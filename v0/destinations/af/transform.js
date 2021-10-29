@@ -41,7 +41,7 @@ function responseBuilderSimple(payload, message, destination) {
   } else if (destination.Config.appId) {
     endpoint = `${ENDPOINT}${destination.Config.appId}`;
   } else {
-    throw new CustomError("Invalid app endpoint");
+    throw new CustomError("Invalid app endpoint", 400);
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;

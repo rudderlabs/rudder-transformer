@@ -242,6 +242,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  ctx.set("apiVersion", API_VERSION);
   return ctx.body;
 }
 

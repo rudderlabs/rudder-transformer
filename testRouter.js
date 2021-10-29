@@ -9,6 +9,7 @@ const { userTransformHandler } = require("./util/customTransformer");
 
 const version = "v0";
 const API_VERSION = "1";
+const samplePaylods = JSON.parse(fs.readFileSync("./samplePayloads.json"));
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -151,6 +152,10 @@ getDestinations().forEach(async dest => {
               };
               await handleDestinationNetwork(version, dest, ctxMock);
               const { output } = ctxMock.body;
+              // handler for node sys error cases
+              if (!output.destination) {
+                throw new Error(output.message);
+              }
               response = {
                 ...response,
                 destination_response: output.destination.data,
@@ -173,12 +178,25 @@ getDestinations().forEach(async dest => {
       ctx.body = {
         error: err.message || JSON.stringify(err)
       };
+      ctx.status = 400;
     }
   });
 });
 
 testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
+});
+
+testRouter.get(`${version}/sample`, ctx => {
+  const dest = ctx.params;
+  if (!samplePaylods[dest]) {
+    ctx.body = {
+      error: `${dest} payload not found`
+    };
+    ctx.status = 400;
+    return ctx;
+  }
+  ctx.body = samplePaylods[dest];
 });
 
 module.exports = { testRouter };

@@ -102,6 +102,8 @@
             ]
           },
           "XML": {},
+          "JSON_ARRAY": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}
@@ -625,6 +627,7 @@
             ]
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}
@@ -749,6 +752,7 @@
             ]
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}
@@ -1328,6 +1332,7 @@
             ]
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}
@@ -2309,6 +2314,7 @@
             "partner": "RudderStack"
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}
@@ -2531,6 +2537,7 @@
             "partner": "RudderStack"
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {}

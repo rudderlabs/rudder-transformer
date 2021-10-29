@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "timestamp": "2019-09-01T15:46:51.693229+05:30",
           "user_properties": {
@@ -134,6 +135,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "timestamp": "2019-09-01T15:46:51.693229+05:30",
           "user_properties": {

@@ -10,6 +10,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {
         "payload": "{\"text\":\"identified my-name-1 with hiji: hulala-1 \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
       }
@@ -28,6 +29,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {
         "payload": "{\"channel\":\"#slack_integration\",\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
       }
@@ -46,6 +48,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {
         "payload": "{\"channel\":\"#slack_integration\",\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
       }

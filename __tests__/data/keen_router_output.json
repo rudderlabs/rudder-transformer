@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
@@ -74,6 +75,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "search": "abc",
           "request_ip": "0.0.0.0",

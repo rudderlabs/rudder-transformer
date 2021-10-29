@@ -34,7 +34,7 @@
               }
             ]
           },
-          "XML": {},
+          "XML": {}, "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {},
@@ -91,7 +91,7 @@
               }
             ]
           },
-          "XML": {},
+          "XML": {}, "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {},
@@ -124,7 +124,7 @@
               }
             ]
           },
-          "XML": {},
+          "XML": {}, "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {},

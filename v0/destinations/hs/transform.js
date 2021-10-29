@@ -18,8 +18,7 @@ const {
   ConfigCategory,
   mappingConfig,
   BATCH_CONTACT_ENDPOINT,
-  MAX_BATCH_SIZE,
-  TRACK_ENDPOINT
+  MAX_BATCH_SIZE
 } = require("./config");
 const { getEmailAndUpdatedProps } = require("./util");
 
@@ -230,7 +229,7 @@ function batchEvents(destEvents) {
   const arrayChunksIdentify = [];
   destEvents.forEach((event, index) => {
     // handler for track call
-    if (event.message.endpoint === TRACK_ENDPOINT) {
+    if (event.message.method === "GET") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
@@ -289,7 +288,7 @@ function batchEvents(destEvents) {
     });
 
     batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      payload: JSON.stringify(identifyResponseList)
+      batch: JSON.stringify(identifyResponseList)
     };
 
     batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;

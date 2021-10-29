@@ -14,7 +14,7 @@
       "body": {
         "JSON": {},
         "JSON_ARRAY": {
-          "payload": "[{\"email\":\"testhubspot3@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot3\"}]},{\"email\":\"testhubspot1@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot1\"}]},{\"email\":\"testhubspot4@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot4\"}]}]"
+          "batch": "[{\"email\":\"testhubspot3@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot3\"}]},{\"email\":\"testhubspot1@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot1\"}]},{\"email\":\"testhubspot4@email.com\",\"properties\":[{\"property\":\"firstname\",\"value\":\"Test Hubspot4\"}]}]"
         },
         "XML": {},
         "FORM": {}

@@ -72,7 +72,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
-    traits = message.properties
+    traits = message.properties;
   }
 
   if (traits) {
@@ -172,9 +172,9 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  //If mapped to destination, Add externalId to traits
-  if(mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // If mapped to destination, Add externalId to traits
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
@@ -223,42 +223,6 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-// const processRouterDest = async inputs => {
-//   if (!Array.isArray(inputs) || inputs.length <= 0) {
-//     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-//     return [respEvents];
-//   }
-
-//   const respList = await Promise.all(
-//     inputs.map(async input => {
-//       try {
-//         if (input.message.statusCode) {
-//           // already transformed event
-//           return getSuccessRespEvents(
-//             input.message,
-//             [input.metadata],
-//             input.destination
-//           );
-//         }
-
-//         // event is not transformed
-//         return getSuccessRespEvents(
-//           await processSingleMessage(input.message, input.destination),
-//           [input.metadata],
-//           input.destination
-//         );
-//       } catch (error) {
-//         return getErrorRespEvents(
-//           [input.metadata],
-//           error.response ? error.response.status : 500, // default to retryable
-//           error.message || "Error occurred while processing payload."
-//         );
-//       }
-//     })
-//   );
-//   return respList;
-// };
-
 function batchEvents(destEvents) {
   const batchedResponseList = [];
   const trackResponseList = [];
@@ -266,7 +230,6 @@ function batchEvents(destEvents) {
   const arrayChunksIdentify = [];
   destEvents.forEach((event, index) => {
     // handler for track call
-    // TODO: check with the track endpoint
     if (event.message.endpoint === TRACK_ENDPOINT) {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");

@@ -277,6 +277,8 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
 // JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {

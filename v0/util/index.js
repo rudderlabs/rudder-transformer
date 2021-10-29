@@ -277,6 +277,7 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -287,6 +288,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -294,6 +296,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -305,6 +308,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },

@@ -11,9 +11,17 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  defaultBatchRequestConfig
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  BATCH_CONTACT_ENDPOINT,
+  MAX_BATCH_SIZE,
+  TRACK_ENDPOINT
+} = require("./config");
+const { getEmailAndUpdatedProps } = require("./util");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -215,40 +223,180 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+// const processRouterDest = async inputs => {
+//   if (!Array.isArray(inputs) || inputs.length <= 0) {
+//     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+//     return [respEvents];
+//   }
+
+//   const respList = await Promise.all(
+//     inputs.map(async input => {
+//       try {
+//         if (input.message.statusCode) {
+//           // already transformed event
+//           return getSuccessRespEvents(
+//             input.message,
+//             [input.metadata],
+//             input.destination
+//           );
+//         }
+
+//         // event is not transformed
+//         return getSuccessRespEvents(
+//           await processSingleMessage(input.message, input.destination),
+//           [input.metadata],
+//           input.destination
+//         );
+//       } catch (error) {
+//         return getErrorRespEvents(
+//           [input.metadata],
+//           error.response ? error.response.status : 500, // default to retryable
+//           error.message || "Error occurred while processing payload."
+//         );
+//       }
+//     })
+//   );
+//   return respList;
+// };
+
+function batchEvents(destEvents) {
+  const batchedResponseList = [];
+  const trackResponseList = [];
+  let eventsChunk = [];
+  const arrayChunksIdentify = [];
+  destEvents.forEach((event, index) => {
+    // handler for track call
+    // TODO: check with the track endpoint
+    if (event.message.endpoint === TRACK_ENDPOINT) {
+      const { message, metadata, destination } = event;
+      const endpoint = get(message, "endpoint");
+
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultGetRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else {
+      eventsChunk.push(event);
+    }
+    if (
+      eventsChunk.length &&
+      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+    ) {
+      arrayChunksIdentify.push(eventsChunk);
+      eventsChunk = [];
+    }
+  });
+
+  // list of chunks [ [..], [..] ]
+  arrayChunksIdentify.forEach(chunk => {
+    const identifyResponseList = [];
+    const metadata = [];
+
+    // extracting destination, apiKey value
+    // from the first event in a batch
+    const { destination } = chunk[0];
+    const { apiKey } = destination.Config;
+    const params = { hapikey: apiKey };
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    chunk.forEach(ev => {
+      const { email, updatedProperties } = getEmailAndUpdatedProps(
+        ev.message.body.JSON.properties
+      );
+      ev.message.body.JSON.properties = updatedProperties;
+      identifyResponseList.push({
+        email,
+        properties: ev.message.body.JSON.properties
+      });
+      metadata.push(ev.metadata);
+    });
+
+    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+      payload: JSON.stringify(identifyResponseList)
+    };
+
+    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+    batchEventResponse.batchedRequest.headers = {
+      "Content-Type": "application/json"
+    };
+    batchEventResponse.batchedRequest.params = params;
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList.concat(trackResponseList);
+}
+
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const successRespList = [];
+  const errorRespList = [];
+  // using the first destination config for transforming the batch
+  const { destination } = inputs[0];
+  await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          successRespList.push({
+            message: input.message,
+            metadata: input.metadata,
+            destination
+          });
+        } else {
+          // event is not transformed
+          successRespList.push({
+            message: await processSingleMessage(input.message, destination),
+            metadata: input.metadata,
+            destination
+          });
         }
-
-        // event is not transformed
-        return getSuccessRespEvents(
-          await processSingleMessage(input.message, input.destination),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+        errorRespList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response ? error.response.status : 500, // default to retryable
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+
+  let batchedResponseList = [];
+  if (successRespList.length) {
+    batchedResponseList = await batchEvents(successRespList);
+  }
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

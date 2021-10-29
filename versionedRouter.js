@@ -242,7 +242,6 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
-  ctx.set("apiVersion", API_VERSION);
   return ctx.body;
 }
 
@@ -299,6 +298,7 @@ if (startDestTransformer) {
         });
       });
       router.post("/routerTransform", async ctx => {
+        ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
     });

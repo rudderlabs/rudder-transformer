@@ -26,12 +26,22 @@ function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
   const os = get(message, "context.os.name");
-  if (os && os.toLowerCase() === "android" && androidAppId) {
-    endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (os && os.toLowerCase() === "ios" && appleAppId) {
-    endpoint = `${ENDPOINT}id${appleAppId}`;
+  if (os && os.toLowerCase() === "android") {
+    if (androidAppId) {
+      endpoint = `${ENDPOINT}${androidAppId}`;
+    } else {
+      throw new CustomError();
+    }
+  } else if (os && os.toLowerCase() === "ios") {
+    if (appleAppId) {
+      endpoint = `${ENDPOINT}id${appleAppId}`;
+    } else {
+      throw new CustomError();
+    }
+  } else if (destination.Config.appId) {
+    endpoint = `${ENDPOINT}${destination.Config.appId}`;
   } else {
-    throw new CustomError("Invalid app endpoint", 400);
+    throw new CustomError("Invalid app endpoint");
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;

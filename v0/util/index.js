@@ -1008,12 +1008,51 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-
+const adduserIdFromExternalId = (message) => {
+  const externalId = get(message, "context.externalId.0.id")
+  if (externalId) {
+    message.userId = externalId;
+  }
+}
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
     this.response = { status: statusCode, metadata };
   }
+}
+
+function ErrorBuilder() {
+  this.err = new Error();
+
+  this.setMessage = message => {
+    this.err.message = message;
+    return this;
+  };
+  this.setStatus = status => {
+    this.err.status = status;
+    return this;
+  };
+
+  this.setDestinationResponse = destination => {
+    this.err.destination = destination;
+    return this;
+  };
+
+  this.setApiInfo = apiLimit => {
+    this.err.apiLimit = apiLimit;
+    return this;
+  };
+
+  this.setMetadata = metadata => {
+    this.err.metadata = metadata;
+    return this;
+  };
+
+  this.isTransformerNetwrokFailure = arg => {
+    this.err.networkFailure = arg;
+    return this;
+  };
+  this.build = () => this.err;
 }
 
 /**
@@ -1043,8 +1082,10 @@ function generateUUID() {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
+  ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,

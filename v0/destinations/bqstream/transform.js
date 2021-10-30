@@ -58,9 +58,7 @@ async function process(event) {
   const responseParams = {
     payload,
     method: "POST",
-    // TODO: ProjectID(rudder-sai) can be referred in a more customised way!
     endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`
-    // endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/rudderstack-dev/datasets/${datasetId}/tables/${tableId}/insertAll`
   };
   if (isOAuthDestination(destination)) {
     // Put authorisation headers into processedResponse

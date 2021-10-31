@@ -9,6 +9,7 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
+const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { populateErrStat } = require("./v0/util/index");
 require("dotenv").config();
@@ -21,7 +22,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const responseTransform = process.env.TRAMNSFORMER_RESPONSE_TRANSFORM || true;
+const responseTransformer = process.env.TRAMNSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
 
@@ -105,8 +106,9 @@ async function handleDest(ctx, version, destination) {
   await Promise.all(
     events.map(async event => {
       try {
-        const parsedEvent = event;
+        let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
+        parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
@@ -232,6 +234,7 @@ async function routerHandleDest(ctx) {
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      desInput = processDynamicConfig(desInput, "router");
       const listOutput = await routerDestHandler.processRouterDest(desInput);
       respEvents.push(...listOutput);
     })
@@ -522,7 +525,7 @@ function handleResponseTransform(version, destination, ctx) {
   // flow should never reach the below (if) its a desperate fall-back
   if (!destNetHandler || !destNetHandler.responseTransform) {
     ctx.status = 404;
-    ctx.body = `${destination} doesn't support transformer proxy`;
+    ctx.body = `${destination} doesn't support response transformation`;
     return ctx.body;
   }
   let response;
@@ -531,18 +534,18 @@ function handleResponseTransform(version, destination, ctx) {
   } catch (err) {
     response = {
       status: err.status || 400,
-      message: err.message || "Error occurred while processing response.",
+      message:
+        err.message || "Error occurred while processing destinationresponse.",
       destinationResponse: err.destinationResponse,
       errorDetailed: err
     };
   }
-
   ctx.body = { output: response };
   ctx.status = response.status;
   return ctx.body;
 }
 
-if (responseTransform) {
+if (responseTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
@@ -589,6 +592,7 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {

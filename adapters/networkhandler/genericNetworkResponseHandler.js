@@ -1,7 +1,7 @@
 const { isEmpty } = require("../../v0/util/index");
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction
- * for all the network comms btw dest transformer along with dest specific reqeusts from server to actual APIs
+ * for all the network comms btw dest transformer.
  *
  * --responseTransform-- this is a function which can be used to handle responses which are not-compatible with
  * rudder-server. If responseTransform for a destination is enabled rudder-server will send the response recieved

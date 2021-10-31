@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
@@ -18,7 +19,8 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  populateErrStat
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -450,19 +452,14 @@ function processSingleMessage(message, destination) {
           throw new ErrorBuilder()
             .setStatus(400)
             .setMessage("Group call parameters are not valid")
-            .isExplicit(true)
-            .statsIncrement(
-              TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-              1,
-              {
-                destination: DESTINATION,
-                stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-                scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-                meta:
-                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                    .INSTRUMENTATION
-              }
-            )
+            .setStatTags({
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .INSTRUMENTATION
+            })
             .build();
         }
       }
@@ -494,18 +491,13 @@ function processSingleMessage(message, destination) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("message type not supported")
-        .isExplicit(true)
-        .statsIncrement(
-          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-          1,
-          {
-            destination: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          }
-        )
+        .setStatTags({
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
         .build();
   }
   return responseBuilderSimple(
@@ -573,13 +565,11 @@ function trackRevenueEvent(message, destination) {
       // when product array is not there in payload, will track the revenue of the original event.
       originalEvent.isRevenue = true;
     }
-  } else {
+  } else if (!isProductArrayInPayload(message)) {
     // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
     // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
     // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
-    if (!isProductArrayInPayload(message)) {
-      originalEvent.isRevenue = true;
-    }
+    originalEvent.isRevenue = true;
   }
   // when trackRevenuePerProduct is false, track the revenue of original event.
   if (destination.Config.trackRevenuePerProduct === false) {
@@ -792,10 +782,13 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, DESTINATION);
         return getErrorRespEvents(
           [input.metadata],
-          error.status ? error.status : error.code ? error.code : 500,
-          error.message || "Error occurred while processing payload."
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          error
         );
       }
     })

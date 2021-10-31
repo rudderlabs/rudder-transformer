@@ -137,7 +137,7 @@ const httpPATCH = async (url, data, options) => {
 };
 
 /**
- * handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * deepricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * @param {*} request
  * @returns
  */

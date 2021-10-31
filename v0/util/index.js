@@ -23,6 +23,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -332,8 +333,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  errorDetailed,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, errorDetailed };
 };
 
 // ========================================================================
@@ -1017,6 +1024,24 @@ class CustomError extends Error {
 }
 
 /**
+ * Used for native error stat population
+ * @param {*} arg
+ * @param {*} destination
+ */
+function populateErrStat(error, destination) {
+  if (!error.statTags) {
+    const statTags = {
+      destination,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+    // eslint-disable-next-line no-ex-assign
+    error = { ...error, statTags };
+  }
+  return error;
+}
+
+/**
  *
  * Utility function for UUID genration
  * @returns
@@ -1088,6 +1113,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

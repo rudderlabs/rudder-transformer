@@ -22,7 +22,8 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  populateErrStat
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const Cache = require("../../util/cache");
@@ -35,7 +36,7 @@ const {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest
-} = require("./nethandler");
+} = require("./networkResponseHandler");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -243,19 +244,14 @@ const getLeadId = async (message, formattedDestination, token) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Lead creation is turned off on the dashboard")
-        .isExplicit(true)
-        .statsIncrement(
-          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-          1,
-          {
-            destination: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                .CONFIGURATION
-          }
-        )
+        .setStatTags({
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        })
         .build();
     }
   }
@@ -272,19 +268,14 @@ const getLeadId = async (message, formattedDestination, token) => {
       .setMessage(
         "lookup failure - either anonymousId or userId or both fields are not created in marketo"
       )
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+            .INSTRUMENTATION
+      })
       .build();
   }
 
@@ -307,18 +298,12 @@ const processIdentify = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Invalid traits value for Marketo")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
       .build();
   }
 
@@ -378,19 +363,13 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Anonymous event tracking is turned off and invalid userId")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
       .build();
   }
 
@@ -399,19 +378,13 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Event is not mapped to Custom Activity")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
       .build();
   }
 
@@ -424,19 +397,13 @@ const processTrack = async (message, formattedDestination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Primary Key value is invalid for the event")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
       .build();
   }
 
@@ -491,18 +458,12 @@ const processEvent = async (message, destination, token) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Message Type is not present. Aborting message.")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
       .build();
   }
   const messageType = message.type.toLowerCase();
@@ -520,18 +481,13 @@ const processEvent = async (message, destination, token) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Message type not supported")
-        .isExplicit(true)
-        .statsIncrement(
-          TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-          1,
-          {
-            destination: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          }
-        )
+        .setStatTags({
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
         .build();
   }
 
@@ -545,16 +501,11 @@ const process = async event => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage("Authorisation failed")
-      .isExplicit(true)
-      .statsIncrement(
-        TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-        1,
-        {
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
-        }
-      )
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
+      })
       .build();
   }
   const response = await processEvent(event.message, event.destination, token);
@@ -572,20 +523,33 @@ const processRouterDest = async inputs => {
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
   } catch (error) {
+    // eslint-disable-next-line no-ex-assign
+    error = populateErrStat(error, DESTINATION);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status ? error.status : 500, // default to retryable
-      error.message || "Error occurred while processing payload."
+      error.status || 500, // default to retryable
+      error.message || "Error occurred while processing payload.",
+      error
     );
     return [respEvents];
   }
 
   // If token is null track/identify calls cannot be executed.
   if (!token) {
+    const errResp = {
+      status: 400,
+      message: "Authorisation failed",
+      statTags: {
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
+      }
+    };
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      400,
-      "Authorisation failed"
+      errResp.status,
+      errResp.message,
+      errResp
     );
     return [respEvents];
   }
@@ -602,10 +566,13 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, DESTINATION);
         return getErrorRespEvents(
           [input.metadata],
-          error.status ? error.status : error.code ? error.code : 500,
-          error.message || "Error occurred while processing payload."
+          error.status || 500,
+          error.message || "Error occurred while processing payload.",
+          error
         );
       }
     })

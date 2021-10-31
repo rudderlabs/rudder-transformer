@@ -14,7 +14,7 @@ const TRANSFORMER_METRIC = {
   },
   TRANSFORMER_STAGE: {
     TRANSFORM: "transform",
-    PROXY: "proxy"
+    RESPONSE_TRANSFORM: "responseTransform"
   },
   MEASUREMENT_TYPE: {
     API: {

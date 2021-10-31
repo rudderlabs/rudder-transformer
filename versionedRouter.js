@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-const heapdump = require("heapdump");
+// const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
@@ -9,8 +9,8 @@ const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
+const { populateErrStat } = require("./v0/util/index");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -21,7 +21,6 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
 const responseTransform = process.env.TRAMNSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
@@ -44,12 +43,12 @@ const getDestNetHander = (version, dest) => {
   const destination = _.toLower(dest);
   let destNetHandler;
   try {
-    destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
-    if (!destNetHandler && !destNetHandler.sendData) {
-      destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
+    if (!destNetHandler && !destNetHandler.responseTransform) {
+      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
     }
   } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
   }
   return destNetHandler;
 };
@@ -129,24 +128,14 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, destination);
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
+          error: error.message || "Error occurred while processing payload.",
+          errorDetailed: error
         });
-        // stats for non-explicit exceptions
-        if (!error.isExplicit) {
-          stats.increment(
-            TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC,
-            1,
-            {
-              destination,
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-            }
-          );
-        }
       }
     })
   );
@@ -327,7 +316,7 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(
           events,
-          event => event.metadata.destinationId + "_" + event.metadata.sourceId
+          event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
         );
       }
       stats.counter(
@@ -528,50 +517,6 @@ if (startSourceTransformer) {
   });
 }
 
-async function handleDestinationNetwork(version, destination, ctx) {
-  const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.sendData) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support transformer proxy`;
-    return ctx.body;
-  }
-  let response;
-  logger.info("Request recieved for destination", destination);
-  try {
-    response = await destNetHandler.sendData(ctx.request.body);
-  } catch (err) {
-    response = {
-      status: 500, // keeping retryable default
-      error: err.message || "Error occurred while processing payload."
-    };
-    // error from network failure should directly parsable as response
-    if (err.networkFailure) {
-      response = { ...err };
-    }
-  }
-
-  ctx.body = { output: response };
-  ctx.status = response.status;
-  return ctx.body;
-}
-
-if (networkMode) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      router.post(`/network/${destination}/proxy`, async ctx => {
-        const startTime = new Date();
-        await handleDestinationNetwork(version, destination, ctx);
-        stats.timing("transformer_proxy_latency", startTime, {
-          destination,
-          version
-        });
-      });
-    });
-  });
-}
-
 function handleResponseTransform(version, destination, ctx) {
   const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
@@ -585,12 +530,11 @@ function handleResponseTransform(version, destination, ctx) {
     response = destNetHandler.responseTransform(ctx.request.body);
   } catch (err) {
     response = {
-      status: 400,
-      error: err.message || "Error occurred while processing response."
+      status: err.status || 400,
+      message: err.message || "Error occurred while processing response.",
+      destinationResponse: err.destinationResponse,
+      errorDetailed: err
     };
-    if (err.responseTransformFailure) {
-      response = { ...err };
-    }
   }
 
   ctx.body = { output: response };
@@ -665,12 +609,12 @@ router.post("/batch", ctx => {
   batchHandler(ctx);
 });
 
-router.get("/heapdump", ctx => {
-  heapdump.writeSnapshot((err, filename) => {
-    logger.debug("Heap dump written to", filename);
-  });
-  ctx.body = "OK";
-});
+// router.get("/heapdump", ctx => {
+//   heapdump.writeSnapshot((err, filename) => {
+//     logger.debug("Heap dump written to", filename);
+//   });
+//   ctx.body = "OK";
+// });
 
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;
@@ -774,6 +718,5 @@ module.exports = {
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleResponseTransform,
-  handleDestinationNetwork
+  handleResponseTransform
 };

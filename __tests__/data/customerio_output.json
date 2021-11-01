@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "_timestamp": 1571043797,
         "anonymous_id": "123456",
@@ -32,6 +33,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "page",
         "data": {
@@ -61,6 +63,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -88,6 +91,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "anonymous_id": "00000000000000000000000000",
         "type": "event",
@@ -116,6 +120,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "review_body": "Some Review Body",
@@ -144,6 +149,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -162,6 +168,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -184,6 +191,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "anonymous_id": "00000000000000000000000000",
         "type": "event",
@@ -212,6 +220,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "user_actual_id": 12345,
@@ -239,6 +248,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -266,6 +276,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -293,6 +304,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "user_actual_id": 12345,
@@ -320,6 +332,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -338,6 +351,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "_timestamp": 1571043797,
         "anonymous_id": "123456",
@@ -367,6 +381,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "page",
         "data": {
@@ -396,6 +411,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -423,6 +439,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "anonymous_id": "00000000000000000000000000",
         "type": "event",
@@ -451,6 +468,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "review_body": "Some Review Body",
@@ -479,6 +497,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -497,6 +516,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -519,6 +539,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "anonymous_id": "00000000000000000000000000",
         "type": "event",
@@ -547,6 +568,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "user_actual_id": 12345,
@@ -574,6 +596,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -601,6 +624,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "type": "event",
         "data": {
@@ -628,6 +652,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "device": {
           "user_actual_id": 12345,
@@ -655,6 +680,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {},
       "FORM": {}
     },
@@ -692,6 +718,7 @@
         "timestamp": 1571051718
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -720,6 +747,7 @@
         "timestamp": 1571051718
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -732,48 +760,98 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/customers/ruchira-user-id-100/events",
     "headers": {
-        "Authorization": "Basic YWJjOnh5eg=="
+      "Authorization": "Basic YWJjOnh5eg=="
     },
     "params": {},
     "body": {
-        "JSON": {
-            "data": {},
-            "name": "Home: Viewed",
-            "type": "event",
-            "timestamp": 1632314412
-        },
-        "XML": {},
-        "FORM": {}
+      "JSON": {
+        "data": {},
+        "name": "Home: Viewed",
+        "type": "event",
+        "timestamp": 1632314412
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
     },
     "files": {},
     "userId": "ruchira-user-id-100",
     "statusCode": 200
-},
-{
-  "version": "1",
-  "type": "REST",
-  "method": "PUT",
-  "endpoint": "https://track-eu.customer.io/api/v1/customers/ruchira-user-id-100",
-  "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
   },
-  "params": {},
-  "body": {
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/ruchira-user-id-100",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "params": {},
+    "body": {
       "JSON": {
-          "city": "NY",
-          "country": "USA",
-          "postalCode": 712136,
-          "state": "CA",
-          "street": "",
-          "email": "test@gmail.com",
-          "_timestamp": 1571043797,
-          "anonymous_id": "ruchira-100-anon"
+        "city": "NY",
+        "country": "USA",
+        "postalCode": 712136,
+        "state": "CA",
+        "street": "",
+        "email": "test@gmail.com",
+        "_timestamp": 1571043797,
+        "anonymous_id": "ruchira-100-anon"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
+    },
+    "files": {},
+    "userId": "ruchira-user-id-100",
+    "statusCode": 200
   },
-  "files": {},
-  "userId": "ruchira-user-id-100",
-  "statusCode": 200
-}
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/xaviercharles@hotmail.com",
+    "headers": {
+      "Authorization": "Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "last_name": "xavier",
+        "first_name": "charles",
+        "email": "xaviercharles@hotmail.com",
+        "_timestamp": 1635325796
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "xaviercharles@hotmail.com",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/xaviercharles",
+    "headers": {
+      "Authorization": "Basic ZWVhZDA5MGFiOWUyZTM1MDA0ZGM6YTI5MmQ4NWFjMzZkZTE1ZmMyMTk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "last_name": "xavier",
+        "first_name": "charles",
+        "id": "xaviercharles",
+        "_timestamp": 1635325796
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "xaviercharles",
+    "statusCode": 200
+  }
 ]

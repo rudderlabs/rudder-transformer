@@ -64,6 +64,7 @@
           "value": 31.98
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -105,6 +106,7 @@
           "plan": "Enterprise"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}

@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -109,6 +110,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -215,6 +217,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -401,6 +404,7 @@
         "request_ip": "127.0.0.1"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},

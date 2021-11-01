@@ -1926,5 +1926,187 @@
         "apiKey": "19f0f734e3bb87a44596"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "xaviercharles@hotmail.com",
+            "identifierType": "email",
+            "type": "CUSTOMERIO-customers"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "batch_id": "3d6f7aa8-9b70-4759-970d-212e6714ad22",
+          "job_id": "1zDgnw7ZmHWR7gtY4niHYysL3zS/Syncher",
+          "job_run_id": "c5shebbh9jqg10k8d21g",
+          "task_id": "tt_10_rows",
+          "task_run_id": "c5shebbh9jqg10k8d220",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "d82a45e1-5a27-4c1d-af89-83bdbc6139d0",
+      "originalTimestamp": "2021-10-27T09:09:56.673Z",
+      "receivedAt": "2021-10-27T09:09:56.187Z",
+      "recordId": "3",
+      "request_ip": "10.1.85.177",
+      "rudderId": "5b19a81b-df60-4ccd-abf0-fcfe2b7db054",
+      "sentAt": "2021-10-27T09:09:56.673Z",
+      "timestamp": "2021-10-27T09:09:56.186Z",
+      "traits": {
+        "last_name": "xavier",
+        "first_name": "charles"
+      },
+      "type": "identify",
+      "userId": "xaviercharles@hotmail.com"
+    },
+    "destination": {
+      "ID": "1zgXcyv272oZA8HWqe7zInhJjPL",
+      "Name": "ere",
+      "DestinationDefinition": {
+        "ID": "1iVQr671C0E8MVpzvCEegsLM2J5",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "apiKey": "a292d85ac36de15fc219",
+        "datacenterEU": false,
+        "siteID": "eead090ab9e2e35004dc"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
+    }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "xaviercharles",
+            "identifierType": "id",
+            "type": "CUSTOMERIO-customers"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "batch_id": "3d6f7aa8-9b70-4759-970d-212e6714ad22",
+          "job_id": "1zDgnw7ZmHWR7gtY4niHYysL3zS/Syncher",
+          "job_run_id": "c5shebbh9jqg10k8d21g",
+          "task_id": "tt_10_rows",
+          "task_run_id": "c5shebbh9jqg10k8d220",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "d82a45e1-5a27-4c1d-af89-83bdbc6139d0",
+      "originalTimestamp": "2021-10-27T09:09:56.673Z",
+      "receivedAt": "2021-10-27T09:09:56.187Z",
+      "recordId": "3",
+      "request_ip": "10.1.85.177",
+      "rudderId": "5b19a81b-df60-4ccd-abf0-fcfe2b7db054",
+      "sentAt": "2021-10-27T09:09:56.673Z",
+      "timestamp": "2021-10-27T09:09:56.186Z",
+      "traits": {
+        "last_name": "xavier",
+        "first_name": "charles"
+      },
+      "type": "identify",
+      "userId": "xaviercharles"
+    },
+    "destination": {
+      "ID": "1zgXcyv272oZA8HWqe7zInhJjPL",
+      "Name": "ere",
+      "DestinationDefinition": {
+        "ID": "1iVQr671C0E8MVpzvCEegsLM2J5",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "apiKey": "a292d85ac36de15fc219",
+        "datacenterEU": false,
+        "siteID": "eead090ab9e2e35004dc"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
+    }
   }
 ]

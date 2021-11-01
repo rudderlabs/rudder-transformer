@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-const _ = require("lodash");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -19,7 +18,8 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  toUnixTimestamp
 } = require("../../util");
 
 /*
@@ -63,8 +63,15 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const anonymousId = get(message, "anonymousId");
   const payload = {
     type: "profile",
-    profileData: profile
+    profileData: profile,
+    ts: get(message, "traits.ts") || get(message, "context.traits.ts")
   };
+
+  // If timestamp is not in unix format
+  if (payload.ts && !Number(payload.ts)) {
+    payload.ts = toUnixTimestamp(payload.ts);
+  }
+
   // If anonymousId is present prioritising to set it as objectId
   if (anonymousId) {
     payload.objectId = anonymousId;
@@ -88,10 +95,16 @@ const mapIdentifyPayload = (message, profile) => {
       {
         type: "profile",
         profileData: profile,
+        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
         identity: getFieldValueFromMessage(message, "userId")
       }
     ]
   };
+
+  // If timestamp is not in unix format
+  if (payload.d[0].ts && !Number(payload.d[0].ts)) {
+    payload.d[0].ts = toUnixTimestamp(payload.d[0].ts);
+  }
   return payload;
 };
 
@@ -139,12 +152,13 @@ const getClevertapProfile = (message, category) => {
     ["traits", "context.traits"],
     CLEVERTAP_DEFAULT_EXCLUSION
   );
+
   return removeUndefinedAndNullValues(profile);
 };
 
 const responseBuilderSimple = (message, category, destination) => {
   let payload;
-  // For identify type of events we require a specific trype of payload
+  // For identify type of events we require a specific type of payload
   // Source: https://developer.clevertap.com/docs/upload-user-profiles-api
   // ---------------------------------------------------------------------
   if (category.type === "identify") {
@@ -157,7 +171,10 @@ const responseBuilderSimple = (message, category, destination) => {
       // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
       // also anoymousId should be present to map it with objectId
       const deviceToken = get(message, "context.device.token");
-      const deviceOS = get(message, "context.os.name").toLowerCase();
+      let deviceOS = get(message, "context.os.name");
+      if (deviceOS) {
+        deviceOS = deviceOS.toLowerCase();
+      }
       if (
         get(message, "anonymousId") &&
         deviceToken &&
@@ -209,13 +226,15 @@ const responseBuilderSimple = (message, category, destination) => {
         evtData: constructPayload(
           message,
           MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]
-        )
+        ),
+        ts: get(message, "properties.ts")
       };
+
       eventPayload.evtData = extractCustomFields(
         message,
         eventPayload.evtData,
         ["properties"],
-        ["checkout_id", "revenue", "products"]
+        ["checkout_id", "revenue", "products", "ts"]
       );
     }
     // For other type of events we need to follow payload for sending events
@@ -231,6 +250,11 @@ const responseBuilderSimple = (message, category, destination) => {
       eventPayload = mapTrackPayloadWithObjectId(message, eventPayload);
     } else {
       eventPayload = mapTrackPayload(message, eventPayload);
+    }
+
+    // If timestamp is not in unix format
+    if (eventPayload.ts && !Number(eventPayload.ts)) {
+      eventPayload.ts = toUnixTimestamp(eventPayload.ts);
     }
 
     payload = {

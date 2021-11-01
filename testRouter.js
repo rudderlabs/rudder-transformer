@@ -9,7 +9,7 @@ const { userTransformHandler } = require("./util/customTransformer");
 
 const version = "v0";
 const API_VERSION = "1";
-// const samplePaylods = JSON.parse(fs.readFileSync("./samplePayloads.json"));
+const samplePaylods = JSON.parse(fs.readFileSync("./samplePayloads.json"));
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -187,16 +187,25 @@ testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
 });
 
-// testRouter.get(`${version}/sample`, ctx => {
-//   const dest = ctx.params;
-//   if (!samplePaylods[dest]) {
-//     ctx.body = {
-//       error: `${dest} payload not found`
-//     };
-//     ctx.status = 400;
-//     return ctx;
-//   }
-//   ctx.body = samplePaylods[dest];
-// });
+testRouter.get(`/${version}/sample`, ctx => {
+  const { dest } = ctx.request.query;
+  console.log("DESTINATION NAME", dest);
+  if (!dest) {
+    ctx.body = {
+      error: "destination name not found"
+    };
+    ctx.status = 400;
+    return ctx;
+  }
+  const destinationName = dest.trim().toUpperCase();
+  if (!samplePaylods[destinationName]) {
+    ctx.body = {
+      error: `payload for ${dest} not found`
+    };
+    ctx.status = 400;
+    return ctx;
+  }
+  ctx.body = samplePaylods[destinationName];
+});
 
 module.exports = { testRouter };

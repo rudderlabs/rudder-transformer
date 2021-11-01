@@ -21,7 +21,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const responseTransformer = process.env.TRAMNSFORMER_RESPONSE_TRANSFORM || true;
+const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
 

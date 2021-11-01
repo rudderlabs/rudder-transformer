@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "subscribers": [
@@ -50,18 +51,19 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
-            "events": [
-                {
-                  "email": "user1@gmail.com",
-                  "properties": {
-                    "field1": "val1"
-                  },
-                  "action": "testing",
-                  "occurred_at": "2019-10-14T09:03:17.562Z"
-                }
-              ]
+          "events": [
+            {
+              "email": "user1@gmail.com",
+              "properties": {
+                "field1": "val1"
+              },
+              "action": "testing",
+              "occurred_at": "2019-10-14T09:03:17.562Z"
+            }
+          ]
         }
       },
       "type": "REST",

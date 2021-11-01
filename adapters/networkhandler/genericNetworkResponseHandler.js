@@ -16,13 +16,15 @@ const { isEmpty } = require("../../v0/util/index");
 const responseTransform = destResponse => {
   let respBody;
   try {
-    respBody = JSON.parse(destResponse.Body);
+    respBody = JSON.parse(destResponse.responseBody);
   } catch (err) {
-    respBody = isEmpty(!destResponse.Body) ? destResponse.Body : null;
+    respBody = isEmpty(!destResponse.responseBody)
+      ? destResponse.responseBody
+      : null;
   }
-  const status = destResponse.Status;
+  const { status } = destResponse;
   const message = respBody.message || "Event delivered successfuly";
-  const destinationResponse = { ...respBody, status: destResponse.Status };
+  const destinationResponse = { ...respBody, status: destResponse.status };
   const { apiLimit } = respBody;
   return {
     status,

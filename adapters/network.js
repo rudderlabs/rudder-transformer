@@ -5,22 +5,6 @@ const https = require("https");
 const axios = require("axios");
 const _ = require("lodash");
 const log = require("../logger");
-const { removeUndefinedAndNullValues } = require("../v0/util/index");
-
-const agentArgs = removeUndefinedAndNullValues({
-  keepAlive: true,
-  maxSockets: Number.isNaN(
-    Number.parseInt(process.env.NETWORK_AGENT_MAX_SOCKET, 10)
-  )
-    ? undefined
-    : Number.parseInt(process.env.NETWORK_AGENT_MAX_SOCKET, 10),
-
-  maxFreeSockets: Number.isNaN(
-    Number.parseInt(process.env.NETWORK_AGENT_MAX_FREE_SOCKET, 10)
-  )
-    ? undefined
-    : Number.parseInt(process.env.NETWORK_AGENT_MAX_FREE_SOCKET, 10)
-});
 
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
@@ -46,10 +30,10 @@ const networkClientConfigs = {
   maxRedirects: 5,
 
   // `httpAgent` and `httpsAgent` define a custom agent to be used when performing http
-  httpAgent: new http.Agent(agentArgs),
+  httpAgent: new http.Agent({ keepAlive: true }),
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
-  httpsAgent: new https.Agent(agentArgs)
+  httpsAgent: new https.Agent({ keepAlive: true })
 };
 
 /**

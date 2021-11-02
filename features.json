@@ -12,6 +12,7 @@
     "FB_CUSTOM_AUDIENCE":true,
     "DELIGHTED": true,
     "DRIP": true,
-    "ALGOLIA": true
+    "ALGOLIA": true,
+    "OMETRIA": true
   }
 }

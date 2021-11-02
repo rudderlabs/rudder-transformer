@@ -9,7 +9,8 @@ const DestCanonicalNames = {
     "FacebookPixel",
     "Facebook Pixel",
     "FB Pixel"
-  ]
+  ],
+  ometria: ["Ometria", "ometria", "OMETRIA"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

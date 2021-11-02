@@ -9,12 +9,13 @@ const heapdump = require("heapdump");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
+const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -22,6 +23,7 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
+const startResponseTransformer = process.env.RESPONSE_TRANSFORMER || true;
 
 const router = new Router();
 
@@ -105,8 +107,9 @@ async function handleDest(ctx, version, destination) {
   await Promise.all(
     events.map(async event => {
       try {
-        const parsedEvent = event;
+        let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
+        parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
 
         if (respEvents) {
@@ -237,6 +240,7 @@ async function routerHandleDest(ctx) {
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      desInput = processDynamicConfig(desInput, "router");
       const listOutput = await routerDestHandler.processRouterDest(desInput);
       respEvents.push(...listOutput);
     })
@@ -298,6 +302,7 @@ if (startDestTransformer) {
         });
       });
       router.post("/routerTransform", async ctx => {
+        ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
     });
@@ -537,7 +542,7 @@ async function handleDestinationNetwork(version, destination, ctx) {
     response = await destNetHandler.sendData(ctx.request.body);
   } catch (err) {
     response = {
-      statusCode: 500, // keeping retryable default
+      status: 500, // keeping retryable default
       error: err.message || "Error occurred while processing payload."
     };
     // error from network failure should directly parsable as response
@@ -562,6 +567,39 @@ if (networkMode) {
   });
 }
 
+function handleResponseTransform(version, destination, ctx) {
+  const handler = getDestHandler(version, destination);
+  if (!handler || !handler.responseTransform) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support response transform`;
+    return ctx.body;
+  }
+  let handledResponse;
+  logger.info("Request recieved for response transform", destination);
+  try {
+    handledResponse = handler.responseTransform(ctx.request.body);
+  } catch (err) {
+    handledResponse = {
+      status: 400,
+      error: err.message || "Error occurred while processing response."
+    };
+  }
+
+  ctx.body = handledResponse;
+  ctx.status = handledResponse.status;
+  return ctx.body;
+}
+
+if (startResponseTransformer) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(`/response/${destination}/transform`, async ctx => {
+        handleResponseTransform(version, destination, ctx);
+      });
+    });
+  });
+}
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
@@ -593,6 +631,7 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {

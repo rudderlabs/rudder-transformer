@@ -467,4 +467,62 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+const responseTransform = input => {
+  const MARKETO_RETRYABLE_CODES = ["600", "601", "602", "604", "611"];
+  const MARKETO_ABORTABLE_CODES = ["603", "605", "609", "610", "612"];
+  const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
+
+  if (input.success) {
+    return {
+      status: 200,
+      destination: { ...input },
+      message: "Processed Successfully"
+    };
+  }
+
+  if (!input.success) {
+    // marketo application response level failure
+    const { errors } = input;
+
+    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 400,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Aborted)`,
+        networkFailure: true
+      };
+    }
+    if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 429,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Throttled)`,
+        networkFailure: true
+      };
+    }
+    if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
+      return {
+        status: 500,
+        destination: { ...input },
+        message: `Request Failed for Marketo, ${errors[0].message} (Retryable)`,
+        networkFailure: true
+      };
+    }
+    // default case
+    return {
+      status: 500,
+      destination: { ...input },
+      message: `Request Failed for Marketo, ${errors[0].message} (Retryable)`,
+      networkFailure: true
+    };
+  }
+  // success is falsey
+  return {
+    status: 500,
+    destination: { ...input },
+    message: `Request Failed for Marketo,(Retryable)`,
+    networkFailure: true
+  };
+};
+
+module.exports = { process, processRouterDest, responseTransform };

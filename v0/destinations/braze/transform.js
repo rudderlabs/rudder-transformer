@@ -1,7 +1,9 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
+  adduserIdFromExternalId,
   defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
@@ -101,7 +103,7 @@ function getUserAttributesObject(message, mappingJson) {
   const traits = getFieldValueFromMessage(message, "traits");
 
   // return the traits as-is if message is mapped to destination
-  if(get(message, MappedToDestinationKey)) {
+  if (get(message, MappedToDestinationKey)) {
     return traits;
   }
 
@@ -146,12 +148,10 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
-  
   // override userId with externalId in context(if present) and event is mapped to destination
-  const externalId = get(message, "context.externalId.0.id")
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination && externalId) {
-      message.userId = externalId; 
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    adduserIdFromExternalId(message);
   }
 
   return buildResponse(
@@ -673,4 +673,20 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, batch };
+const responseTransform = input => {
+  if (input.errors && input.errors.length > 0) {
+    return {
+      status: 400,
+      destination: { ...input },
+      message: "Request Failed for Braze (Aborted)",
+      networkFailure: true
+    };
+  }
+  return {
+    status: 200,
+    destination: { ...input },
+    message: "Processed Successfully"
+  };
+};
+
+module.exports = { process, processRouterDest, batch, responseTransform };

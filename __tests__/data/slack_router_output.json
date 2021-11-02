@@ -28,6 +28,7 @@
         "body": {
           "JSON": {},
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "payload": "{\"text\":\"identified my-name-1 with hiji: hulala-1 \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
           }

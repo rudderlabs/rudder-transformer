@@ -22,6 +22,7 @@
         "ip": "0.0.0.0"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -45,6 +46,7 @@
         "ip": "0.0.0.0"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -76,6 +78,7 @@
         "sharing_filter": "all"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -99,6 +102,7 @@
         "ip": "0.0.0.0"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -122,6 +126,7 @@
         "ip": "0.0.0.0"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -144,6 +149,7 @@
         "appsflyer_id": "afUid"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -166,6 +172,7 @@
         "appsflyer_id": "afUid"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -188,6 +195,7 @@
         "appsflyer_id": "afUid"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -210,6 +218,7 @@
         "appsflyer_id": "afUid"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -232,6 +241,7 @@
         "appsflyer_id": "afUid"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -255,6 +265,7 @@
         "ip": "0.0.0.0"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}

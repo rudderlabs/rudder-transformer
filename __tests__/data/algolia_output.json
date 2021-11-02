@@ -2,6 +2,7 @@
     {
       "body": {
         "FORM": {},
+        "JSON_ARRAY": {},
         "JSON": {"events":[{
               "eventName": "product clicked",
               "eventType": "click",
@@ -26,6 +27,7 @@
     {
       "body": {
         "FORM": {},
+        "JSON_ARRAY": {},
         "JSON": {"events":[{
               "eventName": "product list viewed",
               "eventType": "click",
@@ -67,6 +69,7 @@
     {
       "body": {
         "FORM": {},
+        "JSON_ARRAY": {},
         "JSON": {"events":[{
               "eventName": "product list viewed",
               "eventType": "view",

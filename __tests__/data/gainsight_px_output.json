@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "attributes": {
@@ -43,6 +44,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "attributes": {
@@ -72,6 +74,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "type": "USER",
@@ -107,6 +110,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "accountId": "ecorp-id"
@@ -135,6 +139,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "attributes": {
@@ -167,6 +172,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "attributes": {
@@ -201,6 +207,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "identifyId": "absent-id",

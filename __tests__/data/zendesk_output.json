@@ -26,6 +26,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -53,6 +54,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -93,6 +95,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -115,6 +118,7 @@
       "body": {
         "JSON": {},
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -146,6 +150,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -169,6 +174,7 @@
       "body": {
         "JSON": {},
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -200,6 +206,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -233,6 +240,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -266,6 +274,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -300,6 +309,7 @@
           }
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -332,7 +342,8 @@
           "type": "Abhishek Track me"
         }
       },
-      "XML": {}
+      "XML": {},
+      "JSON_ARRAY": {}
     },
     "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
     "files": {},
@@ -375,7 +386,8 @@
           "type": "Abhishek Track me"
         }
       },
-      "XML": {}
+      "XML": {},
+      "JSON_ARRAY": {}
     },
     "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events",
     "files": {},

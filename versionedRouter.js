@@ -533,11 +533,13 @@ function handleResponseTransform(version, destination, ctx) {
   } catch (err) {
     response = {
       status: err.status || 400,
-      message:
-        err.message || "Error occurred while processing destinationresponse.",
+      message: err.message,
       destinationResponse: err.destinationResponse,
       errorDetailed: err
     };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+    }
   }
   ctx.body = { output: response };
   ctx.status = response.status;

@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "request_id": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
@@ -21,6 +22,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "request_id": "57494c6a-3c62-4b30-83aa-6e821d37ac75",
@@ -43,6 +45,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -68,6 +71,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -95,6 +99,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -137,6 +142,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -220,6 +226,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -264,6 +271,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -292,6 +300,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}

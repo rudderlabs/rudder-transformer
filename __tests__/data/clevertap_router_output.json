@@ -32,11 +32,7 @@
                 "msgSms": true,
                 "msgemail": true,
                 "msgwhatsapp": false,
-                "custom_tags": [
-                  "Test_User",
-                  "Interested_User",
-                  "DIY_Hobby"
-                ],
+                "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
                 "custom_mappings": {
                   "Office": "Trastkiv",
                   "Country": "Russia"
@@ -53,6 +49,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -99,6 +96,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}

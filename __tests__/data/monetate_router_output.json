@@ -1,112 +1,111 @@
 [
-    {
-        "batchedRequest": {
-            "version": "1",
-            "type": "REST",
-            "method": "POST",
-            "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
-            "headers": {
-                "Content-Type": "application/json"
-            },
-            "params": {},
-            "body": {
-                "JSON": {
-                    "monetateId": "1234",
-                    "events": [
-                        {
-                            "eventType": "monetate:context:IpAddress",
-                            "ipAddress": "0.0.0.0"
-                        },
-                        {
-                            "eventType": "monetate:context:ScreenSize",
-                            "height": 22,
-                            "width": 11
-                        },
-                        {
-                            "eventType": "monetate:context:ProductDetailView",
-                            "products": [
-                                {
-                                    "productId": "prodId",
-                                    "sku": ""
-                                }
-                            ]
-                        }
-                    ],
-                    "customerId": "newUser",
-                    "channel": "channel"
-                },
-                "XML": {},
-                "FORM": {}
-            },
-            "files": {}
-        },
-        "metadata": [
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "monetateId": "1234",
+          "events": [
             {
-                "jobId": 2
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "0.0.0.0"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize",
+              "height": 22,
+              "width": 11
+            },
+            {
+              "eventType": "monetate:context:ProductDetailView",
+              "products": [
+                {
+                  "productId": "prodId",
+                  "sku": ""
+                }
+              ]
             }
-        ],
-        "batched": false,
-        "statusCode": 200,
-        "destination": {
-            "Config": {
-                "monetateChannel": "channel",
-                "retailerShortName": "retailer",
-                "apiKey": "api-key"
-            }
-        }
+          ],
+          "customerId": "newUser",
+          "channel": "channel"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
     },
-    {
-        "batchedRequest": {
-            "version": "1",
-            "type": "REST",
-            "method": "POST",
-            "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
-            "headers": {
-                "Content-Type": "application/json"
-            },
-            "params": {},
-            "body": {
-                "JSON": {
-                    "monetateId": "1234",
-                    "events": [
-                        {
-                            "eventType": "monetate:context:IpAddress",
-                            "ipAddress": "0.0.0.0"
-                        },
-                        {
-                            "eventType": "monetate:context:ScreenSize",
-                            "height": 22,
-                            "width": 11
-                        },
-                        {
-                            "eventType": "monetate:context:ProductThumbnailView",
-                            "products": [
-                                "1",
-                                "2"
-                            ]
-                        }
-                    ],
-                    "customerId": "newUser",
-                    "channel": "channel"
-                },
-                "XML": {},
-                "FORM": {}
-            },
-            "files": {}
-        },
-        "metadata": [
-            {
-                "jobId": 2
-            }
-        ],
-        "batched": false,
-        "statusCode": 200,
-        "destination": {
-            "Config": {
-                "monetateChannel": "channel",
-                "retailerShortName": "retailer",
-                "apiKey": "api-key"
-            }
-        }
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
     }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://engine.monetate.net/api/engine/v1/decide/retailer",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "monetateId": "1234",
+          "events": [
+            {
+              "eventType": "monetate:context:IpAddress",
+              "ipAddress": "0.0.0.0"
+            },
+            {
+              "eventType": "monetate:context:ScreenSize",
+              "height": 22,
+              "width": 11
+            },
+            {
+              "eventType": "monetate:context:ProductThumbnailView",
+              "products": ["1", "2"]
+            }
+          ],
+          "customerId": "newUser",
+          "channel": "channel"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "monetateChannel": "channel",
+        "retailerShortName": "retailer",
+        "apiKey": "api-key"
+      }
+    }
+  }
 ]

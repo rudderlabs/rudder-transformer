@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "channel": "web",
           "context": {
@@ -96,6 +97,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "JSON": {
           "channel": "web",
           "context": {

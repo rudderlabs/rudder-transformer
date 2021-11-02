@@ -11,6 +11,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "email": "abc@123.com",
@@ -27,6 +28,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "email": "123@abc.com",
@@ -47,6 +49,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "properties": {
@@ -102,6 +105,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "send": false,

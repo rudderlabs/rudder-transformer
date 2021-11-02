@@ -19,6 +19,7 @@
         "app_id": "<app id>"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -42,6 +43,7 @@
         "app_id": "<app id>"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -53,4 +55,3 @@
   },
   { "statusCode": 400, "error": "Message type not supported" }
 ]
-

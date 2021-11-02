@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "userId": "abcdeeeeeeeexxxx102",
@@ -48,6 +49,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "email": "manashi@website.com",

@@ -20,6 +20,7 @@
           "app_id": "<app id>"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -69,6 +70,7 @@
           "app_id": "<app id>"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},

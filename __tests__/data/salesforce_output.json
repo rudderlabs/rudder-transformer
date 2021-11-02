@@ -26,6 +26,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -58,6 +59,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -91,6 +93,7 @@
           "LeadSource": "RudderLabs"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -129,6 +132,7 @@
           "customKey__c": "customValue"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -162,6 +166,7 @@
           "customKey__c": "customValue"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -194,6 +199,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -225,6 +231,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -257,10 +264,10 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
     }
   ]
 ]
-

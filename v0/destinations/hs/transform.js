@@ -71,7 +71,7 @@ async function getTransformedJSON(message, mappingJson, destination) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
-    traits = message.properties
+    traits = message.properties;
   }
 
   if (traits) {
@@ -171,9 +171,9 @@ async function processTrack(message, destination) {
 
 async function processIdentify(message, destination) {
   const traits = getFieldValueFromMessage(message, "traits");
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  //If mapped to destination, Add externalId to traits
-  if(mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // If mapped to destination, Add externalId to traits
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
@@ -342,13 +342,6 @@ const processRouterDest = async inputs => {
             destination
           });
         }
-
-        // event is not transformed
-        return getSuccessRespEvents(
-          await processSingleMessage(input.message, input.destination),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
         errorRespList.push(
           getErrorRespEvents(

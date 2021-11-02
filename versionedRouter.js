@@ -66,6 +66,10 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
+const getDeletionUserHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/deleteUsers`);
+};
+
 const eventValidator = require("./util/eventValidation");
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
@@ -733,6 +737,30 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+const handleDeletionOfUsers = async ctx => {
+  // const { destType } = ctx.request.body;
+  // taking only amplitude
+  const destDeletionHandler = getDeletionUserHandler("v0", "amplitude");
+
+  let response;
+  if (!destDeletionHandler || destDeletionHandler.processDeleteUsers) {
+    ctx.status = 404;
+    ctx.body = "Doesn't support deletion of users";
+    return null;
+  }
+
+  try {
+    response = await destDeletionHandler.processDeleteUsers(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occured while processing"
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
 router.post("/fileUpload", async ctx => {
   await fileUpload(ctx);
 });
@@ -751,5 +779,11 @@ router.post("/getWarningJobs", async ctx => {
 // eg. v0/validate. will validate events as per respective tracking plans
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
+});
+
+// Api to handle deletion of users for data regulation
+
+router.post(`/v0/deleteUsers`, async ctx => {
+  await handleDeletionOfUsers(ctx);
 });
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

@@ -12,6 +12,7 @@ const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
 const { hsGetRequestHandler } = require("./hs.mock");
 const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
+const profitwellGetRequestHandler = require("./profitwell.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -19,7 +20,8 @@ const urlDirectoryMap = {
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
-  "api.aptrinsic.com": "gainsight_px"
+  "api.aptrinsic.com": "gainsight_px",
+  "api.profitwell.com": "profitwell"
 };
 
 const fs = require("fs");
@@ -76,6 +78,9 @@ function get(url, options) {
   if (url.includes("https://api.delighted.com/v1/people.json")) {
     return delightedGetRequestHandler(options);
   }
+  if (url.includes("https://api.profitwell.com")) {
+    return profitwellGetRequestHandler(url, mockData);
+  }
   if(url.includes("https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com")){
     return Promise.resolve({status : 200 });
   }
@@ -113,7 +118,7 @@ function post(url, payload) {
       resolve({ status: 201 });
     });
   }
-  if( url.includes("https://api.getdrip.com/v2/1809802/subscribers")){
+  if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {
     return dripPostRequestHandler(url, payload);
   }
   return new Promise((resolve, reject) => {

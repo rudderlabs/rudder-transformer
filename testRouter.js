@@ -159,7 +159,9 @@ getDestinations().forEach(async dest => {
               response = {
                 ...response,
                 destination_response: output.destination.data,
-                destination_response_status: output.destination.status
+                destination_response_status: output.destination.status,
+                transformer_message: output.message,
+                transformer_status: output.status
               };
               // console.log("DEST_RESPONSE ", response)
             } else {

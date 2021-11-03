@@ -1015,12 +1015,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-const adduserIdFromExternalId = (message) => {
-  const externalId = get(message, "context.externalId.0.id")
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
   if (externalId) {
     message.userId = externalId;
   }
-}
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1067,11 +1067,13 @@ function ErrorBuilder() {
  * @param {*} arg
  * @param {*} destination
  */
-function populateErrStat(error, destination) {
+function populateErrStat(error, destination, isStageTransform = true) {
   if (!error.statTags) {
     const statTags = {
       destination,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      stage: isStageTransform
+        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };
     // eslint-disable-next-line no-ex-assign

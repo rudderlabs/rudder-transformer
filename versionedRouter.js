@@ -531,6 +531,8 @@ function handleResponseTransform(version, destination, ctx) {
   try {
     response = destNetHandler.responseTransform(ctx.request.body);
   } catch (err) {
+    // eslint-disable-next-line no-ex-assign
+    err = populateErrStat(err, destination, false);
     response = {
       status: err.status || 400,
       message: err.message,

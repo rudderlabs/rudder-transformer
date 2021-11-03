@@ -189,25 +189,25 @@ testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
 });
 
-testRouter.get(`/${version}/sample`, ctx => {
-  const { dest } = ctx.request.query;
-  console.log("DESTINATION NAME", dest);
-  if (!dest) {
-    ctx.body = {
-      error: "destination name not found"
-    };
-    ctx.status = 400;
-    return ctx;
-  }
-  const destinationName = dest.trim().toUpperCase();
-  if (!samplePaylods[destinationName]) {
-    ctx.body = {
-      error: `payload for ${dest} not found`
-    };
-    ctx.status = 400;
-    return ctx;
-  }
-  ctx.body = samplePaylods[destinationName];
-});
+// testRouter.get(`/${version}/sample`, ctx => {
+//   const { dest } = ctx.request.query;
+//   // console.log("DESTINATION NAME", dest);
+//   if (!dest) {
+//     ctx.body = {
+//       error: "destination name not found"
+//     };
+//     ctx.status = 400;
+//     return ctx;
+//   }
+//   const destinationName = dest.trim().toUpperCase();
+//   if (!samplePaylods[destinationName]) {
+//     ctx.body = {
+//       error: `payload for ${dest} not found`
+//     };
+//     ctx.status = 400;
+//     return ctx;
+//   }
+//   ctx.body = samplePaylods[destinationName];
+// });
 
 module.exports = { testRouter };

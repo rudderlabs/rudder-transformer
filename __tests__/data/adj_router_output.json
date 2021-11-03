@@ -24,6 +24,7 @@
       "body": {
         "JSON": {},
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -119,6 +120,7 @@
       "body": {
         "JSON": {},
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},

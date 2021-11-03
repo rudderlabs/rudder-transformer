@@ -14,7 +14,7 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 require("dotenv").config();
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -298,6 +298,7 @@ if (startDestTransformer) {
         });
       });
       router.post("/routerTransform", async ctx => {
+        ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
     });

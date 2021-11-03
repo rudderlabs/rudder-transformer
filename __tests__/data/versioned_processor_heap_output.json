@@ -19,7 +19,7 @@
           },
           "app_id": "<APP_ID>"
         },
-        "XML": {},
+        "XML": {}, "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -50,7 +50,7 @@
           },
           "app_id": "Test_App_Id"
         },
-        "XML": {},
+        "XML": {}, "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -81,7 +81,7 @@
           },
           "app_id": "<app id>"
         },
-        "XML": {},
+        "XML": {}, "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -113,7 +113,7 @@
           },
           "app_id": "<app id>"
         },
-        "XML": {},
+        "XML": {}, "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},

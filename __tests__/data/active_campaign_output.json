@@ -3,6 +3,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "contact": {
@@ -28,6 +29,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "siteTrackingDomain": {
@@ -49,6 +51,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {
         "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
         "actid": "476550467",
@@ -73,6 +76,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {
         "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
         "actid": "476550467",

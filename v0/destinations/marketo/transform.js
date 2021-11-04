@@ -504,7 +504,7 @@ const process = async event => {
       .setStatTags({
         destination: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       })
       .build();
   }
@@ -542,7 +542,7 @@ const processRouterDest = async inputs => {
       statTags: {
         destination: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHORIZATION.SCOPE
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       }
     };
     const respEvents = getErrorRespEvents(

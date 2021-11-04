@@ -15,16 +15,20 @@ const { isEmpty } = require("../../v0/util/index");
 
 const responseTransform = destResponse => {
   let respBody;
+
   try {
     respBody = JSON.parse(destResponse.responseBody);
   } catch (err) {
-    respBody = isEmpty(!destResponse.responseBody)
+    respBody = !isEmpty(destResponse.responseBody)
       ? destResponse.responseBody
-      : null;
+      : "";
   }
   const { status } = destResponse;
-  const message = respBody.message || "Event delivered successfuly";
-  const destinationResponse = { ...respBody, status: destResponse.status };
+  const message = "Response parsed at generic response transform";
+  const destinationResponse = {
+    response: respBody,
+    status: destResponse.status
+  };
   const { apiLimit } = respBody;
   return {
     status,

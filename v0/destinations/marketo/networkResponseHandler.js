@@ -167,9 +167,9 @@ const responseTransform = destResponse => {
   try {
     respBody = JSON.parse(destResponse.responseBody);
   } catch (err) {
-    respBody = isEmpty(!destResponse.responseBody)
+    respBody = !isEmpty(destResponse.responseBody)
       ? destResponse.responseBody
-      : null;
+      : "";
   }
   if (respBody && !respBody.success) {
     // marketo application response level failure
@@ -180,7 +180,10 @@ const responseTransform = destResponse => {
         .setMessage(
           `Request Failed for Marketo, ${errors[0].message} (Aborted).`
         )
-        .setDestinationResponse({ ...respBody, status: destResponse.status })
+        .setDestinationResponse({
+          response: respBody,
+          status: destResponse.status
+        })
         .isTransformResponseFailure(true)
         .setStatTags({
           destination: DESTINATION,
@@ -195,7 +198,10 @@ const responseTransform = destResponse => {
         .setMessage(
           `Request Failed for Marketo, ${errors[0].message} (Throttled).`
         )
-        .setDestinationResponse({ ...respBody, status: destResponse.status })
+        .setDestinationResponse({
+          response: respBody,
+          status: destResponse.status
+        })
         .isTransformResponseFailure(true)
         .setStatTags({
           destination: DESTINATION,
@@ -210,7 +216,10 @@ const responseTransform = destResponse => {
         .setMessage(
           `Request Failed for Marketo, ${errors[0].message} (Retryable).`
         )
-        .setDestinationResponse({ ...respBody, status: destResponse.status })
+        .setDestinationResponse({
+          response: respBody,
+          status: destResponse.status
+        })
         .isTransformResponseFailure(true)
         .setStatTags({
           destination: DESTINATION,
@@ -223,7 +232,10 @@ const responseTransform = destResponse => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(`Request Failed for Marketo, ${errors[0].message} (Aborted).`)
-      .setDestinationResponse({ ...respBody, status: destResponse.status })
+      .setDestinationResponse({
+        response: respBody,
+        status: destResponse.status
+      })
       .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
@@ -234,8 +246,11 @@ const responseTransform = destResponse => {
       .build();
   }
   const { status } = destResponse;
-  const message = respBody.message || "Event delivered successfuly";
-  const destinationResponse = { ...respBody, status: destResponse.status };
+  const message = "Event delivered successfuly";
+  const destinationResponse = {
+    response: respBody,
+    status: destResponse.status
+  };
   const { apiLimit } = respBody;
   return {
     status,

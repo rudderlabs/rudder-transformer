@@ -23,6 +23,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -58,6 +59,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -89,6 +91,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -122,6 +125,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -162,6 +166,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -203,6 +208,7 @@
           "partner": "RudderStack"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -233,6 +239,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -266,6 +273,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -317,6 +325,7 @@
           "partner": "RudderStack"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -396,6 +405,7 @@
           "partner": "RudderStack"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -423,12 +433,13 @@
           "attributes": [
             {
               "ab_rudder_group_1234": true,
-              "external_id":"Randomuser2222"
+              "external_id": "Randomuser2222"
             }
           ],
           "partner": "RudderStack"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -460,6 +471,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -488,6 +500,7 @@
           ]
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -499,4 +512,3 @@
     "message": "Message type is not supported"
   }
 ]
-

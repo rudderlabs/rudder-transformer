@@ -20,7 +20,7 @@ async function processAuth(event, response) {
   // OAuth for BQStream destination
   const { oauthAccessToken } = event.metadata;
   if (!oauthAccessToken) {
-    throw new CustomError("Invalid access token", 400);
+    throw new CustomError("Empty/Invalid access token", 500);
   }
   if (!response.headers) {
     response.headers = {};

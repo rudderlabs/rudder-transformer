@@ -213,8 +213,26 @@ const responseTransform = async ({ payload, dResponse, status }) => {
     }
   }
   const accessToken = getAccessTokenFromDestRequest(payload);
+  let dresponse;
+  try {
+    dresponse = JSON.parse(dResponse);
+  } catch (error) {
+    throw new DestinationRespBuilder()
+      .setStatus(430)
+      .setAuthErrorCategory("")
+      .setMessage("Uncaught error here")
+      .setStatTags({
+        destination: DESTINATION_NAME,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(400)
+      })
+      .setFailureAt("RESP_TRANSFORM_JSON_PARSING")
+      .setDestinationResponse({ ...error, isSuccess: false })
+      .isFailure(true)
+      .build();
+  }
   const parsedResponse = responseHandler({
-    dresponse: JSON.parse(dResponse),
+    dresponse,
     metadata,
     accessToken
   });

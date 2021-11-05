@@ -227,7 +227,7 @@ const responseTransform = async ({ payload, dResponse, status }) => {
         meta: getDynamicMeta(400)
       })
       .setFailureAt("RESP_TRANSFORM_JSON_PARSING")
-      .setDestinationResponse({ ...error, isSuccess: false })
+      .setDestinationResponse({ status, dResponse, error, isSuccess: false })
       .isFailure(true)
       .build();
   }

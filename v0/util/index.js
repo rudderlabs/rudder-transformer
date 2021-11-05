@@ -1083,7 +1083,7 @@ function populateErrStat(error, destination, isStageTransform = true) {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };
     // eslint-disable-next-line no-ex-assign
-    error = { ...error, statTags };
+    error.statTags = statTags;
   }
   return error;
 }

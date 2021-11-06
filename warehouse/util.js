@@ -53,20 +53,11 @@ function isRudderSourcesEvent(event) {
   return event.channel === "sources" || event.CHANNEL === "sources";
 }
 
-function isDataLakeProvider(provider) {
-  return (
-    provider === "s3_datalake" ||
-    provider === "gcs_datalake" ||
-    provider === "azure_datalake"
-  );
-}
-
 module.exports = {
   isObject,
   isBlank,
   timestampRegex,
   validTimestamp,
   getVersionedUtils,
-  isRudderSourcesEvent,
-  isDataLakeProvider
+  isRudderSourcesEvent
 };

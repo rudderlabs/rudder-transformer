@@ -8,8 +8,7 @@ const {
   isBlank,
   validTimestamp,
   getVersionedUtils,
-  isRudderSourcesEvent,
-  isDataLakeProvider
+  isRudderSourcesEvent
 } = require("./util");
 const { getMergeRuleEvent } = require("./identity");
 
@@ -28,7 +27,8 @@ const maxColumnsInEvent = parseInt(
   10
 );
 
-const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
+  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
 
 const getDataType = (val, options) => {
   const type = typeof val;
@@ -231,6 +231,14 @@ function setDataFromInputAndComputeColumnTypes(
       }
     }
   });
+}
+
+function isDataLakeProvider(provider) {
+  return (
+    provider === "s3_datalake" ||
+    provider === "gcs_datalake" ||
+    provider === "azure_datalake"
+  );
 }
 
 /*
@@ -470,8 +478,8 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 */
 
 /*
-* Adds source and destination specific information into context
-* */
+ * Adds source and destination specific information into context
+ * */
 function enhanceContextWithSourceDestInfo(message, metadata) {
   if (!WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT) {
     return;

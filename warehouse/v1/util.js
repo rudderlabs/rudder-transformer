@@ -1,7 +1,6 @@
 const _ = require("lodash");
 
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
-const { isDataLakeProvider } = require("../util");
 
 function safeTableName(provider, name = "") {
   let tableName = name;
@@ -27,6 +26,14 @@ function safeTableName(provider, name = "") {
   }
 
   return tableName.substr(0, 127);
+}
+
+function isDataLakeProvider(provider) {
+  return (
+    provider === "s3_datalake" ||
+    provider === "gcs_datalake" ||
+    provider === "azure_datalake"
+  );
 }
 
 function safeColumnName(provider, name = "") {

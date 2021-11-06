@@ -205,28 +205,21 @@ const sendData = async payload => {
 
 const responseTransform = async ({ payload, dResponse, status }) => {
   const { metadata } = payload;
-  if (payload.accessToken) {
-    putAccessTokenIntoPayload(payload);
-    delete payload.accessToken;
-    if (payload.expirationDate) {
-      delete payload.expirationDate;
-    }
-  }
   const accessToken = getAccessTokenFromDestRequest(payload);
   let dresponse;
   try {
     dresponse = JSON.parse(dResponse);
   } catch (error) {
     throw new DestinationRespBuilder()
-      .setStatus(430)
+      .setStatus(500)
       .setAuthErrorCategory("")
       .setMessage("Uncaught error here")
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(400)
+        meta: getDynamicMeta(500)
       })
-      .setFailureAt("RESP_TRANSFORM_JSON_PARSING")
+      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
       .setDestinationResponse({ status, dResponse, error, isSuccess: false })
       .isFailure(true)
       .build();

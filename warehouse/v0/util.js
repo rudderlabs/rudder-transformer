@@ -1,5 +1,5 @@
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
-const {isDataLakeProvider} = require("../util");
+const { isDataLakeProvider } = require("../util");
 
 const toSnakeCase = str => {
   if (!str) {

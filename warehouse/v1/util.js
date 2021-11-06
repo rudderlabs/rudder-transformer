@@ -1,7 +1,7 @@
 const _ = require("lodash");
 
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
-const {isDataLakeProvider} = require("../util");
+const { isDataLakeProvider } = require("../util");
 
 function safeTableName(provider, name = "") {
   let tableName = name;

@@ -263,7 +263,7 @@ function getColumns(options, event, columnTypes) {
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
     !isRudderSourcesEvent(event) &&
-    isDataLakeProvider(options.provider)
+    !isDataLakeProvider(options.provider)
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`

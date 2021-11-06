@@ -232,6 +232,14 @@ function setDataFromInputAndComputeColumnTypes(
   });
 }
 
+function isDataLakeProvider(provider) {
+  return (
+    provider === "s3_datalake" ||
+    provider === "gcs_datalake" ||
+    provider === "azure_datalake"
+  );
+}
+
 /*
  * uuid_ts and loaded_at datatypes are passed from here to create appropriate columns.
  * Corresponding values are inserted when loading into the warehouse
@@ -254,7 +262,8 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
+    !isRudderSourcesEvent(event) &&
+    isDataLakeProvider(options.provider)
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -272,7 +281,9 @@ const fullEventColumnTypeByProvider = {
   azure_synapse: "json",
   clickhouse: "string",
   s3_datalake: "string",
-  deltalake: "string"
+  deltalake: "string",
+  gcs_datalake: "string",
+  azure_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {

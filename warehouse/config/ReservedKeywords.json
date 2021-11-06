@@ -1657,5 +1657,9 @@
     "WHERE": true,
     "WINDOW": true,
     "WITH": true
+  },
+  "GCS_DATALAKE": {
+  },
+  "AZURE_DATALAKE": {
   }
 }

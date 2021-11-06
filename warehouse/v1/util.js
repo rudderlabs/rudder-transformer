@@ -20,12 +20,20 @@ function safeTableName(provider, name = "") {
   ) {
     tableName = `_${tableName}`;
   }
-  if (provider === "s3_datalake") {
-    // do not trim tableName if provider is s3_datalake
+  if (isDataLakeProvider(provider)) {
+    // do not trim tableName if provider is datalake
     return tableName
   }
 
   return tableName.substr(0, 127);
+}
+
+function isDataLakeProvider(provider) {
+  return (
+    provider === "s3_datalake" ||
+    provider === "gcs_datalake" ||
+    provider === "azure_datalake"
+  );
 }
 
 function safeColumnName(provider, name = "") {
@@ -46,8 +54,8 @@ function safeColumnName(provider, name = "") {
   ) {
     columnName = `_${columnName}`;
   }
-  if (provider === "s3_datalake") {
-    // do not trim columnName if provider is s3_datalake
+  if (isDataLakeProvider(provider)) {
+    // do not trim columnName if provider is datalake
     return columnName
   }
   return columnName.substr(0, 127);

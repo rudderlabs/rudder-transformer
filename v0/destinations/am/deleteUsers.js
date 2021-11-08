@@ -28,7 +28,7 @@ const responseHandler = async (userAttributes, config) => {
       resp &&
       resp.response &&
       resp.response.response &&
-      resp.response.response.status !== 200
+      resp.response.response.status !== 200 // am sends 400 for any bad request or even if user id is not found. The text is also "Bad Request" so not handling user not found case
     ) {
       throw new CustomError(
         resp.response.response.statusText || "Error while deleting user",

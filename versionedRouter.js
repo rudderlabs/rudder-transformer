@@ -750,6 +750,7 @@ const handleDeletionOfUsers = async ctx => {
   try {
     response = await destDeletionHandler.processDeleteUsers(ctx.request.body);
   } catch (error) {
+    // adding the status to the request
     ctx.status = error.response ? error.response.status : 400;
     response = {
       statusCode: error.response ? error.response.status : 400,
@@ -781,7 +782,21 @@ router.post(`/v0/validate`, async ctx => {
 });
 
 // Api to handle deletion of users for data regulation
-
+// {
+//   "destType": "dest name",
+//   "userAttributes": [
+//       {
+//           "userId": "user_1"
+//       },
+//       {
+//           "userId": "user_2"
+//       }
+//   ],
+//   "config": {
+//       "apiKey": "",
+//       "apiSecret": ""
+//   }
+// }
 router.post(`/deleteUsers`, async ctx => {
   await handleDeletionOfUsers(ctx);
 });

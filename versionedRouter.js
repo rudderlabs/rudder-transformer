@@ -738,12 +738,10 @@ const getJobStatus = async (ctx, type) => {
 };
 
 const handleDeletionOfUsers = async ctx => {
-  // const { destType } = ctx.request.body;
-  // taking only amplitude
-  const destDeletionHandler = getDeletionUserHandler("v0", "amplitude");
-
+  const { destType } = ctx.request.body;
+  const destDeletionHandler = getDeletionUserHandler("v0", destType);
   let response;
-  if (!destDeletionHandler || destDeletionHandler.processDeleteUsers) {
+  if (!destDeletionHandler || !destDeletionHandler.processDeleteUsers) {
     ctx.status = 404;
     ctx.body = "Doesn't support deletion of users";
     return null;
@@ -752,6 +750,7 @@ const handleDeletionOfUsers = async ctx => {
   try {
     response = await destDeletionHandler.processDeleteUsers(ctx.request.body);
   } catch (error) {
+    ctx.status = error.response ? error.response.status : 400;
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occured while processing"
@@ -783,7 +782,7 @@ router.post(`/v0/validate`, async ctx => {
 
 // Api to handle deletion of users for data regulation
 
-router.post(`/v0/deleteUsers`, async ctx => {
+router.post(`/deleteUsers`, async ctx => {
   await handleDeletionOfUsers(ctx);
 });
 module.exports = { router, handleDest, routerHandleDest, batchHandler };

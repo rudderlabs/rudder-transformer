@@ -256,8 +256,6 @@ const processTrackEvent = (
 
   if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
     Object.keys(productMerchEventToAdobeEvent).forEach(value => {
-      // this is an object not an array
-      // TypeError: productMerchEventToAdobeEvent.forEach is not a function
       adobeEventArr.push(productMerchEventToAdobeEvent[value]);
     });
   }
@@ -293,17 +291,14 @@ const processTrackEvent = (
         productMerchProperties.forEach(rudderProp => {
           if (rudderProp.productMerchProperties.startsWith("products.")) {
             const key = rudderProp.productMerchProperties.split(".");
-            // take the keys after products. and find the value in properties
             const v = get(properties, key[1]);
             if (isDefinedAndNotNull(v)) {
               Object.keys(adobeProdEvent).forEach(val => {
-                // TypeError: adobeProdEvent.forEach is not a function, that means it is not an array, should we forcefully make it an array?
                 merchMap.push(`${adobeProdEvent[val]}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
             Object.keys(adobeProdEvent).forEach(val => {
-              // TypeError: adobeProdEvent.forEach is not a function, same as the previous
               merchMap.push(
                 `${adobeProdEvent[val]}=${
                   properties[rudderProp.productMerchProperties]

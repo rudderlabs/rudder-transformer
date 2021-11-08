@@ -24,7 +24,7 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
-const { addToList } = require("./nethandler");
+const { httpPOST } = require("../../../adapters/network");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -63,7 +63,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   profile = removeUndefinedValues(profile);
   // send network request
   try {
-    await addToList(
+    await httpPOST(
       targetUrl,
       {
         api_key: destination.Config.privateApiKey,
@@ -213,7 +213,7 @@ const groupRequestHandler = async (message, category, destination) => {
     }
     // send network request
     try {
-      await addToList(
+      await httpPOST(
         targetUrl,
         {
           api_key: destination.Config.privateApiKey,

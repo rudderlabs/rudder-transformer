@@ -5,7 +5,7 @@ const {
   THROTTLED_CODES,
   POLL_ACTIVITY
 } = require("./util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 const stats = require("../../../util/stats");
 
@@ -23,7 +23,7 @@ const getPollStatus = async event => {
     }
   };
   const startTime = Date.now();
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   if (resp.success) {

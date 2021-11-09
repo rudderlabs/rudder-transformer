@@ -1220,6 +1220,203 @@
         ]
       }
     }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "email",
+            "type": "ITERABLE-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "batch_id": "f5f240d0-0acb-46e0-b043-57fb0aabbadd",
+          "job_id": "1zAj94bEy8komdqnYtSoDp0VmGs/Syncher",
+          "job_run_id": "c5tar6cqgmgmcjvupdhg",
+          "task_id": "tt_10_rows_check",
+          "task_run_id": "c5tar6cqgmgmcjvupdi0",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "2f052f7c-f694-4849-a7ed-a432f7ffa0a4",
+      "originalTimestamp": "2021-10-28T14:03:50.503Z",
+      "receivedAt": "2021-10-28T14:03:46.567Z",
+      "recordId": "8",
+      "request_ip": "10.1.94.92",
+      "rudderId": "c0f6843e-e3d6-4946-9752-fa339fbadef2",
+      "sentAt": "2021-10-28T14:03:50.503Z",
+      "timestamp": "2021-10-28T14:03:46.566Z",
+      "traits": {
+        "administrative_unit": "Minnesota",
+        "am_pm": "AM",
+        "boolean": true,
+        "firstname": "Jacqueline",
+        "pPower": "AM",
+        "userId": "Jacqueline"
+      },
+      "type": "identify",
+      "userId": "lynnanderson@smith.net"
+    },
+    "destination": {
+      "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
+      "Name": "test_iterable",
+      "DestinationDefinition": {
+        "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+        "Name": "ITERABLE",
+        "DisplayName": "Iterable",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "mapToSingleEvent",
+              "trackAllPages",
+              "trackCategorisedPages",
+              "trackNamedPages"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": true,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": true
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
+    }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "Matthew",
+            "identifierType": "userId",
+            "type": "ITERABLE-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "batch_id": "230d7c79-a2c2-4b2a-90bb-06ba988d3bb4",
+          "job_id": "1zjj9aF5UkmavBi4HtM3kWOGvy0/Syncher",
+          "job_run_id": "c5tb4gsqgmgmcjvuplhg",
+          "task_id": "tt_10_rows",
+          "task_run_id": "c5tb4gsqgmgmcjvupli0",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "c4c97310-463b-4300-9215-5cfddcb2a769",
+      "originalTimestamp": "2021-10-28T14:23:43.254Z",
+      "receivedAt": "2021-10-28T14:23:38.300Z",
+      "recordId": "3",
+      "request_ip": "10.1.94.92",
+      "rudderId": "7300f5e3-bdb5-489e-ac7e-47876e487de9",
+      "sentAt": "2021-10-28T14:23:43.254Z",
+      "timestamp": "2021-10-28T14:23:38.299Z",
+      "traits": {
+        "price": "GB"
+      },
+      "type": "identify",
+      "userId": "Matthew"
+    },
+    "destination": {
+      "ID": "1zjjHN4RQ6t4DPj3HVpp0b6XW4A",
+      "Name": "test_userId_uniq",
+      "DestinationDefinition": {
+        "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+        "Name": "ITERABLE",
+        "DisplayName": "Iterable",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "mapToSingleEvent",
+              "trackAllPages",
+              "trackCategorisedPages",
+              "trackNamedPages"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": true,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": true
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
+    }
   }
 ]
 

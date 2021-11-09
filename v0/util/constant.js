@@ -10,12 +10,11 @@ const API_CALL = "api_call_count";
 
 const TRANSFORMER_METRIC = {
   MEASUREMENT: {
-    INTEGRATION_ERROR_METRIC: "integration_error_metric",
-    INTEGRATION_SUCCESS_METRIC: "integration_success_metric"
+    INTEGRATION_ERROR_METRIC: "integration_error_metric"
   },
   TRANSFORMER_STAGE: {
     TRANSFORM: "transform",
-    PROXY: "proxy"
+    RESPONSE_TRANSFORM: "responseTransform"
   },
   MEASUREMENT_TYPE: {
     API: {
@@ -48,6 +47,6 @@ const TRANSFORMER_METRIC = {
 module.exports = {
   API_CALL,
   AUTH_CACHE_TTL,
-  USER_LEAD_CACHE_TTL,
-  TRANSFORMER_METRIC
+  TRANSFORMER_METRIC,
+  USER_LEAD_CACHE_TTL
 };

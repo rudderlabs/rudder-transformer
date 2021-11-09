@@ -11,6 +11,7 @@ const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
+const { populateErrStat } = require("./v0/util/index");
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 
@@ -22,12 +23,9 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
-// const startResponseTransformer = process.env.RESPONSE_TRANSFORMER || true;
+const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
-
-const responseTransform = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
 
 const isDirectory = source => {
   return lstatSync(source).isDirectory();
@@ -47,12 +45,12 @@ const getDestNetHander = (version, dest) => {
   const destination = _.toLower(dest);
   let destNetHandler;
   try {
-    destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
-    if (!destNetHandler) {
-      destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
+    if (!destNetHandler && !destNetHandler.responseTransform) {
+      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
     }
   } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
   }
   return destNetHandler;
 };
@@ -133,16 +131,13 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, destination);
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
-        });
-        stats.increment("dest_transform_errors", 1, {
-          destination,
-          version,
-          ...metaTags
+          error: error.message || "Error occurred while processing payload.",
+          errorDetailed: error
         });
       }
     })
@@ -292,7 +287,6 @@ if (startDestTransformer) {
             : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version,
           ...metaTags
         });
         stats.increment("dest_transform_requests", 1, {
@@ -528,78 +522,51 @@ if (startSourceTransformer) {
   });
 }
 
-// async function handleDestinationNetwork(version, destination, ctx) {
-//   const destNetHandler = getDestNetHander(version, destination);
-//   // flow should never reach the below (if) its a desperate fall-back
-//   if (!destNetHandler || !destNetHandler.sendData) {
-//     ctx.status = 404;
-//     ctx.body = `${destination} doesn't support transformer proxy`;
-//     return ctx.body;
-//   }
-//   let response;
-//   logger.info("Request recieved for destination", destination);
-//   try {
-//     response = await destNetHandler.sendData(ctx.request.body);
-//   } catch (err) {
-//     response = {
-//       status: 500, // keeping retryable default
-//       error: err.message || "Error occurred while processing payload."
-//     };
-//     // error from network failure should directly parsable as response
-//     if (err.networkFailure) {
-//       response = { ...err };
-//     }
-//   }
+function handleResponseTransform(version, destination, ctx) {
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.responseTransform) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support response transformation`;
+    return ctx.body;
+  }
+  let response;
+  try {
+    response = destNetHandler.responseTransform(ctx.request.body);
+  } catch (err) {
+    // eslint-disable-next-line no-ex-assign
+    err = populateErrStat(err, destination, false);
+    response = {
+      status: err.status || 400,
+      message: err.message,
+      destinationResponse: err.destinationResponse,
+      errorDetailed: err
+    };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+    }
+  }
+  ctx.body = { output: response };
+  ctx.status = response.status;
+  return ctx.body;
+}
 
-//   ctx.body = { output: response };
-//   ctx.status = response.status;
-//   return ctx.body;
-// }
+if (responseTransformer) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(`/transform/${destination}/response`, async ctx => {
+        const startTime = new Date();
+        await handleResponseTransform(version, destination, ctx);
+        stats.timing("transformer_response_transform_latency", startTime, {
+          destination,
+          version
+        });
+      });
+    });
+  });
+}
 
-// if (networkMode) {
-//   versions.forEach(version => {
-//     const destinations = getIntegrations(`${version}/destinations`);
-//     destinations.forEach(destination => {
-//       router.post(`/network/${destination}/proxy`, async ctx => {
-//         await handleDestinationNetwork(version, destination, ctx);
-//       });
-//     });
-//   });
-// }
-
-// function handleResponseTransform(version, destination, ctx) {
-//   const handler = getDestHandler(version, destination);
-//   if (!handler || !handler.responseTransform) {
-//     ctx.status = 404;
-//     ctx.body = `${destination} doesn't support response transform`;
-//     return ctx.body;
-//   }
-//   let handledResponse;
-//   logger.info("Request recieved for response transform", destination);
-//   try {
-//     handledResponse = handler.responseTransform(ctx.request.body);
-//   } catch (err) {
-//     handledResponse = {
-//       status: 400,
-//       error: err.message || "Error occurred while processing response."
-//     };
-//   }
-
-//   ctx.body = handledResponse;
-//   ctx.status = handledResponse.status;
-//   return ctx.body;
-// }
-
-// if (startResponseTransformer) {
-//   versions.forEach(version => {
-//     const destinations = getIntegrations(`${version}/destinations`);
-//     destinations.forEach(destination => {
-//       router.post(`/response/${destination}/transform`, async ctx => {
-//         handleResponseTransform(version, destination, ctx);
-//       });
-//     });
-//   });
-// }
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
@@ -650,13 +617,6 @@ const batchHandler = ctx => {
 };
 router.post("/batch", ctx => {
   batchHandler(ctx);
-});
-
-router.get("/heapdump", ctx => {
-  heapdump.writeSnapshot((err, filename) => {
-    logger.debug("Heap dump written to", filename);
-  });
-  ctx.body = "OK";
 });
 
 const fileUpload = async ctx => {
@@ -756,48 +716,10 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
-
-async function handleResponseTransform(version, destination, ctx) {
-  const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.responseTransform) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support transformer proxy`;
-    return ctx.body;
-  }
-  let response;
-  logger.info(
-    "Request recieved for response transform for destination",
-    destination
-  );
-  try {
-    response = await destNetHandler.responseTransform(ctx.request.body);
-  } catch (err) {
-    response = {
-      status: 400,
-      error: err.message || "Error occurred while processing payload.",
-      ...err
-    };
-  }
-
-  ctx.body = { output: { ...response } };
-  ctx.status = response.status;
-  return ctx.body;
-}
-
-if (responseTransform) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      router.post(`/transform/${destination}/response`, async ctx => {
-        const startTime = new Date();
-        await handleResponseTransform(version, destination, ctx);
-        stats.timing("transformer_response_transform_latency", startTime, {
-          destination,
-          version
-        });
-      });
-    });
-  });
-}
-module.exports = { router, handleDest, routerHandleDest, batchHandler };
+module.exports = {
+  router,
+  handleDest,
+  routerHandleDest,
+  batchHandler,
+  handleResponseTransform
+};

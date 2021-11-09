@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
-const { sendRequest } = require("../../../adapters/network");
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const {
   DestinationResponseBuilder: DestinationRespBuilder
@@ -63,13 +62,7 @@ const getAccessTokenFromDestRequest = payload =>
  * Reference doc for OAuth Errors
  * https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
  */
-const responseHandler = ({
-  dresponse,
-  metadata,
-  sourceMessage,
-  authRequest,
-  accessToken
-} = {}) => {
+const responseHandler = ({ dresponse, accessToken } = {}) => {
   const isSuccess =
     !dresponse.error &&
     (!dresponse.insertErrors ||
@@ -80,14 +73,13 @@ const responseHandler = ({
       .setMessage("Request Processed successfully")
       .setAuthErrorCategory("")
       .setDestinationResponse({ ...dresponse, success: isSuccess })
-      .setMetadata(metadata)
-      .isFailure(!isSuccess)
+      .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(200)
       })
-      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_SUCCESS_METRIC)
       .build();
   }
   /**
@@ -101,7 +93,6 @@ const responseHandler = ({
         "available": 455,
         "resetAt": timestamp
       },
-      "metadata": {},
       "message" : "simplified message for understannding"
     }
    */
@@ -111,16 +102,15 @@ const responseHandler = ({
     const status = destAuthCategory ? 500 : dresponse.error.code;
     throw new DestinationRespBuilder()
       .setStatus(status)
-      .setMessage(dresponse.error.message)
+      .setMessage(dresponse.error.message || "BQStream request failed")
       .setDestinationResponse({ ...dresponse, success: isSuccess })
-      .setMetadata(metadata)
       .setAuthErrorCategory(destAuthCategory)
       .setAccessToken(accessToken)
-      .isFailure(!isSuccess)
-      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
+      .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(status)
       })
       .build();
@@ -131,15 +121,14 @@ const responseHandler = ({
       .setMessage("Problem during insert operation")
       .setAuthErrorCategory("")
       .setDestinationResponse({ ...dresponse, success: isSuccess })
-      .setMetadata(metadata)
       .setAccessToken(accessToken)
-      .isFailure(!isSuccess)
+      .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(temp.status || 400)
       })
-      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
       .build();
   }
   throw new DestinationRespBuilder()
@@ -148,67 +137,22 @@ const responseHandler = ({
     .setAuthErrorCategory("")
     .setAccessToken(accessToken)
     .setDestinationResponse({ ...dresponse, success: isSuccess })
-    .isFailure(!isSuccess)
+    .isTransformResponseFailure(!isSuccess)
     .setStatTags({
       destination: DESTINATION_NAME,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
       meta: getDynamicMeta(400)
     })
-    .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
-    .setMetadata(metadata)
     .build();
 };
 
-/**
- * This function sets the refreshed access token into the header for bqstream destination
- *
- * Note: This should be used only for OAuth Destinations.
- * For re-trial of event in case a Refresh token request takes place
- * @param {Object} payload - The event payload
- * @param {*} accessToken - AccessToken, this is more like a refreshed Access Token
- */
-const putAccessTokenIntoPayload = payload => {
-  const request = payload;
-  request.headers.Authorization = `Bearer ${payload.accessToken}`;
-};
-
-const sendData = async payload => {
-  const { metadata } = payload;
-  if (payload.accessToken) {
-    putAccessTokenIntoPayload(payload);
-    delete payload.accessToken;
-    if (payload.expirationDate) {
-      delete payload.expirationDate;
-    }
-  }
-  const res = await sendRequest(payload);
-  const accessToken = getAccessTokenFromDestRequest(payload);
-  const parsedResponse = responseHandler({
-    dresponse: res,
-    metadata,
-    accessToken
-  });
-  return {
-    status: parsedResponse.status,
-    destination: {
-      response: parsedResponse.data,
-      status: parsedResponse.status
-    },
-    apiLimit: {
-      available: "",
-      resetAt: ""
-    },
-    metadata,
-    message: parsedResponse.statusText || "Request Processed Successfully"
-  };
-};
-
-const responseTransform = async ({ payload, dResponse, status }) => {
-  const { metadata } = payload;
+const responseTransform = respTransformPayload => {
+  const { payload, responseBody, status } = respTransformPayload;
   const accessToken = getAccessTokenFromDestRequest(payload);
   let dresponse;
   try {
-    dresponse = JSON.parse(dResponse);
+    dresponse = JSON.parse(responseBody);
   } catch (error) {
     throw new DestinationRespBuilder()
       .setStatus(500)
@@ -217,16 +161,15 @@ const responseTransform = async ({ payload, dResponse, status }) => {
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(500)
       })
-      .setStatName(TRANSFORMER_METRIC.MEASUREMENT.INTEGRATION_ERROR_METRIC)
-      .setDestinationResponse({ status, dResponse, error, isSuccess: false })
-      .isFailure(true)
+      .setDestinationResponse({ status, responseBody, error, isSuccess: false })
+      .isTransformResponseFailure(true)
       .build();
   }
   const parsedResponse = responseHandler({
     dresponse,
-    metadata,
     accessToken
   });
   return {
@@ -239,11 +182,10 @@ const responseTransform = async ({ payload, dResponse, status }) => {
       available: "",
       resetAt: ""
     },
-    metadata,
     message: parsedResponse.statusText || "Request Processed Successfully",
     statName: parsedResponse.statName,
     statTags: parsedResponse.statTags
   };
 };
 
-module.exports = { sendData, responseTransform };
+module.exports = { responseTransform };

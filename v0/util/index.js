@@ -23,6 +23,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -338,8 +339,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  errorDetailed,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, errorDetailed };
 };
 
 // ========================================================================
@@ -1014,12 +1021,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-const adduserIdFromExternalId = (message) => {
-  const externalId = get(message, "context.externalId.0.id")
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
   if (externalId) {
     message.userId = externalId;
   }
-}
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1027,38 +1034,25 @@ class CustomError extends Error {
   }
 }
 
-function ErrorBuilder() {
-  this.err = new Error();
 
-  this.setMessage = message => {
-    this.err.message = message;
-    return this;
-  };
-  this.setStatus = status => {
-    this.err.status = status;
-    return this;
-  };
-
-  this.setDestinationResponse = destination => {
-    this.err.destination = destination;
-    return this;
-  };
-
-  this.setApiInfo = apiLimit => {
-    this.err.apiLimit = apiLimit;
-    return this;
-  };
-
-  this.setMetadata = metadata => {
-    this.err.metadata = metadata;
-    return this;
-  };
-
-  this.isTransformerNetwrokFailure = arg => {
-    this.err.networkFailure = arg;
-    return this;
-  };
-  this.build = () => this.err;
+/**
+ * Used for native error stat population
+ * @param {*} arg
+ * @param {*} destination
+ */
+function populateErrStat(error, destination, isStageTransform = true) {
+  if (!error.statTags) {
+    const statTags = {
+      destination,
+      stage: isStageTransform
+        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+    // eslint-disable-next-line no-ex-assign
+    error.statTags = statTags;
+  }
+  return error;
 }
 
 /**
@@ -1102,7 +1096,6 @@ const isOAuthSupported = (destination, destHandler) => {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
-  ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -1149,6 +1142,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
@@ -1159,9 +1153,6 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  getMetadata,
-  checkSubsetOfArray,
-  returnArrayOfSubarrays,
   generateUUID,
   isOAuthSupported,
   isOAuthDestination

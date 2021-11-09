@@ -1,5 +1,4 @@
-const btoa = require("btoa");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 
 const responseHandler = async (userAttributes, config) => {
@@ -16,7 +15,7 @@ const responseHandler = async (userAttributes, config) => {
         Authorization: `Bearer ${apiKey}`
       }
     };
-    const resp = await send(requestOptions);
+    const resp = await httpSend(requestOptions);
     if (!resp || !resp.response) {
       throw new CustomError("Could not get response", 500);
     }

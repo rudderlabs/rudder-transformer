@@ -34,5 +34,14 @@
       }
     ],
     "success": true
+  },
+  "https://marketo_acct_id_failed.mktorest.com/identity/oauth/token": {
+    "success": false,
+    "errors": [
+      {
+        "code": "601",
+        "message": "Access Token Expired"
+      }
+    ]
   }
 }

@@ -26,6 +26,8 @@ const BRAZE_PARTNER_NAME = "RudderStack";
 const TRACK_BRAZE_MAX_REQ_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 
+const DESTINATION = "braze";
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
@@ -33,5 +35,6 @@ module.exports = {
   getTrackEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  DESTINATION
 };

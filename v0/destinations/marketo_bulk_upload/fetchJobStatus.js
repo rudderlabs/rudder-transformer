@@ -8,7 +8,7 @@ const {
   RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY
 } = require("./util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const getFailedJobStatus = async event => {
@@ -25,7 +25,7 @@ const getFailedJobStatus = async event => {
     }
   };
   const startTime = Date.now();
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {
@@ -130,7 +130,7 @@ const getWarningJobStatus = async event => {
     }
   };
   const startTime = Date.now();
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {

@@ -89,8 +89,8 @@
     "files": {}
   },
   {
-    "statusCode": 400,
-    "error": "Request Failed for Marketo (Retryable).During getting auth token"
+    "statusCode": 500,
+    "error": "Request Failed for Marketo, Access Token Expired (Retryable).During fetching auth token"
   },
   {
     "statusCode": 400,

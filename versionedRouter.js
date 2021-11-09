@@ -645,6 +645,7 @@ const batchHandler = ctx => {
   return ctx.body;
 };
 router.post("/batch", ctx => {
+  ctx.set("apiVersion", API_VERSION);
   batchHandler(ctx);
 });
 

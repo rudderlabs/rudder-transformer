@@ -213,13 +213,15 @@ function setDataFromInputAndComputeColumnTypes(
           val = new Date(val).toISOString();
           break;
         case "string":
+          let strVal = val;
           // stringify val if the value type is not string already
           if (typeof(val) !== "string") {
-            val = JSON.stringify(val)
+            strVal = JSON.stringify(val)
           }
           // truncate value to 512 chars if rsAlterStringToText is false
-          if(options.rsAlterStringToText !== "true" && val.length > 512) {
-            val = val.substring(0, 512);
+          // only modify non string types if their stringified length is greater than 512
+          if(options.rsAlterStringToText !== "true" && strVal.length > 512) {
+            val = strVal.substring(0, 512);
           }
           break;
       }

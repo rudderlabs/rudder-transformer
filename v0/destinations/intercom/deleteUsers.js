@@ -2,7 +2,14 @@ const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 
 const responseHandler = async (userAttributes, config) => {
+  if (!config) {
+    throw new CustomError("Config for deletion not present", 400);
+  }
   const { apiKey } = config;
+  if (!apiKey) {
+    throw new CustomError("api key for deletion not present", 400);
+  }
+
   for (let i = 0; i < userAttributes.length; i++) {
     const uId = userAttributes[i].userId;
     if (!uId) {

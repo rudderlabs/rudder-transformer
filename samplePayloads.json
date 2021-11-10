@@ -1,82 +1,164 @@
 {
   "MARKETO": {
-    "channel": "web",
+    "anonymousId": "anon_id_success",
+    "channel": "mobile",
     "context": {
-      "traits": {
-        "firstName": "James",
-        "lastName": "Doe",
-        "phone": "+91237416221",
-        "last_sent_at": "1626698350"
-      },
       "app": {
-        "build": "1.0.0",
-        "name": "RudderLabs JavaScript SDK",
-        "namespace": "com.rudderlabs.javascript",
-        "version": "1.0.0"
+        "build": "1",
+        "name": "TestAppName",
+        "namespace": "com.android.sample",
+        "version": "1.0"
+      },
+      "device": {
+        "id": "anon_id_success",
+        "manufacturer": "Google",
+        "model": "Android SDK built for x86",
+        "name": "generic_x86",
+        "type": "android"
       },
       "library": {
-        "name": "RudderLabs JavaScript SDK",
-        "version": "1.0.0"
+        "name": "com.rudderstack.android.sdk.core",
+        "version": "1.0.1-beta.1"
       },
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "locale": "en-US",
-      "ip": "0.0.0.0",
+      "network": {
+        "carrier": "Android",
+        "bluetooth": false,
+        "cellular": true,
+        "wifi": true
+      },
       "os": {
-        "name": "",
-        "version": ""
+        "name": "Android",
+        "version": "8.1.0"
       },
       "screen": {
-        "density": 2
-      }
+        "density": 420,
+        "height": 1794,
+        "width": 1080
+      },
+      "timezone": "Asia/Kolkata",
+      "traits": {
+        "anonymousId": "anon_id_success"
+      },
+      "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
     },
-    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-    "originalTimestamp": "2019-10-14T09:03:17.562Z",
-    "type": "identify",
-    "userId": "abc@123.com",
+    "event": "Product Clicked",
     "integrations": {
       "All": true
     },
-    "sentAt": "2019-10-14T09:03:22.563Z"
+    "messageId": "id1",
+    "properties": {
+      "name": "Test Product"
+    },
+    "originalTimestamp": "2020-12-17T21:00:59.176Z",
+    "type": "track",
+    "sentAt": "2020-03-12T09:05:03.421Z"
   },
   "WEBHOOK": {
     "channel": "web",
     "context": {
-      "traits": {
-        "firstName": "James",
-        "lastName": "Doe",
-        "phone": "+91237416221",
-        "last_sent_at": "1626698350"
-      },
       "app": {
         "build": "1.0.0",
         "name": "RudderLabs JavaScript SDK",
         "namespace": "com.rudderlabs.javascript",
         "version": "1.0.0"
       },
-      "library": {
-        "name": "RudderLabs JavaScript SDK",
-        "version": "1.0.0"
-      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
       "locale": "en-US",
       "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
+    "userId": "sample-user-id",
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "anonymousId": "sample-anon-id",
+    "type": "track",
+    "event": "Track Me",
+    "properties": {
+      "description": "Sample Track call",
+      "globalContext": {
+        "testOverride": "some-value"
+      }
+    },
+    "integrations": { "All": true },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "PROFITWELL": {
+    "channel": "web",
+    "userId": "sp_245",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.1.9"
+      },
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.1.9"
+      },
+      "locale": "en-GB",
       "os": {
         "name": "",
         "version": ""
       },
       "screen": {
         "density": 2
-      }
+      },
+
+      "traits": {
+        "email": "sample@sample.com",
+        "planId": "23",
+        "planInterval": "month",
+        "planCurrency": "usd",
+        "value": "23",
+        "subscriptionAlias": "samual",
+        "status": "active"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
     },
+    "messageId": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
+    "originalTimestamp": "2021-01-04T08:25:04.780Z",
+    "receivedAt": "2021-01-04T13:55:04.799+05:30",
+    "request_ip": "[::1]",
+    "rudderId": "79881a62-980a-4d76-89ca-7099440f8c13",
+    "sentAt": "2021-01-04T08:25:04.781Z",
+    "timestamp": "2021-09-06T14:15:06.798+05:30",
+    "type": "identify"
+  },
+  "GAINSIGHT_PX": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
+    "userId": "sample-user-id",
     "messageId": "84e26acc-56a5-4835-8233-591137fca468",
     "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
     "originalTimestamp": "2019-10-14T09:03:17.562Z",
-    "type": "identify",
-    "userId": "abc@123.com",
-    "integrations": {
-      "All": true
+    "anonymousId": "sample-anon-id",
+    "type": "track",
+    "event": "Track Me",
+    "properties": {
+      "description": "Sample Track call",
+      "globalContext": {
+        "testOverride": "some-value"
+      }
     },
+    "integrations": { "All": true },
     "sentAt": "2019-10-14T09:03:22.563Z"
   }
 }

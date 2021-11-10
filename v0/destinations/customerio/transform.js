@@ -147,6 +147,12 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     requestConfig = defaultPutRequestConfig;
   } else if (evType === EventType.ALIAS) {
     // ref : https://customer.io/docs/api/#operation/merge
+    if (!userId && !message.previousId) {
+      throw new CustomError(
+        "Both userId and previousId is mandatory for merge operation",
+        400
+      );
+    }
     endpoint = MERGE_USER_ENDPOINT;
     requestConfig = defaultPostRequestConfig;
     rawPayload.primary = {};

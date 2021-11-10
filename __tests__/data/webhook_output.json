@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -109,6 +110,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -215,6 +217,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "timestamp": "2019-09-01T15:46:51.693229+05:30",
         "user_properties": {
@@ -334,6 +337,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -353,6 +357,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -441,6 +446,7 @@
         "request_ip": "127.0.0.1"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -530,6 +536,7 @@
         "request_ip": "127.0.0.1"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -595,6 +602,7 @@
         "type": "track"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -604,6 +612,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "context": {
@@ -658,4 +667,3 @@
     "method": "POST"
   }
 ]
-

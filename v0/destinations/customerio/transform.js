@@ -5,9 +5,11 @@ const truncate = require("truncate-utf8-bytes");
 const {
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  MappedToDestinationKey
 } = require("../../../constants");
 const {
+  adduserIdFromExternalId,
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
@@ -15,7 +17,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 
 const {
@@ -52,6 +55,13 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   let endpoint;
   let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
+  // override userId with externalId in context(if present) and event is mapped to destination
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+  }
+
   const userId =
     message.userId && message.userId !== "" ? message.userId : undefined;
 
@@ -127,6 +137,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
           ).getTime() / 1000
         )
       );
+    }
+    // anonymous_id needs to be sent for identify calls to merge with any previous anon track calls
+    if (message && message.anonymousId) {
+      set(rawPayload, "anonymous_id", message.anonymousId);
     }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
@@ -206,6 +220,14 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )} Screen`;
       } else {
         trimmedEvName = truncate(evName, 100);
+      }
+      // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked
+      // This will help in merging for subsequent calls
+      const anonymousId = message.anonymousId ? message.anonymousId : undefined;
+      if (!anonymousId) {
+        throw new Error("Anonymous id/ user id is required");
+      } else {
+        rawPayload.anonymous_id = anonymousId;
       }
       set(rawPayload, "name", trimmedEvName);
     }

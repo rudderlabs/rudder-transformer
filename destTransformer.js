@@ -6,7 +6,7 @@ require("dotenv").config();
 const { router } = require("./versionedRouter");
 const cluster = require("./util/cluster");
 
-const clusterEnabled = true;
+const clusterEnabled = false;
 
 const PORT = 9090;
 const app = new Koa();

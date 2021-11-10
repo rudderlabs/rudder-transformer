@@ -30,16 +30,14 @@ function responseBuilderSimple(payload, message, destination) {
     if (androidAppId) {
       endpoint = `${ENDPOINT}${androidAppId}`;
     } else {
-      throw new CustomError();
+      throw new CustomError("android app id not found", 400);
     }
   } else if (os && os.toLowerCase() === "ios") {
     if (appleAppId) {
       endpoint = `${ENDPOINT}id${appleAppId}`;
     } else {
-      throw new CustomError();
+      throw new CustomError("apple appId not found", 400);
     }
-  } else if (destination.Config.appId) {
-    endpoint = `${ENDPOINT}${destination.Config.appId}`;
   } else {
     throw new CustomError("Invalid app endpoint", 400);
   }

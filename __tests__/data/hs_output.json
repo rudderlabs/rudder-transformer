@@ -25,7 +25,8 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -52,7 +53,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -83,7 +85,8 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -108,7 +111,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -132,7 +136,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -161,7 +166,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -196,7 +202,8 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -219,7 +226,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200

@@ -11,8 +11,10 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  populateErrStat
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 
 const {
   ConfigCategory,
@@ -21,7 +23,8 @@ const {
   getTrackEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  DESTINATION
 } = require("./config");
 
 function formatGender(gender) {
@@ -295,8 +298,16 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         getTrackEndPoint(destination.Config.endPoint)
       );
     }
-
-    throw new CustomError("Invalid Order Completed event", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid Order Completed event")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -326,7 +337,16 @@ function processGroup(message, destination) {
   const groupAttribute = {};
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new CustomError("Invalid groupId", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid groupId")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
@@ -414,7 +434,17 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Message type is not supported")
+        .setStatTags({
+          destination: DESTINATION,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
 
   return respList;
@@ -658,14 +688,13 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, DESTINATION);
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          error
         );
       }
     })
@@ -673,20 +702,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-const responseTransform = input => {
-  if (input.errors && input.errors.length > 0) {
-    return {
-      status: 400,
-      destination: { ...input },
-      message: "Request Failed for Braze (Aborted)",
-      networkFailure: true
-    };
-  }
-  return {
-    status: 200,
-    destination: { ...input },
-    message: "Processed Successfully"
-  };
-};
-
-module.exports = { process, processRouterDest, batch, responseTransform };
+module.exports = { process, processRouterDest, batch };

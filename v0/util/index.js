@@ -23,6 +23,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -277,6 +278,9 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -287,6 +291,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -294,6 +299,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -305,6 +311,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },
@@ -332,8 +339,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  errorDetailed,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, errorDetailed };
 };
 
 // ========================================================================
@@ -1008,12 +1021,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-const adduserIdFromExternalId = (message) => {
-  const externalId = get(message, "context.externalId.0.id")
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
   if (externalId) {
     message.userId = externalId;
   }
-}
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1053,6 +1066,26 @@ function ErrorBuilder() {
     return this;
   };
   this.build = () => this.err;
+}
+
+/**
+ * Used for native error stat population
+ * @param {*} arg
+ * @param {*} destination
+ */
+function populateErrStat(error, destination, isStageTransform = true) {
+  if (!error.statTags) {
+    const statTags = {
+      destination,
+      stage: isStageTransform
+        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+    // eslint-disable-next-line no-ex-assign
+    error.statTags = statTags;
+  }
+  return error;
 }
 
 /**
@@ -1129,6 +1162,7 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
+  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

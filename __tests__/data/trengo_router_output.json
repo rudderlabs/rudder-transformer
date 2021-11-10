@@ -17,6 +17,7 @@
           "channel_id": "trengo_phone_channel"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -123,6 +124,7 @@
           "channel_id": "trengo_email_channel"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}

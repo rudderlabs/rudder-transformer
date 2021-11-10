@@ -41,7 +41,7 @@ const {
 const identifyResponseBuilder = (message, { Config }) => {
   let payload = constructPayload(message, contactDataMapping);
   payload = contactPayloadValidator(payload);
-  
+
   payload["@type"] = "contact";
   if (!payload.properties) {
     let customFields = {};
@@ -266,41 +266,6 @@ const process = event => {
   }
   return response;
 };
-
-// const batch = destEvents => {
-//   const batchedResponse = [];
-//   const arrayChunks = returnArrayOfSubarrays(destEvents, MAX_BATCH_SIZE);
-
-//   arrayChunks.forEach(chunk => {
-//     const respList = [];
-//     const metadata = [];
-
-//     // extracting the apiKey and destination value
-//     // from the first event in a batch
-//     const { destination } = chunk[0];
-//     const { apiKey } = destination.Config;
-//     let batchEventResponse = defaultBatchRequestConfig();
-
-//     chunk.forEach(ev => {
-//       respList.push(ev.message.body.JSON[0]);
-//       metadata.push(ev.metadata);
-//     });
-
-//     batchEventResponse.batchedRequest.body.JSON = respList;
-//     batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-//     batchEventResponse.batchedRequest.headers = {
-//       "X-Ometria-Auth": apiKey
-//     };
-//     batchEventResponse = {
-//       ...batchEventResponse,
-//       metadata,
-//       destination
-//     };
-//     batchedResponse.push(batchEventResponse);
-//   });
-
-//   return batchedResponse;
-// };
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {

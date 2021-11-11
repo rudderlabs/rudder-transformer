@@ -4,6 +4,7 @@
       "body": {
         "XML": {},
         "FORM": {},
+        "JSON_ARRAY":{},
         "JSON": {
             "personalizations": [
                 {

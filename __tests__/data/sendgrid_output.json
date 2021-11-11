@@ -12,6 +12,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {
@@ -61,6 +62,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {
@@ -110,6 +112,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {
@@ -166,6 +169,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {
@@ -224,6 +228,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {
@@ -282,6 +287,7 @@
     "body": {
       "XML": {},
       "FORM": {},
+      "JSON_ARRAY":{},
       "JSON": {
         "personalizations": [
           {

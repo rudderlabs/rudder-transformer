@@ -556,7 +556,8 @@ if (responseTransformer) {
     destinations.forEach(destination => {
       router.post(`/transform/${destination}/response`, async ctx => {
         const startTime = new Date();
-        await handleResponseTransform(version, destination, ctx);
+        ctx.set("apiVersion", API_VERSION);
+        handleResponseTransform(version, destination, ctx);
         stats.timing("transformer_response_transform_latency", startTime, {
           destination,
           version
@@ -615,6 +616,7 @@ const batchHandler = ctx => {
   return ctx.body;
 };
 router.post("/batch", ctx => {
+  ctx.set("apiVersion", API_VERSION);
   batchHandler(ctx);
 });
 

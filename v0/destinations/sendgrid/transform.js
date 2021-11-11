@@ -8,7 +8,6 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getIntegrationsObj,
   isEmptyObject,
   extractCustomFields,
   constructPayload
@@ -40,25 +39,42 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new CustomError("event not configured on dashboard", 400);
   }
   let payload = {};
-  // all the properties are to be passed inside integrations object
-  const integrationsObj = getIntegrationsObj(message, "sendgrid");
-  if (!integrationsObj) {
-    if (!Config.mailFromTraits) {
-      throw new CustomError("integration object not found", 400);
+  // all the properties are to be passed inside properties object
+  //   const integrationsObj = getIntegrationsObj(message, "sendgrid");
+  //   if (!integrationsObj) {
+  //     if (!Config.mailFromTraits) {
+  //       throw new CustomError("integration object not found", 400);
+  //     }
+  //     const email = getValueFromMessage(message, [
+  //       "traits.email",
+  //       "context.traits.email"
+  //     ]);
+  //     if (!email) {
+  //       throw new CustomError(
+  //         "unable to create personalization object. email not found",
+  //         400
+  //       );
+  //     }
+  //     payload.personalizations = [{ to: [{ email: email }] }];
+  //   } else {
+  //     payload = constructPayload(integrationsObj, trackMapping);
+  //   }
+  payload = constructPayload(message, trackMapping);
+  if (!payload.personalizations) {
+    if (Config.mailFromTraits) {
+      const email = getValueFromMessage(message, [
+        "traits.email",
+        "context.traits.email"
+      ]);
+      if (email) {
+        payload.personalizations = [{ to: [{ email: email }] }];
+      } else {
+        throw new CustomError(
+          "personalizations field cannot be missing or empty",
+          400
+        );
+      }
     }
-    const email = getValueFromMessage(message, [
-      "traits.email",
-      "context.traits.email"
-    ]);
-    if (!email) {
-      throw new CustomError(
-        "unable to create personalization object. email not found",
-        400
-      );
-    }
-    payload.personalizations = [{ to: [{ email: email }] }];
-  } else {
-    payload = constructPayload(message, trackMapping);
   }
   payload = generatePayloadFromConfig(payload, Config);
   requiredFieldValidator(payload);
@@ -83,18 +99,15 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   payload.reply_to = removeUndefinedAndNullValues(payload.reply_to);
   payload.asm = removeUndefinedAndNullValues(payload.asm);
-  payload = createMailSettings(payload, integrationsObj, Config);
+  // const mailSettings = getValueFromMessage(message, "properties.mailSettings");
+  payload = createMailSettings(payload, message, Config); // we are sending message directly because we want this func to get called everytime, since it can take values from Config as well
   payload = createTrackSettings(payload, Config);
   if (!payload.custom_args) {
     let customFields = {};
     customFields = extractCustomFields(
       message,
       customFields,
-      [
-        "integrations.sendgrid",
-        "integrations.Sendgrid",
-        "integrations.SENDGRID"
-      ],
+      ["properties"],
       TRACK_EXCLUSION_FIELDS
     );
     if (!isEmptyObject(customFields)) {
@@ -103,7 +116,7 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   payload = payloadValidator(payload);
   payload = removeUndefinedAndNullValues(payload);
-
+  console.log(payload);
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Bearer ${Config.apiKey}`,

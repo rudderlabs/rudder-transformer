@@ -163,7 +163,7 @@ const createAttachments = Config => {
   return attachmentList;
 };
 
-const createMailSettings = (payload, iObj, Config) => {
+const createMailSettings = (payload, message, Config) => {
   const updatedPayload = payload;
   updatedPayload.mail_settings = {
     bypass_list_management: {},
@@ -178,36 +178,36 @@ const createMailSettings = (payload, iObj, Config) => {
   updatedPayload.mail_settings.footer.html = Config.footerHtml;
   updatedPayload.mail_settings.sandbox_mode.enable = Config.sandboxMode;
 
-  if (iObj && iObj.mailSettings) {
-    const intObjMail = iObj.mailSettings;
-    if (intObjMail.bypassListManagement) {
+  if (message.properties.mailSettings) {
+    const mailObj = message.properties.mailSettings;
+    if (mailObj.bypassListManagement) {
       updatedPayload.mail_settings.bypass_list_management.enable =
-        intObjMail.bypassListManagement;
+        mailObj.bypassListManagement;
     } else {
-      if (intObjMail.bypassSpamManagement) {
+      if (mailObj.bypassSpamManagement) {
         updatedPayload.mail_settings.bypass_spam_management.enable =
-          intObjMail.bypassSpamManagement;
+          mailObj.bypassSpamManagement;
       }
-      if (intObjMail.bypassBounceManagement) {
+      if (mailObj.bypassBounceManagement) {
         updatedPayload.mail_settings.bypass_bounce_management.enable =
-          intObjMail.bypassBounceManagement;
+          mailObj.bypassBounceManagement;
       }
-      if (intObjMail.bypassUnsubscribeManagement) {
+      if (mailObj.bypassUnsubscribeManagement) {
         updatedPayload.mail_settings.bypass_unsubscribe_management.enable =
-          intObjMail.bypassUnsubscribeManagement;
+          mailObj.bypassUnsubscribeManagement;
       }
     }
-    if (intObjMail.footer) {
-      updatedPayload.mail_settings.footer.enable = intObjMail.footer;
+    if (mailObj.footer) {
+      updatedPayload.mail_settings.footer.enable = mailObj.footer;
     }
-    if (intObjMail.footerText) {
-      updatedPayload.mail_settings.footer.text = intObjMail.footerText;
+    if (mailObj.footerText) {
+      updatedPayload.mail_settings.footer.text = mailObj.footerText;
     }
-    if (intObjMail.footerHtml) {
-      updatedPayload.mail_settings.footer.html = intObjMail.footerHtml;
+    if (mailObj.footerHtml) {
+      updatedPayload.mail_settings.footer.html = mailObj.footerHtml;
     }
-    if (intObjMail.sandboxMode) {
-      updatedPayload.mail_settings.sandbox_mode.enable = intObjMail.sandboxMode;
+    if (mailObj.sandboxMode) {
+      updatedPayload.mail_settings.sandbox_mode.enable = mailObj.sandboxMode;
     }
   }
   if (isEmptyObject(payload.mail_settings.bypass_list_management)) {

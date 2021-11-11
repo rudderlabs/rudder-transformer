@@ -700,27 +700,37 @@ const getJobStatus = async (ctx, type) => {
 };
 
 const handleDeletionOfUsers = async ctx => {
-  const { destType } = ctx.request.body;
-  const destDeletionHandler = getDeletionUserHandler("v0", destType);
+  const { body } = ctx.request;
+  const respList = [];
   let response;
-  if (!destDeletionHandler || !destDeletionHandler.processDeleteUsers) {
-    ctx.status = 404;
-    ctx.body = "Doesn't support deletion of users";
-    return null;
-  }
+  await Promise.all(
+    body.map(async b => {
+      const { destType } = b;
+      const destDeletionHandler = getDeletionUserHandler("v0", destType);
+      if (!destDeletionHandler || !destDeletionHandler.processDeleteUsers) {
+        ctx.status = 404;
+        ctx.body = "Doesn't support deletion of users";
+        return null;
+      }
 
-  try {
-    response = await destDeletionHandler.processDeleteUsers(ctx.request.body);
-  } catch (error) {
-    // adding the status to the request
-    ctx.status = error.response ? error.response.status : 400;
-    response = {
-      statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occured while processing"
-    };
-  }
-  ctx.body = response;
+      try {
+        response = await destDeletionHandler.processDeleteUsers(b);
+        if (response) {
+          respList.push(response);
+        }
+      } catch (error) {
+        // adding the status to the request
+        ctx.status = error.response ? error.response.status : 400;
+        respList.push({
+          statusCode: error.response ? error.response.status : 400,
+          error: error.message || "Error occured while processing"
+        });
+      }
+    })
+  );
+  ctx.body = respList;
   return ctx.body;
+  // const { destType } = ctx.request.body;
 };
 
 router.post("/fileUpload", async ctx => {
@@ -759,7 +769,7 @@ router.post(`/v0/validate`, async ctx => {
 //       "apiSecret": ""
 //   }
 // }
-router.post(`/deleteUsers`, async ctx => {
+router.post(`/delete-users`, async ctx => {
   await handleDeletionOfUsers(ctx);
 });
 module.exports = {

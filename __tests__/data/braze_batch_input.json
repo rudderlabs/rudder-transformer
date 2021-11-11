@@ -4,6 +4,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -49,6 +50,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -82,6 +84,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -112,6 +115,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -164,6 +168,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -215,6 +220,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -268,6 +274,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -316,6 +323,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -349,6 +357,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -379,6 +388,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -431,6 +441,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -464,6 +475,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -512,6 +524,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -564,6 +577,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -614,6 +628,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -662,6 +677,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -695,6 +711,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -725,6 +742,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -776,6 +794,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -806,6 +825,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -854,6 +874,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -886,6 +907,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -921,6 +943,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -974,6 +997,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1007,6 +1031,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1037,6 +1062,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1070,6 +1096,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1100,6 +1127,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1148,6 +1176,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1181,6 +1210,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1211,6 +1241,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1259,6 +1290,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1292,6 +1324,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1322,6 +1355,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1374,6 +1408,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1407,6 +1442,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1437,6 +1473,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1485,6 +1522,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1518,6 +1556,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1548,6 +1587,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1599,6 +1639,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1635,6 +1676,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1671,6 +1713,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1707,6 +1750,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1743,6 +1787,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1779,6 +1824,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1815,6 +1861,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -1851,6 +1898,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1881,6 +1929,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1914,6 +1963,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -1946,6 +1996,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -1979,6 +2030,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2009,6 +2061,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2045,6 +2098,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2093,6 +2147,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2123,6 +2178,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2163,6 +2219,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -2196,6 +2253,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2226,6 +2284,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2268,6 +2327,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2321,6 +2381,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2367,6 +2428,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2413,6 +2475,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2443,6 +2506,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2493,6 +2557,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -2526,6 +2591,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2556,6 +2622,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2608,6 +2675,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -2641,6 +2709,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2671,6 +2740,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2719,6 +2789,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -2752,6 +2823,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -2782,6 +2854,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2834,6 +2907,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2879,6 +2953,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               { "external_id": "556bec01-fbc8-447a-a85a-530b928d4cb6" }
@@ -2906,6 +2981,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2942,6 +3018,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -2978,6 +3055,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3014,6 +3092,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3050,6 +3129,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -3080,6 +3160,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3116,6 +3197,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3152,6 +3234,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3188,6 +3271,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3224,6 +3308,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3260,6 +3345,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3296,6 +3382,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -3326,6 +3413,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -3359,6 +3447,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -3391,6 +3480,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3444,6 +3534,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3490,6 +3581,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -3523,6 +3615,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3575,6 +3668,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3627,6 +3721,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3672,6 +3767,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3725,6 +3821,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3776,6 +3873,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3828,6 +3926,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3880,6 +3979,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -3933,6 +4033,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "aliases_to_identify": [
               {
@@ -3968,6 +4069,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4013,6 +4115,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4043,6 +4146,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4095,6 +4199,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4146,6 +4251,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4199,6 +4305,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4247,6 +4354,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4277,6 +4385,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4329,6 +4438,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4377,6 +4487,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4429,6 +4540,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4479,6 +4591,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4527,6 +4640,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4557,6 +4671,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4608,6 +4723,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4638,6 +4754,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4686,6 +4803,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4721,6 +4839,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4774,6 +4893,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4804,6 +4924,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4834,6 +4955,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4882,6 +5004,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4912,6 +5035,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -4960,6 +5084,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -4990,6 +5115,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5042,6 +5168,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5072,6 +5199,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5120,6 +5248,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5150,6 +5279,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5201,6 +5331,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5237,6 +5368,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5273,6 +5405,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5309,6 +5442,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5345,6 +5479,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5381,6 +5516,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5417,6 +5553,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5453,6 +5590,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5483,6 +5621,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5513,6 +5652,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5543,6 +5683,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5579,6 +5720,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5627,6 +5769,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5657,6 +5800,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5697,6 +5841,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5727,6 +5872,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5769,6 +5915,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5822,6 +5969,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5868,6 +6016,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5914,6 +6063,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -5944,6 +6094,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -5994,6 +6145,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6024,6 +6176,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6076,6 +6229,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6106,6 +6260,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6154,6 +6309,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6184,6 +6340,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6236,6 +6393,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6281,6 +6439,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6317,6 +6476,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6353,6 +6513,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6389,6 +6550,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6425,6 +6587,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6455,6 +6618,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6491,6 +6655,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6527,6 +6692,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6563,6 +6729,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6599,6 +6766,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6635,6 +6803,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6671,6 +6840,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6701,6 +6871,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "attributes": [
               {
@@ -6733,6 +6904,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6786,6 +6958,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6832,6 +7005,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6884,6 +7058,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6936,6 +7111,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -6981,6 +7157,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -7034,6 +7211,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -7085,6 +7263,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -7137,6 +7316,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [
@@ -7189,6 +7369,7 @@
       "message": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "JSON": {
             "partner": "RudderStack",
             "events": [

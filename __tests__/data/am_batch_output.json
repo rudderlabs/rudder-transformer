@@ -4,6 +4,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -58,6 +59,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "identification": [
@@ -82,6 +84,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "mapping": [
@@ -106,6 +109,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -208,6 +212,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": {
@@ -260,6 +265,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "identification": [
@@ -284,6 +290,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "mapping": [
@@ -308,6 +315,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -410,6 +418,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -613,6 +622,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "identification": [
@@ -644,6 +654,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "mapping": [
@@ -675,6 +686,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -816,6 +828,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [
@@ -876,6 +889,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "identification": [
@@ -907,6 +921,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
             "mapping": [
@@ -938,6 +953,7 @@
       "batchedRequest": {
         "body": {
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {},
           "JSON": {
             "events": [

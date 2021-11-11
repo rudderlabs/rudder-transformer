@@ -1,5 +1,5 @@
 const { CustomError } = require("../../util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [
@@ -32,7 +32,7 @@ const getAccessToken = async config => {
     url: `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
     method: "get"
   };
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   if (resp.success) {
     if (
       resp.response &&

@@ -9,7 +9,7 @@ const {
   UPLOAD_FILE
 } = require("./util");
 const { CustomError, getHashFromArray } = require("../../util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const getHeaderFields = config => {
@@ -113,7 +113,7 @@ const getImportID = async (input, config) => {
         }
       };
       const startTime = Date.now();
-      const resp = await send(requestOptions);
+      const resp = await httpSend(requestOptions);
       const endTime = Date.now();
       const requestTime = endTime - startTime;
       stats.gauge(

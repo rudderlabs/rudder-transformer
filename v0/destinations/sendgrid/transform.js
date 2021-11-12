@@ -116,7 +116,6 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   payload = payloadValidator(payload);
   payload = removeUndefinedAndNullValues(payload);
-  console.log(payload);
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Bearer ${Config.apiKey}`,

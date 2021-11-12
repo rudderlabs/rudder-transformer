@@ -46,8 +46,7 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "type": "track",
       "event":"testing",
-      "integrations": { 
-        "sendgrid": {
+      "properties": { 
             "personalizations": [
               {
                 "to": [
@@ -64,8 +63,8 @@
             "from": {
               "email": "ankit@rudderstack.com"
             }
-          }
        },
+       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   }

@@ -931,6 +931,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
@@ -976,6 +977,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",

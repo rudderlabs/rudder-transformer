@@ -26,7 +26,8 @@ const {
   USER_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
-  DEVICE_DELETE_ENDPOINT
+  DEVICE_DELETE_ENDPOINT,
+  MERGE_USER_ENDPOINT
 } = require("./config");
 const logger = require("../../../logger");
 
@@ -144,6 +145,20 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
+  } else if (evType === EventType.ALIAS) {
+    // ref : https://customer.io/docs/api/#operation/merge
+    if (!userId && !message.previousId) {
+      throw new CustomError(
+        "Both userId and previousId is mandatory for merge operation",
+        400
+      );
+    }
+    endpoint = MERGE_USER_ENDPOINT;
+    requestConfig = defaultPostRequestConfig;
+    rawPayload.primary = {};
+    rawPayload.primary.id = userId;
+    rawPayload.secondary = {};
+    rawPayload.secondary.id = message.previousId;
   } else {
     // any other event type except identify
     const token = get(message, "context.device.token");
@@ -259,6 +274,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = "event";
       evName = message.event;
+      break;
+    case EventType.ALIAS:
+      evType = "alias";
       break;
     default:
       logger.error(`could not determine type ${messageType}`);

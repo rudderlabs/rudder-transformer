@@ -236,6 +236,9 @@ const createMailSettings = (payload, message, Config) => {
   updatedPayload.mail_settings = removeUndefinedAndNullValues(
     payload.mail_settings
   );
+  if (!updatedPayload.mail_settings.footer.enable) {
+    delete updatedPayload.mail_settings.footer;
+  }
   return updatedPayload;
 };
 
@@ -291,6 +294,17 @@ const createTrackSettings = (payload, Config) => {
   updatedPayload.tracking_settings = removeUndefinedAndNullValues(
     payload.tracking_settings
   );
+  // when not enabled then its any fields inside it are not required
+  if (!updatedPayload.tracking_settings.subscription_tracking.enable) {
+    delete updatedPayload.tracking_settings.subscription_tracking;
+  }
+  if (!updatedPayload.tracking_settings.open_tracking.enable) {
+    delete updatedPayload.tracking_settings.open_tracking;
+  }
+  if (!updatedPayload.tracking_settings.ganalytics.enable) {
+    delete updatedPayload.tracking_settings.ganalytics;
+  }
+
   return updatedPayload;
 };
 

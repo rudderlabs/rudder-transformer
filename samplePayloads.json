@@ -450,7 +450,10 @@
       "locale": "en-US",
       "os": { "name": "macOS", "version": "15.9" },
       "screen": { "density": 2 },
-      "traits": { "anonymousId": "sample-anon-id", "email": "rudder_test@email.com" },
+      "traits": {
+        "anonymousId": "sample-anon-id",
+        "email": "rudder_test@email.com"
+      },
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
     },
     "event": "product added",
@@ -464,5 +467,222 @@
     "timestamp": "2020-01-17T10:23:51.206+05:30",
     "type": "track",
     "userId": "sample-user-id"
+  },
+  "AMPLITUDE": {
+    "type": "identify",
+    "sentAt": "2021-04-21T12:05:42.383Z",
+    "channel": "mobile",
+    "context": {
+      "os": {
+        "name": "iOS",
+        "version": "13.0"
+      },
+      "app": {
+        "name": "Rudder-Amplitude_Example",
+        "build": "1.0",
+        "version": "1.0",
+        "namespace": "org.cocoapods.demo.Rudder-CleverTap-Example"
+      },
+      "device": {
+        "id": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3",
+        "name": "iPhone 11 Pro Max",
+        "type": "iOS",
+        "model": "iPhone",
+        "manufacturer": "Apple"
+      },
+      "locale": "en-US",
+      "screen": {
+        "width": 896,
+        "height": 414,
+        "density": 3
+      },
+      "traits": {
+        "name": "Test Name",
+        "email": "rudder_test@email.com",
+        "gender": "M",
+        "title": "Owner",
+        "organization": "Company",
+        "city": "Tokyo",
+        "region": "ABC",
+        "country": "JP",
+        "zip": "100-0001",
+        "Flagged": false,
+        "Residence": "Shibuya",
+        "MSG-email": false
+      },
+      "library": {
+        "name": "rudder-ios-library",
+        "version": "1.0.11"
+      },
+      "network": {
+        "wifi": true,
+        "carrier": "unavailable",
+        "cellular": false,
+        "bluetooth": false
+      },
+      "timezone": "Asia/Kolkata",
+      "userAgent": "unknown"
+    },
+    "rudderId": "f5bb9c22-4987-4ef2-9b58-52788035ffb7",
+    "anonymousId": "sample-anon-id",
+    "userId": "sample-user-id",
+    "integrations": {
+      "All": true
+    },
+    "originalTimestamp": "2021-04-21T12:05:30.330Z"
+  },
+  "BRAZE": {
+    "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.5"
+      },
+      "ip": "0.0.0.0",
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.5"
+      },
+      "locale": "en-GB",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      },
+      "traits": {
+        "city": "Disney",
+        "country": "USA",
+        "email": "rudder_test@email.com",
+        "firstname": "TestName",
+        "closed_at": null,
+        "orderTotal": 0
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+    },
+    "integrations": {
+      "All": true
+    },
+    "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+    "originalTimestamp": "2020-01-24T06:29:02.362Z",
+    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+    "request_ip": "[::1]:53709",
+    "sentAt": "2020-01-24T06:29:02.363Z",
+    "timestamp": "2020-01-24T11:59:02.402+05:30",
+    "type": "identify",
+    "userId": ""
+  },
+  "CUSTOMERIO": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "traits": {
+        "anonymousId": "sample-anon-id",
+        "email": "rudder_test@email.com",
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.0"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      }
+    },
+    "user_properties": {
+      "prop1": "val1",
+      "prop2": "val2"
+    },
+    "type": "identify",
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "anonymousId": "sample-anon-id",
+    "userId": "sample-user-id",
+    "integrations": {
+      "All": true
+    },
+    "traits": {
+      "anonymousId": "sample-anon-id",
+      "email": "rudder_test@email.com",
+      "dot.name": "Test Name",
+      "address": {
+        "city": "NY",
+        "country": "USA",
+        "postalCode": 712136,
+        "state": "CA",
+        "street": ""
+      }
+    },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "FACEBOOK_PIXEL": {
+    "channel": "web",
+    "context": {
+      "traits": {
+        "name": "Test Name",
+        "email": "rudder_test@email.com",
+        "firstname": "Test",
+        "lastname": "Name",
+        "phone": 9000000000,
+        "gender": "male"
+      },
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.0"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      }
+    },
+    "properties": {
+      "plan": "test plan",
+      "name": "test name"
+    },
+    "type": "identify",
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+    "anonymousId": "00000000000000000000000000",
+    "userId": "sample-user-id",
+    "integrations": {
+      "All": true
+    },
+    "sentAt": "2019-10-14T09:03:22.563Z"
   }
 }

@@ -21,7 +21,7 @@
   },
   {
     "destKey": "batch_id",
-    "sourceKeys": "properties..batchId",
+    "sourceKeys": "properties.batchId",
     "required": false
   },
   {

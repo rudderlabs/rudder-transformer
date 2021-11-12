@@ -88,7 +88,7 @@
   },
   "PROFITWELL": {
     "channel": "web",
-    "userId": "sp_245",
+    "userId": "sample-user-id",
     "context": {
       "app": {
         "build": "1.0.0",
@@ -110,7 +110,7 @@
       },
 
       "traits": {
-        "email": "sample@sample.com",
+        "email": "rudder_test@email.com",
         "planId": "23",
         "planInterval": "month",
         "planCurrency": "usd",
@@ -145,20 +145,540 @@
       "os": { "name": "", "version": "" },
       "screen": { "density": 2 }
     },
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
     "userId": "sample-user-id",
+    "anonymousId": "sample-anon-id",
+    "type": "identify",
+    "traits": {
+      "type": "USER",
+      "gender": "MALE",
+      "email": "rudder_test@email.com",
+      "firstName": "Sample",
+      "lastName": "User",
+      "signUpDate": 1624431528295,
+      "title": "engineer",
+      "countryName": "USA",
+      "countryCode": "US",
+      "city": "New York",
+      "hobbyCustomField": "Sample Hobby"
+    },
+    "integrations": { "All": true },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "APPCUES": {
+    "anonymousId": "33787665-4168-4acc-8df7-17ba79325332",
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.1.9"
+      },
+      "campaign": {},
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.1.9"
+      },
+      "locale": "en-GB",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "page": {
+        "path": "/rudder-sdk-js/tests/html/script-test.html",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html"
+      },
+      "screen": {
+        "density": 2
+      },
+      "traits": {},
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+    },
+    "integrations": {
+      "All": true
+    },
+    "messageId": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
+    "originalTimestamp": "2021-01-04T08:25:04.780Z",
+    "receivedAt": "2021-01-04T13:55:04.799+05:30",
+    "request_ip": "[::1]",
+    "rudderId": "79881a62-980a-4d76-89ca-7099440f8c13",
+    "sentAt": "2021-01-04T08:25:04.781Z",
+    "timestamp": "2021-01-04T13:55:04.798+05:30",
+    "type": "identify",
+    "userId": "sample-user-id"
+  },
+  "BRAZE": {
+    "anonymousId": "sample-anon-id",
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.5"
+      },
+      "ip": "0.0.0.0",
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.5"
+      },
+      "locale": "en-GB",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      },
+      "traits": {
+        "city": "Disney",
+        "country": "USA",
+        "email": "rudder_test@email.com",
+        "firstname": "Mickey",
+        "closed_at": null,
+        "orderTotal": 0
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+    },
+    "integrations": {
+      "All": true
+    },
+    "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+    "originalTimestamp": "2020-01-24T06:29:02.362Z",
+    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+    "request_ip": "[::1]:53709",
+    "sentAt": "2020-01-24T06:29:02.363Z",
+    "timestamp": "2020-01-24T11:59:02.402+05:30",
+    "type": "identify",
+    "userId": ""
+  },
+  "CLEVERTAP": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "anonymousId": "sample-anon-id",
+    "type": "identify",
+    "traits": {
+      "anonymousId": "sample-anon-id",
+      "email": "rudder_test@email.com",
+      "name": "Test Name",
+      "phone": "92374162212",
+      "gender": "other",
+      "employed": true,
+      "birthday": "1614775793",
+      "education": "Science",
+      "graduate": true,
+      "married": true,
+      "customerType": "Prime",
+      "msg_push": true,
+      "msgSms": true,
+      "msgemail": true,
+      "msgwhatsapp": false,
+      "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+      "custom_mappings": {
+        "Office": "Trastkiv",
+        "Country": "Russia"
+      },
+      "address": {
+        "city": "kolkata",
+        "country": "India",
+        "postalCode": 789223,
+        "state": "WB",
+        "street": ""
+      }
+    },
+    "integrations": { "All": true },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "DELIGHTED": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "type": "identify",
+    "userId": "rudder_test@email.com",
+    "traits": {
+      "firstName": "Test",
+      "lastName": "Name",
+      "phone": "+91237416221",
+      "last_sent_at": "1626698350"
+    },
+    "integrations": { "All": true },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "DRIP": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "type": "identify",
+    "userId": "rudder_test@email.com",
+    "traits": {
+      "firstName": "Test",
+      "lastName": "Name",
+      "phone": "+91237416221",
+      "last_sent_at": "1626698350"
+    },
+    "integrations": { "All": true },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "GAINSIGHT": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": { "name": "", "version": "" },
+      "screen": { "density": 2 }
+    },
     "messageId": "84e26acc-56a5-4835-8233-591137fca468",
     "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
     "originalTimestamp": "2019-10-14T09:03:17.562Z",
     "anonymousId": "sample-anon-id",
     "type": "track",
-    "event": "Track Me",
+    "event": "Test Event",
     "properties": {
-      "description": "Sample Track call",
-      "globalContext": {
-        "testOverride": "some-value"
-      }
+      "ticketId": "sample-ticket-id",
+      "actionEmail": "rudder_test@email.com",
+      "status": "resovled"
     },
     "integrations": { "All": true },
     "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "HS": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "traits": {
+        "email": "rudder_test@email.com",
+        "firstname": "Rudder Test",
+        "anonymousId": "sample-anon-id"
+      },
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.0"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-GB",
+      "ip": "0.0.0.0",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      },
+      "page": {
+        "path": "",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": ""
+      }
+    },
+    "type": "identify",
+    "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+    "originalTimestamp": "2019-10-15T09:35:31.288Z",
+    "anonymousId": "sample-anon-id",
+    "userId": "sample-user-id",
+    "integrations": {
+      "All": true
+    },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "INTERCOM": {
+    "anonymousId": "sample-anon-id",
+    "channel": "mobile",
+    "context": {
+      "app": {
+        "build": "1.0",
+        "name": "Test_Example",
+        "namespace": "com.example.testapp",
+        "version": "1.0"
+      },
+      "device": {
+        "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+        "manufacturer": "Apple",
+        "model": "iPhone",
+        "name": "iPod touch (7th generation)",
+        "type": "iOS"
+      },
+      "library": { "name": "test-ios-library", "version": "1.0.7" },
+      "locale": "en-US",
+      "network": {
+        "bluetooth": false,
+        "carrier": "unavailable",
+        "cellular": false,
+        "wifi": true
+      },
+      "os": { "name": "iOS", "version": "14.0" },
+      "screen": { "density": 2, "height": 320, "width": 568 },
+      "timezone": "Asia/Kolkata",
+      "traits": {
+        "anonymousId": "sample-anon-id",
+        "name": "Test Name",
+        "firstName": "Test",
+        "lastName": "Name",
+        "createdAt": "2020-09-30T19:11:00.337Z",
+        "userId": "sample-user-id",
+        "email": "rudder_test@email.com",
+        "phone": "9876543210",
+        "key1": "value1"
+      },
+      "userAgent": "unknown"
+    },
+    "event": "Test Event",
+    "integrations": { "All": true },
+    "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+    "originalTimestamp": "2020-09-30T19:11:00.337Z",
+    "receivedAt": "2020-10-01T00:41:11.369+05:30",
+    "request_ip": "2405:201:8005:9856:7911:25e7:5603:5e18",
+    "sentAt": "2020-09-30T19:11:10.382Z",
+    "timestamp": "2020-10-01T00:41:01.324+05:30",
+    "type": "identify"
+  },
+  "ITERABLE": {
+    "type": "identify",
+    "sentAt": "2020-08-28T16:26:06.466Z",
+    "traits": {
+      "city": "Bangalore",
+      "name": "Test Name",
+      "email": "rudder_test@email.com",
+      "country": "India"
+    },
+    "context": {
+      "traits": {
+        "city": "Bangalore",
+        "name": "Test Name",
+        "email": "rudder_test@email.com",
+        "country": "India"
+      },
+      "library": {
+        "name": "analytics-node",
+        "version": "0.0.3"
+      }
+    },
+    "_metadata": {
+      "nodeVersion": "10.22.0"
+    },
+    "messageId": "node-cc3ef811f686139ee527b806ee0129ef-163a3a88-266f-447e-8cce-34a8f42f8dcd",
+    "anonymousId": "sample-anon-id",
+    "originalTimestamp": "2020-08-28T16:26:06.462Z"
+  },
+  "KEEN": {
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.0"
+      },
+      "traits": {
+        "anonymousId": "sample-anon-id",
+        "email": "rudder_test@email.com",
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.0"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "locale": "en-US",
+      "ip": "0.0.0.0",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      }
+    },
+    "type": "identify",
+    "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+    "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+    "originalTimestamp": "2019-10-14T09:03:17.562Z",
+    "anonymousId": "sample-anon-id",
+    "userId": "sample-user-id",
+    "integrations": {
+      "All": true
+    },
+    "traits": {
+      "anonymousId": "sample-anon-id",
+      "email": "rudder_test@email.com",
+      "address": {
+        "city": "kolkata-1",
+        "country": "US",
+        "postalCode": 712136,
+        "state": "CA",
+        "street": ""
+      }
+    },
+    "sentAt": "2019-10-14T09:03:22.563Z"
+  },
+  "KISSMETRICS": {
+    "anonymousId": "sample-anon-id",
+    "channel": "web",
+    "context": {
+      "app": {
+        "build": "1.0.0",
+        "name": "RudderLabs JavaScript SDK",
+        "namespace": "com.rudderlabs.javascript",
+        "version": "1.0.5"
+      },
+      "ip": "0.0.0.0",
+      "library": {
+        "name": "RudderLabs JavaScript SDK",
+        "version": "1.0.5"
+      },
+      "locale": "en-GB",
+      "os": {
+        "name": "",
+        "version": ""
+      },
+      "screen": {
+        "density": 2
+      },
+      "traits": {
+        "city": "Disney",
+        "country": "USA",
+        "email": "rudder_test@email.com",
+        "firstname": "Mickey"
+      },
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+    },
+    "integrations": {
+      "All": true
+    },
+    "traits": {
+      "city": "Disney-1",
+      "country": "India",
+      "email": "rudder_test@email.com",
+      "firstname": "Sayan"
+    },
+    "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+    "originalTimestamp": "2020-01-24T06:29:02.362Z",
+    "receivedAt": "2020-01-24T11:59:02.403+05:30",
+    "request_ip": "[::1]:53709",
+    "sentAt": "2020-01-24T06:29:02.363Z",
+    "timestamp": "2020-01-24T11:59:02.402+05:30",
+    "type": "identify",
+    "userId": ""
+  },
+  "KLAVIYO": {
+    "type": "identify",
+    "sentAt": "2021-01-03T17:02:53.195Z",
+    "userId": "sample-user-id",
+    "channel": "web",
+    "context": {
+      "os": { "name": "", "version": "" },
+      "app": {
+        "name": "RudderLabs JavaScript SDK",
+        "build": "1.0.0",
+        "version": "1.1.11",
+        "namespace": "com.rudderlabs.javascript"
+      },
+      "traits": {
+        "firstName": "Test",
+        "lastName": "Name",
+        "email": "rudder_test@email.com",
+        "phone": "+12 345 578 900",
+        "userId": "utsabc",
+        "title": "Developer",
+        "organization": "Rudder",
+        "city": "Tokyo",
+        "region": "Kanto",
+        "country": "JP",
+        "zip": "100-0001",
+        "Flagged": false,
+        "Residence": "Shibuya",
+        "properties": {
+          "addToList": true,
+          "listId": "XUepkK",
+          "subscribe": true,
+          "consent": "email",
+          "smsConsent": false
+        }
+      },
+      "locale": "en-US",
+      "screen": { "density": 2 },
+      "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.11" },
+      "campaign": {},
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+    },
+    "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+    "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+    "anonymousId": "sample-anon-id",
+    "integrations": { "All": true },
+    "originalTimestamp": "2021-01-03T17:02:53.193Z"
   }
 }

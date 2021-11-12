@@ -239,6 +239,12 @@ const createMailSettings = (payload, message, Config) => {
   if (!updatedPayload.mail_settings.footer.enable) {
     delete updatedPayload.mail_settings.footer;
   }
+  if (!updatedPayload.mail_settings.sandbox_mode.enable) {
+    delete updatedPayload.mail_settings.sandbox_mode;
+  }
+  if (isEmptyObject(updatedPayload.mail_settings)) {
+    delete updatedPayload.mail_settings;
+  }
   return updatedPayload;
 };
 
@@ -304,7 +310,15 @@ const createTrackSettings = (payload, Config) => {
   if (!updatedPayload.tracking_settings.ganalytics.enable) {
     delete updatedPayload.tracking_settings.ganalytics;
   }
-
+  if (
+    !updatedPayload.tracking_settings.click_tracking.enable &&
+    !updatedPayload.tracking_settings.click_tracking.enable_text
+  ) {
+    delete updatedPayload.tracking_settings.click_tracking;
+  }
+  if (isEmptyObject(updatedPayload.tracking_settings)) {
+    delete updatedPayload.tracking_settings;
+  }
   return updatedPayload;
 };
 

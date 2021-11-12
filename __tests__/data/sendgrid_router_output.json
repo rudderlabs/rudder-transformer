@@ -26,17 +26,7 @@
                   "type": "text/html",
                   "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
                 }
-              ],
-              "mail_settings":{
-                  "footer": { "enable": false },
-                  "sandbox_mode": { "enable": false } 
-              },
-              "tracking_settings":{
-                  "click_tracking": { "enable": false, "enable_text": false },
-                  "open_tracking": { "enable": false },
-                  "subscription_tracking": { "enable": false },
-                  "ganalytics": { "enable": false } 
-              }
+              ]
             }
       },
       "type": "REST",

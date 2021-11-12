@@ -12,6 +12,7 @@ const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { populateErrStat } = require("./v0/util/index");
 require("dotenv").config();
+const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -65,8 +66,6 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
-const eventValidator = require("./util/eventValidation");
-
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -109,6 +108,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
+
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -119,6 +119,7 @@ async function handleDest(ctx, version, destination) {
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }
+
               return {
                 output: { ...ev, userId },
                 metadata: event.metadata,

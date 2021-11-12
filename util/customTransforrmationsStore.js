@@ -33,3 +33,4 @@ async function getTransformationCode(versionId) {
 }
 
 exports.getTransformationCode = getTransformationCode;
+exports.CONFIG_BACKEND_URL = CONFIG_BACKEND_URL;

@@ -539,6 +539,7 @@ const processRouterDest = async inputs => {
     const errResp = {
       status: 400,
       message: "Authorisation failed",
+      responseTransformFailure: true,
       statTags: {
         destination: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,

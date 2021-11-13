@@ -11,6 +11,7 @@ const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { populateErrStat } = require("./v0/util/index");
+const { parseDestJSONResponse } = require("./adapters/utils/networkUtils");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -521,6 +522,7 @@ if (startSourceTransformer) {
 }
 
 function handleResponseTransform(version, destination, ctx) {
+  const destResponse = ctx.request.body;
   const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
   if (!destNetHandler || !destNetHandler.responseTransform) {
@@ -529,15 +531,21 @@ function handleResponseTransform(version, destination, ctx) {
     return ctx.body;
   }
   let response;
+  const parsedDestResponse = parseDestJSONResponse(destResponse);
+  const destStatus = destResponse.status;
   try {
-    response = destNetHandler.responseTransform(ctx.request.body);
+    response = destNetHandler.responseTransform(
+      parsedDestResponse,
+      destStatus,
+      destination
+    );
   } catch (err) {
     // eslint-disable-next-line no-ex-assign
     err = populateErrStat(err, destination, false);
     response = {
       status: err.status || 400,
       message: err.message,
-      destinationResponse: err.destinationResponse,
+      destinationResponse: destResponse.responseBody,
       errorDetailed: err
     };
     if (!err.responseTransformFailure) {
@@ -545,7 +553,7 @@ function handleResponseTransform(version, destination, ctx) {
     }
   }
   ctx.body = { output: response };
-  ctx.status = response.status;
+  ctx.status = 200;
   return ctx.body;
 }
 

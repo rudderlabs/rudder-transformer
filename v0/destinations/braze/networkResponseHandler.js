@@ -1,26 +1,48 @@
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { isEmpty } = require("../../util/index");
+const { isEmpty, isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { DESTINATION } = require("./config");
 const ErrorBuilder = require("../../util/error");
 
-const responseTransform = destResponse => {
-  let respBody;
+// eslint-disable-next-line no-unused-vars
+const responseTransform = (destResponse, _dest) => {
+  let response;
   try {
-    respBody = JSON.parse(destResponse.responseBody);
+    response = JSON.parse(destResponse.responseBody);
   } catch (err) {
-    respBody = !isEmpty(destResponse.responseBody)
+    response = !isEmpty(destResponse.responseBody)
       ? destResponse.responseBody
       : "";
   }
-  if (respBody && respBody.errors && respBody.errors.length > 0) {
+  const { status } = destResponse;
+  const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
+  const destinationResponse = { response, status };
+
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
+    throw new ErrorBuilder()
+      .setStatus(status)
+      .setMessage(
+        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+      )
+      .setDestinationResponse(destinationResponse)
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(status)
+      })
+      .build();
+  }
+  // application level errors
+  if (response && response.errors && response.errors.length > 0) {
     throw new ErrorBuilder()
       .setStatus(400)
-      .setMessage("Braze Request Failed")
-      .setDestinationResponse({
-        response: respBody,
-        status: destResponse.status
-      })
+      .setMessage(
+        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+      )
+      .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
@@ -30,18 +52,10 @@ const responseTransform = destResponse => {
       })
       .build();
   }
-  const { status } = destResponse;
-  const message = "Event delivered successfuly";
-  const destinationResponse = {
-    response: respBody,
-    status: destResponse.Status
-  };
-  const { apiLimit } = respBody;
   return {
     status,
     message,
-    destinationResponse,
-    apiLimit
+    destinationResponse
   };
 };
 

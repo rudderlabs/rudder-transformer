@@ -7,7 +7,7 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {
+function getDataTypeOverride(key, val, options) {
   if (options.chEnableArraySupport === "false") {
     return "string";
   }

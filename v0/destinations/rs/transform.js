@@ -8,7 +8,7 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {
+function getDataTypeOverride(key, val, options) {
   if (options.rsAlterStringToText === "true" && val) {
     const stringifiedVal = Array.isArray(val) ? JSON.stringify(val) : val;
     if (stringifiedVal.length > RSStringLimit) {

@@ -72,7 +72,6 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
       .setStatus(200)
       .setMessage("Request Processed successfully")
       .setAuthErrorCategory("")
-      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
@@ -103,7 +102,6 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
     throw new DestinationRespBuilder()
       .setStatus(status)
       .setMessage(dresponse.error.message || "BQStream request failed")
-      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setAuthErrorCategory(destAuthCategory)
       .setAccessToken(accessToken)
       .isTransformResponseFailure(!isSuccess)
@@ -120,7 +118,6 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
       .setStatus(400)
       .setMessage("Problem during insert operation")
       .setAuthErrorCategory("")
-      .setDestinationResponse({ ...dresponse, success: isSuccess })
       .setAccessToken(accessToken)
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
@@ -136,7 +133,6 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
     .setMessage("Unhandled error type while sending to destination")
     .setAuthErrorCategory("")
     .setAccessToken(accessToken)
-    .setDestinationResponse({ ...dresponse, success: isSuccess })
     .isTransformResponseFailure(!isSuccess)
     .setStatTags({
       destination: DESTINATION_NAME,
@@ -164,7 +160,7 @@ const responseTransform = respTransformPayload => {
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(500)
       })
-      .setDestinationResponse({ status, responseBody, error, isSuccess: false })
+      .setDestinationResponse({ error, isSuccess: false })
       .isTransformResponseFailure(true)
       .build();
   }

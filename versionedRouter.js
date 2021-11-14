@@ -538,7 +538,7 @@ function handleResponseTransform(version, destination, ctx) {
     response = {
       status: err.status || 400,
       message: err.message,
-      destinationResponse: err.destinationResponse,
+      destinationResponse: ctx.request.body.responseBody,
       errorDetailed: err
     };
     if (!err.responseTransformFailure) {

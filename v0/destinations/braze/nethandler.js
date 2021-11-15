@@ -49,7 +49,19 @@ const sendData = async payload => {
   const { metadata } = payload;
   const res = await sendRequest(payload);
   const parsedResponse = responseHandler(res, metadata); // Mandatory to have a handler here
-  return parsedResponse;
+  return {
+    status: parsedResponse.status,
+    destination: {
+      ...parsedResponse,
+      success: true
+    },
+    apiLimit: {
+      available: "",
+      resetAt: ""
+    },
+    metadata,
+    message: parsedResponse.statusText || "Request Processed Successfully"
+  };
 };
 
 module.exports = { sendData };

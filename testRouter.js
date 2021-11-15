@@ -143,25 +143,47 @@ getDestinations().forEach(async dest => {
           if (stage.dest_transform && stage.dest_response) {
             // send event to destination only after transformation
             if (!errorFound) {
-              const ctxMock = {
-                request: {
-                  body: {
-                    ...response.dest_transformed_payload
+              const destResponses = [];
+              const destResponseStatuses = [];
+              const transformerMessages = [];
+              const transformerStatuses = [];
+
+              let transformedPayloads;
+              if (!Array.isArray(response.dest_transformed_payload)) {
+                transformedPayloads = [response.dest_transformed_payload];
+              } else {
+                transformedPayloads = response.dest_transformed_payload;
+              }
+              // console.log("*******", JSON.stringify(transformedPayloads));
+              // eslint-disable-next-line no-restricted-syntax
+              for (const payload of transformedPayloads) {
+                const ctxMock = {
+                  request: {
+                    body: {
+                      ...payload
+                    }
                   }
+                };
+                // eslint-disable-next-line no-await-in-loop
+                await handleDestinationNetwork(version, dest, ctxMock);
+                const { output } = ctxMock.body;
+                // console.log("****OUTPUT*****", output)
+                // handler for node sys error cases
+                if (!output.destination) {
+                  // console.log("*****OUTPUT******", output);
+                  throw new Error(output.message);
                 }
-              };
-              await handleDestinationNetwork(version, dest, ctxMock);
-              const { output } = ctxMock.body;
-              // handler for node sys error cases
-              if (!output.destination) {
-                throw new Error(output.message);
+                destResponses.push(output.destination.data);
+                destResponseStatuses.push(output.destination.status);
+                transformerMessages.push(output.message);
+                transformerStatuses.push(output.status);
               }
               response = {
                 ...response,
-                destination_response: output.destination.data,
-                destination_response_status: output.destination.status,
-                transformer_message: output.message,
-                transformer_status: output.status
+                destination_response: destResponses,
+                destination_response_status: destResponseStatuses,
+                transformer_message: transformerMessages,
+                transformer_status: transformerStatuses
               };
               // console.log("DEST_RESPONSE ", response)
             } else {
@@ -177,6 +199,7 @@ getDestinations().forEach(async dest => {
       ctx.body = respList;
     } catch (err) {
       // fallback error response
+      // console.log("******ERR CHECK****", err);
       ctx.body = {
         error: err.message || JSON.stringify(err)
       };

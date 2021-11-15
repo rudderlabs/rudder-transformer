@@ -125,7 +125,11 @@ getDestinations().forEach(async dest => {
               try {
                 const desthandler = getDestHandler(version, dest);
                 const transformedOutput = await desthandler.process(ev);
-                response.dest_transformed_payload = transformedOutput;
+                if (Array.isArray(transformedOutput)) {
+                  response.dest_transformed_payload = transformedOutput;
+                } else {
+                  response.dest_transformed_payload = [transformedOutput];
+                }
               } catch (err) {
                 // console.log("****ERR**********", err)
                 errorFound = true;
@@ -148,12 +152,14 @@ getDestinations().forEach(async dest => {
               const transformerMessages = [];
               const transformerStatuses = [];
 
-              let transformedPayloads;
-              if (!Array.isArray(response.dest_transformed_payload)) {
-                transformedPayloads = [response.dest_transformed_payload];
-              } else {
-                transformedPayloads = response.dest_transformed_payload;
-              }
+              // let transformedPayloads;
+              // console.log("DEST TRANSFORM", response.dest_transformed_payload);
+              const transformedPayloads = response.dest_transformed_payload;
+              // if (!Array.isArray(response.dest_transformed_payload)) {
+              //   transformedPayloads = [response.dest_transformed_payload];
+              // } else {
+              //   transformedPayloads = response.dest_transformed_payload;
+              // }
               // console.log("*******", JSON.stringify(transformedPayloads));
               // eslint-disable-next-line no-restricted-syntax
               for (const payload of transformedPayloads) {

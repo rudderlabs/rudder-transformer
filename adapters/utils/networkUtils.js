@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 const get = require("get-value");
 const { isEmpty } = require("lodash");
+const { isHttpStatusRetryable } = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const nodeSysErrorToStatus = code => {
@@ -78,7 +79,7 @@ const trimResponse = response => {
 
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
-  if (statusCode == 500) {
+  if (isHttpStatusRetryable(statusCode)) {
     return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
   }
   if (statusCode == 429) {

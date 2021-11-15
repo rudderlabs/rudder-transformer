@@ -17,10 +17,7 @@ const { getDynamicMeta } = require("../utils/networkUtils");
  */
 
 const responseTransform = (response, status, dest) => {
-  const destinationResponse = {
-    response,
-    status
-  };
+  const destinationResponse = { response, status };
   const message = `[Generic Response Transform] Request for destination: ${dest} Processed Successfully`;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {

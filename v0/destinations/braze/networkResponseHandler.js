@@ -1,20 +1,11 @@
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { isEmpty, isHttpStatusSuccess } = require("../../util/index");
+const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { DESTINATION } = require("./config");
 const ErrorBuilder = require("../../util/error");
 
 // eslint-disable-next-line no-unused-vars
-const responseTransform = (destResponse, _dest) => {
-  let response;
-  try {
-    response = JSON.parse(destResponse.responseBody);
-  } catch (err) {
-    response = !isEmpty(destResponse.responseBody)
-      ? destResponse.responseBody
-      : "";
-  }
-  const { status } = destResponse;
+const responseTransform = (response, status, _dest) => {
   const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
   const destinationResponse = { response, status };
 
@@ -48,7 +39,7 @@ const responseTransform = (destResponse, _dest) => {
         destination: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.status || 400)
+        meta: getDynamicMeta(status)
       })
       .build();
   }

@@ -1059,12 +1059,17 @@ function populateErrStat(error, destination, isStageTransform = true) {
  * @returns
  */
 function isHttpStatusSuccess(status) {
-  if (status >= 200 && status < 300) {
-    return true;
-  }
-  return false;
+  return status >= 200 && status < 300;
 }
 
+/**
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
+}
 /**
  *
  * Utility function for UUID genration
@@ -1135,6 +1140,7 @@ module.exports = {
   isEmpty,
   isEmptyObject,
   isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,

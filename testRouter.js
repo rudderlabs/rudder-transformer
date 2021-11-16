@@ -6,6 +6,7 @@ const path = require("path");
 const Router = require("koa-router");
 const { handleDestinationNetwork } = require("./routerUtils");
 const { userTransformHandler } = require("./util/customTransformer");
+const { set, get } = require("lodash");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -22,6 +23,16 @@ const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
 };
 
+const setDynamicField = (payload, keyList, val) => {
+  keyList.some(key => {
+    if (get(payload, key)) {
+      set(payload, key, val);
+      return true;
+    }
+    return false;
+  });
+};
+
 const handleDynamicFields = (destName, payload) => {
   const destFields = dynamicFields[destName];
   if (!destFields) {
@@ -29,10 +40,10 @@ const handleDynamicFields = (destName, payload) => {
     return payload;
   }
   Object.keys(destFields).forEach(key => {
-    const keyFormat = destFields[key];
-    switch (keyFormat) {
+    const { format, destKeys } = destFields[key];
+    switch (format) {
       case "unixTimestamp":
-        payload[key] = Date.now();
+        setDynamicField(payload, destKeys, Date.now());
         break;
       default:
         break;

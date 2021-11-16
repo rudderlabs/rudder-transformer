@@ -39,29 +39,9 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new CustomError("event not configured on dashboard", 400);
   }
   let payload = {};
-  // all the properties are to be passed inside properties object
-  //   const integrationsObj = getIntegrationsObj(message, "sendgrid");
-  //   if (!integrationsObj) {
-  //     if (!Config.mailFromTraits) {
-  //       throw new CustomError("integration object not found", 400);
-  //     }
-  //     const email = getValueFromMessage(message, [
-  //       "traits.email",
-  //       "context.traits.email"
-  //     ]);
-  //     if (!email) {
-  //       throw new CustomError(
-  //         "unable to create personalization object. email not found",
-  //         400
-  //       );
-  //     }
-  //     payload.personalizations = [{ to: [{ email: email }] }];
-  //   } else {
-  //     payload = constructPayload(integrationsObj, trackMapping);
-  //   }
   payload = constructPayload(message, trackMapping);
   if (!payload.personalizations) {
-    if (Config.mailFromTraits) {
+    if (Config.mailFromTraits) {        // if enabled then we look for email in traits and if found we create personalizations object 
       const email = getValueFromMessage(message, [
         "traits.email",
         "context.traits.email"
@@ -70,14 +50,14 @@ const trackResponseBuilder = (message, { Config }) => {
         payload.personalizations = [{ to: [{ email: email }] }];
       } else {
         throw new CustomError(
-          "personalizations field cannot be missing or empty",
+          "Either email not found in traits or personalizations field is missing/empty",
           400
         );
       }
     }
   }
-  payload = generatePayloadFromConfig(payload, Config);
-  requiredFieldValidator(payload);
+  payload = generatePayloadFromConfig(payload, Config);  // if fields present in config are not/empty in properties we override those properties with config values
+  requiredFieldValidator(payload); 
   payload.asm = {};
   if (
     Config.group &&
@@ -99,7 +79,6 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   payload.reply_to = removeUndefinedAndNullValues(payload.reply_to);
   payload.asm = removeUndefinedAndNullValues(payload.asm);
-  // const mailSettings = getValueFromMessage(message, "properties.mailSettings");
   payload = createMailSettings(payload, message, Config); // we are sending message directly because we want this func to get called everytime, since it can take values from Config as well
   payload = createTrackSettings(payload, Config);
   if (!payload.custom_args) {

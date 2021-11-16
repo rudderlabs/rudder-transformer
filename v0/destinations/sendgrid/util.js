@@ -36,6 +36,7 @@ const requiredFieldValidator = payload => {
 const payloadValidator = payload => {
   const updatedPayload = payload;
 
+  // each item in personalizations array must have 'to' field
   if (payload.personalizations) {
     payload.personalizations.forEach((keys, index) => {
       const personalizationsArr = [];
@@ -72,7 +73,7 @@ const payloadValidator = payload => {
         updatedPayload.categories[index] = JSON.stringify(category);
       }
     });
-    payload.categories.splice(10);
+    payload.categories.splice(10); // categories can only have 10 items
   }
   if (payload.headers && !isObject(payload.headers)) {
     updatedPayload.headers = null;
@@ -210,23 +211,15 @@ const createMailSettings = (payload, message, Config) => {
       updatedPayload.mail_settings.sandbox_mode.enable = mailObj.sandboxMode;
     }
   }
-  if (isEmptyObject(payload.mail_settings.bypass_list_management)) {
-    delete updatedPayload.mail_settings.bypass_list_management;
-  }
-
-  if (isEmptyObject(payload.mail_settings.bypass_spam_management)) {
-    delete updatedPayload.mail_settings.bypass_spam_management;
-  }
-  if (isEmptyObject(payload.mail_settings.bypass_bounce_management)) {
-    delete updatedPayload.mail_settings.bypass_bounce_management;
-  }
-  if (isEmptyObject(payload.mail_settings.bypass_unsubscribe_management)) {
-    delete updatedPayload.mail_settings.bypass_unsubscribe_management;
-  }
+  const list = [ "bypass_list_management","bypass_spam_management","bypass_bounce_management","bypass_unsubscribe_management"];
+  list.forEach(key => {
+    if(isEmptyObject(updatedPayload.mail_settings[key])){
+      delete updatedPayload.mail_settings[key];
+    }
+  });
   if (isEmpty(updatedPayload.mail_settings.footer.text)) {
     updatedPayload.mail_settings.footer.text = null;
   }
-
   if (isEmpty(updatedPayload.mail_settings.footer.html)) {
     updatedPayload.mail_settings.footer.html = null;
   }
@@ -284,19 +277,12 @@ const createTrackSettings = (payload, Config) => {
     Config.utmContent || null;
   updatedPayload.tracking_settings.ganalytics.utm_campaign =
     Config.utmCampaign || null;
-
-  updatedPayload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
-    payload.tracking_settings.ganalytics
-  );
-  updatedPayload.tracking_settings.subscription_tracking = removeUndefinedAndNullValues(
-    payload.tracking_settings.subscription_tracking
-  );
-  updatedPayload.tracking_settings.ganalytics = removeUndefinedAndNullValues(
-    payload.tracking_settings.ganalytics
-  );
-  updatedPayload.tracking_settings.open_tracking = removeUndefinedAndNullValues(
-    payload.tracking_settings.open_tracking
-  );
+  
+  const list = ["ganalytics","subscription_tracking","open_tracking"];
+  list.forEach(key => {
+    updatedPayload.tracking_settings[key] = removeUndefinedAndNullValues(payload.tracking_settings[key]);
+  });
+  
   updatedPayload.tracking_settings = removeUndefinedAndNullValues(
     payload.tracking_settings
   );

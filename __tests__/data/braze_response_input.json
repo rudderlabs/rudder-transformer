@@ -1,0 +1,54 @@
+[
+  {
+    "response": {
+      "attributes_processed": 0,
+      "message": "failed",
+      "errors": [
+        {
+          "code": "604"
+        }
+      ]
+    },
+    "status": 200
+  },
+  {
+    "response": { "attributes_processed": 1, "message": "success" },
+    "status": 200
+  },
+  {
+    "response": {
+      "attributes_processed": 0,
+      "message": "failed",
+      "errors": [
+        {
+          "code": "605"
+        }
+      ]
+    },
+    "status": 500
+  },
+  {
+    "response": "Internal Server Error",
+    "status": 500
+  },
+  {
+    "response": {
+      "attributes_processed": 0,
+      "message": "failed",
+      "errors": [
+        {
+          "code": "623"
+        }
+      ]
+    },
+    "status": 429
+  },
+  {
+    "response": "Too many requests",
+    "status": 429
+  },
+  {
+    "response": "",
+    "status": 200
+  }
+]

@@ -136,7 +136,7 @@ async function handleDest(ctx, version, destination) {
           metadata: event.metadata,
           statusCode: 400,
           error: error.message || "Error occurred while processing payload.",
-          errorDetailed: error
+          statTags: error.statTags
         });
       }
     })
@@ -545,8 +545,11 @@ function handleResponseTransform(version, destination, ctx) {
     response = {
       status: err.status || 400,
       message: err.message,
-      destinationResponse: destResponse.responseBody,
-      errorDetailed: err
+      destinationResponse: err.destinationResponse || {
+        response: parsedDestResponse,
+        status: destStatus
+      },
+      statTags: err.statTags
     };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;

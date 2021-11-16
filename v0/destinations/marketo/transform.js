@@ -529,7 +529,7 @@ const processRouterDest = async inputs => {
       inputs.map(input => input.metadata),
       error.status || 500, // default to retryable
       error.message || "Error occurred while processing payload.",
-      error
+      error.statTags
     );
     return [respEvents];
   }
@@ -550,7 +550,7 @@ const processRouterDest = async inputs => {
       inputs.map(input => input.metadata),
       errResp.status,
       errResp.message,
-      errResp
+      errResp.statTags
     );
     return [respEvents];
   }
@@ -573,7 +573,7 @@ const processRouterDest = async inputs => {
           [input.metadata],
           error.status || 500,
           error.message || "Error occurred while processing payload.",
-          error
+          error.statTags
         );
       }
     })

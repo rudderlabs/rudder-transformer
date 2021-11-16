@@ -1,4 +1,8 @@
+/* eslint-disable eqeqeq */
 const get = require("get-value");
+const { isEmpty } = require("lodash");
+const { isHttpStatusRetryable } = require("../../v0/util");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -73,4 +77,32 @@ const trimResponse = response => {
   };
 };
 
-module.exports = { nodeSysErrorToStatus, trimResponse };
+// Returns dynamic Meta based on Status Code as Input
+const getDynamicMeta = statusCode => {
+  if (isHttpStatusRetryable(statusCode)) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+  }
+  if (statusCode == 429) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+  }
+  return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
+};
+
+const parseDestJSONResponse = destResponse => {
+  let response;
+  try {
+    response = JSON.parse(destResponse.responseBody);
+  } catch (err) {
+    response = !isEmpty(destResponse.responseBody)
+      ? destResponse.responseBody
+      : "";
+  }
+  return response;
+};
+
+module.exports = {
+  nodeSysErrorToStatus,
+  trimResponse,
+  getDynamicMeta,
+  parseDestJSONResponse
+};

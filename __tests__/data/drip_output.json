@@ -11,6 +11,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "subscribers": [
@@ -44,6 +45,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "subscribers": [
@@ -75,6 +77,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "subscribers": [
@@ -99,6 +102,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -130,6 +134,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -158,6 +163,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -189,6 +195,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "action": "placed",
@@ -212,6 +219,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "action": "placed",
@@ -241,6 +249,7 @@
     "params": {},
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "events": [
@@ -248,8 +257,8 @@
             "action": "checkout",
             "email": "identified_user@gmail.com",
             "occurred_at": "2019-10-14T09:03:17.562Z",
-            "properties":{
-              "field2":"val2"
+            "properties": {
+              "field2": "val2"
             }
           }
         ]

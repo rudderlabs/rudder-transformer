@@ -17,6 +17,7 @@
         "channel_id": "trengo_email_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -42,6 +43,7 @@
         "channel_id": "trengo_phone_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -70,6 +72,7 @@
         "channel_id": "trengo_phone_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -92,6 +95,7 @@
         "subject": "Product Purchased from Rudderstack"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -114,6 +118,7 @@
         "subject": "Total cart value 5000 shipped"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -139,6 +144,7 @@
         "subject": "Completed Order"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -160,6 +166,7 @@
         "channel_id": "trengo_emailext_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -181,6 +188,7 @@
         "channel_id": "trengo_emailext_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -203,6 +211,7 @@
         "subject": "{event} Stress test"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -226,6 +235,7 @@
         "name": "Thalmor Bretz 2"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -247,6 +257,7 @@
         "channel_id": "trengo_emailext_channel"
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}

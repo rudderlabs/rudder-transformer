@@ -4,6 +4,7 @@ const _ = require("lodash");
 const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
+const { proxyRequest } = require("./adapters/network");
 
 let areFunctionsEnabled = -1;
 const functionsEnabled = () => {
@@ -35,17 +36,18 @@ const getDestNetHander = (version, dest) => {
 };
 
 async function handleDestinationNetwork(version, destination, ctx) {
-  const destNetHandler = getDestNetHander(version, destination);
+  // getDestNetHander is for sending destination requests
+  // const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.sendData) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support transformer proxy`;
-    return ctx.body;
-  }
+  // if (!destNetHandler || !destNetHandler.sendData) {
+  //   ctx.status = 404;
+  //   ctx.body = `${destination} doesn't support transformer proxy`;
+  //   return ctx.body;
+  // }
   let response;
   logger.info("Request recieved for destination", destination);
   try {
-    response = await destNetHandler.sendData(ctx.request.body);
+    response = await proxyRequest(ctx.request.body);
   } catch (err) {
     response = {
       status: 500, // keeping retryable default

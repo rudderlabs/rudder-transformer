@@ -1,37 +1,72 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-const heapdump = require("heapdump");
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { isNonFuncObject, getMetadata } = require("./v0/util");
-const {
-  getIntegrations,
-  getDestHandler,
-  getDestFileUploadHandler,
-  getPollStatusHandler,
-  getJobStatusHandler,
-  handleDestinationNetwork,
-  userTransformHandler
-} = require("./routerUtils");
+const { processDynamicConfig } = require("./util/dynamicConfig");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
+const { populateErrStat } = require("./v0/util/index");
+const { parseDestJSONResponse } = require("./adapters/utils/networkUtils");
 require("dotenv").config();
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const networkMode = process.env.TRANSFORMER_NETWORK_MODE || true;
+const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
 
 const router = new Router();
 
+const isDirectory = source => {
+  return lstatSync(source).isDirectory();
+};
+
+const getIntegrations = type =>
+  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
+
+const getDestHandler = (version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+  }
+  return require(`./${version}/destinations/${dest}/transform`);
+};
+
+const getDestNetHander = (version, dest) => {
+  const destination = _.toLower(dest);
+  let destNetHandler;
+  try {
+    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
+    if (!destNetHandler && !destNetHandler.responseTransform) {
+      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
+    }
+  } catch (err) {
+    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
+  }
+  return destNetHandler;
+};
+
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
 const eventValidator = require("./util/eventValidation");
+
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -63,8 +98,9 @@ async function handleDest(ctx, version, destination) {
   await Promise.all(
     events.map(async event => {
       try {
-        const parsedEvent = event;
+        let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
+        parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
@@ -86,16 +122,13 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-
+        // eslint-disable-next-line no-ex-assign
+        error = populateErrStat(error, destination);
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
-        });
-        stats.increment("dest_transform_errors", 1, {
-          destination,
-          version,
-          ...metaTags
+          error: error.message || "Error occurred while processing payload.",
+          errorDetailed: error
         });
       }
     })
@@ -122,10 +155,10 @@ async function handleValidation(ctx) {
     const eventStartTime = new Date();
     try {
       const parsedEvent = event;
-      parsedEvent.request = {query: reqParams};
+      parsedEvent.request = { query: reqParams };
       const hv = await eventValidator.handleValidation(parsedEvent);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating because : ${hv.violationType}`
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,
@@ -135,21 +168,21 @@ async function handleValidation(ctx) {
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,
-          ...metaTags,
+          ...metaTags
         });
       } else {
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 200,
-          validationErrors: hv.validationErrors,
+          validationErrors: hv.validationErrors
         });
         stats.counter("hv_errors", 1, {
           ...metaTags
         });
       }
     } catch (error) {
-      const errMessage = `Error occurred while validating : ${error}`
+      const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
       respList.push({
         output: event.message,
@@ -193,6 +226,7 @@ async function routerHandleDest(ctx) {
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      desInput = processDynamicConfig(desInput, "router");
       const listOutput = await routerDestHandler.processRouterDest(desInput);
       respEvents.push(...listOutput);
     })
@@ -244,7 +278,6 @@ if (startDestTransformer) {
             : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version,
           ...metaTags
         });
         stats.increment("dest_transform_requests", 1, {
@@ -254,6 +287,7 @@ if (startDestTransformer) {
         });
       });
       router.post("/routerTransform", async ctx => {
+        ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
     });
@@ -278,7 +312,7 @@ if (startDestTransformer) {
       } else {
         groupedEvents = _.groupBy(
           events,
-          event => event.metadata.destinationId + "_" + event.metadata.sourceId
+          event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
         );
       }
       stats.counter(
@@ -479,12 +513,54 @@ if (startSourceTransformer) {
   });
 }
 
-if (networkMode) {
+function handleResponseTransform(version, destination, ctx) {
+  const destResponse = ctx.request.body;
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.responseTransform) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support response transformation`;
+    return ctx.body;
+  }
+  let response;
+  const parsedDestResponse = parseDestJSONResponse(destResponse);
+  const destStatus = destResponse.status;
+  try {
+    response = destNetHandler.responseTransform(
+      parsedDestResponse,
+      destStatus,
+      destination
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-ex-assign
+    err = populateErrStat(err, destination, false);
+    response = {
+      status: err.status || 400,
+      message: err.message,
+      destinationResponse: destResponse.responseBody,
+      errorDetailed: err
+    };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+    }
+  }
+  ctx.body = { output: response };
+  ctx.status = 200;
+  return ctx.body;
+}
+
+if (responseTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
-      router.post(`/network/${destination}/proxy`, async ctx => {
-        await handleDestinationNetwork(version, destination, ctx);
+      router.post(`/transform/${destination}/response`, async ctx => {
+        const startTime = new Date();
+        ctx.set("apiVersion", API_VERSION);
+        handleResponseTransform(version, destination, ctx);
+        stats.timing("transformer_response_transform_latency", startTime, {
+          destination,
+          version
+        });
       });
     });
   });
@@ -521,6 +597,7 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
@@ -538,14 +615,8 @@ const batchHandler = ctx => {
   return ctx.body;
 };
 router.post("/batch", ctx => {
+  ctx.set("apiVersion", API_VERSION);
   batchHandler(ctx);
-});
-
-router.get("/heapdump", ctx => {
-  heapdump.writeSnapshot((err, filename) => {
-    logger.debug("Heap dump written to", filename);
-  });
-  ctx.body = "OK";
 });
 
 const fileUpload = async ctx => {
@@ -645,4 +716,10 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
-module.exports = { router, handleDest, routerHandleDest, batchHandler };
+module.exports = {
+  router,
+  handleDest,
+  routerHandleDest,
+  batchHandler,
+  handleResponseTransform
+};

@@ -23,6 +23,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -277,6 +278,9 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -287,6 +291,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -294,6 +299,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -305,6 +311,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },
@@ -332,8 +339,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  errorDetailed,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, errorDetailed };
 };
 
 // ========================================================================
@@ -1008,7 +1021,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
+  if (externalId) {
+    message.userId = externalId;
+  }
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1051,6 +1069,42 @@ function ErrorBuilder() {
 }
 
 /**
+ * Used for native error stat population
+ * @param {*} arg
+ * @param {*} destination
+ */
+function populateErrStat(error, destination, isStageTransform = true) {
+  if (!error.statTags) {
+    const statTags = {
+      destination,
+      stage: isStageTransform
+        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+    // eslint-disable-next-line no-ex-assign
+    error.statTags = statTags;
+  }
+  return error;
+}
+/**
+ * Returns true for http status code in range of 200 to 300
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusSuccess(status) {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
+}
+/**
  *
  * Utility function for UUID genration
  * @returns
@@ -1080,6 +1134,7 @@ module.exports = {
   ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1119,10 +1174,13 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
+  isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,
   isValidUrl,
+  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

@@ -10,6 +10,7 @@ function getDataTypeOverride(key, val, options) {
   if (key === "violationErrors") {
     return "json";
   }
+  return undefined;
 }
 
 function process(event) {

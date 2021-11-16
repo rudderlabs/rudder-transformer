@@ -47,7 +47,7 @@ const handleDynamicFields = (destName, payload) => {
     const { format, destKeys } = destFields[key];
     switch (format) {
       case "unixTimestamp":
-        setDynamicField(payload, destKeys, key, (Date.now() /1000 |0));
+        setDynamicField(payload, destKeys, key, (Date.now() / 1000) | 0);
         break;
       default:
         break;
@@ -90,9 +90,10 @@ const isTestError = (response, transformerStatuses) => {
     destination_response_status.some(status => {
       return status < 200 || status > 300;
     }) ||
-    transformerStatuses.some(status => {
-      return status < 200 || status > 300;
-    });
+    (transformerStatuses &&
+      transformerStatuses.some(status => {
+        return status < 200 || status > 300;
+      }));
   return isError;
 };
 
@@ -203,16 +204,14 @@ getDestinations().forEach(async dest => {
               };
             }
           }
+          const transformerStatuses = [];
           if (stage.dest_transform && stage.dest_response) {
             // send event to destination only after transformation
             if (!errorFound) {
               const destResponses = [];
               const destResponseStatuses = [];
               // const transformerMessages = [];
-              const transformerStatuses = [];
 
-              // let transformedPayloads;
-              // console.log("DEST TRANSFORM", response.dest_transformed_payload);
               const transformedPayloads = response.dest_transformed_payload;
               // eslint-disable-next-line no-restricted-syntax
               for (const payload of transformedPayloads) {
@@ -243,12 +242,8 @@ getDestinations().forEach(async dest => {
               response = {
                 ...response,
                 destination_response: destResponses,
-                destination_response_status: destResponseStatuses
+                destination_response_status: destResponseStatuses,
               };
-              response.test_status = {
-                success: !isTestError(response, transformerStatuses)
-              };
-              // console.log("DEST_RESPONSE ", response)
             } else {
               response.destination_response = {
                 error:
@@ -256,13 +251,17 @@ getDestinations().forEach(async dest => {
               };
             }
           }
+
+          // setting test_status
+          response.test_status = {
+            success: !isTestError(response, transformerStatuses)
+          };
           respList.push(response);
         })
       );
       ctx.body = respList;
     } catch (err) {
-      // fallback error response
-      // console.log("******ERR CHECK****", err);
+      // fail-safety error response
       ctx.body = {
         error: err.message || JSON.stringify(err)
       };

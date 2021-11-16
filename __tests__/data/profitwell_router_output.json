@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "subscription_alias": "samual",

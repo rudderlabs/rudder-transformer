@@ -103,7 +103,7 @@ async function handleDestinationNetwork(destination, payload) {
   } else {
     parsedResponse = {
       status: error.response.status,
-      response: error.message || "Error occurred while processing payload."
+      response: error.response || "Error occurred while processing payload."
     };
   }
   return parsedResponse;

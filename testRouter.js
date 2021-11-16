@@ -242,7 +242,7 @@ getDestinations().forEach(async dest => {
               response = {
                 ...response,
                 destination_response: destResponses,
-                destination_response_status: destResponseStatuses,
+                destination_response_status: destResponseStatuses
               };
             } else {
               response.destination_response = {

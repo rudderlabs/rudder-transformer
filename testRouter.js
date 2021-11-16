@@ -225,7 +225,6 @@ getDestinations().forEach(async dest => {
                   payload
                 );
 
-                // handler for node sys error cases
                 // if (parsedResponse.networkFailure) {
                 //   // throw new Error(parsedResponse.response);
                 // }

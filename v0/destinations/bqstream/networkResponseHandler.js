@@ -98,7 +98,9 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
   /** Reference-Link: https://cloud.google.com/bigquery/docs/error-messages */
   if (dresponse.error) {
     const destAuthCategory = getDestAuthCategory(dresponse.error.status);
-    const status = destAuthCategory ? 500 : dresponse.error.code;
+    // There is a case of 404, which will make the server panic, hence handling 
+    // that case as aborted
+    const status = destAuthCategory ? 500 : 400;
     throw new DestinationRespBuilder()
       .setStatus(status)
       .setMessage(dresponse.error.message || "BQStream request failed")

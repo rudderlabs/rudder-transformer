@@ -2,13 +2,12 @@
   {
     "destinationResponse": {
       "response": {
-        "attributes_processed": 0,
+        "message": "success",
         "errors": [
           {
-            "code": "604"
+            "message": "minor_error_message"
           }
-        ],
-        "message": "failed"
+        ]
       },
       "status": 200
     },
@@ -39,7 +38,7 @@
         "attributes_processed": 0,
         "errors": [
           {
-            "code": "605"
+            "message": "minor_error_message"
           }
         ],
         "message": "failed"
@@ -77,7 +76,7 @@
         "attributes_processed": 0,
         "errors": [
           {
-            "code": "623"
+            "message": "minor_error_message"
           }
         ],
         "message": "failed"

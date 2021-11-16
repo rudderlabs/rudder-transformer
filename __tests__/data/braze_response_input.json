@@ -1,11 +1,10 @@
 [
   {
     "response": {
-      "attributes_processed": 0,
-      "message": "failed",
+      "message": "success",
       "errors": [
         {
-          "code": "604"
+          "message": "minor_error_message"
         }
       ]
     },
@@ -21,7 +20,7 @@
       "message": "failed",
       "errors": [
         {
-          "code": "605"
+            "message": "minor_error_message"
         }
       ]
     },
@@ -37,7 +36,7 @@
       "message": "failed",
       "errors": [
         {
-          "code": "623"
+            "message": "minor_error_message"
         }
       ]
     },

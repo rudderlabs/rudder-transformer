@@ -95,11 +95,22 @@ function validateAndBuildResponse(message, payload, category, destination) {
       response.body.JSON = removeUndefinedAndNullValues(
         validateIdentify(message, payload)
       );
+      response.headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${destination.Config.apiKey}`,
+        Accept: "application/json",
+        "Intercom-version": "1.4"
+      };
       break;
     case EventType.TRACK:
       response.body.JSON = removeUndefinedAndNullValues(
         validateTrack(message, payload)
       );
+      response.headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${destination.Config.apiKey}`,
+        Accept: "application/json"
+      };
       break;
     default:
       throw new CustomError("Message type not supported", 400);
@@ -107,11 +118,6 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
-  response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json"
-  };
   response.userId = message.anonymousId;
   return response;
 }

@@ -4,7 +4,7 @@ const path = require("path");
 const version = "v0";
 
 const destArg = process.argv.filter(x => x.startsWith("--destName="))[0]; // send arguments on which destination
-let typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send argument on which function
+const typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send argument on which function
 
 // eg: jest versionedRouter --destName=am --type=batch
 // eg: jest versionedRouter --destName=heap --type=processor

@@ -297,12 +297,13 @@
     "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
     "originalTimestamp": "2019-10-14T09:03:17.562Z",
     "type": "identify",
-    "userId": "rudder_test@email.com",
+    "userId": "sample-user-id",
     "traits": {
       "firstName": "Test",
       "lastName": "Name",
       "phone": "+91237416221",
-      "last_sent_at": "1626698350"
+      "last_sent_at": "1626698350",
+      "email": "rudder_test@email.com"
     },
     "integrations": { "All": true },
     "sentAt": "2019-10-14T09:03:22.563Z"

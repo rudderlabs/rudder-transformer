@@ -10,6 +10,7 @@ const { userTransformHandler } = require("./util/customTransformer");
 const version = "v0";
 const API_VERSION = "1";
 const samplePaylods = JSON.parse(fs.readFileSync("./samplePayloads.json"));
+const dynamicFields = JSON.parse(fs.readFileSync("./dynamicFields.json"));
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -19,6 +20,25 @@ const getDestHandler = (version, destination) => {
 
 const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
+};
+
+const handleDynamicFields = (destName, payload) => {
+  const destFields = dynamicFields[destName];
+  if (!destFields) {
+    // no dynamic field for destination
+    return payload;
+  }
+  Object.keys(destFields).forEach(key => {
+    const keyFormat = destFields[key];
+    switch (keyFormat) {
+      case "unixTimestamp":
+        payload[key] = Date.now();
+        break;
+      default:
+        break;
+    }
+  });
+  return payload;
 };
 
 const transformDestination = dest => {
@@ -70,8 +90,12 @@ getDestinations().forEach(async dest => {
       await Promise.all(
         events.map(async event => {
           const { message, destination, stage, libraries } = event;
+          const updatedMessage = handleDynamicFields(
+            destination.destinationDefinition.name,
+            message
+          );
           const ev = {
-            message,
+            message: updatedMessage,
             destination: transformDestination(destination),
             libraries
           };

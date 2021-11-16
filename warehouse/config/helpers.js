@@ -21,7 +21,16 @@ const getFirstValidValue = (message, props) => {
   return currVal;
 };
 
+function isDataLakeProvider(provider) {
+  return (
+    provider === "s3_datalake" ||
+    provider === "gcs_datalake" ||
+    provider === "azure_datalake"
+  );
+}
+
 module.exports = {
   isNull,
-  getFirstValidValue
+  getFirstValidValue,
+  isDataLakeProvider
 };

@@ -9,6 +9,7 @@ const {
   handleResponseTransform
 } = require("./routerUtils");
 const { userTransformHandler } = require("./util/customTransformer");
+const { set, get } = require("lodash");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -25,6 +26,16 @@ const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
 };
 
+const setDynamicField = (payload, destKeys, key, val) => {
+  destKeys.some(keyPath => {
+    if (get(payload, keyPath)) {
+      set(payload, `${keyPath}.${key}`, val);
+      return true;
+    }
+    return false;
+  });
+};
+
 const handleDynamicFields = (destName, payload) => {
   const destFields = dynamicFields[destName];
   if (!destFields) {
@@ -32,10 +43,10 @@ const handleDynamicFields = (destName, payload) => {
     return payload;
   }
   Object.keys(destFields).forEach(key => {
-    const keyFormat = destFields[key];
-    switch (keyFormat) {
+    const { format, destKeys } = destFields[key];
+    switch (format) {
       case "unixTimestamp":
-        payload[key] = Date.now();
+        setDynamicField(payload, destKeys, key, (Date.now() /1000 |0));
         break;
       default:
         break;

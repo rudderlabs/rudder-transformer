@@ -1,0 +1,8 @@
+{
+  "PROFITWELL": {
+    "effectiveDate": {
+      "format": "unixTimestamp",
+      "destKeys": ["traits", "context.traits"]
+    }
+  }
+}

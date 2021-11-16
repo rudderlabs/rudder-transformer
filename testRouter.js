@@ -14,8 +14,12 @@ const { userTransformHandler } = require("./util/customTransformer");
 
 const version = "v0";
 const API_VERSION = "1";
-const samplePaylods = JSON.parse(fs.readFileSync("./samplePayloads.json"));
-const dynamicFields = JSON.parse(fs.readFileSync("./dynamicFields.json"));
+const samplePaylods = JSON.parse(
+  fs.readFileSync("./testData/samplePayloads.json")
+);
+const dynamicFields = JSON.parse(
+  fs.readFileSync("./testData/dynamicFields.json")
+);
 
 const testRouter = new Router({ prefix: "/test-router" });
 

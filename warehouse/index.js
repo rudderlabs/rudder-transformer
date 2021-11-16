@@ -21,6 +21,7 @@ const whPageColumnMappingRules = require("./config/WHPageConfig.js");
 const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
 const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
 const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
+const { isDataLakeProvider } = require("./config/helpers");
 
 const maxColumnsInEvent = parseInt(
   process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
@@ -230,14 +231,6 @@ function setDataFromInputAndComputeColumnTypes(
       }
     }
   });
-}
-
-function isDataLakeProvider(provider) {
-  return (
-    provider === "s3_datalake" ||
-    provider === "gcs_datalake" ||
-    provider === "azure_datalake"
-  );
 }
 
 /*

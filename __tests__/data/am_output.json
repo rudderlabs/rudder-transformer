@@ -27,7 +27,7 @@
             "event_type": "$identify",
             "user_properties": {
               "anonymousId": "123456",
-              "email": "sayan@gmail.com",
+              "email": "sayan1@gmail.com",
               "city": "kolkata",
               "country": "India",
               "postalCode": 712136,

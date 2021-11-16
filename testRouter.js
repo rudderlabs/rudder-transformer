@@ -23,10 +23,10 @@ const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
 };
 
-const setDynamicField = (payload, keyList, val) => {
-  keyList.some(key => {
-    if (get(payload, key)) {
-      set(payload, key, val);
+const setDynamicField = (payload, destKeys, key, val) => {
+  destKeys.some(keyPath => {
+    if (get(payload, keyPath)) {
+      set(payload, `${keyPath}.${key}`, val);
       return true;
     }
     return false;
@@ -43,7 +43,7 @@ const handleDynamicFields = (destName, payload) => {
     const { format, destKeys } = destFields[key];
     switch (format) {
       case "unixTimestamp":
-        setDynamicField(payload, destKeys, Date.now());
+        setDynamicField(payload, destKeys, key, (Date.now() /1000 |0));
         break;
       default:
         break;

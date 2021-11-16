@@ -56,6 +56,7 @@ function handleResponseTransform(version, destination, ctx) {
       destStatus,
       destination
     );
+    console.log("****response transform*****", response);
   } catch (err) {
     // eslint-disable-next-line no-ex-assign
     err = populateErrStat(err, destination, false);
@@ -78,50 +79,35 @@ function handleResponseTransform(version, destination, ctx) {
 }
 
 async function handleDestinationNetwork(destination, payload) {
-  // getDestNetHander is for sending destination requests
-  // const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  // if (!destNetHandler || !destNetHandler.sendData) {
-  //   ctx.status = 404;
-  //   ctx.body = `${destination} doesn't support transformer proxy`;
-  //   return ctx.body;
-  // }
-  let response;
   let parsedResponse;
   logger.info("Request recieved for destination", destination);
-  try {
-    response = await proxyRequest(payload);
+  const resp = await proxyRequest(payload);
+
+  if (resp.success) {
+    const { response } = resp;
     parsedResponse = {
       response: response.data,
       status: response.status
     };
-  } catch (err) {
-    if (!err.response && err.code) {
-      const nodeSysErr = nodeSysErrorToStatus(err.code);
-      parsedResponse = {
-        networkFailure: true,
-        response: nodeSysErr.message,
-        status: nodeSysErr.status
-      };
-    } else {
-      parsedResponse = {
-        status: err.response.status, // keeping retryable default
-        response: err.message || "Error occurred while processing payload."
-      };
-    }
-    // response = {
-    //   status: 500, // keeping retryable default
-    //   error: err.message || "Error occurred while processing payload."
-    // };
-    // // error from network failure should directly parsable as response
-    // if (err.networkFailure) {
-    //   response = { ...err };
-    // }
+    return parsedResponse;
+  }
+
+  const { response: error } = resp;
+  // handling axios error case
+  if (!error.response && error.code) {
+    const nodeSysErr = nodeSysErrorToStatus(error.code);
+    parsedResponse = {
+      networkFailure: true,
+      response: nodeSysErr.message,
+      status: nodeSysErr.status
+    };
+  } else {
+    parsedResponse = {
+      status: error.response.status,
+      response: error.message || "Error occurred while processing payload."
+    };
   }
   return parsedResponse;
-  // ctx.body = { output: response };
-  // // ctx.status = response.status;
-  // return ctx.body;
 }
 
 module.exports = {

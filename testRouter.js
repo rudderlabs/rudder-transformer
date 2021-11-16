@@ -205,7 +205,7 @@ getDestinations().forEach(async dest => {
                 if (parsedResponse.networkFailure) {
                   throw new Error(parsedResponse.response);
                 }
-                destResponses.push(parsedResponse.data);
+                destResponses.push(parsedResponse.response);
                 destResponseStatuses.push(parsedResponse.status);
 
                 // call response transform here
@@ -214,9 +214,10 @@ getDestinations().forEach(async dest => {
                     body: parsedResponse
                   }
                 };
-                handleResponseTransform(version, destination, ctxMock);
-                transformerMessages.push(ctxMock.message);
-                transformerStatuses.push(ctxMock.status);
+                handleResponseTransform(version, dest, ctxMock);
+                const { output } = ctxMock.body;
+                transformerMessages.push(output.message);
+                transformerStatuses.push(output.status);
               }
               response = {
                 ...response,

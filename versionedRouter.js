@@ -42,20 +42,6 @@ const getDestHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
-const getDestNetHander = (version, dest) => {
-  const destination = _.toLower(dest);
-  let destNetHandler;
-  try {
-    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
-    if (!destNetHandler && !destNetHandler.responseTransform) {
-      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-    }
-  } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-  }
-  return destNetHandler;
-};
-
 const getDestFileUploadHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fileUpload`);
 };

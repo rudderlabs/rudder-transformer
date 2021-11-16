@@ -4,12 +4,12 @@
 const fs = require("fs");
 const path = require("path");
 const Router = require("koa-router");
+const { set, get } = require("lodash");
 const {
   handleDestinationNetwork,
   handleResponseTransform
 } = require("./routerUtils");
 const { userTransformHandler } = require("./util/customTransformer");
-const { set, get } = require("lodash");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -197,7 +197,6 @@ getDestinations().forEach(async dest => {
               for (const payload of transformedPayloads) {
                 // eslint-disable-next-line no-await-in-loop
                 const parsedResponse = await handleDestinationNetwork(
-                  version,
                   dest,
                   payload
                 );
@@ -271,6 +270,7 @@ testRouter.get(`/${version}/sample`, ctx => {
     return ctx;
   }
   ctx.body = samplePaylods[destinationName];
+  return ctx;
 });
 
 module.exports = { testRouter };

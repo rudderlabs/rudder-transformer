@@ -28,12 +28,12 @@ const getDestNetHander = (version, dest) => {
   const destination = _.toLower(dest);
   let destNetHandler;
   try {
-    destNetHandler = require(`./${version}/destinations/${destination}/nethandler`);
-    if (!destNetHandler && !destNetHandler.sendData) {
-      destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
+    if (!destNetHandler && !destNetHandler.responseTransform) {
+      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
     }
   } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericnethandler");
+    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
   }
   return destNetHandler;
 };
@@ -77,7 +77,7 @@ function handleResponseTransform(version, destination, ctx) {
   return ctx.body;
 }
 
-async function handleDestinationNetwork(version, destination, payload) {
+async function handleDestinationNetwork(destination, payload) {
   // getDestNetHander is for sending destination requests
   // const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back

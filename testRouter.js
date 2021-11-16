@@ -202,9 +202,9 @@ getDestinations().forEach(async dest => {
                 );
 
                 // handler for node sys error cases
-                if (parsedResponse.networkFailure) {
-                  throw new Error(parsedResponse.response);
-                }
+                // if (parsedResponse.networkFailure) {
+                //   // throw new Error(parsedResponse.response);
+                // }
                 destResponses.push(parsedResponse.response);
                 destResponseStatuses.push(parsedResponse.status);
 

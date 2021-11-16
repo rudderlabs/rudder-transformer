@@ -56,7 +56,6 @@ function handleResponseTransform(version, destination, ctx) {
       destStatus,
       destination
     );
-    console.log("****response transform*****", response);
   } catch (err) {
     // eslint-disable-next-line no-ex-assign
     err = populateErrStat(err, destination, false);

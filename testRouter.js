@@ -4,7 +4,10 @@
 const fs = require("fs");
 const path = require("path");
 const Router = require("koa-router");
-const { handleDestinationNetwork } = require("./routerUtils");
+const {
+  handleDestinationNetwork,
+  handleResponseTransform
+} = require("./routerUtils");
 const { userTransformHandler } = require("./util/customTransformer");
 
 const version = "v0";
@@ -179,34 +182,31 @@ getDestinations().forEach(async dest => {
               // let transformedPayloads;
               // console.log("DEST TRANSFORM", response.dest_transformed_payload);
               const transformedPayloads = response.dest_transformed_payload;
-              // if (!Array.isArray(response.dest_transformed_payload)) {
-              //   transformedPayloads = [response.dest_transformed_payload];
-              // } else {
-              //   transformedPayloads = response.dest_transformed_payload;
-              // }
-              // console.log("*******", JSON.stringify(transformedPayloads));
               // eslint-disable-next-line no-restricted-syntax
               for (const payload of transformedPayloads) {
+                // eslint-disable-next-line no-await-in-loop
+                const parsedResponse = await handleDestinationNetwork(
+                  version,
+                  dest,
+                  payload
+                );
+
+                // handler for node sys error cases
+                if (parsedResponse.networkFailure) {
+                  throw new Error(parsedResponse.response);
+                }
+                destResponses.push(parsedResponse.data);
+                destResponseStatuses.push(parsedResponse.status);
+
+                // call response transform here
                 const ctxMock = {
                   request: {
-                    body: {
-                      ...payload
-                    }
+                    body: parsedResponse
                   }
                 };
-                // eslint-disable-next-line no-await-in-loop
-                await handleDestinationNetwork(version, dest, ctxMock);
-                const { output } = ctxMock.body;
-                // console.log("****OUTPUT*****", output)
-                // handler for node sys error cases
-                if (!output.destination) {
-                  // console.log("*****OUTPUT******", output);
-                  throw new Error(output.message);
-                }
-                destResponses.push(output.destination.data);
-                destResponseStatuses.push(output.destination.status);
-                transformerMessages.push(output.message);
-                transformerStatuses.push(output.status);
+                handleResponseTransform(version, destination, ctxMock);
+                transformerMessages.push(ctxMock.message);
+                transformerStatuses.push(ctxMock.status);
               }
               response = {
                 ...response,
@@ -244,7 +244,6 @@ testRouter.get(`/${version}/health`, ctx => {
 
 testRouter.get(`/${version}/sample`, ctx => {
   const { dest } = ctx.request.query;
-  // console.log("DESTINATION NAME", dest);
   if (!dest) {
     ctx.body = {
       error: "destination name not found"

@@ -10,7 +10,10 @@ const { isNonFuncObject, getMetadata } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { populateErrStat } = require("./v0/util/index");
-const { parseDestJSONResponse } = require("./adapters/utils/networkUtils");
+const {
+  handleResponseTransform,
+  userTransformHandler
+} = require("./routerUtils");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -513,44 +516,44 @@ if (startSourceTransformer) {
   });
 }
 
-function handleResponseTransform(version, destination, ctx) {
-  const destResponse = ctx.request.body;
-  const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.responseTransform) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support response transformation`;
-    return ctx.body;
-  }
-  let response;
-  const parsedDestResponse = parseDestJSONResponse(destResponse);
-  const destStatus = destResponse.status;
-  try {
-    response = destNetHandler.responseTransform(
-      parsedDestResponse,
-      destStatus,
-      destination
-    );
-  } catch (err) {
-    // eslint-disable-next-line no-ex-assign
-    err = populateErrStat(err, destination, false);
-    response = {
-      status: err.status || 400,
-      message: err.message,
-      destinationResponse: err.destinationResponse || {
-        response: parsedDestResponse,
-        status: destStatus
-      },
-      statTags: err.statTags
-    };
-    if (!err.responseTransformFailure) {
-      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
-    }
-  }
-  ctx.body = { output: response };
-  ctx.status = 200;
-  return ctx.body;
-}
+// function handleResponseTransform(version, destination, ctx) {
+//   const destResponse = ctx.request.body;
+//   const destNetHandler = getDestNetHander(version, destination);
+//   // flow should never reach the below (if) its a desperate fall-back
+//   if (!destNetHandler || !destNetHandler.responseTransform) {
+//     ctx.status = 404;
+//     ctx.body = `${destination} doesn't support response transformation`;
+//     return ctx.body;
+//   }
+//   let response;
+//   const parsedDestResponse = parseDestJSONResponse(destResponse);
+//   const destStatus = destResponse.status;
+//   try {
+//     response = destNetHandler.responseTransform(
+//       parsedDestResponse,
+//       destStatus,
+//       destination
+//     );
+//   } catch (err) {
+//     // eslint-disable-next-line no-ex-assign
+//     err = populateErrStat(err, destination, false);
+//     response = {
+//       status: err.status || 400,
+//       message: err.message,
+//       destinationResponse: err.destinationResponse || {
+//         response: parsedDestResponse,
+//         status: destStatus
+//       },
+//       statTags: err.statTags
+//     };
+//     if (!err.responseTransformFailure) {
+//       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+//     }
+//   }
+//   ctx.body = { output: response };
+//   ctx.status = 200;
+//   return ctx.body;
+// }
 
 if (responseTransformer) {
   versions.forEach(version => {

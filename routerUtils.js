@@ -1,10 +1,13 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 const _ = require("lodash");
-const { lstatSync, readdirSync } = require("fs");
 const logger = require("./logger");
-const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { proxyRequest } = require("./adapters/network");
+const {
+  nodeSysErrorToStatus,
+  parseDestJSONResponse
+} = require("./adapters/utils/networkUtils");
+const { populateErrStat } = require("./v0/util/index");
 
 let areFunctionsEnabled = -1;
 const functionsEnabled = () => {
@@ -35,7 +38,46 @@ const getDestNetHander = (version, dest) => {
   return destNetHandler;
 };
 
-async function handleDestinationNetwork(version, destination, ctx) {
+function handleResponseTransform(version, destination, ctx) {
+  const destResponse = ctx.request.body;
+  const destNetHandler = getDestNetHander(version, destination);
+  // flow should never reach the below (if) its a desperate fall-back
+  if (!destNetHandler || !destNetHandler.responseTransform) {
+    ctx.status = 404;
+    ctx.body = `${destination} doesn't support response transformation`;
+    return ctx.body;
+  }
+  let response;
+  const parsedDestResponse = parseDestJSONResponse(destResponse);
+  const destStatus = destResponse.status;
+  try {
+    response = destNetHandler.responseTransform(
+      parsedDestResponse,
+      destStatus,
+      destination
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-ex-assign
+    err = populateErrStat(err, destination, false);
+    response = {
+      status: err.status || 400,
+      message: err.message,
+      destinationResponse: err.destinationResponse || {
+        response: parsedDestResponse,
+        status: destStatus
+      },
+      statTags: err.statTags
+    };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+    }
+  }
+  ctx.body = { output: response };
+  ctx.status = 200;
+  return ctx.body;
+}
+
+async function handleDestinationNetwork(version, destination, payload) {
   // getDestNetHander is for sending destination requests
   // const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
@@ -45,57 +87,45 @@ async function handleDestinationNetwork(version, destination, ctx) {
   //   return ctx.body;
   // }
   let response;
+  let parsedResponse;
   logger.info("Request recieved for destination", destination);
   try {
-    response = await proxyRequest(ctx.request.body);
-  } catch (err) {
-    response = {
-      status: 500, // keeping retryable default
-      error: err.message || "Error occurred while processing payload."
+    response = await proxyRequest(payload);
+    parsedResponse = {
+      response: response.data,
+      status: response.status
     };
-    // error from network failure should directly parsable as response
-    if (err.networkFailure) {
-      response = { ...err };
+  } catch (err) {
+    if (!err.response && err.code) {
+      const nodeSysErr = nodeSysErrorToStatus(err.code);
+      parsedResponse = {
+        networkFailure: true,
+        response: nodeSysErr.message,
+        status: nodeSysErr.status
+      };
+    } else {
+      parsedResponse = {
+        status: err.response.status, // keeping retryable default
+        response: err.message || "Error occurred while processing payload."
+      };
     }
+    // response = {
+    //   status: 500, // keeping retryable default
+    //   error: err.message || "Error occurred while processing payload."
+    // };
+    // // error from network failure should directly parsable as response
+    // if (err.networkFailure) {
+    //   response = { ...err };
+    // }
   }
-
-  ctx.body = { output: response };
-  ctx.status = response.status;
-  return ctx.body;
+  return parsedResponse;
+  // ctx.body = { output: response };
+  // // ctx.status = response.status;
+  // return ctx.body;
 }
 
-const isDirectory = source => {
-  return lstatSync(source).isDirectory();
-};
-
-const getIntegrations = type =>
-  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
-
-const getDestHandler = (version, dest) => {
-  if (DestHandlerMap.hasOwnProperty(dest)) {
-    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
-  }
-  return require(`./${version}/destinations/${dest}/transform`);
-};
-
-const getDestFileUploadHandler = (version, dest) => {
-  return require(`./${version}/destinations/${dest}/fileUpload`);
-};
-
-const getPollStatusHandler = (version, dest) => {
-  return require(`./${version}/destinations/${dest}/poll`);
-};
-
-const getJobStatusHandler = (version, dest) => {
-  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
-};
-
 module.exports = {
-  getIntegrations,
-  getDestHandler,
-  getDestFileUploadHandler,
-  getPollStatusHandler,
-  getJobStatusHandler,
   handleDestinationNetwork,
+  handleResponseTransform,
   userTransformHandler
 };

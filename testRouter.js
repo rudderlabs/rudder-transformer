@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 /* eslint-disable no-shadow */
@@ -73,6 +74,26 @@ const transformDestination = dest => {
   });
   transformedObj.DestinationDefinition = destDef;
   return transformedObj;
+};
+
+const isTestError = (response, transformerStatuses) => {
+  // if error is encountered anywhere in the stages
+  // it counts as test failure
+  const {
+    user_transformed_payload,
+    dest_transformed_payload,
+    destination_response_status
+  } = response;
+  const isError =
+    (user_transformed_payload && user_transformed_payload.error) ||
+    (dest_transformed_payload && dest_transformed_payload.error) ||
+    destination_response_status.some(status => {
+      return status < 200 || status > 300;
+    }) ||
+    transformerStatuses.some(status => {
+      return status < 200 || status > 300;
+    });
+  return isError;
 };
 
 // Test Router request payload
@@ -187,7 +208,7 @@ getDestinations().forEach(async dest => {
             if (!errorFound) {
               const destResponses = [];
               const destResponseStatuses = [];
-              const transformerMessages = [];
+              // const transformerMessages = [];
               const transformerStatuses = [];
 
               // let transformedPayloads;
@@ -216,15 +237,16 @@ getDestinations().forEach(async dest => {
                 };
                 handleResponseTransform(version, dest, ctxMock);
                 const { output } = ctxMock.body;
-                transformerMessages.push(output.message);
+                // transformerMessages.push(output.message);
                 transformerStatuses.push(output.status);
               }
               response = {
                 ...response,
                 destination_response: destResponses,
-                destination_response_status: destResponseStatuses,
-                transformer_message: transformerMessages,
-                transformer_status: transformerStatuses
+                destination_response_status: destResponseStatuses
+              };
+              response.test_status = {
+                success: !isTestError(response, transformerStatuses)
               };
               // console.log("DEST_RESPONSE ", response)
             } else {

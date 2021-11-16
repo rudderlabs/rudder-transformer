@@ -343,10 +343,10 @@ const getErrorRespEvents = (
   metadata,
   statusCode,
   error,
-  errorDetailed,
+  statTags,
   batched = false
 ) => {
-  return { metadata, batched, statusCode, error, errorDetailed };
+  return { metadata, batched, statusCode, error, statTags };
 };
 
 // ========================================================================

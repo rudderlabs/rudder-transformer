@@ -1,0 +1,76 @@
+[
+  {
+    "response": {
+      "requestId": "764c#17d27505c0a",
+      "result": [
+        {
+          "id": 1328328,
+          "status": "updated"
+        }
+      ],
+      "success": true
+    },
+    "status": 200
+  },
+  {
+    "response": {
+      "requestId": "c8ef#17d275a2ac5",
+      "success": false,
+      "errors": [
+        {
+          "code": "612",
+          "message": "Invalid Content Type"
+        }
+      ]
+    },
+    "status": 200
+  },
+  {
+    "response": {
+      "requestId": "c8ef#17d275a2ac5",
+      "success": false,
+      "errors": [
+        {
+          "code": "604",
+          "message": "Unreachable Application Service"
+        }
+      ]
+    },
+    "status": 200
+  },
+  {
+    "response": {
+      "requestId": "c8ef#17d275a2ac5",
+      "success": false,
+      "errors": [
+        {
+          "code": "607",
+          "message": "Too Many Requests"
+        }
+      ]
+    },
+    "status": 200
+  },
+  {
+    "response": {
+      "requestId": "c8ef#17d275a2ac5",
+      "success": false,
+      "message": "Invalid request type"
+    },
+    "status": 401
+  },
+  {
+    "response": {
+      "message": "Too Many Requests"
+    },
+    "status": 429
+  },
+  {
+    "response": "Service Unavailable ",
+    "status": 500
+  },
+  {
+    "response": "",
+    "status": 200
+  }
+]

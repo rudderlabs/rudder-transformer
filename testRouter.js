@@ -10,7 +10,7 @@ const {
   handleDestinationNetwork,
   handleResponseTransform
 } = require("./routerUtils");
-const { userTransformHandler } = require("./util/customTransformer");
+const { userTransformHandler } = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -158,7 +158,7 @@ getDestinations().forEach(async dest => {
 
             if (transformationVersionId) {
               try {
-                const destTransformedEvents = await userTransformHandler(
+                const destTransformedEvents = await userTransformHandler()(
                   [ev],
                   transformationVersionId,
                   librariesVersionIDs

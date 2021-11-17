@@ -57,7 +57,7 @@
     "originalTimestamp": "2019-10-14T09:03:17.562Z",
     "anonymousId": "sample-anon-id",
     "type": "track",
-    "event": "Track Me",
+    "event": "Test Event",
     "properties": {
       "description": "Sample Track call",
       "globalContext": {

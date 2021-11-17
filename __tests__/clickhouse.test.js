@@ -101,7 +101,7 @@ describe("ClickHouse data types testing", ()=> {
     options.getDataTypeOverride = getDataTypeOverride
     testCases.forEach((testCase)=>{
             it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, ()=> {
-                var dataType = getDataType(testCase.data, options)
+                var dataType = getDataType(testCase.type, testCase.data, options)
                 expect(dataType).toEqual(testCase.type)
             })
     })

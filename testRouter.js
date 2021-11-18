@@ -91,9 +91,10 @@ const isTestError = (response, transformerStatuses) => {
   const isError =
     (user_transformed_payload && user_transformed_payload.error) ||
     (dest_transformed_payload && dest_transformed_payload.error) ||
-    destination_response_status.some(status => {
-      return status < 200 || status > 300;
-    }) ||
+    (destination_response_status &&
+      destination_response_status.some(status => {
+        return status < 200 || status > 300;
+      })) ||
     (transformerStatuses &&
       transformerStatuses.some(status => {
         return status < 200 || status > 300;

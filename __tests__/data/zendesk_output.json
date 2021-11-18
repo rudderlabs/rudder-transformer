@@ -1,4 +1,34 @@
 [
+  [{
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+    "headers": {
+      "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-App-Id": "263241",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "external_id": "abcd-124",
+          "user_fields": {
+            "id": "abcd-124"
+          },
+          "verified": true
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
+  }],
   [
     {
       "version": "1",

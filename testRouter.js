@@ -80,27 +80,27 @@ const transformDestination = dest => {
   return transformedObj;
 };
 
-const isTestError = (response, transformerStatuses) => {
-  // if error is encountered anywhere in the stages
-  // it counts as test failure
-  const {
-    user_transformed_payload,
-    dest_transformed_payload,
-    destination_response_status
-  } = response;
-  const isError =
-    (user_transformed_payload && user_transformed_payload.error) ||
-    (dest_transformed_payload && dest_transformed_payload.error) ||
-    (destination_response_status &&
-      destination_response_status.some(status => {
-        return status < 200 || status > 300;
-      })) ||
-    (transformerStatuses &&
-      transformerStatuses.some(status => {
-        return status < 200 || status > 300;
-      }));
-  return isError;
-};
+// const isTestError = (response, transformerStatuses) => {
+//   // if error is encountered anywhere in the stages
+//   // it counts as test failure
+//   const {
+//     user_transformed_payload,
+//     dest_transformed_payload,
+//     destination_response_status
+//   } = response;
+//   const isError =
+//     (user_transformed_payload && user_transformed_payload.error) ||
+//     (dest_transformed_payload && dest_transformed_payload.error) ||
+//     (destination_response_status &&
+//       destination_response_status.some(status => {
+//         return status < 200 || status > 300;
+//       })) ||
+//     (transformerStatuses &&
+//       transformerStatuses.some(status => {
+//         return status < 200 || status > 300;
+//       }));
+//   return isError;
+// };
 
 // Test Router request payload
 // {
@@ -257,9 +257,9 @@ getDestinations().forEach(async dest => {
           }
 
           // setting test_status
-          response.test_status = {
-            success: !isTestError(response, transformerStatuses)
-          };
+          // response.test_status = {
+          //   success: !isTestError(response, transformerStatuses)
+          // };
           respList.push(response);
         })
       );

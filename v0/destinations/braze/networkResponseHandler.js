@@ -5,10 +5,9 @@ const { DESTINATION } = require("./config");
 const ErrorBuilder = require("../../util/error");
 
 // eslint-disable-next-line no-unused-vars
-const responseTransform = (response, status, _dest) => {
+const responseTransform = (destinationResponse, _dest) => {
   const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
-  const destinationResponse = { response, status };
-
+  const { response, status } = destinationResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()

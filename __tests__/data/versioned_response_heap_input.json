@@ -102,5 +102,26 @@
         "responseBody": ""
       }
     }
+  },
+  {
+    "request": {
+      "body": ""
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "status": 0,
+        "responseBody": "Random String"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "status": "",
+        "responseBody": "Random String"
+      }
+    }
   }
 ]

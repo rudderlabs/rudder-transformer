@@ -4,7 +4,7 @@
       "status": 201,
       "message": "[Generic Response Transform] Request for destination: heap Processed Successfully",
       "destinationResponse": {
-        "response": {
+        "responseBody": {
           "attributes_processed": 1,
           "message": "success"
         },
@@ -17,10 +17,7 @@
       "status": 400,
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 400",
       "destinationResponse": {
-        "response": {
-          "attributes_processed": 0,
-          "message": "failed"
-        },
+        "responseBody": "{\"attributes_processed\":0,\"message\":\"failed\"}",
         "status": 400
       },
       "statTags": {
@@ -34,15 +31,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": {
-          "attributes_processed": 0,
-          "errors": [
-            {
-              "code": "604"
-            }
-          ],
-          "message": "failed"
-        },
+        "responseBody": "{\"attributes_processed\":0,\"message\":\"failed\",\"errors\":[{\"code\":\"604\"}]}",
         "status": 500
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 500",
@@ -58,7 +47,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "{\"attributes_processedwe21jsjka",
+        "responseBody": "{\"attributes_processedwe21jsjka",
         "status": 200
       },
       "message": "[Generic Response Transform] Request for destination: heap Processed Successfully",
@@ -68,7 +57,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "",
+        "responseBody": "",
         "status": 200
       },
       "message": "[Generic Response Transform] Request for destination: heap Processed Successfully",
@@ -78,7 +67,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "{\"attributrandom_processedwe21jsjka",
+        "responseBody": "{\"attributrandom_processedwe21jsjka",
         "status": 401
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 401",
@@ -94,7 +83,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "",
+        "responseBody": "",
         "status": 403
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 403",
@@ -110,10 +99,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": {
-          "attributes_processed": 0,
-          "message": "failed"
-        },
+        "responseBody": "{\"attributes_processed\":0,\"message\":\"failed\"}",
         "status": 500
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 500",
@@ -129,7 +115,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "{\"random_str",
+        "responseBody": "{\"random_str",
         "status": 500
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 500",
@@ -145,7 +131,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "",
+        "responseBody": "",
         "status": 500
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 500",
@@ -161,10 +147,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": {
-          "attributes_processed": 0,
-          "message": "failed"
-        },
+        "responseBody": "{\"attributes_processed\":0,\"message\":\"failed\"}",
         "status": 429
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 429",
@@ -180,7 +163,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "{\"random_stra",
+        "responseBody": "{\"random_stra",
         "status": 429
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 429",
@@ -196,7 +179,7 @@
   {
     "output": {
       "destinationResponse": {
-        "response": "",
+        "responseBody": "",
         "status": 429
       },
       "message": "[Generic Response Transfom] Request failed for destination heap with status: 429",
@@ -207,6 +190,42 @@
         "stage": "responseTransform"
       },
       "status": 429
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": "",
+      "message": "[Error occurred while processing destinationresponse for destination heap]: [ResponseTransform]: Destination Response Invalid, for destination: heap",
+      "statTags": {
+        "destination": "heap",
+        "scope": "exception",
+        "stage": "responseTransform"
+      },
+      "status": 400
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": { "responseBody": "Random String", "status": 0 },
+      "message": "[Error occurred while processing destinationresponse for destination heap]: [ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: heap",
+      "statTags": {
+        "destination": "heap",
+        "scope": "exception",
+        "stage": "responseTransform"
+      },
+      "status": 400
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": { "responseBody": "Random String", "status": "" },
+      "message": "[Error occurred while processing destinationresponse for destination heap]: [ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: heap",
+      "statTags": {
+        "destination": "heap",
+        "scope": "exception",
+        "stage": "responseTransform"
+      },
+      "status": 400
     }
   }
 ]

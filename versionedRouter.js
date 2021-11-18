@@ -7,10 +7,15 @@ const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject, getMetadata } = require("./v0/util");
+const {
+  isNonFuncObject,
+  getMetadata,
+  generateErrorObject
+} = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { populateErrStat } = require("./v0/util/index");
+const { parseDestResponse } = require("./adapters/utils/networkUtils");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -44,6 +49,9 @@ const getDestNetHander = (version, dest) => {
   let destNetHandler;
   try {
     destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
+    if (DestHandlerMap.hasOwnProperty(destination)) {
+      destNetHandler = require(`./${version}/destinations/${DestHandlerMap[destination]}/networkResponseHandler`);
+    }
     if (!destNetHandler && !destNetHandler.responseTransform) {
       destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
     }
@@ -129,13 +137,16 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, destination);
+        const errObj = generateErrorObject(
+          error,
+          destination,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
           error: error.message || "Error occurred while processing payload.",
-          errorDetailed: error
+          statTags: errObj.statTags
         });
       }
     })
@@ -521,6 +532,7 @@ if (startSourceTransformer) {
 }
 
 function handleResponseTransform(version, destination, ctx) {
+  const destResponse = ctx.request.body;
   const destNetHandler = getDestNetHander(version, destination);
   // flow should never reach the below (if) its a desperate fall-back
   if (!destNetHandler || !destNetHandler.responseTransform) {
@@ -530,22 +542,24 @@ function handleResponseTransform(version, destination, ctx) {
   }
   let response;
   try {
-    response = destNetHandler.responseTransform(ctx.request.body);
+    const parsedDestResponse = parseDestResponse(destResponse, destination);
+    response = destNetHandler.responseTransform(
+      parsedDestResponse,
+      destination
+    );
   } catch (err) {
-    // eslint-disable-next-line no-ex-assign
-    err = populateErrStat(err, destination, false);
-    response = {
-      status: err.status || 400,
-      message: err.message,
-      destinationResponse: err.destinationResponse,
-      errorDetailed: err
-    };
+    response = generateErrorObject(
+      err,
+      destination,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    );
+    response = { ...response, destinationResponse: destResponse };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
     }
   }
   ctx.body = { output: response };
-  ctx.status = response.status;
+  ctx.status = 200;
   return ctx.body;
 }
 

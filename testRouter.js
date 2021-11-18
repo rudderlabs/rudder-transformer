@@ -5,21 +5,14 @@
 const fs = require("fs");
 const path = require("path");
 const Router = require("koa-router");
-const { set, get } = require("lodash");
 const {
-  handleDestinationNetwork,
-  handleResponseTransform
+  sendToDestination,
+  handleResponseTransform,
+  userTransformHandler
 } = require("./routerUtils");
-const { userTransformHandler } = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
-const samplePaylods = JSON.parse(
-  fs.readFileSync("./testData/samplePayloads.json")
-);
-const dynamicFields = JSON.parse(
-  fs.readFileSync("./testData/dynamicFields.json")
-);
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -29,35 +22,6 @@ const getDestHandler = (version, destination) => {
 
 const getDestinations = () => {
   return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
-};
-
-const setDynamicField = (payload, destKeys, key, val) => {
-  destKeys.some(keyPath => {
-    if (get(payload, keyPath)) {
-      set(payload, `${keyPath}.${key}`, val);
-      return true;
-    }
-    return false;
-  });
-};
-
-const handleDynamicFields = (destName, payload) => {
-  const destFields = dynamicFields[destName];
-  if (!destFields) {
-    // no dynamic field for destination
-    return payload;
-  }
-  Object.keys(destFields).forEach(key => {
-    const { format, destKeys } = destFields[key];
-    switch (format) {
-      case "unixTimestamp":
-        setDynamicField(payload, destKeys, key, (Date.now() / 1000) | 0);
-        break;
-      default:
-        break;
-    }
-  });
-  return payload;
 };
 
 const transformDestination = dest => {
@@ -80,45 +44,6 @@ const transformDestination = dest => {
   return transformedObj;
 };
 
-// const isTestError = (response, transformerStatuses) => {
-//   // if error is encountered anywhere in the stages
-//   // it counts as test failure
-//   const {
-//     user_transformed_payload,
-//     dest_transformed_payload,
-//     destination_response_status
-//   } = response;
-//   const isError =
-//     (user_transformed_payload && user_transformed_payload.error) ||
-//     (dest_transformed_payload && dest_transformed_payload.error) ||
-//     (destination_response_status &&
-//       destination_response_status.some(status => {
-//         return status < 200 || status > 300;
-//       })) ||
-//     (transformerStatuses &&
-//       transformerStatuses.some(status => {
-//         return status < 200 || status > 300;
-//       }));
-//   return isError;
-// };
-
-// Test Router request payload
-// {
-//   "events": [
-//   {
-//     "libraries": [...]
-//     "message": {...},
-//     "destination": {...},
-//     "stage": {
-//       "user_transform": true,
-//       "dest_transform": true,
-//       "dest_response": true
-//     }
-//   },
-//   {...}
-//   ]
-// }
-
 getDestinations().forEach(async dest => {
   testRouter.post(`/${version}/${dest}`, async ctx => {
     try {
@@ -131,12 +56,8 @@ getDestinations().forEach(async dest => {
       await Promise.all(
         events.map(async event => {
           const { message, destination, stage, libraries } = event;
-          const updatedMessage = handleDynamicFields(
-            destination.destinationDefinition.name,
-            message
-          );
           const ev = {
-            message: updatedMessage,
+            message,
             destination: transformDestination(destination),
             libraries
           };
@@ -196,7 +117,6 @@ getDestinations().forEach(async dest => {
                   response.dest_transformed_payload = [transformedOutput];
                 }
               } catch (err) {
-                // console.log("****ERR**********", err)
                 errorFound = true;
                 response.dest_transformed_payload = {
                   error: err.message || JSON.stringify(err)
@@ -221,10 +141,7 @@ getDestinations().forEach(async dest => {
               // eslint-disable-next-line no-restricted-syntax
               for (const payload of transformedPayloads) {
                 // eslint-disable-next-line no-await-in-loop
-                const parsedResponse = await handleDestinationNetwork(
-                  dest,
-                  payload
-                );
+                const parsedResponse = await sendToDestination(dest, payload);
 
                 // if (parsedResponse.networkFailure) {
                 //   // throw new Error(parsedResponse.response);
@@ -276,27 +193,6 @@ getDestinations().forEach(async dest => {
 
 testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
-});
-
-testRouter.get(`/${version}/sample`, ctx => {
-  const { dest } = ctx.request.query;
-  if (!dest) {
-    ctx.body = {
-      error: "destination name not found"
-    };
-    ctx.status = 400;
-    return ctx;
-  }
-  const destinationName = dest.trim().toUpperCase();
-  if (!samplePaylods[destinationName]) {
-    ctx.body = {
-      error: `payload for ${dest} not found`
-    };
-    ctx.status = 400;
-    return ctx;
-  }
-  ctx.body = samplePaylods[destinationName];
-  return ctx;
 });
 
 module.exports = { testRouter };

@@ -77,7 +77,7 @@ function handleResponseTransform(version, destination, ctx) {
   return ctx.body;
 }
 
-async function handleDestinationNetwork(destination, payload) {
+async function sendToDestination(destination, payload) {
   let parsedResponse;
   logger.info("Request recieved for destination", destination);
   const resp = await proxyRequest(payload);
@@ -111,7 +111,7 @@ async function handleDestinationNetwork(destination, payload) {
 }
 
 module.exports = {
-  handleDestinationNetwork,
-  handleResponseTransform,
-  userTransformHandler
+  sendToDestination,
+  userTransformHandler,
+  handleResponseTransform
 };

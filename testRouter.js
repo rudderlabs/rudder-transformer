@@ -135,7 +135,6 @@ getDestinations().forEach(async dest => {
             if (!errorFound) {
               const destResponses = [];
               const destResponseStatuses = [];
-              // const transformerMessages = [];
 
               const transformedPayloads = response.dest_transformed_payload;
               // eslint-disable-next-line no-restricted-syntax
@@ -143,9 +142,6 @@ getDestinations().forEach(async dest => {
                 // eslint-disable-next-line no-await-in-loop
                 const parsedResponse = await sendToDestination(dest, payload);
 
-                // if (parsedResponse.networkFailure) {
-                //   // throw new Error(parsedResponse.response);
-                // }
                 destResponses.push(parsedResponse.response);
                 destResponseStatuses.push(parsedResponse.status);
 
@@ -157,7 +153,6 @@ getDestinations().forEach(async dest => {
                 };
                 handleResponseTransform(version, dest, ctxMock);
                 const { output } = ctxMock.body;
-                // transformerMessages.push(output.message);
                 transformerStatuses.push(output.status);
               }
               response = {

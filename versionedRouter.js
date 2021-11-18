@@ -6,14 +6,18 @@ const _ = require("lodash");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject, getMetadata } = require("./v0/util");
+const {
+  isNonFuncObject,
+  getMetadata,
+  generateErrorObject
+} = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { populateErrStat } = require("./v0/util/index");
 const {
   handleResponseTransform,
   userTransformHandler
 } = require("./routerUtils");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -111,13 +115,16 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, destination);
+        const errObj = generateErrorObject(
+          error,
+          destination,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
           error: error.message || "Error occurred while processing payload.",
-          statTags: error.statTags
+          statTags: errObj.statTags
         });
       }
     })
@@ -512,26 +519,19 @@ if (startSourceTransformer) {
 //     return ctx.body;
 //   }
 //   let response;
-//   const parsedDestResponse = parseDestJSONResponse(destResponse);
-//   const destStatus = destResponse.status;
 //   try {
+//     const parsedDestResponse = parseDestResponse(destResponse, destination);
 //     response = destNetHandler.responseTransform(
 //       parsedDestResponse,
-//       destStatus,
 //       destination
 //     );
 //   } catch (err) {
-//     // eslint-disable-next-line no-ex-assign
-//     err = populateErrStat(err, destination, false);
-//     response = {
-//       status: err.status || 400,
-//       message: err.message,
-//       destinationResponse: err.destinationResponse || {
-//         response: parsedDestResponse,
-//         status: destStatus
-//       },
-//       statTags: err.statTags
-//     };
+//     response = generateErrorObject(
+//       err,
+//       destination,
+//       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+//     );
+//     response = { ...response, destinationResponse: destResponse };
 //     if (!err.responseTransformFailure) {
 //       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
 //     }

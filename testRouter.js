@@ -172,11 +172,6 @@ getDestinations().forEach(async dest => {
               };
             }
           }
-
-          // setting test_status
-          // response.test_status = {
-          //   success: !isTestError(response, transformerStatuses)
-          // };
           respList.push(response);
         })
       );

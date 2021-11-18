@@ -1069,23 +1069,29 @@ function ErrorBuilder() {
 }
 
 /**
- * Used for native error stat population
+ * Used for generating error response with stats from native and built errors
  * @param {*} arg
  * @param {*} destination
+ * @param {*} transformStage
  */
-function populateErrStat(error, destination, isStageTransform = true) {
-  if (!error.statTags) {
-    const statTags = {
+function generateErrorObject(error, destination, transformStage) {
+  // check err is object
+  const { status, message, destinationResponse } = error;
+  let { statTags } = error;
+  if (!statTags) {
+    statTags = {
       destination,
-      stage: isStageTransform
-        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+      stage: transformStage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };
-    // eslint-disable-next-line no-ex-assign
-    error.statTags = statTags;
   }
-  return error;
+  const response = {
+    status: status || 400,
+    message,
+    destinationResponse,
+    statTags
+  };
+  return response;
 }
 /**
  * Returns true for http status code in range of 200 to 300
@@ -1150,6 +1156,8 @@ module.exports = {
   flattenMap,
   formatTimeStamp,
   formatValue,
+  getSuccessRespEvents,
+  generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
@@ -1163,7 +1171,6 @@ module.exports = {
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
-  getSuccessRespEvents,
   getTimeDifference,
   getType,
   getValueFromMessage,
@@ -1180,7 +1187,6 @@ module.exports = {
   isObject,
   isPrimitive,
   isValidUrl,
-  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

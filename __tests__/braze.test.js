@@ -61,7 +61,7 @@ describe(`${name} Tests`, () => {
     inputResponseData.forEach((input, index) => {
       it(`Payload - ${index}`, async () => {
         try {
-          const output = await networkResponseHandler.responseTransform(input.response, input.status, integration);
+          const output = await networkResponseHandler.responseTransform(input, integration);
           expect(output).toEqual(expectedResponseData[index]);
         } catch (error) {
           expect({...error}).toEqual(expectedResponseData[index]);

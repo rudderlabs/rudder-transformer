@@ -1,8 +1,15 @@
 /* eslint-disable eqeqeq */
+const _ = require("lodash");
 const get = require("get-value");
 const { isEmpty } = require("lodash");
-const { isHttpStatusRetryable } = require("../../v0/util");
+const {
+  isHttpStatusRetryable,
+  isDefinedAndNotNullAndNotEmpty,
+  isNonFuncObject,
+  isDefinedAndNotNull
+} = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const ErrorBuilder = require("../../v0/util/error");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -88,21 +95,58 @@ const getDynamicMeta = statusCode => {
   return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
 };
 
-const parseDestJSONResponse = destResponse => {
-  let response;
-  try {
-    response = JSON.parse(destResponse.responseBody);
-  } catch (err) {
-    response = !isEmpty(destResponse.responseBody)
-      ? destResponse.responseBody
-      : "";
+const parseDestResponse = (destResponse, destination) => {
+  const statTags = {
+    destination,
+    stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+  };
+  // validity of destResponse
+  if (
+    !isDefinedAndNotNullAndNotEmpty(destResponse) ||
+    !isNonFuncObject(destResponse)
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
   }
-  return response;
+  const { responseBody, status } = destResponse;
+  // validity of responseBody and status
+  if (
+    !isDefinedAndNotNull(responseBody) ||
+    !isDefinedAndNotNull(status) ||
+    !_.isNumber(status) ||
+    status === 0
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
+  }
+  let parsedDestResponseBody;
+  try {
+    parsedDestResponseBody = JSON.parse(responseBody);
+  } catch (err) {
+    parsedDestResponseBody = !isEmpty(responseBody) ? responseBody : "";
+  }
+  return {
+    responseBody: parsedDestResponseBody,
+    status
+  };
 };
 
 module.exports = {
   nodeSysErrorToStatus,
   trimResponse,
   getDynamicMeta,
-  parseDestJSONResponse
+  parseDestResponse
 };

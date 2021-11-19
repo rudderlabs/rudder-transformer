@@ -17,7 +17,6 @@ const {
   handleResponseTransform,
   userTransformHandler
 } = require("./routerUtils");
-const { parseDestResponse } = require("./adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 require("dotenv").config();
 

@@ -211,7 +211,9 @@ function responseBuilderSimple(
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
-        traits = handleTraits(traits, destination);
+        if (traits) {
+          traits = handleTraits(traits, destination);
+        }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...message.userProperties

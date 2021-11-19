@@ -132,23 +132,8 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
 };
 
 const responseTransform = respTransformPayload => {
-  const { payload, responseBody, status } = respTransformPayload;
+  const { payload, responseBody } = respTransformPayload;
   const accessToken = getAccessTokenFromDestRequest(payload);
-  // if (!status) {
-  //   throw new DestinationRespBuilder()
-  //     .setStatus(500)
-  //     .setAuthErrorCategory("")
-  //     .setMessage("Uncaught error here")
-  //     .setStatTags({
-  //       destination: DESTINATION_NAME,
-  //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  //       meta: getDynamicMeta(500)
-  //     })
-  //     .setDestinationResponse(respTransformPayload)
-  //     .isTransformResponseFailure(true)
-  //     .build();
-  // }
   const parsedResponse = responseHandler({
     dresponse: responseBody,
     accessToken

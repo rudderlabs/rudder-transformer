@@ -23,6 +23,7 @@ const {
   CustomError
 } = require("../../util");
 const logger = require("../../../logger");
+const { isUndefined, isNull } = require("lodash");
 
 let endPoint;
 
@@ -399,7 +400,7 @@ async function processTrack(message, destinationConfig, headers) {
   const traits = getFieldValueFromMessage(message, "traits");
   let userEmail;
   if (traits) {
-    userEmail = traits.email;
+    userEmail = traits.email ? traits.email : null;
   }
   if (!userEmail) {
     throw new CustomError("email not found in traits.", 400);

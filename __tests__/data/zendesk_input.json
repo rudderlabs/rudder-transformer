@@ -43,8 +43,7 @@
         "screen": {
           "density": 2
         },
-        "traits": {
-        },
+        "traits": {},
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
       "integrations": {
@@ -58,6 +57,126 @@
       "timestamp": "2020-03-23T23:57:29.021+05:30",
       "type": "identify",
       "userId": "abcd-124"
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "223b5f40-9543-4456-a7aa-945c43048185",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.15"
+        },
+        "campaign": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.15"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/home/a/Desktop/pybox/Bingads.html",
+          "referrer": "$direct",
+          "referring_domain": "",
+          "search": "",
+          "title": "Rudder Test",
+          "url": "file:///home/a/Desktop/pybox/Bingads.html"
+        },
+        "screen": {
+          "density": 1
+        },
+        "traits": {
+          "country": "UK",
+          "name": "John Wick",
+          "userId": "abcd-124"
+        },
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
+      },
+      "event": "Abhishek Track me",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "017f5227-ead3-4b7d-9794-1465022327be",
+      "originalTimestamp": "2021-03-25T14:36:47.695Z",
+      "properties": {
+        "category": "category",
+        "label": "label",
+        "userId": "abcd-124",
+        "value": "value"
+      },
+      "receivedAt": "2021-03-25T20:06:47.701+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "d1b1b23f-c855-4b86-bad7-091f7bbe99fe",
+      "sentAt": "2021-03-25T14:36:47.695Z",
+      "timestamp": "2021-03-25T20:06:47.701+05:30",
+      "type": "track",
+      "userId": "0000000000"
+    },
+    "metadata": {
+      "sourceId": "1pvRRLH8kBCH6c88kNAQjRmhb8Z",
+      "destinationId": "1qEz66UWpXTKwgCc8BPvyWPorpz",
+      "jobId": 47,
+      "destinationType": "ZENDESK",
+      "messageId": "017f5227-ead3-4b7d-9794-1465022327be",
+      "messageIds": null,
+      "rudderId": "d1b1b23f-c855-4b86-bad7-091f7bbe99fe",
+      "receivedAt": "2021-03-25T20:06:47.701+05:30"
+    },
+    "destination": {
+      "ID": "1qEz66UWpXTKwgCc8BPvyWPorpz",
+      "Name": "Zendesk",
+      "DestinationDefinition": {
+        "ID": "1pvRK5OiIrZkhCbFISQY5e55hX1",
+        "Name": "ZENDESK",
+        "DisplayName": "Zendesk",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "email",
+              "apiToken",
+              "domain",
+              "createUsersAsVerified",
+              "sendGroupCallsWithoutUserId",
+              "removeUsersFromOrganization"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "routerTransform": false,
+          "secretKeys": ["apiToken"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiToken": "budWBvuhBsovsPph4S7LIvCnQEVvzfcqAo07vPHd",
+        "createUsersAsVerified": true,
+        "domain": "rudderlabshelp",
+        "email": "abhishek@rudder.com",
+        "removeUsersFromOrganization": false,
+        "sendGroupCallsWithoutUserId": false
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
     }
   },
   {
@@ -473,9 +592,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": [
-            "apiToken"
-          ],
+          "secretKeys": ["apiToken"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -593,9 +710,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": [
-            "apiToken"
-          ],
+          "secretKeys": ["apiToken"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -713,9 +828,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": [
-            "apiToken"
-          ],
+          "secretKeys": ["apiToken"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -836,9 +949,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": [
-            "apiToken"
-          ],
+          "secretKeys": ["apiToken"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -959,9 +1070,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": false,
-          "secretKeys": [
-            "apiToken"
-          ],
+          "secretKeys": ["apiToken"],
           "supportedSourceTypes": [
             "android",
             "ios",

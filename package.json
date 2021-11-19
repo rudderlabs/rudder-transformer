@@ -22,8 +22,9 @@
     "start": "node destTransformer.js",
     "testDestinations": "npx jest --runInBand --detectOpenHandles --coverage --notify",
     "testVersionedRouter": "npx jest versionedRouter --type=all --detectOpenHandles --notify",
-    "testVersioned": "npx jest versionedRouter --destName=braze --type=batch",
-    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
+    "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
+    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
+    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify && npx jest versionedRouter --destName=heap --type=all --detectOpenHandles  --notify"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",

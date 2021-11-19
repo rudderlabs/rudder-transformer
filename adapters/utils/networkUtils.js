@@ -1,5 +1,15 @@
+/* eslint-disable eqeqeq */
+const _ = require("lodash");
 const get = require("get-value");
+const { isEmpty } = require("lodash");
+const {
+  isHttpStatusRetryable,
+  isDefinedAndNotNullAndNotEmpty,
+  isNonFuncObject,
+  isDefinedAndNotNull
+} = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const ErrorBuilder = require("../../v0/util/error");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -76,9 +86,10 @@ const trimResponse = response => {
 
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
+  if (isHttpStatusRetryable(statusCode)) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+  }
   switch (statusCode) {
-    case 500:
-      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
     case 429:
       return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
     case 200:
@@ -88,4 +99,59 @@ const getDynamicMeta = statusCode => {
   }
 };
 
-module.exports = { nodeSysErrorToStatus, trimResponse, getDynamicMeta };
+const parseDestResponse = (destResponse, destination) => {
+  const statTags = {
+    destination,
+    stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+  };
+  // validity of destResponse
+  if (
+    !isDefinedAndNotNullAndNotEmpty(destResponse) ||
+    !isNonFuncObject(destResponse)
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
+  }
+  const { responseBody, status } = destResponse;
+  // validity of responseBody and status
+  if (
+    !isDefinedAndNotNull(responseBody) ||
+    !isDefinedAndNotNull(status) ||
+    !_.isNumber(status) ||
+    status === 0
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
+  }
+  let parsedDestResponseBody;
+  try {
+    parsedDestResponseBody = JSON.parse(responseBody);
+  } catch (err) {
+    parsedDestResponseBody = !isEmpty(responseBody) ? responseBody : "";
+  }
+  return {
+    responseBody: parsedDestResponseBody,
+    status,
+    payload: destResponse.payload
+  };
+};
+
+module.exports = {
+  nodeSysErrorToStatus,
+  trimResponse,
+  getDynamicMeta,
+  parseDestResponse
+};

@@ -9,6 +9,7 @@ const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { isHttpStatusSuccess } = require("../../util");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -60,7 +61,8 @@ const getAccessTokenFromDestRequest = payload =>
  * Any destination specific error handling has to be done in their own way
  *
  * Reference doc for OAuth Errors
- * https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
+ * 1. https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
+ * 2. https://cloud.google.com/bigquery/docs/error-messages
  */
 const responseHandler = ({ dresponse, accessToken } = {}) => {
   const isSuccess =
@@ -81,24 +83,9 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
       })
       .build();
   }
-  /**
-    {
-      "status" : 429,
-      "destination": {
-        "response": "",
-        "status": 200/400...
-      },
-      "apiLimit" {
-        "available": 455,
-        "resetAt": timestamp
-      },
-      "message" : "simplified message for understannding"
-    }
-   */
-  /** Reference-Link: https://cloud.google.com/bigquery/docs/error-messages */
   if (dresponse.error) {
     const destAuthCategory = getDestAuthCategory(dresponse.error.status);
-    // There is a case of 404, which will make the server panic, hence handling 
+    // There is a case of 404, which will make the server panic, hence handling
     // that case as aborted
     const status = destAuthCategory ? 500 : 400;
     throw new DestinationRespBuilder()
@@ -140,7 +127,7 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
       destination: DESTINATION_NAME,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-      meta: getDynamicMeta(400)
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
     })
     .build();
 };
@@ -148,40 +135,29 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
 const responseTransform = respTransformPayload => {
   const { payload, responseBody, status } = respTransformPayload;
   const accessToken = getAccessTokenFromDestRequest(payload);
-  let dresponse;
-  try {
-    dresponse = JSON.parse(responseBody);
-  } catch (error) {
-    throw new DestinationRespBuilder()
-      .setStatus(500)
-      .setAuthErrorCategory("")
-      .setMessage("Uncaught error here")
-      .setStatTags({
-        destination: DESTINATION_NAME,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(500)
-      })
-      .setDestinationResponse({ error, isSuccess: false })
-      .isTransformResponseFailure(true)
-      .build();
-  }
+  // if (!status) {
+  //   throw new DestinationRespBuilder()
+  //     .setStatus(500)
+  //     .setAuthErrorCategory("")
+  //     .setMessage("Uncaught error here")
+  //     .setStatTags({
+  //       destination: DESTINATION_NAME,
+  //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+  //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+  //       meta: getDynamicMeta(500)
+  //     })
+  //     .setDestinationResponse(respTransformPayload)
+  //     .isTransformResponseFailure(true)
+  //     .build();
+  // }
   const parsedResponse = responseHandler({
-    dresponse,
+    dresponse: responseBody,
     accessToken
   });
   return {
     status: parsedResponse.status,
-    destination: {
-      response: parsedResponse.data,
-      status
-    },
-    apiLimit: {
-      available: "",
-      resetAt: ""
-    },
-    message: parsedResponse.statusText || "Request Processed Successfully",
-    statName: parsedResponse.statName,
+    destinationResponse: responseBody,
+    message: parsedResponse.message || "Request Processed Successfully",
     statTags: parsedResponse.statTags
   };
 };

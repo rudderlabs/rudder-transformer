@@ -8,6 +8,7 @@ const {
   getFieldValueFromMessage,
   flattenJson,
   isDefinedAndNotNull,
+  isValidUrl,
   CustomError,
   getErrorRespEvents,
   getSuccessRespEvents
@@ -89,6 +90,19 @@ function process(event) {
       // Sample user transformation for this:
       //
       // export function transformEvent(event, metadata) {
+      //   event.fullPath = `${subdomain}.rudderstack.com`
+      //
+      //   return event;
+      // }
+      if (message.fullPath && typeof message.fullPath === "string" ) {
+        response.endpoint = message.fullPath;
+        delete message.fullPath
+      }
+
+      // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
+      // Sample user transformation for this:
+      //
+      // export function transformEvent(event, metadata) {
       //   event.appendPath = `/path/${var}/search?param=${var2}`
       //
       //   return event;
@@ -96,6 +110,10 @@ function process(event) {
       if (message.appendPath && typeof message.appendPath === "string" ) {
         response.endpoint += message.appendPath;
         delete message.appendPath
+      }
+
+      if (!isValidUrl(response.endpoint)) {
+        throw new CustomError("Invalid URL for request", 400)
       }
 
       return response;

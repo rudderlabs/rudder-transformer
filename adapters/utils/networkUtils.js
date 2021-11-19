@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 const get = require("get-value");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
@@ -77,13 +76,16 @@ const trimResponse = response => {
 
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
-  if (statusCode == 500) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+  switch (statusCode) {
+    case 500:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+    case 429:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+    case 200:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.SUCCESS;
+    default:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
   }
-  if (statusCode == 429) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
-  }
-  return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
 };
 
 module.exports = { nodeSysErrorToStatus, trimResponse, getDynamicMeta };

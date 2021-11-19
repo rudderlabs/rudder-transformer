@@ -16,11 +16,6 @@ function DestinationResponseBuilder() {
     return this;
   };
 
-  this.setApiInfo = apiLimit => {
-    this.response.apiLimit = apiLimit;
-    return this;
-  };
-
   this.isTransformResponseFailure = arg => {
     this.response.responseTransformFailure = arg;
     return this;
@@ -31,24 +26,6 @@ function DestinationResponseBuilder() {
     return this;
   };
 
-  this.setFailureAt = arg => {
-    this.response.failureAt = arg;
-    return this;
-  };
-
-  this.setresponseorResponse = () => {
-    this.response.response = {
-      status: this.response.status,
-      message: this.response.message
-    };
-    return this;
-  };
-
-  this.isExplicit = arg => {
-    this.response.isExplicit = arg;
-    return this;
-  };
-
   this.setStatTags = (statsObj = {}) => {
     this.response.statTags = { ...statsObj };
     return this;
@@ -56,11 +33,6 @@ function DestinationResponseBuilder() {
 
   this.setAuthErrorCategory = errorCat => {
     this.response.authErrorCategory = errorCat;
-    return this;
-  };
-
-  this.setDestinationResponse = destinationResponse => {
-    this.response.destinationResponse = destinationResponse;
     return this;
   };
 

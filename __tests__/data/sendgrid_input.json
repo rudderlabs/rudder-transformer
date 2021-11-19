@@ -19,7 +19,9 @@
         "openTracking": false,
         "ganalytics": false,
         "subscriptionTracking": false,
-        "clickTrackingEnableText": false
+        "clickTrackingEnableText": false,
+        "text":null,
+        "utmContent": null
       }
     },
     "message": {

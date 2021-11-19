@@ -211,9 +211,14 @@ const createMailSettings = (payload, message, Config) => {
       updatedPayload.mail_settings.sandbox_mode.enable = mailObj.sandboxMode;
     }
   }
-  const list = [ "bypass_list_management","bypass_spam_management","bypass_bounce_management","bypass_unsubscribe_management"];
+  const list = [
+    "bypass_list_management",
+    "bypass_spam_management",
+    "bypass_bounce_management",
+    "bypass_unsubscribe_management"
+  ];
   list.forEach(key => {
-    if(isEmptyObject(updatedPayload.mail_settings[key])){
+    if (isEmptyObject(updatedPayload.mail_settings[key])) {
       delete updatedPayload.mail_settings[key];
     }
   });
@@ -277,12 +282,14 @@ const createTrackSettings = (payload, Config) => {
     Config.utmContent || null;
   updatedPayload.tracking_settings.ganalytics.utm_campaign =
     Config.utmCampaign || null;
-  
-  const list = ["ganalytics","subscription_tracking","open_tracking"];
+
+  const list = ["ganalytics", "subscription_tracking", "open_tracking"];
   list.forEach(key => {
-    updatedPayload.tracking_settings[key] = removeUndefinedAndNullValues(payload.tracking_settings[key]);
+    updatedPayload.tracking_settings[key] = removeUndefinedAndNullValues(
+      payload.tracking_settings[key]
+    );
   });
-  
+
   updatedPayload.tracking_settings = removeUndefinedAndNullValues(
     payload.tracking_settings
   );

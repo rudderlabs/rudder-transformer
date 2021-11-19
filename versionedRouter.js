@@ -17,6 +17,7 @@ const {
   handleResponseTransform,
   userTransformHandler
 } = require("./routerUtils");
+const { parseDestResponse } = require("./adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 require("dotenv").config();
 
@@ -508,38 +509,6 @@ if (startSourceTransformer) {
     });
   });
 }
-
-// function handleResponseTransform(version, destination, ctx) {
-//   const destResponse = ctx.request.body;
-//   const destNetHandler = getDestNetHander(version, destination);
-//   // flow should never reach the below (if) its a desperate fall-back
-//   if (!destNetHandler || !destNetHandler.responseTransform) {
-//     ctx.status = 404;
-//     ctx.body = `${destination} doesn't support response transformation`;
-//     return ctx.body;
-//   }
-//   let response;
-//   try {
-//     const parsedDestResponse = parseDestResponse(destResponse, destination);
-//     response = destNetHandler.responseTransform(
-//       parsedDestResponse,
-//       destination
-//     );
-//   } catch (err) {
-//     response = generateErrorObject(
-//       err,
-//       destination,
-//       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-//     );
-//     response = { ...response, destinationResponse: destResponse };
-//     if (!err.responseTransformFailure) {
-//       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
-//     }
-//   }
-//   ctx.body = { output: response };
-//   ctx.status = 200;
-//   return ctx.body;
-// }
 
 if (responseTransformer) {
   versions.forEach(version => {

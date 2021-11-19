@@ -44,12 +44,6 @@ const getDestNetHander = (version, dest) => {
 function handleResponseTransform(version, destination, ctx) {
   const destResponse = ctx.request.body;
   const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.responseTransform) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support response transformation`;
-    return ctx.body;
-  }
   let response;
   try {
     const parsedDestResponse = parseDestResponse(destResponse, destination);

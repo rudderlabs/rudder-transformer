@@ -86,9 +86,7 @@ const processResponse = ({ dresponse, status } = {}) => {
     isHttpStatusSuccess(status) &&
     (!dresponse.insertErrors ||
       (dresponse.insertErrors && dresponse.insertErrors.length === 0));
-  /**
-   * destResponse, status
-   */
+
   if (!isSuccess) {
     if (dresponse.error) {
       const { status: trStatus, authErrorCategory } = getStatusAndCategory(
@@ -102,7 +100,6 @@ const processResponse = ({ dresponse, status } = {}) => {
             `Request failed for ${DESTINATION_NAME} with status: ${status}`
         )
         .setAuthErrorCategory(authErrorCategory)
-        // .setAccessToken(accessToken)
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
           destination: DESTINATION_NAME,
@@ -117,7 +114,6 @@ const processResponse = ({ dresponse, status } = {}) => {
         .setStatus(400)
         .setMessage("Problem during insert operation")
         .setAuthErrorCategory("")
-        // .setAccessToken(accessToken)
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
           destination: DESTINATION_NAME,
@@ -131,7 +127,6 @@ const processResponse = ({ dresponse, status } = {}) => {
       .setStatus(400)
       .setMessage("Unhandled error type while sending to destination")
       .setAuthErrorCategory("")
-      // .setAccessToken(accessToken)
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,

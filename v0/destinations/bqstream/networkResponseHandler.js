@@ -9,7 +9,6 @@ const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { isHttpStatusSuccess } = require("../../util");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -79,7 +78,7 @@ const responseHandler = ({ dresponse, accessToken } = {}) => {
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(200)
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.SUCCESS
       })
       .build();
   }

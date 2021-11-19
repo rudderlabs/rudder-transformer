@@ -92,8 +92,6 @@ const getDynamicMeta = statusCode => {
   switch (statusCode) {
     case 429:
       return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
-    case 200:
-      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.SUCCESS;
     default:
       return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
   }

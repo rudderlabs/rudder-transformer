@@ -1058,8 +1058,7 @@ function generateErrorObject(error, destination, transformStage) {
     statTags
   };
   // Extra Params needed for OAuth destinations' Response handling
-  if (error.accessToken) {
-    response.accessToken = error.accessToken || "";
+  if (error.authErrorCategory) {
     response.authErrorCategory = error.authErrorCategory || "";
   }
   return response;

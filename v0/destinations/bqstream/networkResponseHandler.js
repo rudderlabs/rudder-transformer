@@ -2,13 +2,12 @@
 const getValue = require("get-value");
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const {
-  DestinationResponseBuilder: DestinationRespBuilder
-} = require("../../util/response-builders");
-const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { isHttpStatusSuccess } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -42,15 +41,25 @@ const getDestAuthCategory = errorCategory => {
   }
 };
 
-/**
- * Gets accessToken information from the destination request
- * This is used to send the information to the token endpoint for refreshing purposes
- *
- * @param {Object} payload - Request to the destination will contain accessToken for OAuth supported destinations
- * @returns Access token from the request
- */
-const getAccessTokenFromDestRequest = payload =>
-  payload.headers.Authorization.split(" ")[1];
+const destinationToRudderStatusMap = {
+  403: 400,
+  500: 500,
+  501: 400,
+  401: 500,
+  404: 400
+};
+
+const getStatusAndCategory = (dresponse, status) => {
+  const trStatus = destinationToRudderStatusMap[status];
+  const authErrorCategory = getDestAuthCategory(dresponse.error.status);
+  if (!trStatus) {
+    return {
+      status: 500,
+      authErrorCategory
+    };
+  }
+  return { status: trStatus, authErrorCategory };
+};
 
 /**
  * This class actually handles the response for BigQuery Stream API
@@ -62,87 +71,88 @@ const getAccessTokenFromDestRequest = payload =>
  * Reference doc for OAuth Errors
  * 1. https://cloud.google.com/apigee/docs/api-platform/reference/policies/oauth-http-status-code-reference
  * 2. https://cloud.google.com/bigquery/docs/error-messages
+ *
+ * Summary:
+ * Abortable -> 403, 501, 400
+ * Retryable -> 5[0-9][02-9], 401(UNAUTHENTICATED)
+ * "Special Cases":
+ * status=200, resp.insertErrors.length > 0  === Failure
+ * 403 => AccessDenied -> DISABLE_DEST, other 403 => Just abort
+ *
  */
-const responseHandler = ({ dresponse, accessToken } = {}) => {
+const processResponse = ({ dresponse, status } = {}) => {
   const isSuccess =
     !dresponse.error &&
+    isHttpStatusSuccess(status) &&
     (!dresponse.insertErrors ||
       (dresponse.insertErrors && dresponse.insertErrors.length === 0));
-  if (isSuccess) {
-    return new DestinationRespBuilder()
-      .setStatus(200)
-      .setMessage("Request Processed successfully")
-      .setAuthErrorCategory("")
-      .isTransformResponseFailure(!isSuccess)
-      .setStatTags({
-        destination: DESTINATION_NAME,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.SUCCESS
-      })
-      .build();
-  }
-  if (dresponse.error) {
-    const destAuthCategory = getDestAuthCategory(dresponse.error.status);
-    // There is a case of 404, which will make the server panic, hence handling
-    // that case as aborted
-    const status = destAuthCategory ? 500 : 400;
-    throw new DestinationRespBuilder()
-      .setStatus(status)
-      .setMessage(dresponse.error.message || "BQStream request failed")
-      .setAuthErrorCategory(destAuthCategory)
-      .setAccessToken(accessToken)
-      .isTransformResponseFailure(!isSuccess)
-      .setStatTags({
-        destination: DESTINATION_NAME,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(status)
-      })
-      .build();
-  } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
-    const temp = trimBqStreamResponse(dresponse);
-    throw new DestinationRespBuilder()
+  /**
+   * destResponse, status
+   */
+  if (!isSuccess) {
+    if (dresponse.error) {
+      const { status: trStatus, authErrorCategory } = getStatusAndCategory(
+        dresponse,
+        status
+      );
+      throw new ErrorBuilder()
+        .setStatus(trStatus)
+        .setMessage(
+          dresponse.error.message ||
+            `Request failed for ${DESTINATION_NAME} with status: ${status}`
+        )
+        .setAuthErrorCategory(authErrorCategory)
+        // .setAccessToken(accessToken)
+        .isTransformResponseFailure(!isSuccess)
+        .setStatTags({
+          destination: DESTINATION_NAME,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+          meta: getDynamicMeta(trStatus)
+        })
+        .build();
+    } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
+      const temp = trimBqStreamResponse(dresponse);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Problem during insert operation")
+        .setAuthErrorCategory("")
+        // .setAccessToken(accessToken)
+        .isTransformResponseFailure(!isSuccess)
+        .setStatTags({
+          destination: DESTINATION_NAME,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+          meta: getDynamicMeta(temp.status || 400)
+        })
+        .build();
+    }
+    throw new ErrorBuilder()
       .setStatus(400)
-      .setMessage("Problem during insert operation")
+      .setMessage("Unhandled error type while sending to destination")
       .setAuthErrorCategory("")
-      .setAccessToken(accessToken)
+      // .setAccessToken(accessToken)
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(temp.status || 400)
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
       })
       .build();
   }
-  throw new DestinationRespBuilder()
-    .setStatus(400)
-    .setMessage("Unhandled error type while sending to destination")
-    .setAuthErrorCategory("")
-    .setAccessToken(accessToken)
-    .isTransformResponseFailure(!isSuccess)
-    .setStatTags({
-      destination: DESTINATION_NAME,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-    })
-    .build();
 };
 
 const responseTransform = respTransformPayload => {
-  const { payload, responseBody } = respTransformPayload;
-  const accessToken = getAccessTokenFromDestRequest(payload);
-  const parsedResponse = responseHandler({
+  const { responseBody, status } = respTransformPayload;
+  processResponse({
     dresponse: responseBody,
-    accessToken
+    status
   });
   return {
-    status: parsedResponse.status,
+    status,
     destinationResponse: responseBody,
-    message: parsedResponse.message || "Request Processed Successfully",
-    statTags: parsedResponse.statTags
+    message: "Request Processed Successfully"
   };
 };
 

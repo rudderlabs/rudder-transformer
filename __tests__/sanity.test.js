@@ -1,20 +1,10 @@
+jest.mock("axios");
 const name = "Sanity";
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
 const { getDirectories } = require("./util");
 const { mockaxios } = require("../__mocks__/network");
-
-jest.mock("../adapters/network", () => {
-  const originalModule = jest.requireActual("../adapters/network");
-
-  //Mock the default export and named export 'send'
-  return {
-    __esModule: true,
-    ...originalModule,
-    send: jest.fn(mockaxios)
-  };
-});
 
 // ********************************
 // Getting Started

@@ -1,4 +1,7 @@
-const { isEmpty } = require("../../v0/util/index");
+const ErrorBuilder = require("../../v0/util/error");
+const { isHttpStatusSuccess } = require("../../v0/util/index");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const { getDynamicMeta } = require("../utils/networkUtils");
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction
  * for all the network comms btw dest transformer.
@@ -13,28 +16,30 @@ const { isEmpty } = require("../../v0/util/index");
  *
  */
 
-const responseTransform = destResponse => {
-  let respBody;
-
-  try {
-    respBody = JSON.parse(destResponse.responseBody);
-  } catch (err) {
-    respBody = !isEmpty(destResponse.responseBody)
-      ? destResponse.responseBody
-      : "";
+const responseTransform = (destinationResponse, dest) => {
+  const { status } = destinationResponse;
+  const message = `[Generic Response Transform] Request for destination: ${dest} Processed Successfully`;
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
+    throw new ErrorBuilder()
+      .setStatus(status)
+      .setMessage(
+        `[Generic Response Transfom] Request failed for destination ${dest} with status: ${status}`
+      )
+      .isTransformResponseFailure(true)
+      .setDestinationResponse(destinationResponse)
+      .setStatTags({
+        destination: dest,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(status)
+      })
+      .build();
   }
-  const { status } = destResponse;
-  const message = "Response parsed at generic response transform";
-  const destinationResponse = {
-    response: respBody,
-    status: destResponse.status
-  };
-  const { apiLimit } = respBody;
   return {
     status,
     message,
-    destinationResponse,
-    apiLimit
+    destinationResponse
   };
 };
 

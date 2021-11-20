@@ -776,8 +776,5 @@
     "params": {},
     "type": "REST",
     "method": "POST"
-  },
-  {
-    "error": "Invalid URL for request"
   }
 ]

@@ -86,7 +86,7 @@ function process(event) {
       response.userId = message.anonymousId;
       response.endpoint = url;
 
-      // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
+      // Similar hack as above for dynamically changing the full url
       // Sample user transformation for this:
       //
       // export function transformEvent(event, metadata) {
@@ -110,10 +110,6 @@ function process(event) {
       if (message.appendPath && typeof message.appendPath === "string" ) {
         response.endpoint += message.appendPath;
         delete message.appendPath
-      }
-
-      if (!isValidUrl(response.endpoint)) {
-        throw new CustomError("Invalid URL for request", 400)
       }
 
       return response;

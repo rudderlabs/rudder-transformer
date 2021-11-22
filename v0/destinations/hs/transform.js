@@ -66,7 +66,12 @@ async function getProperties(destination) {
   return hubSpotPropertyMap;
 }
 
-async function getTransformedJSON(message, mappingJson, propertyMap) {
+async function getTransformedJSON(
+  message,
+  mappingJson,
+  destination,
+  propertyMap
+) {
   const rawPayload = {};
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
@@ -76,6 +81,9 @@ async function getTransformedJSON(message, mappingJson, propertyMap) {
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
+    if (!propertyMap) {
+      propertyMap = await getProperties(destination);
+    }
     sourceKeys.forEach(sourceKey => {
       if (get(traits, sourceKey)) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
@@ -153,6 +161,7 @@ async function processTrack(message, destination, propertyMap) {
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
+    destination,
     propertyMap
   );
 
@@ -182,6 +191,7 @@ async function processIdentify(message, destination, propertyMap) {
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
+    destination,
     propertyMap
   );
   const properties = getPropertyValueForIdentify(userProperties);
@@ -218,10 +228,8 @@ async function processSingleMessage(message, destination, propertyMap) {
 }
 
 // has been deprecated - using routerTransform for both the versions
-async function process(event) {
-  // no. of calls for properties endpoint remains the same
-  const propertyMap = await getProperties(event.destination);
-  return processSingleMessage(event.message, event.destination, propertyMap);
+function process(event) {
+  return processSingleMessage(event.message, event.destination);
 }
 
 function batchEvents(destEvents) {

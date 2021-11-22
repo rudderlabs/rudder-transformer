@@ -22,7 +22,7 @@ const {
   getDestinationExternalID,
   getErrorRespEvents,
   getSuccessRespEvents,
-  populateErrStat
+  generateErrorObject
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -1008,13 +1008,16 @@ const processRouterDest = inputs => {
         input.destination
       );
     } catch (error) {
-      // eslint-disable-next-line no-ex-assign
-      error = populateErrStat(error, DESTINATION);
+      const errObj = generateErrorObject(
+        error,
+        DESTINATION,
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      );
       return getErrorRespEvents(
         [input.metadata],
         error.status || 400,
         error.message || "Error occurred while processing payload.",
-        error
+        errObj.statTags
       );
     }
   });

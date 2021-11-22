@@ -8,7 +8,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -41,7 +41,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -73,7 +73,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -105,7 +105,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -141,7 +141,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -181,7 +181,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -221,7 +221,7 @@
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
       "Accept": "application/json",
-      "Intercom-version": "1.4"
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -253,7 +253,8 @@
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
-      "Accept": "application/json"
+      "Accept": "application/json",
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {
@@ -285,7 +286,8 @@
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
-      "Accept": "application/json"
+      "Accept": "application/json",
+      "Intercom-Version": "1.4"
     },
     "params": {},
     "body": {

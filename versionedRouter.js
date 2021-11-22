@@ -509,23 +509,6 @@ if (startSourceTransformer) {
   });
 }
 
-if (responseTransformer) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      router.post(`/transform/${destination}/response`, async ctx => {
-        const startTime = new Date();
-        ctx.set("apiVersion", API_VERSION);
-        handleResponseTransform(version, destination, ctx);
-        stats.timing("transformer_response_transform_latency", startTime, {
-          destination,
-          version
-        });
-      });
-    });
-  });
-}
-
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });

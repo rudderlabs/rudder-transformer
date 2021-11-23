@@ -41,7 +41,8 @@ const trackResponseBuilder = (message, { Config }) => {
   let payload = {};
   payload = constructPayload(message, trackMapping);
   if (!payload.personalizations) {
-    if (Config.mailFromTraits) {        // if enabled then we look for email in traits and if found we create personalizations object 
+    if (Config.mailFromTraits) {
+      // if enabled then we look for email in traits and if found we create personalizations object
       const email = getValueFromMessage(message, [
         "traits.email",
         "context.traits.email"
@@ -56,8 +57,8 @@ const trackResponseBuilder = (message, { Config }) => {
       }
     }
   }
-  payload = generatePayloadFromConfig(payload, Config);  // if fields present in config are not/empty in properties we override those properties with config values
-  requiredFieldValidator(payload); 
+  payload = generatePayloadFromConfig(payload, Config); // if fields present in config are not/empty in properties we override those properties with config values
+  requiredFieldValidator(payload);
   payload.asm = {};
   if (
     Config.group &&

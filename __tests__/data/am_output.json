@@ -17,6 +17,7 @@
             "os_version": "77.0.3865.90",
             "platform": "Web",
             "device_model": "Mac",
+            "library": "rudderstack",
             "device_id": "123456",
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "app_name": "RudderLabs JavaScript SDK",
@@ -70,6 +71,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
+            "library": "rudderstack",
             "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
@@ -128,6 +130,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
+            "library": "rudderstack",
             "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
@@ -189,6 +192,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
+            "library": "rudderstack",
             "device_model": "Mac",
             "device_id": "00000000000000000000000000",
             "insert_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
@@ -241,6 +245,7 @@
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "platform": "Web",
+            "library": "rudderstack",
             "device_model": "Mac",
             "device_id": "123456",
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
@@ -293,6 +298,7 @@
         "events": [
           {
             "device_id": "123456",
+            "library": "rudderstack",
             "user_properties": {
               "device_id": "adddd0001",
               "device_os": "ios",
@@ -334,6 +340,7 @@
             "device_id": "123456",
             "session_id": "1598597129",
             "event_type": "$identify",
+            "library": "rudderstack",
             "user_properties": {
               "device_id": "adddd0001",
               "device_os": "ios",
@@ -373,6 +380,7 @@
             "device_id": "123456",
             "session_id": 1598597129,
             "event_type": "$identify",
+            "library": "rudderstack",
             "user_properties": {
               "device_id": "adddd0001",
               "device_os": "ios",
@@ -412,6 +420,7 @@
             "device_id": "123456",
             "session_id": -1,
             "event_type": "$identify",
+            "library": "rudderstack",
             "user_properties": {
               "device_id": "adddd0001",
               "device_os": "ios",
@@ -452,6 +461,7 @@
               "os_name": "Chrome",
               "os_version": "85.0.4183.121",
               "platform": "Web",
+              "library": "rudderstack",
               "device_model": "Mac",
               "device_id": "my-anonymous-id-new",
               "app_name": "RudderLabs JavaScript SDK",
@@ -571,6 +581,7 @@
           {
             "os_name": "Android",
             "os_version": "9",
+            "library": "rudderstack",
             "device_id": "0572f78fa49c648e",
             "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
             "carrier": "Android",
@@ -624,6 +635,7 @@
             "platform": "Android",
             "device_id": "0572f78fa49c648e",
             "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "library": "rudderstack",
             "carrier": "Android",
             "app_name": "AMTestProject",
             "app_version": "1.0",
@@ -670,6 +682,7 @@
             "os_name": "Android",
             "os_version": "9",
             "device_model": "AOSP on IA Emulator",
+            "library": "rudderstack",
             "device_manufacturer": "Google",
             "platform": "Android",
             "device_id": "0572f78fa49c648e",
@@ -723,6 +736,7 @@
             "device_model": "iPhone XR",
             "device_manufacturer": "Apple",
             "platform": "iOS",
+            "library": "rudderstack",
             "idfv": "0572f78fa49c648e",
             "device_id": "0572f78fa49c648e",
             "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
@@ -774,6 +788,7 @@
             "device_model": "iPhone XR",
             "device_manufacturer": "Apple",
             "platform": "iOS",
+            "library": "rudderstack",
             "device_id": "0572f78fa49c648e",
             "idfa": "1606e649-c97e-4d5f-a2ef-b81dbc66741a",
             "idfv": "0572f78fa49c648e",
@@ -822,6 +837,7 @@
         "events": [
           {
             "device_id": "anon-id-new",
+            "library": "rudderstack",
             "event_properties": {
               "prop1": "5",
               "name": "Screen View"
@@ -861,6 +877,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Order Completed",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
               "event_properties": {
@@ -914,6 +931,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
@@ -959,6 +977,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
@@ -1004,6 +1023,7 @@
         "events": [
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
             "event_type": "Order Completed",
             "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
             "event_properties": {
@@ -1079,6 +1099,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Order Completed",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
               "event_properties": {
@@ -1129,6 +1150,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
               "event_properties": {
@@ -1177,6 +1199,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
               "event_properties": {
@@ -1225,6 +1248,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Order Completed",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
               "event_properties": {
@@ -1295,6 +1319,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
               "event_properties": {
@@ -1343,6 +1368,7 @@
           "events": [
             {
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "library": "rudderstack",
               "event_type": "Product Purchased",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
               "event_properties": {
@@ -1390,6 +1416,7 @@
         "events": [
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
             "event_type": "Order Completed",
             "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
             "event_properties": {
@@ -1444,6 +1471,7 @@
         "events": [
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
             "event_type": "Order Completed",
             "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
             "event_properties": {
@@ -1498,6 +1526,7 @@
         "events": [
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
             "event_type": "Order Completed",
             "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
             "event_properties": {
@@ -1552,6 +1581,7 @@
         "events": [
           {
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
             "event_type": "Order Completed",
             "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
             "event_properties": {
@@ -1607,6 +1637,7 @@
           {
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
+            "library": "rudderstack",
             "device_model": "Mac",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
@@ -1661,6 +1692,7 @@
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
             "device_model": "Mac",
+            "library": "rudderstack",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1712,6 +1744,7 @@
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
             "device_model": "Mac",
+            "library": "rudderstack",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1763,6 +1796,7 @@
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
             "device_model": "Mac",
+            "library": "rudderstack",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",
@@ -1814,6 +1848,7 @@
             "os_name": "Chrome",
             "os_version": "86.0.4240.198",
             "device_model": "Mac",
+            "library": "rudderstack",
             "platform": "Web",
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "app_name": "RudderLabs JavaScript SDK",

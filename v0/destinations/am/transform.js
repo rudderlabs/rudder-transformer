@@ -19,8 +19,8 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullValues,
-  populateErrStat
+  generateErrorObject,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -340,6 +340,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
+      payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
@@ -782,13 +783,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, DESTINATION);
+        const errRes = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
           error.status || 400,
           error.message || "Error occurred while processing payload.",
-          error
+          errRes.statTags
         );
       }
     })

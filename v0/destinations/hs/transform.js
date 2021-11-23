@@ -335,7 +335,20 @@ const processRouterDest = async inputs => {
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
   // reduce the no. of calls for properties endpoint
-  const propertyMap = await getProperties(destination);
+  let propertyMap;
+  const traitsFound = inputs.some(input => {
+    if (
+      input.message.traits ||
+      input.message.context.traits ||
+      input.message.properties
+    ) {
+      return true;
+    }
+    return false;
+  });
+  if (traitsFound) {
+    propertyMap = await getProperties(destination);
+  }
   await Promise.all(
     inputs.map(async input => {
       try {

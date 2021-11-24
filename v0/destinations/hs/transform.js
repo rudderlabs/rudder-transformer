@@ -33,6 +33,15 @@ function getKey(key) {
   return modifiedKey;
 }
 
+function getTraits(message) {
+  let traits = getFieldValueFromMessage(message, "traits");
+  if (!traits || !Object.keys(traits).length) {
+    traits = message.properties;
+  }
+
+  return traits;
+}
+
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
     let response;
@@ -74,10 +83,7 @@ async function getTransformedJSON(
 ) {
   const rawPayload = {};
   const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (!traits || !Object.keys(traits).length) {
-    traits = message.properties;
-  }
+  const traits = getTraits(message);
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
@@ -337,11 +343,7 @@ const processRouterDest = async inputs => {
   // reduce the no. of calls for properties endpoint
   let propertyMap;
   const traitsFound = inputs.some(input => {
-    if (
-      input.message.traits ||
-      input.message.context.traits ||
-      input.message.properties
-    ) {
+    if (getTraits(input.message)) {
       return true;
     }
     return false;

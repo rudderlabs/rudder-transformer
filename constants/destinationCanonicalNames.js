@@ -9,7 +9,8 @@ const DestCanonicalNames = {
     "FacebookPixel",
     "Facebook Pixel",
     "FB Pixel"
-  ]
+  ],
+  sendgrid: ["sendgrid", "Sendgrid", "SENDGRID"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

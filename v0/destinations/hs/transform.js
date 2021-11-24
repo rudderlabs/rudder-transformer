@@ -343,10 +343,7 @@ const processRouterDest = async inputs => {
   // reduce the no. of calls for properties endpoint
   let propertyMap;
   const traitsFound = inputs.some(input => {
-    if (getTraits(input.message)) {
-      return true;
-    }
-    return false;
+    return getTraits(input.message) !== undefined;
   });
   if (traitsFound) {
     propertyMap = await getProperties(destination);

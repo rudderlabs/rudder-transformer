@@ -73,6 +73,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
+  rawPayload.productId = message.properties.product_id;
   rawPayload.revenueType =
     message.properties.revenueType ||
     message.properties.revenue_type ||
@@ -206,6 +207,8 @@ function responseBuilderSimple(
       endpoint = ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
@@ -231,6 +234,13 @@ function responseBuilderSimple(
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
             }
           });
+
+          if (!rawPayload.country) {
+            rawPayload.country = get(traits, "address.country");
+          }
+          if (!rawPayload.city) {
+            rawPayload.city = get(traits, "address.city");
+          }
         }
       }
 
@@ -254,11 +264,20 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
+
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...traits
         };
+        if (!rawPayload.country) {
+          rawPayload.country = get(traits, "address.country");
+        }
+        if (!rawPayload.city) {
+          rawPayload.city = get(traits, "address.city");
+        }
       }
 
       rawPayload.event_type = evType;
@@ -333,6 +352,12 @@ function responseBuilderSimple(
         payload.user_id = message.userId;
       }
       payload.session_id = getSessionId(payload);
+
+      payload.region = get(message, "context.location.region");
+      payload.location_lat = get(message, "context.location.latitude");
+      payload.location_lng = get(message, "context.location.longitude");
+      payload.dma = get(message, "context.location.dma");
+      payload.carrier = get(message, "context.network.carrier");
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
       // for correct versionName

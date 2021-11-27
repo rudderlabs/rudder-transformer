@@ -1,47 +1,51 @@
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { isEmpty } = require("../../util/index");
+const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { DESTINATION } = require("./config");
 const ErrorBuilder = require("../../util/error");
 
-const responseTransform = destResponse => {
-  let respBody;
-  try {
-    respBody = JSON.parse(destResponse.responseBody);
-  } catch (err) {
-    respBody = !isEmpty(destResponse.responseBody)
-      ? destResponse.responseBody
-      : "";
+// eslint-disable-next-line no-unused-vars
+const responseTransform = (destinationResponse, _dest) => {
+  const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
+  const { response, status } = destinationResponse;
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
+    throw new ErrorBuilder()
+      .setStatus(status)
+      .setMessage(
+        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+      )
+      .setDestinationResponse(destinationResponse)
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destination: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(status)
+      })
+      .build();
   }
-  if (respBody && respBody.errors && respBody.errors.length > 0) {
+  // application level errors
+  if (!!response && response.errors && response.errors.length > 0) {
     throw new ErrorBuilder()
       .setStatus(400)
-      .setMessage("Braze Request Failed")
-      .setDestinationResponse({
-        response: respBody,
-        status: destResponse.status
-      })
+      .setMessage(
+        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+      )
+      .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.status || 400)
+        meta: getDynamicMeta(status)
       })
       .build();
   }
-  const { status } = destResponse;
-  const message = "Event delivered successfuly";
-  const destinationResponse = {
-    response: respBody,
-    status: destResponse.Status
-  };
-  const { apiLimit } = respBody;
   return {
     status,
     message,
-    destinationResponse,
-    apiLimit
+    destinationResponse
   };
 };
 

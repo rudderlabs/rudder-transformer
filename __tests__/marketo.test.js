@@ -1,5 +1,4 @@
-// jest.mock("axios");
-const { mockaxios } = require("../__mocks__/network");
+jest.mock("axios");
 const integration = "marketo";
 const name = "Marketo";
 const version = "v0";
@@ -9,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+const networkResponseHandler = require(`../${version}/destinations/${integration}/networkResponseHandler`);
 
 // Processor Test files
 const inputDataFile = fs.readFileSync(
@@ -30,16 +30,15 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-jest.mock("../adapters/network", () => {
-  const originalModule = jest.requireActual("../adapters/network");
-
-  //Mock the default export and named export 'send'
-  return {
-    __esModule: true,
-    ...originalModule,
-    send: jest.fn(mockaxios)
-  };
-});
+// Response Transform Test files
+const inputResponseDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_response_input.json`)
+);
+const outputResponseDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_response_output.json`)
+);
+const inputResponseData = JSON.parse(inputResponseDataFile);
+const expectedResponseData = JSON.parse(outputResponseDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -61,4 +60,18 @@ describe(`${name} Tests`, () => {
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
+
+  describe("Response Transform Tests", () =>{
+    inputResponseData.forEach((input, index) => {
+      it(`Payload - ${index}`, async () => {
+        try {
+          const output = await networkResponseHandler.responseTransform(input, integration);
+          expect(output).toEqual(expectedResponseData[index]);
+        } catch (error) {
+          expect({...error}).toEqual(expectedResponseData[index]);
+        }
+      });
+    });
+  })
+
 });

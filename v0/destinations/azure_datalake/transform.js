@@ -1,17 +1,17 @@
 const { processWarehouseMessage } = require("../../../warehouse");
 
-const azureDeltalake = "azure_deltalake";
+const azureDatalake = "azure_datalake";
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {}
+function getDataTypeOverride(key, val, options) {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
-  const provider = azureDeltalake;
+  const provider = azureDatalake;
   return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,

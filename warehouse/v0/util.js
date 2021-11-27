@@ -1,4 +1,5 @@
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
+const { isDataLakeProvider } = require("../config/helpers");
 
 const toSnakeCase = str => {
   if (!str) {
@@ -26,14 +27,6 @@ function toSafeDBString(provider, name = "") {
     default:
       return parsedStr.substr(0, 127);
   }
-}
-
-function isDataLakeProvider(provider) {
-  return (
-    provider === "s3_datalake" ||
-    provider === "gcs_datalake" ||
-    provider === "azure_datalake"
-  );
 }
 
 function safeTableName(provider, name = "") {

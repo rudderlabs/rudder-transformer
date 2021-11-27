@@ -6,7 +6,12 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {}
+function getDataTypeOverride(key, val, options) {
+  if (key === "violationErrors") {
+    return "json";
+  }
+  return "string";
+}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";

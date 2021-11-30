@@ -14,8 +14,9 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { parseDestResponse } = require("./adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
+const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+
 require("dotenv").config();
 
 const versions = ["v0"];
@@ -26,7 +27,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
+const transformerProxy = process.env.TRANSFORMER_PROXY || true;
 
 const router = new Router();
 
@@ -42,23 +43,6 @@ const getDestHandler = (version, dest) => {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
-};
-
-const getDestNetHander = (version, dest) => {
-  const destination = _.toLower(dest);
-  let destNetHandler;
-  try {
-    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
-    if (DestHandlerMap.hasOwnProperty(destination)) {
-      destNetHandler = require(`./${version}/destinations/${DestHandlerMap[destination]}/networkResponseHandler`);
-    }
-    if (!destNetHandler && !destNetHandler.responseTransform) {
-      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-    }
-  } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-  }
-  return destNetHandler;
 };
 
 const getDestFileUploadHandler = (version, dest) => {
@@ -531,14 +515,19 @@ if (startSourceTransformer) {
   });
 }
 
-function handleResponseTransform(version, destination, ctx) {
-  const destResponse = ctx.request.body;
-  const destNetHandler = getDestNetHander(version, destination);
+async function handleProxyRequest(destination, ctx) {
+  const destinationRequest = ctx.request.body;
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
   let response;
   try {
-    const parsedDestResponse = parseDestResponse(destResponse, destination);
-    response = destNetHandler.responseTransform(
-      parsedDestResponse,
+    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+      rawProxyResponse
+    );
+    response = destNetworkHandler.responseHandler(
+      processedProxyResponse,
       destination
     );
   } catch (err) {
@@ -547,29 +536,32 @@ function handleResponseTransform(version, destination, ctx) {
       destination,
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
     );
-    response = { ...response, destinationResponse: destResponse };
+    response = { ...response };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
     }
   }
   ctx.body = { output: response };
-  ctx.status = 200;
+  ctx.status = response.status;
   return ctx.body;
 }
 
-if (responseTransformer) {
+if (transformerProxy) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
-      router.post(`/transform/${destination}/response`, async ctx => {
-        const startTime = new Date();
-        ctx.set("apiVersion", API_VERSION);
-        handleResponseTransform(version, destination, ctx);
-        stats.timing("transformer_response_transform_latency", startTime, {
-          destination,
-          version
-        });
-      });
+      router.post(
+        `/${version}/destinations/${destination}/proxy`,
+        async ctx => {
+          const startTime = new Date();
+          ctx.set("apiVersion", API_VERSION);
+          await handleProxyRequest(destination, ctx);
+          stats.timing("transformer_response_transform_latency", startTime, {
+            destination,
+            version
+          });
+        }
+      );
     });
   });
 }
@@ -729,5 +721,5 @@ module.exports = {
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleResponseTransform
+  handleProxyRequest
 };

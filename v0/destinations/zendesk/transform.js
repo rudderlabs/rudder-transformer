@@ -23,7 +23,6 @@ const {
   CustomError
 } = require("../../util");
 const logger = require("../../../logger");
-const { isUndefined, isNull } = require("lodash");
 
 let endPoint;
 
@@ -117,9 +116,6 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
       : getFieldValueFromMessage(message, "traits");
 
   const payload = constructPayload(traits, mappingJson);
-  if (!payload.user) {
-    payload.user = {};
-  }
   payload.user.external_id =
     get(traits, "userId") || get(traits, "id") || message.userId;
 
@@ -398,13 +394,7 @@ async function processIdentify(message, destinationConfig, headers) {
 async function processTrack(message, destinationConfig, headers) {
   validateUserId(message);
   const traits = getFieldValueFromMessage(message, "traits");
-  let userEmail;
-  if (traits) {
-    userEmail = traits.email ? traits.email : null;
-  }
-  if (!userEmail) {
-    throw new CustomError("email not found in traits.", 400);
-  }
+  let userEmail = traits.email;
   let zendeskUserID;
 
   let url = `${endPoint}users/search.json?query=${userEmail}`;

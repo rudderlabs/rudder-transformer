@@ -1888,5 +1888,50 @@
     },
     "files": {},
     "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.1.8",
+            "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+            "device_model": "Mac",
+            "event_type": "$identify",
+            "os_name": "Chrome",
+            "os_version": "86.0.4240.198",
+            "platform": "Web",
+            "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+            "language": "en-GB",
+            "library": "rudderstack",
+            "time": 1605853102342,
+            "user_id": "User_111",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
   }
 ]

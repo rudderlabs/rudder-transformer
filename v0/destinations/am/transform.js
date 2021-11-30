@@ -353,12 +353,6 @@ function responseBuilderSimple(
       }
       payload.session_id = getSessionId(payload);
 
-      payload.region = get(message, "context.location.region");
-      payload.location_lat = get(message, "context.location.latitude");
-      payload.location_lng = get(message, "context.location.longitude");
-      payload.dma = get(message, "context.location.dma");
-      payload.carrier = get(message, "context.network.carrier");
-
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
       // for correct versionName
       // ====================

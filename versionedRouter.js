@@ -522,7 +522,11 @@ async function handleProxyRequest(destination, ctx) {
   );
   let response;
   try {
+    const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    stats.timing("transformer_proxy_time", startTime, {
+      destination
+    });
     const processedProxyResponse = destNetworkHandler.processAxiosResponse(
       rawProxyResponse
     );
@@ -556,7 +560,7 @@ if (transformerProxy) {
           const startTime = new Date();
           ctx.set("apiVersion", API_VERSION);
           await handleProxyRequest(destination, ctx);
-          stats.timing("transformer_response_transform_latency", startTime, {
+          stats.timing("transformer_total_proxy_latency", startTime, {
             destination,
             version
           });

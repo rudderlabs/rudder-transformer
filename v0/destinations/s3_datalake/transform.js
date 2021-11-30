@@ -23,4 +23,7 @@ function process(event) {
   });
 }
 
-exports.process = process;
+module.exports = {
+  process,
+  getDataTypeOverride
+};

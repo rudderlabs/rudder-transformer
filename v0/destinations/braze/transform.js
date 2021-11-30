@@ -11,7 +11,7 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  populateErrStat
+  generateErrorObject
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -688,13 +688,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, DESTINATION);
+        const errObj = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
           error.status || 400,
           error.message || "Error occurred while processing payload.",
-          error
+          errObj.statTags
         );
       }
     })

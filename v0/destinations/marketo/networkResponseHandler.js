@@ -4,7 +4,7 @@ const {
   trimResponse,
   getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
-const { isEmpty } = require("../../util/index");
+const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 
@@ -12,6 +12,83 @@ const MARKETO_RETRYABLE_CODES = ["601", "602", "604", "611"];
 const MARKETO_ABORTABLE_CODES = ["600", "603", "605", "609", "610", "612"];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
+
+// handles marketo application level failures
+const processResponse = (
+  marketoResponse,
+  marketoStatus,
+  sourceMessage,
+  stage
+) => {
+  if (!!marketoResponse && !marketoResponse.success) {
+    // marketo application response level failure
+    const { errors } = marketoResponse;
+    const destResponse = {
+      response: marketoResponse,
+      status: marketoStatus
+    };
+    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
+        )
+        .setDestinationResponse(destResponse)
+        .isTransformResponseFailure(true)
+        .setStatTags({
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+        })
+        .build();
+    } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(429)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
+        )
+        .setDestinationResponse(destResponse)
+        .isTransformResponseFailure(true)
+        .setStatTags({
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
+        })
+        .build();
+    } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
+      throw new ErrorBuilder()
+        .setStatus(500)
+        .setMessage(
+          `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
+        )
+        .setDestinationResponse(destResponse)
+        .isTransformResponseFailure(true)
+        .setStatTags({
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+        })
+        .build();
+    }
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
+      )
+      .setDestinationResponse(destResponse)
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destination: DESTINATION,
+        stage,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+      })
+      .build();
+  }
+};
 
 const marketoResponseHandler = ({
   clientResponse,
@@ -22,77 +99,17 @@ const marketoResponseHandler = ({
   if (clientResponse.success) {
     const trimmedResponse = trimResponse(clientResponse);
     const { data } = trimmedResponse;
-
-    // for authentication requests
     if (data && data.access_token) {
+      // for authentication requests
       return trimmedResponse;
     }
-
     if (data && data.success) {
       // success
       return trimmedResponse;
     }
-
-    if (data && !data.success) {
-      // marketo application response level failure
-      const { errors } = data;
-      if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage(
-            `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
-          )
-          .setDestinationResponse({ ...trimmedResponse, success: false })
-          .setStatTags({
-            destination: DESTINATION,
-            stage,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-          })
-          .build();
-      } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
-        throw new ErrorBuilder()
-          .setStatus(429)
-          .setMessage(
-            `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
-          )
-          .setDestinationResponse({ ...trimmedResponse, success: false })
-          .setStatTags({
-            destination: DESTINATION,
-            stage,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
-          })
-          .build();
-      } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-        throw new ErrorBuilder()
-          .setStatus(500)
-          .setMessage(
-            `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-          )
-          .setDestinationResponse({ ...trimmedResponse, success: false })
-          .setStatTags({
-            destination: DESTINATION,
-            stage,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-          })
-          .build();
-      }
-      // default failure cases (keeping retryable for now)
-      throw new ErrorBuilder()
-        .setStatus(500)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-        )
-        .setDestinationResponse({ ...trimmedResponse, success: false })
-        .setStatTags({
-          destination: DESTINATION,
-          stage,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-        })
-        .build();
+    if (data) {
+      // failure
+      processResponse(data, trimmedResponse.status, sourceMessage, stage);
     }
     // http success but data not present
     throw new ErrorBuilder()
@@ -162,101 +179,37 @@ const sendPostRequest = async (url, data, options) => {
   return clientResponse;
 };
 
-const responseTransform = destResponse => {
-  let respBody;
-  try {
-    respBody = JSON.parse(destResponse.responseBody);
-  } catch (err) {
-    respBody = !isEmpty(destResponse.responseBody)
-      ? destResponse.responseBody
-      : "";
-  }
-  if (respBody && !respBody.success) {
-    // marketo application response level failure
-    const { errors } = respBody;
-    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Aborted).`
-        )
-        .setDestinationResponse({
-          response: respBody,
-          status: destResponse.status
-        })
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-        })
-        .build();
-    } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(429)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Throttled).`
-        )
-        .setDestinationResponse({
-          response: respBody,
-          status: destResponse.status
-        })
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
-        })
-        .build();
-    } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(500)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Retryable).`
-        )
-        .setDestinationResponse({
-          response: respBody,
-          status: destResponse.status
-        })
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-        })
-        .build();
-    }
+// eslint-disable-next-line no-unused-vars
+const responseTransform = (destinationResponse, _dest) => {
+  const message = `[Marketo Response Transform] Request for ${DESTINATION} Processed Successfully`;
+  const { response, status } = destinationResponse;
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(`Request Failed for Marketo, ${errors[0].message} (Aborted).`)
-      .setDestinationResponse({
-        response: respBody,
-        status: destResponse.status
-      })
+      .setStatus(status)
+      .setMessage(
+        `[Marketo Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+      )
+      .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+        meta: getDynamicMeta(status)
       })
       .build();
   }
-  const { status } = destResponse;
-  const message = "Event delivered successfuly";
-  const destinationResponse = {
-    response: respBody,
-    status: destResponse.status
-  };
-  const { apiLimit } = respBody;
+  processResponse(
+    response,
+    status,
+    "During Response Transform",
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+  );
   return {
     status,
     message,
-    destinationResponse,
-    apiLimit
+    destinationResponse
   };
 };
 

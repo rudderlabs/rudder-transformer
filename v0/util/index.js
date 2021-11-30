@@ -343,10 +343,10 @@ const getErrorRespEvents = (
   metadata,
   statusCode,
   error,
-  errorDetailed,
+  statTags,
   batched = false
 ) => {
-  return { metadata, batched, statusCode, error, errorDetailed };
+  return { metadata, batched, statusCode, error, statTags };
 };
 
 // ========================================================================
@@ -1034,60 +1034,48 @@ class CustomError extends Error {
   }
 }
 
-function ErrorBuilder() {
-  this.err = new Error();
-
-  this.setMessage = message => {
-    this.err.message = message;
-    return this;
+/**
+ * Used for generating error response with stats from native and built errors
+ * @param {*} arg
+ * @param {*} destination
+ * @param {*} transformStage
+ */
+function generateErrorObject(error, destination, transformStage) {
+  // check err is object
+  const { status, message, destinationResponse } = error;
+  let { statTags } = error;
+  if (!statTags) {
+    statTags = {
+      destination,
+      stage: transformStage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+  }
+  const response = {
+    status: status || 400,
+    message,
+    destinationResponse,
+    statTags
   };
-  this.setStatus = status => {
-    this.err.status = status;
-    return this;
-  };
-
-  this.setDestinationResponse = destination => {
-    this.err.destination = destination;
-    return this;
-  };
-
-  this.setApiInfo = apiLimit => {
-    this.err.apiLimit = apiLimit;
-    return this;
-  };
-
-  this.setMetadata = metadata => {
-    this.err.metadata = metadata;
-    return this;
-  };
-
-  this.isTransformerNetwrokFailure = arg => {
-    this.err.networkFailure = arg;
-    return this;
-  };
-  this.build = () => this.err;
+  return response;
+}
+/**
+ * Returns true for http status code in range of 200 to 300
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusSuccess(status) {
+  return status >= 200 && status < 300;
 }
 
 /**
- * Used for native error stat population
- * @param {*} arg
- * @param {*} destination
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
  */
-function populateErrStat(error, destination, isStageTransform = true) {
-  if (!error.statTags) {
-    const statTags = {
-      destination,
-      stage: isStageTransform
-        ? TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        : TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-    };
-    // eslint-disable-next-line no-ex-assign
-    error.statTags = statTags;
-  }
-  return error;
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
 }
-
 /**
  *
  * Utility function for UUID genration
@@ -1115,7 +1103,6 @@ function generateUUID() {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
-  ErrorBuilder,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -1134,6 +1121,8 @@ module.exports = {
   flattenMap,
   formatTimeStamp,
   formatValue,
+  getSuccessRespEvents,
+  generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
@@ -1147,7 +1136,6 @@ module.exports = {
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
-  getSuccessRespEvents,
   getTimeDifference,
   getType,
   getValueFromMessage,
@@ -1158,11 +1146,12 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
+  isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,
   isValidUrl,
-  populateErrStat,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,

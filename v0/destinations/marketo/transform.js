@@ -23,7 +23,7 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   isDefinedAndNotNull,
-  populateErrStat
+  generateErrorObject
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const Cache = require("../../util/cache");
@@ -523,13 +523,16 @@ const processRouterDest = async inputs => {
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
   } catch (error) {
-    // eslint-disable-next-line no-ex-assign
-    error = populateErrStat(error, DESTINATION);
+    const errObj = generateErrorObject(
+      error,
+      DESTINATION,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
       error.status || 500, // default to retryable
       error.message || "Error occurred while processing payload.",
-      error
+      errObj.statTags
     );
     return [respEvents];
   }
@@ -539,6 +542,7 @@ const processRouterDest = async inputs => {
     const errResp = {
       status: 400,
       message: "Authorisation failed",
+      responseTransformFailure: true,
       statTags: {
         destination: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
@@ -549,7 +553,7 @@ const processRouterDest = async inputs => {
       inputs.map(input => input.metadata),
       errResp.status,
       errResp.message,
-      errResp
+      errResp.statTags
     );
     return [respEvents];
   }
@@ -566,13 +570,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, DESTINATION);
+        const errObj = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
           error.status || 500,
           error.message || "Error occurred while processing payload.",
-          error
+          errObj.statTags
         );
       }
     })

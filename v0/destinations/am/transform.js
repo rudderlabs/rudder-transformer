@@ -1,5 +1,6 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -19,8 +20,8 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullValues,
-  populateErrStat
+  generateErrorObject,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -211,7 +212,9 @@ function responseBuilderSimple(
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
-        traits = handleTraits(traits, destination);
+        if (traits) {
+          traits = handleTraits(traits, destination);
+        }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...message.userProperties
@@ -340,6 +343,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
+      payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
@@ -782,13 +786,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, DESTINATION);
+        const errRes = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
           error.status || 400,
           error.message || "Error occurred while processing payload.",
-          error
+          errRes.statTags
         );
       }
     })

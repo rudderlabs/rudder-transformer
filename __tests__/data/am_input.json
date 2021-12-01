@@ -1912,5 +1912,67 @@
         ]
       }
     }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToIncrement": [
+          {
+            "traits": "age"
+          },
+          {
+            "traits": "friends"
+          }
+        ]
+      }
+    }
   }
 ]

@@ -1,9 +1,10 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
+
+const _ = require("lodash");
 const http = require("http");
 const https = require("https");
 const axios = require("axios");
-const _ = require("lodash");
 const log = require("../logger");
 
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
@@ -121,7 +122,8 @@ const httpPATCH = async (url, data, options) => {
 };
 
 /**
- * deepricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
  * @param {*} request
  * @returns
  */
@@ -139,6 +141,10 @@ const proxyRequest = async request => {
   }
 
   switch (payloadFormat) {
+    case "JSON_ARRAY":
+      data = payload.batch;
+      // TODO: add headers
+      break;
     case "JSON":
       data = payload;
       headers = { ...headers, "Content-Type": "application/json" };

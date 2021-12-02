@@ -1,6 +1,5 @@
-
-const { getDataType } = require("../warehouse/index")
-const { getDataTypeOverride} = require("../v0/destinations/clickhouse/transform")
+const {getDataType} = require("../warehouse/index")
+const {getDataTypeOverride} = require("../v0/destinations/clickhouse/transform")
 
 var testCases = [
     {
@@ -80,31 +79,39 @@ var testCases = [
     },
     {
         "name": "arrayRandomIntArrays",
-        "data": [[1, 2, 3],[3, 4, 5]],
+        "data": [[1, 2, 3], [3, 4, 5]],
         "type": "array(string)"
     },
     {
         "name": "arrayRandomArrays",
-        "data": [[1, 2, "random"],[2, true, "2019-08-12T05:08:30.909Z"]],
+        "data": [[1, 2, "random"], [2, true, "2019-08-12T05:08:30.909Z"]],
         "type": "array(string)"
     },
     {
         "name": "object",
-        "data": {"a": "random value 1","b": "random value 2"},
+        "data": {"a": "random value 1", "b": "random value 2"},
         "type": "string"
+    },
+    {
+        "name": "violationErrors",
+        "data": [
+            {
+                "message": "no schema for eventName : Product Purchased new, eventType : track in trackingPlanID : tp_20dfXJDpotQWHe7hMxfQfgWMZDv::1",
+                "meta": {},
+                "type": "Unplanned-Event"
+            }
+        ],
+        "type": "array(string)"
     }
 ]
 
-describe("ClickHouse data types testing", ()=> {
-
+describe("ClickHouse data types testing", () => {
     options = {}
     options.getDataTypeOverride = getDataTypeOverride
-    testCases.forEach((testCase)=>{
-            it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, ()=> {
-                var dataType = getDataType(testCase.type, testCase.data, options)
-                expect(dataType).toEqual(testCase.type)
-            })
+    testCases.forEach((testCase) => {
+        it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, () => {
+            var dataType = getDataType(testCase.name, testCase.data, options)
+            expect(dataType).toEqual(testCase.type)
+        })
     })
-
-
 })

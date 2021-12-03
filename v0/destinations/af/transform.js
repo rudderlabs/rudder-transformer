@@ -56,7 +56,7 @@ function responseBuilderSimple(payload, message, destination) {
   const updatedPayload = {
     ...payload,
     eventTime: message.timestamp,
-    customer_user_id: message.user_id,
+    customer_user_id: message.userId,
     ip: get(message, "context.ip") || message.request_ip,
     os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
@@ -207,12 +207,17 @@ function processSingleMessage(message, destination) {
       break;
     }
     case EventType.SCREEN: {
-      const eventName = EventType.SCREEN;
+      const eventName = `Viewed ${message.name ||
+        message.event ||
+        get(message, "properties.category") ||
+        ""} Screen`;
       payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
-      const eventName = EventType.PAGE;
+      const eventName = `Viewed ${message.name ||
+        get(message, "properties.category") ||
+        ""} Page`;
       payload = processNonTrackEvents(message, eventName);
       break;
     }
@@ -256,8 +261,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }

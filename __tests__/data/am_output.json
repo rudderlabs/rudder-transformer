@@ -15,6 +15,8 @@
           {
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
+            "city": "kolkata",
+            "country": "India",
             "platform": "Web",
             "device_model": "Mac",
             "library": "rudderstack",
@@ -244,6 +246,8 @@
           {
             "os_name": "Chrome",
             "os_version": "77.0.3865.90",
+            "city": "kolkata",
+            "country": "India",
             "platform": "Web",
             "library": "rudderstack",
             "device_model": "Mac",
@@ -1152,6 +1156,7 @@
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
+              "productId": "507f1f77bcf86cd799439011",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
               "event_properties": {
                 "sku": "45790-32",
@@ -1201,6 +1206,7 @@
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
+              "productId": "505bd76785ebb509fc183733",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
               "event_properties": {
                 "sku": "46493-32",
@@ -1321,6 +1327,7 @@
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
+              "productId": "507f1f77bcf86cd799439011",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-1",
               "event_properties": {
                 "sku": "45790-32",
@@ -1370,6 +1377,7 @@
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
+              "productId": "505bd76785ebb509fc183733",
               "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9-2",
               "event_properties": {
                 "sku": "46493-32",
@@ -1888,6 +1896,378 @@
     },
     "files": {},
     "userId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Android",
+              "os_version": "11",
+              "device_model": "SM-A025M",
+              "device_manufacturer": "samsung",
+              "platform": "Android",
+              "device_id": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "carrier": "T-Mobile",
+              "app_version": "2.6.0 v3",
+              "language": "en-US",
+              "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+              "user_properties": {
+                "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+                "address": {
+                  "city": "kolkata",
+                  "country": "India",
+                  "postalCode": 712136,
+                  "state": "WB",
+                  "street": ""
+                }
+              },
+              "event_properties": {
+                "tax": 2,
+                "total": 27.5,
+                "coupon": "hasbros",
+                "revenue": 48,
+                "price": 25,
+                "quantity": 2,
+                "currency": "USD",
+                "discount": 2.5,
+                "order_id": "50314b8e9bcf000000000000",
+                "shipping": 3,
+                "subtotal": 22.5,
+                "affiliation": "Google Store",
+                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+              },
+              "country": "United States",
+              "city": "San Francisco",
+              "event_type": "Order Completed",
+              "user_id": "userID123",
+              "time": 1597383030118,
+              "session_id": -1,
+              "region": "California",
+              "location_lat": "37.7672319",
+              "location_lng": "-122.4021353",
+              "dma": "San Francisco-Oakland-San Jose, CA",
+              "library": "rudderstack"
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "50be5c78-6c3f-4b60-be84-97805a31aaa1"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Android",
+              "os_version": "11",
+              "device_model": "SM-A025M",
+              "device_manufacturer": "samsung",
+              "platform": "Android",
+              "device_id": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "carrier": "T-Mobile",
+              "app_version": "2.6.0 v3",
+              "language": "en-US",
+              "event_type": "Product Purchased",
+              "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2-1",
+              "user_properties": {
+                "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+                "address": {
+                  "city": "kolkata",
+                  "country": "India",
+                  "postalCode": 712136,
+                  "state": "WB",
+                  "street": ""
+                }
+              },
+              "event_properties": {
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "category": "Games",
+                "quantity": 1,
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "product_id": "507f1f77bcf86cd799439011"
+              },
+              "country": "United States",
+              "city": "San Francisco",
+              "user_id": "userID123",
+              "productId": "507f1f77bcf86cd799439011",
+              "revenueType": "Purchased",
+              "price": 19,
+              "quantity": 1,
+              "time": 1597383030118,
+              "session_id": -1,
+              "region": "California",
+              "location_lat": "37.7672319",
+              "location_lng": "-122.4021353",
+              "dma": "San Francisco-Oakland-San Jose, CA",
+              "library": "rudderstack"
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "50be5c78-6c3f-4b60-be84-97805a31aaa1"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Android",
+              "os_version": "11",
+              "device_model": "SM-A025M",
+              "device_manufacturer": "samsung",
+              "platform": "Android",
+              "device_id": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "carrier": "T-Mobile",
+              "app_version": "2.6.0 v3",
+              "language": "en-US",
+              "event_type": "Product Purchased",
+              "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2-2",
+              "user_properties": {
+                "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+                "address": {
+                  "city": "kolkata",
+                  "country": "India",
+                  "postalCode": 712136,
+                  "state": "WB",
+                  "street": ""
+                }
+              },
+              "event_properties": {
+                "sku": "46493-32",
+                "name": "Uno Card Game",
+                "price": 3,
+                "category": "Games",
+                "quantity": 2,
+                "product_id": "505bd76785ebb509fc183733"
+              },
+              "country": "United States",
+              "city": "San Francisco",
+              "user_id": "userID123",
+              "productId": "505bd76785ebb509fc183733",
+              "revenueType": "Purchased",
+              "price": 3,
+              "quantity": 2,
+              "time": 1597383030118,
+              "session_id": -1,
+              "region": "California",
+              "location_lat": "37.7672319",
+              "location_lng": "-122.4021353",
+              "dma": "San Francisco-Oakland-San Jose, CA",
+              "library": "rudderstack"
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "50be5c78-6c3f-4b60-be84-97805a31aaa1"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "platform": "Android",
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "language": "en-US",
+            "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "address": {
+                "city": "kolkata",
+                "country": "India",
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_properties": {
+              "tax": 2,
+              "total": 27.5,
+              "coupon": "hasbros",
+              "revenue": 48,
+              "price": 25,
+              "quantity": 2,
+              "currency": "USD",
+              "discount": 2.5,
+              "order_id": "50314b8e9bcf000000000000",
+              "products": [
+                {
+                  "sku": "45790-32",
+                  "url": "https://www.example.com/product/path",
+                  "name": "Monopoly: 3rd Edition",
+                  "price": 19,
+                  "category": "Games",
+                  "quantity": 1,
+                  "image_url": "https:///www.example.com/product/path.jpg",
+                  "product_id": "507f1f77bcf86cd799439011"
+                },
+                {
+                  "sku": "46493-32",
+                  "name": "Uno Card Game",
+                  "price": 3,
+                  "category": "Games",
+                  "quantity": 2,
+                  "product_id": "505bd76785ebb509fc183733"
+                }
+              ],
+              "shipping": 3,
+              "subtotal": 22.5,
+              "affiliation": "Google Store",
+              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+            },
+            "country": "India",
+            "city": "kolkata",
+            "event_type": "Order Completed",
+            "user_id": "userID123",
+            "revenueType": "Purchased",
+            "price": 25,
+            "quantity": 2,
+            "revenue": 48,
+            "time": 1597383030118,
+            "session_id": -1,
+            "location_lat": "37.7672319",
+            "location_lng": "-122.4021353",
+            "dma": "San Francisco-Oakland-San Jose, CA",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a31aaa1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "platform": "Android",
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "language": "en-US",
+            "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "address": {
+                "city": "kolkata",
+                "country": "India",
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_properties": {
+              "externalID": "1637170658229-3961832492194264209"
+            },
+            "country": "United States",
+            "city": "San Francisco",
+            "event_type": "App_Opened",
+            "user_id": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+            "device_brand": "samsung",
+            "time": 1637176431143,
+            "session_id": -1,
+            "location_lat": "37.7672319",
+            "location_lng": "-122.4021353",
+            "dma": "San Francisco-Oakland-San Jose, CA",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "version": "1",

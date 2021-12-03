@@ -32,5 +32,9 @@
   "properties.category": "event_type",
   "session_id": "session_id",
   "request_ip": "ip",
-  "messageId": "insert_id"
+  "messageId": "insert_id",
+  "context.location.region": "region",
+  "context.location.latitude": "location_lat",
+  "context.location.longitude": "location_lng",
+  "context.location.dma": "dma"
 }

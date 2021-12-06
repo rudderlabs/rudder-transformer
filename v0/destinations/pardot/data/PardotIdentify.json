@@ -253,5 +253,15 @@
         "context.traits.territory"
       ],
       "required": false
+    },
+    {
+      "destKey": "campaign_id",
+      "sourceKeys": [
+        "traits.campaignId",
+        "traits.campaign_id",
+        "context.traits.campaignId",
+        "context.traits.campaign_id"
+      ],
+      "required": false
     }
   ]

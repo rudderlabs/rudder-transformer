@@ -11,7 +11,8 @@ const {
   getErrorRespEvents,
   CustomError,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  getFieldValueFromMessage
 } = require("../../util");
 
 const {
@@ -56,7 +57,7 @@ function responseBuilderSimple(payload, message, destination) {
   const updatedPayload = {
     ...payload,
     eventTime: message.timestamp,
-    customer_user_id: message.userId,
+    customer_user_id: getFieldValueFromMessage(message, "userIdOnly"),
     ip: get(message, "context.ip") || message.request_ip,
     os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
@@ -207,17 +208,29 @@ function processSingleMessage(message, destination) {
       break;
     }
     case EventType.SCREEN: {
-      const eventName = `Viewed ${message.name ||
-        message.event ||
-        get(message, "properties.category") ||
-        ""} Screen`;
+      let eventName;
+      if (destination.Config.includeScreenOrPageName === true) {
+        eventName = `Viewed ${message.name ||
+          message.event ||
+          get(message, "properties.category") ||
+          ""} Screen`;
+      }
+      else {
+        eventName = EventType.SCREEN;
+      }
       payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
-      const eventName = `Viewed ${message.name ||
-        get(message, "properties.category") ||
-        ""} Page`;
+      let eventName;
+      if (destination.Config.includeScreenOrPageName === true) {
+        eventName = `Viewed ${message.name ||
+          get(message, "properties.category") ||
+          ""} Page`;
+      }
+      else {
+        eventName = EventType.PAGE;
+      }
       payload = processNonTrackEvents(message, eventName);
       break;
     }

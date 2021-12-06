@@ -1912,5 +1912,325 @@
         ]
       }
     }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "userId": "userID123",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "country": "United States",
+          "city": "San Francisco",
+          "region": "California",
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": false,
+        "trackRevenuePerProduct": true
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "userId": "userID123",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "App_Opened",
+      "sentAt": "2021-11-17T19:13:52.106Z",
+      "userId": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+      "channel": "mobile",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "country": "United States",
+          "city": "San Francisco",
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "externalID": "1637170658229-3961832492194264209"
+      },
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-11-17T19:13:51.143Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2020-11-20T06:18:22.342Z",
+      "userId": "User_111",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.8",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2.5
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.8"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"
+      },
+      "rudderId": "7e00bf3d-5357-4448-886d-f8fc8abf932d",
+      "messageId": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
+      "anonymousId": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-11-20T06:18:22.342Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "traitsToIncrement": [
+          {
+            "traits": "age"
+          },
+          {
+            "traits": "friends"
+          }
+        ]
+      }
+    }
   }
 ]

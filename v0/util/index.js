@@ -19,6 +19,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -275,6 +276,9 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -285,6 +289,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -292,6 +297,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -303,6 +309,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },
@@ -330,8 +337,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  statTags,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, statTags };
 };
 
 // ========================================================================
@@ -1006,7 +1019,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
+  if (externalId) {
+    message.userId = externalId;
+  }
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1014,6 +1032,48 @@ class CustomError extends Error {
   }
 }
 
+/**
+ * Used for generating error response with stats from native and built errors
+ * @param {*} arg
+ * @param {*} destination
+ * @param {*} transformStage
+ */
+function generateErrorObject(error, destination, transformStage) {
+  // check err is object
+  const { status, message, destinationResponse } = error;
+  let { statTags } = error;
+  if (!statTags) {
+    statTags = {
+      destination,
+      stage: transformStage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+  }
+  const response = {
+    status: status || 400,
+    message,
+    destinationResponse,
+    statTags
+  };
+  return response;
+}
+/**
+ * Returns true for http status code in range of 200 to 300
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusSuccess(status) {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
+}
 /**
  *
  * Utility function for UUID genration
@@ -1043,6 +1103,7 @@ module.exports = {
   CustomError,
   ErrorMessage,
   addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1059,6 +1120,8 @@ module.exports = {
   formatTimeStamp,
   formatValue,
   generateUUID,
+  getSuccessRespEvents,
+  generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
@@ -1072,7 +1135,6 @@ module.exports = {
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
-  getSuccessRespEvents,
   getTimeDifference,
   getType,
   getValueFromMessage,
@@ -1083,6 +1145,8 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
+  isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,

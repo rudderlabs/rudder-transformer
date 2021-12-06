@@ -36,6 +36,7 @@
           "type": "alias"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -123,6 +124,7 @@
           "type": "capture"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}

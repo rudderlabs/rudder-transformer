@@ -9,8 +9,9 @@
     "SFMC": true,
     "TRENGO": true,
     "KUSTOMER": true,
-    "FB_CUSTOM_AUDIENCE":true,
+    "FB_CUSTOM_AUDIENCE": true,
     "DELIGHTED": true,
-    "DRIP": true
+    "DRIP": true,
+    "ALGOLIA": true
   }
 }

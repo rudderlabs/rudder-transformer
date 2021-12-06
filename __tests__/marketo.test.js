@@ -8,6 +8,7 @@ const fs = require("fs");
 const path = require("path");
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+const networkResponseHandler = require(`../${version}/destinations/${integration}/networkResponseHandler`);
 
 // Processor Test files
 const inputDataFile = fs.readFileSync(
@@ -29,6 +30,16 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+// Response Transform Test files
+const inputResponseDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_response_input.json`)
+);
+const outputResponseDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_response_output.json`)
+);
+const inputResponseData = JSON.parse(inputResponseDataFile);
+const expectedResponseData = JSON.parse(outputResponseDataFile);
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {
@@ -49,4 +60,18 @@ describe(`${name} Tests`, () => {
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
+
+  describe("Response Transform Tests", () =>{
+    inputResponseData.forEach((input, index) => {
+      it(`Payload - ${index}`, async () => {
+        try {
+          const output = await networkResponseHandler.responseTransform(input, integration);
+          expect(output).toEqual(expectedResponseData[index]);
+        } catch (error) {
+          expect({...error}).toEqual(expectedResponseData[index]);
+        }
+      });
+    });
+  })
+
 });

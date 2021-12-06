@@ -9,6 +9,7 @@ const ACTIVITY_METRIC = "marketo_activity";
 const FETCH_TOKEN_METRIC = "marketo_fetch_token";
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const DESTINATION = "marketo";
 
 const formatConfig = destination => {
   return {
@@ -48,6 +49,7 @@ module.exports = {
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
   FETCH_TOKEN_METRIC,
+  DESTINATION,
   formatConfig,
   identifyConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
 };

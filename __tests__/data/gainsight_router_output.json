@@ -20,6 +20,7 @@
           "MasterAvatarTypeCode": 10
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -198,6 +199,7 @@
           "status": "active"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}

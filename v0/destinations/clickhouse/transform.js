@@ -7,7 +7,7 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {
+function getDataTypeOverride(key, val, options) {
   if (options.chEnableArraySupport === "false") {
     return "string";
   }
@@ -17,10 +17,10 @@ function getDataTypeOverride(val, options) {
       return "string";
     }
     // check for different data types in the array. if there are different then return array(string)
-    const firstValueDataType = getDataType(val[0], {});
+    const firstValueDataType = getDataType(key, val[0], {});
     let finalDataType = firstValueDataType;
     for (let i = 1; i < val.length; i += 1) {
-      const dataType = getDataType(val[i], {});
+      const dataType = getDataType(key, val[i], {});
       if (finalDataType !== dataType) {
         if (finalDataType === "string") {
           break;

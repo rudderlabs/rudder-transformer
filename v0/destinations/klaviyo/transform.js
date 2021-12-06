@@ -24,7 +24,7 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
-const { addToList } = require("./nethandler");
+const { httpPOST } = require("../../../adapters/network");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -62,18 +62,22 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   }
   profile = removeUndefinedValues(profile);
   // send network request
-  await addToList(
-    targetUrl,
-    {
-      api_key: destination.Config.privateApiKey,
-      profiles: [profile]
-    },
-    {
-      headers: {
-        "Content-Type": "application/json"
+  try {
+    await httpPOST(
+      targetUrl,
+      {
+        api_key: destination.Config.privateApiKey,
+        profiles: [profile]
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
-    }
-  );
+    );
+  } catch (err) {
+    logger.debug("[Klaviyo :: addToList]", err);
+  }
 };
 
 // ---------------------
@@ -208,18 +212,22 @@ const groupRequestHandler = async (message, category, destination) => {
       profile.$consent = destination.Config.consent;
     }
     // send network request
-    await addToList(
-      targetUrl,
-      {
-        api_key: destination.Config.privateApiKey,
-        profiles: [profile]
-      },
-      {
-        headers: {
-          "Content-Type": "application/json"
+    try {
+      await httpPOST(
+        targetUrl,
+        {
+          api_key: destination.Config.privateApiKey,
+          profiles: [profile]
+        },
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      logger.debug("[Klaviyo :: groupRequestHandler (addToList)", err);
+    }
   }
   delete profile.sms_consent;
   delete profile.$consent;

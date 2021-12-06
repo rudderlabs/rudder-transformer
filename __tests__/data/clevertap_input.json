@@ -244,6 +244,7 @@
         "currency": "USD",
         "discount": 1.5,
         "order_id": "1234",
+        "ts": "2021-03-10T11:59:22.080Z",
         "products": [
           {
             "sku": "G-32",
@@ -602,6 +603,80 @@
       "rudderId": "138c4214-b537-4f77-9dea-9abde70b5147",
       "type": "track",
       "userId": "ankur4"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "jamesDoe@gmail.com",
+        "name": "James Doe",
+        "phone": "92374162212",
+        "gender": "M",
+        "employed": true,
+        "birthday": "1614775793",
+        "education": "Science",
+        "graduate": true,
+        "married": true,
+        "customerType": "Prime",
+        "ts": "2021-03-10T11:59:22.080Z",
+        "msg_push": true,
+        "msgSms": true,
+        "msgemail": true,
+        "msgwhatsapp": false,
+        "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+        "custom_mappings": {
+          "Office": "Trastkiv",
+          "Country": "Russia"
+        },
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
     }
   }
 ]

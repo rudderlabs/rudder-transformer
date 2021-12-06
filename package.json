@@ -21,16 +21,16 @@
     "merge-check": "npm run verify || exit 1; codecov",
     "start": "node destTransformer.js",
     "testDestinations": "npx jest --runInBand --detectOpenHandles --coverage --notify",
-    "testVersionedRouter" : "npx jest versionedRouter --type=all --detectOpenHandles --notify",
-    "test":"npx jest --runInBand --detectOpenHandles --coverage --notify; npx jest versionedRouter --type=all --detectOpenHandles --notify",
-    "testVersioned": "npx jest versionedRouter --destName=braze --type=batch",
-    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
+    "testVersionedRouter": "npx jest versionedRouter --type=all --detectOpenHandles --notify",
+    "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
+    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
+    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify && npx jest versionedRouter --destName=heap --type=all --detectOpenHandles  --notify"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
     "@ndhoule/extend": "^2.0.0",
     "ajv": "^8.6.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.0.0",
@@ -62,6 +62,7 @@
     "statsd-client": "^0.4.4",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^0.7.24",
+    "unset-value": "^2.0.0",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9"
   },

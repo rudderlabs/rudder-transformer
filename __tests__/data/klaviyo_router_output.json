@@ -3,6 +3,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {}
       },
@@ -32,6 +33,7 @@
     "batchedRequest": {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {}
       },

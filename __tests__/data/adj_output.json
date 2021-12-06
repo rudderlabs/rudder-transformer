@@ -23,7 +23,9 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
+      
     },
     "files": {},
     "userId": "21e13f4bc7ceddad"
@@ -57,6 +59,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -95,6 +98,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -124,6 +128,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -153,6 +158,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -186,6 +192,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -212,6 +219,7 @@
     "body": {
       "JSON": {},
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},

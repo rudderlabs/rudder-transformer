@@ -1,3 +1,6 @@
+/* eslint-disable no-lonely-if */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -5,6 +8,7 @@ const {
   SpecedTraits,
   TraitsMapping
 } = require("../../../constants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -16,10 +20,12 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
+  generateErrorObject,
   removeUndefinedAndNullValues
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
+  DESTINATION,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
@@ -68,6 +74,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
+  rawPayload.productId = message.properties.product_id;
   rawPayload.revenueType =
     message.properties.revenueType ||
     message.properties.revenue_type ||
@@ -201,12 +208,16 @@ function responseBuilderSimple(
       endpoint = ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
-        traits = handleTraits(traits, destination);
+        if (traits) {
+          traits = handleTraits(traits, destination);
+        }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...message.userProperties
@@ -226,6 +237,13 @@ function responseBuilderSimple(
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
             }
           });
+
+          if (!rawPayload.country) {
+            rawPayload.country = get(traits, "address.country");
+          }
+          if (!rawPayload.city) {
+            rawPayload.city = get(traits, "address.city");
+          }
         }
       }
 
@@ -249,11 +267,20 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
+
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...traits
         };
+        if (!rawPayload.country) {
+          rawPayload.country = get(traits, "address.country");
+        }
+        if (!rawPayload.city) {
+          rawPayload.city = get(traits, "address.city");
+        }
       }
 
       rawPayload.event_type = evType;
@@ -335,6 +362,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
+      payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
@@ -444,7 +472,18 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new CustomError("Group call parameters are not valid", 400);
+          throw new ErrorBuilder()
+            .setStatus(400)
+            .setMessage("Group call parameters are not valid")
+            .setStatTags({
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .INSTRUMENTATION
+            })
+            .build();
         }
       }
       break;
@@ -472,7 +511,17 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new CustomError("message type not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("message type not supported")
+        .setStatTags({
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
   return responseBuilderSimple(
     groupInfo,
@@ -539,13 +588,11 @@ function trackRevenueEvent(message, destination) {
       // when product array is not there in payload, will track the revenue of the original event.
       originalEvent.isRevenue = true;
     }
-  } else {
+  } else if (!isProductArrayInPayload(message)) {
     // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
     // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
     // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
-    if (!isProductArrayInPayload(message)) {
-      originalEvent.isRevenue = true;
-    }
+    originalEvent.isRevenue = true;
   }
   // when trackRevenuePerProduct is false, track the revenue of original event.
   if (destination.Config.trackRevenuePerProduct === false) {
@@ -758,14 +805,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errRes = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          errRes.statTags
         );
       }
     })
@@ -773,4 +822,12 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, batch };
+const responseTransform = input => {
+  return {
+    status: 200,
+    destination: { ...input },
+    message: "Processed Successfully"
+  };
+};
+
+module.exports = { process, processRouterDest, batch, responseTransform };

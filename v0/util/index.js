@@ -217,7 +217,7 @@ const formatTimeStamp = (dateStr, format) => {
   const date = new Date(dateStr);
   // moment format is passed. format accordingly
   if (format) {
-    return moment(date).format(format);
+    return moment.utc(date).format(format);
   }
 
   // return default format

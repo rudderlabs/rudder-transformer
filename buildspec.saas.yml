@@ -37,6 +37,7 @@ phases:
       - git checkout -b shared-transformer-\"$VERSION\"
       - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
       - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
       - git add values.enterprise.yaml values.prod.yaml
       - git commit -m "changing version for shared transformer"
       - git push -u origin shared-transformer-\"$VERSION\"

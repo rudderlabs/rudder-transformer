@@ -1,4 +1,4 @@
-const { send } = require("../../../adapters/network");
+const { httpGET } = require("../../../adapters/network");
 const { CustomError, toUnixTimestamp } = require("../../util");
 
 const CURRENCY_CODES = [
@@ -166,11 +166,16 @@ const CURRENCY_CODES = [
 
 const getSubscriptionHistory = async (endpoint, options) => {
   const requestOptions = {
-    url: endpoint,
     method: "get",
     ...options
   };
-  const res = await send(requestOptions);
+  let res;
+  try {
+    const response = await httpGET(endpoint, requestOptions);
+    res = { success: true, response };
+  } catch (err) {
+    res = { success: false, response: err };
+  }
   return res;
 };
 

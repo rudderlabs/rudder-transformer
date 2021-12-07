@@ -32,7 +32,7 @@ function processEvent(event) {
       }
     });
 
-    if (message.context.device == undefined) {
+    if (Object.prototype.toString.call(message.context.device) !== "[object Object]") {
       message.context.device = {};
     }
 

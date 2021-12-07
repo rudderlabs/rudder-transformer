@@ -500,8 +500,8 @@ function processSingleMessage(message, destination) {
 
       if (
         message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
+        isDefinedAndNotNull(message.properties.revenue) &&
+        isDefinedAndNotNull(message.properties.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly

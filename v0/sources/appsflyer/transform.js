@@ -32,6 +32,10 @@ function processEvent(event) {
       }
     });
 
+    if (message.context.device == undefined) {
+      message.context.device = {};
+    }
+
     if (event.platform) {
       if (event.platform.toLowerCase() === "ios") {
         message.context.device.advertisingId = event.idfa;

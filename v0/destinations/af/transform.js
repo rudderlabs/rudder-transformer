@@ -209,7 +209,7 @@ function processSingleMessage(message, destination) {
     }
     case EventType.SCREEN: {
       let eventName;
-      if (destination.Config.includeScreenOrPageName === true) {
+      if (destination.Config.useRichEventName === true) {
         eventName = `Viewed ${message.name ||
           message.event ||
           get(message, "properties.category") ||
@@ -223,7 +223,7 @@ function processSingleMessage(message, destination) {
     }
     case EventType.PAGE: {
       let eventName;
-      if (destination.Config.includeScreenOrPageName === true) {
+      if (destination.Config.useRichEventName === true) {
         eventName = `Viewed ${message.name ||
           get(message, "properties.category") ||
           ""} Page`;

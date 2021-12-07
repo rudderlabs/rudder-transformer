@@ -6,7 +6,7 @@ const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 
-const { removeUndefinedAndNullValues } = require("../../util");
+const { removeUndefinedAndNullValues, isObject } = require("../../util");
 
 function processEvent(event) {
   const messageType = "track";
@@ -32,7 +32,7 @@ function processEvent(event) {
       }
     });
 
-    if (Object.prototype.toString.call(message.context.device) !== "[object Object]") {
+    if (!isObject(message.context.device)) {
       message.context.device = {};
     }
 

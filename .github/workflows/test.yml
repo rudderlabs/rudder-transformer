@@ -9,9 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: npm install
-      uses: actions/npm@master
+      uses: actions/setup-node@v2
       with:
-        args: install
+        node-version: 10
+      run: npm install
     - name: Jest
       uses: rkusa/jest-action@master
       with:

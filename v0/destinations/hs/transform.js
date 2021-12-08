@@ -33,6 +33,15 @@ function getKey(key) {
   return modifiedKey;
 }
 
+function getTraits(message) {
+  let traits = getFieldValueFromMessage(message, "traits");
+  if (!traits || !Object.keys(traits).length) {
+    traits = message.properties;
+  }
+
+  return traits;
+}
+
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
     let response;
@@ -66,17 +75,21 @@ async function getProperties(destination) {
   return hubSpotPropertyMap;
 }
 
-async function getTransformedJSON(message, mappingJson, destination) {
+async function getTransformedJSON(
+  message,
+  mappingJson,
+  destination,
+  propertyMap
+) {
   const rawPayload = {};
   const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (!traits || !Object.keys(traits).length) {
-    traits = message.properties;
-  }
+  const traits = getTraits(message);
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
-    const propertyMap = await getProperties(destination);
+    if (!propertyMap) {
+      propertyMap = await getProperties(destination);
+    }
     sourceKeys.forEach(sourceKey => {
       if (get(traits, sourceKey)) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
@@ -138,7 +151,7 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   return response;
 }
 
-async function processTrack(message, destination) {
+async function processTrack(message, destination, propertyMap) {
   const parameters = {
     _a: destination.Config.hubID,
     _n: message.event
@@ -154,7 +167,8 @@ async function processTrack(message, destination) {
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
-    destination
+    destination,
+    propertyMap
   );
 
   return responseBuilderSimple(
@@ -169,7 +183,7 @@ async function processTrack(message, destination) {
 //   throw new Error(message);
 // }
 
-async function processIdentify(message, destination) {
+async function processIdentify(message, destination, propertyMap) {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // If mapped to destination, Add externalId to traits
@@ -183,7 +197,8 @@ async function processIdentify(message, destination) {
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
-    destination
+    destination,
+    propertyMap
   );
   const properties = getPropertyValueForIdentify(userProperties);
   return responseBuilderSimple(
@@ -194,7 +209,7 @@ async function processIdentify(message, destination) {
   );
 }
 
-async function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination, propertyMap) {
   let response;
 
   if (!message.type) {
@@ -203,10 +218,10 @@ async function processSingleMessage(message, destination) {
 
   switch (message.type) {
     case EventType.TRACK:
-      response = await processTrack(message, destination);
+      response = await processTrack(message, destination, propertyMap);
       break;
     case EventType.IDENTIFY:
-      response = await processIdentify(message, destination);
+      response = await processIdentify(message, destination, propertyMap);
       break;
     default:
       throw new CustomError(
@@ -218,6 +233,7 @@ async function processSingleMessage(message, destination) {
   return response;
 }
 
+// has been deprecated - using routerTransform for both the versions
 function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
@@ -324,6 +340,14 @@ const processRouterDest = async inputs => {
   const errorRespList = [];
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
+  // reduce the no. of calls for properties endpoint
+  let propertyMap;
+  const traitsFound = inputs.some(input => {
+    return getTraits(input.message) !== undefined;
+  });
+  if (traitsFound) {
+    propertyMap = await getProperties(destination);
+  }
   await Promise.all(
     inputs.map(async input => {
       try {
@@ -337,7 +361,11 @@ const processRouterDest = async inputs => {
         } else {
           // event is not transformed
           successRespList.push({
-            message: await processSingleMessage(input.message, destination),
+            message: await processSingleMessage(
+              input.message,
+              destination,
+              propertyMap
+            ),
             metadata: input.metadata,
             destination
           });

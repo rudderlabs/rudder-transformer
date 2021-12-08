@@ -212,10 +212,9 @@ function processSingleMessage(message, destination) {
       if (destination.Config.useRichEventName === true) {
         eventName = `Viewed ${message.name ||
           message.event ||
-          get(message, "properties.category") ||
+          get(message, "properties.name") ||
           ""} Screen`;
-      }
-      else {
+      } else {
         eventName = EventType.SCREEN;
       }
       payload = processNonTrackEvents(message, eventName);
@@ -225,10 +224,9 @@ function processSingleMessage(message, destination) {
       let eventName;
       if (destination.Config.useRichEventName === true) {
         eventName = `Viewed ${message.name ||
-          get(message, "properties.category") ||
+          get(message, "properties.name") ||
           ""} Page`;
-      }
-      else {
+      } else {
         eventName = EventType.PAGE;
       }
       payload = processNonTrackEvents(message, eventName);
@@ -274,8 +272,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }

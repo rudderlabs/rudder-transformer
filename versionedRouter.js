@@ -3,7 +3,6 @@
 /* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
-const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
@@ -14,7 +13,10 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { parseDestResponse } = require("./adapters/utils/networkUtils");
+const {
+  handleResponseTransform,
+  userTransformHandler
+} = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 require("dotenv").config();
 
@@ -31,34 +33,17 @@ const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
 const router = new Router();
 
 const isDirectory = source => {
-  return lstatSync(source).isDirectory();
+  return fs.lstatSync(source).isDirectory();
 };
 
 const getIntegrations = type =>
-  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
+  fs.readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
-};
-
-const getDestNetHander = (version, dest) => {
-  const destination = _.toLower(dest);
-  let destNetHandler;
-  try {
-    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
-    if (DestHandlerMap.hasOwnProperty(destination)) {
-      destNetHandler = require(`./${version}/destinations/${DestHandlerMap[destination]}/networkResponseHandler`);
-    }
-    if (!destNetHandler && !destNetHandler.responseTransform) {
-      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-    }
-  } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-  }
-  return destNetHandler;
 };
 
 const getDestFileUploadHandler = (version, dest) => {
@@ -85,13 +70,6 @@ const functionsEnabled = () => {
     areFunctionsEnabled = process.env.ENABLE_FUNCTIONS === "false" ? 0 : 1;
   }
   return areFunctionsEnabled === 1;
-};
-
-const userTransformHandler = () => {
-  if (functionsEnabled()) {
-    return require("./util/customTransformer").userTransformHandler;
-  }
-  throw new Error("Functions are not enabled");
 };
 
 async function handleDest(ctx, version, destination) {
@@ -526,49 +504,6 @@ if (startSourceTransformer) {
           version
         });
         stats.increment("source_transform_requests", 1, { source, version });
-      });
-    });
-  });
-}
-
-function handleResponseTransform(version, destination, ctx) {
-  const destResponse = ctx.request.body;
-  const destNetHandler = getDestNetHander(version, destination);
-  let response;
-  try {
-    const parsedDestResponse = parseDestResponse(destResponse, destination);
-    response = destNetHandler.responseTransform(
-      parsedDestResponse,
-      destination
-    );
-  } catch (err) {
-    response = generateErrorObject(
-      err,
-      destination,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-    );
-    response = { ...response, destinationResponse: destResponse };
-    if (!err.responseTransformFailure) {
-      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
-    }
-  }
-  ctx.body = { output: response };
-  ctx.status = 200;
-  return ctx.body;
-}
-
-if (responseTransformer) {
-  versions.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.forEach(destination => {
-      router.post(`/transform/${destination}/response`, async ctx => {
-        const startTime = new Date();
-        ctx.set("apiVersion", API_VERSION);
-        handleResponseTransform(version, destination, ctx);
-        stats.timing("transformer_response_transform_latency", startTime, {
-          destination,
-          version
-        });
       });
     });
   });

@@ -1,7 +1,3 @@
-/* eslint-disable  consistent-return */
-/* eslint-disable  no-param-reassign */
-/* eslint-disable  array-callback-return */
-
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -219,19 +215,20 @@ const getDateInFormat = date => {
 // Generic timestamp formatter
 const formatTimeStamp = (dateStr, format) => {
   const date = new Date(dateStr);
-  switch (format) {
-    default:
-      return date.getTime();
+  // moment format is passed. format accordingly
+  if (format) {
+    return moment.utc(date).format(format);
   }
-};
 
-//
+  // return default format
+  return date.getTime();
+};
 
 const hashToSha256 = value => {
   return sha256(value);
 };
-// Check what type of gender and convert to f or m
 
+// Check what type of gender and convert to f or m
 const getFbGenderVal = gender => {
   if (
     gender.toUpperCase() === "FEMALE" ||
@@ -247,6 +244,7 @@ const getFbGenderVal = gender => {
   ) {
     return hashToSha256("m");
   }
+  return null;
 };
 
 // ========================================================================
@@ -1121,6 +1119,7 @@ module.exports = {
   flattenMap,
   formatTimeStamp,
   formatValue,
+  generateUUID,
   getSuccessRespEvents,
   generateErrorObject,
   getBrowserInfo,
@@ -1161,6 +1160,5 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload,
-  generateUUID
+  updatePayload
 };

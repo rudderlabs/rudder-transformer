@@ -14,5 +14,5 @@ jobs:
         args: install
     - name: Jest
       uses: rkusa/jest-action@master
-      secrets: d10e6be8dedb20348a882bf1aa92423d6ec22276 
-          
+      with:
+        secrets: d10e6be8dedb20348a882bf1aa92423d6ec22276

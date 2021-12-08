@@ -8,7 +8,6 @@ const {
   getFieldValueFromMessage,
   flattenJson,
   isDefinedAndNotNull,
-  isValidUrl,
   CustomError,
   getErrorRespEvents,
   getSuccessRespEvents

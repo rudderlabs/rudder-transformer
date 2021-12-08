@@ -1,0 +1,288 @@
+[
+  [
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": {
+          "id": "fedcba87-6543-210f-edc-ba9876543210",
+          "model": "Nexus 5X"
+        },
+        "timezone": "America/Chicago",
+        "os": { "version": "Android (N)", "name": "android" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.inappmessage.Click",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "campaign_name": "Test Campaign",
+        "message_variation_id": "c1234567-89ab-cdef-0123-456789abcdef",
+        "button_id": "0",
+        "send_id": "f123456789abcdef01234567"
+      },
+      "timestamp": "2020-12-14T23:32:32.551Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": { "id": "fedcba87-6543-210f-edc-ba9876543210" },
+        "timezone": "America/Chicago",
+        "os": { "name": "ios" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.pushnotification.Send",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "campaign_name": "Test Campaign",
+        "message_variation_id": "c1234567-89ab-cdef-0123-456789abcdef",
+        "send_id": "f123456789abcdef01234567",
+        "dispatch_id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "timezone": "America/Chicago",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.email.Open",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "traits": { "email": "test@test.com" },
+      "properties": {
+        "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "campaign_name": "Test Campaign",
+        "dispatch_id": "12345qwert",
+        "message_variation_id": "c1234567-89ab-cdef-0123-456789abcdef",
+        "send_id": "f123456789abcdef01234567"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "timezone": "America/Chicago",
+        "integration": { "name": "Braze" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.sms.Delivery",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "traits": { "phone": "+16462345678" },
+      "properties": {
+        "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "campaign_name": "Test Campaign",
+        "dispatch_id": "12345qwert",
+        "message_variation_id": "c1234567-89ab-cdef-0123-456789abcdef",
+        "subscription_group_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "from_phone_number": "+12123470922"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": {
+          "id": "fedcba87-6543-210f-edc-ba9876543210",
+          "model": "Nexus 5X"
+        },
+        "timezone": "America/Chicago",
+        "os": { "version": "Android (N)", "name": "android" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.inappmessage.Click",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "canvas_name": "My Cool Campaign",
+        "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+        "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "button_id": "0",
+        "send_id": "f123456789abcdef01234567"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": { "id": "fedcba87-6543-210f-edc-ba9876543210" },
+        "timezone": "America/Chicago",
+        "os": { "name": "ios" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.pushnotification.Send",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "canvas_name": "My Cool Campaign",
+        "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+        "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "send_id": "f123456789abcdef01234567",
+        "dispatch_id": "01234567-89ab-cdef-0123-456789abcdef"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "timezone": "America/Chicago",
+        "userAgent": "Mozilla/5.0(Macintosh;IntelMacOSX10_13_5)AppleWebKit/537.36(KHTML,likeGecko)Chrome/67.0.3396.99Safari/537.36"
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.email.Open",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "traits": { "email": "test@test.com" },
+      "properties": {
+        "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "canvas_name": "My Cool Canvas",
+        "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+        "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "dispatch_id": "12345qwert",
+        "send_id": "f123456789abcdef01234567"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "timezone": "America/Chicago",
+        "integration": { "name": "Braze" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.messages.sms.Delivery",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "traits": { "phone": "+16462345678" },
+      "properties": {
+        "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+        "canvas_name": "MyCoolCanvas",
+        "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+        "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "dispatch_id": "12345qwert",
+        "subscription_group_id": "41234567-89ab-cdef-0123-456789abcdef",
+        "from_phone_number": "+12123470922"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": {
+          "id": "fedcba87-6543-210f-edc-ba9876543210",
+          "model": "iPhone7Plus",
+          "advertisingId": "01234567-89ab-cdef-0123-456789abcdef",
+          "adTrackingEnabled": true
+        },
+        "timezone": "America/Chicago",
+        "os": { "version": "iOS10.3.1", "name": "ios" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.behaviors.CustomEvent",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "name": "customeventname",
+        "ad_id_type": "roku_ad_id",
+        "custom_properties": {
+          "stringpropertyname": "a",
+          "numberpropertyname": 1,
+          "listpropertyname": ["a", "b"]
+        }
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": {
+          "id": "fedcba87-6543-210f-edc-ba9876543210",
+          "model": "iPhone7Plus",
+          "advertisingId": "01234567-89ab-cdef-0123-456789abcdef",
+          "adTrackingEnabled": true
+        },
+        "timezone": "America/Chicago",
+        "os": { "version": "iOS10.3.1", "name": "ios" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.behaviors.Purchase",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "product_id": "1234",
+        "price": 12.34,
+        "currency": "AED",
+        "ad_id_type": "roku_ad_id",
+        "purchase_properties": {
+          "stringpropertyname": "a",
+          "numberpropertyname": 1,
+          "listpropertyname": ["a", "b"]
+        }
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    },
+    {
+      "context": {
+        "library": { "name": "unknown", "version": "unknown" },
+        "integration": { "name": "Braze" },
+        "device": {
+          "id": "fedcba87-6543-210f-edc-ba9876543210",
+          "model": "iPhone7Plus"
+        },
+        "os": { "version": "iOS10.3.1", "name": "ios" }
+      },
+      "integrations": { "Braze": false },
+      "type": "track",
+      "event": "users.behaviors.app.SessionStart",
+      "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+      "anonymousId": "0123456789abcdef01234567",
+      "userId": "user_id",
+      "properties": {
+        "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+        "session_id": "b1234567-89ab-cdef-0123-456789abcdef"
+      },
+      "timestamp": "1970-01-18T02:25:02.783Z"
+    }
+  ]
+]

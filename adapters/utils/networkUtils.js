@@ -137,13 +137,12 @@ const parseDestResponse = (destResponse, destination) => {
 
 // Function to process wrapped axioss response from internal http client compatible for response handlers
 const processAxiosResponse = clientResponse => {
-  let processedResponse;
   if (!clientResponse.success) {
     const { response, code } = clientResponse.response;
     // node internal http client failure cases
     if (!response && code) {
       const nodeClientError = nodeSysErrorToStatus(code);
-      processedResponse = {
+      return {
         response: nodeClientError.message,
         status: nodeClientError.status
       };
@@ -151,7 +150,7 @@ const processAxiosResponse = clientResponse => {
     // non 2xx status handling for axios response
     if (response) {
       const { data, status } = response;
-      processedResponse = {
+      return {
         response: data || "",
         status
       };
@@ -159,11 +158,10 @@ const processAxiosResponse = clientResponse => {
   }
   // success(2xx) axios response
   const { data, status } = clientResponse.response;
-  processedResponse = {
+  return {
     response: data || "",
     status
   };
-  return processedResponse;
 };
 
 module.exports = {

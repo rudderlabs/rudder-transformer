@@ -110,7 +110,8 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json"
+    Accept: "application/json",
+    "Intercom-Version": "1.4"
   };
   response.userId = message.anonymousId;
   return response;

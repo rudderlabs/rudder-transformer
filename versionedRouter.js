@@ -13,11 +13,10 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const {
-  handleResponseTransform,
-  userTransformHandler
-} = require("./routerUtils");
+const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
+const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 
@@ -29,7 +28,7 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
+const transformerProxy = process.env.TRANSFORMER_PROXY || true;
 
 const router = new Router();
 
@@ -508,6 +507,61 @@ if (startSourceTransformer) {
   });
 }
 
+async function handleProxyRequest(destination, ctx) {
+  const destinationRequest = ctx.request.body;
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
+  let response;
+  try {
+    const startTime = new Date();
+    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    stats.timing("transformer_proxy_time", startTime, {
+      destination
+    });
+    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+      rawProxyResponse
+    );
+    response = destNetworkHandler.responseHandler(
+      processedProxyResponse,
+      destination
+    );
+  } catch (err) {
+    response = generateErrorObject(
+      err,
+      destination,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    );
+    response = { ...response };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+    }
+  }
+  ctx.body = { output: response };
+  ctx.status = response.status;
+  return ctx.body;
+}
+
+if (transformerProxy) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(
+        `/${version}/destinations/${destination}/proxy`,
+        async ctx => {
+          const startTime = new Date();
+          ctx.set("apiVersion", API_VERSION);
+          await handleProxyRequest(destination, ctx);
+          stats.timing("transformer_total_proxy_latency", startTime, {
+            destination,
+            version
+          });
+        }
+      );
+    });
+  });
+}
+
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
@@ -663,5 +717,5 @@ module.exports = {
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleResponseTransform
+  handleProxyRequest
 };

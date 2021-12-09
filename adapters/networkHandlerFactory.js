@@ -1,4 +1,4 @@
-const { BrazeNetworkHandler } = require("../v0/destinations/braze/config");
+const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
 const {
   GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");

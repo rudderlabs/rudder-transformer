@@ -55,17 +55,6 @@ if (typeArg) {
       const output = await vRouter.batchHandler(reqBody);
       expect(output).toEqual(respBody);
     });
-  } else if (type === "response") {
-    reqBody.forEach((req, index) => {
-      it(`Testing: handleResponse payload:${index}`, () => {
-        const output = vRouter.handleResponseTransform(
-          version,
-          destination,
-          req
-        );
-        expect(output).toEqual(respBody[index]);
-      });
-    });
   } else if (type === "all") {
     it(`Testing: routerHandleDest`, async () => {
       const reqBody = JSON.parse(
@@ -137,17 +126,6 @@ if (typeArg) {
         )
       )
     );
-    reqBody.forEach((req, index) => {
-      it(`Testing: handleResponse payload:${index}`, () => {
-        const output = vRouter.handleResponseTransform(
-          version,
-          destination,
-          req
-        );
-        expect(output).toEqual(respBody[index]);
-      });
-    });
-    // response transform tests end
   } else {
     it(`Type is not all/router/batch/processor`, () => {
       expect("Type is not all/router/batch/processor").toEqual(

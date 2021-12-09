@@ -36,7 +36,7 @@ const {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest
-} = require("./networkResponseHandler");
+} = require("./util");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day

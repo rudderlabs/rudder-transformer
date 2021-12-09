@@ -46,7 +46,7 @@ describe(`${name} Tests`, () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
-  });s
+  });
 });
 
 const batchInputDataFile = fs.readFileSync(

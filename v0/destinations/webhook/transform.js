@@ -85,6 +85,19 @@ function process(event) {
       response.userId = message.anonymousId;
       response.endpoint = url;
 
+      // Similar hack as above for dynamically changing the full url
+      // Sample user transformation for this:
+      //
+      // export function transformEvent(event, metadata) {
+      //   event.fullPath = `${subdomain}.rudderstack.com`
+      //
+      //   return event;
+      // }
+      if (message.fullPath && typeof message.fullPath === "string" ) {
+        response.endpoint = message.fullPath;
+        delete message.fullPath
+      }
+
       // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
       // Sample user transformation for this:
       //

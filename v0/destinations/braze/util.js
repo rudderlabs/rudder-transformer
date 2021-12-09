@@ -10,14 +10,14 @@ const ErrorBuilder = require("../../util/error");
 const { DESTINATION } = require("./config");
 
 const responseHandler = (destinationResponse, _dest) => {
-  const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
+  const message = `[Braze Response Handler] Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)
       .setMessage(
-        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+        `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`
       )
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
@@ -34,7 +34,7 @@ const responseHandler = (destinationResponse, _dest) => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
-        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+        `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`
       )
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)

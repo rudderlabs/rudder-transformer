@@ -1,7 +1,9 @@
-const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
-  nodeSysErrorToStatus,
-  trimResponse,
+  httpGET,
+  httpPOST,
+  proxyRequest
+} = require("../../../adapters/network");
+const {
   getDynamicMeta,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -15,71 +17,20 @@ const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
 
 // handles marketo application level failures
-const processResponse = (
+const marketoApplicationErrorHandler = (
   marketoResponse,
-  marketoStatus,
   sourceMessage,
   stage
 ) => {
-  if (!!marketoResponse && !marketoResponse.success) {
-    // marketo application response level failure
-    const { errors } = marketoResponse;
-    const destResponse = {
-      response: marketoResponse,
-      status: marketoStatus
-    };
-    if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
-        )
-        .setDestinationResponse(destResponse)
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-        })
-        .build();
-    } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(429)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
-        )
-        .setDestinationResponse(destResponse)
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
-        })
-        .build();
-    } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-      throw new ErrorBuilder()
-        .setStatus(500)
-        .setMessage(
-          `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-        )
-        .setDestinationResponse(destResponse)
-        .isTransformResponseFailure(true)
-        .setStatTags({
-          destination: DESTINATION,
-          stage,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-        })
-        .build();
-    }
+  const { response } = marketoResponse;
+  const { errors } = response;
+  if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
         `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
       )
-      .setDestinationResponse(destResponse)
+      .setDestinationResponse(marketoResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
@@ -88,38 +39,29 @@ const processResponse = (
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
       })
       .build();
-  }
-};
-
-const marketoResponseHandler = ({
-  clientResponse,
-  sourceMessage,
-  stage
-} = {}) => {
-  // success case
-  if (clientResponse.success) {
-    const trimmedResponse = trimResponse(clientResponse);
-    const { data } = trimmedResponse;
-    if (data && data.access_token) {
-      // for authentication requests
-      return trimmedResponse;
-    }
-    if (data && data.success) {
-      // success
-      return trimmedResponse;
-    }
-    if (data) {
-      // failure
-      processResponse(data, trimmedResponse.status, sourceMessage, stage);
-    }
-    // http success but data not present
+  } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+    throw new ErrorBuilder()
+      .setStatus(429)
+      .setMessage(
+        `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
+      )
+      .setDestinationResponse(marketoResponse)
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destination: DESTINATION,
+        stage,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
+      })
+      .build();
+  } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ErrorBuilder()
       .setStatus(500)
-      .setMessage(`Request Failed for Marketo (Retryable).${sourceMessage}`)
-      .setDestinationResponse({
-        ...trimmedResponse,
-        success: false
-      })
+      .setMessage(
+        `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
+      )
+      .setDestinationResponse(marketoResponse)
+      .isTransformResponseFailure(true)
       .setStatTags({
         destination: DESTINATION,
         stage,
@@ -128,68 +70,103 @@ const marketoResponseHandler = ({
       })
       .build();
   }
-  // http failure cases
-  const { response } = clientResponse.response;
-  if (!response && clientResponse.response && clientResponse.response.code) {
-    const nodeSysErr = nodeSysErrorToStatus(clientResponse.response.code);
-    throw new ErrorBuilder()
-      .setStatus(nodeSysErr.status || 500)
-      .setMessage(`Error occured ${sourceMessage} Error: ${nodeSysErr.message}`)
-      .setStatTags({
-        destination: DESTINATION,
-        stage,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(nodeSysErr.status || 500)
-      })
-      .build();
-  } else {
-    const temp = trimResponse(clientResponse.response);
-    throw new ErrorBuilder()
-      .setStatus(temp.status || 500)
-      .setMessage(`Error occured ${sourceMessage} Error: ${temp.statusText}`)
-      .setDestinationResponse({ ...temp, success: false })
-      .setStatTags({
-        destination: DESTINATION,
-        stage,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(temp.status || 500)
-      })
-      .build();
-  }
+  throw new ErrorBuilder()
+    .setStatus(400)
+    .setMessage(
+      `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
+    )
+    .setDestinationResponse(marketoResponse)
+    .isTransformResponseFailure(true)
+    .setStatTags({
+      destination: DESTINATION,
+      stage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+    })
+    .build();
 };
 
+const marketoResponseHandler = ({
+  destResponse,
+  sourceMessage,
+  stage
+} = {}) => {
+  if (destResponse) {
+    const { status, response } = destResponse;
+    if (isHttpStatusSuccess(status)) {
+      // for authentication requests
+      if (response && response.access_token) {
+        return response;
+      }
+      if (response && response.success) {
+        return response;
+      }
+      if (response && !response.success) {
+        marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
+      }
+    } else {
+      throw new ErrorBuilder()
+        .setStatus(status)
+        .setMessage(`Error occured ${sourceMessage}`)
+        .setDestinationResponse(destResponse)
+        .setStatTags({
+          destination: DESTINATION,
+          stage,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(status)
+        })
+        .build();
+    }
+  }
+  throw new ErrorBuilder()
+    .setStatus(500)
+    .setMessage(
+      `Error occured ${sourceMessage}, no response received from destination`
+    )
+    .setDestinationResponse("")
+    .setStatTags({
+      destination: DESTINATION,
+      stage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+      meta: getDynamicMeta(500)
+    })
+    .build();
+};
+
+/**
+ *
+ * @param {*} url
+ * @param {*} options
+ * @returns { response, status }
+ */
 const sendGetRequest = async (url, options) => {
-  let clientResponse;
-  try {
-    const response = await httpGET(url, options);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  }
-  return clientResponse;
+  const clientResponse = await httpGET(url, options);
+  const processedResponse = processAxiosResponse(clientResponse);
+  return processedResponse;
 };
 
+/**
+ *
+ * @param {*} url
+ * @param {*} options
+ * @returns { response, status }
+ */
 const sendPostRequest = async (url, data, options) => {
-  let clientResponse;
-  try {
-    const response = await httpPOST(url, data, options);
-    clientResponse = { success: true, response };
-  } catch (err) {
-    clientResponse = { success: false, response: err };
-  }
-  return clientResponse;
+  const clientResponse = await httpPOST(url, options);
+  const processedResponse = processAxiosResponse(clientResponse);
+  return processedResponse;
 };
 
 // eslint-disable-next-line no-unused-vars
-const responseTransform = (destinationResponse, _dest) => {
-  const message = `[Marketo Response Transform] Request for ${DESTINATION} Processed Successfully`;
-  const { response, status } = destinationResponse;
+const responseHandler = (destinationResponse, _dest) => {
+  const message = `[Marketo Response Handler] - Request Processed Successfully`;
+  const { status } = destinationResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)
       .setMessage(
-        `[Marketo Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+        `[Marketo Response Handler] - Request failed  with status: ${status}`
       )
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
@@ -201,10 +178,10 @@ const responseTransform = (destinationResponse, _dest) => {
       })
       .build();
   }
-  processResponse(
-    response,
-    status,
-    "During Response Transform",
+
+  marketoApplicationErrorHandler(
+    destinationResponse,
+    "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
   return {
@@ -214,9 +191,15 @@ const responseTransform = (destinationResponse, _dest) => {
   };
 };
 
+const MarketoNetworkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+
 module.exports = {
   marketoResponseHandler,
-  responseTransform,
   sendGetRequest,
-  sendPostRequest
+  sendPostRequest,
+  MarketoNetworkHandler
 };

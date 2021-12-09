@@ -86,11 +86,7 @@ const marketoApplicationErrorHandler = (
     .build();
 };
 
-const marketoResponseHandler = ({
-  destResponse,
-  sourceMessage,
-  stage
-} = {}) => {
+const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   if (destResponse) {
     const { status, response } = destResponse;
     if (isHttpStatusSuccess(status)) {

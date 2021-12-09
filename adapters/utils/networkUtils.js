@@ -1,6 +1,5 @@
 /* eslint-disable eqeqeq */
 const _ = require("lodash");
-const get = require("get-value");
 const { isEmpty } = require("lodash");
 const {
   isHttpStatusRetryable,
@@ -71,17 +70,6 @@ const nodeSysErrorToStatus = code => {
     }
   };
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
-};
-
-const trimResponse = response => {
-  return {
-    code: get(response, "response.code"),
-    status: get(response, "response.status"),
-    statusText: get(response, "response.statusText"),
-    headers: get(response, "response.headers"),
-    data: get(response, "response.data"),
-    success: get(response, "suceess")
-  };
 };
 
 // Returns dynamic Meta based on Status Code as Input
@@ -177,7 +165,6 @@ const processAxiosResponse = clientResponse => {
 
 module.exports = {
   nodeSysErrorToStatus,
-  trimResponse,
   getDynamicMeta,
   parseDestResponse,
   processAxiosResponse

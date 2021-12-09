@@ -26,6 +26,8 @@
                 "language": "en-US",
                 "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
                 "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+                "city": "kolkata",
+                "country": "India",
                 "user_properties": {
                   "initial_referrer": "https://docs.rudderstack.com",
                   "initial_referring_domain": "docs.rudderstack.com",

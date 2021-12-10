@@ -109,23 +109,6 @@ if (typeArg) {
         )
       );
     });
-    // response transform tests start
-    const reqBody = JSON.parse(
-      fs.readFileSync(
-        path.resolve(
-          __dirname,
-          `./data/versioned_response_${destination}_input.json`
-        )
-      )
-    );
-    const respBody = JSON.parse(
-      fs.readFileSync(
-        path.resolve(
-          __dirname,
-          `./data/versioned_response_${destination}_output.json`
-        )
-      )
-    );
   } else {
     it(`Type is not all/router/batch/processor`, () => {
       expect("Type is not all/router/batch/processor").toEqual(

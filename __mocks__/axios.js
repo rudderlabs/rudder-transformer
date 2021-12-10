@@ -19,7 +19,7 @@ const urlDirectoryMap = {
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
-  "api.aptrinsic.com": "gainsight_px"
+  "api.aptrinsic.com": "gainsight_px",
 };
 
 const fs = require("fs");
@@ -113,7 +113,7 @@ function post(url, payload) {
       resolve({ status: 201 });
     });
   }
-  if( url.includes("https://api.getdrip.com/v2/1809802/subscribers")){
+  if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {
     return dripPostRequestHandler(url, payload);
   }
   return new Promise((resolve, reject) => {

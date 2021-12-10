@@ -1,3 +1,4 @@
+// Todo add documentation for internal functions
 function ErrorBuilder() {
   this.err = new Error();
 
@@ -15,28 +16,8 @@ function ErrorBuilder() {
     return this;
   };
 
-  this.setApiInfo = apiLimit => {
-    this.err.apiLimit = apiLimit;
-    return this;
-  };
-
-  this.setMetadata = metadata => {
-    this.err.metadata = metadata;
-    return this;
-  };
-
   this.isTransformResponseFailure = arg => {
     this.err.responseTransformFailure = arg;
-    return this;
-  };
-
-  this.isTransformerNetworkFailure = arg => {
-    this.err.networkFailure = arg;
-    return this;
-  };
-
-  this.setFailureAt = arg => {
-    this.err.failureAt = arg;
     return this;
   };
 
@@ -45,11 +26,6 @@ function ErrorBuilder() {
       status: this.err.status,
       message: this.err.message
     };
-    return this;
-  };
-
-  this.isExplicit = arg => {
-    this.err.isExplicit = arg;
     return this;
   };
 

@@ -21,7 +21,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -499,8 +500,8 @@ function processSingleMessage(message, destination) {
 
       if (
         message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
+        isDefinedAndNotNull(message.properties.revenue) &&
+        isDefinedAndNotNull(message.properties.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
@@ -622,7 +623,8 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   if (messageType === EventType.TRACK) {
-    if (message.properties && message.properties.revenue) {
+    const { properties } = message;
+    if (properties && isDefinedAndNotNull(properties.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
       revenueEvents.forEach(revenueEvent => {
         toSendEvents.push(revenueEvent);
@@ -689,8 +691,8 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length +
-        JSON.stringify(incomingMessageEvent).length <
-        AMBatchSizeLimit
+      JSON.stringify(incomingMessageEvent).length <
+      AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
@@ -728,14 +730,14 @@ function batch(destEvents) {
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
         : messageEvent
-        ? messageEvent.user_id
-        : undefined;
+          ? messageEvent.user_id
+          : undefined;
     deviceId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].device_id
         : messageEvent
-        ? messageEvent.device_id
-        : undefined;
+          ? messageEvent.device_id
+          : undefined;
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {

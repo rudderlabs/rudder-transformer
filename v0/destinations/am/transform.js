@@ -138,6 +138,22 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
+function getConfigProperty(message, payload, mappingJson) {
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    // check if custom processing is required on the payload sourceKey ==> destKey
+    if (typeof mappingJson[sourceKey] === "object") {
+      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+      if (isFunc) {
+        // get the destKey/outKey value from calling the util function
+        set(payload, outKey, AMUtils[funcName](message, sourceKey));
+      }
+    } else {
+      set(payload, mappingJson[sourceKey], get(message, sourceKey));
+    }
+  });
+}
+
 function responseBuilderSimple(
   groupInfo,
   rootElementName,
@@ -163,19 +179,7 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    // check if custom processing is required on the payload sourceKey ==> destKey
-    if (typeof mappingJson[sourceKey] === "object") {
-      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
-      if (isFunc) {
-        // get the destKey/outKey value from calling the util function
-        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
-      }
-    } else {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-    }
-  });
+  getConfigProperty(message, rawPayload, mappingJson);
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -356,6 +360,12 @@ function responseBuilderSimple(
         payload.user_id = message.userId;
       }
       payload.session_id = getSessionId(payload);
+
+      getConfigProperty(
+        message,
+        payload,
+        mappingConfig[ConfigCategory.COMMON_CONFIG.name]
+      );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
       // for correct versionName
@@ -691,8 +701,8 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length +
-      JSON.stringify(incomingMessageEvent).length <
-      AMBatchSizeLimit
+        JSON.stringify(incomingMessageEvent).length <
+        AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
@@ -730,14 +740,14 @@ function batch(destEvents) {
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
         : messageEvent
-          ? messageEvent.user_id
-          : undefined;
+        ? messageEvent.user_id
+        : undefined;
     deviceId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].device_id
         : messageEvent
-          ? messageEvent.device_id
-          : undefined;
+        ? messageEvent.device_id
+        : undefined;
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {

@@ -144,6 +144,7 @@ const processAxiosResponse = clientResponse => {
         response: nodeClientError.message,
         status: nodeClientError.status
       };
+      return processedResponse;
     }
     // non 2xx status handling for axios response
     if (response) {
@@ -152,6 +153,7 @@ const processAxiosResponse = clientResponse => {
         response: data || "",
         status
       };
+      return processedResponse;
     }
   }
   // success(2xx) axios response

@@ -12,23 +12,35 @@ const responseHandler = async (userAttributes, config) => {
       400
     );
   }
+  let endPoint;
   for (let i = 0; i < userAttributes.length; i++) {
     const uId = userAttributes[i].userId;
     if (!uId) {
       throw new CustomError("User id for deletion not present", 400);
     }
-    const data = JSON.stringify({ external_ids: [uId] });
 
+    // Endpoints different for different data centers.
+    // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
+
+    const dataCenterArr = dataCenter.trim().split("-");
+    if (dataCenterArr[0].toLowerCase() === "eu") {
+      endPoint = "https://rest.fra-01.braze.eu";
+    } else {
+      endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
+    }
+    const data = { external_ids: [uId] };
     const requestOptions = {
       method: "post",
-      url: `https://${dataCenter}.braze.com/users/delete`,
+      url: `${endPoint}/users/delete`,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${restApiKey}`
       },
       data
     };
+
     const resp = await httpSend(requestOptions);
+
     if (resp && !resp.success && !resp.response.response) {
       throw new CustomError(resp.response.code || "Could not delete user", 400);
     }

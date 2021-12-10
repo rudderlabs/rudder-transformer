@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
-const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
+const {
+  getDynamicMeta,
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
@@ -8,6 +11,7 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
+const { proxyRequest } = require("../../../adapters/network");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -138,17 +142,23 @@ const processResponse = ({ dresponse, status } = {}) => {
   }
 };
 
-const responseTransform = respTransformPayload => {
-  const { responseBody, status } = respTransformPayload;
+const responseHandler = respTransformPayload => {
+  const { response, status } = respTransformPayload;
   processResponse({
-    dresponse: responseBody,
+    dresponse: response,
     status
   });
   return {
     status,
-    destinationResponse: responseBody,
+    destinationResponse: response,
     message: "Request Processed Successfully"
   };
 };
 
-module.exports = { responseTransform };
+const BqStreamNetworkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+
+module.exports = { BqStreamNetworkHandler };

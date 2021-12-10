@@ -1178,5 +1178,7 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  isOAuthSupported,
+  isOAuthDestination
 };

@@ -1,6 +1,5 @@
 /* eslint-disable eqeqeq */
 const _ = require("lodash");
-const get = require("get-value");
 const { isEmpty } = require("lodash");
 const {
   isHttpStatusRetryable,
@@ -73,17 +72,6 @@ const nodeSysErrorToStatus = code => {
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
 
-const trimResponse = response => {
-  return {
-    code: get(response, "response.code"),
-    status: get(response, "response.status"),
-    statusText: get(response, "response.statusText"),
-    headers: get(response, "response.headers"),
-    data: get(response, "response.data"),
-    success: get(response, "suceess")
-  };
-};
-
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
@@ -147,9 +135,38 @@ const parseDestResponse = (destResponse, destination) => {
   };
 };
 
+// Function to process wrapped axioss response from internal http client compatible for response handlers
+const processAxiosResponse = clientResponse => {
+  if (!clientResponse.success) {
+    const { response, code } = clientResponse.response;
+    // node internal http client failure cases
+    if (!response && code) {
+      const nodeClientError = nodeSysErrorToStatus(code);
+      return {
+        response: nodeClientError.message,
+        status: nodeClientError.status
+      };
+    }
+    // non 2xx status handling for axios response
+    if (response) {
+      const { data, status } = response;
+      return {
+        response: data || "",
+        status
+      };
+    }
+  }
+  // success(2xx) axios response
+  const { data, status } = clientResponse.response;
+  return {
+    response: data || "",
+    status
+  };
+};
+
 module.exports = {
   nodeSysErrorToStatus,
-  trimResponse,
   getDynamicMeta,
-  parseDestResponse
+  parseDestResponse,
+  processAxiosResponse
 };

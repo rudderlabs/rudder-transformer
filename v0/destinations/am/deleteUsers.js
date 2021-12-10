@@ -16,7 +16,7 @@ const responseHandler = async (userAttributes, config) => {
     if (!uId) {
       throw new CustomError("User id for deletion not present", 400);
     }
-    const data = JSON.stringify({ user_ids: [uId], requester: "a" });
+    const data = JSON.stringify({ user_ids: [uId], requester: "RudderStack" });
     const requestOptions = {
       method: "post",
       url: "https://amplitude.com/api/2/deletions/users",

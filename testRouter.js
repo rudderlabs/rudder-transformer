@@ -130,7 +130,7 @@ getDestinations().forEach(async dest => {
             }
           }
           const transformerStatuses = [];
-          if (stage.dest_transform && stage.dest_response) {
+          if (stage.dest_transform && stage.send_to_destination) {
             // send event to destination only after transformation
             if (!errorFound) {
               const destResponses = [];

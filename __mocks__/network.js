@@ -1,32 +1,46 @@
-const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+const { isHttpStatusSuccess } = require("../v0/util");
 
-/**
- * mock function to mock axios aliasing, since jest mocks axios library with aliases
- * @param {*} options 
- * @returns 
- */
-const mockaxios = async options => {
-  const { url, data, params, headers, method } = options;
-  let resp;
-  try {
-    switch (method) {
-      case "get":
-        resp = await axios.get(url, options);
-        break;
-      case "post":
-        resp = await axios.post(url, data);
-        break;
-      case "put":
-        resp = await axios.put(url, data, options);
-        break;
-      default:
-        resp = null;
-        break;
-    }
-    return { success: true, response: resp };
-  } catch (err) {
-    return { success: false, response: err };
-  }
+const urlDirectoryMap = {
+  "api.hubapi.com": "hs",
+  "zendesk.com": "zendesk",
+  "salesforce.com": "salesforce",
+  "mktorest.com": "marketo",
+  "active.campaigns.rudder.com": "active_campaigns",
+  "api.aptrinsic.com": "gainsight_px",
+  "api.amplitude.com": "am",
+  "braze.com": "braze"
 };
 
-module.exports = { mockaxios };
+function getData(url) {
+  let directory = "";
+  Object.keys(urlDirectoryMap).forEach(key => {
+    if (url.includes(key)) {
+      directory = urlDirectoryMap[key];
+    }
+  });
+  if (directory) {
+    const dataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${directory}/proxy_response.json`)
+    );
+    const data = JSON.parse(dataFile);
+    return data[url];
+  }
+  return {};
+}
+
+const mockedAxiosClient = arg => {
+  const mockedResponse = getData(arg.url);
+  return new Promise((resolve, reject) => {
+    if (isHttpStatusSuccess(mockedResponse.status)) {
+      resolve(mockedResponse);
+    } else {
+      reject(mockedResponse);
+    }
+  });
+};
+
+module.exports = {
+  mockedAxiosClient
+};

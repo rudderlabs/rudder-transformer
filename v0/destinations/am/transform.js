@@ -138,7 +138,7 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
-function getConfigProperty(message, payload, mappingJson) {
+function updateConfigProperty(message, payload, mappingJson) {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     // check if custom processing is required on the payload sourceKey ==> destKey
@@ -179,7 +179,7 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  getConfigProperty(message, rawPayload, mappingJson);
+  updateConfigProperty(message, rawPayload, mappingJson);
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -361,7 +361,7 @@ function responseBuilderSimple(
       }
       payload.session_id = getSessionId(payload);
 
-      getConfigProperty(
+      updateConfigProperty(
         message,
         payload,
         mappingConfig[ConfigCategory.COMMON_CONFIG.name]

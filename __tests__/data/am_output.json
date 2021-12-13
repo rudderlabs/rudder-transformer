@@ -2611,5 +2611,125 @@
     },
     "files": {},
     "userId": "066a37dc92b16284"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "device_id": "066a37dc92b16284",
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {
+              "name": "Home",
+              "externalID": "1637763064336-7225034711957140329"
+            },
+            "insert_id": "1639061715808-a934f1c2-7b55-5e78-bd4d-df209c31d8a2",
+            "ip": "186.54.216.75",
+            "user_properties": {
+              "anonymousId": "50be5c79-6c3f-4b60-be84-97805a32aaa1",
+              "address": {
+                "city": "kolkata",
+                "country": "India",
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_type": "Viewed Home Screen",
+            "user_id": "abcdef123456cf",
+            "device_brand": "samsung",
+            "time": 1639061715808,
+            "session_id": -1,
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "066a37dc92b16284"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "device_id": "066a37dc92b16284",
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {
+              "name": "Home",
+              "externalID": "1637763064336-7225034711957140329"
+            },
+            "insert_id": "1639061715808-a934f1c2-7b55-5e78-bd4d-df209c31d8a2",
+            "ip": "186.54.216.75",
+            "user_properties": {
+              "anonymousId": "50be5c79-6c3f-4b60-be84-97805a32aaa1",
+              "address": {
+                "city": "Sealdah",
+                "country": "India",
+                "postalCode": 700014,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_type": "Viewed Home Screen",
+            "user_id": "abcdef123456cf",
+            "device_brand": "samsung",
+            "time": 1639061715808,
+            "session_id": -1,
+            "country": "India",
+            "city": "Sealdah",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "066a37dc92b16284"
   }
 ]

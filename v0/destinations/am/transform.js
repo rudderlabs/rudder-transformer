@@ -138,22 +138,37 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
-function updateConfigProperty(message, payload, mappingJson) {
+function updateConfigProperty(message, payload, mappingJson, validatePayload) {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     // check if custom processing is required on the payload sourceKey ==> destKey
     if (typeof mappingJson[sourceKey] === "object") {
       const { isFunc, funcName, outKey } = mappingJson[sourceKey];
       if (isFunc) {
-        const val = get(payload, outKey);
-        if (!val) {
+        if (validatePayload) {
+          const data = get(payload, outKey);
+          if (!data) {
+            const val = AMUtils[funcName](message, sourceKey);
+            if (val || val === false || val === 0) {
+              // get the destKey/outKey value from calling the util function
+              set(payload, outKey, AMUtils[funcName](message, sourceKey));
+            }
+          }
+        } else {
           // get the destKey/outKey value from calling the util function
           set(payload, outKey, AMUtils[funcName](message, sourceKey));
         }
       }
     } else {
-      const val = get(payload, mappingJson[sourceKey]);
-      if (!val) {
+      if (validatePayload) {
+        const data = get(payload, mappingJson[sourceKey]);
+        if (!data) {
+          const val = get(message, sourceKey);
+          if (val || val === false || val === 0) {
+            set(payload, mappingJson[sourceKey], get(message, sourceKey));
+          }
+        }
+      } else {
         set(payload, mappingJson[sourceKey], get(message, sourceKey));
       }
     }
@@ -185,7 +200,7 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  updateConfigProperty(message, rawPayload, mappingJson);
+  updateConfigProperty(message, rawPayload, mappingJson, false);
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -353,7 +368,8 @@ function responseBuilderSimple(
       updateConfigProperty(
         message,
         payload,
-        mappingConfig[ConfigCategory.COMMON_CONFIG.name]
+        mappingConfig[ConfigCategory.COMMON_CONFIG.name],
+        true
       );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK

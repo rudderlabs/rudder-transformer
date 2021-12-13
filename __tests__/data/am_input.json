@@ -2405,5 +2405,68 @@
         "apiKey": "abcde"
       }
     }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "event": "Home",
+      "sentAt": "2021-12-09T14:55:17.074Z",
+      "userId": "abcdef123456cf",
+      "channel": "mobile",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c79-6c3f-4b60-be84-97805a32aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "rudderId": "004670a6-4559-4f2b-aa1a-f12cf81a9423",
+      "messageId": "1639061715808-a934f1c2-7b55-5e78-bd4d-df209c31d8a2",
+      "timestamp": "2021-12-09T14:55:15.914Z",
+      "properties": {
+        "name": "Home",
+        "externalID": "1637763064336-7225034711957140329"
+      },
+      "receivedAt": "2021-12-09T14:55:17.180Z",
+      "request_ip": "186.54.216.75",
+      "anonymousId": "066a37dc92b16284",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-12-09T14:55:15.808Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
   }
 ]

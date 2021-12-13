@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
-const _ = require("lodash");
 const logger = require("./logger");
 const { proxyRequest } = require("./adapters/network");
 const { nodeSysErrorToStatus } = require("./adapters/utils/networkUtils");

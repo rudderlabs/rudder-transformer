@@ -277,6 +277,15 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
+        "traits": {
+          "address": {
+            "city": "Sealdah",
+            "country": "India",
+            "postalCode": 700014,
+            "state": "WB",
+            "street": ""
+          }
+        },
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"

@@ -145,11 +145,17 @@ function updateConfigProperty(message, payload, mappingJson) {
     if (typeof mappingJson[sourceKey] === "object") {
       const { isFunc, funcName, outKey } = mappingJson[sourceKey];
       if (isFunc) {
-        // get the destKey/outKey value from calling the util function
-        set(payload, outKey, AMUtils[funcName](message, sourceKey));
+        const val = get(payload, outKey);
+        if (!val) {
+          // get the destKey/outKey value from calling the util function
+          set(payload, outKey, AMUtils[funcName](message, sourceKey));
+        }
       }
     } else {
-      set(payload, mappingJson[sourceKey], get(message, sourceKey));
+      const val = get(payload, mappingJson[sourceKey]);
+      if (!val) {
+        set(payload, mappingJson[sourceKey], get(message, sourceKey));
+      }
     }
   });
 }
@@ -213,8 +219,6 @@ function responseBuilderSimple(
       endpoint = ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
-      rawPayload.country = get(message, "context.location.country");
-      rawPayload.city = get(message, "context.location.city");
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
@@ -242,13 +246,6 @@ function responseBuilderSimple(
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
             }
           });
-
-          if (!rawPayload.country) {
-            rawPayload.country = get(traits, "address.country");
-          }
-          if (!rawPayload.city) {
-            rawPayload.city = get(traits, "address.city");
-          }
         }
       }
 
@@ -272,20 +269,12 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
-      rawPayload.country = get(message, "context.location.country");
-      rawPayload.city = get(message, "context.location.city");
 
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...traits
         };
-        if (!rawPayload.country) {
-          rawPayload.country = get(traits, "address.country");
-        }
-        if (!rawPayload.city) {
-          rawPayload.city = get(traits, "address.city");
-        }
       }
 
       rawPayload.event_type = evType;

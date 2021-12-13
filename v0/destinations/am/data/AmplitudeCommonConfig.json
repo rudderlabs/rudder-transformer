@@ -2,5 +2,13 @@
   "context.location.region": "region",
   "context.location.latitude": "location_lat",
   "context.location.longitude": "location_lng",
-  "context.location.dma": "dma"
+  "context.location.dma": "dma",
+
+  "context.location.country": "country",
+  "traits.address.country": "country",
+  "context.traits.address.country": "country",
+
+  "context.location.city": "city",
+  "traits.address.city": "city",
+  "context.traits.address.city": "city"
 }

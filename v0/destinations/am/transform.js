@@ -147,11 +147,10 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload) {
       if (isFunc) {
         if (validatePayload) {
           const data = get(payload, outKey);
-          if (!data) {
+          if (!isDefinedAndNotNull(data)) {
             const val = AMUtils[funcName](message, sourceKey);
             if (val || val === false || val === 0) {
-              // get the destKey/outKey value from calling the util function
-              set(payload, outKey, AMUtils[funcName](message, sourceKey));
+              set(payload, outKey, val);
             }
           }
         } else {
@@ -162,10 +161,10 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload) {
     } else {
       if (validatePayload) {
         const data = get(payload, mappingJson[sourceKey]);
-        if (!data) {
+        if (!isDefinedAndNotNull(data)) {
           const val = get(message, sourceKey);
           if (val || val === false || val === 0) {
-            set(payload, mappingJson[sourceKey], get(message, sourceKey));
+            set(payload, mappingJson[sourceKey], val);
           }
         }
       } else {

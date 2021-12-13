@@ -201,4 +201,4 @@ testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
 });
 
-module.exports = { testRouter };
+module.exports = { testRouter, handleTestEvent };

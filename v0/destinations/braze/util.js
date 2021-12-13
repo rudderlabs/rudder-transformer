@@ -30,7 +30,12 @@ const responseHandler = (destinationResponse, _dest) => {
       .build();
   }
   // application level errors
-  if (!!response && response.errors && response.errors.length > 0) {
+  if (
+    !!response &&
+    response.message !== "success" &&
+    response.errors &&
+    response.errors.length > 0
+  ) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(

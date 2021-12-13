@@ -153,16 +153,21 @@ const processAxiosResponse = clientResponse => {
       const { data, status } = response;
       return {
         response: data || "",
-        status
+        status: status || 500
       };
       return processedResponse;
     }
+    // (edge case) response and code is not present
+    return {
+      response: "",
+      status: 500
+    };
   }
   // success(2xx) axios response
   const { data, status } = clientResponse.response;
   return {
     response: data || "",
-    status
+    status: status || 500
   };
 };
 

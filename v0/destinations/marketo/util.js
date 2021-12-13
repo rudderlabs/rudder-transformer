@@ -24,7 +24,7 @@ const marketoApplicationErrorHandler = (
 ) => {
   const { response } = marketoResponse;
   const { errors } = response;
-  if (MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
+  if (errors && MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
@@ -39,7 +39,7 @@ const marketoApplicationErrorHandler = (
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
       })
       .build();
-  } else if (MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
+  } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ErrorBuilder()
       .setStatus(429)
       .setMessage(
@@ -54,7 +54,7 @@ const marketoApplicationErrorHandler = (
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
       })
       .build();
-  } else if (MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
+  } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ErrorBuilder()
       .setStatus(500)
       .setMessage(
@@ -70,61 +70,34 @@ const marketoApplicationErrorHandler = (
       })
       .build();
   }
-  throw new ErrorBuilder()
-    .setStatus(400)
-    .setMessage(
-      `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
-    )
-    .setDestinationResponse(marketoResponse)
-    .isTransformResponseFailure(true)
-    .setStatTags({
-      destination: DESTINATION,
-      stage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-    })
-    .build();
 };
 
 const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
-  if (destResponse) {
-    const { status, response } = destResponse;
-    if (isHttpStatusSuccess(status)) {
-      // for authentication requests
-      if (response && response.access_token) {
-        return response;
-      }
-      if (response && response.success) {
-        return response;
-      }
-      if (response && !response.success) {
-        marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
-      }
-    } else {
-      throw new ErrorBuilder()
-        .setStatus(status)
-        .setMessage(`Error occured ${sourceMessage}`)
-        .setDestinationResponse(destResponse)
-        .setStatTags({
-          destination: DESTINATION,
-          stage,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: getDynamicMeta(status)
-        })
-        .build();
+  const { status, response } = destResponse;
+  if (isHttpStatusSuccess(status)) {
+    // for authentication requests
+    if (response && response.access_token) {
+      return response;
+    }
+    // marketo application level success
+    if (response && response.success) {
+      return response;
+    }
+    // marketo application level failure
+    if (response && !response.success) {
+      marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
     }
   }
+  // non 2xx failure
   throw new ErrorBuilder()
-    .setStatus(500)
-    .setMessage(
-      `Error occured ${sourceMessage}, no response received from destination`
-    )
-    .setDestinationResponse("")
+    .setStatus(status)
+    .setMessage(`Error occured ${sourceMessage}`)
+    .setDestinationResponse(destResponse)
     .setStatTags({
       destination: DESTINATION,
       stage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      meta: getDynamicMeta(500)
+      meta: getDynamicMeta(status)
     })
     .build();
 };
@@ -174,12 +147,13 @@ const responseHandler = (destinationResponse, _dest) => {
       })
       .build();
   }
-
+  // check for marketo application level failures
   marketoApplicationErrorHandler(
     destinationResponse,
     "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
+  // else successfully return status, message and original destination response
   return {
     status,
     message,

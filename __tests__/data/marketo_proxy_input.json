@@ -1,0 +1,254 @@
+[
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test1",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test2",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test3",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test4",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test5",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test6",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://mktId.mktorest.com/rest/v1/leads.json/test7",
+        "method": "POST",
+        "userId": "",
+        "headers": {
+          "Authorization": "Bearer token",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "action": "createOrUpdate",
+            "input": [
+              {
+                "City": "Tokyo",
+                "Country": "JP",
+                "Email": "gabi29@gmail.com",
+                "PostalCode": "100-0001",
+                "Title": "Owner",
+                "id": 1328328,
+                "userId": "gabi_userId_45"
+              }
+            ],
+            "lookupField": "id"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  }
+]

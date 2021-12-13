@@ -75,6 +75,7 @@ async function sendToDestination(destination, payload) {
   if (resp.success) {
     const { response } = resp;
     parsedResponse = {
+      headers: response.headers,
       response: response.data,
       status: response.status
     };
@@ -86,12 +87,14 @@ async function sendToDestination(destination, payload) {
   if (!error.response && error.code) {
     const nodeSysErr = nodeSysErrorToStatus(error.code);
     parsedResponse = {
+      headers: null,
       networkFailure: true,
       response: nodeSysErr.message,
       status: nodeSysErr.status
     };
   } else {
     parsedResponse = {
+      headers: error.response.headers,
       status: error.response.status,
       response:
         error.response.data || "Error occurred while processing payload."

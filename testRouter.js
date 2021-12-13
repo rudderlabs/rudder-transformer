@@ -5,11 +5,7 @@
 const fs = require("fs");
 const path = require("path");
 const Router = require("koa-router");
-const {
-  sendToDestination,
-  handleResponseTransform,
-  userTransformHandler
-} = require("./routerUtils");
+const { sendToDestination, userTransformHandler } = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -129,7 +125,7 @@ getDestinations().forEach(async dest => {
               };
             }
           }
-          const transformerStatuses = [];
+          // const transformerStatuses = [];
           if (stage.dest_transform && stage.send_to_destination) {
             // send event to destination only after transformation
             if (!errorFound) {
@@ -142,18 +138,35 @@ getDestinations().forEach(async dest => {
                 // eslint-disable-next-line no-await-in-loop
                 const parsedResponse = await sendToDestination(dest, payload);
 
-                destResponses.push(parsedResponse.response);
+                let contentType = "";
+                let response = "";
+                if (parsedResponse.headers) {
+                  contentType = parsedResponse.headers["content-type"];
+                  if (
+                    contentType.includes("text") ||
+                    contentType.toLowerCase().includes("application/xml") ||
+                    contentType.toLowerCase().includes("application/json")
+                  ) {
+                    response = parsedResponse.response;
+                  }
+                }
+
+                destResponses.push(response);
                 destResponseStatuses.push(parsedResponse.status);
 
+                // TODO: Use updated handleResponseTransform function
+                // Removing the below part, because transformerStatus is not
+                // currently being returned by test api response
+
                 // call response transform here
-                const ctxMock = {
-                  request: {
-                    body: parsedResponse
-                  }
-                };
-                handleResponseTransform(version, dest, ctxMock);
-                const { output } = ctxMock.body;
-                transformerStatuses.push(output.status);
+                // const ctxMock = {
+                //   request: {
+                //     body: parsedResponse
+                //   }
+                // };
+                // handleResponseTransform(version, dest, ctxMock);
+                // const { output } = ctxMock.body;
+                // transformerStatuses.push(output.status);
               }
               response = {
                 ...response,

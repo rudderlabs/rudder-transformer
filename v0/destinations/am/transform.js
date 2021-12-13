@@ -1,5 +1,6 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -19,8 +20,9 @@ const {
   deleteObjectProperty,
   getSuccessRespEvents,
   getErrorRespEvents,
+  generateErrorObject,
   removeUndefinedAndNullValues,
-  populateErrStat
+  isDefinedAndNotNull
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -73,6 +75,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
+  rawPayload.productId = message.properties.product_id;
   rawPayload.revenueType =
     message.properties.revenueType ||
     message.properties.revenue_type ||
@@ -206,12 +209,16 @@ function responseBuilderSimple(
       endpoint = ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
-        traits = handleTraits(traits, destination);
+        if (traits) {
+          traits = handleTraits(traits, destination);
+        }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...message.userProperties
@@ -231,6 +238,13 @@ function responseBuilderSimple(
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
             }
           });
+
+          if (!rawPayload.country) {
+            rawPayload.country = get(traits, "address.country");
+          }
+          if (!rawPayload.city) {
+            rawPayload.city = get(traits, "address.city");
+          }
         }
       }
 
@@ -254,11 +268,20 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
+      rawPayload.country = get(message, "context.location.country");
+      rawPayload.city = get(message, "context.location.city");
+
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...traits
         };
+        if (!rawPayload.country) {
+          rawPayload.country = get(traits, "address.country");
+        }
+        if (!rawPayload.city) {
+          rawPayload.city = get(traits, "address.city");
+        }
       }
 
       rawPayload.event_type = evType;
@@ -340,6 +363,7 @@ function responseBuilderSimple(
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
+      payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
@@ -476,8 +500,8 @@ function processSingleMessage(message, destination) {
 
       if (
         message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
+        isDefinedAndNotNull(message.properties.revenue) &&
+        isDefinedAndNotNull(message.properties.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
@@ -599,7 +623,8 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   if (messageType === EventType.TRACK) {
-    if (message.properties && message.properties.revenue) {
+    const { properties } = message;
+    if (properties && isDefinedAndNotNull(properties.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
       revenueEvents.forEach(revenueEvent => {
         toSendEvents.push(revenueEvent);
@@ -666,8 +691,8 @@ function getBatchEvents(message, metadata, batchEventResponse) {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length +
-        JSON.stringify(incomingMessageEvent).length <
-        AMBatchSizeLimit
+      JSON.stringify(incomingMessageEvent).length <
+      AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
@@ -705,14 +730,14 @@ function batch(destEvents) {
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
         : messageEvent
-        ? messageEvent.user_id
-        : undefined;
+          ? messageEvent.user_id
+          : undefined;
     deviceId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].device_id
         : messageEvent
-        ? messageEvent.device_id
-        : undefined;
+          ? messageEvent.device_id
+          : undefined;
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {
@@ -782,13 +807,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, DESTINATION);
+        const errRes = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
           error.status || 400,
           error.message || "Error occurred while processing payload.",
-          error
+          errRes.statTags
         );
       }
     })

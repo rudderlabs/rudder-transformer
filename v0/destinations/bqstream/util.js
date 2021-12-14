@@ -103,6 +103,7 @@ const processResponse = ({ dresponse, status } = {}) => {
           dresponse.error.message ||
             `Request failed for ${DESTINATION_NAME} with status: ${status}`
         )
+        .setDestinationResponse(dresponse.error)
         .setAuthErrorCategory(authErrorCategory)
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
@@ -117,6 +118,7 @@ const processResponse = ({ dresponse, status } = {}) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Problem during insert operation")
+        .setDestinationResponse(dresponse.insertErrors)
         .setAuthErrorCategory("")
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
@@ -131,6 +133,7 @@ const processResponse = ({ dresponse, status } = {}) => {
       .setStatus(400)
       .setMessage("Unhandled error type while sending to destination")
       .setAuthErrorCategory("")
+      .setDestinationResponse(dresponse)
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,

@@ -1,7 +1,7 @@
 [
   {
     "destKey": "$value",
-    "sourceKeys": " ",
+    "sourceKeys": "value",
     "required": false
   },
   {

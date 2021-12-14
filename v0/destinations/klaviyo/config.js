@@ -19,7 +19,7 @@ const ecomExclusionKeys = [
   "name",
   "product_id",
   "sku",
-  "imgae_url",
+  "image_url",
   "url",
   "brand",
   "price",
@@ -30,6 +30,8 @@ const ecomExclusionKeys = [
   "product_names",
   "order_id",
   "value",
+  "checkout_url",
+  "item_names",
   "checkout_url"
 ];
 

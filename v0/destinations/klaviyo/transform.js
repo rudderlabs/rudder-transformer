@@ -186,21 +186,6 @@ const trackRequestHandler = (message, category, destination) => {
       message.properties,
       MAPPING_CONFIG[categ.name]
     );
-    if (!payload.properties) {
-      let properties = {};
-      properties = extractCustomFields(
-        message,
-        properties,
-        ["properties"],
-        ecomExclusionKeys
-      );
-      if (!isEmptyObject(properties)) {
-        payload = {
-          ...payload,
-          properties
-        };
-      }
-    }
     if (message.properties.items) {
       const itemArr = [];
       message.properties.items.forEach(key => {
@@ -216,32 +201,42 @@ const trackRequestHandler = (message, category, destination) => {
       }
       payload.properties.items = itemArr;
     }
-    const response = defaultRequestConfig();
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.endpoint = `${BASE_ENDPOINT}/api/track`;
-    response.body.JSON = payload;
-    return response;
-  }
-  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.token = destination.Config.publicApiKey;
-  if (message.properties && message.properties.revenue) {
-    payload.properties.$value = message.properties.revenue;
-    delete payload.properties.revenue;
-  }
-  const customerProperties = createCustomerProperties(message);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete customerProperties.$id;
-    customerProperties._id = getFieldValueFromMessage(message, "userId");
-  }
-  payload.customer_properties = customerProperties;
-  if (message.timestamp) {
-    payload.time = toUnixTimestamp(message.timestamp);
+    if (isEmptyObject(payload.properties)) {
+      let properties = {};
+      properties = extractCustomFields(
+        message,
+        properties,
+        ["properties"],
+        ecomExclusionKeys
+      );
+      if (!isEmptyObject(properties)) {
+        payload = {
+          ...payload,
+          properties
+        };
+      }
+    }
+  } else {
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    payload.token = destination.Config.publicApiKey;
+    if (message.properties && message.properties.revenue) {
+      payload.properties.$value = message.properties.revenue;
+      delete payload.properties.revenue;
+    }
+    const customerProperties = createCustomerProperties(message);
+    if (destination.Config.enforceEmailAsPrimary) {
+      delete customerProperties.$id;
+      customerProperties._id = getFieldValueFromMessage(message, "userId");
+    }
+    payload.customer_properties = customerProperties;
+    if (message.timestamp) {
+      payload.time = toUnixTimestamp(message.timestamp);
+    }
   }
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;
   response.method = defaultGetRequestConfig.requestMethod;
-  // console.log(response);
   return response;
 };
 

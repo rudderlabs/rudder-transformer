@@ -25,6 +25,7 @@ async function processAuth(event, response) {
   if (!response.headers) {
     response.headers = {};
   }
+  console.log("OAUTH TOKEN..", oauthAccessToken);
   response.headers.Authorization = `Bearer ${oauthAccessToken}`;
   return response;
 }

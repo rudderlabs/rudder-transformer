@@ -1,0 +1,73 @@
+{
+  "https://mktId.mktorest.com/rest/v1/leads.json/test1": {
+    "data": {
+      "requestId": "664#17dae8c3d48",
+      "result": [
+        {
+          "id": 1328328,
+          "status": "updated"
+        }
+      ],
+      "success": true
+    },
+    "status": 200,
+    "statusText": "OK"
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test2": {
+    "data": {
+      "requestId": "a61c#17daea5968a",
+      "success": false,
+      "errors": [
+        {
+          "code": "601",
+          "message": "Access token invalid"
+        }
+      ]
+    },
+    "status": 200,
+    "statusText": "OK"
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test3": {
+    "data": {
+      "requestId": "a61c#17daea5968a",
+      "success": false,
+      "errors": [
+        {
+          "code": "610",
+          "message": "Requested resource not found"
+        }
+      ]
+    },
+    "status": 200,
+    "statusText": "OK"
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test4": {
+    "response": {
+      "data": {
+        "code": 413,
+        "payload_size_bytes": 86321233,
+        "message": "Payload exceeded 1MB limit."
+      },
+      "status": 413,
+      "statusText": "Request Entity Too Large",
+      "headers": {
+        "date": "Sat, 11 Dec 2021 15:08:22 GMT",
+        "content-type": "application/json",
+        "content-length": "93",
+        "connection": "keep-alive",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, POST",
+        "strict-transport-security": "max-age=15768000"
+      }
+    }
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test5": {
+    "response": {}
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test6": {
+    "response": ""
+  },
+  "https://mktId.mktorest.com/rest/v1/leads.json/test7": {
+    "code": "[ENOTFOUND] :: DNS lookup failed"
+  }
+}

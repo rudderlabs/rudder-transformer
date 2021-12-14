@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
+const axios = require("axios");
 const logger = require("../../../logger");
 const { EventType, WhiteListedTraits } = require("../../../constants");
 const {
@@ -24,7 +25,6 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
-const { httpPOST } = require("../../../adapters/network");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -63,7 +63,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   profile = removeUndefinedValues(profile);
   // send network request
   try {
-    await httpPOST(
+    await axios.post(
       targetUrl,
       {
         api_key: destination.Config.privateApiKey,
@@ -213,7 +213,7 @@ const groupRequestHandler = async (message, category, destination) => {
     }
     // send network request
     try {
-      await httpPOST(
+      await axios.post(
         targetUrl,
         {
           api_key: destination.Config.privateApiKey,

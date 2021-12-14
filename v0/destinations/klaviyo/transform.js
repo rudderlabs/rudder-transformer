@@ -2,13 +2,19 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
+const fs = require("fs");
+const path = require("path");
 const logger = require("../../../logger");
 const { EventType, WhiteListedTraits } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
   MAPPING_CONFIG,
-  LIST_CONF
+  LIST_CONF,
+  ecomExclusionKeys,
+  ecomEvents,
+  eventNameMapping,
+  jsonNameMapping
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -22,7 +28,9 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  getValueFromMessage,
+  isEmptyObject
 } = require("../../util");
 const { httpPOST } = require("../../../adapters/network");
 
@@ -141,13 +149,8 @@ const identifyRequestHandler = async (message, category, destination) => {
 // User info needs to be mapped to a track event (mandatory)
 // DOCS: https://www.klaviyo.com/docs/http-api
 // ----------------------
-const trackRequestHandler = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.token = destination.Config.publicApiKey;
-  if (message.properties && message.properties.revenue) {
-    payload.properties.$value = message.properties.revenue;
-    delete payload.properties.revenue;
-  }
+
+const createCustomerProperties = message => {
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
@@ -160,6 +163,72 @@ const trackRequestHandler = (message, category, destination) => {
     WhiteListedTraits
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
+  return customerProperties;
+};
+const trackRequestHandler = (message, category, destination) => {
+  let payload = {};
+  let event = getValueFromMessage(message, "event");
+  event = event ? event.trim().toLowerCase() : event;
+  if (ecomEvents.includes(event) && message.properties) {
+    const eventName = eventNameMapping[event];
+    payload.event = eventName;
+    payload.token = destination.Config.publicApiKey;
+    const eventMap = jsonNameMapping[eventName];
+    payload.customer_properties = createCustomerProperties(message);
+    if (
+      !payload.customer_properties.$email &&
+      !payload.customer_properties.$phone_number
+    ) {
+      throw new CustomError("customer_properties not found", 400);
+    }
+    const categ = CONFIG_CATEGORIES[eventMap];
+    payload.properties = constructPayload(
+      message.properties,
+      MAPPING_CONFIG[categ.name]
+    );
+    if (!payload.properties) {
+      let properties = {};
+      properties = extractCustomFields(
+        message,
+        properties,
+        ["properties"],
+        ecomExclusionKeys
+      );
+      if (!isEmptyObject(properties)) {
+        payload = {
+          ...payload,
+          properties
+        };
+      }
+    }
+    if (message.properties.items) {
+      const itemArr = [];
+      message.properties.items.forEach(key => {
+        let item = constructPayload(
+          key,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+        );
+        item = removeUndefinedAndNullValues(item);
+        itemArr.push(item);
+      });
+      if (!payload.properties) {
+        payload.properties = {};
+      }
+      payload.properties.items = itemArr;
+    }
+    const response = defaultRequestConfig();
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = `${BASE_ENDPOINT}/api/track`;
+    response.body.JSON = payload;
+    return response;
+  }
+  payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  payload.token = destination.Config.publicApiKey;
+  if (message.properties && message.properties.revenue) {
+    payload.properties.$value = message.properties.revenue;
+    delete payload.properties.revenue;
+  }
+  const customerProperties = createCustomerProperties(message);
   if (destination.Config.enforceEmailAsPrimary) {
     delete customerProperties.$id;
     customerProperties._id = getFieldValueFromMessage(message, "userId");
@@ -172,6 +241,7 @@ const trackRequestHandler = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;
   response.method = defaultGetRequestConfig.requestMethod;
+  // console.log(response);
   return response;
 };
 

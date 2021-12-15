@@ -27,7 +27,6 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  getValueFromMessage,
   isEmptyObject
 } = require("../../util");
 const { httpPOST } = require("../../../adapters/network");
@@ -165,7 +164,7 @@ const createCustomerProperties = message => {
 };
 const trackRequestHandler = (message, category, destination) => {
   let payload = {};
-  let event = getValueFromMessage(message, "event");
+  let event = get(message, "event");
   event = event ? event.trim().toLowerCase() : event;
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
@@ -184,7 +183,7 @@ const trackRequestHandler = (message, category, destination) => {
       message.properties,
       MAPPING_CONFIG[categ.name]
     );
-    if (message.properties.items) {
+    if (message.properties.items && Array.isArray(message.properties.items)) {
       const itemArr = [];
       message.properties.items.forEach(key => {
         let item = constructPayload(
@@ -192,27 +191,27 @@ const trackRequestHandler = (message, category, destination) => {
           MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
         );
         item = removeUndefinedAndNullValues(item);
-        itemArr.push(item);
+        if (!isEmptyObject(item)) {
+          itemArr.push(item);
+        }
       });
       if (!payload.properties) {
         payload.properties = {};
       }
       payload.properties.items = itemArr;
     }
-    if (isEmptyObject(payload.properties)) {
-      let properties = {};
-      properties = extractCustomFields(
-        message,
-        properties,
-        ["properties"],
-        ecomExclusionKeys
-      );
-      if (!isEmptyObject(properties)) {
-        payload = {
-          ...payload,
-          properties
-        };
-      }
+    let properties = {};
+    properties = extractCustomFields(
+      message,
+      properties,
+      ["properties"],
+      ecomExclusionKeys
+    );
+    if (!isEmptyObject(properties)) {
+      payload.properties = {
+        ...payload.properties,
+        ...properties
+      };
     }
   } else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);

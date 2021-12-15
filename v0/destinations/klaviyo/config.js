@@ -10,10 +10,10 @@ const CONFIG_CATEGORIES = {
   SCREEN: { name: "KlaviyoTrack", apiUrl: "/api/track" },
   TRACK: { name: "KlaviyoTrack", apiUrl: "/api/track" },
   GROUP: { name: "KlaviyoGroup" },
-  STARTED_CHECKOUT: { type: "STARTED_CHECKOUT", name: "StartedCheckout" },
-  VIEWED_PRODUCT: { type: "VIEWED_PRODUCT", name: "ViewedProduct" },
-  ADDED_TO_CART: { type: "ADDED_TO_CART", name: "AddedToCart" },
-  ITEMS: { type: "ITEMS", name: "Items" }
+  STARTED_CHECKOUT: { name: "StartedCheckout" },
+  VIEWED_PRODUCT: { name: "ViewedProduct" },
+  ADDED_TO_CART: { name: "AddedToCart" },
+  ITEMS: { name: "Items" }
 };
 const ecomExclusionKeys = [
   "name",
@@ -32,6 +32,7 @@ const ecomExclusionKeys = [
   "value",
   "checkout_url",
   "item_names",
+  "items",
   "checkout_url"
 ];
 

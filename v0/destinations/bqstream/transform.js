@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -25,7 +26,6 @@ async function processAuth(event, response) {
   if (!response.headers) {
     response.headers = {};
   }
-  console.log("OAUTH TOKEN..", oauthAccessToken);
   response.headers.Authorization = `Bearer ${oauthAccessToken}`;
   return response;
 }
@@ -41,7 +41,11 @@ const responseWrapper = response => {
 
 async function process(event) {
   const { message } = event;
-  const { properties } = message;
+  const { properties, type } = message;
+  // EventType validation
+  if (type !== EventType.TRACK) {
+    throw new CustomError(`Message Type not supported: ${type}`, 400);
+  }
   const {
     destination: {
       Config: { datasetId, tableId, projectId }

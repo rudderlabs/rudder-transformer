@@ -171,6 +171,8 @@ const trackRequestHandler = (message, category, destination) => {
     payload.event = eventName;
     payload.token = destination.Config.publicApiKey;
     const eventMap = jsonNameMapping[eventName];
+
+    // using identify to create customer properties
     payload.customer_properties = createCustomerProperties(message);
     if (
       !payload.customer_properties.$email &&
@@ -183,6 +185,8 @@ const trackRequestHandler = (message, category, destination) => {
       message.properties,
       MAPPING_CONFIG[categ.name]
     );
+
+    // products mapping using Items.json
     if (message.properties.items && Array.isArray(message.properties.items)) {
       const itemArr = [];
       message.properties.items.forEach(key => {
@@ -200,6 +204,8 @@ const trackRequestHandler = (message, category, destination) => {
       }
       payload.properties.items = itemArr;
     }
+
+    // all extra props passed is incorporated inside properties
     let properties = {};
     properties = extractCustomFields(
       message,

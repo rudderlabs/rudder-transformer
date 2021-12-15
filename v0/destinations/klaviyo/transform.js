@@ -178,7 +178,10 @@ const trackRequestHandler = (message, category, destination) => {
       !payload.customer_properties.$email &&
       !payload.customer_properties.$phone_number
     ) {
-      throw new CustomError("customer_properties not found", 400);
+      throw new CustomError(
+        "email or phone is required for customer_properties",
+        400
+      );
     }
     const categ = CONFIG_CATEGORIES[eventMap];
     payload.properties = constructPayload(
@@ -206,18 +209,21 @@ const trackRequestHandler = (message, category, destination) => {
     }
 
     // all extra props passed is incorporated inside properties
-    let properties = {};
-    properties = extractCustomFields(
+    let customProperties = {};
+    customProperties = extractCustomFields(
       message,
-      properties,
+      customProperties,
       ["properties"],
       ecomExclusionKeys
     );
-    if (!isEmptyObject(properties)) {
+    if (!isEmptyObject(customProperties)) {
       payload.properties = {
         ...payload.properties,
-        ...properties
+        ...customProperties
       };
+    }
+    if (isEmptyObject(payload.properties)) {
+      delete payload.properties;
     }
   } else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);

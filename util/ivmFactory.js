@@ -5,7 +5,7 @@ const _ = require("lodash");
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 
-const isolateVmMem = 8;
+const isolateVmMem = 128;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});

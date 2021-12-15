@@ -158,10 +158,10 @@ const responseHandler = respTransformPayload => {
   };
 };
 
-const BqStreamNetworkHandler = function() {
+const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 
-module.exports = { BqStreamNetworkHandler };
+module.exports = { networkHandler };

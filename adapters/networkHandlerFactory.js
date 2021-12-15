@@ -1,9 +1,15 @@
-const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
-const { MarketoNetworkHandler } = require("../v0/destinations/marketo/util");
-const { BqStreamNetworkHandler } = require("../v0/destinations/bqstream/util");
 const {
-  GenericNetworkHandler
+  networkHandler: BrazeNetworkHandler
+} = require("../v0/destinations/braze/util");
+const {
+  networkHandler: MarketoNetworkHandler
+} = require("../v0/destinations/marketo/util");
+const {
+  networkHandler: GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
+const {
+  networkHandler: BqStreamNetworkHandler
+} = require("../v0/destinations/bqstream/util");
 
 const handler = {
   generic: GenericNetworkHandler,

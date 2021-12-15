@@ -58,12 +58,12 @@ const responseHandler = (destinationResponse, _dest) => {
   };
 };
 
-const BrazeNetworkHandler = function() {
+const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 
 module.exports = {
-  BrazeNetworkHandler
+  networkHandler
 };

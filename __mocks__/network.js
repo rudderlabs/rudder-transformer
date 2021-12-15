@@ -10,7 +10,8 @@ const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
   "api.amplitude.com": "am",
-  "braze.com": "braze"
+  "braze.com": "braze",
+  "bigquery.googleapis.com": "bqstream"
 };
 
 function getData(url) {

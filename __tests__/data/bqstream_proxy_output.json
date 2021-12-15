@@ -1,0 +1,164 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "kind": "bigquery#tableDataInsertAllResponse"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Problem during insert operation",
+      "destinationResponse": [
+        {
+          "errors": [
+            {
+              "debugInfo": "",
+              "location": "count",
+              "message": "Invalid NUMERIC value: $2",
+              "reason": "invalid"
+            }
+          ],
+          "index": 0
+        }
+      ],
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Problem during insert operation",
+      "destinationResponse": [
+        {
+          "index": 0,
+          "errors": [
+            {
+              "reason": "invalid",
+              "location": "",
+              "debugInfo": "",
+              "message": "Missing required fields: Msg_0_CLOUD_QUERY_TABLE.count, Msg_0_CLOUD_QUERY_TABLE.productid, Msg_0_CLOUD_QUERY_TABLE.productname."
+            }
+          ]
+        }
+      ],
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+      "destinationResponse": {
+        "code": 401,
+        "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+        "errors": [
+          {
+            "message": "Invalid Credentials",
+            "domain": "global",
+            "reason": "authError",
+            "location": "Authorization",
+            "locationType": "header"
+          }
+        ],
+        "status": "UNAUTHENTICATED"
+      },
+      "authErrorCategory": "REFRESH_TOKEN",
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "retryable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+      "destinationResponse": {
+        "code": 401,
+        "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+        "errors": [
+          {
+            "message": "Invalid Credentials",
+            "domain": "global",
+            "reason": "authError",
+            "location": "Authorization",
+            "locationType": "header"
+          }
+        ],
+        "status": "UNAUTHENTICATED"
+      },
+      "authErrorCategory": "REFRESH_TOKEN",
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "retryable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Access Denied: Dataset test-project:test_ds_unaccess: Permission bigquery.datasets.get denied on dataset test-project:test_ds_unaccess (or it may not exist).",
+      "destinationResponse": {
+        "code": 403,
+        "message": "Access Denied: Dataset test-project:test_ds_unaccess: Permission bigquery.datasets.get denied on dataset test-project:test_ds_unaccess (or it may not exist).",
+        "errors": [
+          {
+            "message": "Access Denied: Dataset test-project:test_ds_unaccess: Permission bigquery.datasets.get denied on dataset test-project:test_ds_unaccess (or it may not exist).",
+            "domain": "global",
+            "reason": "accessDenied"
+          }
+        ],
+        "status": "PERMISSION_DENIED"
+      },
+      "authErrorCategory": "DISABLE_DESTINATION",
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Not found: Project test-project-notexist",
+      "destinationResponse": {
+        "code": 404,
+        "message": "Not found: Project test-project-notexist",
+        "errors": [
+          {
+            "message": "Not found: Project test-project-notexist",
+            "domain": "global",
+            "reason": "notFound"
+          }
+        ],
+        "status": "NOT_FOUND"
+      },
+      "statTags": {
+        "destination": "bqstream",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
+  }
+]

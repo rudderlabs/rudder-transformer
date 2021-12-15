@@ -2,7 +2,7 @@ const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
-const destinations = ["marketo", "braze"];
+const destinations = ["marketo", "braze", "bqstream"];
 const service = require("../versionedRouter").handleProxyRequest;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));

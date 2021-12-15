@@ -1,0 +1,126 @@
+{
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test1": {
+    "data": {
+      "kind": "bigquery#tableDataInsertAllResponse"
+    },
+    "status": 200
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test2": {
+    "data": {
+      "kind": "bigquery#tableDataInsertAllResponse",
+      "insertErrors": [
+        {
+          "index": 0,
+          "errors": [
+            {
+              "reason": "invalid",
+              "location": "count",
+              "debugInfo": "",
+              "message": "Invalid NUMERIC value: $2"
+            }
+          ]
+        }
+      ]
+    },
+    "status": 201
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test3": {
+    "data": {
+      "kind": "bigquery#tableDataInsertAllResponse",
+      "insertErrors": [
+        {
+          "index": 0,
+          "errors": [
+            {
+              "reason": "invalid",
+              "location": "",
+              "debugInfo": "",
+              "message": "Missing required fields: Msg_0_CLOUD_QUERY_TABLE.count, Msg_0_CLOUD_QUERY_TABLE.productid, Msg_0_CLOUD_QUERY_TABLE.productname."
+            }
+          ]
+        }
+      ]
+    },
+    "status": 200
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test4": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 401,
+          "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+          "errors": [
+            {
+              "message": "Invalid Credentials",
+              "domain": "global",
+              "reason": "authError",
+              "location": "Authorization",
+              "locationType": "header"
+            }
+          ],
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "status": 401
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test5": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 401,
+          "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+          "errors": [
+            {
+              "message": "Invalid Credentials",
+              "domain": "global",
+              "reason": "authError",
+              "location": "Authorization",
+              "locationType": "header"
+            }
+          ],
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "status": 401
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds_unaccess/tables/test_products/insertAll/test6": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 403,
+          "message": "Access Denied: Dataset test-project:test_ds_unaccess: Permission bigquery.datasets.get denied on dataset test-project:test_ds_unaccess (or it may not exist).",
+          "errors": [
+            {
+              "message": "Access Denied: Dataset test-project:test_ds_unaccess: Permission bigquery.datasets.get denied on dataset test-project:test_ds_unaccess (or it may not exist).",
+              "domain": "global",
+              "reason": "accessDenied"
+            }
+          ],
+          "status": "PERMISSION_DENIED"
+        }
+      },
+      "status": 403
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project-notexist/datasets/test_ds/tables/test_products/insertAll/test7": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 404,
+          "message": "Not found: Project test-project-notexist",
+          "errors": [
+            {
+              "message": "Not found: Project test-project-notexist",
+              "domain": "global",
+              "reason": "notFound"
+            }
+          ],
+          "status": "NOT_FOUND"
+        }
+      },
+      "status": 404
+    }
+  }
+}

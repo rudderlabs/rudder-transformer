@@ -171,6 +171,10 @@ const trackRequestHandler = (message, category, destination) => {
     payload.event = eventName;
     payload.token = destination.Config.publicApiKey;
     const eventMap = jsonNameMapping[eventName];
+    const timestamp = get(message, "originalTimestamp");
+    if (timestamp) {
+      payload.time = timestamp;
+    }
 
     // using identify to create customer properties
     payload.customer_properties = createCustomerProperties(message);
@@ -222,6 +226,7 @@ const trackRequestHandler = (message, category, destination) => {
         ...customProperties
       };
     }
+
     if (isEmptyObject(payload.properties)) {
       delete payload.properties;
     }

@@ -63,9 +63,12 @@ function validateIdentify(message, payload) {
         finalPayload.custom_attributes.company
       );
     }
-    ReservedTraitsProperties.forEach(trait => {
-      delete finalPayload.custom_attributes[trait];
-    });
+
+    if (finalPayload.custom_attributes) {
+      ReservedTraitsProperties.forEach(trait => {
+        delete finalPayload.custom_attributes[trait];
+      });
+    }
 
     return finalPayload;
   }

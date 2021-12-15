@@ -161,7 +161,7 @@ const responseHandler = (destinationResponse, _dest) => {
   };
 };
 
-const MarketoNetworkHandler = function() {
+const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
@@ -171,5 +171,5 @@ module.exports = {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest,
-  MarketoNetworkHandler
+  networkHandler
 };

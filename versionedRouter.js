@@ -535,7 +535,7 @@ async function handleProxyRequest(destination, ctx) {
     );
     response = { ...response };
     if (!err.responseTransformFailure) {
-      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+      response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
   }
   ctx.body = { output: response };

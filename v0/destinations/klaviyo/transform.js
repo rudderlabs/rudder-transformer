@@ -171,11 +171,6 @@ const trackRequestHandler = (message, category, destination) => {
     payload.event = eventName;
     payload.token = destination.Config.publicApiKey;
     const eventMap = jsonNameMapping[eventName];
-    const timestamp = get(message, "originalTimestamp");
-    if (timestamp) {
-      payload.time = timestamp;
-    }
-
     // using identify to create customer properties
     payload.customer_properties = createCustomerProperties(message);
     if (
@@ -243,9 +238,9 @@ const trackRequestHandler = (message, category, destination) => {
       customerProperties._id = getFieldValueFromMessage(message, "userId");
     }
     payload.customer_properties = customerProperties;
-    if (message.timestamp) {
-      payload.time = toUnixTimestamp(message.timestamp);
-    }
+  }
+  if (message.timestamp) {
+    payload.time = toUnixTimestamp(message.timestamp);
   }
   const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();

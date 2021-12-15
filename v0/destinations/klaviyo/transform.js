@@ -2,8 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
-const fs = require("fs");
-const path = require("path");
 const logger = require("../../../logger");
 const { EventType, WhiteListedTraits } = require("../../../constants");
 const {

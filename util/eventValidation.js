@@ -23,6 +23,15 @@ const violationTypes = {
     UnplannedEvent: "Unplanned-Event"
 };
 
+const supportedEventTypes = {
+    "identify": false,
+    "track": true,
+    "page": false,
+    "screen": false,
+    "alias": false,
+    "group": false
+};
+
 // TODO: Handle various json schema versions
 let ajv = new Ajv(defaultOptions);
 
@@ -37,6 +46,21 @@ function checkForPropertyMissing(property) {
         throw `${property} doesnt exist for event`;
     }
 }
+
+/**
+ * @param {*} eventType
+ *
+ * Checks if the event type is supported or not.
+ * @returns true if it is supprted
+ * @returns false if it is not supported or even if it is not present in supportedEventTypes map.
+ */
+function checkIfEventTypeIsSupportedOrNot(eventType) {
+    if (!supportedEventTypes.hasOwnProperty(eventType)) {
+        return false;
+    }
+    return supportedEventTypes[eventType];
+}
+
 
 /**
  * @param {*} tpId
@@ -190,6 +214,15 @@ async function handleValidation(event) {
             };
         }
 
+        // Checking the evenType is supported or not
+        if (!checkIfEventTypeIsSupportedOrNot(event.message.type)) {
+            return {
+                dropEvent: dropEvent,
+                violationType: violationType,
+                validationErrors: []
+            };
+        }
+
         const validationErrors = await validate(event);
         if (validationErrors.length === 0) {
             return {
@@ -265,4 +298,7 @@ async function handleValidation(event) {
     }
 }
 
-exports.handleValidation = handleValidation;
+module.exports = {
+    handleValidation,
+    checkIfEventTypeIsSupportedOrNot
+};

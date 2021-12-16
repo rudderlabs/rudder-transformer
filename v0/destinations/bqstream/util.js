@@ -137,9 +137,8 @@ const processResponse = ({ dresponse, status } = {}) => {
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destination: DESTINATION_NAME,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
       })
       .build();
   }

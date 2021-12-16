@@ -1,7 +1,12 @@
 const ErrorBuilder = require("../../v0/util/error");
 const { isHttpStatusSuccess } = require("../../v0/util/index");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
-const { getDynamicMeta } = require("../utils/networkUtils");
+const { proxyRequest } = require("../network");
+const {
+  getDynamicMeta,
+  processAxiosResponse
+} = require("../utils/networkUtils");
+
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction
  * for all the network comms btw dest transformer.
@@ -15,16 +20,15 @@ const { getDynamicMeta } = require("../utils/networkUtils");
  * will act as fall-fack for such scenarios.
  *
  */
-
-const responseTransform = (destinationResponse, dest) => {
+const responseHandler = (destinationResponse, dest) => {
   const { status } = destinationResponse;
-  const message = `[Generic Response Transform] Request for destination: ${dest} Processed Successfully`;
+  const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)
       .setMessage(
-        `[Generic Response Transfom] Request failed for destination ${dest} with status: ${status}`
+        `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`
       )
       .isTransformResponseFailure(true)
       .setDestinationResponse(destinationResponse)
@@ -43,4 +47,10 @@ const responseTransform = (destinationResponse, dest) => {
   };
 };
 
-module.exports = { responseTransform };
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+
+module.exports = { networkHandler };

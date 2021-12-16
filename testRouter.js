@@ -129,7 +129,7 @@ getDestinations().forEach(async dest => {
               };
             }
           }
-          const transformerStatuses = [];
+          // const transformerStatuses = [];
           if (stage.dest_transform && stage.send_to_destination) {
             // send event to destination only after transformation
             if (!errorFound) {
@@ -145,15 +145,19 @@ getDestinations().forEach(async dest => {
                 destResponses.push(parsedResponse.response);
                 destResponseStatuses.push(parsedResponse.status);
 
+                // TODO: Use updated handleResponseTransform function
+                // Removing the below part, because transformerStatus is not
+                // currently being returned by test api response
+
                 // call response transform here
-                const ctxMock = {
-                  request: {
-                    body: parsedResponse
-                  }
-                };
-                handleResponseTransform(version, dest, ctxMock);
-                const { output } = ctxMock.body;
-                transformerStatuses.push(output.status);
+                // const ctxMock = {
+                //   request: {
+                //     body: parsedResponse
+                //   }
+                // };
+                // handleResponseTransform(version, dest, ctxMock);
+                // const { output } = ctxMock.body;
+                // transformerStatuses.push(output.status);
               }
               response = {
                 ...response,

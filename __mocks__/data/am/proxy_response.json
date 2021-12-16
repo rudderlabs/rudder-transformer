@@ -1,0 +1,57 @@
+{
+  "https://api.amplitude.com/2/httpapi/test1": {
+    "data": {
+      "code": 200,
+      "server_upload_time": 1639235302252,
+      "payload_size_bytes": 863,
+      "events_ingested": 1
+    },
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "date": "Sat, 11 Dec 2021 15:08:22 GMT",
+      "content-type": "application/json",
+      "content-length": "93",
+      "connection": "keep-alive",
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "GET, POST",
+      "strict-transport-security": "max-age=15768000"
+    }
+  },
+  "https://api.amplitude.com/2/httpapi/test2": {
+    "response": {
+      "data": {
+        "code": 400,
+        "server_upload_time": 1639235302252,
+        "payload_size_bytes": 863,
+        "events_ingested": 0
+      },
+      "status": 400,
+      "statusText": "Bad Request",
+      "headers": {
+        "date": "Sat, 11 Dec 2021 15:08:22 GMT",
+        "content-type": "application/json",
+        "content-length": "93",
+        "connection": "keep-alive",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, POST",
+        "strict-transport-security": "max-age=15768000"
+      }
+    }
+  },
+  "https://api.amplitude.com/2/httpapi/test3": {
+    "code": "[ENOTFOUND] :: DNS lookup failed"
+  },
+  "https://api.amplitude.com/2/httpapi/test4": {
+    "response": {
+      "status": 400,
+      "statusText": "Bad Request"
+    }
+  },
+  "https://api.amplitude.com/2/httpapi/test5": {
+    "response": {}
+  },
+  "https://api.amplitude.com/2/httpapi/test6": {
+    
+  }
+}

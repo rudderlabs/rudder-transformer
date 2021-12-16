@@ -1,6 +1,5 @@
 /* eslint-disable eqeqeq */
 const _ = require("lodash");
-const get = require("get-value");
 const { isEmpty } = require("lodash");
 const {
   isHttpStatusRetryable,
@@ -73,17 +72,6 @@ const nodeSysErrorToStatus = code => {
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
 
-const trimResponse = response => {
-  return {
-    code: get(response, "response.code"),
-    status: get(response, "response.status"),
-    statusText: get(response, "response.statusText"),
-    headers: get(response, "response.headers"),
-    data: get(response, "response.data"),
-    success: get(response, "suceess")
-  };
-};
-
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
@@ -144,9 +132,47 @@ const parseDestResponse = (destResponse, destination) => {
   };
 };
 
+// Function to process wrapped axioss response from internal http client compatible for response handlers
+const processAxiosResponse = clientResponse => {
+  let processedResponse;
+  if (!clientResponse.success) {
+    const { response, code } = clientResponse.response;
+    // node internal http client failure cases
+    if (!response && code) {
+      const nodeClientError = nodeSysErrorToStatus(code);
+      processedResponse = {
+        response: nodeClientError.message,
+        status: nodeClientError.status
+      };
+      return processedResponse;
+    }
+    // non 2xx status handling for axios response
+    if (response) {
+      const { data, status } = response;
+      processedResponse = {
+        response: data || "",
+        status: status || 500
+      };
+      return processedResponse;
+    }
+    // (edge case) response and code is not present
+    return {
+      response: "",
+      status: 500
+    };
+  }
+  // success(2xx) axios response
+  const { data, status } = clientResponse.response;
+  processedResponse = {
+    response: data || "",
+    status: status || 500
+  };
+  return processedResponse;
+};
+
 module.exports = {
   nodeSysErrorToStatus,
-  trimResponse,
   getDynamicMeta,
-  parseDestResponse
+  parseDestResponse,
+  processAxiosResponse
 };

@@ -65,5 +65,28 @@
     "headers": {},
     "version": "1",
     "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGlkIjoiYmF0c3UiLCIkZW1haWwiOiJiYXRzdUBydWRkZXJzdGFjay5jb20iLCIkZmlyc3RfbmFtZSI6IkJhdHN1IiwiJGxhc3RfbmFtZSI6IkNob3dkaHVyeSIsIiRwaG9uZV9udW1iZXIiOiIrMTIgMzQ1IDU3OCA5MDAiLCIkdGl0bGUiOiJEZXZlbG9wZXIiLCIkb3JnYW5pemF0aW9uIjoiUnVkZGVyIiwiJGNpdHkiOiJUb2t5byIsIiRyZWdpb24iOiJLYW50byIsIiRjb3VudHJ5IjoiSlAiLCIkemlwIjoiMTAwLTAwMDEiLCJGbGFnZ2VkIjpmYWxzZSwiUmVzaWRlbmNlIjoiU2hpYnV5YSJ9fQ=="
+  },
+  {
+    "body": { "XML": {}, "JSON_ARRAY": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlZpZXdlZCBQcm9kdWN0IiwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRpZCI6InNhamFsMTIiLCIkZW1haWwiOiJ1dHNhYkBydWRkZXJzdGFjay5jb20iLCIkcGhvbmVfbnVtYmVyIjoiOTExMjM0MDM3NSIsImFnZSI6IjIyIiwibmFtZSI6IlV0c2FiIiwiZGVzY3JpcHRpb24iOiJTYW1wbGUgZGVzY3JpcHRpb24ifSwicHJvcGVydGllcyI6eyJQcm9kdWN0TmFtZSI6InRlc3QgcHJvZHVjdCIsIlByb2R1Y3RJRCI6IjExMTQiLCJTS1UiOiJXSU5OSWVQdWgxMiIsIkltYWdlVVJMIjoiaHR0cDovL3d3dy5leGFtcGxlLmNvbS9wYXRoL3RvL3Byb2R1Y3QvaW1hZ2UucG5nIiwiVVJMIjoiaHR0cDovL3d3dy5leGFtcGxlLmNvbS9wYXRoL3RvL3Byb2R1Y3QiLCJCcmFuZCI6Ik5vdCBmb3IgS2lkcyIsIlByaWNlIjo5LjksIkNhdGVnb3JpZXMiOlsiRmljdGlvbiIsIkNoaWxkcmVuIl19fQ=="
+  },
+  {
+    "body": { "XML": {}, "JSON_ARRAY": {}, "FORM": {}, "JSON": {} },
+    "type": "REST",
+    "files": {},
+    "method": "GET",
+    "params": {},
+    "headers": {},
+    "version": "1",
+    "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IkFkZGVkIHRvIENhcnQiLCJ0b2tlbiI6IldKcWlqOSIsImN1c3RvbWVyX3Byb3BlcnRpZXMiOnsiJGlkIjoic2FqYWwxMiIsIiRlbWFpbCI6InV0c2FiQHJ1ZGRlcnN0YWNrLmNvbSIsIiRwaG9uZV9udW1iZXIiOiI5MTEyMzQwMzc1IiwiYWdlIjoiMjIiLCJuYW1lIjoiVXRzYWIiLCJkZXNjcmlwdGlvbiI6IlNhbXBsZSBkZXNjcmlwdGlvbiJ9LCJwcm9wZXJ0aWVzIjp7IiR2YWx1ZSI6MTIuMTIsIkFkZGVkSXRlbUNhdGVnb3JpZXMiOlsiRmljdGlvbjMiLCJDaGlsZHJlbjMiXSwiSXRlbU5hbWVzIjpbImJvb2sxIiwiYm9vazIiXSwiQ2hlY2tvdXRVUkwiOiJodHRwOi8vd3d3LmhleXRoZXJlLmNvbSIsIml0ZW1zIjpbeyJQcm9kdWN0SUQiOiJiMXBpZCIsIlNLVSI6IjEyM3giLCJQcm9kdWN0TmFtZSI6ImJvb2sxIiwiSXRlbVByaWNlIjoxMiwiUHJvZHVjdFVSTCI6ImhleXRoZXIuY29tIn0seyJQcm9kdWN0SUQiOiJiMnBpZCIsIlNLVSI6IjEyM3giLCJQcm9kdWN0TmFtZSI6ImJvb2syIiwiSXRlbVByaWNlIjoxNCwiUHJvZHVjdFVSTCI6ImhleXRoZXIyLmNvbSJ9XX19"
+  },
+  {
+    "error": "email or phone is required for customer_properties"
   }
 ]

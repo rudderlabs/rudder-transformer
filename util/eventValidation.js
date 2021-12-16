@@ -24,12 +24,12 @@ const violationTypes = {
 };
 
 const supportedEventTypes = {
-    "identify": false,
+    "group": true,
     "track": true,
+    "identify": true,
     "page": false,
     "screen": false,
-    "alias": false,
-    "group": false
+    "alias": false
 };
 
 // TODO: Handle various json schema versions
@@ -51,8 +51,8 @@ function checkForPropertyMissing(property) {
  * @param {*} eventType
  *
  * Checks if the event type is supported or not.
- * @returns true if it is supprted
- * @returns false if it is not supported or even if it is not present in supportedEventTypes map.
+ * @returns true If it is supported.
+ * @returns false If it is not supported or it is not present in supportedEventTypes.
  */
 function checkIfEventTypeIsSupportedOrNot(eventType) {
     if (!supportedEventTypes.hasOwnProperty(eventType)) {

@@ -1,4 +1,5 @@
 const {checkIfEventTypeIsSupportedOrNot} = require("../util/eventValidation");
+
 var testCases = [
     {
         "output": false
@@ -13,10 +14,14 @@ var testCases = [
     },
     {
         "eventType": "identify",
-        "output": false
+        "output": true
     },
     {
         "eventType": "track",
+        "output": true
+    },
+    {
+        "eventType": "group",
         "output": true
     },
     {
@@ -29,10 +34,6 @@ var testCases = [
     },
     {
         "eventType": "alias",
-        "output": false
-    },
-    {
-        "eventType": "group",
         "output": false
     }
 ]

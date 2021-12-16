@@ -169,6 +169,44 @@ const processAxiosResponse = clientResponse => {
   };
 };
 
+// Function to process wrapped axioss response from internal http client compatible for response handlers
+const processAxiosResponse = clientResponse => {
+  let processedResponse;
+  if (!clientResponse.success) {
+    const { response, code } = clientResponse.response;
+    // node internal http client failure cases
+    if (!response && code) {
+      const nodeClientError = nodeSysErrorToStatus(code);
+      processedResponse = {
+        response: nodeClientError.message,
+        status: nodeClientError.status
+      };
+      return processedResponse;
+    }
+    // non 2xx status handling for axios response
+    if (response) {
+      const { data, status } = response;
+      processedResponse = {
+        response: data || "",
+        status: status || 500
+      };
+      return processedResponse;
+    }
+    // (edge case) response and code is not present
+    return {
+      response: "",
+      status: 500
+    };
+  }
+  // success(2xx) axios response
+  const { data, status } = clientResponse.response;
+  processedResponse = {
+    response: data || "",
+    status: status || 500
+  };
+  return processedResponse;
+};
+
 module.exports = {
   nodeSysErrorToStatus,
   getDynamicMeta,

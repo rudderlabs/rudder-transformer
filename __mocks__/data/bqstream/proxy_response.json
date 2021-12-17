@@ -122,5 +122,81 @@
       },
       "status": 404
     }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test8": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 403,
+          "message": "Rate Limit Exceeded",
+          "errors": [
+            {
+              "message": "Rate Limit Exceeded",
+              "domain": "global",
+              "reason": "rateLimitExceeded"
+            }
+          ],
+          "status": "RATE_LIMIT_EXCEEDED"
+        }
+      },
+      "status": 403
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test9": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 403,
+          "message": "Other error from google",
+          "errors": [
+            {
+              "message": "Other error from google",
+              "domain": "global",
+              "reason": "randomReason"
+            }
+          ],
+          "status": "RANDOM_REASON"
+        }
+      },
+      "status": 403
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test10": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 403,
+          "message": "Other error from google",
+          "errors": [
+            {
+              "message": "Other error from google",
+              "domain": "global"
+            }
+          ],
+          "status": "RANDOM_REASON"
+        }
+      },
+      "status": 403
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test11": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 502,
+          "message": "Bad Gateway",
+          "status": "RANDOM_REASON"
+        }
+      },
+      "status": 502
+    }
+  },
+  "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test12": {
+    "response": {
+      "data": {
+        "random": "random"
+      },
+      "status": 400
+    }
   }
 }

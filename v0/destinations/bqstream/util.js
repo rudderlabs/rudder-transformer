@@ -45,23 +45,34 @@ const getDestAuthCategory = errorCategory => {
   }
 };
 
-const destinationToRudderStatusMap = {
-  403: 400,
-  500: 500,
-  501: 400,
-  401: 500,
-  404: 400
+const destToRudderStatusMap = {
+  403: {
+    rateLimitExceeded: 429,
+    default: 400
+  },
+  400: {
+    tableUnavailable: 500,
+    default: 400
+  },
+  500: { default: 500 },
+  503: { default: 500 },
+  401: { default: 500 },
+  404: { default: 400 },
+  501: { default: 400 }
 };
 
 const getStatusAndCategory = (dresponse, status) => {
-  const trStatus = destinationToRudderStatusMap[status];
   const authErrorCategory = getDestAuthCategory(dresponse.error.status);
-  if (!trStatus) {
-    return {
-      status: 500,
-      authErrorCategory
-    };
-  }
+  const reason =
+    dresponse.error.errors &&
+    Array.isArray(dresponse.error.errors) &&
+    dresponse.error.errors.length > 0 &&
+    dresponse.error.errors[0].reason;
+
+  const trStatus = destToRudderStatusMap[status]
+    ? destToRudderStatusMap[status][reason] ||
+      destToRudderStatusMap[status].default
+    : 500;
   return { status: trStatus, authErrorCategory };
 };
 
@@ -103,7 +114,7 @@ const processResponse = ({ dresponse, status } = {}) => {
           dresponse.error.message ||
             `Request failed for ${DESTINATION_NAME} with status: ${status}`
         )
-        .setDestinationResponse(dresponse.error)
+        .setDestinationResponse(dresponse)
         .setAuthErrorCategory(authErrorCategory)
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
@@ -118,7 +129,7 @@ const processResponse = ({ dresponse, status } = {}) => {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage("Problem during insert operation")
-        .setDestinationResponse(dresponse.insertErrors)
+        .setDestinationResponse(dresponse)
         .setAuthErrorCategory("")
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({

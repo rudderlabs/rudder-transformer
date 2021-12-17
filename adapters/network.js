@@ -67,7 +67,13 @@ const httpSend = async options => {
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpGET = async (url, options) => {
-  return axios.get(url, options);
+  try {
+    const response = await axios.get(url, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
+  return clientResponse;
 };
 
 /**
@@ -79,7 +85,12 @@ const httpGET = async (url, options) => {
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpDELETE = async (url, options) => {
-  return axios.delete(url, options);
+  try {
+    const response = await axios.delete(url, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
 };
 
 /**
@@ -92,7 +103,12 @@ const httpDELETE = async (url, options) => {
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPOST = async (url, data, options) => {
-  return axios.post(url, data, options);
+  try {
+    const response = await axios.post(url, data, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
 };
 
 /**
@@ -105,7 +121,12 @@ const httpPOST = async (url, data, options) => {
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPUT = async (url, data, options) => {
-  return axios.put(url, data, options);
+  try {
+    const response = await axios.put(url, data, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
 };
 
 /**
@@ -118,7 +139,12 @@ const httpPUT = async (url, data, options) => {
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPATCH = async (url, data, options) => {
-  return axios.patch(url, data, options);
+  try {
+    const response = await axios.patch(url, data, options);
+    clientResponse = { success: true, response };
+  } catch (err) {
+    clientResponse = { success: false, response: err };
+  }
 };
 
 /**

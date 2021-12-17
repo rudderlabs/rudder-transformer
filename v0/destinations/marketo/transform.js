@@ -36,7 +36,7 @@ const {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest
-} = require("./networkResponseHandler");
+} = require("./util");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -53,23 +53,24 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 const getAuthToken = async formattedDestination => {
   return authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
-    const response = marketoResponseHandler({
-      clientResponse: await sendGetRequest(
-        `https://${accountId}.mktorest.com/identity/oauth/token`,
-        {
-          params: {
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: "client_credentials"
-          }
+    const clientResponse = await sendGetRequest(
+      `https://${accountId}.mktorest.com/identity/oauth/token`,
+      {
+        params: {
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: "client_credentials"
         }
-      ),
-      sourceMessage: "During fetching auth token",
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    });
-    if (response && response.data) {
+      }
+    );
+    const data = marketoResponseHandler(
+      clientResponse,
+      "During fetching auth token",
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+    if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return response.data.access_token;
+      return data.access_token;
     }
     stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
@@ -104,27 +105,28 @@ const createOrUpdateLead = async (
       action: "create"
     });
     const { accountId } = formattedDestination;
-    const response = marketoResponseHandler({
-      clientResponse: await sendPostRequest(
-        `https://${accountId}.mktorest.com/rest/v1/leads.json`,
-        // `https://httpstat.us/200`,
-        {
-          action: "createOrUpdate",
-          input: [attribute],
-          lookupField: userId ? "userId" : "anonymousId"
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-type": "application/json"
-          }
+    const clientResponse = await sendPostRequest(
+      `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
+      {
+        action: "createOrUpdate",
+        input: [attribute],
+        lookupField: userId ? "userId" : "anonymousId"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-type": "application/json"
         }
-      ),
-      sourceMessage: "During lookup lead",
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    });
-    if (response && response.data) {
-      const { result } = response.data;
+      }
+    );
+    const data = marketoResponseHandler(
+      clientResponse,
+      "[Marketo Transformer]: During lookup lead",
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+    if (data) {
+      const { result } = data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }
@@ -141,20 +143,21 @@ const createOrUpdateLead = async (
 const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
   return emailLeadCache.get(email, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
-    const response = marketoResponseHandler({
-      clientResponse: await sendGetRequest(
-        `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
-        // `https://httpstat.us/200`,
-        {
-          params: { filterValues: email, filterType: "email" },
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      ),
-      sourceMessage: "During lead look up using email",
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    });
-    if (response && response.data) {
-      const { result } = response.data;
+    const clientResponse = await sendGetRequest(
+      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
+      // `https://httpstat.us/200`,
+      {
+        params: { filterValues: email, filterType: "email" },
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    const data = marketoResponseHandler(
+      clientResponse,
+      "[Marketo Transformer]: During lead look up using email",
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+    if (data) {
+      const { result } = data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }
@@ -177,22 +180,23 @@ const lookupLeadUsingId = async (
 ) => {
   return userIdLeadCache.get(userId || anonymousId, async () => {
     stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
-    const response = marketoResponseHandler({
-      clientResponse: await sendGetRequest(
-        `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
-        {
-          params: {
-            filterValues: userId || anonymousId,
-            filterType: userId ? "userId" : "anonymousId"
-          },
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      ),
-      sourceMessage: "During lead look up using userId",
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    });
-    if (response.data) {
-      const { result } = response.data;
+    const clientResponse = await sendGetRequest(
+      `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
+      {
+        params: {
+          filterValues: userId || anonymousId,
+          filterType: userId ? "userId" : "anonymousId"
+        },
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    const data = marketoResponseHandler(
+      clientResponse,
+      "[Marketo Transformer]: During lead look up using userId",
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+    if (data) {
+      const { result } = data;
       if (result && Array.isArray(result) && result.length > 0) {
         return result[0].id;
       }

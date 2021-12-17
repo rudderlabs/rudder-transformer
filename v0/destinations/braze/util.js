@@ -1,19 +1,23 @@
-const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
+/* eslint-disable no-unused-vars */
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
+const { proxyRequest } = require("../../../adapters/network");
+const {
+  getDynamicMeta,
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
+const { DESTINATION } = require("./config");
 
-// eslint-disable-next-line no-unused-vars
-const responseTransform = (destinationResponse, _dest) => {
-  const message = `[Braze Response Transform] Request for ${DESTINATION} Processed Successfully`;
+const responseHandler = (destinationResponse, _dest) => {
+  const message = `[Braze Response Handler] Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
-  // if the responsee from destination is not a success case build an explicit error
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)
       .setMessage(
-        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+        `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`
       )
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
@@ -26,11 +30,16 @@ const responseTransform = (destinationResponse, _dest) => {
       .build();
   }
   // application level errors
-  if (!!response && response.errors && response.errors.length > 0) {
+  if (
+    !!response &&
+    response.message !== "success" &&
+    response.errors &&
+    response.errors.length > 0
+  ) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
-        `[Braze Response Transfom] Request failed for ${DESTINATION} with status: ${status}`
+        `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`
       )
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
@@ -49,4 +58,12 @@ const responseTransform = (destinationResponse, _dest) => {
   };
 };
 
-module.exports = { responseTransform };
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+
+module.exports = {
+  networkHandler
+};

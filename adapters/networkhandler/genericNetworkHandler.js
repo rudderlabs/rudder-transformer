@@ -47,10 +47,10 @@ const responseHandler = (destinationResponse, dest) => {
   };
 };
 
-const GenericNetworkHandler = function() {
+const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 
-module.exports = { GenericNetworkHandler };
+module.exports = { networkHandler };

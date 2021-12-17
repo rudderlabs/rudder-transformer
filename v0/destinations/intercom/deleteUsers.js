@@ -1,7 +1,7 @@
 const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 
-const responseHandler = async (userAttributes, config) => {
+const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new CustomError("Config for deletion not present", 400);
   }
@@ -43,7 +43,7 @@ const responseHandler = async (userAttributes, config) => {
 };
 const processDeleteUsers = async event => {
   const { userAttributes, config } = event;
-  const resp = await responseHandler(userAttributes, config);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 

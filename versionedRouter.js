@@ -652,14 +652,17 @@ const handleDeletionOfUsers = async ctx => {
     body.map(async b => {
       const { destType } = b;
       const destUserDeletionHandler = getDeletionUserHandler("v0", destType);
-      if (!destDeletionHandler || !destDeletionHandler.processDeleteUsers) {
+      if (
+        !destUserDeletionHandler ||
+        !destUserDeletionHandler.processDeleteUsers
+      ) {
         ctx.status = 404;
         ctx.body = "Doesn't support deletion of users";
         return null;
       }
 
       try {
-        response = await destDeletionHandler.processDeleteUsers(b);
+        response = await destUserDeletionHandler.processDeleteUsers(b);
         if (response) {
           respList.push(response);
         }

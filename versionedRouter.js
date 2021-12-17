@@ -651,7 +651,7 @@ const handleDeletionOfUsers = async ctx => {
   await Promise.all(
     body.map(async b => {
       const { destType } = b;
-      const destDeletionHandler = getDeletionUserHandler("v0", destType);
+      const destUserDeletionHandler = getDeletionUserHandler("v0", destType);
       if (!destDeletionHandler || !destDeletionHandler.processDeleteUsers) {
         ctx.status = 404;
         ctx.body = "Doesn't support deletion of users";

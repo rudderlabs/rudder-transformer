@@ -46,6 +46,9 @@ async function process(event) {
   if (type !== EventType.TRACK) {
     throw new CustomError(`Message Type not supported: ${type}`, 400);
   }
+  if (!properties || typeof properties !== 'object') {
+    throw new CustomError('Invalid Payload for the destination', 400);
+  }
   const {
     destination: {
       Config: { datasetId, tableId, projectId }

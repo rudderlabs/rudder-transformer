@@ -1,10 +1,13 @@
 const _ = require("lodash");
+const get = require("get-value");
 
 const v0 = require("./v0/util");
 const v1 = require("./v1/util");
 
 const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
 const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
+
+const sourceCategoriesToUseRecordId = ["cloud", "singer-protocol"];
 
 const isObject = value => {
   const type = typeof value;
@@ -53,11 +56,24 @@ function isRudderSourcesEvent(event) {
   return event.channel === "sources" || event.CHANNEL === "sources";
 }
 
+const getCloudRecordID = (message, fallbackValue) => {
+  if (get(message, "context.sources.version")) {
+    const { recordId } = message;
+    if (typeof recordId === "object" || isBlank(recordId)) {
+      throw new Error("recordId cannot be empty for cloud sources events");
+    }
+    return recordId;
+  }
+  return fallbackValue || null;
+};
+
 module.exports = {
   isObject,
   isBlank,
   timestampRegex,
   validTimestamp,
   getVersionedUtils,
-  isRudderSourcesEvent
+  isRudderSourcesEvent,
+  sourceCategoriesToUseRecordId,
+  getCloudRecordID
 };

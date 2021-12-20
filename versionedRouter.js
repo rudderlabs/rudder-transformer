@@ -3,15 +3,22 @@
 /* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
-const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { isNonFuncObject, getMetadata } = require("./v0/util");
+const {
+  isNonFuncObject,
+  getMetadata,
+  generateErrorObject
+} = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { populateErrStat } = require("./v0/util/index");
+const { userTransformHandler } = require("./routerUtils");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
+const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+
 require("dotenv").config();
+const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -21,36 +28,22 @@ const transformerMode = process.env.TRANSFORMER_MODE;
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const responseTransformer = process.env.TRANSFORMER_RESPONSE_TRANSFORM || true;
+const transformerProxy = process.env.TRANSFORMER_PROXY || true;
 
 const router = new Router();
 
 const isDirectory = source => {
-  return lstatSync(source).isDirectory();
+  return fs.lstatSync(source).isDirectory();
 };
 
 const getIntegrations = type =>
-  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
+  fs.readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
-};
-
-const getDestNetHander = (version, dest) => {
-  const destination = _.toLower(dest);
-  let destNetHandler;
-  try {
-    destNetHandler = require(`./${version}/destinations/${destination}/networkResponseHandler`);
-    if (!destNetHandler && !destNetHandler.responseTransform) {
-      destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-    }
-  } catch (err) {
-    destNetHandler = require("./adapters/networkhandler/genericNetworkResponseHandler");
-  }
-  return destNetHandler;
 };
 
 const getDestFileUploadHandler = (version, dest) => {
@@ -65,8 +58,6 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
-const eventValidator = require("./util/eventValidation");
-
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
 };
@@ -77,13 +68,6 @@ const functionsEnabled = () => {
     areFunctionsEnabled = process.env.ENABLE_FUNCTIONS === "false" ? 0 : 1;
   }
   return areFunctionsEnabled === 1;
-};
-
-const userTransformHandler = () => {
-  if (functionsEnabled()) {
-    return require("./util/customTransformer").userTransformHandler;
-  }
-  throw new Error("Functions are not enabled");
 };
 
 async function handleDest(ctx, version, destination) {
@@ -129,13 +113,16 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        // eslint-disable-next-line no-ex-assign
-        error = populateErrStat(error, destination);
+        const errObj = generateErrorObject(
+          error,
+          destination,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
           error: error.message || "Error occurred while processing payload.",
-          errorDetailed: error
+          statTags: errObj.statTags
         });
       }
     })
@@ -520,28 +507,34 @@ if (startSourceTransformer) {
   });
 }
 
-function handleResponseTransform(version, destination, ctx) {
-  const destNetHandler = getDestNetHander(version, destination);
-  // flow should never reach the below (if) its a desperate fall-back
-  if (!destNetHandler || !destNetHandler.responseTransform) {
-    ctx.status = 404;
-    ctx.body = `${destination} doesn't support response transformation`;
-    return ctx.body;
-  }
+async function handleProxyRequest(destination, ctx) {
+  const destinationRequest = ctx.request.body;
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
   let response;
   try {
-    response = destNetHandler.responseTransform(ctx.request.body);
+    const startTime = new Date();
+    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    stats.timing("transformer_proxy_time", startTime, {
+      destination
+    });
+    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+      rawProxyResponse
+    );
+    response = destNetworkHandler.responseHandler(
+      processedProxyResponse,
+      destination
+    );
   } catch (err) {
-    // eslint-disable-next-line no-ex-assign
-    err = populateErrStat(err, destination, false);
-    response = {
-      status: err.status || 400,
-      message: err.message,
-      destinationResponse: err.destinationResponse,
-      errorDetailed: err
-    };
+    response = generateErrorObject(
+      err,
+      destination,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    );
+    response = { ...response };
     if (!err.responseTransformFailure) {
-      response.message = `[Error occurred while processing destinationresponse for destination ${destination}]: ${err.message}`;
+      response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
   }
   ctx.body = { output: response };
@@ -549,18 +542,22 @@ function handleResponseTransform(version, destination, ctx) {
   return ctx.body;
 }
 
-if (responseTransformer) {
+if (transformerProxy) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
-      router.post(`/transform/${destination}/response`, async ctx => {
-        const startTime = new Date();
-        handleResponseTransform(version, destination, ctx);
-        stats.timing("transformer_response_transform_latency", startTime, {
-          destination,
-          version
-        });
-      });
+      router.post(
+        `/${version}/destinations/${destination}/proxy`,
+        async ctx => {
+          const startTime = new Date();
+          ctx.set("apiVersion", API_VERSION);
+          await handleProxyRequest(destination, ctx);
+          stats.timing("transformer_total_proxy_latency", startTime, {
+            destination,
+            version
+          });
+        }
+      );
     });
   });
 }
@@ -720,5 +717,5 @@ module.exports = {
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleResponseTransform
+  handleProxyRequest
 };

@@ -1,6 +1,14 @@
 /* eslint-disable eqeqeq */
-const get = require("get-value");
+const _ = require("lodash");
+const { isEmpty } = require("lodash");
+const {
+  isHttpStatusRetryable,
+  isDefinedAndNotNullAndNotEmpty,
+  isNonFuncObject,
+  isDefinedAndNotNull
+} = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const ErrorBuilder = require("../../v0/util/error");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -64,26 +72,106 @@ const nodeSysErrorToStatus = code => {
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
 
-const trimResponse = response => {
+// Returns dynamic Meta based on Status Code as Input
+const getDynamicMeta = statusCode => {
+  if (isHttpStatusRetryable(statusCode)) {
+    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+  }
+  switch (statusCode) {
+    case 429:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+    default:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
+  }
+};
+
+const parseDestResponse = (destResponse, destination) => {
+  const statTags = {
+    destination,
+    stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+  };
+  // validity of destResponse
+  if (
+    !isDefinedAndNotNullAndNotEmpty(destResponse) ||
+    !isNonFuncObject(destResponse)
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
+  }
+  const { responseBody, status } = destResponse;
+  // validity of responseBody and status
+  if (
+    !isDefinedAndNotNull(responseBody) ||
+    !isDefinedAndNotNull(status) ||
+    !_.isNumber(status) ||
+    status === 0
+  ) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(
+        `[ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: ${destination}`
+      )
+      .setDestinationResponse(destResponse)
+      .setStatTags(statTags)
+      .build();
+  }
+  let parsedDestResponseBody;
+  try {
+    parsedDestResponseBody = JSON.parse(responseBody);
+  } catch (err) {
+    parsedDestResponseBody = !isEmpty(responseBody) ? responseBody : "";
+  }
   return {
-    code: get(response, "response.code"),
-    status: get(response, "response.status"),
-    statusText: get(response, "response.statusText"),
-    headers: get(response, "response.headers"),
-    data: get(response, "response.data"),
-    success: get(response, "suceess")
+    responseBody: parsedDestResponseBody,
+    status,
+    payload: destResponse.payload
   };
 };
 
-// Returns dynamic Meta based on Status Code as Input
-const getDynamicMeta = statusCode => {
-  if (statusCode == 500) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+// Function to process wrapped axioss response from internal http client compatible for response handlers
+const processAxiosResponse = clientResponse => {
+  if (!clientResponse.success) {
+    const { response, code } = clientResponse.response;
+    // node internal http client failure cases
+    if (!response && code) {
+      const nodeClientError = nodeSysErrorToStatus(code);
+      return {
+        response: nodeClientError.message,
+        status: nodeClientError.status
+      };
+    }
+    // non 2xx status handling for axios response
+    if (response) {
+      const { data, status } = response;
+      return {
+        response: data || "",
+        status: status || 500
+      };
+    }
+    // (edge case) response and code is not present
+    return {
+      response: "",
+      status: 500
+    };
   }
-  if (statusCode == 429) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
-  }
-  return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
+  // success(2xx) axios response
+  const { data, status } = clientResponse.response;
+  return {
+    response: data || "",
+    status: status || 500
+  };
 };
 
-module.exports = { nodeSysErrorToStatus, trimResponse, getDynamicMeta };
+module.exports = {
+  nodeSysErrorToStatus,
+  getDynamicMeta,
+  parseDestResponse,
+  processAxiosResponse
+};

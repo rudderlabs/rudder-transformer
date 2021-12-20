@@ -11,7 +11,9 @@
       "params": {},
       "body": {
         "JSON": {},
-        "JSON_ARRAY": {"batch": "[{\"email\":\"testone@gmail.com\",\"id\":\"test1\",\"customer_id\":\"userId1\",\"firstname\":\"test\",\"lastname\":\"one\",\"@type\":\"contact\",\"properties\":{\"field1\":\"val1\",\"ip\":\"0.0.0.0\"},\"marketing_optin\":\"EXPLICITLY_OPTEDOUT\",\"channels\":{\"sms\":{\"allow_marketing\":false,\"allow_transactional\":false}}},{\"email\":\"testone@gmail.com\",\"id\":\"updatedId1\",\"customer_id\":\"userId1\",\"firstname\":\"test\",\"lastname\":\"one\",\"@type\":\"contact\",\"properties\":{\"field1\":\"val1\",\"ip\":\"0.0.0.0\"},\"marketing_optin\":\"EXPLICITLY_OPTEDOUT\",\"channels\":{\"sms\":{\"allow_marketing\":true,\"allow_transactional\":false}}}]"},
+        "JSON_ARRAY": {
+          "batch": "[{\"email\":\"testone@gmail.com\",\"id\":\"test1\",\"customer_id\":\"userId1\",\"firstname\":\"test\",\"lastname\":\"one\",\"@type\":\"contact\",\"properties\":{\"field1\":\"val1\",\"ip\":\"0.0.0.0\"},\"marketing_optin\":\"EXPLICITLY_OPTEDOUT\",\"channels\":{\"sms\":{\"allow_marketing\":false,\"allow_transactional\":false}}},{\"email\":\"testone@gmail.com\",\"id\":\"updatedId1\",\"customer_id\":\"userId1\",\"firstname\":\"test\",\"lastname\":\"one\",\"@type\":\"contact\",\"properties\":{\"field1\":\"val1\",\"ip\":\"0.0.0.0\"},\"marketing_optin\":\"EXPLICITLY_OPTEDOUT\",\"channels\":{\"sms\":{\"allow_marketing\":true,\"allow_transactional\":false}}}]"
+        },
         "XML": {},
         "FORM": {}
       },
@@ -35,15 +37,32 @@
         "Name": "OMETRIA",
         "DisplayName": "Ometria",
         "Config": {
-              "transformAt": "router",
-              "transformAtV1": "router",
-              "saveDestinationResponse": true,
-              "includeKeys": [],
-              "excludeKeys": [],
-              "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative", "flutter", "cordova"],
-              "supportedMessageTypes": ["identify", "track"],
-              "destConfig": { "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"] },
-              "secretKeys": ["apiKey"]
+          "transformAt": "router",
+          "transformAtV1": "router",
+          "saveDestinationResponse": true,
+          "includeKeys": [],
+          "excludeKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportedMessageTypes": ["identify", "track"],
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "marketingOptin",
+              "allowMarketing",
+              "allowTransactional"
+            ]
+          },
+          "secretKeys": ["apiKey"]
         },
         "ResponseRules": {}
       },

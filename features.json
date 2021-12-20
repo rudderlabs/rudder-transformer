@@ -13,7 +13,7 @@
     "DELIGHTED": true,
     "DRIP": true,
     "ALGOLIA": true,
-    "OMETRIA": false,
+    "OMETRIA": true,
     "BQSTREAM": true
   }
 }

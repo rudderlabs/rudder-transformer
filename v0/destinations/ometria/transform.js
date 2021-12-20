@@ -1,6 +1,5 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
-const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   constructPayload,
@@ -118,19 +117,10 @@ const identifyResponseBuilder = (message, { Config }) => {
     }
   }
 
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON_ARRAY = {
-    batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
-  };
-  response.endpoint = ENDPOINT;
-  response.headers = {
-    "X-Ometria-Auth": Config.apiKey
-  };
-  return response;
+  return removeUndefinedAndNullValues(payload);
 };
 
-const trackResponseBuilder = (message, { Config }) => {
+const trackResponseBuilder = message => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
     throw new CustomError("Event name is required for track call.", 400);
@@ -197,16 +187,7 @@ const trackResponseBuilder = (message, { Config }) => {
     if (payload.shipping_address) {
       payload.shipping_address = addressMappper(payload.shipping_address);
     }
-    const response = defaultRequestConfig();
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON_ARRAY = {
-      batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
-    };
-    response.endpoint = ENDPOINT;
-    response.headers = {
-      "X-Ometria-Auth": Config.apiKey
-    };
-    return response;
+    return removeUndefinedAndNullValues(payload);
   }
 
   // custom events
@@ -229,16 +210,26 @@ const trackResponseBuilder = (message, { Config }) => {
     );
     payload.properties = customFields;
   }
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON_ARRAY = {
-    batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
-  };
-  response.endpoint = ENDPOINT;
-  response.headers = {
-    "X-Ometria-Auth": Config.apiKey
-  };
-  return response;
+  return removeUndefinedAndNullValues(payload);
+};
+
+const handleMessage = (message, destination) => {
+  if (!message.type) {
+    throw new CustomError(`Message type is not defined`, 400);
+  }
+  const messageType = message.type.toLowerCase();
+  let payload;
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      payload = identifyResponseBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      payload = trackResponseBuilder(message);
+      break;
+    default:
+      throw new CustomError(`message type ${messageType} not supported`, 400);
+  }
+  return payload;
 };
 
 /**
@@ -257,19 +248,14 @@ const process = event => {
     throw new CustomError("Invalid Api Key", 400);
   }
 
-  const messageType = message.type.toLowerCase();
-
-  let response;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
-      break;
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
-      break;
-    default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
-  }
+  const payload = handleMessage(message, destination);
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON_ARRAY = { batch: JSON.stringify([payload]) };
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    "X-Ometria-Auth": destination.Config.apiKey
+  };
   return response;
 };
 
@@ -290,10 +276,8 @@ const processRouterDest = async inputs => {
     const { destination } = chunk[0];
     chunk.forEach(async input => {
       try {
-        set(input, "destination", destination);
-        // input.destination = destination;
-        const transformedEvent = process(input);
-        eventsList.push(...transformedEvent.body.JSON_ARRAY.batch[0]);
+        const transformedEvent = handleMessage(input.message, destination);
+        eventsList.push(transformedEvent);
         metadataList.push(input.metadata);
       } catch (error) {
         errorList.push(

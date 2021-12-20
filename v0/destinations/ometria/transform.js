@@ -120,7 +120,9 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedAndNullValues(payload)]) };
+  response.body.JSON_ARRAY = {
+    batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
+  };
   response.endpoint = ENDPOINT;
   response.headers = {
     "X-Ometria-Auth": Config.apiKey
@@ -197,7 +199,9 @@ const trackResponseBuilder = (message, { Config }) => {
     }
     const response = defaultRequestConfig();
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedAndNullValues(payload)]) };
+    response.body.JSON_ARRAY = {
+      batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
+    };
     response.endpoint = ENDPOINT;
     response.headers = {
       "X-Ometria-Auth": Config.apiKey
@@ -227,7 +231,9 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedAndNullValues(payload)]) };
+  response.body.JSON_ARRAY = {
+    batch: JSON.stringify([removeUndefinedAndNullValues(payload)])
+  };
   response.endpoint = ENDPOINT;
   response.headers = {
     "X-Ometria-Auth": Config.apiKey
@@ -296,8 +302,8 @@ const processRouterDest = async inputs => {
             error.response
               ? error.response.status
               : error.code
-                ? error.code
-                : 400,
+              ? error.code
+              : 400,
             error.message || "Error occurred while processing payload."
           )
         );

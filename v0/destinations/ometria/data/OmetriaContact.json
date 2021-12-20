@@ -1,0 +1,157 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": ["traits.listingId", "context.traits.listingId"],
+    "required": false
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": [
+      "traits.phoneNumber",
+      "traits.phone",
+      "context.traits.phoneNumber",
+      "context.traits.phone"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "@collection",
+    "sourceKeys": ["traits.collection", "context.traits.collection"],
+    "required": false
+  },
+  {
+    "destKey": "customer_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "prefix",
+    "sourceKeys": ["traits.prefix", "context.traits.prefix"],
+    "required": false
+  },
+  {
+    "destKey": "firstname",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "lastname",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "middlename",
+    "sourceKeys": "middleName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "date_of_birth",
+    "sourceKeys": [
+      "traits.dateOfBirth",
+      "traits.birthday",
+      "context.traits.dateOfBirth",
+      "context.traits.birthday"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "country_id",
+    "sourceKeys": ["traits.countryId", "context.traits.countryId"],
+    "required": false
+  },
+  {
+    "destKey": "timezone",
+    "sourceKeys": [
+      "context.timezone",
+      "traits.timezone",
+      "context.traits.timezone"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_acquired",
+    "sourceKeys": [
+      "traits.timestampAcquired",
+      "traits.createdAt",
+      "context.traits.timestampAcquired",
+      "context.traits.createdAt"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_subscribed",
+    "sourceKeys": [
+      "traits.timestampSubscribed",
+      "context.traits.timestampSubscribed"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "timestamp_unsubscribed",
+    "sourceKeys": [
+      "traits.timestampUnsubscribed",
+      "context.traits.timestampUnsubscribed"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "store_ids",
+    "sourceKeys": ["traits.storeIds", "context.traits.storeIds"],
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "f"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "m"
+        },
+        {
+          "sourceVal": ["o", "O", "Others", "others", "OTHERS"],
+          "destVal": "o"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "@remove_from_lists",
+    "sourceKeys": ["traits.removeFromLists", "context.traits.removeFromLists"],
+    "required": false
+  },
+  {
+    "destKey": "@add_to_lists",
+    "sourceKeys": ["traits.addToLists", "context.traits.addToLists"],
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": ["traits.custom_fields", "context.traits.custom_fields"],
+    "required": false
+  },
+  {
+    "destKey": "@force_optin",
+    "sourceKeys": ["traits.forceOptin", "context.traits.forceOptin"],
+    "required": false
+  },
+  {
+    "destKey": "@merge",
+    "sourceKeys": ["traits.merge", "context.traits.merge"],
+    "required": false
+  }
+]

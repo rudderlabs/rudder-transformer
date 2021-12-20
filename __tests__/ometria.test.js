@@ -30,12 +30,12 @@ inputData.forEach((input, index) => {
   });
 });
 
-const batchInputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
-);
-const batchOutputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
-);
+// const batchInputDataFile = fs.readFileSync(
+//   path.resolve(__dirname, `./data/${integration}_batch_input.json`)
+// );
+// const batchOutputDataFile = fs.readFileSync(
+//   path.resolve(__dirname, `./data/${integration}_batch_output.json`)
+// );
 
 // const batchInputData = JSON.parse(batchInputDataFile);
 // const batchExpectedData = JSON.parse(batchOutputDataFile);
@@ -52,10 +52,10 @@ const batchOutputDataFile = fs.readFileSync(
 //   });
 // });
 
-test('Batching', async () => {
-  const batchInputData = JSON.parse(batchInputDataFile);
-  const batchExpectedData = JSON.parse(batchOutputDataFile);
-  const output = await transformer.processRouterDest(batchInputData);
-  expect(Array.isArray(output)).toEqual(true);
-  expect(output).toEqual(batchExpectedData);
-});
+// test('Batching', async () => {
+//   const batchInputData = JSON.parse(batchInputDataFile);
+//   const batchExpectedData = JSON.parse(batchOutputDataFile);
+//   const output = await transformer.processRouterDest(batchInputData);
+//   expect(Array.isArray(output)).toEqual(true);
+//   expect(output).toEqual(batchExpectedData);
+// });

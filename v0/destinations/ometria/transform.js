@@ -120,7 +120,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = [removeUndefinedAndNullValues(payload)];
+  response.body.JSON_ARRAY = [removeUndefinedAndNullValues(payload)];
   response.endpoint = ENDPOINT;
   response.headers = {
     "X-Ometria-Auth": Config.apiKey
@@ -197,7 +197,7 @@ const trackResponseBuilder = (message, { Config }) => {
     }
     const response = defaultRequestConfig();
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = [removeUndefinedAndNullValues(payload)];
+    response.body.JSON_ARRAY = [removeUndefinedAndNullValues(payload)];
     response.endpoint = ENDPOINT;
     response.headers = {
       "X-Ometria-Auth": Config.apiKey
@@ -227,7 +227,7 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = [removeUndefinedAndNullValues(payload)];
+  response.body.JSON_ARRAY = [removeUndefinedAndNullValues(payload)];
   response.endpoint = ENDPOINT;
   response.headers = {
     "X-Ometria-Auth": Config.apiKey
@@ -287,7 +287,7 @@ const processRouterDest = async inputs => {
         set(input, "destination", destination);
         // input.destination = destination;
         const transformedEvent = process(input);
-        eventsList.push(...transformedEvent.body.JSON);
+        eventsList.push(...transformedEvent.body.JSON_ARRAY[0]);
         metadataList.push(input.metadata);
       } catch (error) {
         errorList.push(

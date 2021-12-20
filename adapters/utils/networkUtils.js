@@ -77,10 +77,12 @@ const getDynamicMeta = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
     return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
   }
-  if (statusCode == 429) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+  switch (statusCode) {
+    case 429:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+    default:
+      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
   }
-  return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
 };
 
 const parseDestResponse = (destResponse, destination) => {
@@ -128,32 +130,30 @@ const parseDestResponse = (destResponse, destination) => {
   }
   return {
     responseBody: parsedDestResponseBody,
-    status
+    status,
+    payload: destResponse.payload
   };
 };
 
 // Function to process wrapped axioss response from internal http client compatible for response handlers
 const processAxiosResponse = clientResponse => {
-  let processedResponse;
   if (!clientResponse.success) {
     const { response, code } = clientResponse.response;
     // node internal http client failure cases
     if (!response && code) {
       const nodeClientError = nodeSysErrorToStatus(code);
-      processedResponse = {
+      return {
         response: nodeClientError.message,
         status: nodeClientError.status
       };
-      return processedResponse;
     }
     // non 2xx status handling for axios response
     if (response) {
       const { data, status } = response;
-      processedResponse = {
+      return {
         response: data || "",
         status: status || 500
       };
-      return processedResponse;
     }
     // (edge case) response and code is not present
     return {
@@ -163,11 +163,10 @@ const processAxiosResponse = clientResponse => {
   }
   // success(2xx) axios response
   const { data, status } = clientResponse.response;
-  processedResponse = {
+  return {
     response: data || "",
     status: status || 500
   };
-  return processedResponse;
 };
 
 module.exports = {

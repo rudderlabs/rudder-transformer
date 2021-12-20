@@ -147,6 +147,8 @@ const handleTestEvent = async (ctx, dest) => {
                 ) {
                   response = parsedResponse.response;
                 }
+              } else if (parsedResponse.networkFailure) {
+                response = parsedResponse.response;
               }
 
               destResponses.push(response);

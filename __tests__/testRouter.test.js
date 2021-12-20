@@ -14,8 +14,16 @@ const outputData = JSON.parse(outputDataFile);
 
 
 describe('Test Router Tests', () => {
-  it('should fail with error on receiving wrong type for events', () => {
-    try {}
+  it('should fail with error on not receiving events array', async () => {
+    try {
+      const dest = "dummy";
+      const ctxMock = {
+        request: {
+          body: {}
+        }
+      };
+      await handleTestEvent(ctxMock, dest.toLowerCase());
+    }
     catch (error) {
       expect(error.message).toEqual("events array is required in payload");
     }
@@ -32,13 +40,8 @@ describe('Test Router Tests', () => {
         }
       };
       it(`Input: ${index} should return proper response`, async () => {
-        try {
-          await handleTestEvent(ctxMock, dest.toLowerCase());
-          expect(ctxMock.body).toEqual(outputData[index]);
-        }
-        catch (err) {
-          // should not enter this block
-        }
+        await handleTestEvent(ctxMock, dest.toLowerCase());
+        expect(ctxMock.body).toEqual(outputData[index]);
       });
     });
   });

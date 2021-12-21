@@ -12,6 +12,7 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const { proxyRequest } = require("../../../adapters/network");
+const { GenericNetworkHandler } = require("../../../adapters/networkhandler/genericNetworkHandler");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -155,23 +156,39 @@ const processResponse = ({ dresponse, status } = {}) => {
   }
 };
 
-const responseHandler = respTransformPayload => {
-  const { response, status } = respTransformPayload;
-  processResponse({
-    dresponse: response,
-    status
-  });
-  return {
-    status,
-    destinationResponse: response,
-    message: "Request Processed Successfully"
-  };
-};
+// const responseHandler = respTransformPayload => {
+//   const { response, status } = respTransformPayload;
+//   processResponse({
+//     dresponse: response,
+//     status
+//   });
+//   return {
+//     status,
+//     destinationResponse: response,
+//     message: "Request Processed Successfully"
+//   };
+// };
 
-const networkHandler = function() {
-  this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
-  this.processAxiosResponse = processAxiosResponse;
-};
+// const networkHandler = function() {
+//   this.responseHandler = responseHandler;
+//   this.proxy = proxyRequest;
+//   this.processAxiosResponse = processAxiosResponse;
+// };
 
-module.exports = { networkHandler };
+class BqStreamNetworkHandler extends GenericNetworkHandler {
+  // eslint-disable-next-line class-methods-use-this
+  responseHandler(respTransformPayload) {
+    const { response, status } = respTransformPayload;
+    processResponse({
+      dresponse: response,
+      status
+    });
+    return {
+      status,
+      destinationResponse: response,
+      message: "Request Processed Successfully"
+    };
+  }
+}
+
+module.exports = { BqStreamNetworkHandler };

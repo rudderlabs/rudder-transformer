@@ -21,43 +21,52 @@ const {
  * will act as fall-fack for such scenarios.
  *
  */
-const responseHandler = (destinationResponse, dest) => {
-  const { status } = destinationResponse;
-  const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
-  // if the responsee from destination is not a success case build an explicit error
-  if (!isHttpStatusSuccess(status)) {
-    throw new ErrorBuilder()
-      .setStatus(status)
-      .setMessage(
-        `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`
-      )
-      .isTransformResponseFailure(true)
-      .setDestinationResponse(destinationResponse)
-      .setStatTags({
-        destination: dest,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
-      })
-      .build();
-  }
-  return {
-    status,
-    message,
-    destinationResponse
-  };
-};
+// const responseHandler = (destinationResponse, dest) => {
+//   const { status } = destinationResponse;
+//   const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
+//   // if the responsee from destination is not a success case build an explicit error
+//   if (!isHttpStatusSuccess(status)) {
+//     throw new ErrorBuilder()
+//       .setStatus(status)
+//       .setMessage(
+//         `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`
+//       )
+//       .isTransformResponseFailure(true)
+//       .setDestinationResponse(destinationResponse)
+//       .setStatTags({
+//         destination: dest,
+//         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+//         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+//         meta: getDynamicMeta(status)
+//       })
+//       .build();
+//   }
+//   return {
+//     status,
+//     message,
+//     destinationResponse
+//   };
+// };
 
-const networkHandler = function() {
-  this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
-  this.processAxiosResponse = processAxiosResponse;
-};
+// const networkHandler = function() {
+//   this.responseHandler = responseHandler;
+//   this.proxy = proxyRequest;
+//   this.processAxiosResponse = processAxiosResponse;
+// };
 
 class GenericNetworkHandler {
   constructor() {
     this.proxy = proxyRequest;
     this.processAxiosResponse = processAxiosResponse;
+  }
+
+  /**
+   * keeping the option to set a different proxy
+   * function if needed
+   * @param {*} customProxyFunction
+   */
+  setProxy(customProxyFunction) {
+    this.proxy = customProxyFunction;
   }
 
   responseHandler(destinationResponse, dest) {
@@ -88,4 +97,6 @@ class GenericNetworkHandler {
   }
 }
 
-module.exports = { networkHandler, GenericNetworkHandler };
+module.exports = {
+  GenericNetworkHandler
+};

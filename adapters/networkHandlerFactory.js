@@ -1,13 +1,9 @@
-const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
-const {
-  networkHandler: MarketoNetworkHandler
-} = require("../v0/destinations/marketo/util");
 const {
   GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
-const {
-  networkHandler: BqStreamNetworkHandler
-} = require("../v0/destinations/bqstream/util");
+const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
+const { MarketoNetworkHandler } = require("../v0/destinations/marketo/util");
+const { BqStreamNetworkHandler } = require("../v0/destinations/bqstream/util");
 
 // const handler = {
 //   generic: GenericNetworkHandler,
@@ -20,10 +16,10 @@ class NetworkHandlerFactory {
   constructor() {
     this.info = "NetworkHandlerFactory";
     this.factoryMap = {
-      generic: GenericNetworkHandler,
+      generic: new GenericNetworkHandler(),
       braze: new BrazeNetworkHandler(),
-      marketo: MarketoNetworkHandler,
-      bqstream: BqStreamNetworkHandler
+      marketo: new MarketoNetworkHandler(),
+      bqstream: new BqStreamNetworkHandler()
     };
   }
 
@@ -39,6 +35,9 @@ class NetworkHandlerFactory {
 //   }
 // };
 
-// exporting a singleton factory object
-// Alternate option: expose the class and make the members as static
+// Alternate option 1: expose the class and make the members as static
+// Alternate option 2: export the class and initialize the
+// singleton object inside versioned router
+
+// directly exporting a singleton factory object
 module.exports = new NetworkHandlerFactory();

@@ -1,0 +1,382 @@
+[
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test1",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrdaM_Nw6UYZBdqLzsIAlJx_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test2",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrdaM_Nw6UYZBdqLzsIAlJx_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": "$2",
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test3",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrdaM_Nw6UYZBdqLzsIAlJx_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {}
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test4",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrexpiredToken6Jx_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test5",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrrevokedToken6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds_unaccess/tables/test_products/insertAll/test6",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project-notexist/datasets/test_ds/tables/test_products/insertAll/test7",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test8",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test9",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test10",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test11",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://bigquery.googleapis.com/bigquery/v2/projects/test-project/datasets/test_ds/tables/test_products/insertAll/test12",
+        "headers": {
+          "Authorization": "Bearer ya29.h0ARrlknfuesdie_7e6J_89L2kmcOLGm3EJ89Q2yjOC_HBVT0wr0f0FrlGXi_yA_NcqiBHStSDX2dJ75O3eJI0958W60reOID3o643BTTT_0qA4xHEra9xnmU3sCUb5kmTC8IlizUgJq7jx2guNrOaFz",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "rows": [
+              {
+                "json": {
+                  "count": 21,
+                  "productId": 238,
+                  "productName": "Product-342 (From Dev Envt After fixing disable refresh problem)"
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  }
+]

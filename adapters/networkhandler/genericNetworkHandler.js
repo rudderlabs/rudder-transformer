@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 const ErrorBuilder = require("../../v0/util/error");
 const { isHttpStatusSuccess } = require("../../v0/util/index");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
@@ -53,4 +54,38 @@ const networkHandler = function() {
   this.processAxiosResponse = processAxiosResponse;
 };
 
-module.exports = { networkHandler };
+class GenericNetworkHandler {
+  constructor() {
+    this.proxy = proxyRequest;
+    this.processAxiosResponse = processAxiosResponse;
+  }
+
+  responseHandler(destinationResponse, dest) {
+    const { status } = destinationResponse;
+    const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
+    // if the responsee from destination is not a success case build an explicit error
+    if (!isHttpStatusSuccess(status)) {
+      throw new ErrorBuilder()
+        .setStatus(status)
+        .setMessage(
+          `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`
+        )
+        .isTransformResponseFailure(true)
+        .setDestinationResponse(destinationResponse)
+        .setStatTags({
+          destination: dest,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(status)
+        })
+        .build();
+    }
+    return {
+      status,
+      message,
+      destinationResponse
+    };
+  }
+}
+
+module.exports = { networkHandler, GenericNetworkHandler };

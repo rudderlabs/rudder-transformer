@@ -10,6 +10,7 @@ const DestCanonicalNames = {
     "Facebook Pixel",
     "FB Pixel"
   ],
+  ometria: ["Ometria", "ometria", "OMETRIA"],
   sendgrid: ["sendgrid", "Sendgrid", "SENDGRID"]
 };
 

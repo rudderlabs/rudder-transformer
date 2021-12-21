@@ -12,7 +12,8 @@
     "FB_CUSTOM_AUDIENCE": true,
     "DELIGHTED": true,
     "DRIP": true,
-    "BQSTREAM": true,
-    "ALGOLIA": true
+    "ALGOLIA": true,
+    "OMETRIA": true,
+    "BQSTREAM": true
   }
 }

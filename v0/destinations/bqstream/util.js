@@ -1,9 +1,6 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
-const {
-  getDynamicMeta,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
+const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
@@ -11,8 +8,9 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
-const { proxyRequest } = require("../../../adapters/network");
-const { GenericNetworkHandler } = require("../../../adapters/networkhandler/genericNetworkHandler");
+const {
+  GenericNetworkHandler
+} = require("../../../adapters/networkhandler/genericNetworkHandler");
 
 const DESTINATION_NAME = "bqstream";
 
@@ -155,25 +153,6 @@ const processResponse = ({ dresponse, status } = {}) => {
       .build();
   }
 };
-
-// const responseHandler = respTransformPayload => {
-//   const { response, status } = respTransformPayload;
-//   processResponse({
-//     dresponse: response,
-//     status
-//   });
-//   return {
-//     status,
-//     destinationResponse: response,
-//     message: "Request Processed Successfully"
-//   };
-// };
-
-// const networkHandler = function() {
-//   this.responseHandler = responseHandler;
-//   this.proxy = proxyRequest;
-//   this.processAxiosResponse = processAxiosResponse;
-// };
 
 class BqStreamNetworkHandler extends GenericNetworkHandler {
   // eslint-disable-next-line class-methods-use-this

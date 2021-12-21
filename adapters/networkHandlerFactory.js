@@ -5,13 +5,6 @@ const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
 const { MarketoNetworkHandler } = require("../v0/destinations/marketo/util");
 const { BqStreamNetworkHandler } = require("../v0/destinations/bqstream/util");
 
-// const handler = {
-//   generic: GenericNetworkHandler,
-//   braze: BrazeNetworkHandler,
-//   marketo: MarketoNetworkHandler,
-//   bqstream: BqStreamNetworkHandler
-// };
-
 class NetworkHandlerFactory {
   constructor() {
     this.info = "NetworkHandlerFactory";
@@ -27,13 +20,6 @@ class NetworkHandlerFactory {
     return this.factoryMap[type] || this.factoryMap.generic;
   }
 }
-
-// module.exports = {
-//   getNetworkHandler(type) {
-//     const NetworkHandler = handler[type] || handler.generic;
-//     return new NetworkHandler();
-//   }
-// };
 
 // Alternate option 1: expose the class and make the members as static
 // Alternate option 2: export the class and initialize the

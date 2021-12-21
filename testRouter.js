@@ -47,7 +47,7 @@ const handleTestEvent = async (ctx, dest) => {
       throw new Error("events array is required in payload");
     }
     const respList = [];
-    // ctx.set("apiVersion", API_VERSION);
+    ctx.set("apiVersion", API_VERSION);
     await Promise.all(
       events.map(async event => {
         const { message, destination, stage, libraries } = event;

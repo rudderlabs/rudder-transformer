@@ -20,7 +20,8 @@ describe('Test Router Tests', () => {
       const ctxMock = {
         request: {
           body: {}
-        }
+        },
+        set: (a, b) => {}
       };
       await handleTestEvent(ctxMock, dest.toLowerCase());
     }
@@ -36,8 +37,9 @@ describe('Test Router Tests', () => {
         request: {
           body: {
             events: [input]
-          }
-        }
+          },
+        },
+        set: (a, b) => {}
       };
       it(`Input: ${index} should return proper response`, async () => {
         await handleTestEvent(ctxMock, dest.toLowerCase());

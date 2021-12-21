@@ -1,27 +1,38 @@
+const { CustomError } = require("../v0/util");
 const {
   GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
-const { BrazeNetworkHandler } = require("../v0/destinations/braze/util");
-const { MarketoNetworkHandler } = require("../v0/destinations/marketo/util");
-const { BqStreamNetworkHandler } = require("../v0/destinations/bqstream/util");
+const NetWorkHandlerClassMap = require("./networkHandlersMap");
 
 class NetworkHandlerFactory {
   constructor() {
     this.info = "NetworkHandlerFactory";
-    this.factoryMap = {
-      generic: new GenericNetworkHandler(),
-      braze: new BrazeNetworkHandler(),
-      marketo: new MarketoNetworkHandler(),
-      bqstream: new BqStreamNetworkHandler()
-    };
+    // intially map would contain only the generic handler
+    this.factoryMap = new Map();
+    this.factoryMap.set("generic", new GenericNetworkHandler());
   }
 
-  getNetworkHandler(type) {
-    return this.factoryMap[type] || this.factoryMap.generic;
+  getNetworkHandler(destination) {
+    if (this.factoryMap.has(destination)) {
+      return this.factoryMap[destination];
+    }
+
+    if (!NetWorkHandlerClassMap[destination]) {
+      throw new CustomError(
+        `NetworkHandler Class for ${destination} not found`,
+        400
+      );
+    }
+
+    // if not found in map, adds the networkHandler object
+    // to factoryMap dynamically and returns it
+    const Handler = NetWorkHandlerClassMap[destination];
+    this.factoryMap.set(destination, new Handler());
+    return this.factoryMap.get(destination);
   }
 }
 
-// Alternate option 1: expose the class and make the members as static
+// Alternate option 1: expose the class and make the member method as static
 // Alternate option 2: export the class and initialize the
 // singleton object inside versioned router
 

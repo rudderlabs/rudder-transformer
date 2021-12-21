@@ -2,13 +2,18 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
+const axios = require("axios");
 const logger = require("../../../logger");
 const { EventType, WhiteListedTraits } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
   MAPPING_CONFIG,
-  LIST_CONF
+  LIST_CONF,
+  ecomExclusionKeys,
+  ecomEvents,
+  eventNameMapping,
+  jsonNameMapping
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -22,9 +27,9 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isEmptyObject
 } = require("../../util");
-const { httpPOST } = require("../../../adapters/network");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -63,7 +68,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   profile = removeUndefinedValues(profile);
   // send network request
   try {
-    await httpPOST(
+    await axios.post(
       targetUrl,
       {
         api_key: destination.Config.privateApiKey,
@@ -141,13 +146,8 @@ const identifyRequestHandler = async (message, category, destination) => {
 // User info needs to be mapped to a track event (mandatory)
 // DOCS: https://www.klaviyo.com/docs/http-api
 // ----------------------
-const trackRequestHandler = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.token = destination.Config.publicApiKey;
-  if (message.properties && message.properties.revenue) {
-    payload.properties.$value = message.properties.revenue;
-    delete payload.properties.revenue;
-  }
+
+const createCustomerProperties = message => {
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
@@ -160,11 +160,85 @@ const trackRequestHandler = (message, category, destination) => {
     WhiteListedTraits
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete customerProperties.$id;
-    customerProperties._id = getFieldValueFromMessage(message, "userId");
+  return customerProperties;
+};
+const trackRequestHandler = (message, category, destination) => {
+  let payload = {};
+  let event = get(message, "event");
+  event = event ? event.trim().toLowerCase() : event;
+  if (ecomEvents.includes(event) && message.properties) {
+    const eventName = eventNameMapping[event];
+    payload.event = eventName;
+    payload.token = destination.Config.publicApiKey;
+    const eventMap = jsonNameMapping[eventName];
+    // using identify to create customer properties
+    payload.customer_properties = createCustomerProperties(message);
+    if (
+      !payload.customer_properties.$email &&
+      !payload.customer_properties.$phone_number
+    ) {
+      throw new CustomError(
+        "email or phone is required for customer_properties",
+        400
+      );
+    }
+    const categ = CONFIG_CATEGORIES[eventMap];
+    payload.properties = constructPayload(
+      message.properties,
+      MAPPING_CONFIG[categ.name]
+    );
+
+    // products mapping using Items.json
+    if (message.properties.items && Array.isArray(message.properties.items)) {
+      const itemArr = [];
+      message.properties.items.forEach(key => {
+        let item = constructPayload(
+          key,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+        );
+        item = removeUndefinedAndNullValues(item);
+        if (!isEmptyObject(item)) {
+          itemArr.push(item);
+        }
+      });
+      if (!payload.properties) {
+        payload.properties = {};
+      }
+      payload.properties.items = itemArr;
+    }
+
+    // all extra props passed is incorporated inside properties
+    let customProperties = {};
+    customProperties = extractCustomFields(
+      message,
+      customProperties,
+      ["properties"],
+      ecomExclusionKeys
+    );
+    if (!isEmptyObject(customProperties)) {
+      payload.properties = {
+        ...payload.properties,
+        ...customProperties
+      };
+    }
+
+    if (isEmptyObject(payload.properties)) {
+      delete payload.properties;
+    }
+  } else {
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    payload.token = destination.Config.publicApiKey;
+    if (message.properties && message.properties.revenue) {
+      payload.properties.$value = message.properties.revenue;
+      delete payload.properties.revenue;
+    }
+    const customerProperties = createCustomerProperties(message);
+    if (destination.Config.enforceEmailAsPrimary) {
+      delete customerProperties.$id;
+      customerProperties._id = getFieldValueFromMessage(message, "userId");
+    }
+    payload.customer_properties = customerProperties;
   }
-  payload.customer_properties = customerProperties;
   if (message.timestamp) {
     payload.time = toUnixTimestamp(message.timestamp);
   }
@@ -213,7 +287,7 @@ const groupRequestHandler = async (message, category, destination) => {
     }
     // send network request
     try {
-      await httpPOST(
+      await axios.post(
         targetUrl,
         {
           api_key: destination.Config.privateApiKey,

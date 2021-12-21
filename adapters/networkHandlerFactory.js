@@ -1,4 +1,3 @@
-const { CustomError } = require("../v0/util");
 const {
   GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
@@ -14,14 +13,13 @@ class NetworkHandlerFactory {
 
   getNetworkHandler(destination) {
     if (this.factoryMap.has(destination)) {
-      return this.factoryMap[destination];
+      return this.factoryMap.get(destination);
     }
 
+    // fallback to generic if destination name
+    // not in the Class Map
     if (!NetWorkHandlerClassMap[destination]) {
-      throw new CustomError(
-        `NetworkHandler Class for ${destination} not found`,
-        400
-      );
+      return this.factoryMap.get("generic");
     }
 
     // if not found in map, adds the networkHandler object

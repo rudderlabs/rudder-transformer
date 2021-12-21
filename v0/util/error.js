@@ -34,6 +34,12 @@ function ErrorBuilder() {
     return this;
   };
 
+  // Used for only OAuth related destinations
+  this.setAuthErrorCategory = errorCat => {
+    this.err.authErrorCategory = errorCat;
+    return this;
+  };
+
   this.build = () => this.err;
 }
 

@@ -54,7 +54,7 @@ function checkForPropertyMissing(property) {
  * @returns true If it is supported.
  * @returns false If it is not supported or it is not present in supportedEventTypes.
  */
-function checkIfEventTypeIsSupportedOrNot(eventType) {
+function isEventTypeSupported(eventType) {
     if (!supportedEventTypes.hasOwnProperty(eventType)) {
         return false;
     }
@@ -97,7 +97,11 @@ async function validate(event) {
         );
 
         // UnPlanned event case - since no event schema is found. Violation is raised
+        // Return this violation error only in case of track calls.
         if (!eventSchema || eventSchema === {}) {
+            if (event.message.type !== "track"){
+                return [];
+            }
             rudderValidationError = {
                 type: violationTypes.UnplannedEvent,
                 message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${event.metadata.trackingPlanId}::${event.metadata.trackingPlanVersion}`,
@@ -215,7 +219,7 @@ async function handleValidation(event) {
         }
 
         // Checking the evenType is supported or not
-        if (!checkIfEventTypeIsSupportedOrNot(event.message.type)) {
+        if (!isEventTypeSupported(event.message.type)) {
             return {
                 dropEvent: dropEvent,
                 violationType: violationType,
@@ -300,5 +304,6 @@ async function handleValidation(event) {
 
 module.exports = {
     handleValidation,
-    checkIfEventTypeIsSupportedOrNot
+    validate,
+    isEventTypeSupported
 };

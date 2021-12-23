@@ -1,7 +1,7 @@
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
 
-const {isEventTypeSupported, validate, handleValidation} = require("../util/eventValidation");
+const {isEventTypeSupported, handleValidation, violationTypes} = require("../util/eventValidation");
 
 const trackingPlan = {
     rules: {
@@ -12,36 +12,62 @@ const trackingPlan = {
                 description: "Fired when an product is clicked.",
                 version: "1-0-0",
                 rules: {
+                    type: "object",
                     $schema: "http://json-schema.org/draft-07/schema#",
-                    additionalProperties: false,
+                    required: ["properties"],
                     properties: {
-                        email: {
-                            type: [
-                                "string"
-                            ]
-                        },
-                        name: {
-                            type: [
-                                "string"
-                            ]
-                        },
-                        prop_float: {
-                            type: [
-                                "string"
-                            ]
-                        },
-                        prop_integer: {
-                            type: [
-                                "string"
-                            ]
-                        },
-                        revenue: {
-                            type: [
-                                "number"
-                            ]
+                        properties: {
+                            $schema: "http://json-schema.org/draft-07/schema#",
+                            additionalProperties: false,
+                            properties: {
+                                email: {
+                                    type: [
+                                        "string"
+                                    ]
+                                },
+                                name: {
+                                    type: [
+                                        "string"
+                                    ]
+                                },
+                                prop_float: {
+                                    type: [
+                                        "number"
+                                    ]
+                                },
+                                prop_integer: {
+                                    type: [
+                                        "number"
+                                    ]
+                                },
+                                revenue: {
+                                    type: [
+                                        "number"
+                                    ]
+                                }
+                            },
+                            type: "object",
+                            required: [
+                                "email",
+                                "name",
+                                "prop_float",
+                                "prop_integer",
+                                "revenue"
+                            ],
+                            allOf: [
+                                {
+                                    "properties": {
+                                        "prop_integer": {
+                                            "const": 2
+                                        },
+                                        "prop_float": {
+                                            "const": 2.3
+                                        },
+                                    }
+                                }
+                            ],
                         }
-                    },
-                    type: "object"
+                    }
                 }
             }
         ]
@@ -114,223 +140,314 @@ const eventTypesTestCases = [
     }
 ];
 const eventValidationTestCases = [
-    // {
-    //     "testCase": "Empty Source TP Config",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Empty Merged TP Config",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             sourceTpConfig: sourceTpConfig,
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Empty Source and Merged TP Config",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Page Event is not Supported",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //             sourceTpConfig: sourceTpConfig,
-    //         },
-    //         message: {
-    //             type: "page",
-    //             userId: "user12345",
-    //             anonymousId: "anon-id-new",
-    //             name: "Page View",
-    //             properties: {
-    //                 title: "Home",
-    //                 path: "/"
-    //             },
-    //             context: {
-    //                 ip: "14.5.67.21",
-    //                 library: {
-    //                     name: "http"
-    //                 }
-    //             },
-    //             timestamp: "2020-02-02T00:23:09.544Z"
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Screen Event is not Supported",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //             sourceTpConfig: sourceTpConfig,
-    //         },
-    //         message: {
-    //             type: "screen",
-    //             userId: "user12345",
-    //             anonymousId: "anon-id-new",
-    //             name: "Screen View",
-    //             properties: {
-    //                 prop1: "5"
-    //             },
-    //             context: {
-    //                 ip: "14.5.67.21",
-    //                 library: {
-    //                     name: "http"
-    //                 }
-    //             },
-    //             timestamp: "2020-02-02T00:23:09.544Z"
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Alias Event is not Supported",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //             sourceTpConfig: sourceTpConfig,
-    //         },
-    //         message: {
-    //             type: "alias",
-    //             userId: "user123",
-    //             previousId: "user12345",
-    //             context: {
-    //                 traits: {
-    //                     trait1: "new-val"
-    //                 },
-    //                 ip: "14.5.67.21",
-    //                 library: {
-    //                     name: "http"
-    //                 }
-    //             },
-    //             timestamp: "2020-01-21T00:21:34.208Z"
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Group is not present in Tracking Plan ",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //             sourceTpConfig: sourceTpConfig,
-    //         },
-    //         message: {
-    //             type: "group",
-    //             userId: "user12345",
-    //             groupId: "group1",
-    //             traits: {
-    //                 name: "Company",
-    //                 industry: "Industry",
-    //                 employees: 123
-    //             },
-    //             context: {
-    //                 traits: {
-    //                     trait1: "new-val"
-    //                 },
-    //                 ip: "14.5.67.21",
-    //                 library: {
-    //                     name: "http"
-    //                 }
-    //             },
-    //             timestamp: "2020-01-21T00:21:34.208Z"
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
-    // {
-    //     "testCase": "Identify is not present in Tracking Plan ",
-    //     "event": {
-    //         metadata: {
-    //             trackingPlanId: "dummy_tracking_plan_id",
-    //             trackingPlanVersion: "dummy_version",
-    //             workspaceId: "dummy_workspace_id",
-    //             mergedTpConfig: mergedTpConfig,
-    //             sourceTpConfig: sourceTpConfig,
-    //         },
-    //         message: {
-    //             type: "identify",
-    //             userId: "user12345",
-    //             anonymousId: "anon-id-new",
-    //             context: {
-    //                 traits: {
-    //                     trait1: "new-val"
-    //                 },
-    //                 ip: "14.5.67.21",
-    //                 library: {
-    //                     name: "http"
-    //                 }
-    //             },
-    //             timestamp: "2020-02-02T00:23:09.544Z"
-    //         }
-    //     },
-    //     "trackingPlan": trackingPlan,
-    //     "output": {
-    //         dropEvent: false,
-    //         violationType: "None"
-    //     }
-    // },
     {
-        "testCase": "Track event is present in Tracking Plan ",
+        "testCase": "Empty Source TP Config",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Empty Merged TP Config",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                sourceTpConfig: sourceTpConfig,
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Empty Source and Merged TP Config",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Page Event is not Supported",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+                sourceTpConfig: sourceTpConfig,
+            },
+            message: {
+                type: "page",
+                userId: "user12345",
+                anonymousId: "anon-id-new",
+                name: "Page View",
+                properties: {
+                    title: "Home",
+                    path: "/"
+                },
+                context: {
+                    ip: "14.5.67.21",
+                    library: {
+                        name: "http"
+                    }
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Screen Event is not Supported",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+                sourceTpConfig: sourceTpConfig,
+            },
+            message: {
+                type: "screen",
+                userId: "user12345",
+                anonymousId: "anon-id-new",
+                name: "Screen View",
+                properties: {
+                    prop1: "5"
+                },
+                context: {
+                    ip: "14.5.67.21",
+                    library: {
+                        name: "http"
+                    }
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Alias Event is not Supported",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+                sourceTpConfig: sourceTpConfig,
+            },
+            message: {
+                type: "alias",
+                userId: "user123",
+                previousId: "user12345",
+                context: {
+                    traits: {
+                        trait1: "new-val"
+                    },
+                    ip: "14.5.67.21",
+                    library: {
+                        name: "http"
+                    }
+                },
+                timestamp: "2020-01-21T00:21:34.208Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Group is not part of Tracking Plan ",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+                sourceTpConfig: sourceTpConfig,
+            },
+            message: {
+                type: "group",
+                userId: "user12345",
+                groupId: "group1",
+                traits: {
+                    name: "Company",
+                    industry: "Industry",
+                    employees: 123
+                },
+                context: {
+                    traits: {
+                        trait1: "new-val"
+                    },
+                    ip: "14.5.67.21",
+                    library: {
+                        name: "http"
+                    }
+                },
+                timestamp: "2020-01-21T00:21:34.208Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Identify is not part of Tracking Plan ",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: mergedTpConfig,
+                sourceTpConfig: sourceTpConfig,
+            },
+            message: {
+                type: "identify",
+                userId: "user12345",
+                anonymousId: "anon-id-new",
+                context: {
+                    traits: {
+                        trait1: "new-val"
+                    },
+                    ip: "14.5.67.21",
+                    library: {
+                        name: "http"
+                    }
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is not part of Tracking Plan and allowUnplannedEvents is set to true",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: "true",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: "true",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: "false",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is not part of Tracking Plan and allowUnplannedEvents is set to false",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: "false",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: "false",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: "true",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.UnplannedEvent
+        }
+    },
+
+    {
+        "testCase": "Track event is part of Tracking Plan",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -341,14 +458,374 @@ const eventValidationTestCases = [
             },
             message: {
                 type: "track",
-                userId: "user-charitha",
+                userId: "user-demo",
                 event: "Product clicked",
                 properties: {
                     name: "Rubik's Cube",
                     revenue: 4.99,
-                    prop_integer: "2",
-                    prop_float: "2.3",
-                    email: "sandhya12345@rudderstack.com"
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and unplannedProperties is set to drop",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    unplannedProperties: "drop",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        unplannedProperties: "drop",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        unplannedProperties: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
+                    mobile: "999888777666"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.AdditionalProperties
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and unplannedProperties is set to forward",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    unplannedProperties: "forward",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        unplannedProperties: "forward",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        unplannedProperties: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
+                    mobile: "999888777666"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Required] is set to drop",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "drop",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "drop",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.RequiredMissing
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Required] is set to forward",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "forward",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[DateType] is set to drop",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "drop",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "drop",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: "4.99",
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.DatatypeMismatch
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[DateType] is set to forward",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "forward",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: "4.99",
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Unknown] is set to drop",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "drop",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "drop",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 3,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.UnknownViolation
+        }
+    },
+    {
+        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Unknown] is set to forward",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    anyOtherViolation: "forward",
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    },
+                    global: {
+                        anyOtherViolation: "forward",
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 3,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com",
                 },
                 context: {
                     ip: "14.5.67.21"

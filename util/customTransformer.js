@@ -69,7 +69,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
         const err = JSON.parse(
           JSON.stringify(error, Object.getOwnPropertyNames(error))
         );
-        resolve.applyIgnored(undefined, [
+        reject.applyIgnored(undefined, [
           new ivm.ExternalCopy(err).copyInto()
         ]);
       }
@@ -113,6 +113,18 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
         return new Promise(resolve => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let fetchV2 = _fetchV2;
+      delete _fetchV2;
+      global.fetchV2 = function(...args) {
+        return new Promise((resolve, reject) => {
+          fetchV2.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

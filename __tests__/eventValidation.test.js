@@ -287,7 +287,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Group is not part of Tracking Plan ",
+        "testCase": "Group is not part of Tracking Plan",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -324,7 +324,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Identify is not part of Tracking Plan ",
+        "testCase": "Identify is not part of Tracking Plan",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -356,7 +356,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is not part of Tracking Plan and allowUnplannedEvents is set to true",
+        "testCase": "Track is not part of Tracking Plan and allowUnplannedEvents is set to true",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -401,7 +401,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is not part of Tracking Plan and allowUnplannedEvents is set to false",
+        "testCase": "Track is not part of Tracking Plan and allowUnplannedEvents is set to false",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -447,7 +447,7 @@ const eventValidationTestCases = [
     },
 
     {
-        "testCase": "Track event is part of Tracking Plan",
+        "testCase": "Track is part of Tracking Plan",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -480,7 +480,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and unplannedProperties is set to drop",
+        "testCase": "Track is part of Tracking Plan and unplannedProperties is set to drop",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -526,7 +526,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and unplannedProperties is set to forward",
+        "testCase": "Track is part of Tracking Plan and unplannedProperties is set to forward",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -572,7 +572,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Required] is set to drop",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[Required] is set to drop",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -616,7 +616,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Required] is set to forward",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[Required] is set to forward",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -660,7 +660,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[DateType] is set to drop",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[DateType] is set to drop",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -705,7 +705,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[DateType] is set to forward",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[DateType] is set to forward",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -750,7 +750,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Unknown] is set to drop",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[Unknown] is set to drop",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",
@@ -795,7 +795,7 @@ const eventValidationTestCases = [
         }
     },
     {
-        "testCase": "Track event is part of Tracking Plan and anyOtherViolation[Unknown] is set to forward",
+        "testCase": "Track is part of Tracking Plan and anyOtherViolation[Unknown] is set to forward",
         "event": {
             metadata: {
                 trackingPlanId: "dummy_tracking_plan_id",

@@ -252,7 +252,7 @@ async function handleValidation(event) {
                     break;
                 }
                 case "unplannedProperties": {
-                    const exists = violationsByType.has(violationTypes.UnplannedEvent);
+                    const exists = violationsByType.has(violationTypes.AdditionalProperties);
                     if (value === "drop" && exists) {
                         dropEvent = true;
                         violationType = violationTypes.AdditionalProperties;
@@ -305,5 +305,6 @@ async function handleValidation(event) {
 module.exports = {
     handleValidation,
     validate,
-    isEventTypeSupported
+    isEventTypeSupported,
+    violationTypes
 };

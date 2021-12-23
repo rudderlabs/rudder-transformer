@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { fetchWithTimeout } = require("./fetch");
 
 async function runUserTransform(events, code, eventsMetadata, versionId) {
   const tags = {
@@ -34,6 +35,42 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
       } catch (error) {
         resolve.applyIgnored(undefined, [
           new ivm.ExternalCopy("ERROR").copyInto()
+        ]);
+      }
+    })
+  );
+
+  await jail.set(
+    "_fetchV2",
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetchWithTimeout(...args);
+        const headersContent = {};
+        res.headers.forEach((value, header) => {
+          headersContent[header] = value;
+        });
+        const data = {
+          url: res.url,
+          status: res.status,
+          headers: headersContent,
+          body: await res.text()
+        };
+
+        try {
+          data.body = JSON.parse(data.body);
+        } catch (e) {}
+
+        stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      } catch (error) {
+        const err = JSON.parse(
+          JSON.stringify(error, Object.getOwnPropertyNames(error))
+        );
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(err).copyInto()
         ]);
       }
     })

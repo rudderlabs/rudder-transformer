@@ -53,7 +53,6 @@ const trackingPlan = {
     update_time: "2021-12-15T13:29:59.272Z"
 }
 const sourceTpConfig = {
-    group: {},
     track: {
         allowUnplannedEvents: "true",
         unplannedProperties: "forward",
@@ -67,24 +66,14 @@ const sourceTpConfig = {
         anyOtherViolation: "drop",
         sendViolatedEventsTo: "procErrors",
         ajvOptions: {}
-    },
-    identify: {}
+    }
 }
 const mergedTpConfig = {
-    group: {},
-    track: {
-        allowUnplannedEvents: "true",
-        unplannedProperties: "forward",
-        anyOtherViolation: "forward",
-        propagateValidationErrors: "true"
-    },
-    global: {
-        allowUnplannedEvents: "false",
-        unplannedProperties: "drop",
-        anyOtherViolation: "drop",
-        sendViolatedEventsTo: "procErrors"
-    },
-    identify: {}
+    allowUnplannedEvents: "false",
+    unplannedProperties: "drop",
+    anyOtherViolation: "drop",
+    sendViolatedEventsTo: "procErrors",
+    ajvOptions: {}
 }
 
 const eventTypesTestCases = [
@@ -138,8 +127,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -155,8 +143,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -171,8 +158,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -206,8 +192,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -240,8 +225,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -273,8 +257,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -311,8 +294,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     // {
@@ -344,8 +326,7 @@ const eventValidationTestCases = [
     //     "trackingPlan": trackingPlan,
     //     "output": {
     //         dropEvent: false,
-    //         violationType: "None",
-    //         validationErrors: []
+    //         violationType: "None"
     //     }
     // },
     {
@@ -378,8 +359,7 @@ const eventValidationTestCases = [
         "trackingPlan": trackingPlan,
         "output": {
             dropEvent: false,
-            violationType: "None",
-            validationErrors: []
+            violationType: "None"
         }
     }
 ];
@@ -396,15 +376,14 @@ describe("Supported Event types testing", () => {
 
 describe("Handle validation", () => {
     eventValidationTestCases.forEach((testCase) => {
-        it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}, length of validationErrors: ${testCase.output.validationErrors},`, async () => {
+        it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
             fetch.mockResolvedValue({
                 json: jest.fn().mockResolvedValue(testCase.trackingPlan),
                 status: 200
             });
-            const {dropEvent, violationType, validationErrors} = await handleValidation(testCase.event);
+            const {dropEvent, violationType} = await handleValidation(testCase.event);
             expect(dropEvent).toEqual(testCase.output.dropEvent)
             expect(violationType).toEqual(testCase.output.violationType)
-            expect(validationErrors.length).toEqual(testCase.output.validationErrors.length)
         })
     })
 })

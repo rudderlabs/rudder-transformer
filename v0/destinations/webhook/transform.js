@@ -43,7 +43,7 @@ function process(event) {
         response.params = getPropertyParams(message);
       } else {
         response.method = defaultPostRequestConfig.requestMethod;
-        response.body.redundant = getPropertyParams(message)
+        console.log(getPropertyParams(message))
         response.body.JSON = message;
         response.headers = {
           "content-type": "application/json",

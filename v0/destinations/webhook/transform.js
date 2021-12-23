@@ -42,11 +42,11 @@ function process(event) {
         // send properties as query params for GET
         response.params = getPropertyParams(message);
       } else {
-        response.redundant = getPropertyParams(message)
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "content-type": "application/json"
+          "content-type": "application/json",
+          "test-headers" : getPropertyParams(message)
         };
       }
 

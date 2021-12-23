@@ -47,7 +47,7 @@ async function process(event) {
     throw new CustomError(`Message Type not supported: ${type}`, 400);
   }
   if (!properties || typeof properties !== "object") {
-    throw new CustomError("Invalid Payload for the destination", 400);
+    throw new CustomError("Invalid payload for the destination", 400);
   }
   const {
     destination: {

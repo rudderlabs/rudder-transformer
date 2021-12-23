@@ -1,7 +1,7 @@
 jest.mock("node-fetch");
 
 const fetch = require("node-fetch", () => jest.fn());
-const {getEventSchema} = require("../util/trackingPlan");
+const {getEventSchema, getTrackingPlan} = require("../util/trackingPlan");
 
 const trackingPlan = {
     rules: {
@@ -295,10 +295,40 @@ const eventSchemaTestCases = [
         }
     },
 ];
+const trackingPlanTestCases = [
+    {
+        "testCase": "Should not use cache",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+            },
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            trackingPlan: trackingPlan,
+        }
+    },
+    {
+        "testCase": "Should use cache",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+            },
+        },
+        "trackingPlan": {},
+        "output": {
+            trackingPlan: trackingPlan,
+        }
+    },
+];
 
 describe("Get Event Schema", () => {
     eventSchemaTestCases.forEach((testCase) => {
-        it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
+        it(`should return correct schema`, async () => {
             fetch.mockResolvedValue({
                 json: jest.fn().mockResolvedValue(testCase.trackingPlan),
                 status: 200
@@ -311,6 +341,23 @@ describe("Get Event Schema", () => {
                 testCase.event.metadata.workspaceId
             );
             expect(eventSchema).toEqual(testCase.output.eventSchema)
+        })
+    })
+})
+
+describe("Get Tracking Plan", () => {
+    trackingPlanTestCases.forEach((testCase) => {
+        it(`should return correct schema`, async () => {
+            fetch.mockResolvedValue({
+                json: jest.fn().mockResolvedValue(testCase.trackingPlan),
+                status: 200
+            });
+            const trackingPlan = await getTrackingPlan(
+                testCase.event.metadata.trackingPlanId,
+                testCase.event.metadata.trackingPlanVersion,
+                testCase.event.metadata.workspaceId
+            );
+            expect(trackingPlan).toEqual(testCase.output.trackingPlan)
         })
     })
 })

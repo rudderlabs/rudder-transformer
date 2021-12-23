@@ -42,6 +42,7 @@ function process(event) {
         // send properties as query params for GET
         response.params = getPropertyParams(message);
       } else {
+        getPropertyParams(message)
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {

@@ -4,7 +4,11 @@
 const get = require("get-value");
 const axios = require("axios");
 const logger = require("../../../logger");
-const { EventType, WhiteListedTraits } = require("../../../constants");
+const {
+  EventType,
+  WhiteListedTraits,
+  MappedToDestinationKey
+} = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
@@ -28,7 +32,9 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  isEmptyObject
+  isEmptyObject,
+  addExternalIdToTraits,
+  adduserIdFromExternalId
 } = require("../../util");
 
 // A sigle func to handle the addition of user to a list
@@ -113,6 +119,12 @@ const identifyRequestHandler = async (message, category, destination) => {
       `Cannot process list operation as listId is not available, either in message or config, or private key not present`
     );
   }
+
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+  }
   // actual identify call
   let propertyPayload = constructPayload(
     message,
@@ -130,6 +142,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     delete propertyPayload.$id;
     propertyPayload._id = getFieldValueFromMessage(message, "userId");
   }
+
   const payload = {
     token: destination.Config.publicApiKey,
     properties: propertyPayload

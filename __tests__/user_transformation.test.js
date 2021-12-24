@@ -796,7 +796,7 @@ possibleEnvs.forEach(envValue => {
     });
 
     // Running timeout tests only for one possible env value to reduce time taken for tests
-    if (envValue === "right") {
+    if (envValue === "true") {
       describe("Timeout tests", () => {
         beforeEach(() => {});
         it(`Test for timeout for v0 transformation`, async () => {

@@ -3,7 +3,6 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
-const { fetchWithTimeout } = require("./fetch");
 
 async function runUserTransform(events, code, eventsMetadata, versionId) {
   const tags = {
@@ -45,7 +44,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithTimeout(...args);
+        const res = await fetch(...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

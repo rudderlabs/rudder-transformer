@@ -4,7 +4,6 @@ const _ = require("lodash");
 
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
-const { fetchWithTimeout } = require("./fetch");
 
 const isolateVmMem = 128;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -150,7 +149,7 @@ async function createIvm(code, libraryVersionIds, versionId) {
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetchWithTimeout(...args);
+        const res = await fetch(...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

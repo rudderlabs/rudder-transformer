@@ -144,7 +144,6 @@ possibleEnvs.forEach(envValue => {
         }
         `
       };
-      const expectedResponse = { test: "TEST" };
       const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
       when(fetch)
         .calledWith(transformerUrl)

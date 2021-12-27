@@ -771,7 +771,7 @@ router.post(`/v0/validate`, async ctx => {
 //       "apiSecret": ""
 //   }
 // }
-router.post(`/delete-users`, async ctx => {
+router.post(`/deleteUsers`, async ctx => {
   await handleDeletionOfUsers(ctx);
 });
 module.exports = {

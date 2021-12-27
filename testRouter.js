@@ -9,6 +9,7 @@ const { sendToDestination, userTransformHandler } = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
+const SUPPORTED_CONTENT_TYPES = ["application/xml", "application/json", "text"];
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -138,12 +139,13 @@ const handleTestEvent = async (ctx, dest) => {
 
               let contentType = "";
               let response = "";
-              if (parsedResponse.headers) {
+              if (
+                parsedResponse.headers &&
+                parsedResponse.headers["content-type"]
+              ) {
                 contentType = parsedResponse.headers["content-type"];
                 if (
-                  contentType.includes("text") ||
-                  contentType.toLowerCase().includes("application/xml") ||
-                  contentType.toLowerCase().includes("application/json")
+                  SUPPORTED_CONTENT_TYPES.includes(contentType.toLowerCase())
                 ) {
                   response = parsedResponse.response;
                 }

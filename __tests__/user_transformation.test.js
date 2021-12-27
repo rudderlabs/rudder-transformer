@@ -1,7 +1,7 @@
 const { when } = require("jest-when");
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
-const { Response } = jest.requireActual("node-fetch");
+const { Response, Headers } = jest.requireActual("node-fetch");
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
 const unsupportedFuncNames = [
@@ -25,6 +25,24 @@ const randomID = () =>
   Math.random()
     .toString(36)
     .substring(2, 15);
+
+const headers = {
+  "Content-Type": "application/json",
+  Accept: "*/*"
+};
+const responseInit = url => {
+  return {
+    status: 200,
+    headers,
+    url
+  };
+};
+
+const getfetchResponse = (resp, url) =>
+  new Response(
+    typeof resp === "object" ? JSON.stringify(resp) : resp,
+    responseInit(url)
+  );
 
 const possibleEnvs = ["true", "false", "no_value", "some_random_value"];
 possibleEnvs.forEach(envValue => {
@@ -102,6 +120,98 @@ possibleEnvs.forEach(envValue => {
       );
 
       expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple async ${name} FetchV2 Test for V0 transformation`, async () => {
+      const versionId = randomID();
+      const inputData = require(`./data/${integration}_input.json`);
+
+      const respBody = {
+        codeVersion: "0",
+        name,
+        code: `
+        async function transform(events) {
+          const filteredEvents = [];
+          await Promise.all(events.map(async (event) => {
+            try {
+              const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
+              filteredEvents.push(res);
+            } catch (err) {
+              filteredEvents.push(err);
+            }
+          }));
+            return filteredEvents;
+        }
+        `
+      };
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+      const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
+      const jsonResponse = { type: "json" };
+      const textResponse = "200 OK";
+      when(fetch)
+        .calledWith(dummyUrl)
+        .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+        .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+        .mockRejectedValue(new Error("Timed Out"));
+
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(fetch).toHaveBeenCalledWith(transformerUrl);
+      expect(fetch).toHaveBeenCalledWith(dummyUrl);
+
+      expect(output[0].transformedEvent.body).toEqual(jsonResponse);
+      expect(output[1].transformedEvent.body).toEqual(textResponse);
+      expect(output[2].transformedEvent.message).toEqual("Timed Out");
+    });
+
+    it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
+      const versionId = randomID();
+      const inputData = require(`./data/${integration}_input.json`);
+
+      const respBody = {
+        code: `
+        export async function transformEvent(event, metadata) {
+            try{
+              const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
+              return res;
+            } catch (err) {
+              return err;
+            }
+          }
+            `,
+        name: "url",
+        codeVersion: "1"
+      };
+      respBody["versionId"] = versionId;
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+      const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
+      const jsonResponse = { type: "json" };
+      const textResponse = "200 OK";
+      when(fetch)
+        .calledWith(dummyUrl)
+        .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+        .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+        .mockRejectedValue(new Error("Timed Out"));
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(fetch).toHaveBeenCalledWith(transformerUrl);
+      expect(fetch).toHaveBeenCalledWith(dummyUrl);
+
+      expect(output[0].transformedEvent.body).toEqual(jsonResponse);
+      expect(output[1].transformedEvent.body).toEqual(textResponse);
+      expect(output[2].transformedEvent.message).toEqual("Timed Out");
     });
 
     it(`Simple ${name} async test for V1 transformation - transformBatch`, async () => {

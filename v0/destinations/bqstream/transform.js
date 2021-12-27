@@ -2,13 +2,14 @@
 const { EventType } = require("../../../constants");
 const { CustomError } = require("../../util");
 
-const getInsertId = (properties, insertId) => {
+const getInsertIdColValue = (properties, insertIdCol) => {
   if (
-    properties[insertId] &&
-    (typeof insertId === "string" || typeof insertId === "number")
+    properties[insertIdCol] &&
+    (typeof insertIdCol === "string" || typeof insertIdCol === "number")
   ) {
-    return `${properties[insertId]}`;
+    return `${properties[insertIdCol]}`;
   }
+  return null;
 };
 
 const process = async event => {
@@ -23,10 +24,10 @@ const process = async event => {
   }
   const {
     destination: {
-      Config: { datasetId, tableId, projectId, insertId }
+      Config: { datasetId, tableId, projectId, insertId: insertIdColumn }
     }
   } = event;
-  const propInsertId = getInsertId(properties, insertId);
+  const propInsertId = getInsertIdColValue(properties, insertIdColumn);
   const props = { ...properties };
   if (propInsertId) {
     props.insertId = propInsertId;

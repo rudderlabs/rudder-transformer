@@ -1,6 +1,6 @@
 const {
   defaultPostRequestConfig,
-  defaultRequestConfig,
+  defaultRequestConfig
 } = require("../../util");
 const { ENDPOINT } = require("./config");
 

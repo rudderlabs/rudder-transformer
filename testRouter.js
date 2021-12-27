@@ -9,7 +9,25 @@ const { sendToDestination, userTransformHandler } = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
-const SUPPORTED_CONTENT_TYPES = ["application/xml", "application/json", "text"];
+
+const isSupportedContentType = contentType => {
+  let supported = false;
+  const SUPPORTED_CONTENT_TYPES = [
+    "application/xml",
+    "application/json",
+    "text"
+  ];
+  if (contentType) {
+    SUPPORTED_CONTENT_TYPES.some(type => {
+      if (contentType.toLowerCase().includes(type)) {
+        supported = true;
+        return true;
+      }
+      return false;
+    });
+  }
+  return supported;
+};
 
 const testRouter = new Router({ prefix: "/test-router" });
 
@@ -139,14 +157,9 @@ const handleTestEvent = async (ctx, dest) => {
 
               let contentType = "";
               let response = "";
-              if (
-                parsedResponse.headers &&
-                parsedResponse.headers["content-type"]
-              ) {
+              if (parsedResponse.headers) {
                 contentType = parsedResponse.headers["content-type"];
-                if (
-                  SUPPORTED_CONTENT_TYPES.includes(contentType.toLowerCase())
-                ) {
+                if (isSupportedContentType(contentType)) {
                   response = parsedResponse.response;
                 }
               } else if (parsedResponse.networkFailure) {

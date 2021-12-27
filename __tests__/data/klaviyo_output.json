@@ -88,5 +88,20 @@
   },
   {
     "error": "email or phone is required for customer_properties"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGlkIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGVtYWlsIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGZpcnN0X25hbWUiOiJVdHNhYiIsIiRsYXN0X25hbWUiOiJDaG93ZGh1cnkiLCJvbWVnYSI6Im9tZWdhc2hlbnJvbiJ9fQ==",
+    "headers": {},
+    "params": {},
+    "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {}
   }
 ]

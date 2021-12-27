@@ -159,7 +159,9 @@
         "companies": [
           {
             "company_id": "company_id",
-            "custom_attributes": { "key1": "value1" },
+            "custom_attributes": {
+              "key1": "value1"
+            },
             "name": "Test Comp",
             "industry": "test industry"
           }
@@ -199,7 +201,9 @@
         "companies": [
           {
             "company_id": "c0277b5c814453e5135f515f943d085a",
-            "custom_attributes": { "key1": "value1" },
+            "custom_attributes": {
+              "key1": "value1"
+            },
             "name": "Test Comp",
             "industry": "test industry"
           }
@@ -277,7 +281,6 @@
     "files": {},
     "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   },
-
   {
     "version": "1",
     "type": "REST",
@@ -307,5 +310,36 @@
   {
     "statusCode": 400,
     "error": "Email or userId is mandatory"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.intercom.io/users",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Accept": "application/json",
+      "Intercom-Version": "1.4"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+        "name": "Test Name",
+        "firstName": "Test",
+        "lastName": "Name",
+        "createdAt": "2020-09-30T19:11:00.337Z",
+        "phone": "9876543210",
+        "key1": "value1",
+        "email": "test@gmail.com",
+        "update_last_request_at": true
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33"
   }
 ]

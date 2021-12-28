@@ -4,8 +4,10 @@ const { CustomError } = require("../../util");
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
+    insertIdCol &&
     properties[insertIdCol] &&
-    (typeof insertIdCol === "string" || typeof insertIdCol === "number")
+    (typeof properties[insertIdCol] === "string" ||
+      typeof properties[insertIdCol] === "number")
   ) {
     return `${properties[insertIdCol]}`;
   }

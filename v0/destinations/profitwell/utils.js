@@ -169,13 +169,8 @@ const getSubscriptionHistory = async (endpoint, options) => {
     method: "get",
     ...options
   };
-  let res;
-  try {
-    const response = await httpGET(endpoint, requestOptions);
-    res = { success: true, response };
-  } catch (err) {
-    res = { success: false, response: err };
-  }
+
+  const res = await httpGET(endpoint, requestOptions);
   return res;
 };
 

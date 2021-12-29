@@ -29,7 +29,7 @@ const maxColumnsInEvent = parseInt(
 
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
 
-const getDataType = (val, options) => {
+const getDataType = (key, val, options) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -46,7 +46,7 @@ const getDataType = (val, options) => {
     options.getDataTypeOverride &&
     typeof options.getDataTypeOverride === "function"
   ) {
-    return options.getDataTypeOverride(val, options) || "string";
+    return options.getDataTypeOverride(key, val, options) || "string";
   }
   return "string";
 };
@@ -135,7 +135,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
       delete columnTypes[columnName];
       return;
     }
-    const datatype = getDataType(val, options);
+    const datatype = getDataType(key, val, options);
     if (datatype === "datetime") {
       val = new Date(val).toISOString();
     }
@@ -209,7 +209,7 @@ function setDataFromInputAndComputeColumnTypes(
         val = JSON.stringify(val);
       }
 
-      const datatype = getDataType(val, options);
+      const datatype = getDataType(key, val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
@@ -246,7 +246,7 @@ function getColumns(options, event, columnTypes) {
     columns[loadedAt] = "datetime";
   }
   Object.keys(event).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(event[key], options);
+    columns[key] = columnTypes[key] || getDataType(key, event[key], options);
   });
   /*
    1) throw error if too many columns in an event just in case to avoid creating too many columns in warehouse due to a spurious event
@@ -752,7 +752,11 @@ function processWarehouseMessage(message, options) {
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersColumnTypes[
         utils.safeColumnName(options.provider, "id")
-      ] = getDataType(message.userId, options);
+      ] = getDataType(
+        utils.safeColumnName(options.provider, "id"),
+        message.userId,
+        options
+      );
       // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")

@@ -7,15 +7,11 @@ const {
 const {
   networkHandler: GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
-const {
-  networkHandler: BqStreamNetworkHandler
-} = require("../v0/destinations/bqstream/util");
 
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
-  marketo: MarketoNetworkHandler,
-  bqstream: BqStreamNetworkHandler
+  marketo: MarketoNetworkHandler
 };
 
 module.exports = {

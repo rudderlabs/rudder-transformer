@@ -1113,12 +1113,8 @@ const isOAuthSupported = (destination, destHandler) => {
 };
 
 function isAppleFamily(platform) {
-  return (
-    platform.toLowerCase() === "ios" ||
-    platform.toLowerCase() === "watchos" ||
-    platform.toLowerCase() === "ipados" ||
-    platform.toLowerCase() === "tvos"
-  );
+  const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
+  return appleOsNames.includes(platform.toLowerCase());
 }
 
 // ========================================================================

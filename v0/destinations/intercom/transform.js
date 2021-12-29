@@ -144,7 +144,7 @@ function processSingleMessage(message, destination) {
 
   // build the response and return
   const payload = constructPayload(message, MappingConfig[category.name]);
-  if (sendAnonymousId && !payload.user_id && !payload.email) {
+  if (sendAnonymousId && !payload.user_id) {
     payload.user_id = message.anonymousId;
   }
   return validateAndBuildResponse(message, payload, category, destination);

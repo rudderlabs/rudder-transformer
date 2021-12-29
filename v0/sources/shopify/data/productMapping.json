@@ -1,6 +1,6 @@
 [
-{
-    "sourceKeys":"line_item.product_id",
-    "destKeys":"products.product_id"
-}
+  {
+    "sourceKeys": "line_item.product_id",
+    "destKeys": "products.product_id"
+  }
 ]

@@ -1,53 +1,39 @@
-/* eslint-disable prettier/prettier */
-const path = require("path");
-const fs = require("fs");
+const { getShopifyTopic } = require("./util");
+const { generateUUID } = require("../../util");
 const Message = require("../message");
-const { mapProductsFromLineitems } = require("./util");
+const { EventType } = require("../../../constants");
+const { INTEGERATION, MAPPING_CATEGORIES } = require("./config");
 
-// const {
-//     removeUndefinedAndNullValues,
-//     extractCustomFields
-// } = require("../../util");
+const identifyPayloadBuilder = event => {
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.IDENTIFY);
+  message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  if (event.updated_at) {
+    message.setTimestamp(event.updated_at);
+  }
+  return message;
+};
 
-const mappingJson = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
-);
+const processEvent = event => {
+  let message;
+  const shopifyTopic = getShopifyTopic(event);
+  switch (shopifyTopic) {
+    case "customers_create":
+    case "customers_udpate":
+      message = identifyPayloadBuilder(event);
+      break;
+    default:
+      break;
+  }
 
-function guidGenerator() {
-    const S4 = () =>
-        // eslint-disable-next-line no-bitwise
-        (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-}
-// event: Shopify
-// message: Rudder
+  message.setProperty("anonymousId", generateUUID());
+  message.setProperty(`integrations.${INTEGERATION}`, true);
+  return message;
+};
 
-function processEvent(event) {
-    // console.log("==In processEvent==");
-    const message = new Message(`SHOPIFY`);
-    message.setEventType("track");
-
-    switch (event.shopifyType) {
-        case "cart_create":
-            message.setEventName(event.shopifyType);
-            message.setPropertiesV2(event, mappingJson);
-            break;
-        default:
-
-    }
-    // message.setPropertiesV2(products, productMappingJson);
-
-    // message.products = products
-    const products = mapProductsFromLineitems(event.line_items);
-    message.anonymousId = guidGenerator();
-    message.products = products;
-    return message;
-}
-
-function process(event) {
-    const response = processEvent(event);
-    // console.log(event)
-    return response;
-}
+const process = event => {
+  const response = processEvent(event);
+  return response;
+};
 
 exports.process = process;

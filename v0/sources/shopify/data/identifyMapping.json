@@ -1,7 +1,10 @@
 [
     {
         "sourceKeys": "id",
-        "destKeys": "userId"
+        "destKeys": "userId",
+        "metadata": {
+            "type": "toString"
+        }
     },
     {
         "sourceKeys": "email",
@@ -98,41 +101,5 @@
     {
         "sourceKeys":"accepts_marketing_updated_at",
         "destKeys":"traits.acceptsMarketingUpdatedAt"
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    {
-        "sourceKeys":"",
-        "destKeys":""
     }
 ]

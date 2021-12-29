@@ -6,8 +6,6 @@ const path = require("path");
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
-const networkResponseHandler = require(`../${version}/destinations/${integration}/networkResponseHandler`);
-
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
 );
@@ -40,15 +38,7 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-// Response Transform Test files
-const inputResponseDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_response_input.json`)
-);
-const outputResponseDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_response_output.json`)
-);
-const inputResponseData = JSON.parse(inputResponseDataFile);
-const expectedResponseData = JSON.parse(outputResponseDataFile);
+
 
 describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
@@ -57,18 +47,6 @@ describe(`${name} Tests`, () => {
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  describe("Response Transform Tests", () =>{
-    inputResponseData.forEach((input, index) => {
-      it(`Payload - ${index}`, async () => {
-        try {
-          const output = await networkResponseHandler.responseTransform(input, integration);
-          expect(output).toEqual(expectedResponseData[index]);
-        } catch (error) {
-          expect({...error}).toEqual(expectedResponseData[index]);
-        }
-      });
-    });
-  })
 });
 
 const batchInputDataFile = fs.readFileSync(

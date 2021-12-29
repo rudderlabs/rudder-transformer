@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "$event_id",
+    "sourceKeys": "order_id",
+    "required": false
+  },
+  {
+    "destKey": "$value",
+    "sourceKeys": "value",
+    "required": false
+  },
+  {
+    "destKey": "Categories",
+    "sourceKeys": "categories",
+    "required": false
+  },
+  {
+    "destKey": "CheckoutURL",
+    "sourceKeys": "checkout_url",
+    "required": false
+  },
+  {
+    "destKey": "ItemNames",
+    "sourceKeys": "item_names",
+    "required": false
+  }
+]

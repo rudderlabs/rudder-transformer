@@ -21,7 +21,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -137,6 +138,42 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
+function updateConfigProperty(message, payload, mappingJson, validatePayload) {
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    // check if custom processing is required on the payload sourceKey ==> destKey
+    if (typeof mappingJson[sourceKey] === "object") {
+      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+      if (isFunc) {
+        if (validatePayload) {
+          const data = get(payload, outKey);
+          if (!isDefinedAndNotNull(data)) {
+            const val = AMUtils[funcName](message, sourceKey);
+            if (val || val === false || val === 0) {
+              set(payload, outKey, val);
+            }
+          }
+        } else {
+          // get the destKey/outKey value from calling the util function
+          set(payload, outKey, AMUtils[funcName](message, sourceKey));
+        }
+      }
+    } else {
+      if (validatePayload) {
+        const data = get(payload, mappingJson[sourceKey]);
+        if (!isDefinedAndNotNull(data)) {
+          const val = get(message, sourceKey);
+          if (val || val === false || val === 0) {
+            set(payload, mappingJson[sourceKey], val);
+          }
+        }
+      } else {
+        set(payload, mappingJson[sourceKey], get(message, sourceKey));
+      }
+    }
+  });
+}
+
 function responseBuilderSimple(
   groupInfo,
   rootElementName,
@@ -162,19 +199,7 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    // check if custom processing is required on the payload sourceKey ==> destKey
-    if (typeof mappingJson[sourceKey] === "object") {
-      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
-      if (isFunc) {
-        // get the destKey/outKey value from calling the util function
-        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
-      }
-    } else {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-    }
-  });
+  updateConfigProperty(message, rawPayload, mappingJson, false);
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -208,8 +233,6 @@ function responseBuilderSimple(
       endpoint = ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
-      rawPayload.country = get(message, "context.location.country");
-      rawPayload.city = get(message, "context.location.city");
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
@@ -237,13 +260,6 @@ function responseBuilderSimple(
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
             }
           });
-
-          if (!rawPayload.country) {
-            rawPayload.country = get(traits, "address.country");
-          }
-          if (!rawPayload.city) {
-            rawPayload.city = get(traits, "address.city");
-          }
         }
       }
 
@@ -267,20 +283,12 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
-      rawPayload.country = get(message, "context.location.country");
-      rawPayload.city = get(message, "context.location.city");
 
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...traits
         };
-        if (!rawPayload.country) {
-          rawPayload.country = get(traits, "address.country");
-        }
-        if (!rawPayload.city) {
-          rawPayload.city = get(traits, "address.city");
-        }
       }
 
       rawPayload.event_type = evType;
@@ -355,6 +363,13 @@ function responseBuilderSimple(
         payload.user_id = message.userId;
       }
       payload.session_id = getSessionId(payload);
+
+      updateConfigProperty(
+        message,
+        payload,
+        mappingConfig[ConfigCategory.COMMON_CONFIG.name],
+        true
+      );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
       // for correct versionName
@@ -499,8 +514,8 @@ function processSingleMessage(message, destination) {
 
       if (
         message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
+        isDefinedAndNotNull(message.properties.revenue) &&
+        isDefinedAndNotNull(message.properties.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
@@ -622,7 +637,8 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   if (messageType === EventType.TRACK) {
-    if (message.properties && message.properties.revenue) {
+    const { properties } = message;
+    if (properties && isDefinedAndNotNull(properties.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
       revenueEvents.forEach(revenueEvent => {
         toSendEvents.push(revenueEvent);

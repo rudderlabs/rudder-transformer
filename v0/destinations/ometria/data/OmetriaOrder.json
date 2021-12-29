@@ -1,0 +1,92 @@
+[
+  {
+    "destKey": "id",
+    "sourceKeys": "properties.order_id",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": ["properties.timestamp", "originalTimestamp"],
+    "required": true
+  },
+  {
+    "destKey": "grand_total",
+    "sourceKeys": "properties.grand_total",
+    "required": true
+  },
+  {
+    "destKey": "subtotal",
+    "sourceKeys": "properties.subtotal",
+    "required": false
+  },
+  {
+    "destKey": "discount",
+    "sourceKeys": "properties.discount",
+    "required": false
+  },
+  {
+    "destKey": "shipping",
+    "sourceKeys": "properties.shipping",
+    "required": false
+  },
+  {
+    "destKey": "tax",
+    "sourceKeys": "properties.tax",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  },
+  {
+    "destKey": "web_id",
+    "sourceKeys": "properties.web_id",
+    "required": false
+  },
+  {
+    "destKey": "ip_address",
+    "sourceKeys": ["context.ip", "properties.ip_address"],
+    "required": false
+  },
+  {
+    "destKey": "channel",
+    "sourceKeys": "properties.channel",
+    "required": false
+  },
+  {
+    "destKey": "store",
+    "sourceKeys": "properties.store",
+    "required": false
+  },
+  {
+    "destKey": "payment_method",
+    "sourceKeys": "properties.payment_method",
+    "required": false
+  },
+  {
+    "destKey": "shipping_method",
+    "sourceKeys": "properties.shipping_method",
+    "required": false
+  },
+  {
+    "destKey": "shipping_address",
+    "sourceKeys": "properties.shipping_address",
+    "required": false
+  },
+  {
+    "destKey": "billing_address",
+    "sourceKeys": "properties.billing_address",
+    "required": false
+  },
+  {
+    "destKey": "coupon_code",
+    "sourceKeys": "properties.coupon_code",
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties.custom_fields",
+    "required": false
+  }
+]

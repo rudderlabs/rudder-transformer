@@ -810,6 +810,42 @@ describe("handle recordId from cloud sources", () => {
     });
   });
 
+  it("should set id based on recordId when sourceCategory is singer-protocol and has source version", () => {
+    let i = input("track");
+    i.message.recordId = 42;
+    i.message.properties.recordId = "anotherRecordId";
+    i.metadata = { sourceCategory: "singer-protocol" };
+    i.message.context.sources = { version: 1.12 };
+    transformers.forEach((transformer, index) => {
+      const received = transformer.process(i);
+      expect(
+        received[0].metadata.columns[
+          integrationCasedString(integrations[index], "record_id")
+        ]
+      ).toEqual("string");
+      expect(
+        received[0].data[
+          integrationCasedString(integrations[index], "record_id")
+        ]
+      ).toBe("42");
+
+      expect(
+        received[1].metadata.columns[
+          integrationCasedString(integrations[index], "id")
+        ]
+      ).toEqual("int");
+      expect(
+        received[1].data[integrationCasedString(integrations[index], "id")]
+      ).toBe(42);
+      expect(received[1].metadata.columns).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+      expect(received[1].data).not.toHaveProperty(
+        integrationCasedString(integrations[index], "record_id")
+      );
+    });
+  });
+
   it("should throw error when sourceCategory is cloud and has source version and recordId is missing", () => {
     let i = input("track");
     i.message.properties.recordId = "anotherRecordId";
@@ -885,12 +921,14 @@ describe("handle level three nested events from sources", () => {
 describe("Handle no of columns in an event", () => {
   it("should throw an error if no of columns are more than 200", () => {
     const i = input("track");
-    transformers.filter((transformer, index) => integrations[index] !== "s3_datalake").forEach((transformer, index) => {
-      i.message.properties = largeNoOfColumnsevent;
-      expect(() => transformer.process(i)).toThrow(
-        "transfomer: Too many columns outputted from the event"
-      );
-    });
+    transformers
+      .filter((transformer, index) => integrations[index] !== "s3_datalake")
+      .forEach((transformer, index) => {
+        i.message.properties = largeNoOfColumnsevent;
+        expect(() => transformer.process(i)).toThrow(
+          "transfomer: Too many columns outputted from the event"
+        );
+      });
   });
 
   it("should not throw an error if no of columns are more than 200 and the event is from rudder-sources", () => {

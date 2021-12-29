@@ -73,6 +73,113 @@
     "files": {},
     "userId": "sampath"
   },
-  { "statusCode": 400, "error": "Message type is not supported" }
+  { "statusCode": 400, "error": "Message type is not supported" },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.branch.io/v2/event/standard",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "content_items": [
+          {
+            "$product_name": "sampath"
+          }
+        ],
+        "user_data": {
+          "os": "watchos",
+          "app_version": "1.0.0",
+          "screen_dpi": 2,
+          "developer_identity": "sampath"
+        },
+        "name": "ADD_TO_CART",
+        "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "limit_ad_tracking": false,
+        "branch_key": "<branch key goes here>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.branch.io/v2/event/standard",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "content_items": [
+          {
+            "$product_name": "sampath"
+          }
+        ],
+        "user_data": {
+          "os": "ipados",
+          "app_version": "1.0.0",
+          "screen_dpi": 2,
+          "developer_identity": "sampath"
+        },
+        "name": "ADD_TO_CART",
+        "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "limit_ad_tracking": false,
+        "branch_key": "<branch key goes here>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.branch.io/v2/event/standard",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "content_items": [
+          {
+            "$product_name": "sampath"
+          }
+        ],
+        "user_data": {
+          "os": "tvos",
+          "app_version": "1.0.0",
+          "screen_dpi": 2,
+          "developer_identity": "sampath"
+        },
+        "name": "ADD_TO_CART",
+        "idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "limit_ad_tracking": false,
+        "branch_key": "<branch key goes here>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  }
 ]
-

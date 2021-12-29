@@ -11,6 +11,7 @@ const productMappingJson = JSON.parse(
 );
 
 function setPropertiesV2(event, mappingJson) {
+    const product = {};
     mappingJson.forEach(mapping => {
         const { sourceKeys } = mapping;
         let { destKeys } = mapping;
@@ -19,7 +20,7 @@ function setPropertiesV2(event, mappingJson) {
             destKeys = [destKeys];
         }
         destKeys.forEach(destKey => {
-            const existingVal = get(this, destKey);
+            const existingVal = get(product, destKey);
             // do not set if val setVal nil
             // give higher pref to first key in mapping.json in case of same value
             if (
@@ -27,20 +28,21 @@ function setPropertiesV2(event, mappingJson) {
                 setVal !== undefined &&
                 (existingVal === null || existingVal === undefined)
             ) {
-                set(this, destKey, setVal);
+                set(product, destKey, setVal);
             }
         });
     });
+    return product;
 }
 
 function mapProductsFromLineitems(line_items) {
     const products = [];
     // const shopify_context_products = []; //leaving extra properties for later implementation
     line_items.forEach(lineitem => {
-        const product = {};
-        setPropertiesV2(lineitem, productMappingJson);
+
+        const product = setPropertiesV2(lineitem, productMappingJson);
         // Object.entries(productMappingJson)
-        // product[`${destination_key}`] = get(lineitem, `${source}`)
+        // product[`${destKeys}`] = get(lineitem, `${sourceKeys}`)
         products.push(product)
     });
     return products;

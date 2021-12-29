@@ -47,7 +47,7 @@
     "is-ip": "^3.1.0",
     "isolated-vm": "^3.3.7",
     "json-query": "^2.2.2",
-    "koa": "^2.12.1",
+    "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.21",

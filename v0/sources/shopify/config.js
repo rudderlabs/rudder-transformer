@@ -2,7 +2,10 @@ const path = require("path");
 const fs = require("fs");
 const { EventType } = require("../../../constants");
 
-const IDENTIFY_TOPICS = ["customers_create", "customers_update"];
+const IDENTIFY_TOPICS = {
+  CUSTOMERS_CREATE: "customers_create",
+  CUSTOMERS_UDPATE: "customers_update"
+};
 
 // Mapping from shopify_topic --> Rudder Ecom Event
 const ECOM_TOPICS = {

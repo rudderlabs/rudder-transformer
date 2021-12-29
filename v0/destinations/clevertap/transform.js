@@ -178,7 +178,7 @@ const responseBuilderSimple = (message, category, destination) => {
       if (
         get(message, "anonymousId") &&
         deviceToken &&
-        ["ios", "android"].includes(deviceOS)
+        ["ios", "watchos", "ipados", "tvos", "android"].includes(deviceOS)
       ) {
         const tokenType = deviceOS === "android" ? "fcm" : "apns";
         const payloadForDeviceToken = {

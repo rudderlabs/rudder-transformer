@@ -1112,6 +1112,14 @@ const isOAuthSupported = (destination, destHandler) => {
   );
 };
 
+function isAppleFamily(platform) {
+  return (
+    platform.toLowerCase() === "ios" ||
+    platform.toLowerCase() === "watchos" ||
+    platform.toLowerCase() === "ipados" ||
+    platform.toLowerCase() === "tvos"
+  );
+}
 
 // ========================================================================
 // EXPORTS
@@ -1180,5 +1188,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   isOAuthSupported,
-  isOAuthDestination
+  isOAuthDestination,
+  isAppleFamily
 };

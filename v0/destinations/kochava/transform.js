@@ -10,7 +10,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  formatTimeStamp
+  formatTimeStamp,
+  isAppleFamily
 } = require("../../util");
 
 // build final response
@@ -51,14 +52,14 @@ function responseBuilder(eventName, eventData, message, destination) {
         message.context &&
         message.context.os &&
         message.context.os.name &&
-        message.context.os.name.toLowerCase() === "ios"
+        isAppleFamily(message.context.os.name)
           ? message.context.device.advertisingId || ""
           : "",
       idvf:
         message.context &&
         message.context.os &&
         message.context.os.name &&
-        message.context.os.name.toLowerCase() === "ios"
+        isAppleFamily(message.context.os.name)
           ? message.context.device.id || message.anonymousId || ""
           : "",
       adid:

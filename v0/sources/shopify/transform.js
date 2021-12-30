@@ -5,7 +5,8 @@ const { EventType } = require("../../../constants");
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
-  IDENTIFY_TOPICS
+  IDENTIFY_TOPICS,
+  ECOM_TOPICS
 } = require("./config");
 
 const identifyPayloadBuilder = event => {
@@ -19,6 +20,14 @@ const identifyPayloadBuilder = event => {
   return message;
 };
 
+const ecomPayloadBuilder = event => {
+  const message = new Message(INTEGERATION);
+  message.setEventType(EventType.TRACK);
+  message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.TRACK]);
+
+  return message;
+};
+
 const processEvent = event => {
   let message;
   const shopifyTopic = getShopifyTopic(event);
@@ -26,6 +35,9 @@ const processEvent = event => {
     case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
     case IDENTIFY_TOPICS.CUSTOMERS_UDPATE:
       message = identifyPayloadBuilder(event);
+      break;
+    case ECOM_TOPICS.checkout_create:
+      message = ecomPayloadBuilder(event);
       break;
     default:
       break;

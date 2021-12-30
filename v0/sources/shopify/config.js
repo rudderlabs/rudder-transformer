@@ -17,10 +17,15 @@ const identifyMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "data", "identifyMapping.json"))
 );
 
+const productMappingJSON = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, "data", "productMapping.json"))
+);
+
 const INTEGERATION = "SHOPIFY";
 
 const MAPPING_CATEGORIES = {
-  [EventType.IDENTIFY]: identifyMappingJSON
+  [EventType.IDENTIFY]: identifyMappingJSON,
+  [EventType.TRACK]: productMappingJSON
 };
 
 module.exports = {

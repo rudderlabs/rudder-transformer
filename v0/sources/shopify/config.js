@@ -4,13 +4,13 @@ const { EventType } = require("../../../constants");
 
 const IDENTIFY_TOPICS = {
   CUSTOMERS_CREATE: "customers_create",
-  CUSTOMERS_UDPATE: "customers_update"
+  CUSTOMERS_UPDATE: "customers_update"
 };
 
 // Mapping from shopify_topic --> Rudder Ecom Event
 const ECOM_TOPICS = {
-  checkout_create: "Checkout Started",
-  order_udpated: "Order Updated"
+  CHECKOUT_CREATE: "checkout_create",
+  ORDER_UPDATED: "Order Updated"
 };
 
 const identifyMappingJSON = JSON.parse(

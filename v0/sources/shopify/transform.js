@@ -23,7 +23,13 @@ const identifyPayloadBuilder = event => {
 const ecomPayloadBuilder = event => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
+  message.setEventName("Checkout Started");
   message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.TRACK]);
+
+  if (event.updated_at) {
+    // converting shopify updated_at timestamp to rudder timestamp format
+    message.setTimestamp(new Date(event.updated_at).toISOString());
+  }
 
   return message;
 };
@@ -33,10 +39,10 @@ const processEvent = event => {
   const shopifyTopic = getShopifyTopic(event);
   switch (shopifyTopic) {
     case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
-    case IDENTIFY_TOPICS.CUSTOMERS_UDPATE:
+    case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
       message = identifyPayloadBuilder(event);
       break;
-    case ECOM_TOPICS.checkout_create:
+    case ECOM_TOPICS.CHECKOUT_CREATE:
       message = ecomPayloadBuilder(event);
       break;
     default:

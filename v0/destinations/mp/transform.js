@@ -13,7 +13,8 @@ const {
   getTimeDifference,
   getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -186,7 +187,7 @@ function processIdentifyEvents(message, type, destination) {
   const { device } = message.context;
   if (device && device.token) {
     let payload;
-    if (device.type.toLowerCase() === "ios") {
+    if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {

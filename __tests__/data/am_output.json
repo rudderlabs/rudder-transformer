@@ -2686,6 +2686,156 @@
         "api_key": "abcde",
         "events": [
           {
+            "device_manufacturer": "Apple",
+            "platform": "watchos",
+            "device_id": "0572f78fa49c648e",
+            "carrier": "AT&T",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "user_id": "0572f78fa49c648e",
+            "device_brand": "Apple",
+            "idfa": "1606e649-c97e-4d5f-a2ef-b81dbc66741a",
+            "idfv": "0572f78fa49c648e",
+            "time": 1600355223515,
+            "session_id": -1,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_manufacturer": "Apple",
+            "platform": "ipados",
+            "device_id": "0572f78fa49c648e",
+            "carrier": "AT&T",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "user_id": "0572f78fa49c648e",
+            "device_brand": "Apple",
+            "idfa": "1606e649-c97e-4d5f-a2ef-b81dbc66741a",
+            "idfv": "0572f78fa49c648e",
+            "time": 1600355223515,
+            "session_id": -1,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_manufacturer": "Apple",
+            "platform": "tvos",
+            "device_id": "0572f78fa49c648e",
+            "carrier": "AT&T",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e"
+            },
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "user_id": "0572f78fa49c648e",
+            "device_brand": "Apple",
+            "idfa": "1606e649-c97e-4d5f-a2ef-b81dbc66741a",
+            "idfv": "0572f78fa49c648e",
+            "time": 1600355223515,
+            "session_id": -1,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
             "os_name": "Android",
             "os_version": "11",
             "device_model": "SM-A025M",

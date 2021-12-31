@@ -1,0 +1,14 @@
+[
+  {
+    "datasetId": "gc_dataset",
+    "projectId": "gc-project-id",
+    "properties": { "count": 25, "productId": 6, "productName": "Product-5" },
+    "tableId": "gc_table"
+  },
+  {
+    "datasetId": "gc_dataset",
+    "projectId": "gc-project-id",
+    "properties": { "count": 25, "productId": 6, "productName": "Product-5", "insertId": "6" },
+    "tableId": "gc_table"
+  }
+]

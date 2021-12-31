@@ -10,7 +10,7 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  adduserIdFromExternalId
+  isAppleFamily
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -35,7 +35,7 @@ function constructPayloadItem(message, category, destination) {
         mappingConfig[ConfigCategory.DEVICE.name]
       );
       rawPayload.preferUserId = true;
-      if (message.context.device.type.toLowerCase() === "ios") {
+      if (isAppleFamily(message.context.device.type)) {
         rawPayload.device.platform = "APNS";
       } else {
         rawPayload.device.platform = "GCM";

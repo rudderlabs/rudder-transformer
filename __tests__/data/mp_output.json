@@ -512,5 +512,45 @@
     },
     "files": {},
     "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": "eyIkc2V0Ijp7ImFub255bW91c0lkIjoiNTA5NGY1NzA0YjljZjJiMyIsInVzZXJJZCI6InRlc3RfdXNlcl9pZCIsIiRpb3NfZGV2aWNlcyI6WyJ0ZXN0X2RldmljZV90b2tlbiJdLCIkaW9zX2RldmljZV9tb2RlbCI6IkFuZHJvaWQgU0RLIGJ1aWx0IGZvciB4ODYiLCIkaW9zX2FwcF9yZWxlYXNlIjoiMSIsIiRpb3NfYXBwX3ZlcnNpb24iOiIxLjAifSwiJHRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsIiRkaXN0aW5jdF9pZCI6InRlc3RfdXNlcl9pZCIsIiR0aW1lIjpudWxsfQ=="
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
+      },
+      "params": {
+        "data": "eyJldmVudCI6IiRtZXJnZSIsInByb3BlcnRpZXMiOnsiJGRpc3RpbmN0X2lkcyI6WyJ0ZXN0X3VzZXJfaWQiLCI1MDk0ZjU3MDRiOWNmMmIzIl0sInRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiJ9fQ=="
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    }
+  ]
 ]

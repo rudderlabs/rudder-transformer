@@ -10,15 +10,15 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isAppleFamily
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
-
   const os = get(message, "context.os.name");
 
   if (isDefinedAndNotNull(os)) {
-    if (os.toLowerCase() === "ios") {
+    if (isAppleFamily(os)) {
       payload.idfa = get(message, "context.device.advertisingId");
       payload.idfv = get(message, "context.device.id");
     } else if (os.toLowerCase() === "android") {
@@ -268,4 +268,3 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
-

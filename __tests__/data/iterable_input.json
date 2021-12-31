@@ -994,7 +994,7 @@
       "userId": "12345",
       "event": "test track event GA3",
       "properties": {
-        "email":"ruchira@rudderlabs.com",
+        "email": "ruchira@rudderlabs.com",
         "campaignId": "1",
         "templateId": "0",
         "category": "test-category",
@@ -1153,62 +1153,61 @@
       "userId": "8751",
       "channel": "web",
       "context": {
-          "os": {
-              "name": "",
-              "version": ""
-          },
-          "app": {
-              "name": "RudderLabs JavaScript SDK",
-              "build": "1.0.0",
-              "version": "1.0.16",
-              "namespace": "com.rudderlabs.javascript"
-          },
-          "page": {
-              "url": "https://joybird.com/cabinets/vira-console-cabinet/",
-              "path": "/cabinets/vira-console-cabinet/",
-              "title": "Vira Console Cabinet | Joybird",
-              "search": "",
-              "referrer": "$direct",
-              "referring_domain": ""
-          },
-          "locale": "en-us",
-          "screen": {
-              "density": 2
-          },
-          "traits": {
-              "email": "jessica@jlpdesign.net"
-          },
-          "library": {
-              "name": "RudderLabs JavaScript SDK",
-              "version": "1.0.16"
-          },
-          "campaign": {},
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.0.16",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "https://joybird.com/cabinets/vira-console-cabinet/",
+          "path": "/cabinets/vira-console-cabinet/",
+          "title": "Vira Console Cabinet | Joybird",
+          "search": "",
+          "referrer": "$direct",
+          "referring_domain": ""
+        },
+        "locale": "en-us",
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "jessica@jlpdesign.net"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.16"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15"
       },
       "rudderId": "1c42e104-97ec-4f54-a328-2379623583fe",
       "messageId": "e58f6624-a1c3-48f4-a6af-610389602304",
       "timestamp": "2021-07-09T05:27:18.131Z",
       "properties": {
-          
-          "sku": "JB24691400-W05",
-          "name": "Vira Console Cabinet",
-          "price": 797,
-          "cart_id": "bd9b8dbf4ef8ee01d4206b04fe2ee6ae",
-          "variant": "Oak",
-          "quantity": 1,
-          "quickship": true,
-          "full_price": 1328,
-          "product_id": 10606,
-          "non_interaction": 1
+        "sku": "JB24691400-W05",
+        "name": "Vira Console Cabinet",
+        "price": 797,
+        "cart_id": "bd9b8dbf4ef8ee01d4206b04fe2ee6ae",
+        "variant": "Oak",
+        "quantity": 1,
+        "quickship": true,
+        "full_price": 1328,
+        "product_id": 10606,
+        "non_interaction": 1
       },
       "receivedAt": "2021-07-09T05:27:18.131Z",
       "request_ip": "162.224.233.114",
       "anonymousId": "8a7ff986-62d8-45ca-9a16-8895b3f9d341",
       "integrations": {
-          "All": true
+        "All": true
       },
       "originalTimestamp": "2021-07-09T05:27:17.908Z"
-  },
+    },
     "destination": {
       "Config": {
         "credentials": "abc",
@@ -1282,12 +1281,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1378,12 +1372,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1417,6 +1406,57 @@
     "request": {
       "query": {}
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "token": "sample_push_token",
+          "name": "sample_device_name",
+          "model": "sample_device_model",
+          "manufacturer": "sample_device_manufacturer",
+          "type": "watchos"
+        },
+        "traits": {
+          "email": "ruchira@rudderlabs.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
   }
 ]
-

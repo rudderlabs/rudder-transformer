@@ -11,7 +11,8 @@ const {
   getErrorRespEvents,
   CustomError,
   isDefinedAndNotNull,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
@@ -83,8 +84,8 @@ function getUserData(message) {
   const { context } = message;
   const { os } = message.context;
 
-  if (!os) {
-    throw new CustomError("os related information is required", 400);
+  if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
+    throw new CustomError("os related information is missing", 400);
   }
 
   return removeUndefinedAndNullValues({

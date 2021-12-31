@@ -216,6 +216,6 @@
 },
 {
   "statusCode": 400,
-  "error": "os related information is required"
+  "error": "os related information is missing"
 }
 ]

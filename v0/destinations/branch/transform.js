@@ -85,7 +85,10 @@ function getUserData(message) {
   const { os } = message.context;
 
   if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
-    throw new CustomError("os related information is missing", 400);
+    throw new CustomError(
+      "os name is missing in the payload and please make sure to insert it at context.os.name",
+      400
+    );
   }
 
   return removeUndefinedAndNullValues({

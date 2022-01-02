@@ -1,74 +1,18 @@
 [
   {
     "sourceKeys": "id",
-    "destKeys": "order_id"
+    "destKey": "order_id"
   },
   {
     "sourceKeys": "total_price",
-    "destKeys": "value"
+    "destKey": "value"
   },
   {
     "sourceKeys": "total_tax",
-    "destKeys": "tax"
+    "destKey": "tax"
   },
   {
     "sourceKeys": "currency",
-    "destKeys": "currency"
-  },
-  {
-    "sourceKeys": "line_items",
-    "destKeys": "products"
-  },
-  {
-    "sourceKeys": "",
-    "destKeys": ""
-  },
-  {
-    "sourceKeys": "line_items.product_id",
-    "destKeys": "product_id"
-  },
-  {
-    "sourceKeys": "sku",
-    "destKeys": "sku"
-  },
-
-  {
-    "sourceKeys": "presentment_title",
-    "destKeys": "name"
-  },
-
-  {
-    "sourceKeys": "vendor",
-    "destKeys": "brand"
-  },
-
-  {
-    "sourceKeys": "price",
-    "destKeys": "price"
-  },
-
-  {
-    "sourceKeys": "quantity",
-    "destKeys": "quantity"
-  },
-
-  {
-    "sourceKeys": "image_url",
-    "destKeys": "image_url"
-  },
-
-  {
-    "sourceKeys": "",
-    "destKeys": ""
-  },
-
-  {
-    "sourceKeys": "",
-    "destKeys": ""
-  },
-
-  {
-    "sourceKeys": "",
-    "destKeys": ""
+    "destKey": "currency"
   }
 ]

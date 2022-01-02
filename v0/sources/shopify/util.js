@@ -1,64 +1,15 @@
-// const path = require("path");
-// const fs = require("fs");
-// const get = require("get-value");
-// const set = require("set-value");
-// const { getValueFromMessage, CustomError } = require("../../util/index")
-// const { setPropertiesV2 } = require(v0/sources/message.js)
-
-const { CustomError } = require("../../util");
-
-// const productMappingJson = JSON.parse(
-//     fs.readFileSync(path.resolve(__dirname, "./productMapping.json"), "utf-8")
-// );
-
-// function setPropertiesV2(event, mappingJson) {
-//     const product = {};
-//     mappingJson.forEach(mapping => {
-//         const { sourceKeys } = mapping;
-//         let { destKeys } = mapping;
-//         const setVal = getValueFromMessage(event, sourceKeys);
-//         if (!Array.isArray(destKeys)) {
-//             destKeys = [destKeys];
-//         }
-//         destKeys.forEach(destKey => {
-//             const existingVal = get(product, destKey);
-//             // do not set if val setVal nil
-//             // give higher pref to first key in mapping.json in case of same value
-//             if (
-//                 setVal !== null &&
-//                 setVal !== undefined &&
-//                 (existingVal === null || existingVal === undefined)
-//             ) {
-//                 set(product, destKey, setVal);
-//             }
-//         });
-//     });
-//     return product;
-// }
-
-// function mapProductsFromLineitems(line_items) {
-//     const products = [];
-//     // const shopify_context_products = []; //leaving extra properties for later implementation
-//     line_items.forEach(lineitem => {
-
-//         const product = setPropertiesV2(lineitem, productMappingJson);
-//         // Object.entries(productMappingJson)
-//         // product[`${destKeys}`] = get(lineitem, `${sourceKeys}`)
-//         products.push(product)
-//     });
-//     return products;
-// }
-// function mapProductsFromLineitems(line_items) {
-//     let products = [];
-//     // const shopify_context_products = []; //leaving extra properties for later implementation
-//     line_items.forEach(lineitem => {
-//         products = Object.entries(productMappingJson)
-//         // const product = {};
-//         product[`${destKeys}`] = get(lineitem, `${sourceKeys}`)
-//         products.push(product)
-//     });
-//     return products;
-// }
+/* eslint-disable camelcase */
+const {
+  CustomError,
+  constructPayload,
+  extractCustomFields
+} = require("../../util");
+const {
+  lineItemsMappingJSON,
+  productMappingJSON,
+  LINE_ITEM_EXCLUSION_FIELDS,
+  PRODUCT_MAPPING_EXCLUSION_FIELDS
+} = require("./config");
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -85,4 +36,42 @@ const getShopifyTopic = event => {
   return topic[0];
 };
 
-module.exports = { getShopifyTopic };
+const getVariantString = lineItem => {
+  const { variant_id, variant_price, variant_title } = lineItem;
+  return `${variant_id || ""} ${variant_price || ""} ${variant_title || ""}`;
+};
+
+const getProductsListFromLineItems = lineItems => {
+  if (!lineItems || lineItems.length === 0) {
+    return [];
+  }
+  const products = [];
+  lineItems.forEach(lineItem => {
+    const product = constructPayload(lineItem, lineItemsMappingJSON);
+    extractCustomFields(lineItem, product, "root", LINE_ITEM_EXCLUSION_FIELDS);
+    product.variant = getVariantString(lineItem);
+    products.push(product);
+  });
+  return products;
+};
+
+const createPropertiesForEcomEvent = message => {
+  const { line_items: lineItems } = message;
+  const productsList = getProductsListFromLineItems(lineItems);
+  const mappedPayload = constructPayload(message, productMappingJSON);
+  extractCustomFields(
+    message,
+    mappedPayload,
+    "root",
+    PRODUCT_MAPPING_EXCLUSION_FIELDS
+  );
+
+  mappedPayload.products = productsList;
+  return mappedPayload;
+};
+
+module.exports = {
+  getShopifyTopic,
+  getProductsListFromLineItems,
+  createPropertiesForEcomEvent
+};

@@ -60,7 +60,14 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
 /**
  * this list would contain the list of event names
  */
-const SUPPORTED_TRACK_EVENTS = [];
+const SUPPORTED_TRACK_EVENTS = [
+  "carts_create",
+  "carts_update",
+  "fulfillments_create",
+  "fulfillments_update",
+  "order_create",
+  "order_cancelled"
+];
 
 module.exports = {
   ECOM_TOPICS,

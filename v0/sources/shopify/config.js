@@ -61,12 +61,22 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
  * this list would contain the list of event names
  */
 const SUPPORTED_TRACK_EVENTS = [
+  "checkout_delete",
+  "checkout_update",
+  "customers_disabled",
+  "customers_enable",
   "carts_create",
   "carts_update",
   "fulfillments_create",
   "fulfillments_update",
-  "order_create",
-  "order_cancelled"
+  "orders_create",
+  "orders_delete",
+  "orders_cancelled",
+  "orders_fulfilled",
+  "orders_paid",
+  "orders_partially_fullfilled",
+  "orders_updated",
+  "orders_cancelled"
 ];
 
 module.exports = {

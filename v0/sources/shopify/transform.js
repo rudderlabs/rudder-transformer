@@ -74,7 +74,7 @@ const processEvent = event => {
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new CustomError("event type not supported", 400);
+        throw new CustomError(`event type ${shopifyTopic} not supported`, 400);
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;

@@ -58,7 +58,7 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
 ];
 
 /**
- * this list would contain the list of event names
+ * list of events name supported as generic track calls
  */
 const SUPPORTED_TRACK_EVENTS = [
   "checkout_delete",

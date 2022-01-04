@@ -796,5 +796,60 @@
       "FORM": {}
     },
     "files": {}
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/users/update",
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "ruchira@rudderlabs.com",
+          "dataFields": {
+            "email": "ruchira@rudderlabs.com"
+          },
+          "userId": "123456",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+      "headers": {
+        "Content-Type": "application/json",
+        "api_key": "12345"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "ruchira@rudderlabs.com",
+          "userId": "123456",
+          "device": {
+            "token": "sample_push_token",
+            "applicationName": "sample_device_name",
+            "platform": "APNS"
+          },
+          "preferUserId": true
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ]
 ]

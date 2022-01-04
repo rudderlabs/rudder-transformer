@@ -24,7 +24,8 @@
     "testVersionedRouter": "npx jest versionedRouter --type=all --detectOpenHandles --notify",
     "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
-    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify && npx jest versionedRouter --destName=heap --type=all --detectOpenHandles  --notify"
+    "testTestRouter": "npx jest testRouter",
+    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify && npx jest versionedRouter --destName=heap --type=all --detectOpenHandles  --notify && npx jest testRouter"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
@@ -83,6 +84,6 @@
     "prettier": "^1.18.2"
   },
   "precommit": {
-    "run": "lint, testDestinations, testVersioned"
+    "run": "lint, testDestinations, testVersioned, testTestRouter"
   }
 }

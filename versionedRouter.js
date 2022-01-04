@@ -705,7 +705,7 @@ const handleDeletionOfUsers = async ctx => {
   await Promise.all(
     body.map(async b => {
       const { destType } = b;
-      const destUserDeletionHandler = getDeletionUserHandler("v0", destType);
+      const destUserDeletionHandler = getDeletionUserHandler("v0", destType.toLowerCase());
       if (
         !destUserDeletionHandler ||
         !destUserDeletionHandler.processDeleteUsers

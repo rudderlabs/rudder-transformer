@@ -18,6 +18,7 @@ const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
+const { prometheusRegistry } = require("./middleware");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -692,6 +693,13 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+const metricsController = async ctx => {
+  ctx.status = 200;
+  ctx.type = prometheusRegistry.contentType;
+  ctx.body = await prometheusRegistry.metrics();
+  return ctx.body;
+};
+
 router.post("/fileUpload", async ctx => {
   await fileUpload(ctx);
 });
@@ -711,6 +719,11 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
+
+router.get("/metrics", async ctx => {
+  await metricsController(ctx);
+});
+
 module.exports = {
   router,
   handleDest,

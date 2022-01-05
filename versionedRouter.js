@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require("koa-router");
@@ -18,6 +17,8 @@ const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
 require("dotenv").config();
+const eventValidator = require("./util/eventValidation");
+const { prometheusRegistry } = require("./middleware");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -56,6 +57,7 @@ const getPollStatusHandler = (version, dest) => {
 const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
+
 
 const getDeletionUserHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/deleteUsers`);
@@ -698,6 +700,7 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+
 const handleDeletionOfUsers = async ctx => {
   const { body } = ctx.request;
   const respList = [];
@@ -733,6 +736,13 @@ const handleDeletionOfUsers = async ctx => {
   ctx.body = respList;
   return ctx.body;
   // const { destType } = ctx.request.body;
+
+const metricsController = async ctx => {
+  ctx.status = 200;
+  ctx.type = prometheusRegistry.contentType;
+  ctx.body = await prometheusRegistry.metrics();
+  return ctx.body;
+
 };
 
 router.post("/fileUpload", async ctx => {
@@ -755,6 +765,7 @@ router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
 
+
 // Api to handle deletion of users for data regulation
 // {
 //   "destType": "dest name",
@@ -774,6 +785,12 @@ router.post(`/v0/validate`, async ctx => {
 router.post(`/deleteUsers`, async ctx => {
   await handleDeletionOfUsers(ctx);
 });
+
+router.get("/metrics", async ctx => {
+  await metricsController(ctx);
+});
+
+
 module.exports = {
   router,
   handleDest,

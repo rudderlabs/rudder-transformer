@@ -12,7 +12,8 @@ const {
   CustomError,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  isAppleFamily
 } = require("../../util");
 
 const {
@@ -29,7 +30,7 @@ function responseBuilderSimple(payload, message, destination) {
   const os = get(message, "context.os.name");
   if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (os && (os.toLowerCase() === "ios" || os.toLowerCase() === "ipados") && appleAppId) {
+  } else if (os && isAppleFamily(os) && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
   } else {
     throw new CustomError("Invalid app endpoint", 400);
@@ -63,7 +64,7 @@ function responseBuilderSimple(payload, message, destination) {
     appsflyer_id: appsflyerId
   };
 
-  if (os.toLowerCase() === "ios" || os.toLowerCase() === "ipados") {
+  if (isAppleFamily(os)) {
     updatedPayload.idfa = get(message, "context.device.advertisingId");
     updatedPayload.idfv = get(message, "context.device.id");
   } else if (os.toLowerCase() === "android") {

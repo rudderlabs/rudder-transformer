@@ -35,7 +35,7 @@
         },
         "locale": "en-US",
         "os": {
-          "name": "",
+          "name": "iOS",
           "version": ""
         },
         "screen": {
@@ -100,7 +100,7 @@
         },
         "locale": "en-US",
         "os": {
-          "name": "",
+          "name": "iOS",
           "version": ""
         },
         "screen": {

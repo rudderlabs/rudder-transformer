@@ -19,7 +19,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  toUnixTimestamp
+  toUnixTimestamp,
+  isAppleFamily
 } = require("../../util");
 
 /*
@@ -178,7 +179,7 @@ const responseBuilderSimple = (message, category, destination) => {
       if (
         get(message, "anonymousId") &&
         deviceToken &&
-        ["ios", "android"].includes(deviceOS)
+        (deviceOS === "android" || isAppleFamily(deviceOS))
       ) {
         const tokenType = deviceOS === "android" ? "fcm" : "apns";
         const payloadForDeviceToken = {

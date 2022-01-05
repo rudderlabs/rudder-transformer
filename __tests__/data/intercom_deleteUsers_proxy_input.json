@@ -1,0 +1,48 @@
+[
+    {
+    "destType": "intercom",
+    "userAttributes": [
+        {
+            "userId": "6188c2c5f47e464b4abf3235"
+        },
+        {
+            "userId": "user_sdk2"
+        }
+    ],
+    "config": {
+        "apiKey": "a="
+    }
+},
+{
+    "destType": "intercom",
+    "userAttributes": [
+        {
+            "userId": "6188c2c5f47e464b4abf3235"
+        },
+        {
+            "userId": "user_sdk2"
+        }
+    ]
+},
+{
+    "destType": "intercom",
+    "userAttributes": [
+        {
+            "userId": "6188c2c5f47e464b4abf3235"
+        },
+        {
+            "userId": "user_sdk2"
+        }
+    ],
+    "config": {
+    }
+},
+{
+    "destType": "intercom",
+    "userAttributes": [
+        {} 
+    ],
+    "config": {
+        "apiKey": "a="
+    }
+}]

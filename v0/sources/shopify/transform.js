@@ -69,8 +69,8 @@ const processEvent = event => {
     case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
       message = identifyPayloadBuilder(event);
       break;
-    case ECOM_TOPICS.ORDER_UPDATED:
-    case ECOM_TOPICS.CHECKOUT_CREATE:
+    case ECOM_TOPICS.ORDERS_UPDATED:
+    case ECOM_TOPICS.CHECKOUTS_CREATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     default:

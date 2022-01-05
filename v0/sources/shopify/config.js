@@ -9,13 +9,13 @@ const IDENTIFY_TOPICS = {
 
 // Mapping from shopify_topic name for ecom events
 const ECOM_TOPICS = {
-  CHECKOUT_CREATE: "checkout_create",
-  ORDER_UPDATED: "order_updated"
+  CHECKOUTS_CREATE: "checkouts_create",
+  ORDERS_UPDATED: "orders_updated"
 };
 
 const RUDDER_ECOM_MAP = {
-  checkout_create: "Checkout Started",
-  order_updated: "Order Updated"
+  checkouts_create: "Checkout Started",
+  orders_updated: "Order Updated"
 };
 
 const identifyMappingJSON = JSON.parse(
@@ -61,8 +61,8 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
  * list of events name supported as generic track calls
  */
 const SUPPORTED_TRACK_EVENTS = [
-  "checkout_delete",
-  "checkout_update",
+  "checkouts_delete",
+  "checkouts_update",
   "customers_disabled",
   "customers_enable",
   "carts_create",
@@ -75,7 +75,6 @@ const SUPPORTED_TRACK_EVENTS = [
   "orders_fulfilled",
   "orders_paid",
   "orders_partially_fullfilled",
-  "orders_updated",
   "orders_cancelled"
 ];
 

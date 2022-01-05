@@ -9,12 +9,13 @@ const typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send ar
 // eg: jest versionedRouter --destName=am --type=batch
 // eg: jest versionedRouter --destName=heap --type=processor
 // eg: jest versionedRouter --destName=heap --type=router
+// eg: jest versionedRouter --destName=heap --type=response
 // eg: jest versionedRouter --type=all
 
 let destination;
 if (typeArg) {
   destination = destArg ? destArg.split("=")[1] : "heap"; // default
-  type = typeArg.split("=")[1];
+  const type = typeArg.split("=")[1];
   let reqBody;
   let respBody;
   if (type !== "all") {
@@ -107,8 +108,6 @@ if (typeArg) {
           path.resolve(__dirname, `./data/versioned_batch_braze_output.json`)
         )
       );
-      const output = await vRouter.batchHandler(reqBody);
-      expect(output).toEqual(respBody);
     });
   } else {
     it(`Type is not all/router/batch/processor`, () => {

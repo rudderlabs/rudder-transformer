@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "ProductID",
+    "sourceKeys": "product_id",
+    "required": false
+  },
+  {
+    "destKey": "SKU",
+    "sourceKeys": "sku",
+    "required": false
+  },
+  {
+    "destKey": "ProductName",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "Quantity",
+    "sourceKeys": "quantity",
+    "required": false
+  },
+  {
+    "destKey": "ItemPrice",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "RowTotal",
+    "sourceKeys": "row_total",
+    "required": false
+  },
+  {
+    "destKey": "ProductURL",
+    "sourceKeys": "url",
+    "required": false
+  },
+  {
+    "destKey": "ImageURL",
+    "sourceKeys": "image_url",
+    "required": false
+  },
+  {
+    "destKey": "ProductCategories",
+    "sourceKeys": "categories",
+    "required": false
+  }
+]

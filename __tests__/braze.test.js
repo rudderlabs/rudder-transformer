@@ -20,7 +20,7 @@ inputData.forEach((input, index) => {
     let output, expected;
     try {
       output = transformer.process(input);
-      expected = expectedData[index]
+      expected = expectedData[index];
     } catch (error) {
       output = error.message;
       expected = expectedData[index].message;
@@ -39,7 +39,8 @@ const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 
-  describe(`${name} Tests`, () => {
+
+describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
@@ -65,6 +66,6 @@ batchInputData.forEach((input, index) => {
     expect(output.length).toEqual(batchExpectedData[index].length);
     output.forEach((input, indexInner) => {
       expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-    })
+    });
   });
 });

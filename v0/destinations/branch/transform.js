@@ -10,15 +10,16 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
-
   const os = get(message, "context.os.name");
 
   if (isDefinedAndNotNull(os)) {
-    if (os.toLowerCase() === "ios") {
+    if (isAppleFamily(os)) {
       payload.idfa = get(message, "context.device.advertisingId");
       payload.idfv = get(message, "context.device.id");
     } else if (os.toLowerCase() === "android") {
@@ -81,10 +82,18 @@ function getCategoryAndName(rudderEventName) {
 
 function getUserData(message) {
   const { context } = message;
+  const { os } = message.context;
+
+  if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
+    throw new CustomError(
+      "os name is missing in the payload and please make sure to insert it at context.os.name",
+      400
+    );
+  }
 
   return removeUndefinedAndNullValues({
-    os: context.os.name,
-    os_version: context.os.version,
+    os: os.name,
+    os_version: os.version,
     app_version: context.app.version,
     screen_dpi: context.screen.density,
     android_id: get(context, "android_id") ? context.android_id : null,
@@ -187,7 +196,7 @@ function getCommonPayload(message, category, evName) {
     rawPayload.custom_data = custom_data;
     rawPayload.content_items = content_items;
     rawPayload.event_data = event_data;
-    rawPayload.user_data = getUserData(message);
+    // rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
       if (Object.keys(rawPayload[key]).length == 0) {
@@ -195,6 +204,7 @@ function getCommonPayload(message, category, evName) {
       }
     });
   }
+  rawPayload.user_data = getUserData(message);
   rawPayload.name = evName;
 
   return rawPayload;
@@ -268,4 +278,3 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
-

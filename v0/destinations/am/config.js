@@ -30,6 +30,9 @@ const ConfigCategory = {
   },
   DEFAULT: {
     name: "AmplitudeDefaultConfig"
+  },
+  COMMON_CONFIG: {
+    name: "AmplitudeCommonConfig"
   }
 };
 

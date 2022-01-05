@@ -22,7 +22,8 @@ const {
   getErrorRespEvents,
   generateErrorObject,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isAppleFamily
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -340,7 +341,7 @@ function responseBuilderSimple(
         const advertId = get(message, "context.device.advertisingId");
 
         if (platform) {
-          if (platform.toLowerCase() === "ios") {
+          if (isAppleFamily(platform)) {
             set(payload, "idfa", advertId);
             set(payload, "idfv", deviceId);
           } else if (platform.toLowerCase() === "android") {

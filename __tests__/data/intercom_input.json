@@ -17,7 +17,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -25,8 +28,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -42,7 +52,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -77,7 +89,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -85,8 +100,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -100,7 +122,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -135,7 +159,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -143,8 +170,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -157,7 +191,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -192,7 +228,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -200,8 +239,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -214,7 +260,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -249,7 +297,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -257,8 +308,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -270,7 +328,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -305,7 +365,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -313,8 +376,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -333,7 +403,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -368,7 +440,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -376,8 +451,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -396,7 +478,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -431,7 +515,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -439,8 +526,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -458,7 +552,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -493,7 +589,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -501,8 +600,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -533,7 +639,9 @@
         "property6": null
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -568,7 +676,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -576,8 +687,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -592,7 +710,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -627,7 +747,10 @@
           "name": "iPod touch (7th generation)",
           "type": "iOS"
         },
-        "library": { "name": "test-ios-library", "version": "1.0.7" },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
         "locale": "en-US",
         "network": {
           "bluetooth": false,
@@ -635,8 +758,15 @@
           "cellular": false,
           "wifi": true
         },
-        "os": { "name": "iOS", "version": "14.0" },
-        "screen": { "density": 2, "height": 320, "width": 568 },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
@@ -650,7 +780,9 @@
         "userAgent": "unknown"
       },
       "event": "Test Event 2",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "originalTimestamp": "2020-09-30T19:11:00.337Z",
       "receivedAt": "2020-10-01T00:41:11.369+05:30",
@@ -664,6 +796,225 @@
         "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1.0",
+          "name": "Test_Example",
+          "namespace": "com.example.testapp",
+          "version": "1.0"
+        },
+        "externalId": [
+          {
+            "identifierType": "email",
+            "id": "test@gmail.com"
+          }
+        ],
+        "mappedToDestination": true,
+        "device": {
+          "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPod touch (7th generation)",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "name": "Test Name",
+          "firstName": "Test",
+          "lastName": "Name",
+          "createdAt": "2020-09-30T19:11:00.337Z",
+          "phone": "9876543210",
+          "key1": "value1"
+        },
+        "userAgent": "unknown"
+      },
+      "event": "Test Event 2",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+      "originalTimestamp": "2020-09-30T19:11:00.337Z",
+      "receivedAt": "2020-10-01T00:41:11.369+05:30",
+      "request_ip": "2405:201:8005:9856:7911:25e7:5603:5e18",
+      "sentAt": "2020-09-30T19:11:10.382Z",
+      "timestamp": "2020-10-01T00:41:01.324+05:30",
+      "type": "identify"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1.0",
+          "name": "Test_Example",
+          "namespace": "com.example.testapp",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPod touch (7th generation)",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "name": "Test Name",
+          "firstName": "Test",
+          "lastName": "Name",
+          "createdAt": "2020-09-30T19:11:00.337Z",
+          "phone": "9876543210",
+          "key1": "value1"
+        },
+        "userAgent": "unknown"
+      },
+      "event": "Test Event 2",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+      "originalTimestamp": "2020-09-30T19:11:00.337Z",
+      "receivedAt": "2020-10-01T00:41:11.369+05:30",
+      "request_ip": "2405:201:8005:9856:7911:25e7:5603:5e18",
+      "sentAt": "2020-09-30T19:11:10.382Z",
+      "timestamp": "2020-10-01T00:41:01.324+05:30",
+      "type": "identify"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
+        "collectContext": false,
+        "sendAnonymousId": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1.0",
+          "name": "Test_Example",
+          "namespace": "com.example.testapp",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPod touch (7th generation)",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "name": "Test Name",
+          "firstName": "Test",
+          "lastName": "Name",
+          "createdAt": "2020-09-30T19:11:00.337Z",
+          "phone": "9876543210",
+          "key1": "value1"
+        },
+        "userAgent": "unknown"
+      },
+      "event": "Test Event 2",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+      "originalTimestamp": "2020-09-30T19:11:00.337Z",
+      "receivedAt": "2020-10-01T00:41:11.369+05:30",
+      "request_ip": "2405:201:8005:9856:7911:25e7:5603:5e18",
+      "sentAt": "2020-09-30T19:11:10.382Z",
+      "timestamp": "2020-10-01T00:41:01.324+05:30",
+      "type": "identify"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
+        "collectContext": false,
+        "sendAnonymousId": false
       }
     }
   }

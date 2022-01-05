@@ -1055,6 +1055,10 @@ function generateErrorObject(error, destination, transformStage) {
     destinationResponse,
     statTags
   };
+  // Extra Params needed for OAuth destinations' Response handling
+  if (error.authErrorCategory) {
+    response.authErrorCategory = error.authErrorCategory || "";
+  }
   return response;
 }
 /**
@@ -1093,6 +1097,24 @@ function generateUUID() {
     d = Math.floor(d / 16);
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
+}
+
+const isOAuthDestination = destination => {
+  const { Config: destConf } = destination.DestinationDefinition;
+  return destConf && destConf.auth && destConf.auth.type === "OAuth";
+};
+
+const isOAuthSupported = (destination, destHandler) => {
+  return (
+    isOAuthDestination(destination) &&
+    destHandler.processAuth &&
+    typeof destHandler.processAuth === "function"
+  );
+};
+
+function isAppleFamily(platform) {
+  const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
+  return appleOsNames.includes(platform.toLowerCase());
 }
 
 // ========================================================================
@@ -1160,5 +1182,8 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  isOAuthSupported,
+  isOAuthDestination,
+  isAppleFamily
 };

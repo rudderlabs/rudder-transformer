@@ -59,7 +59,7 @@ class Message {
 
   setPropertiesV2(event, mappingJson) {
     mappingJson.forEach(mapping => {
-      const { sourceKeys, metadata } = mapping;
+      const { sourceKeys } = mapping;
       let { destKeys } = mapping;
       const setVal = getValueFromMessage(event, sourceKeys);
       if (!Array.isArray(destKeys)) {
@@ -74,17 +74,7 @@ class Message {
           setVal !== undefined &&
           (existingVal === null || existingVal === undefined)
         ) {
-          let formattedVal = setVal;
-          if (metadata && metadata.type) {
-            switch (metadata.type) {
-              case "toString":
-                formattedVal = String(setVal);
-                break;
-              default:
-                break;
-            }
-          }
-          set(this, destKey, formattedVal);
+          set(this, destKey, setVal);
         }
       });
     });

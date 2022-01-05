@@ -80,6 +80,9 @@ const processEvent = event => {
       break;
   }
 
+  if (message.userId) {
+    message.userId = String(message.userId);
+  }
   message.setProperty("anonymousId", generateUUID());
   message.setProperty(`integrations.${INTEGERATION}`, true);
   return message;

@@ -1,10 +1,7 @@
 [
     {
         "sourceKeys": "id",
-        "destKeys": "userId",
-        "metadata": {
-            "type": "toString"
-        }
+        "destKeys": "userId"
     },
     {
         "sourceKeys": "email",

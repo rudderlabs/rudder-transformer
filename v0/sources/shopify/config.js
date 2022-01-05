@@ -59,6 +59,8 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
 
 /**
  * list of events name supported as generic track calls
+ * track events not belonging to this list or ecom events will
+ * be discarded.
  */
 const SUPPORTED_TRACK_EVENTS = [
   "checkouts_delete",

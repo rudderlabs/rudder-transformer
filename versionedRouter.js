@@ -18,6 +18,7 @@ const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
 require("dotenv").config();
+const eventValidator = require("./util/eventValidation");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -61,7 +62,6 @@ const getDeletionUserHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/deleteUsers`);
 };
 
-const eventValidator = require("./util/eventValidation");
 
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);

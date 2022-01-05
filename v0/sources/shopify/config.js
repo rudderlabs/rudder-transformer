@@ -74,8 +74,7 @@ const SUPPORTED_TRACK_EVENTS = [
   "orders_cancelled",
   "orders_fulfilled",
   "orders_paid",
-  "orders_partially_fullfilled",
-  "orders_cancelled"
+  "orders_partially_fullfilled"
 ];
 
 module.exports = {

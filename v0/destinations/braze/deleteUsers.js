@@ -60,7 +60,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       );
     }
   }
-  return { status: "successful" };
+  return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {
   const { userAttributes, config } = event;

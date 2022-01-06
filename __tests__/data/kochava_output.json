@@ -18,7 +18,7 @@
           "currency": "USD",
           "device_ids": {
             "idfa": "",
-            "idvf": "",
+            "idfv": "",
             "adid": "",
             "android_id": ""
           },
@@ -63,7 +63,7 @@
           "currency": "USD",
           "device_ids": {
             "idfa": "",
-            "idvf": "",
+            "idfv": "",
             "adid": "",
             "android_id": ""
           },
@@ -107,7 +107,7 @@
           "currency": "USD",
           "device_ids": {
             "idfa": "",
-            "idvf": "",
+            "idfv": "",
             "adid": "",
             "android_id": ""
           },
@@ -151,7 +151,7 @@
           "device_ver": "Android SDK built for x86-Android-8.1.0",
           "device_ids": {
             "idfa": "",
-            "idvf": "",
+            "idfv": "",
             "adid": "some_adid",
             "android_id": "5094f5704b9cf2b3"
           },
@@ -192,7 +192,7 @@
           "device_ver": "Android SDK built for x86-iOS-14.5",
           "device_ids": {
             "idfa": "some_adid",
-            "idvf": "5094f5704b9cf2b3",
+            "idfv": "5094f5704b9cf2b3",
             "adid": "",
             "android_id": ""
           },
@@ -235,7 +235,7 @@
           "device_ver": "",
           "device_ids": {
             "idfa": "some_adid",
-            "idvf": "5094f5704b9cf2b3",
+            "idfv": "5094f5704b9cf2b3",
             "adid": "",
             "android_id": ""
           },

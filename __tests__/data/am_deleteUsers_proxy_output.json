@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "status": "successful",
+      "statusCode": 200
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "Config for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "api key/secret for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "User id for deletion not present"
+    }
+  ]
+]

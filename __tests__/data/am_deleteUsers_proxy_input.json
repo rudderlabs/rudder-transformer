@@ -1,8 +1,11 @@
 [
-    {
-        "jobId": "423451324652346",
-        "destType": "AM",
-        "config": {
+  {
+    "request": {
+      "body": [
+        {
+          "jobId": "423451324652346",
+          "destType": "AM",
+          "config": {
             "apiKey": "a",
             "apiSecret": "b",
             "enableLocationListening": false,
@@ -17,52 +20,64 @@
             "trackRevenuePerProduct": false,
             "trackSessionEvents": false,
             "traitsToAppend": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToIncrement": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToPrepend": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToSetOnce": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "useAdvertisingIdForDeviceId": false,
             "useNativeSDK": false,
             "versionName": ""
-        },
-        "userAttributes": [
+          },
+          "userAttributes": [
             {
-                "userId": "61b2f131e8918f7f8349aaa0",
-                "phone": "1234567890",
-                "email": "abc@xyc.com"
+              "userId": "61b2f131e8918f7f8349aaa0",
+              "phone": "1234567890",
+              "email": "abc@xyc.com"
             }
-        ]
-    },
-    {
-        "jobId": "423451324652346",
-        "destType": "AM",
-        "userAttributes": [
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "jobId": "423451324652346",
+          "destType": "AM",
+          "userAttributes": [
             {
-                "userId": "61b2f131e8918f7f8349aaa0",
-                "phone": "1234567890",
-                "email": "abc@xyc.com"
+              "userId": "61b2f131e8918f7f8349aaa0",
+              "phone": "1234567890",
+              "email": "abc@xyc.com"
             }
-        ]
-    },
-    {
-        "jobId": "423451324652346",
-        "destType": "AM",
-        "config": {
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "jobId": "423451324652346",
+          "destType": "AM",
+          "config": {
             "apiKey": "a",
             "enableLocationListening": false,
             "eventUploadPeriodMillis": 30000,
@@ -76,84 +91,92 @@
             "trackRevenuePerProduct": false,
             "trackSessionEvents": false,
             "traitsToAppend": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToIncrement": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToPrepend": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "traitsToSetOnce": [
-                {
-                    "traits": ""
-                }
+              {
+                "traits": ""
+              }
             ],
             "useAdvertisingIdForDeviceId": false,
             "useNativeSDK": false,
             "versionName": ""
-        },
-        "userAttributes": [
+          },
+          "userAttributes": [
             {
-                "userId": "61b2f131e8918f7f8349aaa0",
-                "phone": "1234567890",
-                "email": "abc@xyc.com"
+              "userId": "61b2f131e8918f7f8349aaa0",
+              "phone": "1234567890",
+              "email": "abc@xyc.com"
             }
-        ]
-    },
-        {
-            "jobId": "423451324652346",
-            "destType": "AM",
-            "config": {
-                "apiKey": "a",
-                "apiSecret": "b",
-                "enableLocationListening": false,
-                "eventUploadPeriodMillis": 30000,
-                "eventUploadThreshold": 30,
-                "groupTypeTrait": "",
-                "groupValueTrait": "",
-                "trackAllPages": false,
-                "trackCategorizedPages": true,
-                "trackNamedPages": true,
-                "trackProductsOnce": false,
-                "trackRevenuePerProduct": false,
-                "trackSessionEvents": false,
-                "traitsToAppend": [
-                    {
-                        "traits": ""
-                    }
-                ],
-                "traitsToIncrement": [
-                    {
-                        "traits": ""
-                    }
-                ],
-                "traitsToPrepend": [
-                    {
-                        "traits": ""
-                    }
-                ],
-                "traitsToSetOnce": [
-                    {
-                        "traits": ""
-                    }
-                ],
-                "useAdvertisingIdForDeviceId": false,
-                "useNativeSDK": false,
-                "versionName": ""
-            },
-            "userAttributes": [
-                {
-                    "phone": "1234567890",
-                    "email": "abc@xyc.com"
-                }
-            ]
+          ]
         }
-
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "jobId": "423451324652346",
+          "destType": "AM",
+          "config": {
+            "apiKey": "a",
+            "apiSecret": "b",
+            "enableLocationListening": false,
+            "eventUploadPeriodMillis": 30000,
+            "eventUploadThreshold": 30,
+            "groupTypeTrait": "",
+            "groupValueTrait": "",
+            "trackAllPages": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true,
+            "trackProductsOnce": false,
+            "trackRevenuePerProduct": false,
+            "trackSessionEvents": false,
+            "traitsToAppend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToIncrement": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToPrepend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToSetOnce": [
+              {
+                "traits": ""
+              }
+            ],
+            "useAdvertisingIdForDeviceId": false,
+            "useNativeSDK": false,
+            "versionName": ""
+          },
+          "userAttributes": [
+            {
+              "phone": "1234567890",
+              "email": "abc@xyc.com"
+            }
+          ]
+        }
+      ]
+    }
+  }
 ]

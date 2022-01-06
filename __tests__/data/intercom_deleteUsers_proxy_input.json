@@ -1,48 +1,72 @@
 [
-    {
-    "destType": "intercom",
-    "userAttributes": [
+  {
+    "request": {
+      "body": [
         {
-            "userId": "6188c2c5f47e464b4abf3235"
-        },
-        {
-            "userId": "user_sdk2"
+          "destType": "intercom",
+          "userAttributes": [
+            {
+              "userId": "6188c2c5f47e464b4abf3235"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {
+            "apiKey": "a="
+          }
         }
-    ],
-    "config": {
-        "apiKey": "a="
+      ]
     }
-},
-{
-    "destType": "intercom",
-    "userAttributes": [
+  },
+  {
+    "request": {
+      "body": [
         {
-            "userId": "6188c2c5f47e464b4abf3235"
-        },
-        {
-            "userId": "user_sdk2"
+          "destType": "intercom",
+          "userAttributes": [
+            {
+              "userId": "6188c2c5f47e464b4abf3235"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ]
         }
-    ]
-},
-{
-    "destType": "intercom",
-    "userAttributes": [
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
         {
-            "userId": "6188c2c5f47e464b4abf3235"
-        },
-        {
-            "userId": "user_sdk2"
+          "destType": "intercom",
+          "userAttributes": [
+            {
+              "userId": "6188c2c5f47e464b4abf3235"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {}
         }
-    ],
-    "config": {
+      ]
     }
-},
-{
-    "destType": "intercom",
-    "userAttributes": [
-        {} 
-    ],
-    "config": {
-        "apiKey": "a="
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "intercom",
+          "userAttributes": [
+            {}
+          ],
+          "config": {
+            "apiKey": "a="
+          }
+        }
+      ]
     }
-}]
+  }
+]

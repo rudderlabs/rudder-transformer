@@ -11,7 +11,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     throw new CustomError("api key/secret for deletion not present", 400);
   }
 
-  for (let i = 0; i < userAttributes.length; i++) {
+  for (let i = 0; i < userAttributes.length; i += 1) {
     const uId = userAttributes[i].userId;
     if (!uId) {
       throw new CustomError("User id for deletion not present", 400);

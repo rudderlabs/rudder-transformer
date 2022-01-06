@@ -58,11 +58,9 @@ const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
 };
 
-
 const getDeletionUserHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/deleteUsers`);
 };
-
 
 const getSourceHandler = (version, source) => {
   return require(`./${version}/sources/${source}/transform`);
@@ -699,7 +697,6 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
-
 const handleDeletionOfUsers = async ctx => {
   const { body } = ctx.request;
   const respList = [];
@@ -707,7 +704,10 @@ const handleDeletionOfUsers = async ctx => {
   await Promise.all(
     body.map(async b => {
       const { destType } = b;
-      const destUserDeletionHandler = getDeletionUserHandler("v0", destType.toLowerCase());
+      const destUserDeletionHandler = getDeletionUserHandler(
+        "v0",
+        destType.toLowerCase()
+      );
       if (
         !destUserDeletionHandler ||
         !destUserDeletionHandler.processDeleteUsers
@@ -735,13 +735,12 @@ const handleDeletionOfUsers = async ctx => {
   ctx.body = respList;
   return ctx.body;
   // const { destType } = ctx.request.body;
-  }
+};
 const metricsController = async ctx => {
   ctx.status = 200;
   ctx.type = prometheusRegistry.contentType;
   ctx.body = await prometheusRegistry.metrics();
   return ctx.body;
-
 };
 
 router.post("/fileUpload", async ctx => {
@@ -763,7 +762,6 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
-
 
 // Api to handle deletion of users for data regulation
 // {
@@ -789,11 +787,11 @@ router.get("/metrics", async ctx => {
   await metricsController(ctx);
 });
 
-
 module.exports = {
   router,
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleProxyRequest
+  handleProxyRequest,
+  handleDeletionOfUsers
 };

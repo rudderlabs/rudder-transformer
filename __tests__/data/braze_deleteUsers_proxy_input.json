@@ -1,54 +1,78 @@
 [
-    {
-        "destType": "braze",
-        "userAttributes": [
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "braze",
+          "userAttributes": [
             {
-                "userId": "test_user_id"
+              "userId": "test_user_id"
             },
             {
-                "userId": "user_sdk2"
+              "userId": "user_sdk2"
             }
-        ],
-        "config": {
+          ],
+          "config": {
             "restApiKey": "b1bd90e2-d203-480a-962c-f7bb03ea0afe",
             "dataCenter": "US-03"
+          }
         }
-    },
-    {
-        "destType": "braze",
-        "userAttributes": [
-            {
-                "userId": "test_user_id"
-            },
-            {
-                "userId": "user_sdk2"
-            }
-        ]
-    },
-    {
-        "destType": "braze",
-        "userAttributes": [
-            {
-                "userId": "test_user_id"
-            },
-            {
-                "userId": "user_sdk2"
-            }
-        ],
-        "config": {
-            "dataCenter": "US-03"
-        }
-    },
-    {
-        "destType": "braze",
-        "userAttributes": [
-            {
-                "name": "a"
-            }
-        ],
-        "config": {
-            "restApiKey": "b1bd90e2-d203-480a-962c-f7bb03ea0afe",
-            "dataCenter": "US-03"
-        }
+      ]
     }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "braze",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "braze",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {
+            "dataCenter": "US-03"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "braze",
+          "userAttributes": [
+            {
+              "name": "a"
+            }
+          ],
+          "config": {
+            "restApiKey": "b1bd90e2-d203-480a-962c-f7bb03ea0afe",
+            "dataCenter": "US-03"
+          }
+        }
+      ]
+    }
+  }
 ]

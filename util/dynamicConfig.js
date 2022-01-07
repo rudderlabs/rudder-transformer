@@ -24,12 +24,11 @@ function getDynamicConfig(event) {
       const value = Config[field].toString().trim();
       if (Array.isArray(value)) {
         value.forEach(obj => {
-          if (obj.to) {
-            const val = obj.to;
-            if (val.startsWith("{{") && val.endsWith("}}")) {
-              recurse(event, val, Config, field);
+          Object.keys(obj).forEach(key => {
+            if (key.startsWith("{{") && key.endsWith("}}")) {
+              recurse(event, key, Config, field);
             }
-          }
+          });
         });
       } else if (value.startsWith("{{") && value.endsWith("}}")) {
         recurse(event, value, Config, field);

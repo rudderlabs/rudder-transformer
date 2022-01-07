@@ -1,24 +1,38 @@
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const unset = require("unset-value");
+
+function recurse(event, value, Config, field) {
+  value = value.replace("{{", "");
+  value = value.replace("}}", "");
+  if (value.includes("||")) {
+    const path = value.split("||")[0].trim();
+    const getFieldVal = get(event, path);
+    if (getFieldVal) {
+      Config[field] = getFieldVal;
+      unset(event, path);
+    } else {
+      Config[field] = JSON.parse(value.split("||")[1].trim()).toString();
+    }
+  }
+}
 
 function getDynamicConfig(event) {
   const { Config } = event.destination;
   if (Config) {
     Object.keys(Config).forEach(field => {
-      let value = Config[field].toString().trim();
-      if (value.startsWith("{{") && value.endsWith("}}")) {
-        value = value.replace("{{", "");
-        value = value.replace("}}", "");
-        if (value.includes("||")) {
-          const path = value.split("||")[0].trim();
-          const getFieldVal = get(event, path);
-          if (getFieldVal) {
-            Config[field] = getFieldVal;
-            unset(event, path);
-          } else {
-            Config[field] = JSON.parse(value.split("||")[1].trim()).toString();
+      const value = Config[field].toString().trim();
+      if (Array.isArray(value)) {
+        value.forEach(obj => {
+          if (obj.to) {
+            const val = obj.to;
+            if (val.startsWith("{{") && val.endsWith("}}")) {
+              recurse(event, val, Config, field);
+            }
           }
-        }
+        });
+      } else if (value.startsWith("{{") && value.endsWith("}}")) {
+        recurse(event, value, Config, field);
       }
     });
   }

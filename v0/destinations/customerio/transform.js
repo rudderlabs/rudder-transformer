@@ -36,6 +36,16 @@ const deviceRelatedEventNames = [
   "Application Opened",
   "Application Uninstalled"
 ];
+
+const isdeviceRelatedEventName = (eventName, destination) => {
+  return (
+    deviceRelatedEventNames.includes(eventName) ||
+    (destination.Config &&
+      destination.Config.deviceTokenEventName &&
+      destination.Config.deviceTokenEventName === eventName)
+  );
+};
+
 const deviceDeleteRelatedEventName = "Application Uninstalled";
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
@@ -179,7 +189,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
 
     // DEVICE registration
-    if (deviceRelatedEventNames.includes(evName) && userId && token) {
+    if (isdeviceRelatedEventName(evName, destination) && userId && token) {
       const devProps = message.properties || {};
       set(devProps, "id", get(message, "context.device.token"));
       const deviceType = get(message, "context.device.type");
@@ -212,7 +222,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
 
     if (userId) {
-      if (deviceRelatedEventNames.includes(evName) && token) {
+      if (isdeviceRelatedEventName(evName, destination) && token) {
         endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
       } else {
         endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);

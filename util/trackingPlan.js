@@ -77,4 +77,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     }
 }
 
-exports.getEventSchema = getEventSchema;
+module.exports = {
+    getEventSchema,
+    getTrackingPlan
+};

@@ -6,11 +6,13 @@ require("dotenv").config();
 const { router } = require("./versionedRouter");
 const { testRouter } = require("./testRouter");
 const cluster = require("./util/cluster");
+const { addPrometheusMiddleware } = require("./middleware");
 
 const clusterEnabled = true;
 
 const PORT = 9090;
 const app = new Koa();
+addPrometheusMiddleware(app);
 
 app.use(
   bodyParser({

@@ -20,6 +20,7 @@ const name = "User Transformations";
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
+const { parserForImport } = require("../util/parser");
 
 const randomID = () =>
   Math.random()
@@ -792,6 +793,33 @@ possibleEnvs.forEach(envValue => {
       );
 
       expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple ${name} Test for library parser`, () => {
+      const outputImport = {
+        "@angular2/core": ["Component"],
+        "module-name1": ["defaultMember"],
+        "module-name2": [],
+        "module-name3": ["member"],
+        "module-name4": ["member"],
+        "module-name5": ["member1", "member2"],
+        "module-name6": ["member1", "member2", "member3"],
+        "module-name7": ["defaultMember", "member", "member"]
+      };
+
+      const code = `
+        import { Component } from '@angular2/core';
+        import defaultMember from \n"module-name1"; 
+        import   *    as name from "module-name2  ";
+        import   {  member }   from "  module-name3"; 
+        import { member as alias } \nfrom "module-name4"; 
+        import { \n   member1 , \n    member2 \n} from "module-name5"; 
+        import { member1 , member2 as alias2 , member3 as alias3 } from "module-name6"; 
+        import defaultMember, { member, member } from "module-name7";
+      `;
+      const output = parserForImport(code);
+
+      expect(output).toEqual(outputImport);
     });
 
     // Running timeout tests only for one possible env value to reduce time taken for tests

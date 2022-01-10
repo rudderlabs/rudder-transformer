@@ -532,5 +532,69 @@
       "FORM": {}
     },
     "files": {}
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.clevertap.com/1/upload",
+      "headers": {
+        "X-CleverTap-Account-Id": "476550467",
+        "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "d": [
+            {
+              "type": "profile",
+              "profileData": {
+                "Email": "tony4an@testmail.com",
+                "Phone": "4444457700",
+                "Name": "Tony4AN Stark",
+                "identity": "useran4"
+              },
+              "objectId": "f54bb572361c4fd1"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.clevertap.com/1/upload",
+      "headers": {
+        "X-CleverTap-Account-Id": "476550467",
+        "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "d": [
+            {
+              "type": "token",
+              "tokenData": {
+                "id": "frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf",
+                "type": "apns"
+              },
+              "objectId": "f54bb572361c4fd1"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ]
 ]

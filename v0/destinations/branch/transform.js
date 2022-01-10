@@ -1,5 +1,4 @@
 const get = require("get-value");
-const { isEmpty } = require("lodash");
 const { EventType } = require("../../../constants");
 const { endpoints } = require("./config");
 const { categoriesList } = require("./data/eventMapping");
@@ -95,10 +94,8 @@ function getUserData(message) {
 
   if (
     userData.developer_identity ||
-    (userData.os === "android" && userData.aaid) ||
-    userData.android_id ||
-    (userData.os === "ios" && userData.idfa) ||
-    userData.idfv
+    (userData.os === "android" && (userData.aaid || userData.android_id)) ||
+    (userData.os === "ios" && (userData.idfa || userData.idfv))
   )
     return removeUndefinedAndNullValues(userData);
   throw new CustomError(
@@ -181,7 +178,8 @@ function getCommonPayload(message, category, evName) {
             Object.assign(event_data, event_dataObj);
             Object.assign(custom_data, custom_dataObj);
           });
-          if (!isEmpty(productObj)) content_items.push(productObj);
+          if (isDefinedAndNotNullAndNotEmpty(productObj))
+            content_items.push(productObj);
           productObj = {};
         }
       } else {
@@ -195,7 +193,8 @@ function getCommonPayload(message, category, evName) {
         Object.assign(custom_data, custom_dataObj);
       }
     });
-    if (!isEmpty(productObj)) content_items.push(productObj);
+    if (isDefinedAndNotNullAndNotEmpty(productObj))
+      content_items.push(productObj);
     rawPayload.custom_data = custom_data;
     rawPayload.content_items = content_items;
     rawPayload.event_data = event_data;

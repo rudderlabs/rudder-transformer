@@ -70,21 +70,18 @@ function getUserData(message) {
     );
   }
   const userData = {};
-
   userData.os = os.name;
   userData.os_version = os.version;
   userData.app_version = context.app.version;
   userData.screen_dpi = context.screen.density;
   userData.developer_identity = getFieldValueFromMessage(message, "userId");
 
-  if (isDefinedAndNotNull(os.name)) {
-    if (isAppleFamily(os.name)) {
-      userData.idfa = get(message, "context.device.advertisingId");
-      userData.idfv = get(message, "context.device.id");
-    } else if (os.name.toLowerCase() === "android") {
-      userData.android_id = get(message, "context.device.id");
-      userData.aaid = get(message, "context.device.advertisingId");
-    }
+  if (isAppleFamily(os.name)) {
+    userData.idfa = get(message, "context.device.advertisingId");
+    userData.idfv = get(message, "context.device.id");
+  } else if (os.name.toLowerCase() === "android") {
+    userData.android_id = get(message, "context.device.id");
+    userData.aaid = get(message, "context.device.advertisingId");
   }
 
   const att = get(message, "context.device.attTrackingStatus");

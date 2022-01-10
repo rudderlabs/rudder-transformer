@@ -22,7 +22,7 @@ function getDynamicConfig(event) {
     Object.keys(Config).forEach(field => {
       // let value = Config[field].toString().trim();
       let value = Config[field];
-      if (typeof value !== "string") {
+      if (typeof value === "object") {
         value.forEach(obj => {
           Object.keys(obj).forEach(key => {
             const val = obj[key];

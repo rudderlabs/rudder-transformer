@@ -197,11 +197,11 @@
       "body": {
         "JSON": {
           "identity": "sampath",
+          "app_id": 12345,
           "properties": {
             "anonymousId": "sampath",
             "email": "sampath@gmail.com"
-          },
-          "app_id": "Test_App_Id"
+          }
         },
         "XML": {}, "JSON_ARRAY": {},
         "FORM": {}

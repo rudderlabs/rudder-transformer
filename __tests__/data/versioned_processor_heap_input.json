@@ -381,12 +381,7 @@
       {
         "destination": {
           "Config": {
-            "appId": [
-              {
-                "abc": "{{ message.traits.appId || \"<APP_ID>\" }}",
-                "def": "ViewContent"
-              }
-            ]
+            "appId": 12345
           },
           "DestinationDefinition": {
             "DisplayName": "Heap.io",
@@ -431,8 +426,7 @@
           },
           "traits": {
             "anonymousId": "sampath",
-            "email": "sampath@gmail.com",
-            "appId": "Test_App_Id"
+            "email": "sampath@gmail.com"
           },
           "messageId": "fca2e71a-5d30-48e1-ba45-761c16e3820f",
           "originalTimestamp": "2020-01-16T13:21:59.076Z",

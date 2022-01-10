@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { isEmpty } = require("lodash");
 const { EventType } = require("../../../constants");
 const { endpoints } = require("./config");
 const { categoriesList } = require("./data/eventMapping");
@@ -16,27 +17,6 @@ const {
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
-  const os = get(message, "context.os.name");
-
-  if (isDefinedAndNotNull(os)) {
-    if (isAppleFamily(os)) {
-      payload.idfa = get(message, "context.device.advertisingId");
-      payload.idfv = get(message, "context.device.id");
-    } else if (os.toLowerCase() === "android") {
-      payload.android_id = get(message, "context.device.id");
-      payload.aaid = get(message, "context.device.advertisingId");
-    }
-  }
-
-  const att = get(message, "context.device.attTrackingStatus");
-  if (isDefinedAndNotNull(att)) {
-    if (att == 3) {
-      payload.limit_ad_tracking = false;
-    } else if (att == 2) {
-      payload.limit_ad_tracking = true;
-    }
-  }
-
   const response = defaultRequestConfig();
 
   if (category === "custom") {
@@ -83,25 +63,51 @@ function getCategoryAndName(rudderEventName) {
 function getUserData(message) {
   const { context } = message;
   const { os } = message.context;
-
   if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
     throw new CustomError(
       "os name is missing in the payload and please make sure to insert it at context.os.name",
       400
     );
   }
+  const userData = {};
 
-  return removeUndefinedAndNullValues({
-    os: os.name,
-    os_version: os.version,
-    app_version: context.app.version,
-    screen_dpi: context.screen.density,
-    android_id: get(context, "android_id") ? context.android_id : null,
-    idfa: get(context, "idfa") ? context.android_id : null,
-    idfv: get(context, "idfv") ? context.android_id : null,
-    aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: getFieldValueFromMessage(message, "userId")
-  });
+  userData.os = os.name;
+  userData.os_version = os.version;
+  userData.app_version = context.app.version;
+  userData.screen_dpi = context.screen.density;
+  userData.developer_identity = getFieldValueFromMessage(message, "userId");
+
+  if (isDefinedAndNotNull(os.name)) {
+    if (isAppleFamily(os.name)) {
+      userData.idfa = get(message, "context.device.advertisingId");
+      userData.idfv = get(message, "context.device.id");
+    } else if (os.name.toLowerCase() === "android") {
+      userData.android_id = get(message, "context.device.id");
+      userData.aaid = get(message, "context.device.advertisingId");
+    }
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att === 3) {
+      userData.limit_ad_tracking = false;
+    } else if (att === 2) {
+      userData.limit_ad_tracking = true;
+    }
+  }
+
+  if (
+    userData.developer_identity ||
+    (userData.os === "android" && userData.aaid) ||
+    userData.android_id ||
+    (userData.os === "ios" && userData.idfa) ||
+    userData.idfv
+  )
+    return removeUndefinedAndNullValues(userData);
+  throw new CustomError(
+    "developer_identity or (os=iOS AND (idfa OR idfv)) or (os=Android AND (android_id or aaid)) is required in user_data.",
+    400
+  );
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
@@ -178,7 +184,7 @@ function getCommonPayload(message, category, evName) {
             Object.assign(event_data, event_dataObj);
             Object.assign(custom_data, custom_dataObj);
           });
-          content_items.push(productObj);
+          if (!isEmpty(productObj)) content_items.push(productObj);
           productObj = {};
         }
       } else {
@@ -192,7 +198,7 @@ function getCommonPayload(message, category, evName) {
         Object.assign(custom_data, custom_dataObj);
       }
     });
-    content_items.push(productObj);
+    if (!isEmpty(productObj)) content_items.push(productObj);
     rawPayload.custom_data = custom_data;
     rawPayload.content_items = content_items;
     rawPayload.event_data = event_data;

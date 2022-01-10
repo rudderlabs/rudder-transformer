@@ -3,8 +3,7 @@ const get = require("get-value");
 const unset = require("unset-value");
 
 function setDynamicConfigValue(event, value, config, field) {
-  value = value.replace("{{", "");
-  value = value.replace("}}", "");
+  value = value.replace("{{", "").replace("}}", "");
   if (value.includes("||")) {
     const path = value.split("||")[0].trim();
     const getFieldVal = get(event, path);

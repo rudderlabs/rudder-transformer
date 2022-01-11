@@ -36,6 +36,16 @@ const deviceRelatedEventNames = [
   "Application Opened",
   "Application Uninstalled"
 ];
+
+const isdeviceRelatedEventName = (eventName, destination) => {
+  return (
+    deviceRelatedEventNames.includes(eventName) ||
+    (destination.Config &&
+      destination.Config.deviceTokenEventName &&
+      destination.Config.deviceTokenEventName === eventName)
+  );
+};
+
 const deviceDeleteRelatedEventName = "Application Uninstalled";
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
@@ -63,11 +73,9 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     adduserIdFromExternalId(message);
   }
 
-  const userId =
-    message.userId && message.userId !== "" ? message.userId : undefined;
-
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
   const response = defaultRequestConfig();
-  response.userId = message.userId || message.anonymousId;
+  response.userId = userId || message.anonymousId;
   response.headers = {
     Authorization: `Basic ${btoa(
       `${destination.Config.siteID}:${destination.Config.apiKey}`
@@ -163,46 +171,41 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     // any other event type except identify
     const token = get(message, "context.device.token");
 
-    if (message.properties) {
-      // use this if only top level keys are to be sent
-      // DEVICE DELETE from CustomerIO
-      if (deviceDeleteRelatedEventName === evName) {
-        if (userId && token) {
-          endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
-            ":device_id",
-            token
-          );
-
-          response.endpoint = endpoint;
-          response.method = "DELETE";
-
-          return response;
-        }
-        throw new CustomError("userId or device_token not present", 400);
-      }
-
-      // DEVICE registration
-      if (userId && deviceRelatedEventNames.includes(evName) && token) {
-        const devProps = message.properties;
-        set(devProps, "id", get(message, "context.device.token"));
-        const deviceType = get(message, "context.device.type");
-        if (deviceType) {
-          set(devProps, "platform", deviceType.toLowerCase());
-        }
-        set(
-          devProps,
-          "last_used",
-          Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+    // use this if only top level keys are to be sent
+    // DEVICE DELETE from CustomerIO
+    if (deviceDeleteRelatedEventName === evName) {
+      if (userId && token) {
+        endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
+          ":device_id",
+          token
         );
-        set(rawPayload, "device", devProps);
-        requestConfig = defaultPutRequestConfig;
-      } else {
-        rawPayload.data = {};
-        set(rawPayload, "data", message.properties);
+
+        response.endpoint = endpoint;
+        response.method = "DELETE";
+
+        return response;
       }
+      throw new CustomError("userId or device_token not present", 400);
     }
 
-    if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
+    // DEVICE registration
+    if (isdeviceRelatedEventName(evName, destination) && userId && token) {
+      const devProps = message.properties || {};
+      set(devProps, "id", get(message, "context.device.token"));
+      const deviceType = get(message, "context.device.type");
+      if (deviceType) {
+        set(devProps, "platform", deviceType.toLowerCase());
+      }
+      set(
+        devProps,
+        "last_used",
+        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+      );
+      set(rawPayload, "device", devProps);
+      requestConfig = defaultPutRequestConfig;
+    } else {
+      rawPayload.data = {};
+      set(rawPayload, "data", message.properties);
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
       if (getFieldValueFromMessage(message, "historicalTimestamp")) {
@@ -219,7 +222,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
 
     if (userId) {
-      if (deviceRelatedEventNames.includes(evName) && token) {
+      if (isdeviceRelatedEventName(evName, destination) && token) {
         endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
       } else {
         endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);
@@ -339,6 +342,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

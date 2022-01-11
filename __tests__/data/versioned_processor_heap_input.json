@@ -318,7 +318,9 @@
             "appId": [
               {
                 "from": "{{ message.traits.appId || \"<APP_ID>\" }}",
-                "to": "ViewContent"
+                "to": "{{ message.traits.anonymousId || \"<APP_ID_1>\" }}",
+                "abc": { "def": "{{ message.traits.appId || \"<APP_ID>\" }}"},
+                "xyz": [ { "mno": "{{ message.traits.email || \"<APP_ID>\" }}"}]
               }
             ]
           },

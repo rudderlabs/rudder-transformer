@@ -19,7 +19,8 @@
           },
           "app_id": "<APP_ID>"
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -50,7 +51,8 @@
           },
           "app_id": "Test_App_Id"
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -81,7 +83,8 @@
           },
           "app_id": "<app id>"
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -113,7 +116,8 @@
           },
           "app_id": "<app id>"
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -139,9 +143,15 @@
             "anonymousId": "sampath",
             "email": "sampath@gmail.com"
           },
-          "app_id": "<APP_ID>"
+          "app_id": [
+            {
+              "from": "<APP_ID>",
+              "to": "ViewContent"
+            }
+          ]
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -165,14 +175,19 @@
       "params": {},
       "body": {
         "JSON": {
+          "app_id": [
+            {
+              "from": "Test_App_Id",
+              "to": "sampath",
+              "abc": { "def": "<APP_ID>"},
+              "xyz": [ {"mno": "sampath@gmail.com"}]
+            }
+          ],
           "identity": "sampath",
-          "properties": {
-            "anonymousId": "sampath",
-            "email": "sampath@gmail.com"
-          },
-          "app_id": "Test_App_Id"
+          "properties": {}
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},
@@ -203,7 +218,8 @@
             "email": "sampath@gmail.com"
           }
         },
-        "XML": {}, "JSON_ARRAY": {},
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {},

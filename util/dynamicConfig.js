@@ -23,9 +23,11 @@ function getVal(value, event) {
     });
   } else if (typeof value === "object") {
     Object.keys(value).forEach(obj => {
+      // first checking whether the value is array/object -> in that case we recurse and send that object/array as value
       if (typeof value[obj] === "object") {
         getVal(value[obj], event);
-      } else if (typeof obj === "string") {
+      } // if we encounter string (actual values), then we start configuring it
+      else if (typeof value[obj] === "string") {
         let val = value[obj];
         // we need to configure the value here itself else we will not have path
         if (val && val.startsWith("{{") && val.endsWith("}}")) {

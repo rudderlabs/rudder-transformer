@@ -1117,6 +1117,24 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+/**
+ * Get access token to be bound to the event req headers
+ *
+ * Note:
+ * This method is to be used for `OAuth Destinations`
+ *
+ * @param {Object} metadata
+ * @returns
+ */
+const getAccessToken = metadata => {
+  // OAuth for this destination
+  const { oauthAccessToken } = metadata;
+  if (!oauthAccessToken) {
+    throw new CustomError("Empty/Invalid access token", 500);
+  }
+  return oauthAccessToken;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1185,5 +1203,6 @@ module.exports = {
   updatePayload,
   isOAuthSupported,
   isOAuthDestination,
-  isAppleFamily
+  isAppleFamily,
+  getAccessToken
 };

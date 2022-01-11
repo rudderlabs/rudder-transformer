@@ -1,7 +1,39 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-else-return */
-// const parser = require("fast-xml-parser");
-const { axios } = require("axios");
+
+/**
+ * Doc for the file:
+ * This destination in general uses upsert API exposed by Pardot for creation/updation of a prospect
+ *
+ * externalId should be sent inside context object
+ * Example:
+ * {
+ *    ...,
+ *    context: {
+ *      externalId: {
+ *        type: 'pardotId' || 'crmfid',
+ *        id: number || string (whatever pardot/salesforce provides as pardot id or crm fid)
+ *      },
+ *      ...
+ *    }
+ *    ...
+ * }
+ *
+ * If externalId sent as a valid object including type & id in it, we would update the prospect
+ * If externalId is not sent or not a valid object, we would by default create the prospect
+ *
+ * Cases:
+ * case-1 -> externalId = { type: 'randpmType', id: 1239835 } - created(use upsert API) using email in payload
+ * case-2 -> externalId = { type: 'pardotId', id: 1239835 } - update(use upsert API) using pardot id provided here
+ * case-3 -> externalId = { type: 'crmfid', id: 'xyze' } - try to update(use upsert API) using crmfid
+ * case-4 -> externalId = { type: 'pardotId' } - created(use upsert API) using email in payload
+ * case-5 -> externalId = { id: 1234434 } - created(use upsert API) using email in payload
+ * case-6 -> externalId = { } - created(use upsert API) using email in payload
+ * case-7 -> externalId not sent in payload - created(use upsert API) using email in payload
+ *
+ */
+
+const get = require("get-value");
 const { identifyConfig } = require("./config");
 const logger = require("../../../logger");
 const {
@@ -9,193 +41,95 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  isDefinedAndNotNullAndNotEmpty,
   CustomError,
   removeUndefinedValues,
-  getDestinationExternalID
+  getAccessToken,
+  getSuccessRespEvents,
+  getErrorRespEvents
 } = require("../../util");
 
 const { CONFIG_CATEGORIES } = require("./config");
 
-const responseBuilderSimple = (
-  payload,
-  category,
-  destination,
-  accessToken,
-  prospectExists,
-  operationField,
-  operationValue
-) => {
+const buildResponse = (payload, url, destination, token) => {
   const responseBody = removeUndefinedValues(payload);
   const response = defaultRequestConfig();
-  response.endpoint = prospectExists
-    ? `${category.updateUrl}/${operationField}/${operationValue}?format=json`
-    : category.createUrl;
+  response.endpoint = url;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    Authorization: `Bearer ${accessToken}`
+    Authorization: `Bearer ${token}`,
+    "Pardot-Business-Unit-Id": destination.Config.businessUnitId
   };
-  response.headers["Pardot-Business-Unit-Id"] =
-    destination.Config.businessUnitId;
   response.body.FORM = responseBody;
   return response;
 };
 
-//********   OAUTH PART NEEDS TO BE ADDRESSED *********************//
-
-// const getAccessToken = async destination => {
-//   const { pardotAccountEmail, pardotAccountPassword } = destination.Config;
-
-//   const authResponse = await axios.post(
-//     "https://login.salesforce.com//api/login/version/4",
-//     {
-//       username: pardotAccountEmail,
-//       password: pardotAccountPassword,
-//       clientId: "",
-//       clientSecret: "",
-//       grantType: "password"
-//     }
-//   );
-//   if (!authResponse.access_token) {
-//     throw new CustomError(
-//       `Authorization failed : ${authResponse.error_description}`,
-//       400
-//     );
-//   }
-//   return authResponse.access_token;
-// };
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value);
-}
-
-// in case both id and fid is provided, checking if both of them belongs from the same prospect. 
-// If yes, then return true, else false.
-const checkDataConsistency = async (
-  category,
-  destination,
-  accessToken,
-  id,
-  fid
-) => {
-  const { businessUnitId } = destination.Config;
-  let response;
-
-  try {
-    response = await axios.get(category.readUrl.replace(":id", id), {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Pardot-Business-Unit-Id": businessUnitId
-      }
-    });
-    if (!response.prospect) {
-      throw new CustomError(
-        `No prospect information available with id : ${id}`,
-        400
-      );
-    } else {
-      const fieldValueMatch = getKeyByValue(response.prospect, fid);
-      if (
-        isDefinedAndNotNullAndNotEmpty(fieldValueMatch) &&
-        fieldValueMatch.includes("_fid") &&
-        fieldValueMatch !== "crm_fid"
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  } catch (e) {
-    throw new CustomError(response.err, 400);
-  }
+const isExtIdNotProperlyDefined = externalId => {
+  return !externalId || (externalId && (!externalId.type || !externalId.id));
 };
-const processIdentify = (message, destination, category) => {
-  const accessToken = getAccessToken(destination);
-  const { campaignId } = destination.Config;
-  // let prospectExists;
-  if (!accessToken) {
-    throw new Error("authentication fail");
-  }
 
-  const id = getDestinationExternalID(message, "pardotProspectId");
-  const fid = getDestinationExternalID(message, "pardotFid");
+/**
+ * This method provides the url that would be used to send the event to Pardot
+ *
+ * @typedef {Object} urlParams
+ * @property {{ type: string, id: string }} externalId
+ * @property {Object} category
+ * @property {string} email - email sent in the payload
+ * @returns {properUrl} - The complete url used for sending event to Pardot
+ */
+const getUrl = urlParams => {
+  const { externalId, category, email } = urlParams;
+  let properUrl = `${category.endPointUpsert}/email/${email}`;
+  if (isExtIdNotProperlyDefined(externalId)) {
+    logger.debug(`PARDOT: externalId doesn't exist/invalid datastructure`);
+    return properUrl;
+  }
+  // when there is a proper externalId object defined
+  switch (externalId.type.toLowerCase()) {
+    case "pardotid":
+      properUrl = `${category.endPointUpsert}/id/${externalId.id}`;
+      break;
+    case "crmfid":
+      properUrl = `${category.endPointUpsert}/fid/${externalId.id}`;
+      break;
+    default:
+      logger.debug(
+        `PARDOT: externalId type is different from the ones supported`
+      );
+      break;
+  }
+  return properUrl;
+};
+
+const processIdentify = ({ message, metadata }, destination, category) => {
+  const { campaignId } = destination.Config;
+  const accessToken = getAccessToken(metadata);
+
+  const extId = get(message, "context.externalId");
+  const email = getFieldValueFromMessage(message, "email");
 
   const traits = getFieldValueFromMessage(message, "traits");
   const prospectObject = constructPayload(traits, identifyConfig);
 
-  const email = getFieldValueFromMessage(message, "email");
-  if (!id && !fid && !email) {
-    throw new CustomError(
-      "Any one of prospect id, prospect fid or email is required for prospect creation or updation",
-      400
-    );
-  } else if (!fid && !id) {
-    // when ONLY email is present we will consider to create a prospect every time
-    if (!prospectObject.campaign_id) {
-      prospectObject.campaign_id = campaignId;
-    }
-    return responseBuilderSimple(
-      prospectObject,
-      category,
-      destination,
-      accessToken,
-      false,
-      "email",
-      email
-    );
-  } else if (id && fid) {
-    // read with id and check if the fid provided matches with prospect data
-    const dataConsistencyResult = checkDataConsistency(
-      category,
-      destination,
-      accessToken,
-      id,
-      fid
-    );
-    if (dataConsistencyResult) {
-      // if it matches, update the prospect using the prospect id
-      return responseBuilderSimple(
-        prospectObject,
-        category,
-        destination,
-        accessToken,
-        true,
-        "id",
-        id
-      );
-    } else {
-      // otherwise ignore update operation and keep log
-      logger.debug("id and fid do not exist in the same prospect");
-    }
-  } else if (id) {
-    // if ONLY id is present update with id
-    return responseBuilderSimple(
-      prospectObject,
-      category,
-      destination,
-      accessToken,
-      true,
-      "id",
-      id
-    );
-  } else if (fid) {
-    // if only fid is present, update with fid
-    return responseBuilderSimple(
-      prospectObject,
-      category,
-      destination,
-      accessToken,
-      true,
-      "fid",
-      fid
-    );
+  const url = getUrl({
+    externalId: extId,
+    category,
+    email
+  });
+
+  if (!prospectObject.campaign_id) {
+    prospectObject.campaign_id = campaignId;
   }
+
+  return buildResponse(prospectObject, url, destination, accessToken);
 };
 
-const processEvent = (message, destination) => {
+const processEvent = (metadata, message, destination) => {
   let response;
   if (!message.type) {
-    throw new Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   if (!destination.Config.campaignId) {
     throw new CustomError("Campaign Id is mandatory", 400);
@@ -208,7 +142,7 @@ const processEvent = (message, destination) => {
   if (message.type === "identify") {
     const category = CONFIG_CATEGORIES.IDENTIFY;
 
-    response = processIdentify(message, destination, category);
+    response = processIdentify({ message, metadata }, destination, category);
   } else {
     throw new CustomError(`${message.type} is not supported in Pardot`, 400);
   }
@@ -216,7 +150,38 @@ const processEvent = (message, destination) => {
 };
 
 const process = event => {
-  return processEvent(event.message, event.destination);
+  return processEvent(event.metadata, event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async events => {
+  if (!Array.isArray(events) || events.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const responseList = Promise.all(
+    events.map(event => {
+      try {
+        return getSuccessRespEvents(
+          process(event),
+          [event.metadata],
+          event.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [event.metadata],
+          // eslint-disable-next-line no-nested-ternary
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return responseList;
+};
+
+exports.processRouterDest = processRouterDest;

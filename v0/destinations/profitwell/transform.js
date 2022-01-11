@@ -184,9 +184,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
   }
 
   // handler for other destination side errors
-  if (res.response.response.status !== 404) {
+  const error = res.response;
+  if (error.response.status !== 404) {
     throw new CustomError(
-      "Failed to get subscription history for a user",
+      `Failed to get subscription history for a user (${error.response.statusText})`,
       res.response.response.status
     );
   }

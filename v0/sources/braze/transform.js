@@ -73,7 +73,7 @@ const process = events => {
   const responses = [];
 
   // Ref: Custom Currents Connector Partner Dev Documentation.pdf
-  const eventList = events[0].events;
+  const eventList = Array.isArray(events) ? events[0].events : events.events;
   eventList.forEach(event => {
     try {
       const resp = processEvent(event);

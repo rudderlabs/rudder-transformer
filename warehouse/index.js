@@ -21,6 +21,7 @@ const whPageColumnMappingRules = require("./config/WHPageConfig.js");
 const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
 const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
 const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
+const { isDataLakeProvider } = require("./config/helpers");
 
 const maxColumnsInEvent = parseInt(
   process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
@@ -254,7 +255,8 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
+    !isRudderSourcesEvent(event) &&
+    !isDataLakeProvider(options.provider)
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -271,7 +273,10 @@ const fullEventColumnTypeByProvider = {
   mssql: "json",
   azure_synapse: "json",
   clickhouse: "string",
-  s3_datalake: "string"
+  s3_datalake: "string",
+  deltalake: "string",
+  gcs_datalake: "string",
+  azure_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {

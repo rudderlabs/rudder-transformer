@@ -4,6 +4,7 @@ const _ = require("lodash");
 
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
+const { parserForImport } = require("./parser");
 
 const isolateVmMem = 128;
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
@@ -21,9 +22,13 @@ async function createIvm(code, libraryVersionIds, versionId) {
   );
   const librariesMap = {};
   if (code && libraries) {
+    const extractedLibraries = Object.keys(parserForImport(code));
     // TODO: Check if this should this be &&
     libraries.forEach(library => {
-      librariesMap[_.camelCase(library.name)] = library.code;
+      const libHandleName = _.camelCase(library.name);
+      if (extractedLibraries.includes(libHandleName)) {
+        librariesMap[libHandleName] = library.code;
+      }
     });
   }
 
@@ -145,6 +150,42 @@ async function createIvm(code, libraryVersionIds, versionId) {
   );
 
   await jail.set(
+    "_fetchV2",
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetch(...args);
+        const headersContent = {};
+        res.headers.forEach((value, header) => {
+          headersContent[header] = value;
+        });
+        const data = {
+          url: res.url,
+          status: res.status,
+          headers: headersContent,
+          body: await res.text()
+        };
+
+        try {
+          data.body = JSON.parse(data.body);
+        } catch (e) {}
+
+        stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      } catch (error) {
+        const err = JSON.parse(
+          JSON.stringify(error, Object.getOwnPropertyNames(error))
+        );
+        reject.applyIgnored(undefined, [
+          new ivm.ExternalCopy(err).copyInto(),
+        ]);
+      }
+    })
+  );
+
+  await jail.set(
     "_log",
     new ivm.Reference((...args) => {
       console.log("Log: ", ...args);
@@ -173,6 +214,18 @@ async function createIvm(code, libraryVersionIds, versionId) {
         return new Promise(resolve => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let fetchV2 = _fetchV2;
+      delete _fetchV2;
+      global.fetchV2 = function(...args) {
+        return new Promise((resolve,reject) => {
+          fetchV2.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

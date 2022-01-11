@@ -10,7 +10,8 @@ const {
   getValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily
 } = require("../../util");
 
 const {
@@ -249,7 +250,7 @@ function buildBaseEvent(message) {
   sourceSDK = sourceSDK.toLowerCase();
   if (sourceSDK === "android") {
     sourceSDK = "a2";
-  } else if (sourceSDK === "ios") {
+  } else if (isAppleFamily(sourceSDK)) {
     sourceSDK = "i2";
   } else {
     // if the sourceSDK is not android or ios, send an empty string

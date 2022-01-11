@@ -9,20 +9,27 @@ const transformer = require(`../${version}/destinations/${integration}/transform
 
 //for router test
 const inputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_input.json`)
+    path.resolve(__dirname, `./data/${integration}_input.json`)
 );
 const outputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_output.json`)
+    path.resolve(__dirname, `./data/${integration}_output.json`)
 );
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const inputProcData = JSON.parse(inputRouterDataFile);
+const expectedProcData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
   
   describe("Router Tests", () => {
     it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+      inputProcData.forEach(async (input, ind) => {
+        try {
+          const routerOutput = await transformer.process(input);
+          expect(routerOutput).toEqual(expectedProcData[ind]);
+        } catch (error) {
+          console.error(error);
+          expect(routerOutput).toEqual(error);
+        }
+      });
     });
   });
   

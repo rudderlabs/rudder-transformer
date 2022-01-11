@@ -1,0 +1,103 @@
+[
+  [
+    {
+      "dest_transformed_payload": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://api.clevertap.com/1/upload",
+          "headers": {
+            "X-CleverTap-Account-Id": "sample-account-id",
+            "X-CleverTap-Passcode": "sample-passcode",
+            "Content-Type": "application/json"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "d": [
+                {
+                  "evtName": "test track event HS",
+                  "evtData": {
+                    "user_actual_role": "system_admin, system_user",
+                    "user_actual_id": 12345
+                  },
+                  "type": "event",
+                  "identity": "12345"
+                }
+              ]
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        }
+      ]
+    }
+  ],
+  [
+    {
+      "dest_transformed_payload": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.iad-03.braze.com/users/identify",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer a1d4f79a-cea9-4e0e-a104-b57e37ba3b3a"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "aliases_to_identify": [
+                {
+                  "user_alias": {
+                    "alias_name": "00000000000000000000000000",
+                    "alias_label": "rudder_id"
+                  },
+                  "external_id": "12345"
+                }
+              ]
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {},
+          "userId": "12345"
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.iad-03.braze.com/users/track",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer a1d4f79a-cea9-4e0e-a104-b57e37ba3b3a"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "attributes": [
+                {
+                  "email": "testhubspot2@email.com",
+                  "firstname": "Test Hubspot",
+                  "external_id": "12345"
+                }
+              ]
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {},
+          "userId": "12345"
+        }
+      ]
+    }
+  ]
+]

@@ -94,12 +94,13 @@ function getUserData(message) {
 
   if (
     userData.developer_identity ||
-    (userData.os === "android" && (userData.aaid || userData.android_id)) ||
-    (userData.os === "ios" && (userData.idfa || userData.idfv))
+    (userData.os === "Android" && (userData.aaid || userData.android_id)) ||
+    (userData.os === "iOS" && (userData.idfa || userData.idfv))
   )
     return removeUndefinedAndNullValues(userData);
+
   throw new CustomError(
-    "developer_identity or (os=iOS AND (idfa OR idfv)) or (os=Android AND (android_id or aaid)) is required in user_data.",
+    "At least one of the user ID, advertising ID (device.advertisingId), or device ID (device.id) is missing.",
     400
   );
 }

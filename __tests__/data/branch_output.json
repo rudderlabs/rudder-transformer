@@ -216,5 +216,14 @@
   {
     "statusCode": 400,
     "error": "os name is missing in the payload and please make sure to insert it at context.os.name"
+  },
+  {
+    "statusCode": 400,
+    "error": "At least one of the user ID, advertising ID (device.advertisingId), or device ID (device.id) is missing.",
+    "statTags": {
+      "destination": "branch",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

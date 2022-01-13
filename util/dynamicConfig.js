@@ -16,16 +16,16 @@ function setDynamicConfigValue(event, value, config, field) {
   }
 }
 
-function getVal(value, event) {
+function configureVal(value, event) {
   if (Array.isArray(value)) {
     value.forEach(key => {
-      getVal(key, event);
+      configureVal(key, event);
     });
   } else if (typeof value === "object") {
     Object.keys(value).forEach(obj => {
       // first checking whether the value is array/object -> in that case we recurse and send that object/array as value
       if (typeof value[obj] === "object") {
-        getVal(value[obj], event);
+        configureVal(value[obj], event);
       } // if we encounter string (actual values), then we start configuring it
       else if (typeof value[obj] === "string") {
         const val = value[obj];
@@ -44,8 +44,10 @@ function getDynamicConfig(event) {
       let value = Config[field];
       if (Array.isArray(value)) {
         value.forEach(obj => {
-          getVal(obj, event);
+          configureVal(obj, event);
         });
+      } else if (typeof value === "object") {
+        configureVal(value, event);
       } else {
         value = value.toString().trim();
         if (value.startsWith("{{") && value.endsWith("}}")) {

@@ -1117,6 +1117,38 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+/**
+ * Util for audience upload destinations
+ * Returns true if the boolean field is set to true
+ * @param {*} message
+ * @returns
+ */
+const warehouseSchemaExists = message =>
+  get(message, "context.mappedToDestination");
+
+/**
+ * Util for audience upload destinations
+ * returns the schema as set by warehouse actions
+ * throws error if not found
+ * @param {*} message
+ * @returns
+ */
+const getSchemaForEventMappedToDest = message => {
+  const mappedSchema = get(message, "context.destinationFields");
+  if (!mappedSchema) {
+    throw new CustomError(
+      "context.destinationFields is required property for events mapped to destination ",
+      400
+    );
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema)
+    ? mappedSchema
+    : mappedSchema.split(",");
+  userSchema = userSchema.map(field => field.trim());
+  return userSchema;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1143,6 +1175,7 @@ module.exports = {
   formatValue,
   generateUUID,
   getSuccessRespEvents,
+  getSchemaForEventMappedToDest,
   generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
@@ -1185,5 +1218,6 @@ module.exports = {
   updatePayload,
   isOAuthSupported,
   isOAuthDestination,
-  isAppleFamily
+  isAppleFamily,
+  warehouseSchemaExists
 };

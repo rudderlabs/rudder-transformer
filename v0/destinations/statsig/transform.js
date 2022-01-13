@@ -1,7 +1,8 @@
 const { EventType } = require("../../../constants");
 const {
   defaultPostRequestConfig,
-  defaultRequestConfig
+  defaultRequestConfig,
+  CustomError
 } = require("../../util");
 const { ENDPOINT } = require("./config");
 

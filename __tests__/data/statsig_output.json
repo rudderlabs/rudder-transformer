@@ -588,5 +588,8 @@
     "params": {},
     "type": "REST",
     "method": "POST"
+  },
+  {
+    "message": "Message type not supported"
   }
 ]

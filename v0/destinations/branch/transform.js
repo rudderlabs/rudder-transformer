@@ -91,7 +91,8 @@ function getUserData(message) {
       userData.limit_ad_tracking = true;
     }
   }
-
+  /* we are accepting empty string as valid in place of android_id,
+   aaid, idfa and idfv as of now, as the destination also supports empty String. */
   if (
     userData.developer_identity ||
     (userData.os === "Android" && (userData.aaid || userData.android_id)) ||

@@ -1,45 +1,20 @@
 /* eslint-disable no-console */
 const { EventType } = require("../../../constants");
-const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  CustomError,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  isOAuthDestination
-} = require("../../util");
+const { CustomError } = require("../../util");
 
-/**
- * This function puts the accessToken information in the transformed response
- * to facilitate for a successfully authorised event
- *
- * @param {*} event - The event on which transformation is being performed
- * @param {*} response - Transformation Response
- * @returns Transformation Response bound with token information(may not be required as such)
- */
-async function processAuth(event, response) {
-  // OAuth for BQStream destination
-  const { oauthAccessToken } = event.metadata;
-  if (!oauthAccessToken) {
-    throw new CustomError("Access token is empty/undefined", 500);
+const getInsertIdColValue = (properties, insertIdCol) => {
+  if (
+    insertIdCol &&
+    properties[insertIdCol] &&
+    (typeof properties[insertIdCol] === "string" ||
+      typeof properties[insertIdCol] === "number")
+  ) {
+    return `${properties[insertIdCol]}`;
   }
-  if (!response.headers) {
-    response.headers = {};
-  }
-  response.headers.Authorization = `Bearer ${oauthAccessToken}`;
-  return response;
-}
-
-const responseWrapper = response => {
-  const resp = defaultRequestConfig();
-  resp.endpoint = response.endPoint;
-  resp.method = defaultPostRequestConfig.requestMethod;
-  resp.headers = { ...response.headers, "Content-Type": "application/json" };
-  resp.body.JSON = response.payload;
-  return resp;
+  return null;
 };
 
-async function process(event) {
+const process = async event => {
   const { message } = event;
   const { properties, type } = message;
   // EventType validation
@@ -51,59 +26,20 @@ async function process(event) {
   }
   const {
     destination: {
-      Config: { datasetId, tableId, projectId }
-    },
-    destination
+      Config: { datasetId, tableId, projectId, insertId: insertIdColumn }
+    }
   } = event;
-
-  const payload = {
-    rows: [
-      {
-        json: { ...properties }
-      }
-    ]
-  };
-  const responseParams = {
-    payload,
-    method: "POST",
-    endPoint: `https://bigquery.googleapis.com/bigquery/v2/projects/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`
-  };
-  if (isOAuthDestination(destination)) {
-    // Put authorisation headers into processedResponse
-    await processAuth(event, responseParams);
+  const propInsertId = getInsertIdColValue(properties, insertIdColumn);
+  const props = { ...properties };
+  if (propInsertId) {
+    props.insertId = propInsertId;
   }
-  return responseWrapper(responseParams);
-}
-
-const processRouterDest = async events => {
-  if (!Array.isArray(events) || events.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const responseList = Promise.all(
-    events.map(async event => {
-      try {
-        return getSuccessRespEvents(
-          await process(event),
-          [event.metadata],
-          event.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [event.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
-  return responseList;
+  return {
+    datasetId,
+    tableId,
+    projectId,
+    properties: { ...props }
+  };
 };
 
-module.exports = { processRouterDest };
+module.exports = { process };

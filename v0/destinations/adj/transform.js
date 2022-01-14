@@ -9,7 +9,8 @@ const {
   flattenJson,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily
 } = require("../../util");
 
 const rejectParams = ["revenue", "currency"];
@@ -17,6 +18,7 @@ const rejectParams = ["revenue", "currency"];
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { appToken, customMappings, environment } = destination.Config;
+  const platform = message.context.device.type;
   if (
     !message.context.device ||
     !message.context.device.type ||
@@ -24,10 +26,10 @@ function responseBuilderSimple(message, category, destination) {
   ) {
     throw new CustomError("Device type/id  not present", 400);
   }
-  if (message.context.device.type.toLowerCase() === "android") {
+  if (platform.toLowerCase() === "android") {
     delete payload.idfv;
     delete payload.idfa;
-  } else if (message.context.device.type.toLowerCase() === "ios") {
+  } else if (isAppleFamily(platform)) {
     delete payload.android_id;
     delete payload.gps_adid;
   } else {

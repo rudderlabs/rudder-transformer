@@ -89,7 +89,7 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const { sharingFilter } = destination.Config.sharingFilter;
+  const { sharingFilter } = destination.Config;
   if (isDefinedAndNotNull(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }

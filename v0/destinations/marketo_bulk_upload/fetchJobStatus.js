@@ -308,7 +308,7 @@ const responseHandler = async (event, type) => {
     }
   );
   const response = {
-    statuCode: 200,
+    statusCode: 200,
     metadata: {
       failedKeys,
       failedReasons,

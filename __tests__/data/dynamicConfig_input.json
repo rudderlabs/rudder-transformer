@@ -1,0 +1,106 @@
+{
+  "request": {
+    "body": [
+      {
+        "destination": {
+          "Config": {
+            "appId": "{{ message.traits.appId || \"<APP_ID>\" }}"
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": [{"from" :"{{ message.traits.appId || \"<APP_ID>\" }}"} ,{ "to": "{{ message.traits.appId || \"<APP_ID>\" }}"}]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": {
+              "key2": "hey",
+              "key3": "{{ message.traits.appId || \"email\" }}",
+              "key4": [
+                {
+                  "from": "{{ message.traits.email || \"email\" }}",
+                  "to": "no"
+                }
+              ]
+            }
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": [
+              { "key2": "hey" },
+              { "key3": "{{ message.traits.appId || \"email\" }}" },
+              {
+                "key4": [
+                  {
+                    "from": "{{ message.traits.email || \"email\" }}",
+                    "to": "no"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      }
+    ]
+  }
+}

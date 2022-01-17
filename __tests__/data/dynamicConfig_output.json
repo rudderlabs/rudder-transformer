@@ -1,0 +1,91 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "appId": "testAppId"
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {},
+      "traits": {
+        "anonymousId": "sampath",
+        "email": "sampath@gmail.com"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": [{"from" :"testAppId"} ,{ "to": "<APP_ID>"}]
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {},
+      "traits": {
+        "anonymousId": "sampath",
+        "email": "sampath@gmail.com"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": {
+            "key2": "hey",
+            "key3": "testAppId",
+            "key4": [{"from": "sampath@gmail.com", "to": "no"}]
+          }
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {},
+      "traits": {
+        "anonymousId": "sampath"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": [
+          { "key2": "hey" },
+          { "key3": "testAppId" },
+          {
+            "key4": [
+              {
+                "from": "sampath@gmail.com",
+                "to": "no"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {},
+      "traits": {
+        "anonymousId": "sampath"
+      }
+    }
+  }
+]

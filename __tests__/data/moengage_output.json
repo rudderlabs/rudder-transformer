@@ -76,6 +76,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -84,6 +85,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "type": "customer",
@@ -114,6 +116,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "type": "customer",
@@ -143,6 +146,7 @@
     {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "type": "customer",
@@ -173,6 +177,7 @@
     {
       "body": {
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
           "type": "device",
@@ -203,6 +208,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "type": "customer",
@@ -233,6 +239,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "type": "customer",
@@ -349,6 +356,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
@@ -430,6 +438,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},

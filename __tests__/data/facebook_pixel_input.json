@@ -1982,5 +1982,110 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "my product list",
+      "properties": {
+        "email": "abc@gmail.com",
+        "quantity": 2,
+        "category": "cat 1",
+        "list_id": "1234",
+        "filters": [
+          {
+            "type": "department",
+            "value": "beauty"
+          },
+          {
+            "type": "price",
+            "value": "under"
+          }
+        ],
+        "sorts": [
+          {
+            "type": "price",
+            "value": "desc"
+          }
+        ],
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "productDimension": "My Product Dimension",
+            "productMetric": "My Product Metric",
+            "position": 10
+          },
+          {
+            "product_id": "507f1f77bcf86cdef799439011",
+            "productDimension": "My Product Dimension1",
+            "productMetric": "My Product Metric1",
+            "position": -10
+          }
+        ],
+        "testDimension": true,
+        "testMetric": true
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "My product list",
+            "to": "Schedule"
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": "list_id"
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

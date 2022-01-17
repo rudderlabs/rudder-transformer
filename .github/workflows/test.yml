@@ -9,10 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: npm install
-      uses: actions/npm@master
+      uses: actions/setup-node@v2
       with:
-        args: install
+        node-version: 10
+    - run: npm install
     - name: Jest
-      uses: rkusa/jest-action@master
-      secrets: d10e6be8dedb20348a882bf1aa92423d6ec22276 
-          
+      run: npm run test

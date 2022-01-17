@@ -25,7 +25,8 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -52,7 +53,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -83,7 +85,8 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -108,7 +111,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -132,7 +136,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -161,7 +166,8 @@
     "body": {
       "JSON": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200
@@ -196,7 +202,32 @@
         ]
       },
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://track.hubspot.com/v1/event",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "userId": "00000000000000000000000000",
+    "params": {
+      "_a": "6405167",
+      "_n": "test track event HS",
+      "email": "testhubspot2@email.com",
+      "firstname": "Test Hubspot"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {},
+      "JSON_ARRAY": {}
     },
     "files": {},
     "statusCode": 200

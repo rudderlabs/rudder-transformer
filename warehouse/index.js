@@ -21,13 +21,16 @@ const whPageColumnMappingRules = require("./config/WHPageConfig.js");
 const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
 const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
 const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
+const { isDataLakeProvider } = require("./config/helpers");
 
 const maxColumnsInEvent = parseInt(
   process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
   10
 );
 
-const getDataType = (val, options) => {
+const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+
+const getDataType = (key, val, options) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -44,7 +47,7 @@ const getDataType = (val, options) => {
     options.getDataTypeOverride &&
     typeof options.getDataTypeOverride === "function"
   ) {
-    return options.getDataTypeOverride(val, options) || "string";
+    return options.getDataTypeOverride(key, val, options) || "string";
   }
   return "string";
 };
@@ -133,7 +136,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
       delete columnTypes[columnName];
       return;
     }
-    const datatype = getDataType(val, options);
+    const datatype = getDataType(key, val, options);
     if (datatype === "datetime") {
       val = new Date(val).toISOString();
     }
@@ -207,7 +210,7 @@ function setDataFromInputAndComputeColumnTypes(
         val = JSON.stringify(val);
       }
 
-      const datatype = getDataType(val, options);
+      const datatype = getDataType(key, val, options);
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
@@ -244,7 +247,7 @@ function getColumns(options, event, columnTypes) {
     columns[loadedAt] = "datetime";
   }
   Object.keys(event).forEach(key => {
-    columns[key] = columnTypes[key] || getDataType(event[key], options);
+    columns[key] = columnTypes[key] || getDataType(key, event[key], options);
   });
   /*
    1) throw error if too many columns in an event just in case to avoid creating too many columns in warehouse due to a spurious event
@@ -252,7 +255,8 @@ function getColumns(options, event, columnTypes) {
   */
   if (
     Object.keys(columns).length > maxColumnsInEvent &&
-    !isRudderSourcesEvent(event) && options.provider !== "s3_datalake"
+    !isRudderSourcesEvent(event) &&
+    !isDataLakeProvider(options.provider)
   ) {
     throw new Error(
       `${options.provider} transfomer: Too many columns outputted from the event`
@@ -269,7 +273,10 @@ const fullEventColumnTypeByProvider = {
   mssql: "json",
   azure_synapse: "json",
   clickhouse: "string",
-  s3_datalake: "string"
+  s3_datalake: "string",
+  deltalake: "string",
+  gcs_datalake: "string",
+  azure_datalake: "string"
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
@@ -463,6 +470,25 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
   ]
 */
 
+/*
+* Adds source and destination specific information into context
+* */
+function enhanceContextWithSourceDestInfo(message, metadata) {
+  if (!WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT) {
+    return;
+  }
+  if (!metadata) {
+    return;
+  }
+  context = message.context || {};
+  context.sourceId = metadata.sourceId;
+  context.sourceType = metadata.sourceType;
+  context.destinationId = metadata.destinationId;
+  context.destinationType = metadata.destinationType;
+
+  message.context = context
+}
+
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
@@ -474,6 +500,9 @@ function processWarehouseMessage(message, options) {
     const randomID = uuidv4();
     message.messageId = `auto-${randomID}`;
   }
+
+  // Adding source and destination specific information.
+  enhanceContextWithSourceDestInfo(message, options.metadata)
 
   if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
     message.receivedAt =
@@ -728,7 +757,11 @@ function processWarehouseMessage(message, options) {
       usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
       usersColumnTypes[
         utils.safeColumnName(options.provider, "id")
-      ] = getDataType(message.userId, options);
+      ] = getDataType(
+        utils.safeColumnName(options.provider, "id"),
+        message.userId,
+        options
+      );
       // set received_at
       usersEvent[
         utils.safeColumnName(options.provider, "received_at")

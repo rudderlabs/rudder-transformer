@@ -6,9 +6,9 @@ const CustomCache = require("../v0/util/customCache");
 // const transformationCache = {};
 const cache = new CustomCache();
 
+// const CONFIG_BACKEND_URL = "http://localhost:5000";
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
-
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
 
@@ -43,12 +43,14 @@ async function getLibraryCodeV1(versionId) {
   const library = cache.get(versionId);
   if (library) return library;
   const tags = {
-    transformerVersionId: versionId,
+    libraryVersionId: versionId,
     version: 1
   };
   try {
     const startTime = new Date();
-    const response = await fetchWithProxy(`${getLibrariesUrl}?versionId=${versionId}`);
+    const response = await fetchWithProxy(
+      `${getLibrariesUrl}?versionId=${versionId}`
+    );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);
     const myJson = await response.json();

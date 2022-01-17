@@ -179,11 +179,13 @@ const events = Object.keys(Event);
 events.forEach(event => {
   nameToEventMap[Event[event].name] = Event[event];
 });
+const DESTINATION = "googleAnalytics";
 
 module.exports = {
   Event,
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap
+  nameToEventMap,
+  DESTINATION
 };

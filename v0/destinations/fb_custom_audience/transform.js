@@ -1,15 +1,14 @@
 const sha256 = require("sha256");
+const get = require("get-value");
 
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
-  constructPayload,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
   CustomError,
   isDefinedAndNotNull,
@@ -17,18 +16,31 @@ const {
 } = require("../../util");
 
 const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
   getEndPoint,
   schemaFields,
-  sessionBlockField,
-  MAX_USER_COUNT,
-  getAudienceId,
   USER_ADD,
-  USER_DELETE
+  USER_DELETE,
+  typeFields,
+  subTypeFields
 } = require("./config");
 
-const logger = require("../../../logger");
+const { MappedToDestinationKey } = require("../../../constants");
+
+const getSchemaForEventMappedToDest = message => {
+  const mappedSchema = get(message, "context.destinationFields");
+  if (!mappedSchema) {
+    throw new CustomError(
+      "context.destinationFields is required property for events mapped to destination ",
+      400
+    );
+  }
+  // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
+  let userSchema = Array.isArray(mappedSchema)
+    ? mappedSchema
+    : mappedSchema.split(",");
+  userSchema = userSchema.map(field => field.trim());
+  return userSchema;
+};
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
@@ -36,10 +48,10 @@ const responseBuilderSimple = (payload, audienceId) => {
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
 
-    if (payload.operationCategory === "userListAdd") {
+    if (payload.operationCategory === "add") {
       response.method = defaultPostRequestConfig.requestMethod;
     }
-    if (payload.operationCategory === "userListDelete") {
+    if (payload.operationCategory === "remove") {
       response.method = defaultDeleteRequestConfig.requestMethod;
     }
 
@@ -227,52 +239,44 @@ const prepareResponse = (
   destination,
   isHashRequired = true,
   allowedAudienceArray,
-  audienceOperation
+  userSchema
 ) => {
-  const { accessToken, userSchema, disableFormat } = destination.Config;
-  const { properties } = message;
-  const prepareParams = {};
-  let sessionPayload = {};
-  // creating the parameters field
-  let paramsPayload = {};
-  let dataSource = {};
-  sessionPayload = removeUndefinedAndNullValues(
-    constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name])
-  );
+  const {
+    accessToken,
+    disableFormat,
+    type,
+    subType,
+    isRaw
+  } = destination.Config;
 
-  const sessionId =
-    audienceOperation === "userListAdd"
-      ? parseInt(properties.sessionIdAdd, 10)
-      : parseInt(properties.sessionIdDelete, 10);
-  // eslint-disable-next-line no-restricted-globals
-  if (isDefinedAndNotNull(sessionId) && !isNaN(sessionId)) {
-    sessionPayload.session_id = sessionId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+
+  // If mapped to destination, use the mapped fields instead of destination userschema
+  if (mappedToDestination) {
+    // eslint-disable-next-line no-param-reassign
+    userSchema = getSchemaForEventMappedToDest(message);
   }
-  // without all the mandatory fields present, session blocks can not be formed
-  if (
-    checkSubsetOfArray(
-      Object.getOwnPropertyNames(sessionPayload),
-      sessionBlockField
-    )
-  ) {
-    prepareParams.session = sessionPayload;
-  } else {
-    logger.debug("All required fields for session block is not present");
-  }
+
+  const prepareParams = {};
+  // creating the parameters field
+  const paramsPayload = {};
+  const dataSource = {};
+
   prepareParams.access_token = accessToken;
 
   // creating the payload field for parameters
-
-  paramsPayload = removeUndefinedAndNullValues(
-    constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name])
-  );
+  if (isRaw) {
+    paramsPayload.is_raw = isRaw;
+  }
   // creating the data_source block
-  dataSource = removeUndefinedAndNullValues(
-    constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.DATA_SOURCE.name]
-    )
-  );
+
+  if (type && type !== "NA" && typeFields.includes(type)) {
+    dataSource.type = type;
+  }
+
+  if (subType && subType !== "NA" && subTypeFields.includes(subType)) {
+    dataSource.sub_type = subType;
+  }
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
@@ -292,25 +296,39 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
-  const { userSchema, isHashRequired } = destination.Config;
+  let { userSchema } = destination.Config;
+  const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
       400
     );
   }
-  if (message.type !== "track") {
+  const maxUserCountNumber = parseInt(maxUserCount, 10);
+
+  if (Number.isNaN(maxUserCountNumber)) {
+    throw new CustomError("Batch size must be an Integer.", 400);
+  }
+  if (message.type.toLowerCase() !== "audiencelist") {
     throw new CustomError(` ${message.type} call is not supported `, 400);
   }
-  const operationAudienceId = getAudienceId(message.event, destination);
+  const operationAudienceId = audienceId;
 
-  // when no event to audience_id mapping is found
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
-    throw new CustomError(
-      `The event name does not match with configured audience ids'`,
-      400
-    );
+    throw new CustomError("Audience ID is a mandatory field", 400);
   }
+
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // If mapped to destination, use the mapped fields instead of destination userschema
+  if (mappedToDestination) {
+    userSchema = getSchemaForEventMappedToDest(message);
+  }
+
+  // When one single schema field is added in the webapp, it does not appear to be an array
+  if (!Array.isArray(userSchema)) {
+    userSchema = [userSchema];
+  }
+
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {
     throw new CustomError(
@@ -318,13 +336,13 @@ const processEvent = (message, destination) => {
       400
     );
   }
-  const { properties } = message;
+  const { listData } = message.properties;
 
-  // When "userListAdd" is present in the payload
-  if (isDefinedAndNotNullAndNotEmpty(properties[USER_ADD])) {
+  // when "remove" is present in the payload
+  if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(
-      properties[USER_ADD],
-      MAX_USER_COUNT
+      listData[USER_DELETE],
+      maxUserCountNumber
     );
     audienceChunksArray.forEach(allowedAudienceArray => {
       response = prepareResponse(
@@ -332,32 +350,33 @@ const processEvent = (message, destination) => {
         destination,
         isHashRequired,
         allowedAudienceArray,
-        USER_ADD
-      );
-      wrappedResponse = {
-        responseField: response,
-        operationCategory: USER_ADD
-      };
-      toSendEvents.push(wrappedResponse);
-    });
-  }
-  // when userListDelete is present in the payload
-  if (isDefinedAndNotNullAndNotEmpty(properties[USER_DELETE])) {
-    const audienceChunksArray = returnArrayOfSubarrays(
-      properties[USER_DELETE],
-      MAX_USER_COUNT
-    );
-    audienceChunksArray.forEach(allowedAudienceArray => {
-      response = prepareResponse(
-        message,
-        destination,
-        isHashRequired,
-        allowedAudienceArray,
-        USER_DELETE
+        userSchema
       );
       wrappedResponse = {
         responseField: response,
         operationCategory: USER_DELETE
+      };
+      toSendEvents.push(wrappedResponse);
+    });
+  }
+
+  // When "add" is present in the payload
+  if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
+    const audienceChunksArray = returnArrayOfSubarrays(
+      listData[USER_ADD],
+      maxUserCountNumber
+    );
+    audienceChunksArray.forEach(allowedAudienceArray => {
+      response = prepareResponse(
+        message,
+        destination,
+        isHashRequired,
+        allowedAudienceArray,
+        userSchema
+      );
+      wrappedResponse = {
+        responseField: response,
+        operationCategory: USER_ADD
       };
       toSendEvents.push(wrappedResponse);
     });

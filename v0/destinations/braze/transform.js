@@ -1,16 +1,20 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
+  adduserIdFromExternalId,
   defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues,
+  removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 
 const {
   ConfigCategory,
@@ -19,7 +23,8 @@ const {
   getTrackEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  DESTINATION
 } = require("./config");
 
 function formatGender(gender) {
@@ -45,7 +50,7 @@ function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(properties);
+  response.body.JSON = removeUndefinedValues(properties);
   return {
     ...response,
     headers: {
@@ -101,7 +106,7 @@ function getUserAttributesObject(message, mappingJson) {
   const traits = getFieldValueFromMessage(message, "traits");
 
   // return the traits as-is if message is mapped to destination
-  if(get(message, MappedToDestinationKey)) {
+  if (get(message, MappedToDestinationKey)) {
     return traits;
   }
 
@@ -135,7 +140,7 @@ function getUserAttributesObject(message, mappingJson) {
       // if traitKey is not reserved add the value to final output
       if (reservedKeys.indexOf(traitKey) === -1) {
         const value = get(traits, traitKey);
-        if (value) {
+        if (value !== undefined) {
           data[traitKey] = value;
         }
       }
@@ -146,12 +151,10 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
-  
   // override userId with externalId in context(if present) and event is mapped to destination
-  const externalId = get(message, "context.externalId.0.id")
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination && externalId) {
-      message.userId = externalId; 
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    adduserIdFromExternalId(message);
   }
 
   return buildResponse(
@@ -295,8 +298,16 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         getTrackEndPoint(destination.Config.endPoint)
       );
     }
-
-    throw new CustomError("Invalid Order Completed event", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid Order Completed event")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -326,7 +337,16 @@ function processGroup(message, destination) {
   const groupAttribute = {};
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new CustomError("Invalid groupId", 400);
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid groupId")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
@@ -414,7 +434,17 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Message type is not supported")
+        .setStatTags({
+          destination: DESTINATION,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
 
   return respList;
@@ -658,14 +688,16 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

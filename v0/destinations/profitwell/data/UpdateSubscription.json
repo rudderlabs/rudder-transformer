@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "plan_id",
+    "sourceKeys": ["traits.planId", "context.traits.planId"],
+    "required": true
+  },
+  {
+    "destKey": "plan_interval",
+    "sourceKeys": ["traits.planInterval", "context.traits.planInterval"],
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": ["traits.value", "context.traits.value"],
+    "required": true
+  },
+  {
+    "destKey": "status",
+    "sourceKeys": ["traits.status", "context.traits.status"],
+    "required": false
+  },
+  {
+    "destKey": "effective_date",
+    "sourceKeys": ["traits.effectiveDate", "context.traits.effectiveDate"],
+    "required": true
+  }
+]

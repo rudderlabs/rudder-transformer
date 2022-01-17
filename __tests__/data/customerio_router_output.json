@@ -12,6 +12,7 @@
         "params": {},
         "body": {
           "JSON": {
+            "anonymous_id": "123456",
             "city": "NY",
             "country": "USA",
             "postalCode": 712136,
@@ -24,6 +25,7 @@
             "_timestamp": 1571043797
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {},
@@ -71,6 +73,7 @@
             "timestamp": 1571051718
           },
           "XML": {},
+          "JSON_ARRAY": {},
           "FORM": {}
         },
         "files": {},

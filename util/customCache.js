@@ -1,15 +1,17 @@
 const NodeCache = require("node-cache");
 const stdTTL = process.env.STDTTL ? parseInt(process.env.STDTTL, 10) : 0;
 const shared = process.env.ON_DEMAND_ISOLATE_VM
-  ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true" : false;
+  ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
+  : false;
 
 class CustomCache {
   constructor(ttlSeconds = stdTTL) {
-    this.cache = shared ? new NodeCache({
-      stdTTL: ttlSeconds,
-      checkperiod: ttlSeconds * 0.2,
-    })
-    : {};
+    this.cache = shared
+      ? new NodeCache({
+          stdTTL: ttlSeconds,
+          checkperiod: ttlSeconds * 0.2
+        })
+      : {};
   }
 
   get(key) {
@@ -17,7 +19,7 @@ class CustomCache {
   }
 
   set(key, value, ttl = stdTTL) {
-      return shared ? this.cache.set(key, value, ttl) : this.cache[key] = value;
+    return shared ? this.cache.set(key, value, ttl) : (this.cache[key] = value);
   }
 }
 

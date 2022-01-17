@@ -1,7 +1,7 @@
 const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
-const CustomCache = require("../v0/util/customCache");
+const CustomCache = require("./customCache");
 
 // const transformationCache = {};
 const cache = new CustomCache();

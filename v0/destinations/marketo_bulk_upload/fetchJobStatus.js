@@ -14,10 +14,11 @@ const stats = require("../../../util/stats");
 const getFailedJobStatus = async event => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
+  const { munchkinId } = event.config;
   // Get status of each lead for failed leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
-    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
+    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
     method: "get",
     headers: {
       "Content-Type": "application/json",
@@ -119,10 +120,11 @@ const getFailedJobStatus = async event => {
 const getWarningJobStatus = async event => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
+  const { munchkinId } = event.config;
   // Get status of each lead for warning leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {
-    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
+    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
     method: "get",
     headers: {
       "Content-Type": "application/json",
@@ -217,7 +219,7 @@ const getWarningJobStatus = async event => {
     status: 400,
     state: "Abortable"
   });
-  throw new CustomError("Could fetch warning job status", 400);
+  throw new CustomError("Could not fetch warning job status", 400);
 };
 
 const responseHandler = async (event, type) => {
@@ -306,7 +308,7 @@ const responseHandler = async (event, type) => {
     }
   );
   const response = {
-    statuCode: 200,
+    statusCode: 200,
     metadata: {
       failedKeys,
       failedReasons,

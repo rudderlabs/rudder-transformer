@@ -16,10 +16,11 @@ const getHeaderFields = config => {
   const { columnFieldsMapping } = config;
   const columnField = getHashFromArray(
     columnFieldsMapping,
-    "from",
     "to",
+    "from",
     false
   );
+  console.log(columnField)
   return Object.keys(columnField);
 };
 

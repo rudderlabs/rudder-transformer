@@ -25,10 +25,12 @@ function responseBuilderSimple(message, destination) {
 */
   const fieldHashmap = getHashFromArray(
     destination.Config.columnFieldsMapping,
-    "from",
     "to",
+    "from",
     false
   );
+
+  console.log(fieldHashmap)
 
   const traits = getFieldValueFromMessage(message, "traits");
 

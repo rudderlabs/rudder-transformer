@@ -1,0 +1,34 @@
+[
+    {
+        "request": {
+          "body": 
+            {
+                "config": {
+                    "munchkinId": "a",
+                    "clientId": "b",
+                    "clientSecret": "c",
+                    "columnFieldsMapping": [
+                      {
+                        "to": "Email",
+                        "from": "email"
+                      }
+                    ]
+                  },
+                "input": [
+                    {
+                        "message": {
+                    "name__c": "Carlo Lombard",
+                    "email__c": "carlo@enuffsaid.media",
+                    "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+                  },
+                        "metadata": {
+                            "job_id": 17
+                        }
+                    }
+                ],
+                "destType": "marketo_bulk_upload"
+            }
+          
+        }
+      }
+]

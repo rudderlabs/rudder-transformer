@@ -1,4 +1,28 @@
 {
+  "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+   "status":200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://a.mktorest.com/bulk/v1/leads.json": {
+    "status":200,
+    "data": {
+      "success": true,
+      "result": [
+      {
+        "importId": "TestImportId"
+      }
+      ],
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+   },
   "https://mktId.mktorest.com/rest/v1/leads.json/test1": {
     "data": {
       "requestId": "664#17dae8c3d48",

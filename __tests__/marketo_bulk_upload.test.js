@@ -1,9 +1,13 @@
+const { mockedAxiosClient } = require("../__mocks__/network");
 const vRouter = require("../versionedRouter");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
 const integration = "marketo_bulk_upload";
 const transformer = require(`../${version}/destinations/${integration}/transform`);
+
+
+jest.mock("axios", () => jest.fn(mockedAxiosClient));
 
 try {
   reqTransformBody = JSON.parse(
@@ -14,14 +18,14 @@ try {
       path.resolve(__dirname, `./data/${integration}_output.json`)
     )
   );
-//   reqFileUploadBody = JSON.parse(
-//     fs.readFileSync(path.resolve(__dirname, `./data/${integration}_fileUpload_input.json`))
-//   );
-//   respFileUploadBody = JSON.parse(
-//     fs.readFileSync(
-//       path.resolve(__dirname, `./data/${integration}_fileUpload_output.json`)
-//     )
-//   );
+  reqFileUploadBody = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `./data/${integration}_fileUpload_input.json`))
+  );
+  respFileUploadBody = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_fileUpload_output.json`)
+    )
+  );
 //   reqPollBody = JSON.parse(
 //     fs.readFileSync(path.resolve(__dirname, `./data/${integration}_poll_input.json`))
 //   );
@@ -56,18 +60,18 @@ describe(`${integration}   Tests`, () => {
       });
     });
 
-    // describe("fileUpload.js", () => {
-    //     reqFileUploadBody.forEach(async (input, index) => {
-    //     it(`Payload - ${index}`, async () => {
-    //       try {
-    //         const output = await vRouter.fileUpload(input);
-    //         expect(output).toEqual(respFileUploadBody[index]);
-    //       } catch (error) {
-    //         expect(error.message).toEqual(respFileUploadBody[index].error);
-    //       }
-    //     });
-    //   });
-    // });
+    describe("fileUpload.js", () => {
+        reqFileUploadBody.forEach(async (input, index) => {
+        it(`Payload - ${index}`, async () => {
+          try {
+            const output = await vRouter.fileUpload(input);
+            expect(output).toEqual(respFileUploadBody[index]);
+          } catch (error) {
+            expect(error.message).toEqual(respFileUploadBody[index].error);
+          }
+        });
+      });
+    });
 
     // describe("poll.js", () => {
     //     reqPollBody.forEach(async (input, index) => {

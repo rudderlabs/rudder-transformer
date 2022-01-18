@@ -386,7 +386,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -468,7 +468,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -545,7 +545,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -618,7 +618,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -724,7 +724,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -837,7 +837,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -949,7 +949,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1138,7 +1138,7 @@
         "city": "Disney",
         "country": "USA",
         "email": "mickey@disney.com",
-        "firstname": "Mickey"
+        "firstName": "Mickey"
       },
       "integrations": {
         "All": true
@@ -1346,7 +1346,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1684,7 +1684,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",

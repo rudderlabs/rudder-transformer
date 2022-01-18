@@ -1,8 +1,8 @@
 {
   "createdat": "$created",
   "email": "$email",
-  "firstname": "$firstName",
-  "lastname": "$lastName",
+  "firstName": "$firstName",
+  "lastName": "$lastName",
   "name": "$name",
   "username": "$username",
   "phone": "$phone",

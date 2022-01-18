@@ -11,11 +11,12 @@ const stats = require("../../../util/stats");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
+  const { munchkinId } = event.config;
 
   // To see the status of the import job polling is done
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
   const requestOptions = {
-    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
+    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
     method: "get",
     headers: {
       "Content-Type": "application/json",

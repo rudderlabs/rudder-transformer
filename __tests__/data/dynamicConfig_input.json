@@ -24,7 +24,12 @@
       {
         "destination": {
           "Config": {
-            "appId": [{"from" :"{{ message.traits.appId || \"<APP_ID>\" }}"} ,{ "to": "{{ message.traits.appId || \"<APP_ID>\" }}"}]
+            "appId": [
+              {
+                "from": "{{ message.traits.appId || \"<APP_ID>\" }}",
+                "to": "{{ message.traits.anonymousId || \"1234\" }}"
+              }
+            ]
           }
         },
         "metadata": {
@@ -98,6 +103,116 @@
             "anonymousId": "sampath",
             "email": "sampath@gmail.com",
             "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": [
+              { "key2": "hey" },
+              { "key3": "{{ message.traits.appId || \"email\" }}" },
+              {
+                "key4": ["{{ message.traits.email || \"email\" }}", "no"]
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": false
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": 12345
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": [
+              { "abc": 1234, "def": "{{message.traits.email|| \"email\"}}" },
+              "{{message.traits.appId|| \"testAppId\"}}"
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath",
+            "email": "sampath@gmail.com",
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "destination": {
+          "Config": {
+            "appId": [
+              { "abc": 1234, "def": "{{message.traits.email|| 12345 }}" },
+              "{{message.traits.appId|| false }}"
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "message": {
+          "anonymousId": "sampath",
+          "channel": "web",
+          "context": {},
+          "traits": {
+            "anonymousId": "sampath"
           }
         }
       }

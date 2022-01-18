@@ -2,60 +2,58 @@
 const get = require("get-value");
 const unset = require("unset-value");
 
-function setDynamicConfigValue(event, value, config, field) {
+function isValidPattern(val) {
+  // this rgegex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
+  //  " {{message.traits.key  ||   \"email\" }} "
+  //  " {{ message.traits.key || 1233 }} "
+  const re = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*"?(?<defaultValue>.*)"?\s*\}\}\s*$/;
+  return re.test(String(val));
+}
+
+function getDynamicConfigValue(event, value) {
   value = value.replace("{{", "").replace("}}", "");
   if (value.includes("||")) {
     const path = value.split("||")[0].trim();
-    const getFieldVal = get(event, path);
-    if (getFieldVal) {
-      config[field] = getFieldVal;
+    const fieldVal = get(event, path);
+    if (fieldVal) {
+      value = fieldVal;
       unset(event, path);
     } else {
-      config[field] = JSON.parse(value.split("||")[1].trim()).toString();
+      value = JSON.parse(value.split("||")[1].trim());
     }
   }
+  return value;
 }
 
+// eslint-disable-next-line consistent-return
 function configureVal(value, event) {
-  if (Array.isArray(value)) {
-    value.forEach(key => {
-      configureVal(key, event);
-    });
-  } else if (typeof value === "object") {
-    Object.keys(value).forEach(obj => {
-      // first checking whether the value is array/object -> in that case we recurse and send that object/array as value
-      if (typeof value[obj] === "object") {
-        configureVal(value[obj], event);
-      } // if we encounter string (actual values), then we start configuring it
-      else if (typeof value[obj] === "string") {
-        const val = value[obj];
-        if (val && val.startsWith("{{") && val.endsWith("}}")) {
-          setDynamicConfigValue(event, val, value, obj);
-        }
+  if (value) {
+    if (Array.isArray(value)) {
+      value.forEach((key, index) => {
+        value[index] = configureVal(key, event);
+      });
+    } else if (typeof value === "object") {
+      Object.keys(value).forEach(obj => {
+        value[obj] = configureVal(value[obj], event);
+      });
+    } else if (
+      typeof value !== "function" &&
+      typeof value !== "symbol" &&
+      typeof value !== "boolean"
+    ) {
+      const val = value.toString().trim();
+      if (isValidPattern(val)) {
+        value = getDynamicConfigValue(event, val);
       }
-    });
+    }
+    return value;
   }
+  return value;
 }
 
 function getDynamicConfig(event) {
   const { Config } = event.destination;
-  if (Config) {
-    Object.keys(Config).forEach(field => {
-      let value = Config[field];
-      if (Array.isArray(value)) {
-        value.forEach(obj => {
-          configureVal(obj, event);
-        });
-      } else if (typeof value === "object") {
-        configureVal(value, event);
-      } else {
-        value = value.toString().trim();
-        if (value.startsWith("{{") && value.endsWith("}}")) {
-          setDynamicConfigValue(event, value, Config, field);
-        }
-      }
-    });
-  }
+  event.destination.Config = configureVal(Config, event);
   return event;
 }
 

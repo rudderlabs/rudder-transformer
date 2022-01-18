@@ -17,14 +17,9 @@ const inputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
-// inputData.request.body.forEach((input,index) => {
 it(`Testing: handleDest`, async () => {
-    // try{
-    const output = processDynamicConfig(inputData.request.body, "router");
+    let output = processDynamicConfig(inputData.request.body, "router");
+    // output = JSON.stringify(output);
+    // expectedData = JSON.stringify(expectedData);
     expect(output).toEqual(expectedData);
-    // expect(output).toEqual(expectedData[index]);
-    // }catch(error){
-    //     expect(error.message).toEqual(expectedData[index].error);
-    // }
   });
-// });

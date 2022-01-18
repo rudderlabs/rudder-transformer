@@ -863,6 +863,19 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+
+// Checks if the traits object has a firstName key and a lastName key
+// If it does have those two keys AND does NOT already have a name key
+// Then this function will return fullName: "<firstName> <lastName>"
+function getFullName(traits) {
+  let fullName
+  if (traits.firstName && traits.lastName && !traits.name) {
+    fullName = `${traits.firstName} ${traits.lastName}`
+  }
+  return fullName
+}
+
+
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -1151,6 +1164,7 @@ module.exports = {
   getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
+  getFullName,
   getHashFromArray,
   getIntegrationsObj,
   getMappingConfig,

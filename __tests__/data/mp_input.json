@@ -386,7 +386,9 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstName": "Mickey"
+          "firstName": "Mickey",
+          "lastName": "Mouse",
+          "createdAt": "2020-01-23T08:54:02.362Z"
         },
         "page": {
           "path": "/destinations/mixpanel",

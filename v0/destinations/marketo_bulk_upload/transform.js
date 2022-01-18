@@ -30,8 +30,6 @@ function responseBuilderSimple(message, destination) {
     false
   );
 
-  console.log(fieldHashmap)
-
   const traits = getFieldValueFromMessage(message, "traits");
 
   // columnNames with trait's values from rudder payload

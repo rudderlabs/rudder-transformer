@@ -20,7 +20,6 @@ const getHeaderFields = config => {
     "from",
     false
   );
-  console.log(columnField)
   return Object.keys(columnField);
 };
 

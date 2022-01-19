@@ -15,6 +15,9 @@
     "params": {},
     "body": {
       "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "appsflyer_id": "afUid",
@@ -39,6 +42,9 @@
     "method": "POST",
     "body": {
       "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "{\"user_actual_role\":\"system_admin, system_user\",\"user_actual_id\":12345}",
         "eventName": "test track event hs",
         "appsflyer_id": "afUid",
@@ -69,13 +75,14 @@
     "params": {},
     "body": {
       "JSON": {
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "appsflyer_id": "some_other2345_sample_external_id",
         "os": "",
         "ip": "0.0.0.0",
-        "app_version_name": "1.0.0",
-        "sharing_filter": "all"
+        "app_version_name": "1.0.0"
       },
       "XML": {},
       "JSON_ARRAY": {},
@@ -95,6 +102,9 @@
     "params": {},
     "body": {
       "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "appsflyer_id": "afUid",
@@ -119,6 +129,9 @@
     "params": {},
     "body": {
       "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
         "eventName": "page",
         "appsflyer_id": "afUid",
@@ -143,7 +156,8 @@
     "params": {},
     "body": {
       "JSON": {
-        "eventValue": "{\"properties\":{\"tax\":2,\"total\":27.5,\"coupon\":\"hasbros\",\"revenue\":48,\"price\":25,\"quantity\":2,\"currency\":\"ZAR\",\"discount\":2.5,\"order_id\":\"50314b8e9bcf000000000000\",\"products\":[{\"sku\":\"45790-32\",\"url\":\"https://www.example.com/product/path\",\"name\":\"Monopoly: 3rd Edition\",\"price\":19,\"category\":\"Games\",\"quantity\":1,\"image_url\":\"https:///www.example.com/product/path.jpg\",\"product_id\":\"507f1f77bcf86cd799439011\"},{\"sku\":\"46493-32\",\"name\":\"Uno Card Game\",\"price\":3,\"category\":\"Games\",\"quantity\":2,\"product_id\":\"505bd76785ebb509fc183733\"}],\"shipping\":3,\"subtotal\":22.5,\"affiliation\":\"Google Store\",\"checkout_id\":\"fksdjfsdjfisjf9sdfjsd9f\"},\"af_revenue\":48,\"af_price\":[19,3],\"af_content_id\":[\"507f1f77bcf86cd799439011\",\"505bd76785ebb509fc183733\"],\"af_currency\":\"ZAR\",\"af_quantity\":[1,2],\"af_order_id\":\"50314b8e9bcf000000000000\"}",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "eventValue": "{\"properties\":{\"tax\":2,\"total\":27.5,\"coupon\":\"hasbros\",\"revenue\":48,\"price\":25,\"quantity\":2,\"currency\":\"ZAR\",\"discount\":2.5,\"order_id\":\"50314b8e9bcf000000000000\",\"products\":[{\"sku\":\"45790-32\",\"url\":\"https://www.example.com/product/path\",\"name\":\"Monopoly: 3rd Edition\",\"price\":19,\"category\":\"Games\",\"quantity\":1,\"image_url\":\"https:///www.example.com/product/path.jpg\",\"product_id\":\"507f1f77bcf86cd799439011\"},{\"sku\":\"46493-32\",\"name\":\"Uno Card Game\",\"price\":3,\"category\":\"Games\",\"quantity\":2,\"product_id\":\"505bd76785ebb509fc183733\"}],\"shipping\":3,\"subtotal\":22.5,\"affiliation\":\"Google Store\",\"checkout_id\":\"fksdjfsdjfisjf9sdfjsd9f\"},\"af_revenue\":48,\"af_price\":[19,3],\"af_currency\":\"ZAR\",\"af_quantity\":[1,2],\"af_order_id\":\"50314b8e9bcf000000000000\",\"af_content_id\":[\"507f1f77bcf86cd799439011\",\"505bd76785ebb509fc183733\"]}",
         "eventName": "order completed",
         "eventTime": "2020-08-14T05:30:30.118Z",
         "appsflyer_id": "afUid"
@@ -166,6 +180,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "bundleIdentifier": "com.rudderlabs.javascript",
         "eventValue": "{\"properties\":{\"tax\":2,\"total\":27.5,\"coupon\":\"hasbros\",\"revenue\":48,\"price\":25,\"quantity\":2,\"currency\":\"ZAR\",\"discount\":2.5,\"order_id\":\"50314b8e9bcf000000000000\",\"shipping\":3,\"subtotal\":22.5,\"affiliation\":\"Google Store\",\"checkout_id\":\"fksdjfsdjfisjf9sdfjsd9f\"},\"af_revenue\":48,\"af_price\":25,\"af_currency\":\"ZAR\",\"af_quantity\":2,\"af_order_id\":\"50314b8e9bcf000000000000\"}",
         "eventName": "order completed",
         "eventTime": "2020-08-14T05:30:30.118Z",
@@ -189,6 +204,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "bundleIdentifier": "com.rudderlabs.javascript",
         "eventValue": "",
         "eventName": "order completed",
         "eventTime": "2020-08-14T05:30:30.118Z",
@@ -212,6 +228,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "bundleIdentifier": "com.rudderlabs.javascript",
         "eventValue": "{\"tax\":2,\"total\":27.5,\"coupon\":\"hasbros\",\"revenue\":48,\"price\":25,\"quantity\":2,\"currency\":\"ZAR\",\"discount\":2.5,\"order_id\":\"50314b8e9bcf000000000000\",\"products\":[{\"sku\":\"45790-32\",\"url\":\"https://www.example.com/product/path\",\"name\":\"Monopoly: 3rd Edition\",\"price\":19,\"category\":\"Games\",\"quantity\":1,\"image_url\":\"https:///www.example.com/product/path.jpg\",\"product_id\":\"507f1f77bcf86cd799439011\"},{\"sku\":\"46493-32\",\"name\":\"Uno Card Game\",\"price\":3,\"category\":\"Games\",\"quantity\":2,\"product_id\":\"505bd76785ebb509fc183733\"}],\"shipping\":3,\"subtotal\":22.5,\"affiliation\":\"Google Store\",\"checkout_id\":\"fksdjfsdjfisjf9sdfjsd9f\"}",
         "eventName": "normal track event",
         "eventTime": "2020-08-14T05:30:30.118Z",
@@ -235,6 +252,7 @@
     "params": {},
     "body": {
       "JSON": {
+        "bundleIdentifier": "com.rudderlabs.javascript",
         "eventValue": "",
         "eventName": "normal track event",
         "eventTime": "2020-08-14T05:30:30.118Z",
@@ -258,11 +276,70 @@
     "params": {},
     "body": {
       "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
         "eventValue": "",
         "eventName": "page",
         "appsflyer_id": "afUid",
         "os": "",
         "ip": "0.0.0.0"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "method": "POST",
+    "params": {},
+    "body": {
+      "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "appsflyer_id": "afUid",
+        "os": "",
+        "ip": "0.0.0.0",
+        "sharing_filter": ["hello"]
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "endpoint": "https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript",
+    "headers": {
+      "Content-Type": "application/json",
+      "authentication": "ef1d42390426e3f7c90ac78272e74344"
+    },
+    "method": "POST",
+    "params": {},
+    "body": {
+      "JSON": {
+        "app_version_name": "1.0.0",
+        "bundleIdentifier": "com.rudderlabs.javascript",
+        "customer_user_id": "12345",
+        "eventValue": "{\"path\":\"\",\"referrer\":\"\",\"search\":\"\",\"title\":\"\",\"url\":\"\"}",
+        "eventName": "page",
+        "appsflyer_id": "afUid",
+        "os": "",
+        "ip": "0.0.0.0",
+        "sharing_filter": "all"
       },
       "XML": {},
       "JSON_ARRAY": {},

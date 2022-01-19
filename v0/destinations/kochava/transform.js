@@ -55,7 +55,7 @@ function responseBuilder(eventName, eventData, message, destination) {
         isAppleFamily(message.context.os.name)
           ? message.context.device.advertisingId || ""
           : "",
-      idvf:
+      idfv:
         message.context &&
         message.context.os &&
         message.context.os.name &&

@@ -12,6 +12,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
+  const logs = [];
   const jail = context.global;
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
@@ -77,7 +78,14 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(() => {
+    new ivm.Reference((...args) => {
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
       // console.log("Log: ", ...args);
     })
   );
@@ -223,7 +231,10 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
     throw error;
   }
   isolate.dispose();
-  return result;
+  return {
+    transformedEvents: result,
+    logs
+  };
 }
 
 async function userTransformHandler(events, versionId, libraryVersionIDs) {
@@ -240,19 +251,20 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
 
       let userTransformedEvents = [];
       if (res.codeVersion && res.codeVersion === "1") {
-        userTransformedEvents = await userTransformHandlerV1(
+        const result = await userTransformHandlerV1(
           events,
           res,
           libraryVersionIDs
         );
+        userTransformedEvents = result.transformedEvents;
       } else {
-        userTransformedEvents = await runUserTransform(
+        const result = await runUserTransform(
           eventMessages,
           res.code,
           eventsMetadata,
           versionId
         );
-        userTransformedEvents = userTransformedEvents.map(ev => ({
+        userTransformedEvents = result.transformedEvents.map(ev => ({
           transformedEvent: ev,
           metadata: {}
         }));
@@ -263,4 +275,39 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
   return events;
 }
 
-exports.userTransformHandler = userTransformHandler;
+async function userTransformTestHandler(
+  events,
+  code,
+  codeVersion,
+  libraryVersionIDs
+) {
+  // V1 transformation code test with dummy version id
+  if (codeVersion === "1") {
+    let { transformedEvents, logs } = await userTransformHandlerV1(
+      events,
+      { code, versionId: "testVersionId" },
+      libraryVersionIDs
+    );
+    transformedEvents = transformedEvents.map(ev => ev.transformedEvent);
+    return { transformedEvents, logs };
+  }
+  // V0 transformation code test with dummy version id
+  const eventMessages = events.map(event => event.message);
+  const eventsMetadata = {};
+  events.forEach(ev => {
+    eventsMetadata[ev.message.messageId] = ev.metadata;
+  });
+
+  const { transformedEvents, logs } = await runUserTransform(
+    eventMessages,
+    code,
+    eventsMetadata,
+    "testVersionId"
+  );
+  return { transformedEvents, logs };
+}
+
+module.exports = {
+  userTransformHandler,
+  userTransformTestHandler
+};

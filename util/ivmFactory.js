@@ -15,6 +15,7 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
 
 async function createIvm(code, libraryVersionIds, versionId) {
   const createIvmStartTime = new Date();
+  const logs = [];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCodeV1(libraryVersionId)
@@ -188,7 +189,13 @@ async function createIvm(code, libraryVersionIds, versionId) {
   await jail.set(
     "_log",
     new ivm.Reference((...args) => {
-      console.log("Log: ", ...args);
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
     })
   );
 
@@ -318,8 +325,15 @@ async function createIvm(code, libraryVersionIds, versionId) {
     fnRef,
     isolateStartWallTime,
     isolateStartCPUTime,
-    fName
+    fName,
+    logs
   };
+}
+
+async function compileUserLibrary(code) {
+  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const context = await isolate.createContext();
+  return loadModule(isolate, context, code);
 }
 
 async function getFactory(code, libraryVersionIds, versionId) {
@@ -335,4 +349,7 @@ async function getFactory(code, libraryVersionIds, versionId) {
   return factory;
 }
 
-exports.getFactory = getFactory;
+module.exports = {
+  getFactory,
+  compileUserLibrary
+};

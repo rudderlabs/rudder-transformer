@@ -90,6 +90,7 @@ async function userTransformHandlerV1(
       isolatevm.isolateStartCPUTime
     );
     const transformedEvents = await transform(isolatevm, events);
+    const { logs } = isolatevm;
     const isolateEndWallTime = calculateMsFromIvmTime(
       isolatevm.isolate.wallTime
     );
@@ -117,12 +118,11 @@ async function userTransformHandlerV1(
       stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
       logger.debug(`Pooled Tranformer VMs destroyed.. `);
     }
-    return transformedEvents;
+    return { transformedEvents, logs };
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation
-
   }
-  return events;
+  return { transformedEvents: events };
 }
 
 exports.userTransformHandlerV1 = userTransformHandlerV1;

@@ -126,8 +126,7 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const extId = get(message, "context.externalId");
   const email = getFieldValueFromMessage(message, "email");
 
-  const traits = getFieldValueFromMessage(message, "traits");
-  const prospectObject = constructPayload(traits, identifyConfig);
+  const prospectObject = constructPayload(message, identifyConfig);
 
   const url = getUrl({
     externalId: extId,

@@ -1,4 +1,44 @@
 {
+  "https://testMunchkin3.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+     "data": {
+      "errors": [
+        {"message": "Any 400 error",
+        "code": 500}
+      ]
+    },
+    "response": 
+        {"statusText": "Any 500 error",
+        "status": 502}
+    
+  },
+  "https://testMunchkin4.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+    "data": {
+      "errors": [
+        {"message": "Any 400 error",
+        "code": 1000}
+      ]
+    }
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+    "data": {
+      "requestId": "13402#17e7238a1b9",
+      "result": [
+        {
+          "batchId": 1234,
+          "importId": "1234",
+          "status": "Complete",
+          "numOfLeadsProcessed": 1,
+          "numOfRowsFailed": 0,
+          "numOfRowsWithWarning": 0,
+          "message": "Import succeeded, 1 records imported (1 members)"
+        }
+      ],
+      "success": true
+    }
+  },
   "https://testMunchkin4.mktorest.com/bulk/v1/leads.json": {
     "status": 200,
     "data": {

@@ -26,14 +26,14 @@ try {
       path.resolve(__dirname, `./data/${integration}_fileUpload_output.json`)
     )
   );
-//   reqPollBody = JSON.parse(
-//     fs.readFileSync(path.resolve(__dirname, `./data/${integration}_poll_input.json`))
-//   );
-//   respPollBody = JSON.parse(
-//     fs.readFileSync(
-//       path.resolve(__dirname, `./data/${integration}_poll_output.json`)
-//     )
-//   );
+  reqPollBody = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `./data/${integration}_poll_input.json`))
+  );
+  respPollBody = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_poll_output.json`)
+    )
+  );
 //   reqJobStatusBody = JSON.parse(
 //     fs.readFileSync(path.resolve(__dirname, `./data/${integration}_jobStatus_input.json`))
 //   );
@@ -73,18 +73,22 @@ describe(`${integration}   Tests`, () => {
       });
     });
 
-    // describe("poll.js", () => {
-    //     reqPollBody.forEach(async (input, index) => {
-    //     it(`Payload - ${index}`, async () => {
-    //       try {
-    //         const output = await vRouter.fileUpload(input);
-    //         expect(output).toEqual(respPollBody[index]);
-    //       } catch (error) {
-    //         expect(error.message).toEqual(respPollBody[index].error);
-    //       }
-    //     });
-    //   });
-    // });
+    describe("poll.js", () => {
+        reqPollBody.forEach(async (input, index) => {
+        it(`Payload - ${index}`, async () => {
+          try {
+            const output = await vRouter.pollStatus(input);
+            expect(output).toEqual(respPollBody[index]);
+          } catch (error) {
+            console.log("CHEEECKKKK")
+            console.log(error)
+            console.log(respPollBody[index].error)
+            expect(error.message).toEqual(respPollBody[index].error);
+          }
+        });
+      });
+    });
+
     // describe("fetchJobStatus.js", () => {
     //     reqJobStatusBody.forEach(async (input, index) => {
     //     it(`Payload - ${index}`, async () => {

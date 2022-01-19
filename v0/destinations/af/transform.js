@@ -90,7 +90,7 @@ function responseBuilderSimple(payload, message, destination) {
   }
 
   const { sharingFilter } = destination.Config;
-  if (isDefinedAndNotNull(sharingFilter)) {
+  if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
 

@@ -275,7 +275,10 @@ const responseHandler = async (input, config) => {
     status: 500,
     state: "Retryable"
   });
-  throw new CustomError("No import id received", 500);
+  throw new CustomError("No import id received", 500, {
+    successfulJobs,
+    unsuccessfulJobs
+  });
 };
 const processFileData = async event => {
   const { input, config } = event;

@@ -1,6 +1,119 @@
 {
+  "https://testMunchkin4.mktorest.com/bulk/v1/leads.json": {
+    "status": 200,
+    "data": {
+      "requestId": "125f1#17e710ba1fd",
+      "success": false,
+      "errors": [
+        {
+          "message": "Any other error"
+        }
+      ]
+    }
+  },
+  "https://testMunchkin4.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://testMunchkin3.mktorest.com/bulk/v1/leads.json": {
+    "status": 200,
+    "data": {
+      "requestId": "125f1#17e710ba1fd",
+      "success": false,
+      "errors": [
+        {
+          "message": "Empty file"
+        }
+      ]
+    }
+  },
+  "https://testMunchkin3.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://testMunchkin2.mktorest.com/bulk/v1/leads.json": {
+    "status": 200,
+    "data": {
+      "requestId": "125f1#17e710ba1fd",
+      "success": false,
+      "errors": [
+        {
+          "message": "There are 10 imports currently being processed. Please try again later"
+        }
+      ]
+    }
+  },
+  "https://testMunchkin2.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://testMunchkin1.mktorest.com/bulk/v1/leads.json": {
+    "status": 400
+  },
+  "https://testMunchkin1.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://testMunchkin.mktorest.com/bulk/v1/leads.json": {
+    "status": 200,
+    "data": {
+      "requestId": "125f1#17e710ba1fd",
+      "success": false,
+      "errors": [
+        {
+          "code": "1006",
+          "message": "Header field 'a' not found"
+        }
+      ]
+    }
+  },
+  "https://testMunchkin.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 200,
+    "data": {
+      "access_token": "abc",
+      "token_type": "bearer",
+      "expires_in": 2340,
+      "scope": "integrations@rudderstack.com"
+    }
+  },
+  "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=forThrottle&grant_type=client_credentials": {
+    "status": 500,
+    "response": {
+      "status": 502,
+      "statusText": "throttled"
+    }
+  },
+  "https://a.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=c&grant_type=client_credentials": {
+    "status": 400,
+    "code": 401,
+    "statusText": "Unauthorized"
+  },
+  "https://wrongMunchkin.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "status": 400,
+    "code": "ENOTFOUND"
+  },
   "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
-   "status":200,
+    "status": 200,
     "data": {
       "access_token": "abc",
       "token_type": "bearer",
@@ -9,20 +122,20 @@
     }
   },
   "https://a.mktorest.com/bulk/v1/leads.json": {
-    "status":200,
+    "status": 200,
     "data": {
       "success": true,
       "result": [
-      {
-        "importId": "TestImportId"
-      }
+        {
+          "importId": "TestImportId"
+        }
       ],
       "access_token": "abc",
       "token_type": "bearer",
       "expires_in": 2340,
       "scope": "integrations@rudderstack.com"
     }
-   },
+  },
   "https://mktId.mktorest.com/rest/v1/leads.json/test1": {
     "data": {
       "requestId": "664#17dae8c3d48",

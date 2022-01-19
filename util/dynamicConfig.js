@@ -41,7 +41,6 @@ function configureVal(value, event) {
     } else if (typeof value === "string") {
       value = getDynamicConfigValue(event, value);
     }
-    return value;
   }
   return value;
 }

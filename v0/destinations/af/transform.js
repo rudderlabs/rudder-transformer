@@ -13,7 +13,8 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getFieldValueFromMessage,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const {

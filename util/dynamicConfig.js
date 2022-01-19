@@ -2,26 +2,28 @@
 const get = require("get-value");
 const unset = require("unset-value");
 
-function isValidPattern(val) {
+function getDynamicConfigValue(event, value) {
   // this rgegex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
   //  " {{message.traits.key  ||   \"email\" }} "
   //  " {{ message.traits.key || 1233 }} "
-  const re = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*"?(?<defaultValue>.*)"?\s*\}\}\s*$/;
-  return re.test(String(val));
-}
-
-function getDynamicConfigValue(event, value) {
-  value = value.replace("{{", "").replace("}}", "");
-  if (value.includes("||")) {
-    const path = value.split("||")[0].trim();
-    const fieldVal = get(event, path);
-    if (fieldVal) {
-      value = fieldVal;
-      unset(event, path);
+  const defFormat = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
+  const matResult = value.match(defFormat);
+  if (matResult) {
+    const pathVal = get(event, matResult.groups.path);
+    if (pathVal) {
+      value = pathVal;
+      unset(event, matResult.groups.path);
     } else {
-      value = JSON.parse(value.split("||")[1].trim());
+      value = matResult.groups.defaultVal.replace(/"/g, "").trim();
     }
+    return value;
   }
+  /** var format2 = /<some other regex>/;
+  matResult = value.match(format2);
+  if (matResult) {
+    <more logic here>
+    return value
+  } */
   return value;
 }
 
@@ -36,15 +38,8 @@ function configureVal(value, event) {
       Object.keys(value).forEach(obj => {
         value[obj] = configureVal(value[obj], event);
       });
-    } else if (
-      typeof value !== "function" &&
-      typeof value !== "symbol" &&
-      typeof value !== "boolean"
-    ) {
-      const val = value.toString().trim();
-      if (isValidPattern(val)) {
-        value = getDynamicConfigValue(event, val);
-      }
+    } else if (typeof value === "string") {
+      value = getDynamicConfigValue(event, value);
     }
     return value;
   }

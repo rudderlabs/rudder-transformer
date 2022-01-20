@@ -1,0 +1,24 @@
+[
+  {
+    "destKey": "traits",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": true
+  },
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  { "destKey": "timestamp", "sourceKeys": "timestamp", "required": false },
+  { "destKey": "messageId", "sourceKeys": "messageId", "required": false }
+]

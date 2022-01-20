@@ -23,6 +23,7 @@ describe(`${name} Tests`, () => {
         // so removing it before json comparison.
         // Note: the anonymousId field is removed from the output json as well.
         delete output.anonymousId;
+        delete output.writeKey;
         expect(output).toEqual(expectedData[index]);
       } catch (err) {
         if (index === 2) {

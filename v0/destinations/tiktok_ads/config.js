@@ -13,30 +13,21 @@ const ConfigCategory = {
   }
 };
 
-const webEvents = [
-  "ViewContent",
-  "ClickButton",
-  "Search",
-  "Contact",
-  "Download",
-  "SubmitForm",
-  "CompleteRegistration",
-  "Subscribe",
-  "AddToWishlist",
-  "AddToCart",
-  "InitiateCheckout",
-  "AddPaymentInfo",
-  "CompletePayment",
-  "PlaceAnOrder"
-];
-
 const eventNameMapping = {
   "product added to wishlist": "AddToWishlist",
   "product added": "AddToCart",
   "checkout started": "InitiateCheckout",
   "payment info entered": "AddPaymentInfo",
   "checkout step completed": "CompletePayment",
-  "order completed": "PlaceAnOrder"
+  "order completed": "PlaceAnOrder",
+  viewcontent: "ViewContent",
+  clickbuttom: "ClickButton",
+  search: "Search",
+  contact: "Contact",
+  download: "Download",
+  submitform: "SubmitForm",
+  completeregistration: "CompleteRegistration",
+  subscribe: "Subscribe"
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
@@ -46,6 +37,5 @@ module.exports = {
   BATCH_ENDPOINT,
   MAX_BATCH_SIZE,
   trackMapping: mappingConfig[ConfigCategory.TRACK.name],
-  webEvents,
   eventNameMapping
 };

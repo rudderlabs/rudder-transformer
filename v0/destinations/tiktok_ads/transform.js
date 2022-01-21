@@ -18,7 +18,6 @@ const {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
   eventNameMapping,
-  webEvents,
   MAX_BATCH_SIZE
 } = require("./config");
 
@@ -46,13 +45,10 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Event name is required", 400);
   }
 
-  if (eventNameMapping[event] !== undefined) {
-    event = eventNameMapping[event];
-  }
-
-  if (!webEvents.includes(event)) {
+  if (eventNameMapping[event] === undefined) {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
+  event = eventNameMapping[event];
 
   let payload = constructPayload(message, trackMapping);
   payload = { pixel_code, event, ...payload };

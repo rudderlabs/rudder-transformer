@@ -3,6 +3,8 @@
   "email": "$email",
   "firstName": "$firstName",
   "lastName": "$lastName",
+  "firstname": "$firstName",
+  "lastname": "$lastName",
   "name": "$name",
   "username": "$username",
   "phone": "$phone",

@@ -34,14 +34,14 @@ try {
       path.resolve(__dirname, `./data/${integration}_poll_output.json`)
     )
   );
-//   reqJobStatusBody = JSON.parse(
-//     fs.readFileSync(path.resolve(__dirname, `./data/${integration}_jobStatus_input.json`))
-//   );
-//   respJobStatusBody = JSON.parse(
-//     fs.readFileSync(
-//       path.resolve(__dirname, `./data/${integration}_jobStatus_output.json`)
-//     )
-//   );
+  reqJobStatusBody = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `./data/${integration}_jobStatus_input.json`))
+  );
+  respJobStatusBody = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_jobStatus_output.json`)
+    )
+  );
 } catch (error) {
   throw new Error("Could not read files." + error);
 }
@@ -89,17 +89,30 @@ describe(`${integration}   Tests`, () => {
       });
     });
 
-    // describe("fetchJobStatus.js", () => {
-    //     reqJobStatusBody.forEach(async (input, index) => {
-    //     it(`Payload - ${index}`, async () => {
-    //       try {
-    //         const output = await vRouter.getJobStatus(input);
-    //         expect(output).toEqual(respJobStatusBody[index]);
-    //       } catch (error) {
-    //         expect(error.message).toEqual(respJobStatusBody[index].error);
-    //       }
-    //     });
-    //   });
-    // });
+    describe("fetchJobStatus.js for warn", () => {
+        reqJobStatusBody.forEach(async (input, index) => {
+        it(`Payload - ${index}`, async () => {
+          try {
+            const output = await vRouter.getJobStatus(input, "warn");
+            expect(output).toEqual(respJobStatusBody[0].data[index]);
+          } catch (error) {
+            expect(error.message).toEqual(respJobStatusBody[0].data[index].error);
+          }
+        });
+      });
+    });
+
+    describe("fetchJobStatus.js for fail", () => {
+        reqJobStatusBody.forEach(async (input, index) => {
+        it(`Payload - ${index}`, async () => {
+          try {
+            const output = await vRouter.getJobStatus(input, "fail");
+            expect(output).toEqual(respJobStatusBody[1].data[index]);
+          } catch (error) {
+            expect(error.message).toEqual(respJobStatusBody[1].data[index].error);
+          }
+        });
+      });
+    });
 
 });

@@ -1,23 +1,41 @@
 {
+  "https://testMunchkin3.mktorest.com/bulk/v1/leads/batch/12345/warnings.json": {
+    "status": 200
+  },
+  "https://testMunchkin3.mktorest.com/bulk/v1/leads/batch/12345/failures.json": {
+    "status": 200
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/warnings.json": {
+    "status": 200,
+    "data": "data"
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/failures.json": {
+    "status": 200,
+    "data": "data"
+  },
   "https://testMunchkin3.mktorest.com/bulk/v1/leads/batch/1234.json": {
     "status": 200,
-     "data": {
+    "data": {
       "errors": [
-        {"message": "Any 400 error",
-        "code": 500}
+        {
+          "message": "Any 400 error",
+          "code": 500
+        }
       ]
     },
-    "response": 
-        {"statusText": "Any 500 error",
-        "status": 502}
-    
+    "response": {
+      "statusText": "Any 500 error",
+      "status": 502
+    }
   },
   "https://testMunchkin4.mktorest.com/bulk/v1/leads/batch/1234.json": {
     "status": 200,
     "data": {
       "errors": [
-        {"message": "Any 400 error",
-        "code": 1000}
+        {
+          "message": "Any 400 error",
+          "code": 1000
+        }
       ]
     }
   },

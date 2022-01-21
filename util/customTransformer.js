@@ -185,8 +185,14 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
 
-  const customScript = await isolate.compileScript(`${code}`);
-  await customScript.run(context);
+  try {
+    const customScript = await isolate.compileScript(`${code}`);
+    await customScript.run(context);
+  } catch (err) {
+    isolate.dispose();
+    throw err;
+  }
+
   const fnRef = await jail.get("transform");
   // stat
   stats.counter("events_into_vm", events.length, tags);

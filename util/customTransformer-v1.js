@@ -89,7 +89,14 @@ async function userTransformHandlerV1(
     const isolateStartCPUTime = calculateMsFromIvmTime(
       isolatevm.isolateStartCPUTime
     );
-    const transformedEvents = await transform(isolatevm, events);
+    let transformedEvents = [];
+    try {
+      transformedEvents = await transform(isolatevm, events);
+    } catch (err) {
+      isolatevmFactory.destroy(isolatevm);
+      throw err;
+    }
+
     const isolateEndWallTime = calculateMsFromIvmTime(
       isolatevm.isolate.wallTime
     );

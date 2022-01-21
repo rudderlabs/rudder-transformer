@@ -22,18 +22,11 @@ const {
 } = require("./util");
 
 /** TO DO List
-1. Priority is defined in config.js. Following that order we create separate list for each identifier type
-2. if array is not empty then we can create payload for that (keeping in mind that identitifiers can contain
-  maximum of 50,000 items) . If there are more than 50k we create separate payload for same identifier type
-3. process remains same for remove functions as well
-4. all the payloads = each identifier type for 'add' operation + each identifier type for 'remove' operation
 
-endpoint remains same, method is PATCH,  only identifier type and identifier list changes.
-
-OAuth list
-1. One time Config be setup to be done
-2. have a network response handler in transformer that handles the error when access_token expires in 15 minutes
-3. Error response looks like this
+  OAuth list
+  1. One time Config be setup to be done
+  2. have a network response handler in transformer that handles the error when access_token expires in 15 minutes
+  3. Error response looks like this
   {
     "warnings": [],
     "errors": [
@@ -48,7 +41,12 @@ OAuth list
         }
     ]
   }
-4. When we encounter the above problem we make axios call and get another access_token , which has to be updated in transformer payload while making new request
+  4. When we encounter the above problem we
+
+  For OAuth references->
+  We need to add rudder-auth, responseHandler inside criteo, config be and webapp
+  Notion ->https://www.notion.so/rudderstacks/Core-OAuth-Framework-Destinations-fc679b3944654be5b4853bc39f41240d
+  At the bottom of this notion page link to PRs of pardot is present. For reference.
 */
 
 const processEvent = event => {

@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "event_id",
+    "sourceKeys": "properties.eventId",
+    "required": false
+  },
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "required": false
+  },
+  {
+    "destKey": "test_event_code",
+    "sourceKeys": "properties.testEventCode",
+    "required": false
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "properties.context",
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties.properties",
+    "required": false
+  }
+]

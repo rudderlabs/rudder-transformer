@@ -80,7 +80,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     !checkIfValidSHA256(phone_number)
   ) {
     if (checkIfValidPhoneNumber(phone_number)) {
-      payload.context.user.email = SHA256(phone_number).toString();
+      payload.context.user.phone_number = SHA256(phone_number).toString();
     } else {
       throw new CustomError(
         "Invalid phone number. Include proper country code except +86. Aborting ",

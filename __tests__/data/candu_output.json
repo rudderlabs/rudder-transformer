@@ -12,18 +12,16 @@
     "body": {
       "JSON": {
         "traits": {
-          "email": "sampath@gmail.com",
-          "name": "Joker",
-          "Gender": "male",
-          "foo": {
-            "foo": "bar"
-          }
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female"
         },
         "type": "identify",
-        "userId": "sampath",
-        "anonymousId": "a1b2c3d4e5f6g7h8i9j10",
-        "timestamp": "2020-01-17T10:23:51.206+05:30",
-        "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+        "userId": "user123456001",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
         "context": {
           "source": "RudderStack"
         }
@@ -33,5 +31,75 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.candu.ai/api/eventWebhook",
+    "headers": {
+      "Authorization": "Basic RlhMa0xVRWhHSnl2bVk0",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "type": "track",
+        "event": "testEventWithoutProp",
+        "traits": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female"
+        },
+        "userId": "user123456001",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "e9f3dfb4-562c-48f4-b0cf-85782dfc9b1e",
+        "context": {
+          "source": "RudderStack"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"event\"",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[CANDU]:: Message type page not supported.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[CANDU]:: apiKey cannot be empty.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

@@ -4,7 +4,8 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const { endpoint, identifyDataMapping, trackDataMapping } = require("./config");
 
@@ -15,7 +16,9 @@ const responseBuilder = (body, { Config }) => {
   };
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.body.JSON = payload;
+  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+  if (!Config.apiKey.trim())
+    throw new CustomError(`[CANDU]:: apiKey cannot be empty.`, 400);
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,

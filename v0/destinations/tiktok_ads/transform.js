@@ -187,9 +187,9 @@ function batchEvents(destEvents) {
       metadata.push(ev.metadata);
     });
 
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+    batchEventResponse.batchedRequest.body.JSON = {
       pixel_code: pixelCode,
-      batch: JSON.stringify(batchResponseList)
+      batch: batchResponseList
     };
 
     batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;

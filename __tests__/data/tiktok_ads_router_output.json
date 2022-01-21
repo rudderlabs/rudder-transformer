@@ -1,0 +1,75 @@
+[
+  {
+    "batched": false,
+    "batchedRequest": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "context": {
+            "ad": {
+              "callback": "123ATXSfe"
+            },
+            "ip": "13.57.97.131",
+            "page": {
+              "referrer": "http://demo.mywebsite.com",
+              "url": "http://demo.mywebsite.com/purchase"
+            },
+            "user": {
+              "email": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+              "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+              "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea"
+            },
+            "user_agent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion"
+          },
+          "event": "AddToWishlist",
+          "event_id": "1616318632825_357",
+          "pixel_code": "C7K0C8AGCKHAS5EFUHE011",
+          "properties": {
+            "contents": [
+              {
+                "content_id": "1077218",
+                "content_type": "socks",
+                "price": 8,
+                "quantity": 2
+              },
+              {
+                "content_id": "1197218",
+                "content_type": "dress",
+                "price": 30,
+                "quantity": 1
+              }
+            ],
+            "currency": "USD",
+            "value": 46
+          },
+          "test_event_code": "sample rudder test_event_code",
+          "timestamp": "2020-09-17T19:49:27Z"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "files": {},
+      "headers": {
+        "Access-Token": "f0e7863a5b4f4111de8fbb9040df626fb425df6011",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "f0e7863a5b4f4111de8fbb9040df626fb425df6011",
+        "pixelCode": "C7K0C8AGCKHAS5EFUHE011"
+      }
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "statusCode": 200
+  }
+]

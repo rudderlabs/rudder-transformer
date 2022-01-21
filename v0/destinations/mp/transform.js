@@ -156,9 +156,9 @@ function getTransformedJSON(message, mappingJson) {
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
 
-  const fullName = getFullName(traits)
+  const fullName = getFullName(traits);
   if (fullName) {
-    traits.name = fullName
+    traits.name = fullName;
   }
 
   if (traits) {

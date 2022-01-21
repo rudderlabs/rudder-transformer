@@ -547,7 +547,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstName": "Mickey"
+          "firstname": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -726,7 +726,9 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstName": "Mickey"
+          "firstname": "Mickey",
+          "lastName": "Mouse",
+          "name": "Mickey Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1348,7 +1350,8 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstName": "Mickey"
+          "firstname": "Mickey",
+          "lastname": "Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1686,7 +1689,8 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstName": "Mickey"
+          "lastname": "Mickey",
+          "firstName": "Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1770,7 +1774,8 @@
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "5094f5704b9cf2b3",
-          "userId": "test_user_id"
+          "userId": "test_user_id",
+          "createdat": "2020-01-23T08:54:02.362Z"
         },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
       },

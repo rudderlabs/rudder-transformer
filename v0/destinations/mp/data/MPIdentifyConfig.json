@@ -1,5 +1,6 @@
 {
   "createdAt": "$created",
+  "createdat": "$created",
   "email": "$email",
   "firstName": "$firstName",
   "lastName": "$lastName",

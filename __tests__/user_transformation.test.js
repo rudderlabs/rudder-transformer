@@ -13,7 +13,7 @@ const unsupportedFuncNames = [
   "reverse",
   "split"
 ];
-const { userTransformHandler } = require("../util/customTransformer");
+const { userTransformHandler, userTransformTestHandler } = require("../util/customTransformer");
 const integration = "user_transformation";
 const name = "User Transformations";
 
@@ -21,6 +21,7 @@ const util = require("util");
 const fs = require("fs");
 const path = require("path");
 const { parserForImport } = require("../util/parser");
+const { compileUserLibrary } = require("../util/ivmFactory");
 
 const randomID = () =>
   Math.random()
@@ -820,6 +821,75 @@ possibleEnvs.forEach(envValue => {
       const output = parserForImport(code);
 
       expect(output).toEqual(outputImport);
+    });
+
+    it(`Simple ${name} async test for V1 transformation code`, async () => {
+      const libraryVersionId = randomID();
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_code_test_output.json`);
+
+      const code = `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          log('Transformation test');
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `;
+      const codeVersion = "1";
+
+      const urlCode = `${fs.readFileSync(
+        "./util/url-search-params.min.js",
+        "utf8"
+      )};
+      export default self;
+      `;
+
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+      when(fetch)
+        .calledWith(libraryUrl)
+        .mockResolvedValue({
+          json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+        });
+
+      const output = await userTransformTestHandler(inputData, code, codeVersion, [
+        libraryVersionId
+      ]);
+
+      expect(fetch).toHaveBeenCalledWith(libraryUrl);
+
+      expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple async ${name} Test for V0 transformation code`, async () => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_code_test_output.json`);
+
+      const codeVersion = "0";
+      const code = `
+        async function foo() {
+          return 'resolved';
+        }
+        async function transform(events) {
+          const pr = await foo();
+          const filteredEvents = events.map(event => {
+            log('Transformation test');
+            event.promise = pr;
+            return event;
+          });
+          return filteredEvents;
+        }
+      `;
+
+      const output = await userTransformTestHandler(inputData, code, codeVersion, []);
+      expect(output).toEqual(expectedData);
     });
 
     // Running timeout tests only for one possible env value to reduce time taken for tests

@@ -40,7 +40,8 @@ function checkIfValidPhoneNumber(str) {
 const trackResponseBuilder = async (message, { Config }) => {
   const pixel_code = Config.pixelCode;
 
-  let event = get(message, "event").toLowerCase();
+  let event = get(message, "event");
+  event = event ? event.trim().toLowerCase() : event;
   if (!event) {
     throw new CustomError("Event name is required", 400);
   }
@@ -99,14 +100,6 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const process = async event => {
   const { message, destination } = event;
-
-  if (!destination.Config.accessToken) {
-    throw new CustomError("Access Token not found. Aborting ", 400);
-  }
-
-  if (!destination.Config.pixelCode) {
-    throw new CustomError("Pixel Code not found. Aborting", 400);
-  }
 
   if (!message.type) {
     throw new CustomError(
@@ -185,6 +178,7 @@ function batchEvents(destEvents) {
     chunk.forEach(ev => {
       // Pixel code must be added above "batch": [..]
       delete ev.message.body.JSON.pixel_code;
+      ev.message.body.JSON.type = "track";
       batchResponseList.push(ev.message.body.JSON);
       metadata.push(ev.metadata);
     });

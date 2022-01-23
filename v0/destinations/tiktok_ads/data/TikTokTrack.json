@@ -5,11 +5,6 @@
     "required": false
   },
   {
-    "destKey": "type",
-    "sourceKeys": "type",
-    "required": false
-  },
-  {
     "destKey": "timestamp",
     "sourceKeys": "timestamp",
     "required": false

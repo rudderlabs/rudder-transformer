@@ -183,6 +183,8 @@ function batchEvents(destEvents) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
+      // Pixel code must be added above "batch": [..]
+      delete ev.message.body.JSON.pixel_code;
       batchResponseList.push(ev.message.body.JSON);
       metadata.push(ev.metadata);
     });

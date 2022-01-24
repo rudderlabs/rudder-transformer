@@ -95,7 +95,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message.",
+    "error": "[CANDU]:: Message Type is not present. Aborting message.",
     "statTags": {
       "destination": "candu",
       "stage": "transform",

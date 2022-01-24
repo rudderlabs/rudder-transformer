@@ -1,10 +1,5 @@
 [
   {
-    "destKey": "type",
-    "sourceKeys": "type",
-    "required": true
-  },
-  {
     "destKey": "event",
     "sourceKeys": "event",
     "required": true

@@ -17,8 +17,6 @@ const responseBuilder = (body, { Config }) => {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
-  if (!Config.apiKey.trim())
-    throw new CustomError(`[CANDU]:: apiKey cannot be empty.`, 400);
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
@@ -28,9 +26,11 @@ const responseBuilder = (body, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
+  if (!destination.Config.apiKey.trim())
+    throw new CustomError(`[CANDU]:: apiKey cannot be empty.`, 400);
   if (!message.type) {
     throw new CustomError(
-      "Message Type is not present. Aborting message.",
+      "[CANDU]:: Message Type is not present. Aborting message.",
       400
     );
   }
@@ -39,9 +39,11 @@ const processEvent = (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       payload = constructPayload(message, identifyDataMapping);
+      payload.type = "identify";
       break;
     case EventType.TRACK:
       payload = constructPayload(message, trackDataMapping);
+      payload.type = "track";
       break;
     default:
       throw new CustomError(

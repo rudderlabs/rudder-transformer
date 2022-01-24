@@ -2,12 +2,7 @@
   {
     "destKey": "traits",
     "sourceKeys": ["traits", "context.traits"],
-    "required": true
-  },
-  {
-    "destKey": "type",
-    "sourceKeys": "type",
-    "required": true
+    "required": false
   },
   {
     "destKey": "userId",

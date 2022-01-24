@@ -6,7 +6,8 @@
   },
   {
     "destKey": "userId",
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

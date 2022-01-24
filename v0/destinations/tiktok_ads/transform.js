@@ -58,26 +58,28 @@ const trackResponseBuilder = async (message, { Config }) => {
    * Hashing user related detail i.e external_id, email, phone_number
    */
 
-  const external_id = payload.context.user.external_id.trim();
+  const external_id = get(payload, "context.user.external_id");
   if (
     isDefinedAndNotNullAndNotEmpty(external_id) &&
     !checkIfValidSHA256(external_id)
   ) {
-    payload.context.user.external_id = SHA256(external_id).toString();
+    payload.context.user.external_id = SHA256(external_id.trim()).toString();
   }
 
-  const email = payload.context.user.email.trim().toLowerCase();
+  const email = get(payload, "context.user.email");
   if (isDefinedAndNotNullAndNotEmpty(email) && !checkIfValidSHA256(email)) {
-    payload.context.user.email = SHA256(email).toString();
+    payload.context.user.email = SHA256(email.trim().toLowerCase()).toString();
   }
 
-  const phone_number = payload.context.user.phone_number.trim();
+  const phone_number = get(payload, "context.user.phone_number");
   if (
     isDefinedAndNotNullAndNotEmpty(phone_number) &&
     !checkIfValidSHA256(phone_number)
   ) {
-    if (checkIfValidPhoneNumber(phone_number)) {
-      payload.context.user.phone_number = SHA256(phone_number).toString();
+    if (checkIfValidPhoneNumber(phone_number.trim())) {
+      payload.context.user.phone_number = SHA256(
+        phone_number.trim()
+      ).toString();
     } else {
       throw new CustomError(
         "Invalid phone number. Include proper country code except +86. Aborting ",
@@ -100,6 +102,14 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const process = async event => {
   const { message, destination } = event;
+
+  if (!destination.Config.accessToken) {
+    throw new CustomError("Access Token not found. Aborting ", 400);
+  }
+
+  if (!destination.Config.pixelCode) {
+    throw new CustomError("Pixel Code not found. Aborting", 400);
+  }
 
   if (!message.type) {
     throw new CustomError(

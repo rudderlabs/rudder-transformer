@@ -15,13 +15,33 @@
     "required": false
   },
   {
-    "destKey": "context",
-    "sourceKeys": "properties.context",
+    "destKey": "properties",
+    "sourceKeys": "properties.properties",
     "required": false
   },
   {
-    "destKey": "properties",
-    "sourceKeys": "properties.properties",
+    "destKey": "context.ad",
+    "sourceKeys": ["context.ad", "properties.context.ad"],
+    "required": false
+  },
+  {
+    "destKey": "context.page",
+    "sourceKeys": ["context.page", "properties.context.page"],
+    "required": false
+  },
+  {
+    "destKey": "context.user",
+    "sourceKeys": ["context.user", "properties.context.user"],
+    "required": false
+  },
+  {
+    "destKey": "context.ip",
+    "sourceKeys": ["context.ip", "properties.context.ip"],
+    "required": false
+  },
+  {
+    "destKey": "context.user_agent",
+    "sourceKeys": ["context.userAgent", "properties.context.userAgent"],
     "required": false
   }
 ]

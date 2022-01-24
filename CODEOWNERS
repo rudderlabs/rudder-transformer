@@ -1,1 +1,5 @@
-* @sanpj2292 @sivashanmukh @psrikanth88 @saikumarrs @arnab-p
+* @sanpj2292 @saikumarrs @arnab-p
+v0/ @rudderlabs/integrations
+adapters/ @rudderlabs/integrations
+constants/ @rudderlabs/integrations
+warehouse/ @sivashanmukh @psrikanth88

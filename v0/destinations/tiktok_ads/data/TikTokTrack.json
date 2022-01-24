@@ -36,12 +36,12 @@
   },
   {
     "destKey": "context.ip",
-    "sourceKeys": ["context.ip", "properties.context.ip"],
+    "sourceKeys": ["properties.context.ip", "context.ip"],
     "required": false
   },
   {
     "destKey": "context.user_agent",
-    "sourceKeys": ["context.userAgent", "properties.context.userAgent"],
+    "sourceKeys": ["properties.context.userAgent", "context.userAgent"],
     "required": false
   }
 ]

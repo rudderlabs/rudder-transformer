@@ -21,13 +21,6 @@ const {
   MAX_BATCH_SIZE
 } = require("./config");
 
-function checkIfValidSHA256(str) {
-  // Regular expression to check if string is a SHA256 hash
-  const regexExp = /^[a-f0-9]{64}$/gi;
-
-  return regexExp.test(str);
-}
-
 function checkIfValidPhoneNumber(str) {
   // Ref - https://ads.tiktok.com/marketing_api/docs?id=1701890979375106
   // Regular expression to check whether it has country code
@@ -58,25 +51,24 @@ const trackResponseBuilder = async (message, { Config }) => {
    * Hashing user related detail i.e external_id, email, phone_number
    */
 
-  const external_id = get(payload, "context.user.external_id");
-  if (
-    isDefinedAndNotNullAndNotEmpty(external_id) &&
-    !checkIfValidSHA256(external_id)
-  ) {
-    payload.context.user.external_id = SHA256(external_id.trim()).toString();
-  }
+  if (Config.hashUserProperties) {
+    const external_id = get(payload, "context.user.external_id");
+    if (isDefinedAndNotNullAndNotEmpty(external_id)) {
+      payload.context.user.external_id = SHA256(external_id.trim()).toString();
+    }
 
-  const email = get(payload, "context.user.email");
-  if (isDefinedAndNotNullAndNotEmpty(email) && !checkIfValidSHA256(email)) {
-    payload.context.user.email = SHA256(email.trim().toLowerCase()).toString();
-  }
+    const email = get(payload, "context.user.email");
+    if (isDefinedAndNotNullAndNotEmpty(email)) {
+      payload.context.user.email = SHA256(
+        email.trim().toLowerCase()
+      ).toString();
+    }
 
-  const phone_number = get(payload, "context.user.phone_number");
-  if (
-    isDefinedAndNotNullAndNotEmpty(phone_number) &&
-    !checkIfValidSHA256(phone_number)
-  ) {
-    if (checkIfValidPhoneNumber(phone_number.trim())) {
+    const phone_number = get(payload, "context.user.phone_number");
+    if (
+      isDefinedAndNotNullAndNotEmpty(phone_number) &&
+      checkIfValidPhoneNumber(phone_number.trim())
+    ) {
       payload.context.user.phone_number = SHA256(
         phone_number.trim()
       ).toString();

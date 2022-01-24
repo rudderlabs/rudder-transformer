@@ -23,8 +23,8 @@
         },
         "user": {
           "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
-          "phone_number": "+858987675687",
-          "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
+          "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+          "email": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
         },
         "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
         "ip": "13.57.97.131",
@@ -75,7 +75,8 @@
     "destination": {
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
-        "pixelCode": "A1T8T4UYGVIQA8ORZMX9"
+        "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
+        "hashUserProperties": false
       }
     }
   },
@@ -159,7 +160,8 @@
     "destination": {
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
-        "pixelCode": "A1T8T4UYGVIQA8ORZMX9"
+        "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
+        "hashUserProperties": false
       }
     }
   },
@@ -243,7 +245,8 @@
     "destination": {
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
-        "pixelCode": "A1T8T4UYGVIQA8ORZMX9"
+        "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
+        "hashUserProperties": false
       }
     }
   },
@@ -327,7 +330,8 @@
     "destination": {
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
-        "pixelCode": "A1T8T4UYGVIQA8ORZMX9"
+        "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
+        "hashUserProperties": false
       }
     }
   },
@@ -375,9 +379,9 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
-            "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
-            "email": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+            "external_id": "1234",
+            "phone_number": "+858987675687",
+            "email": "sample@sample.com"
           },
           "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
           "ip": "13.57.97.131"
@@ -412,7 +416,8 @@
     "destination": {
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
-        "pixelCode": "A1T8T4UYGVIQA8ORZMX9"
+        "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
+        "hashUserProperties": true
       }
     }
   }

@@ -21,17 +21,17 @@
   },
   {
     "destKey": "context.ad",
-    "sourceKeys": ["context.ad", "properties.context.ad"],
+    "sourceKeys": ["properties.context.ad", "context.ad"],
     "required": false
   },
   {
     "destKey": "context.page",
-    "sourceKeys": ["context.page", "properties.context.page"],
+    "sourceKeys": ["properties.context.page", "context.page"],
     "required": false
   },
   {
     "destKey": "context.user",
-    "sourceKeys": ["context.user", "properties.context.user"],
+    "sourceKeys": ["properties.context.user", "context.user"],
     "required": false
   },
   {

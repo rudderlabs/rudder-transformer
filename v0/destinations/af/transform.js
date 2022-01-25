@@ -13,7 +13,8 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getFieldValueFromMessage,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const {
@@ -89,8 +90,8 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const sharingFilter = destination.Config.sharingFilter || "all";
-  if (isDefinedAndNotNull(sharingFilter)) {
+  const { sharingFilter } = destination.Config;
+  if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
 

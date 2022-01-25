@@ -1,5 +1,5 @@
 const { isEmpty } = require("lodash");
-const { proxyRequest, httpSend } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -111,12 +111,12 @@ const pardotProxyRequest = async request => {
   let data;
   let payload;
   let payloadFormat;
-  for (const [key, value] of Object.entries(body)) {
+  Object.entries(body).forEach(([key, value]) => {
     if (!isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }
-  }
+  });
 
   switch (payloadFormat) {
     case "JSON_ARRAY":

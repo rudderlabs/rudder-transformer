@@ -23,7 +23,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -58,7 +64,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -101,7 +106,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -120,7 +131,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -177,7 +187,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -197,7 +213,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -256,7 +271,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -276,7 +297,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -335,7 +355,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -355,7 +381,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -414,7 +439,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -434,7 +465,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -493,7 +523,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "1234"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -513,7 +549,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "1234",
             "phone_number": "+868987675687",
             "email": "sample@sample.com"
           }
@@ -572,7 +607,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -591,7 +632,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -650,7 +690,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -668,7 +714,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -728,7 +773,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -745,7 +796,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -804,7 +854,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -822,7 +878,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -881,7 +936,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -900,7 +961,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -959,7 +1019,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -978,7 +1044,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           },
@@ -1023,7 +1088,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -1042,7 +1113,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -1101,7 +1171,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -1120,7 +1196,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -1179,7 +1254,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -1198,7 +1279,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }
@@ -1257,7 +1337,13 @@
         },
         "screen": {
           "density": 2
-        }
+        },
+        "externalId": [
+          {
+            "type": "tiktokExternalId",
+            "id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc"
+          }
+        ]
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -1276,7 +1362,6 @@
             "referrer": "http://demo.mywebsite.com"
           },
           "user": {
-            "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
           }

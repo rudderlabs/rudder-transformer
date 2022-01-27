@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   getErrorRespEvents,
@@ -11,7 +12,8 @@ const {
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  getDestinationExternalID
 } = require("../../util");
 const {
   trackMapping,
@@ -45,6 +47,11 @@ const trackResponseBuilder = async (message, { Config }) => {
   event = eventNameMapping[event];
 
   let payload = constructPayload(message, trackMapping);
+
+  const externalId = getDestinationExternalID(message, "tiktokExternalId");
+  if (isDefinedAndNotNullAndNotEmpty(externalId)) {
+    set(payload, "context.user.external_id", externalId);
+  }
   payload = { pixel_code, event, ...payload };
 
   /*
@@ -65,18 +72,17 @@ const trackResponseBuilder = async (message, { Config }) => {
     }
 
     const phone_number = get(payload, "context.user.phone_number");
-    if (
-      isDefinedAndNotNullAndNotEmpty(phone_number) &&
-      checkIfValidPhoneNumber(phone_number.trim())
-    ) {
-      payload.context.user.phone_number = SHA256(
-        phone_number.trim()
-      ).toString();
-    } else {
-      throw new CustomError(
-        "Invalid phone number. Include proper country code except +86. Aborting ",
-        400
-      );
+    if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
+      if (checkIfValidPhoneNumber(phone_number.trim())) {
+        payload.context.user.phone_number = SHA256(
+          phone_number.trim()
+        ).toString();
+      } else {
+        throw new CustomError(
+          "Invalid phone number. Include proper country code except +86. Aborting ",
+          400
+        );
+      }
     }
   }
 
@@ -209,7 +215,7 @@ const processRouterDest = async inputs => {
   }
 
   const trackResponseList = []; // list containing single track event in batched format
-  let eventsChunk = []; // temporary variable to divide payload in chunks
+  let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (n) batch size
   const errorRespList = [];
   await Promise.all(
@@ -218,6 +224,7 @@ const processRouterDest = async inputs => {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, trackResponseList, eventsChunk);
+          // slice according to batch size
           if (
             eventsChunk.length &&
             (eventsChunk.length >= MAX_BATCH_SIZE ||
@@ -237,6 +244,7 @@ const processRouterDest = async inputs => {
             trackResponseList,
             eventsChunk
           );
+          // slice according to batch size
           if (
             eventsChunk.length &&
             (eventsChunk.length >= MAX_BATCH_SIZE ||

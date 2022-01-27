@@ -15,8 +15,28 @@
     "required": false
   },
   {
-    "destKey": "properties",
-    "sourceKeys": "properties.properties",
+    "destKey": "properties.contents",
+    "sourceKeys": "properties.contents",
+    "required": false
+  },
+  {
+    "destKey": "properties.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "properties.value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "properties.description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "properties.query",
+    "sourceKeys": "properties.query",
     "required": false
   },
   {
@@ -36,12 +56,12 @@
   },
   {
     "destKey": "context.ip",
-    "sourceKeys": ["properties.context.ip", "context.ip"],
+    "sourceKeys": "context.ip",
     "required": false
   },
   {
     "destKey": "context.user_agent",
-    "sourceKeys": ["properties.context.userAgent", "context.userAgent"],
+    "sourceKeys": "context.userAgent",
     "required": false
   }
 ]

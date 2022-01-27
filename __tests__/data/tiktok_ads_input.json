@@ -14,7 +14,6 @@
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"
         },
-
         "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
         "ip": "13.57.97.131",
         "locale": "en-US",
@@ -34,24 +33,22 @@
       "event": "checkout step completed",
       "properties": {
         "eventId": "1616318632825_357",
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        },
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0,
         "context": {
           "ad": {
             "callback": "123ATXSfe"
@@ -126,28 +123,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -207,28 +200,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -290,28 +279,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -373,28 +358,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -456,28 +437,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -539,28 +516,24 @@
             "external_id": "1234",
             "phone_number": "+868987675687",
             "email": "sample@sample.com"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -621,28 +594,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -702,28 +671,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -783,28 +748,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -864,28 +825,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -946,28 +903,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -1092,28 +1045,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -1174,28 +1123,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -1256,28 +1201,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true
@@ -1338,28 +1279,24 @@
             "external_id": "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
             "phone_number": "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
             "email": "dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f"
-          },
-          "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-          "ip": "13.57.97.131"
+          }
         },
-        "properties": {
-          "contents": [
-            {
-              "price": 8,
-              "quantity": 2,
-              "content_type": "socks",
-              "content_id": "1077218"
-            },
-            {
-              "price": 30,
-              "quantity": 1,
-              "content_type": "dress",
-              "content_id": "1197218"
-            }
-          ],
-          "currency": "USD",
-          "value": 46.0
-        }
+        "contents": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "socks",
+            "content_id": "1077218"
+          },
+          {
+            "price": 30,
+            "quantity": 1,
+            "content_type": "dress",
+            "content_id": "1197218"
+          }
+        ],
+        "currency": "USD",
+        "value": 46.0
       },
       "integrations": {
         "All": true

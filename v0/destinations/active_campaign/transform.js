@@ -85,7 +85,7 @@ const customTagProcessor = async (message, category, destination) => {
     );
   } catch (err) {
     throw new CustomError(
-      `Failed to create new Contact (${err.response.statusText})`,
+      `Failed to create new contact (${err.response.statusText})`,
       err.response.status || 400
     );
   }

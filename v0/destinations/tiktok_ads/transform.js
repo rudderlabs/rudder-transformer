@@ -144,6 +144,7 @@ function batchEvents(arrayChunks) {
 
     let batchEventResponse = defaultBatchRequestConfig();
 
+    // Batch event into dest batch structure
     chunk.forEach(ev => {
       // Pixel code must be added above "batch": [..]
       delete ev.message.body.JSON.pixel_code;
@@ -181,6 +182,8 @@ function batchEvents(arrayChunks) {
 }
 
 function getEventChunks(event, trackResponseList, eventsChunk) {
+  // Do not apply batching if the payload contains test_event_code
+  // which corresponds to track endpoint
   if (event.message.body.JSON.test_event_code) {
     const { message, metadata, destination } = event;
     const endpoint = get(message, "endpoint");
@@ -204,6 +207,7 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
       )
     );
   } else {
+    // build eventsChunk of MAX_BATCH_SIZE
     eventsChunk.push(event);
   }
 }

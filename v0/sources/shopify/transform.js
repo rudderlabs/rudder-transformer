@@ -61,7 +61,6 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 const processEvent = event => {
   let message;
   const shopifyTopic = getShopifyTopic(event);
-  const { writeKey } = event.query_parameters;
   delete event.query_parameters;
 
   switch (shopifyTopic) {
@@ -86,7 +85,6 @@ const processEvent = event => {
   }
   message.setProperty("anonymousId", generateUUID());
   message.setProperty(`integrations.${INTEGERATION}`, true);
-  message.setProperty("writeKey", writeKey);
   return message;
 };
 

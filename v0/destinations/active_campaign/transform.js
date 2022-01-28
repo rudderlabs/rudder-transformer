@@ -401,7 +401,10 @@ const screenRequestHandler = async (message, category, destination) => {
     );
   } catch (err) {}
   if (res.status !== 200)
-    throw new CustomError("Unable to fetch dest events", res.status || 400);
+    throw new CustomError(
+      `Unable to create dest event (${res.statusText})`,
+      res.status || 400
+    );
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -432,7 +435,10 @@ const screenRequestHandler = async (message, category, destination) => {
     } catch (err) {}
 
     if (res.status !== 201)
-      throw new CustomError("Unable to create dest event", res.status || 400);
+      throw new CustomError(
+        `Unable to create dest event (${res.statusText})`,
+        res.status || 400
+      );
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -469,7 +475,10 @@ const trackRequestHandler = async (message, category, destination) => {
     );
   } catch (err) {}
   if (res.status !== 200)
-    throw new CustomError("Unable to fetch dest events", res.status || 400);
+    throw new CustomError(
+      `Unable to create dest event (${res.statusText})`,
+      res.status || 400
+    );
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -500,7 +509,10 @@ const trackRequestHandler = async (message, category, destination) => {
     } catch (err) {}
 
     if (res.status !== 201)
-      throw new CustomError("Unable to create dest event", res.status || 400);
+      throw new CustomError(
+        `Unable to create dest event (${res.statusText})`,
+        res.status || 400
+      );
   }
   // Previous operations successfull then
   // Mapping the Event payloads

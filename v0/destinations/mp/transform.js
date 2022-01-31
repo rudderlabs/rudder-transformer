@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { isObject } = require("lodash");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
@@ -150,7 +151,7 @@ function processTrack(message, destination) {
   return returnValue;
 }
 
-function getTransformedJSON(message, mappingJson) {
+function getTransformedJSON(message, mappingJson, useOldMapping) {
   const rawPayload = {};
 
   const sourceKeys = Object.keys(mappingJson);
@@ -160,8 +161,14 @@ function getTransformedJSON(message, mappingJson) {
   if (fullName) {
     traits.name = fullName;
   }
-
   if (traits) {
+    if (traits.address && isObject(traits.address)) {
+      const tkeys = Object.keys(traits.address);
+      tkeys.forEach(key => {
+        traits[key] = traits.address[key];
+      });
+      delete traits.address;
+    }
     traits = { ...traits };
     const keys = Object.keys(traits);
     keys.forEach(key => {
@@ -183,14 +190,28 @@ function getTransformedJSON(message, mappingJson) {
     "$initial_referring_domain",
     get(message, "context.page.initial_referring_domain")
   );
+  if (useOldMapping) {
+    if (rawPayload.$first_name) {
+      rawPayload.$firstName = rawPayload.$first_name;
+      delete rawPayload.$first_name;
+    }
+    if (rawPayload.$last_name) {
+      rawPayload.$lastName = rawPayload.$last_name;
+      delete rawPayload.$last_name;
+    }
+  }
 
   return rawPayload;
 }
 
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
-
-  let properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  const { useOldMapping } = destination.Config;
+  let properties = getTransformedJSON(
+    message,
+    mPIdentifyConfigJson,
+    useOldMapping
+  );
   const { device } = message.context;
   if (device && device.token) {
     let payload;

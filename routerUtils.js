@@ -4,9 +4,6 @@ const logger = require("./logger");
 const { proxyRequest } = require("./adapters/network");
 const { nodeSysErrorToStatus } = require("./adapters/utils/networkUtils");
 
-const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
-  ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
-  : false;
 let areFunctionsEnabled = -1;
 const functionsEnabled = () => {
   if (areFunctionsEnabled === -1) {
@@ -20,13 +17,6 @@ const userTransformHandler = () => {
     return require("./util/customTransformer").userTransformHandler;
   }
   throw new Error("Functions are not enabled");
-};
-
-const userTransformTestHandler = () => {
-  if (transformerTestModeEnabled) {
-    return require("./util/customTransformer").userTransformTestHandler;
-  }
-  throw new Error("User Transformation test mode is not enabled");
 };
 
 async function sendToDestination(destination, payload) {
@@ -67,6 +57,5 @@ async function sendToDestination(destination, payload) {
 
 module.exports = {
   sendToDestination,
-  userTransformHandler,
-  userTransformTestHandler
+  userTransformHandler
 };

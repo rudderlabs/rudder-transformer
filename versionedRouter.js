@@ -12,10 +12,7 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const {
-  userTransformHandler,
-  userTransformTestHandler
-} = require("./routerUtils");
+const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
@@ -462,22 +459,24 @@ if (startDestTransformer) {
 if (transformerTestModeEnabled) {
   router.post("/transformation/test", async ctx => {
     try {
-      const {
-        events,
-        code,
-        codeVersion,
-        libraryVersionIDs = []
-      } = ctx.request.body;
-      if (!code || !codeVersion || !events || events.length === 0) {
-        throw new Error("Invalid request. Missing parameters");
+      const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+      if (!events || events.length === 0) {
+        throw new Error("Invalid request. Missing events");
       }
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
-      const res = await userTransformTestHandler()(
+      trRevCode.versionId = "testVersionId";
+      const res = await userTransformHandler()(
         events,
-        code,
-        codeVersion,
-        libraryVersionIDs
+        trRevCode.versionId,
+        libraryVersionIDs,
+        trRevCode,
+        true
       );
       logger.debug(
         `[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`

@@ -13,7 +13,7 @@ const unsupportedFuncNames = [
   "reverse",
   "split"
 ];
-const { userTransformHandler, userTransformTestHandler } = require("../util/customTransformer");
+const { userTransformHandler } = require("../util/customTransformer");
 const integration = "user_transformation";
 const name = "User Transformations";
 
@@ -828,22 +828,25 @@ possibleEnvs.forEach(envValue => {
       const inputData = require(`./data/${integration}_input.json`);
       const expectedData = require(`./data/${integration}_code_test_output.json`);
 
-      const code = `
-      import url from 'url';
-      async function foo() {
-        return 'resolved';
-      }
-      export async function transformEvent(event, metadata) {
-          const pr = await foo();
-          log('Transformation test');
-          if(event.properties && event.properties.url){
-            const x = new url.URLSearchParams(event.properties.url).get("client");
+      const trRevCode = {
+        code: `
+          import url from 'url';
+          async function foo() {
+            return 'resolved';
           }
-          event.promise = pr;
-          return event;
-        }
-        `;
-      const codeVersion = "1";
+          export async function transformEvent(event, metadata) {
+              const pr = await foo();
+              log('Transformation test');
+              if(event.properties && event.properties.url){
+                const x = new url.URLSearchParams(event.properties.url).get("client");
+              }
+              event.promise = pr;
+              return event;
+            }
+        `,
+        codeVersion: "1",
+        versionId: "testVersionId"
+      };
 
       const urlCode = `${fs.readFileSync(
         "./util/url-search-params.min.js",
@@ -859,9 +862,7 @@ possibleEnvs.forEach(envValue => {
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
-      const output = await userTransformTestHandler(inputData, code, codeVersion, [
-        libraryVersionId
-      ]);
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId], trRevCode, true);
 
       expect(fetch).toHaveBeenCalledWith(libraryUrl);
 
@@ -872,23 +873,26 @@ possibleEnvs.forEach(envValue => {
       const inputData = require(`./data/${integration}_input.json`);
       const expectedData = require(`./data/${integration}_code_test_output.json`);
 
-      const codeVersion = "0";
-      const code = `
-        async function foo() {
-          return 'resolved';
-        }
-        async function transform(events) {
-          const pr = await foo();
-          const filteredEvents = events.map(event => {
-            log('Transformation test');
-            event.promise = pr;
-            return event;
-          });
-          return filteredEvents;
-        }
-      `;
+      const trRevCode = {
+        codeVersion: "0",
+        code: `
+          async function foo() {
+            return 'resolved';
+          }
+          async function transform(events) {
+            const pr = await foo();
+            const filteredEvents = events.map(event => {
+              log('Transformation test');
+              event.promise = pr;
+              return event;
+            });
+            return filteredEvents;
+          }
+        `,
+        versionId: "testVersionId"
+      };
 
-      const output = await userTransformTestHandler(inputData, code, codeVersion, []);
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
       expect(output).toEqual(expectedData);
     });
 

@@ -237,9 +237,15 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   };
 }
 
-async function userTransformHandler(events, versionId, libraryVersionIDs) {
+async function userTransformHandler(
+  events,
+  versionId,
+  libraryVersionIDs,
+  trRevCode = {},
+  testMode = false
+) {
   if (versionId) {
-    const res = await getTransformationCode(versionId);
+    const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
       // And put back the destination after transforrmation
@@ -256,7 +262,13 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
           res,
           libraryVersionIDs
         );
-        userTransformedEvents = result.transformedEvents;
+
+        userTransformedEvents = !testMode
+          ? result.transformedEvents
+          : {
+              transformedEvents: result.transformedEvents.map(ev => ev.transformedEvent),
+              logs: result.logs
+            };
       } else {
         const result = await runUserTransform(
           eventMessages,
@@ -264,10 +276,13 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
           eventsMetadata,
           versionId
         );
-        userTransformedEvents = result.transformedEvents.map(ev => ({
-          transformedEvent: ev,
-          metadata: {}
-        }));
+
+        userTransformedEvents = testMode
+          ? result
+          : result.transformedEvents.map(ev => ({
+              transformedEvent: ev,
+              metadata: {}
+            }));
       }
       return userTransformedEvents;
     }
@@ -275,39 +290,4 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
   return events;
 }
 
-async function userTransformTestHandler(
-  events,
-  code,
-  codeVersion,
-  libraryVersionIDs
-) {
-  // V1 transformation code test with dummy version id
-  if (codeVersion === "1") {
-    let { transformedEvents, logs } = await userTransformHandlerV1(
-      events,
-      { code, versionId: "testVersionId" },
-      libraryVersionIDs
-    );
-    transformedEvents = transformedEvents.map(ev => ev.transformedEvent);
-    return { transformedEvents, logs };
-  }
-  // V0 transformation code test with dummy version id
-  const eventMessages = events.map(event => event.message);
-  const eventsMetadata = {};
-  events.forEach(ev => {
-    eventsMetadata[ev.message.messageId] = ev.metadata;
-  });
-
-  const { transformedEvents, logs } = await runUserTransform(
-    eventMessages,
-    code,
-    eventsMetadata,
-    "testVersionId"
-  );
-  return { transformedEvents, logs };
-}
-
-module.exports = {
-  userTransformHandler,
-  userTransformTestHandler
-};
+exports.userTransformHandler = userTransformHandler;

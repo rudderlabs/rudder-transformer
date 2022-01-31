@@ -1,5 +1,4 @@
 const get = require("get-value");
-const { isObject } = require("lodash");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
@@ -16,7 +15,8 @@ const {
   getSuccessRespEvents,
   CustomError,
   isAppleFamily,
-  getFullName
+  getFullName,
+  isObject
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -163,6 +163,7 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
   }
 
   if (traits) {
+    // if address attribute is an object, we are storing the attributes in root
     if (traits.address && isObject(traits.address)) {
       const tkeys = Object.keys(traits.address);
       tkeys.forEach(key => {
@@ -191,6 +192,13 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
     "$initial_referring_domain",
     get(message, "context.page.initial_referring_domain")
   );
+
+  /*
+  we are adding backward compatibility using useOldMapping key.
+  TODO :: This portion need to be removed after we deciding to stop 
+  support for old mapping.
+  */
+
   if (useOldMapping) {
     if (rawPayload.$first_name) {
       rawPayload.$firstName = rawPayload.$first_name;
@@ -207,6 +215,7 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
 
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
+  // this variable is used for supporting backward compatibility
   const { useOldMapping } = destination.Config;
   let properties = getTransformedJSON(
     message,

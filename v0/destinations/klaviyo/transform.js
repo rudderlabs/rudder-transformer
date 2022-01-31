@@ -1,14 +1,23 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
 const axios = require("axios");
 const logger = require("../../../logger");
-const { EventType, WhiteListedTraits } = require("../../../constants");
+const {
+  EventType,
+  WhiteListedTraits,
+  MappedToDestinationKey
+} = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
   MAPPING_CONFIG,
-  LIST_CONF
+  LIST_CONF,
+  ecomExclusionKeys,
+  ecomEvents,
+  eventNameMapping,
+  jsonNameMapping
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -19,7 +28,13 @@ const {
   extractCustomFields,
   removeUndefinedValues,
   toUnixTimestamp,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError,
+  isEmptyObject,
+  addExternalIdToTraits,
+  adduserIdFromExternalId
 } = require("../../util");
 
 // A sigle func to handle the addition of user to a list
@@ -57,8 +72,9 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
       : destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
+  // send network request
   try {
-    const res = await axios.post(
+    await axios.post(
       targetUrl,
       {
         api_key: destination.Config.privateApiKey,
@@ -70,11 +86,8 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
         }
       }
     );
-    if (res.status !== 200) {
-      logger.debug("Unable to add User to List");
-    }
   } catch (err) {
-    logger.debug(err);
+    logger.debug("[Klaviyo :: addToList]", err);
   }
 };
 
@@ -92,14 +105,25 @@ const identifyRequestHandler = async (message, category, destination) => {
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     destination.Config.privateApiKey
   ) {
-    addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
+    await addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
     if (get(traitsInfo.properties, "subscribe") === true) {
-      addUserToList(message, traitsInfo, LIST_CONF.SUBSCRIBE, destination);
+      await addUserToList(
+        message,
+        traitsInfo,
+        LIST_CONF.SUBSCRIBE,
+        destination
+      );
     }
   } else {
     logger.info(
       `Cannot process list operation as listId is not available, either in message or config, or private key not present`
     );
+  }
+
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
   }
   // actual identify call
   let propertyPayload = constructPayload(
@@ -118,6 +142,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     delete propertyPayload.$id;
     propertyPayload._id = getFieldValueFromMessage(message, "userId");
   }
+
   const payload = {
     token: destination.Config.publicApiKey,
     properties: propertyPayload
@@ -134,13 +159,8 @@ const identifyRequestHandler = async (message, category, destination) => {
 // User info needs to be mapped to a track event (mandatory)
 // DOCS: https://www.klaviyo.com/docs/http-api
 // ----------------------
-const trackRequestHandler = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.token = destination.Config.publicApiKey;
-  if (message.properties && message.properties.revenue) {
-    payload.properties.$value = message.properties.revenue;
-    delete payload.properties.revenue;
-  }
+
+const createCustomerProperties = message => {
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
@@ -153,11 +173,85 @@ const trackRequestHandler = (message, category, destination) => {
     WhiteListedTraits
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete customerProperties.$id;
-    customerProperties._id = getFieldValueFromMessage(message, "userId");
+  return customerProperties;
+};
+const trackRequestHandler = (message, category, destination) => {
+  let payload = {};
+  let event = get(message, "event");
+  event = event ? event.trim().toLowerCase() : event;
+  if (ecomEvents.includes(event) && message.properties) {
+    const eventName = eventNameMapping[event];
+    payload.event = eventName;
+    payload.token = destination.Config.publicApiKey;
+    const eventMap = jsonNameMapping[eventName];
+    // using identify to create customer properties
+    payload.customer_properties = createCustomerProperties(message);
+    if (
+      !payload.customer_properties.$email &&
+      !payload.customer_properties.$phone_number
+    ) {
+      throw new CustomError(
+        "email or phone is required for customer_properties",
+        400
+      );
+    }
+    const categ = CONFIG_CATEGORIES[eventMap];
+    payload.properties = constructPayload(
+      message.properties,
+      MAPPING_CONFIG[categ.name]
+    );
+
+    // products mapping using Items.json
+    if (message.properties.items && Array.isArray(message.properties.items)) {
+      const itemArr = [];
+      message.properties.items.forEach(key => {
+        let item = constructPayload(
+          key,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+        );
+        item = removeUndefinedAndNullValues(item);
+        if (!isEmptyObject(item)) {
+          itemArr.push(item);
+        }
+      });
+      if (!payload.properties) {
+        payload.properties = {};
+      }
+      payload.properties.items = itemArr;
+    }
+
+    // all extra props passed is incorporated inside properties
+    let customProperties = {};
+    customProperties = extractCustomFields(
+      message,
+      customProperties,
+      ["properties"],
+      ecomExclusionKeys
+    );
+    if (!isEmptyObject(customProperties)) {
+      payload.properties = {
+        ...payload.properties,
+        ...customProperties
+      };
+    }
+
+    if (isEmptyObject(payload.properties)) {
+      delete payload.properties;
+    }
+  } else {
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    payload.token = destination.Config.publicApiKey;
+    if (message.properties && message.properties.revenue) {
+      payload.properties.$value = message.properties.revenue;
+      delete payload.properties.revenue;
+    }
+    const customerProperties = createCustomerProperties(message);
+    if (destination.Config.enforceEmailAsPrimary) {
+      delete customerProperties.$id;
+      customerProperties._id = getFieldValueFromMessage(message, "userId");
+    }
+    payload.customer_properties = customerProperties;
   }
-  payload.customer_properties = customerProperties;
   if (message.timestamp) {
     payload.time = toUnixTimestamp(message.timestamp);
   }
@@ -204,8 +298,9 @@ const groupRequestHandler = async (message, category, destination) => {
     if (!profile.$consent) {
       profile.$consent = destination.Config.consent;
     }
+    // send network request
     try {
-      const res = await axios.post(
+      await axios.post(
         targetUrl,
         {
           api_key: destination.Config.privateApiKey,
@@ -217,11 +312,8 @@ const groupRequestHandler = async (message, category, destination) => {
           }
         }
       );
-      if (res.status !== 200) {
-        logger.debug("Unable to add User to List");
-      }
     } catch (err) {
-      logger.debug(err);
+      logger.debug("[Klaviyo :: groupRequestHandler (addToList)", err);
     }
   }
   delete profile.sms_consent;
@@ -246,7 +338,10 @@ const groupRequestHandler = async (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
 
@@ -267,7 +362,7 @@ const processEvent = async (message, destination) => {
       response = await groupRequestHandler(message, category, destination);
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   return response;
 };
@@ -277,4 +372,43 @@ const process = async event => {
   return result;
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

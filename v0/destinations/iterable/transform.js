@@ -1,16 +1,22 @@
-const { EventType } = require("../../../constants");
+const { get } = require("lodash");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const { ConfigCategory, mappingConfig } = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  constructPayload
+  constructPayload,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError,
+  addExternalIdToTraits,
+  isAppleFamily
 } = require("../../util");
 const logger = require("../../../logger");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
-    throw new Error("userId or email is mandatory for this request");
+    throw new CustomError("userId or email is mandatory for this request", 400);
   }
 }
 
@@ -29,7 +35,7 @@ function constructPayloadItem(message, category, destination) {
         mappingConfig[ConfigCategory.DEVICE.name]
       );
       rawPayload.preferUserId = true;
-      if (message.context.device.type.toLowerCase() === "ios") {
+      if (isAppleFamily(message.context.device.type)) {
         rawPayload.device.platform = "APNS";
       } else {
         rawPayload.device.platform = "GCM";
@@ -43,6 +49,10 @@ function constructPayloadItem(message, category, destination) {
       validateMandatoryField(rawPayload);
       break;
     case "identify":
+      // If mapped to destination, Add externalId to traits
+      if (get(message, MappedToDestinationKey)) {
+        addExternalIdToTraits(message);
+      }
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.preferUserId = true;
       rawPayload.mergeNestedObjects = true;
@@ -63,7 +73,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new Error("Invalid page call");
+        throw new CustomError("Invalid page call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -94,7 +104,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new Error("Invalid screen call");
+        throw new CustomError("Invalid screen call", 400);
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -131,9 +141,23 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(el => {
+      if (rawPayload.items) {
+        rawPayload.items.forEach(el => {
+          const element = constructPayload(
+            el,
+            mappingConfig[ConfigCategory.PRODUCT.name]
+          );
+          if (element.categories) {
+            element.categories = element.categories.split(",");
+          }
+          element.price = parseFloat(element.price);
+          element.quantity = parseInt(element.quantity, 10);
+          const clone = { ...element };
+          rawPayloadItemArr.push(clone);
+        });
+      } else {
         const element = constructPayload(
-          el,
+          message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
         if (element.categories) {
@@ -143,7 +167,7 @@ function constructPayloadItem(message, category, destination) {
         element.quantity = parseInt(element.quantity, 10);
         const clone = { ...element };
         rawPayloadItemArr.push(clone);
-      });
+      }
 
       rawPayload.items = rawPayloadItemArr;
       rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
@@ -167,9 +191,23 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      rawPayload.items.forEach(el => {
+      if (rawPayload.items) {
+        rawPayload.items.forEach(el => {
+          const element = constructPayload(
+            el,
+            mappingConfig[ConfigCategory.PRODUCT.name]
+          );
+          if (element.categories) {
+            element.categories = element.categories.split(",");
+          }
+          element.price = parseFloat(element.price);
+          element.quantity = parseInt(element.quantity, 10);
+          const clone = { ...element };
+          rawPayloadItemArr.push(clone);
+        });
+      } else {
         const element = constructPayload(
-          el,
+          message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
         if (element.categories) {
@@ -179,7 +217,7 @@ function constructPayloadItem(message, category, destination) {
         element.quantity = parseInt(element.quantity, 10);
         const clone = { ...element };
         rawPayloadItemArr.push(clone);
-      });
+      }
 
       rawPayload.items = rawPayloadItemArr;
       break;
@@ -258,7 +296,7 @@ function processSingleMessage(message, destination) {
       }
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   const response = responseBuilderSimple(message, category, destination);
 
@@ -281,4 +319,43 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

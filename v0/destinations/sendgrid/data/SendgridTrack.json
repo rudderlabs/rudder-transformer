@@ -1,0 +1,67 @@
+[
+  {
+    "destKey": "from",
+    "sourceKeys": "properties.from",
+    "required": false
+  },
+  {
+    "destKey": "attachments",
+    "sourceKeys": "properties.attachments",
+    "required": false
+  },
+  {
+    "destKey": "categories",
+    "sourceKeys": "properties.categories",
+    "required": false
+  },
+  {
+    "destKey": "send_at",
+    "sourceKeys": "properties.sendAt",
+    "required": false
+  },
+  {
+    "destKey": "batch_id",
+    "sourceKeys": "properties.batchId",
+    "required": false
+  },
+  {
+    "destKey": "reply_to_list",
+    "sourceKeys": "properties.replyToList",
+    "required": false
+  },
+  {
+    "destKey": "content",
+    "sourceKeys": "properties.content",
+    "required": false
+  },
+  {
+    "destKey": "template_id",
+    "sourceKeys": "properties.templateId",
+    "required": false
+  },
+  {
+    "destKey": "headers",
+    "sourceKeys": "properties.headers",
+    "required": false
+  },
+  {
+    "destKey": "custom_args",
+    "sourceKeys": "properties.customArgs",
+    "required": false
+  },
+  {
+    "destKey": "personalizations",
+    "sourceKeys": "properties.personalizations",
+    "required": false
+  },
+  {
+    "destKey": "subject",
+    "sourceKeys": "properties.subject",
+    "required": false
+  },
+  {
+    "destKey": "reply_to",
+    "sourceKeys": "properties.replyTo",
+    "required": false
+  }
+]

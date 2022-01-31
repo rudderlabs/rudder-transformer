@@ -7,8 +7,14 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  getFieldValueFromMessage,
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const {
@@ -25,12 +31,10 @@ function responseBuilderSimple(payload, message, destination) {
   const os = get(message, "context.os.name");
   if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
-  } else if (os && os.toLowerCase() === "ios" && appleAppId) {
+  } else if (os && isAppleFamily(os) && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
   } else {
-    throw new Error(
-      "Invalid platform or required androidAppId or appleAppId missing"
-    );
+    throw new CustomError("Invalid app endpoint", 400);
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;
@@ -49,19 +53,19 @@ function responseBuilderSimple(payload, message, destination) {
   //   : undefined;
   const appsflyerId = getDestinationExternalID(message, "appsflyerExternalId");
   if (!appsflyerId) {
-    throw new Error("Appsflyer id is not set. Rejecting the event");
+    throw new CustomError("Appsflyer id is not set. Rejecting the event", 400);
   }
 
   const updatedPayload = {
     ...payload,
     eventTime: message.timestamp,
-    customer_user_id: message.user_id,
+    customer_user_id: getFieldValueFromMessage(message, "userIdOnly"),
     ip: get(message, "context.ip") || message.request_ip,
     os: get(message, "context.os.version"),
     appsflyer_id: appsflyerId
   };
 
-  if (os.toLowerCase() === "ios") {
+  if (isAppleFamily(os)) {
     updatedPayload.idfa = get(message, "context.device.advertisingId");
     updatedPayload.idfv = get(message, "context.device.id");
   } else if (os.toLowerCase() === "android") {
@@ -86,8 +90,8 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const sharingFilter = destination.Config.sharingFilter || "all";
-  if (isDefinedAndNotNull(sharingFilter)) {
+  const { sharingFilter } = destination.Config;
+  if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
 
@@ -206,17 +210,32 @@ function processSingleMessage(message, destination) {
       break;
     }
     case EventType.SCREEN: {
-      const eventName = EventType.SCREEN;
+      let eventName;
+      if (destination.Config.useRichEventName === true) {
+        eventName = `Viewed ${message.name ||
+          message.event ||
+          get(message, "properties.name") ||
+          ""} Screen`;
+      } else {
+        eventName = EventType.SCREEN;
+      }
       payload = processNonTrackEvents(message, eventName);
       break;
     }
     case EventType.PAGE: {
-      const eventName = EventType.PAGE;
+      let eventName;
+      if (destination.Config.useRichEventName === true) {
+        eventName = `Viewed ${message.name ||
+          get(message, "properties.name") ||
+          ""} Page`;
+      } else {
+        eventName = EventType.PAGE;
+      }
       payload = processNonTrackEvents(message, eventName);
       break;
     }
     default:
-      throw new Error("message type not supported");
+      throw new CustomError("message type not supported", 400);
   }
   return responseBuilderSimple(payload, message, destination);
 }
@@ -226,4 +245,43 @@ function process(event) {
   return response;
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

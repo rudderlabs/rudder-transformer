@@ -19,6 +19,15 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+
 inputData.forEach((input, index) => {
   test(`${name} Tests : payload: ${index}`, () => {
     let output, expected;
@@ -32,4 +41,20 @@ inputData.forEach((input, index) => {
     }
     expect(output).toEqual(expected);
   });
+});
+
+describe(`${name} Tests`, () => {
+describe("Router Tests", () => {
+  it("Payload", async () => {
+    let singleRouterOutput, singleExpectedOutput;
+    const routerOutput = await transformer.processRouterDest(inputRouterData);
+    routerOutput.forEach((output, index) => {
+      singleRouterOutput = routerOutput[index];
+      singleExpectedOutput = expectedRouterData[index];
+      singleExpectedOutput.batchedRequest.params.qt = singleRouterOutput.batchedRequest.params.qt;
+    })
+    expect(routerOutput).toEqual(expectedRouterData);
+  });
+});
+
 });

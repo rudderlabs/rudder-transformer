@@ -1,41 +1,66 @@
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require("koa-router");
 const _ = require("lodash");
-const { lstatSync, readdirSync } = require("fs");
 const fs = require("fs");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const {
+  isNonFuncObject,
+  getMetadata,
+  generateErrorObject
+} = require("./v0/util");
 const {oncehubTransformer} = require("./util/oncehub-custom-transformer");
-const { isNonFuncObject } = require("./v0/util");
-const { DestHandlerMap } = require("./constants");
-require("dotenv").config();
+const { processDynamicConfig } = require("./util/dynamicConfig");
+const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
+const { userTransformHandler } = require("./routerUtils");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
+const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
+require("dotenv").config();
+const eventValidator = require("./util/eventValidation");
+const { prometheusRegistry } = require("./middleware");
 
 const versions = ["v0"];
-const API_VERSION = "1";
+const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
+const transformerProxy = process.env.TRANSFORMER_PROXY || true;
 
 const router = new Router();
 
 const isDirectory = source => {
-  return lstatSync(source).isDirectory();
+  return fs.lstatSync(source).isDirectory();
 };
 
 const getIntegrations = type =>
-  readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
+  fs.readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
   return require(`./${version}/destinations/${dest}/transform`);
+};
+
+const getDestFileUploadHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fileUpload`);
+};
+
+const getPollStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/poll`);
+};
+
+const getJobStatusHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
+const getDeletionUserHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/deleteUsers`);
 };
 
 const getSourceHandler = (version, source) => {
@@ -50,28 +75,28 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
-const userTransformHandler = () => {
-  if (functionsEnabled()) {
-    return require("./util/customTransformer").userTransformHandler;
-  }
-  throw new Error("Functions are not enabled");
-};
-
 async function handleDest(ctx, version, destination) {
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+
+  const metaTags =
+    events && events.length && events[0].metadata
+      ? getMetadata(events[0].metadata)
+      : {};
   stats.increment("dest_transform_input_events", events.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   const respList = [];
   await Promise.all(
     events.map(async event => {
       try {
-        const parsedEvent = oncehubTransformer(destination,event);
+        let parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
+        parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
@@ -93,23 +118,99 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-
+        const errObj = generateErrorObject(
+          error,
+          destination,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload."
+          error: error.message || "Error occurred while processing payload.",
+          statTags: errObj.statTags
         });
-        stats.increment("dest_transform_errors", 1, { destination, version });
       }
     })
   );
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
-    version
+    version,
+    ...metaTags
   });
   ctx.body = respList;
+  return ctx.body;
+}
+
+async function handleValidation(ctx) {
+  const requestStartTime = new Date();
+  const events = ctx.request.body;
+  const requestSize = ctx.request.get("content-length");
+  const reqParams = ctx.request.query;
+  const respList = [];
+  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    const eventStartTime = new Date();
+    try {
+      const parsedEvent = event;
+      parsedEvent.request = { query: reqParams };
+      const hv = await eventValidator.handleValidation(parsedEvent);
+      if (hv.dropEvent) {
+        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 400,
+          validationErrors: hv.validationErrors,
+          errors: errMessage
+        });
+        stats.counter("hv_violation_type", 1, {
+          violationType: hv.violationType,
+          ...metaTags
+        });
+      } else {
+        respList.push({
+          output: event.message,
+          metadata: event.metadata,
+          statusCode: 200,
+          validationErrors: hv.validationErrors
+        });
+        stats.counter("hv_errors", 1, {
+          ...metaTags
+        });
+      }
+    } catch (error) {
+      const errMessage = `Error occurred while validating : ${error}`;
+      logger.error(errMessage);
+      respList.push({
+        output: event.message,
+        metadata: event.metadata,
+        statusCode: 200,
+        validationErrors: [],
+        error: errMessage
+      });
+      stats.counter("hv_errors", 1, {
+        ...metaTags
+      });
+    } finally {
+      stats.timing("hv_event_latency", eventStartTime, {
+        ...metaTags
+      });
+    }
+  }
+  ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
+
+  stats.counter("hv_events_count", events.length, {
+    ...metaTags
+  });
+  stats.counter("hv_request_size", requestSize, {
+    ...metaTags
+  });
+  stats.timing("hv_request_latency", requestStartTime, {
+    ...metaTags
+  });
 }
 
 async function routerHandleDest(ctx) {
@@ -118,17 +219,19 @@ async function routerHandleDest(ctx) {
   if (!routerDestHandler || !routerDestHandler.processRouterDest) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support router transform`;
-    return;
+    return null;
   }
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
     Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+      desInput = processDynamicConfig(desInput, "router");
       const listOutput = await routerDestHandler.processRouterDest(desInput);
       respEvents.push(...listOutput);
     })
   );
   ctx.body = { output: respEvents };
+  return ctx.body;
 }
 
 if (startDestTransformer) {
@@ -139,23 +242,51 @@ if (startDestTransformer) {
       router.post(`/${version}/destinations/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
+        // Assuming that events are from one single source
+
+        const metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          version,
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
         const startTime = new Date();
         await handleDest(ctx, version, destination);
+        ctx.set("apiVersion", API_VERSION);
+        // Assuming that events are from one single source
+
+        const metaTags =
+          ctx.request.body &&
+          ctx.request.body.length &&
+          ctx.request.body[0].metadata
+            ? getMetadata(ctx.request.body[0].metadata)
+            : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          version
+          ...metaTags
         });
-        stats.increment("dest_transform_requests", 1, { destination, version });
+        stats.increment("dest_transform_requests", 1, {
+          destination,
+          version,
+          ...metaTags
+        });
       });
       router.post("/routerTransform", async ctx => {
+        ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
     });
@@ -175,10 +306,13 @@ if (startDestTransformer) {
         groupedEvents = _.groupBy(events, event => {
           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
           const rudderId = event.metadata.rudderId || event.message.anonymousId;
-          return `${event.destination.ID}_${rudderId}`;
+          return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(events, event => event.destination.ID);
+        groupedEvents = _.groupBy(
+          events,
+          event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
+        );
       }
       stats.counter(
         "user_transform_function_group_size",
@@ -214,6 +348,10 @@ if (startDestTransformer) {
             messageIds
           };
 
+          const metaTags =
+            destEvents.length && destEvents[0].metadata
+              ? getMetadata(destEvents[0].metadata)
+              : {};
           const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
@@ -222,8 +360,8 @@ if (startDestTransformer) {
                 "user_transform_function_input_events",
                 destEvents.length,
                 {
-                  transformationVersionId,
-                  processSessions
+                  processSessions,
+                  ...metaTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -275,13 +413,14 @@ if (startDestTransformer) {
               transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
-                processSessions
+                processSessions,
+                ...metaTags
               });
             } finally {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions }
+                { transformationVersionId, processSessions, ...metaTags }
               );
             }
           } else {
@@ -294,7 +433,8 @@ if (startDestTransformer) {
             });
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
-              processSessions
+              processSessions,
+              ...metaTags
             });
           }
         })
@@ -326,6 +466,7 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -371,6 +512,61 @@ if (startSourceTransformer) {
   });
 }
 
+async function handleProxyRequest(destination, ctx) {
+  const destinationRequest = ctx.request.body;
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
+  let response;
+  try {
+    const startTime = new Date();
+    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    stats.timing("transformer_proxy_time", startTime, {
+      destination
+    });
+    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+      rawProxyResponse
+    );
+    response = destNetworkHandler.responseHandler(
+      processedProxyResponse,
+      destination
+    );
+  } catch (err) {
+    response = generateErrorObject(
+      err,
+      destination,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    );
+    response = { ...response };
+    if (!err.responseTransformFailure) {
+      response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
+    }
+  }
+  ctx.body = { output: response };
+  ctx.status = response.status;
+  return ctx.body;
+}
+
+if (transformerProxy) {
+  versions.forEach(version => {
+    const destinations = getIntegrations(`${version}/destinations`);
+    destinations.forEach(destination => {
+      router.post(
+        `/${version}/destinations/${destination}/proxy`,
+        async ctx => {
+          const startTime = new Date();
+          ctx.set("apiVersion", API_VERSION);
+          await handleProxyRequest(destination, ctx);
+          stats.timing("transformer_total_proxy_latency", startTime, {
+            destination,
+            version
+          });
+        }
+      );
+    });
+  });
+}
+
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";
 });
@@ -383,18 +579,18 @@ router.get("/health", ctx => {
   ctx.body = "OK";
 });
 
-router.get("/features", ctx =>{
+router.get("/features", ctx => {
   const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
   ctx.body = JSON.stringify(obj);
 });
 
-router.post("/batch", ctx => {
+const batchHandler = ctx => {
   const { destType, input } = ctx.request.body;
   const destHandler = getDestHandler("v0", destType);
   if (!destHandler || !destHandler.batch) {
     ctx.status = 404;
     ctx.body = `${destType} doesn't support batching`;
-    return;
+    return null;
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
@@ -402,6 +598,7 @@ router.post("/batch", ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
@@ -413,9 +610,192 @@ router.post("/batch", ctx => {
   if (response.errors.length > 0) {
     ctx.status = 500;
     ctx.body = response.errors;
-    return;
+    return null;
   }
   ctx.body = response.batchedRequests;
+  return ctx.body;
+};
+router.post("/batch", ctx => {
+  ctx.set("apiVersion", API_VERSION);
+  batchHandler(ctx);
 });
 
-module.exports = router;
+const fileUpload = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getDestFileUploadHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processFileData(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload.",
+      metadata: error.response ? error.response.metadata : null
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const pollStatus = async ctx => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getPollStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+  let response;
+  if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  try {
+    response = await destFileUploadHandler.processPolling(ctx.request.body);
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const getJobStatus = async (ctx, type) => {
+  const { destType } = ctx.request.body;
+  const destFileUploadHandler = getJobStatusHandler(
+    "v0",
+    destType.toLowerCase()
+  );
+
+  if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
+    ctx.status = 404;
+    ctx.body = `${destType} doesn't support bulk upload`;
+    return null;
+  }
+  let response;
+  try {
+    response = await destFileUploadHandler.processJobStatus(
+      ctx.request.body,
+      type
+    );
+  } catch (error) {
+    response = {
+      statusCode: error.response ? error.response.status : 400,
+      error: error.message || "Error occurred while processing payload."
+    };
+  }
+  ctx.body = response;
+  return ctx.body;
+};
+
+const handleDeletionOfUsers = async ctx => {
+  const { body } = ctx.request;
+  const respList = [];
+  let response;
+  await Promise.all(
+    body.map(async b => {
+      const { destType } = b;
+      const destUserDeletionHandler = getDeletionUserHandler(
+        "v0",
+        destType.toLowerCase()
+      );
+      if (
+        !destUserDeletionHandler ||
+        !destUserDeletionHandler.processDeleteUsers
+      ) {
+        ctx.status = 404;
+        ctx.body = "Doesn't support deletion of users";
+        return null;
+      }
+
+      try {
+        response = await destUserDeletionHandler.processDeleteUsers(b);
+        if (response) {
+          respList.push(response);
+        }
+      } catch (error) {
+        // adding the status to the request
+        ctx.status = error.response ? error.response.status : 400;
+        respList.push({
+          statusCode: error.response ? error.response.status : 400,
+          error: error.message || "Error occured while processing"
+        });
+      }
+    })
+  );
+  ctx.body = respList;
+  return ctx.body;
+  // const { destType } = ctx.request.body;
+};
+const metricsController = async ctx => {
+  ctx.status = 200;
+  ctx.type = prometheusRegistry.contentType;
+  ctx.body = await prometheusRegistry.metrics();
+  return ctx.body;
+};
+
+router.post("/fileUpload", async ctx => {
+  await fileUpload(ctx);
+});
+
+router.post("/pollStatus", async ctx => {
+  await pollStatus(ctx);
+});
+
+router.post("/getFailedJobs", async ctx => {
+  await getJobStatus(ctx, "fail");
+});
+
+router.post("/getWarningJobs", async ctx => {
+  await getJobStatus(ctx, "warn");
+});
+// eg. v0/validate. will validate events as per respective tracking plans
+router.post(`/v0/validate`, async ctx => {
+  await handleValidation(ctx);
+});
+
+// Api to handle deletion of users for data regulation
+// {
+//   "destType": "dest name",
+//   "userAttributes": [
+//       {
+//           "userId": "user_1"
+//       },
+//       {
+//           "userId": "user_2"
+//       }
+//   ],
+//   "config": {
+//       "apiKey": "",
+//       "apiSecret": ""
+//   }
+// }
+router.post(`/deleteUsers`, async ctx => {
+  await handleDeletionOfUsers(ctx);
+});
+
+router.get("/metrics", async ctx => {
+  await metricsController(ctx);
+});
+
+module.exports = {
+  router,
+  handleDest,
+  routerHandleDest,
+  batchHandler,
+  handleProxyRequest,
+  handleDeletionOfUsers,
+  fileUpload,
+  pollStatus,
+  getJobStatus
+};

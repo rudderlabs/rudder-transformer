@@ -1,13 +1,21 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
+  adduserIdFromExternalId,
   defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues
+  removeUndefinedValues,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  generateErrorObject
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
+
 const {
   ConfigCategory,
   mappingConfig,
@@ -15,7 +23,8 @@ const {
   getTrackEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  DESTINATION
 } = require("./config");
 
 function formatGender(gender) {
@@ -41,7 +50,7 @@ function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.userId = message.userId || message.anonymousId;
-  response.body.JSON = removeUndefinedAndNullValues(properties);
+  response.body.JSON = removeUndefinedValues(properties);
   return {
     ...response,
     headers: {
@@ -96,6 +105,11 @@ function getUserAttributesObject(message, mappingJson) {
   // get traits from message
   const traits = getFieldValueFromMessage(message, "traits");
 
+  // return the traits as-is if message is mapped to destination
+  if (get(message, MappedToDestinationKey)) {
+    return traits;
+  }
+
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach(destKey => {
     let value = get(traits, mappingJson[destKey]);
@@ -126,7 +140,7 @@ function getUserAttributesObject(message, mappingJson) {
       // if traitKey is not reserved add the value to final output
       if (reservedKeys.indexOf(traitKey) === -1) {
         const value = get(traits, traitKey);
-        if (value) {
+        if (value !== undefined) {
           data[traitKey] = value;
         }
       }
@@ -137,6 +151,12 @@ function getUserAttributesObject(message, mappingJson) {
 }
 
 function processIdentify(message, destination) {
+  // override userId with externalId in context(if present) and event is mapped to destination
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    adduserIdFromExternalId(message);
+  }
+
   return buildResponse(
     message,
     destination,
@@ -278,8 +298,16 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         getTrackEndPoint(destination.Config.endPoint)
       );
     }
-
-    throw new Error("Invalid Order Completed event");
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid Order Completed event")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -309,7 +337,16 @@ function processGroup(message, destination) {
   const groupAttribute = {};
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new Error("Invalid groupId");
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Invalid groupId")
+      .setStatTags({
+        destination: DESTINATION,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
@@ -397,7 +434,17 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new Error("Message type is not supported");
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("Message type is not supported")
+        .setStatTags({
+          destination: DESTINATION,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
 
   return respList;
@@ -528,7 +575,6 @@ function batch(destEvents) {
       if (!identifyEndpoint) {
         identifyEndpoint = endPoint;
       }
-
       const aliasObjectArr = get(jsonBody, "aliases_to_identify");
       const aliasMaxCount =
         aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
@@ -542,7 +588,7 @@ function batch(destEvents) {
           partner: BRAZE_PARTNER_NAME
         };
         if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = attributesBatch;
+          responseBodyJson.aliases_to_identify = [...aliasBatch];
         }
         batchResponse.body.JSON = responseBodyJson;
         respList.push(
@@ -618,7 +664,45 @@ function batch(destEvents) {
   return respList;
 }
 
-module.exports = {
-  process,
-  batch
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        const errObj = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
+        return getErrorRespEvents(
+          [input.metadata],
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
+        );
+      }
+    })
+  );
+  return respList;
 };
+
+module.exports = { process, processRouterDest, batch };

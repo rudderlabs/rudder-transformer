@@ -1,20 +1,30 @@
 const _ = require("lodash");
 const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require("./config");
+const { EventType } = require("../../../constants");
 const {
   isDefinedAndNotNull,
   getHashFromArray,
   getFieldValueFromMessage,
   isBlank,
-  isDefined
+  isDefined,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
-async function process(ev) {
-  const { destination, message } = ev;
+const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event } = message;
   const { customMappings, trackingId } = destination.Config;
 
-  if (!event) {
-    throw new Error(" Cannot process if no event name specified");
+  if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
+    throw new CustomError(" Cannot process if no event name specified", 400);
+  }
+
+  if (!trackingId) {
+    throw new CustomError(
+      "Tracking Id is a mandatory information to use putEvents",
+      400
+    );
   }
 
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
@@ -28,13 +38,12 @@ async function process(ev) {
   Object.keys(keyMap).forEach(key => {
     // name of the key in event.properties
     const value = properties && properties[keyMap[key]];
-
     if (
       !KEY_CHECK_LIST.includes(key.toUpperCase()) &&
       !MANDATORY_PROPERTIES.includes(key.toUpperCase())
     ) {
       if (!isDefined(value)) {
-        throw new Error(`Mapped property ${keyMap[key]} not found`);
+        throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
       }
       // all the values inside property has to be sent as strings
       outputEvent.properties[_.camelCase(key)] = String(value);
@@ -43,7 +52,10 @@ async function process(ev) {
         (!isDefinedAndNotNull(value) || isBlank(value)) &&
         key.toUpperCase() !== "ITEM_ID"
       ) {
-        throw new Error(`Null values cannot be sent for ${keyMap[key]} `);
+        throw new CustomError(
+          `Null values cannot be sent for ${keyMap[key]} `,
+          400
+        );
       }
       if (
         !(
@@ -65,7 +77,7 @@ async function process(ev) {
       } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
         outputEvent[_.camelCase(key)] = parseFloat(value);
-      } else throw new Error(" EVENT_VALUE should be a float value");
+      } else throw new CustomError(" EVENT_VALUE should be a float value", 400);
     }
   });
   // manipulate for itemId
@@ -77,8 +89,7 @@ async function process(ev) {
       : message.messageId;
   // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-
-  return {
+  const response = {
     userId:
       keyMap.USER_ID &&
       isDefinedAndNotNull(properties[keyMap.USER_ID]) &&
@@ -92,6 +103,215 @@ async function process(ev) {
     trackingId,
     eventList: [outputEvent]
   };
-}
 
-exports.process = process;
+  return response;
+};
+
+const putItemsHandler = (message, destination) => {
+  const { properties } = message;
+  const { customMappings, datasetARN } = destination.Config;
+  const keyMap = getHashFromArray(customMappings, "from", "to", false);
+
+  if (!datasetARN) {
+    throw new CustomError(
+      "Dataset ARN is a mandatory information to use putItems"
+    );
+  }
+  if (!datasetARN.includes("/ITEMS")) {
+    throw new CustomError(
+      "Either Dataset ARN is not correctly entered or invalid",
+      400
+    );
+  }
+  const outputItem = {
+    properties: {}
+  };
+  Object.keys(keyMap).forEach(key => {
+    let value;
+
+    if (key.toUpperCase() !== "ITEM_ID") {
+      value = properties && properties[keyMap[key]];
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (!isDefinedAndNotNull(value) || isBlank(value)) {
+        // itemId cannot be null
+        value = String(_.get(message, keyMap[key]));
+      }
+    }
+    if (!isDefined(value)) {
+      throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
+    }
+    if (key.toUpperCase() !== "ITEM_ID") {
+      // itemId is not allowed inside properties
+      outputItem.properties[_.camelCase(key)] = value;
+    } else {
+      outputItem.itemId = String(value);
+    }
+  });
+  if (!outputItem.itemId) {
+    throw new CustomError(
+      "itemId is a mandatory property for using PutItems",
+      400
+    );
+  }
+  const response = {
+    datasetArn: datasetARN,
+    items: [outputItem]
+  };
+  return response;
+};
+
+const trackRequestHandler = (message, destination, eventOperation) => {
+  let response;
+
+  switch (eventOperation) {
+    case "PutEvents":
+      response = putEventsHandler(message, destination);
+      break;
+    case "PutItems":
+      response = putItemsHandler(message, destination);
+      break;
+    default:
+      throw new CustomError(
+        `${eventOperation} is not supported for Track Calls`,
+        400
+      );
+  }
+  return response;
+};
+
+const identifyRequestHandler = (message, destination, eventOperation) => {
+  const traits = getFieldValueFromMessage(message, "traits");
+  const { customMappings, datasetARN } = destination.Config;
+
+  const keyMap = getHashFromArray(customMappings, "from", "to", false);
+
+  if (eventOperation !== "PutUsers") {
+    throw new CustomError(
+      `This Message Type does not support ${eventOperation}. Aborting message.`,
+      400
+    );
+  }
+
+  if (!datasetARN) {
+    throw new CustomError(
+      "Dataset ARN is a mandatory information to use putUsers"
+    );
+  }
+
+  if (!datasetARN.includes("/USERS")) {
+    throw new CustomError(
+      "Either Dataset ARN is not correctly entered or invalid.",
+      400
+    );
+  }
+
+  const outputUser = {
+    userId: getFieldValueFromMessage(message, "userId"),
+    properties: {}
+  };
+  Object.keys(keyMap).forEach(key => {
+    const value = traits && traits[keyMap[key]];
+    if (!isDefined(value)) {
+      throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
+    }
+    if (key.toUpperCase() !== "USER_ID") {
+      // userId is not allowed inside properties
+      outputUser.properties[_.camelCase(key)] = value;
+    }
+  });
+  if (!outputUser.userId) {
+    throw new CustomError(
+      "userId is a mandatory property for using PutUsers",
+      400
+    );
+  }
+  const response = {
+    datasetArn: datasetARN,
+    users: [outputUser]
+  };
+  return response;
+};
+
+const processEvent = async (message, destination) => {
+  let response;
+  let wrappedResponse;
+  const { eventChoice } = destination.Config;
+  const eventOperation = eventChoice || "PutEvents";
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
+
+  const messageType = message.type.toLowerCase();
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      response = identifyRequestHandler(message, destination, eventOperation);
+      break;
+    case EventType.TRACK:
+      response = trackRequestHandler(message, destination, eventOperation);
+      break;
+    default:
+      throw new CustomError("Message type not supported", 400);
+  }
+
+  if (eventChoice && eventChoice !== "PutEvents") {
+    wrappedResponse = {
+      payload: response,
+      choice: eventChoice
+    };
+  } else {
+    // this is done to make it comaptible with the older version of rudder-server
+    wrappedResponse = response;
+  }
+
+  return wrappedResponse;
+};
+
+const process = event => {
+  return processEvent(event.message, event.destination);
+};
+
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

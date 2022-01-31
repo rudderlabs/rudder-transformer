@@ -52,7 +52,10 @@
           "requestId": "a61c#17daea5968a",
           "success": false,
           "errors": [
-            { "code": "610", "message": "Requested resource not found" }
+            {
+              "code": "610",
+              "message": "Requested resource not found"
+            }
           ]
         },
         "status": 200
@@ -89,7 +92,10 @@
     "output": {
       "status": 500,
       "message": "[Marketo Response Handler] - Request failed  with status: 500",
-      "destinationResponse": { "response": "", "status": 500 },
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
       "statTags": {
         "destination": "marketo",
         "stage": "responseTransform",
@@ -102,7 +108,10 @@
     "output": {
       "status": 500,
       "message": "[Marketo Response Handler] - Request failed  with status: 500",
-      "destinationResponse": { "response": "", "status": 500 },
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
       "statTags": {
         "destination": "marketo",
         "stage": "responseTransform",

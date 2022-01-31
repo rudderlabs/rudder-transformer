@@ -1,0 +1,59 @@
+[
+  {
+    "request": {
+      "body": {
+        "destType": "marketo_bulk_upload",
+        "importId": 1234,
+        "config": {
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "from": "email",
+              "to": "Email"
+            }
+          ],
+          "munchkinId": "a"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "destType": "marketo_bulk_upload",
+        "importId": 1234,
+        "config": {
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "from": "email",
+              "to": "Email"
+            }
+          ],
+          "munchkinId": "testMunchkin4"
+        }
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "destType": "marketo_bulk_upload",
+        "importId": 1234,
+        "config": {
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "from": "email",
+              "to": "Email"
+            }
+          ],
+          "munchkinId": "testMunchkin3"
+        }
+      }
+    }
+  }
+]

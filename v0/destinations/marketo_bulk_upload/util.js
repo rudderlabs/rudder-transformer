@@ -55,14 +55,14 @@ const getAccessToken = async config => {
       throw new CustomError(resp.response.code, 500);
     } // handle for abortable codes
     else if (resp.response.response) {
-      if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
+      if (ABORTABLE_CODES.indexOf(resp.response.response.status) > -1) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",
           400
         );
       } // handle for throttled codes
-      else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+      else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",

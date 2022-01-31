@@ -2,21 +2,12 @@
   "createdAt": "$created",
   "createdat": "$created",
   "email": "$email",
-<<<<<<< HEAD
   "firstName": "$first_name",
   "lastName": "$last_name",
   "firstname": "$first_name",
   "lastname": "$last_name",
   "first_name": "$first_name",
   "last_name": "$last_name",
-=======
-  "firstName": "$firstName",
-  "lastName": "$lastName",
-  "firstname": "$firstName",
-  "lastname": "$lastName",
-  "first_name": "$firstName",
-  "last_name": "$lastName",
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
   "name": "$name",
   "username": "$username",
   "phone": "$phone",

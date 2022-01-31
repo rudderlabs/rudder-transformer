@@ -1821,12 +1821,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-<<<<<<< HEAD
         "useNativeSDK": false,
         "useOldMapping": true
-=======
-        "useNativeSDK": false
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1900,12 +1896,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-<<<<<<< HEAD
         "useNativeSDK": false,
         "useOldMapping": true
-=======
-        "useNativeSDK": false
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1978,12 +1970,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-<<<<<<< HEAD
         "useNativeSDK": false,
         "useOldMapping": true
-=======
-        "useNativeSDK": false
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2019,16 +2007,11 @@
           "density": 2
         },
         "traits": {
-<<<<<<< HEAD
           "address": {
             "city": "Disney",
             "country": "USA",
             "state": "US"
           },
-=======
-          "city": "Disney",
-          "country": "USA",
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
           "email": "mickey@disney.com",
           "first_name": "Mickey",
           "last_name": "Mouse",
@@ -2066,12 +2049,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-<<<<<<< HEAD
         "useNativeSDK": false,
         "useOldMapping": true
-=======
-        "useNativeSDK": false
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2150,12 +2129,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-<<<<<<< HEAD
         "useNativeSDK": false,
         "useOldMapping": true
-=======
-        "useNativeSDK": false
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2225,7 +2200,6 @@
       "type": "identify",
       "userId": ""
     }
-<<<<<<< HEAD
   },
   {
     "destination": {
@@ -2535,7 +2509,5 @@
       "type": "identify",
       "userId": ""
     }
-=======
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
   }
 ]

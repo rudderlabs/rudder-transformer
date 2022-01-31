@@ -161,10 +161,7 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
   if (fullName) {
     traits.name = fullName;
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> 0cfaa644afb3eaae17d721d91b446b1112eb4747
   if (traits) {
     if (traits.address && isObject(traits.address)) {
       const tkeys = Object.keys(traits.address);

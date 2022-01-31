@@ -57,7 +57,7 @@ const getPollStatus = async event => {
         resp.response.data.errors[0] &&
         ((resp.response.data.errors[0].code >= 1000 &&
           resp.response.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code) > -1)
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -69,7 +69,7 @@ const getPollStatus = async event => {
           resp.response.data.errors[0].message || "Could not poll status",
           400
         );
-      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
           requestTime,

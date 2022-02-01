@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "Email": "cosmo@krammer.com",
@@ -26,6 +27,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "Email": "cosmo@krammer.com",
@@ -54,6 +56,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "ticketId": "sample-ticket-id",
@@ -80,6 +83,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "Email": "krammer@seinfeld.com",
@@ -104,6 +108,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "Email": "krammer@seinfeld.com",
@@ -128,6 +133,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "Email": "cosmo@krammer.com",
@@ -154,6 +160,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
         "ticketId": "sample-ticket-id",
@@ -179,29 +186,30 @@
     "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/eventManager/event"
   },
   {
-  "body": {
-    "XML": {},
-    "FORM": {},
-    "JSON": {
-      "Name": "Bruce Wayne",
-      "Email": "ceo@waynefoundation.com",
-      "car__gc": "Batmobile",
-      "Comments": "I am Batman!",
-      "LastName": "Wayne",
-      "Location": "Gotham Central",
-      "FirstName": "Bruce",
-      "LinkedinUrl": "https://www.linkedin.com/in/notyourBatman/"
-    }
-  },
-  "type": "REST",
-  "files": {},
-  "method": "PUT",
-  "params": {},
-  "headers": {
-    "Accesskey": "sample-access-key",
-    "Content-Type": "application/json"
-  },
-  "version": "1",
-  "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
-}
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {},
+      "JSON": {
+        "Name": "Bruce Wayne",
+        "Email": "ceo@waynefoundation.com",
+        "car__gc": "Batmobile",
+        "Comments": "I am Batman!",
+        "LastName": "Wayne",
+        "Location": "Gotham Central",
+        "FirstName": "Bruce",
+        "LinkedinUrl": "https://www.linkedin.com/in/notyourBatman/"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Accesskey": "sample-access-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://demo-domain.gainsightcloud.com/v1.0/api/people"
+  }
 ]

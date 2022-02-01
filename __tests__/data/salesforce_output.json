@@ -26,6 +26,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -58,6 +59,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -91,6 +93,7 @@
           "LeadSource": "RudderLabs"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -129,6 +132,7 @@
           "customKey__c": "customValue"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -162,6 +166,7 @@
           "customKey__c": "customValue"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -194,6 +199,7 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
@@ -225,10 +231,43 @@
           "Company": "Initech"
         },
         "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "Email": "peter.gibbons@initech.com",
+          "Phone": "570-690-4150",
+          "Rating": "Hot",
+          "Title": "VP of Derp",
+          "FirstName": "Peter",
+          "LastName": "Gibbons",
+          "PostalCode": "94115",
+          "City": "east greenwich",
+          "Country": "USA",
+          "State": "California",
+          "Street": "19123 forest lane",
+          "Company": "Initech"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
         "FORM": {}
       },
       "files": {}
     }
   ]
 ]
-

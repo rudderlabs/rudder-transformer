@@ -11,12 +11,16 @@ const {
 const { EventType } = require("../../../constants");
 
 const {
+  CustomError,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  extractCustomFields,
   flattenJson,
-  isObject,
-  extractCustomFields
+  getErrorRespEvents,
+  getIntegrationsObj,
+  getSuccessRespEvents,
+  isObject
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -104,11 +108,11 @@ const handleOrder = (message, categoryToContent) => {
     }
     contents.forEach(content => {
       if (content.id === "") {
-        throw Error("Product id is required. Event not sent");
+        throw new CustomError("Product id is required. Event not sent", 400);
       }
     });
   } else {
-    throw new Error("Product is not an object. Event not sent");
+    throw new CustomError("Product is not an object. Event not sent", 400);
   }
   return {
     content_category: category,
@@ -145,7 +149,7 @@ const handleProductListViewed = (message, categoryToContent) => {
           });
         }
       } else {
-        throw Error("Product is not an object. Event not sent");
+        throw new CustomError("Product is not an object. Event not sent", 400);
       }
     });
   }
@@ -162,7 +166,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   }
   contents.forEach(content => {
     if (content.id === "") {
-      throw Error("Product id is required. Event not sent");
+      throw new CustomError("Product id is required. Event not sent", 400);
     }
   });
   return {
@@ -207,7 +211,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   ];
   contents.forEach(content => {
     if (content.id === "") {
-      throw Error("Product id is required. Event not sent");
+      throw new CustomError("Product id is required. Event not sent", 400);
     }
   });
   return {
@@ -283,7 +287,8 @@ const transformedPayloadData = (
   blacklistPiiProperties,
   whitelistPiiProperties,
   isStandard,
-  eventCustomProperties
+  eventCustomProperties,
+  integrationsObj
 ) => {
   const defaultPiiProperties = [
     "email",
@@ -338,7 +343,10 @@ const transformedPayloadData = (
       )
     ) {
       if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] = sha256(String(message.properties[eventProp]));
+        customData[eventProp] =
+          integrationsObj && integrationsObj.hashed
+            ? String(message.properties[eventProp])
+            : sha256(String(message.properties[eventProp]));
       } else {
         delete customData[eventProp];
       }
@@ -366,18 +374,22 @@ const responseBuilderSimple = (message, category, destination) => {
     testEventCode,
     standardPageCall
   } = Config;
+  const integrationsObj = getIntegrationsObj(message, "fb_pixel");
 
-  const endpoint = `https://graph.facebook.com/v10.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    "fb_pixel"
   );
   if (userData) {
     const split = userData.name ? userData.name.split(" ") : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
-      userData.fn = sha256(split[0]);
-      userData.ln = sha256(split[1]);
+      userData.fn =
+        integrationsObj && integrationsObj.hashed ? split[0] : sha256(split[0]);
+      userData.ln =
+        integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
     }
     delete userData.name;
   }
@@ -387,13 +399,14 @@ const responseBuilderSimple = (message, category, destination) => {
 
   commonData = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
+    "fb_pixel"
   );
   if (commonData.action_source) {
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw Error("Invalid Action Source type");
+      throw new CustomError("Invalid Action Source type", 400);
     }
   }
   if (category.type !== "identify") {
@@ -409,7 +422,10 @@ const responseBuilderSimple = (message, category, destination) => {
       category.standard = true;
     }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw Error("No properties for the event so the event cannot be sent.");
+      throw new CustomError(
+        "No properties for the event so the event cannot be sent.",
+        400
+      );
     }
     customData = transformedPayloadData(
       message,
@@ -417,7 +433,8 @@ const responseBuilderSimple = (message, category, destination) => {
       blacklistPiiProperties,
       whitelistPiiProperties,
       category.standard,
-      eventCustomProperties
+      eventCustomProperties,
+      integrationsObj
     );
     message.properties = message.properties || {};
     if (category.standard) {
@@ -469,8 +486,12 @@ const responseBuilderSimple = (message, category, destination) => {
           customData = { ...customData };
           commonData.event_name = "PageView";
           break;
+        case "otherStandard":
+          customData = { ...customData };
+          commonData.event_name = category.event;
+          break;
         default:
-          throw Error("This standard event does not exist");
+          throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
         ? message.properties.currency || "USD"
@@ -525,12 +546,15 @@ const responseBuilderSimple = (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new Error("Payload could not be constructed");
+  throw new CustomError("Payload could not be constructed", 400);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const { advancedMapping, eventsToEvents } = destination.Config;
   let standard;
@@ -544,8 +568,9 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw Error(
-          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent."
+        throw new CustomError(
+          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
+          400
         );
       }
     case EventType.PAGE:
@@ -601,6 +626,7 @@ const processEvent = (message, destination) => {
         case "SubmitApplication":
         case "Subscribe":
           category = CONFIG_CATEGORIES.OTHER_STANDARD;
+          category.event = checkEvent;
           break;
         case "PageView":
           category = CONFIG_CATEGORIES.PAGE_VIEW;
@@ -611,7 +637,7 @@ const processEvent = (message, destination) => {
       }
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError("Message type not supported", 400);
   }
   // build the response
   return responseBuilderSimple(message, category, destination);
@@ -621,4 +647,43 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

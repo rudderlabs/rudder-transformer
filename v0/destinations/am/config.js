@@ -30,6 +30,9 @@ const ConfigCategory = {
   },
   DEFAULT: {
     name: "AmplitudeDefaultConfig"
+  },
+  COMMON_CONFIG: {
+    name: "AmplitudeCommonConfig"
   }
 };
 
@@ -118,8 +121,10 @@ const events = Object.keys(Event);
 events.forEach(event => {
   nameToEventMap[Event[event].name] = Event[event];
 });
+const DESTINATION = "amplitude";
 
 module.exports = {
+  DESTINATION,
   Event,
   ENDPOINT,
   IDENTIFY_ENDPOINT,

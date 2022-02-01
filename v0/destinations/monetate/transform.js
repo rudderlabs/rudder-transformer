@@ -4,7 +4,10 @@ const set = require("set-value");
 const {
   getValueFromMessage,
   defaultRequestConfig,
-  removeUndefinedValues
+  removeUndefinedValues,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  CustomError
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -12,7 +15,7 @@ const { ENDPOINT, mappingConfig } = require("./config");
 
 const createObject = type => {
   if (!type) {
-    throw new Error("[createObject] type not defined");
+    throw new CustomError("[createObject] type not defined", 400);
   }
   // TODO: check if default makes sense
   let retObj = {};
@@ -153,8 +156,9 @@ const constructPayload = (message, mappingJson) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new Error(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
+        throw new CustomError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`,
+          400
         );
       }
     });
@@ -189,7 +193,10 @@ function track(message, destination) {
           ]
         });
       } else {
-        throw new Error("'product_id' is a required field for Product Viewed");
+        throw new CustomError(
+          "'product_id' is a required field for Product Viewed",
+          400
+        );
       }
     } else if (evName === "Product List Viewed") {
       if (properties.products && Array.isArray(properties.products)) {
@@ -197,8 +204,9 @@ function track(message, destination) {
           product => product.product_id
         );
         if (viewedProducts.length !== properties.products.length) {
-          throw new Error(
-            "'product_id' is a required field for all products for Product List Viewed"
+          throw new CustomError(
+            "'product_id' is a required field for all products for Product List Viewed",
+            400
           );
         }
         rawPayload.events.push({
@@ -208,8 +216,9 @@ function track(message, destination) {
           )
         });
       } else {
-        throw new Error(
-          "'products' missing or not array in Product List Viewed"
+        throw new CustomError(
+          "'products' missing or not array in Product List Viewed",
+          400
         );
       }
     } else if (evName === "Product Added") {
@@ -238,8 +247,9 @@ function track(message, destination) {
           ]
         });
       } else {
-        throw new Error(
-          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
+        throw new CustomError(
+          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added",
+          400
         );
       }
     } else if (evName === "Cart Viewed") {
@@ -253,8 +263,9 @@ function track(message, destination) {
             product.product_id
         );
         if (cartProducts.length !== properties.products.length) {
-          throw new Error(
-            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed"
+          throw new CustomError(
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed",
+            400
           );
         }
         rawPayload.events.push({
@@ -286,8 +297,9 @@ function track(message, destination) {
             product.product_id
         );
         if (purchaseLines.length !== products.length) {
-          throw new Error(
-            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed"
+          throw new CustomError(
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed",
+            400
           );
         }
         rawPayload.events.push({
@@ -355,10 +367,49 @@ function process(event) {
       case EventType.SCREEN:
         return screen(event.message, event.destination);
       default:
-        throw new Error(`Message type ${evType} not supported`);
+        throw new CustomError(`Message type ${evType} not supported`, 400);
     }
   }
-  throw new Error("Message type missing from event");
+  throw new CustomError("Message type missing from event", 400);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

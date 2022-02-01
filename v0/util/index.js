@@ -1,7 +1,3 @@
-/* eslint-disable  consistent-return */
-/* eslint-disable  no-param-reassign */
-/* eslint-disable  array-callback-return */
-
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -20,6 +16,10 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
+const {
+  DestCanonicalNames
+} = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -36,7 +36,7 @@ const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
 const removeUndefinedAndNullAndEmptyValues = obj =>
   _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = value => _.isEmpty(_.toString(value));
-
+const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -64,7 +64,7 @@ const isPrimitive = arg => {
  * @param {*} arg
  * @returns {type}
  *
- * Returns type of passed arg 
+ * Returns type of passed arg
  * for null argss returns "NULL" insted of "object"
  *
  */
@@ -72,6 +72,9 @@ const getType = arg => {
   const type = typeof arg;
   if (arg == null) {
     return "NULL";
+  }
+  if (Array.isArray(arg)) {
+    return "array";
   }
   return type;
 };
@@ -83,6 +86,19 @@ const formatValue = value => {
 
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
+}
+
+/**
+ * Returns true for empty object {}
+ * @param {*} obj
+ * @returns
+ */
+function isEmptyObject(obj) {
+  if (!obj) {
+    logger.warn("input is undefined or null");
+    return true;
+  }
+  return Object.keys(obj).length === 0;
 }
 
 // Format the destination.Config.dynamicMap arrays to hashMap
@@ -199,19 +215,20 @@ const getDateInFormat = date => {
 // Generic timestamp formatter
 const formatTimeStamp = (dateStr, format) => {
   const date = new Date(dateStr);
-  switch (format) {
-    default:
-      return date.getTime();
+  // moment format is passed. format accordingly
+  if (format) {
+    return moment.utc(date).format(format);
   }
-};
 
-//
+  // return default format
+  return date.getTime();
+};
 
 const hashToSha256 = value => {
   return sha256(value);
 };
-// Check what type of gender and convert to f or m
 
+// Check what type of gender and convert to f or m
 const getFbGenderVal = gender => {
   if (
     gender.toUpperCase() === "FEMALE" ||
@@ -227,6 +244,7 @@ const getFbGenderVal = gender => {
   ) {
     return hashToSha256("m");
   }
+  return null;
 };
 
 // ========================================================================
@@ -258,6 +276,9 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -268,6 +289,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -275,6 +297,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -286,6 +309,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },
@@ -313,8 +337,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  statTags,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, statTags };
 };
 
 // ========================================================================
@@ -415,7 +445,7 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata) => {
+const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   if (!metadata) {
     return value;
   }
@@ -427,7 +457,8 @@ const handleMetadataForValue = (value, metadata) => {
     template,
     defaultValue,
     excludes,
-    multikeyMap
+    multikeyMap,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -489,8 +520,14 @@ const handleMetadataForValue = (value, metadata) => {
       case "toFloat":
         formattedVal = parseFloat(formattedVal);
         break;
+      case "toInt":
+        formattedVal = parseInt(formattedVal, 10);
+        break;
       case "hashToSha256":
-        formattedVal = hashToSha256(String(formattedVal));
+        formattedVal =
+          integrationsObj && integrationsObj.hashed
+            ? String(formattedVal)
+            : hashToSha256(String(formattedVal));
         break;
       case "getFbGenderVal":
         formattedVal = getFbGenderVal(formattedVal);
@@ -502,6 +539,11 @@ const handleMetadataForValue = (value, metadata) => {
         formattedVal = formattedVal
           .replace("https://", "")
           .replace("http://", "");
+        break;
+      case "IsBoolean":
+        if (!(typeof formattedVal === "boolean")) {
+          logger.debug("Boolean value missing, so dropping it");
+        }
         break;
       default:
         break;
@@ -567,11 +609,45 @@ const handleMetadataForValue = (value, metadata) => {
     if (!foundVal) formattedVal = undefined;
   }
 
+  if (allowedKeyCheck) {
+    let foundVal = false;
+    if (Array.isArray(allowedKeyCheck)) {
+      allowedKeyCheck.some(key => {
+        if (key.sourceVal.includes(formattedVal)) {
+          foundVal = true;
+          return true;
+        }
+      });
+    }
+    if (!foundVal) {
+      formattedVal = undefined;
+    }
+  }
+
   return formattedVal;
 };
 
+// Given a destinationName according to the destination definition names,
+// It'll look for the canonical names for that integration and return the
+// `integrations` object for that destination, else null
+const getIntegrationsObj = (message, destinationName = null) => {
+  if (destinationName) {
+    const canonicalNames = DestCanonicalNames[destinationName];
+    for (let index = 0; index < canonicalNames.length; index += 1) {
+      const integrationsObj = get(
+        message,
+        `integrations.${canonicalNames[index]}`
+      );
+      if (integrationsObj) {
+        return integrationsObj;
+      }
+    }
+  }
+  return null;
+};
+
 // construct payload from an event and mappingJson
-const constructPayload = (message, mappingJson) => {
+const constructPayload = (message, mappingJson, destinationName = null) => {
   // Mapping JSON should be an array
   if (Array.isArray(mappingJson) && mappingJson.length > 0) {
     // - construct a blank payload and return at the end
@@ -622,16 +698,25 @@ const constructPayload = (message, mappingJson) => {
       } = mapping;
       // get the value from event, pass sourceFromGenericMap in the mapping to force this to take the
       // sourcekeys from GenericFieldMapping, else take the sourceKeys from specific destination mapping sourceKeys
+      const integrationsObj = destinationName
+        ? getIntegrationsObj(message, destinationName)
+        : null;
       const value = handleMetadataForValue(
         sourceFromGenericMap
           ? getFieldValueFromMessage(message, sourceKeys)
           : getValueFromMessage(message, sourceKeys),
-        metadata
+        metadata,
+        integrationsObj
       );
 
       if (value || value === 0 || value === false) {
-        // set the value only if correct
-        set(payload, destKey, value);
+        if (destKey) {
+          // set the value only if correct
+          set(payload, destKey, value);
+        } else {
+          // to set to root and flatten later
+          payload[""] = value;
+        }
       } else if (required) {
         // throw error if reqired value is missing
         throw new Error(
@@ -778,6 +863,21 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+
+// Checks if the traits object has a firstName key and a lastName key as defined in GenericFieldMapping.json
+// If it does have those two keys AND does NOT already have a name key
+// Then this function will return fullName: "<firstName> <lastName>"
+function getFullName(message) {
+  let fullName;
+  const firstName = getFieldValueFromMessage(message, "firstName");
+  const lastName = getFieldValueFromMessage(message, "lastName");
+  const name = getFieldValueFromMessage(message, "name");
+  if (!name && firstName && lastName) {
+    fullName = `${firstName} ${lastName}`;
+  }
+  return fullName;
+}
+
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -899,13 +999,150 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+const getMetadata = metadata => {
+  return {
+    sourceType: metadata.sourceType,
+    destinationType: metadata.destinationType,
+    k8_namespace: metadata.namespace
+  };
+};
+// checks if array 2 is a subset of array 1
+function checkSubsetOfArray(array1, array2) {
+  const result = array2.every(val => array1.includes(val));
+  return result;
+}
+
+// splits array into equal parts and returns array of sub arrays
+function returnArrayOfSubarrays(arr, len) {
+  const chunks = [];
+  let i = 0;
+  const n = arr.length;
+  while (i < n) {
+    chunks.push(arr.slice(i, (i += len)));
+  }
+  return chunks;
+}
+
+// Helper method to add external Id to traits
+// Traverse through the possible keys for traits using generic mapping and add externalId if traits found
+function addExternalIdToTraits(message) {
+  const identifierType = get(message, "context.externalId.0.identifierType");
+  const identifierValue = get(message, "context.externalId.0.id");
+  set(
+    getFieldValueFromMessage(message, "traits"),
+    identifierType,
+    identifierValue
+  );
+}
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
+  if (externalId) {
+    message.userId = externalId;
+  }
+};
+class CustomError extends Error {
+  constructor(message, statusCode, metadata) {
+    super(message);
+    this.response = { status: statusCode, metadata };
+  }
+}
+
+/**
+ * Used for generating error response with stats from native and built errors
+ * @param {*} arg
+ * @param {*} destination
+ * @param {*} transformStage
+ */
+function generateErrorObject(error, destination, transformStage) {
+  // check err is object
+  const { status, message, destinationResponse } = error;
+  let { statTags } = error;
+  if (!statTags) {
+    statTags = {
+      destination,
+      stage: transformStage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+  }
+  const response = {
+    status: status || 400,
+    message,
+    destinationResponse,
+    statTags
+  };
+  // Extra Params needed for OAuth destinations' Response handling
+  if (error.authErrorCategory) {
+    response.authErrorCategory = error.authErrorCategory || "";
+  }
+  return response;
+}
+/**
+ * Returns true for http status code in range of 200 to 300
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusSuccess(status) {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
+}
+/**
+ *
+ * Utility function for UUID genration
+ * @returns
+ */
+function generateUUID() {
+  // Public Domain/MIT
+  let d = new Date().getTime();
+  if (
+    typeof performance !== "undefined" &&
+    typeof performance.now === "function"
+  ) {
+    d += performance.now(); // use high-precision timer if available
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    const r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+const isOAuthDestination = destination => {
+  const { Config: destConf } = destination.DestinationDefinition;
+  return destConf && destConf.auth && destConf.auth.type === "OAuth";
+};
+
+const isOAuthSupported = (destination, destHandler) => {
+  return (
+    isOAuthDestination(destination) &&
+    destHandler.processAuth &&
+    typeof destHandler.processAuth === "function"
+  );
+};
+
+function isAppleFamily(platform) {
+  const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
+  return appleOsNames.includes(platform.toLowerCase());
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
+  CustomError,
   ErrorMessage,
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
+  checkSubsetOfArray,
   constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
@@ -916,8 +1153,12 @@ module.exports = {
   deleteObjectProperty,
   extractCustomFields,
   flattenJson,
+  flattenMap,
   formatTimeStamp,
   formatValue,
+  generateUUID,
+  getSuccessRespEvents,
+  generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
@@ -925,11 +1166,13 @@ module.exports = {
   getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
+  getFullName,
   getHashFromArray,
+  getIntegrationsObj,
   getMappingConfig,
+  getMetadata,
   getParsedIP,
   getStringValueOfJSON,
-  getSuccessRespEvents,
   getTimeDifference,
   getType,
   getValueFromMessage,
@@ -939,6 +1182,9 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isEmptyObject,
+  isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,
@@ -947,9 +1193,13 @@ module.exports = {
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
+  returnArrayOfSubarrays,
   setValues,
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  isOAuthSupported,
+  isOAuthDestination,
+  isAppleFamily
 };

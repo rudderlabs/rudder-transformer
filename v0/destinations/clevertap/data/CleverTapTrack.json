@@ -5,17 +5,16 @@
     "required": true
   },
   {
-    "destKey": "identity",
-    "sourceKeys": "userId",
-    "required": true,
-    "sourceFromGenericMap": true
-  },
-  {
     "destKey": "evtData",
     "sourceKeys": "properties",
     "required": true,
     "metadata": {
       "defaultValue": {}
     }
+  },
+  {
+    "destKey": "ts",
+    "sourceKeys": "properties.ts",
+    "required": false
   }
 ]

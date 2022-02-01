@@ -13,15 +13,9 @@ const {
   toTitleCase,
   getHashFromArray,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 

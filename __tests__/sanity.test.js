@@ -1,8 +1,10 @@
+jest.mock("axios");
 const name = "Sanity";
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
 const { getDirectories } = require("./util");
+const { mockaxios } = require("../__mocks__/network");
 
 // ********************************
 // Getting Started

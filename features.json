@@ -2,11 +2,18 @@
   "routerTransform": {
     "GA": true,
     "GAINSIGHT": true,
+    "GAINSIGHT_PX": true,
     "HS": true,
     "MARKETO": true,
     "SALESFORCE": true,
     "SFMC": true,
     "TRENGO": true,
-    "KUSTOMER": true
+    "KUSTOMER": true,
+    "FB_CUSTOM_AUDIENCE": true,
+    "DELIGHTED": true,
+    "DRIP": true,
+    "ALGOLIA": true,
+    "PROFITWELL": true,
+    "OMETRIA": true
   }
 }

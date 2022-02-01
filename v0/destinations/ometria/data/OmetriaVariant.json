@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "id",
+    "sourceKeys": "id",
+    "required": false
+  },
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": false
+  },
+  {
+    "destKey": "label",
+    "sourceKeys": "label",
+    "required": false
+  }
+]

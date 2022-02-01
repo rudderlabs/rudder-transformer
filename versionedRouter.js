@@ -63,6 +63,40 @@ const versionIdsMap = {
   "1YiEU0JDDBOl2vtx3hhb31ErcLK": "1uecc7SaHD8TID68e2FqWc6QphC",
   "1axJesPakkAmZQYeJNV1YaA6OSB": "1uecc8dlr9jDnXUGuApMliD8CWo"
 };
+const workspaceMap = {
+  "1fHddAUiVeBwp2SwZ0aG71X454q": "acorns-dgaray",
+  "1htBITAbZb6oMHymeum7UF7xRzd": "acorns-dgaray",
+  "1o2OT5cYDxm7zGO9pMt40XaX6rM": "acorns-dgaray",
+  "1pDAWi760WAW96LLZTsbqFAuK08": "acorns-dgaray",
+  "1ypPtyuFjCYYCCR1hfPqc3dlcGA": "acorns-dgaray",
+  "1jZCAI2VrDB9QS6hjkVyhXjhdzS": "acorns-dgaray+dedupe",
+  "1iF1tH9zAfc3KZ9OJzzBIl1VPia": "acorns-dgaray+production",
+  "1iLHAfJjp8lFBrf3XPdGF5M9l3F": "acorns-dgaray+production",
+  "1jZC3aruHvIXGBTdwJ6kFA1GJdR": "acorns-dgaray+production",
+  "1iUDrOIvGBZwji5SeKtVgNmG6UR": "acorns-dgaray+production",
+  "1hvMxM8v2BzhlXQWj1bLUxvulIP": "acorns-dgaray+production",
+  "1iI4BsKlN9bk9tbma6RMG1NAl96": "acorns-dgaray+production",
+  "1o2mvdEPpuDYu3z6UeW0iHBMffG": "acorns-dgaray+production",
+  "1s5u0SjDG5X3HcCbY24JQ5ykfrA": "acorns-dgaray+production",
+  "1udGSiF1Bp6jAic37JEOSYG22Ez": "amperity-caleb",
+  "1qMYBT4LLFcmi0cU59MIE61MwoV": "carbmanager-kevin",
+  "1klz2PRe75x3pc1IuQGE1JbGS1y": "codota-nimrod",
+  "1t2kGu1qRz11BvfAplCdYFdlC8h": "codota-nimrod",
+  "1rqrpnPoUZVjq4VmHXK2ADpVleV": "Crate & Barrel",
+  "1rZihudH1HurUghaKWoG1ivyRfh": "Crate & Barrel",
+  "1rh0srM5fH9yWr7WHWqpPPzeEXO": "Crate & Barrel",
+  "1u2nigrRiZbCloWHwNFCCIX3NP4": "Crate & Barrel",
+  "1oezI5OihLXxZwinVn4CjvPK1Cj": "mattermost-alex",
+  "1bLaSZgS4UhGnggH4ZLdhmbgUlX": "RudderStack Production",
+  "1xaNtgrNWiCk4F0bhA8IWfcXZ1U": "RudderStack Production",
+  "20B31YmHnMrrAfxa4gfymzcgHtQ": "Sbermarket",
+  "1kp5NcAOv9jLcgbFSAo6RtFTIT8": "Sbermarket",
+  "1sWhcuNB78V0Hq3ebVuU7eQKvp2": "Sbermarket",
+  "1ilNgx7qoMlClUESjCdTnE7LYdA": "suprdaily-sarang.bondre",
+  "1U9zJ1KQ321vePoo14NNGMqmOzM": "Torpedo",
+  "1YiEU0JDDBOl2vtx3hhb31ErcLK": "Torpedo",
+  "1axJesPakkAmZQYeJNV1YaA6OSB": "Torpedo"
+};
 const versions = ["v0"];
 const API_VERSION = "2";
 
@@ -390,7 +424,7 @@ if (startDestTransformer) {
                 }
                 if (!responseMatched) {
                   logger.info("Failed Hit ", transformationVersionId);
-                  stats.counter("match_fail", 1, { transformationVersionId });
+                  stats.counter("match_fail", 1, { transformationVersionId, workspace: workspaceMap[transformationVersionId] });
                   finalResults[transformationVersionId]['fail'] = 1 + finalResults[transformationVersionId]['fail'];
                   if (!failedVersions.includes(transformationVersionId)) {
                     failedVersions.push(transformationVersionId)
@@ -403,7 +437,7 @@ if (startDestTransformer) {
                   );
                 } else {
                   logger.info("Successful Hit ", transformationVersionId);
-                  stats.counter("match_success", 1, { transformationVersionId });
+                  stats.counter("match_success", 1, { transformationVersionId, workspace: workspaceMap[transformationVersionId] });
                   finalResults[transformationVersionId].success = 1 + finalResults[transformationVersionId].success;
                   if (!successfulVersions.includes(transformationVersionId)) {
                     successfulVersions.push(transformationVersionId);

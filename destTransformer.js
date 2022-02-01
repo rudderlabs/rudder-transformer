@@ -8,7 +8,7 @@ const { testRouter } = require("./testRouter");
 const cluster = require("./util/cluster");
 const { addPrometheusMiddleware } = require("./middleware");
 
-const clusterEnabled = true;
+const clusterEnabled = !(process.env.CLUSTER_ENABLED === false) || true;
 
 const PORT = 9090;
 const app = new Koa();
@@ -29,3 +29,5 @@ if (clusterEnabled) {
   app.listen(PORT);
   logger.info(`Listening on Port: ${PORT}`);
 }
+
+

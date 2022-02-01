@@ -619,7 +619,6 @@ router.post("/batch", ctx => {
   batchHandler(ctx);
 });
 
-
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getDestFileUploadHandler(

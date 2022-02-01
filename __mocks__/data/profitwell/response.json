@@ -1,0 +1,34 @@
+{
+  "https://api.profitwell.com/v2/users/pwu_Oea7HXV3bnTP/": [
+    {
+      "user_id": "pwu_Oea7HXV3bnTP",
+      "subscription_id": "pws_FecTCEyo17rV",
+      "user_alias": "spiderman_1a",
+      "subscription_alias": "spiderman_sub_1a",
+      "email": "spiderman@profitwell.com",
+      "plan_id": "web_plan",
+      "plan_interval": "month",
+      "plan_currency": "usd",
+      "status": "active",
+      "value": 5000,
+      "effective_date": 1514764800,
+      "meta": {}
+    }
+  ],
+  "https://api.profitwell.com/v2/users/spiderman_1a/": [
+    {
+      "user_id": "pwu_Oea7HXV3bnTP",
+      "subscription_id": "pws_FecTCEyo17rV",
+      "user_alias": "spiderman_1a",
+      "subscription_alias": "spiderman_sub_1a",
+      "email": "spiderman@profitwell.com",
+      "plan_id": "web_plan",
+      "plan_interval": "month",
+      "plan_currency": "usd",
+      "status": "active",
+      "value": 5000,
+      "effective_date": 1514764800,
+      "meta": {}
+    }
+  ]
+}

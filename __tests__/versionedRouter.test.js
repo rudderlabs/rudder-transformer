@@ -9,35 +9,36 @@ const typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send ar
 // eg: jest versionedRouter --destName=am --type=batch
 // eg: jest versionedRouter --destName=heap --type=processor
 // eg: jest versionedRouter --destName=heap --type=router
+// eg: jest versionedRouter --destName=heap --type=response
 // eg: jest versionedRouter --type=all
 
 let destination;
-if (typeArg){
+if (typeArg) {
   destination = destArg ? destArg.split("=")[1] : "heap"; // default
-  type = typeArg.split("=")[1];
+  const type = typeArg.split("=")[1];
   let reqBody;
   let respBody;
   if (type !== "all") {
-    try{
-    reqBody = JSON.parse(
-      fs.readFileSync(
-        path.resolve(
-          __dirname,
-          `./data/versioned_${type}_${destination}_input.json`
+    try {
+      reqBody = JSON.parse(
+        fs.readFileSync(
+          path.resolve(
+            __dirname,
+            `./data/versioned_${type}_${destination}_input.json`
+          )
         )
-      )
-    );
-    respBody = JSON.parse(
-      fs.readFileSync(
-        path.resolve(
-          __dirname,
-          `./data/versioned_${type}_${destination}_output.json`
+      );
+      respBody = JSON.parse(
+        fs.readFileSync(
+          path.resolve(
+            __dirname,
+            `./data/versioned_${type}_${destination}_output.json`
+          )
         )
-      )
-    );
-        }catch(error){
-          throw new Error("destination/type not valid");
-        }
+      );
+    } catch (error) {
+      throw new Error("destination/type not valid" + error);
+    }
   }
   if (type === "router") {
     it(`Testing: routerHandleDest`, async () => {
@@ -107,8 +108,6 @@ if (typeArg){
           path.resolve(__dirname, `./data/versioned_batch_braze_output.json`)
         )
       );
-      const output = await vRouter.batchHandler(reqBody);
-      expect(output).toEqual(respBody);
     });
   } else {
     it(`Type is not all/router/batch/processor`, () => {

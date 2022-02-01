@@ -19,7 +19,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  toUnixTimestamp
+  toUnixTimestamp,
+  isAppleFamily
 } = require("../../util");
 
 /*
@@ -171,11 +172,14 @@ const responseBuilderSimple = (message, category, destination) => {
       // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
       // also anoymousId should be present to map it with objectId
       const deviceToken = get(message, "context.device.token");
-      const deviceOS = get(message, "context.os.name").toLowerCase();
+      let deviceOS = get(message, "context.os.name");
+      if (deviceOS) {
+        deviceOS = deviceOS.toLowerCase();
+      }
       if (
         get(message, "anonymousId") &&
         deviceToken &&
-        ["ios", "android"].includes(deviceOS)
+        (deviceOS === "android" || isAppleFamily(deviceOS))
       ) {
         const tokenType = deviceOS === "android" ? "fcm" : "apns";
         const payloadForDeviceToken = {

@@ -1,7 +1,3 @@
-/* eslint-disable  consistent-return */
-/* eslint-disable  no-param-reassign */
-/* eslint-disable  array-callback-return */
-
 // ========================================================================
 // Make sure you are putting any new method in relevant section
 // INLINERS ==> Inline methods
@@ -23,6 +19,7 @@ const logger = require("../../logger");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
+const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -218,19 +215,20 @@ const getDateInFormat = date => {
 // Generic timestamp formatter
 const formatTimeStamp = (dateStr, format) => {
   const date = new Date(dateStr);
-  switch (format) {
-    default:
-      return date.getTime();
+  // moment format is passed. format accordingly
+  if (format) {
+    return moment.utc(date).format(format);
   }
-};
 
-//
+  // return default format
+  return date.getTime();
+};
 
 const hashToSha256 = value => {
   return sha256(value);
 };
-// Check what type of gender and convert to f or m
 
+// Check what type of gender and convert to f or m
 const getFbGenderVal = gender => {
   if (
     gender.toUpperCase() === "FEMALE" ||
@@ -246,6 +244,7 @@ const getFbGenderVal = gender => {
   ) {
     return hashToSha256("m");
   }
+  return null;
 };
 
 // ========================================================================
@@ -277,6 +276,9 @@ const defaultPutRequestConfig = {
 };
 
 // DEFAULT
+// TODO: add builder pattern to generate request and batchRequest
+// and set payload for JSON_ARRAY
+// JSON_ARRAY: { payload: [] }
 const defaultRequestConfig = () => {
   return {
     version: "1",
@@ -287,6 +289,7 @@ const defaultRequestConfig = () => {
     params: {},
     body: {
       JSON: {},
+      JSON_ARRAY: {},
       XML: {},
       FORM: {}
     },
@@ -294,6 +297,7 @@ const defaultRequestConfig = () => {
   };
 };
 
+// JSON_ARRAY: { payload: [] }
 const defaultBatchRequestConfig = () => {
   return {
     batchedRequest: {
@@ -305,6 +309,7 @@ const defaultBatchRequestConfig = () => {
       params: {},
       body: {
         JSON: {},
+        JSON_ARRAY: {},
         XML: {},
         FORM: {}
       },
@@ -332,8 +337,14 @@ const getSuccessRespEvents = (
 
 // Router transformer
 // Error responses
-const getErrorRespEvents = (metadata, statusCode, error, batched = false) => {
-  return { metadata, batched, statusCode, error };
+const getErrorRespEvents = (
+  metadata,
+  statusCode,
+  error,
+  statTags,
+  batched = false
+) => {
+  return { metadata, batched, statusCode, error, statTags };
 };
 
 // ========================================================================
@@ -852,6 +863,21 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+
+// Checks if the traits object has a firstName key and a lastName key as defined in GenericFieldMapping.json
+// If it does have those two keys AND does NOT already have a name key
+// Then this function will return fullName: "<firstName> <lastName>"
+function getFullName(message) {
+  let fullName;
+  const firstName = getFieldValueFromMessage(message, "firstName");
+  const lastName = getFieldValueFromMessage(message, "lastName");
+  const name = getFieldValueFromMessage(message, "name");
+  if (!name && firstName && lastName) {
+    fullName = `${firstName} ${lastName}`;
+  }
+  return fullName;
+}
+
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -1008,7 +1034,12 @@ function addExternalIdToTraits(message) {
     identifierValue
   );
 }
-
+const adduserIdFromExternalId = message => {
+  const externalId = get(message, "context.externalId.0.id");
+  if (externalId) {
+    message.userId = externalId;
+  }
+};
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1016,6 +1047,52 @@ class CustomError extends Error {
   }
 }
 
+/**
+ * Used for generating error response with stats from native and built errors
+ * @param {*} arg
+ * @param {*} destination
+ * @param {*} transformStage
+ */
+function generateErrorObject(error, destination, transformStage) {
+  // check err is object
+  const { status, message, destinationResponse } = error;
+  let { statTags } = error;
+  if (!statTags) {
+    statTags = {
+      destination,
+      stage: transformStage,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    };
+  }
+  const response = {
+    status: status || 400,
+    message,
+    destinationResponse,
+    statTags
+  };
+  // Extra Params needed for OAuth destinations' Response handling
+  if (error.authErrorCategory) {
+    response.authErrorCategory = error.authErrorCategory || "";
+  }
+  return response;
+}
+/**
+ * Returns true for http status code in range of 200 to 300
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusSuccess(status) {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Returns true for http status code in range of 500 to 600
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusRetryable(status) {
+  return status >= 500 && status < 600;
+}
 /**
  *
  * Utility function for UUID genration
@@ -1037,6 +1114,24 @@ function generateUUID() {
   });
 }
 
+const isOAuthDestination = destination => {
+  const { Config: destConf } = destination.DestinationDefinition;
+  return destConf && destConf.auth && destConf.auth.type === "OAuth";
+};
+
+const isOAuthSupported = (destination, destHandler) => {
+  return (
+    isOAuthDestination(destination) &&
+    destHandler.processAuth &&
+    typeof destHandler.processAuth === "function"
+  );
+};
+
+function isAppleFamily(platform) {
+  const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
+  return appleOsNames.includes(platform.toLowerCase());
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1045,6 +1140,7 @@ module.exports = {
   CustomError,
   ErrorMessage,
   addExternalIdToTraits,
+  adduserIdFromExternalId,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1060,6 +1156,9 @@ module.exports = {
   flattenMap,
   formatTimeStamp,
   formatValue,
+  generateUUID,
+  getSuccessRespEvents,
+  generateErrorObject,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
@@ -1067,13 +1166,13 @@ module.exports = {
   getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
+  getFullName,
   getHashFromArray,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
-  getSuccessRespEvents,
   getTimeDifference,
   getType,
   getValueFromMessage,
@@ -1084,6 +1183,8 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
+  isHttpStatusSuccess,
+  isHttpStatusRetryable,
   isNonFuncObject,
   isObject,
   isPrimitive,
@@ -1098,5 +1199,7 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  generateUUID
+  isOAuthSupported,
+  isOAuthDestination,
+  isAppleFamily
 };

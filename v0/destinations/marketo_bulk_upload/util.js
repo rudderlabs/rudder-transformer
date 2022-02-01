@@ -1,5 +1,5 @@
 const { CustomError } = require("../../util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [
@@ -32,7 +32,7 @@ const getAccessToken = async config => {
     url: `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
     method: "get"
   };
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   if (resp.success) {
     if (
       resp.response &&
@@ -55,14 +55,14 @@ const getAccessToken = async config => {
       throw new CustomError(resp.response.code, 500);
     } // handle for abortable codes
     else if (resp.response.response) {
-      if (ABORTABLE_CODES.indexOf(resp.response.response.status)) {
+      if (ABORTABLE_CODES.indexOf(resp.response.response.status) > -1) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",
           400
         );
       } // handle for throttled codes
-      else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+      else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
         throw new CustomError(
           resp.response.response.statusText ||
             "Error during fetching access token",

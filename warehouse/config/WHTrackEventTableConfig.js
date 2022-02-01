@@ -1,22 +1,12 @@
-const get = require("get-value");
-const { isBlank } = require("../util");
-
-const getCloudRecordID = message => {
-  if (get(message, "context.sources.version")) {
-    const { recordId } = message;
-    if (typeof recordId === "object" || isBlank(recordId)) {
-      throw new Error("recordId cannot be empty for cloud sources events");
-    }
-    return recordId;
-  }
-  return message.messageId;
-};
+const { sourceCategoriesToUseRecordId, getCloudRecordID } = require("../util");
 
 const rules = {
-  id: (message, options) =>
-    message.type === "track" && options.sourceCategory === "cloud"
-      ? getCloudRecordID(message)
-      : message.messageId
+  id: (message, options) => {
+    return message.type === "track" &&
+      sourceCategoriesToUseRecordId.includes(options.sourceCategory)
+      ? getCloudRecordID(message, message.messageId)
+      : message.messageId;
+  }
 };
 
 module.exports = rules;

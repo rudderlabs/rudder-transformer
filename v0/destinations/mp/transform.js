@@ -13,7 +13,9 @@ const {
   getTimeDifference,
   getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily,
+  getFullName
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -153,6 +155,12 @@ function getTransformedJSON(message, mappingJson) {
 
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
+
+  const fullName = getFullName(message);
+  if (fullName) {
+    traits.name = fullName;
+  }
+
   if (traits) {
     traits = { ...traits };
     const keys = Object.keys(traits);
@@ -186,7 +194,7 @@ function processIdentifyEvents(message, type, destination) {
   const { device } = message.context;
   if (device && device.token) {
     let payload;
-    if (device.type.toLowerCase() === "ios") {
+    if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {

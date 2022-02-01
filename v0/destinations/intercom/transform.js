@@ -1,5 +1,6 @@
 const md5 = require("md5");
-const { EventType } = require("../../../constants");
+const get = require("get-value");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   ConfigCategory,
   MappingConfig,
@@ -14,7 +15,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  addExternalIdToTraits
 } = require("../../util");
 
 function getCompanyAttribute(company) {
@@ -56,14 +58,17 @@ function validateIdentify(message, payload) {
       }
     }
 
-    if (finalPayload.custom_attributes.company) {
+    if (get(finalPayload, "custom_attributes.company")) {
       finalPayload.companies = getCompanyAttribute(
         finalPayload.custom_attributes.company
       );
     }
-    ReservedTraitsProperties.forEach(trait => {
-      delete finalPayload.custom_attributes[trait];
-    });
+
+    if (finalPayload.custom_attributes) {
+      ReservedTraitsProperties.forEach(trait => {
+        delete finalPayload.custom_attributes[trait];
+      });
+    }
 
     return finalPayload;
   }
@@ -110,7 +115,8 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json"
+    Accept: "application/json",
+    "Intercom-Version": "1.4"
   };
   response.userId = message.anonymousId;
   return response;
@@ -123,6 +129,7 @@ function processSingleMessage(message, destination) {
       400
     );
   }
+  const { sendAnonymousId } = destination.Config;
   const messageType = message.type.toLowerCase();
   let category;
 
@@ -141,7 +148,16 @@ function processSingleMessage(message, destination) {
   }
 
   // build the response and return
-  const payload = constructPayload(message, MappingConfig[category.name]);
+  let payload;
+  if (get(message, MappedToDestinationKey)) {
+    addExternalIdToTraits(message);
+    payload = getFieldValueFromMessage(message, "traits");
+  } else {
+    payload = constructPayload(message, MappingConfig[category.name]);
+  }
+  if (sendAnonymousId && !payload.user_id) {
+    payload.user_id = message.anonymousId;
+  }
   return validateAndBuildResponse(message, payload, category, destination);
 }
 

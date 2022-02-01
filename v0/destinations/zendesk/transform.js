@@ -116,6 +116,9 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
       : getFieldValueFromMessage(message, "traits");
 
   const payload = constructPayload(traits, mappingJson);
+  if (!payload.user) {
+    payload.user = {};
+  }
   payload.user.external_id =
     get(traits, "userId") || get(traits, "id") || message.userId;
 
@@ -394,7 +397,13 @@ async function processIdentify(message, destinationConfig, headers) {
 async function processTrack(message, destinationConfig, headers) {
   validateUserId(message);
   const traits = getFieldValueFromMessage(message, "traits");
-  let userEmail = traits.email;
+  let userEmail;
+  if (traits) {
+    userEmail = traits.email ? traits.email : null;
+  }
+  if (!userEmail) {
+    throw new CustomError("email not found in traits.", 400);
+  }
   let zendeskUserID;
 
   let url = `${endPoint}users/search.json?query=${userEmail}`;
@@ -550,6 +559,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

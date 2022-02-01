@@ -372,7 +372,7 @@ if (startDestTransformer) {
                   finalResults[transformationVersionId] = {
                     success: 0,
                     fail: 0
-                  }
+                  };
                 }
                 let responseMatched = true;
                 try {
@@ -390,6 +390,7 @@ if (startDestTransformer) {
                 }
                 if (!responseMatched) {
                   logger.info("Failed Hit ", transformationVersionId);
+                  stats.counter("match_fail", 1, { transformationVersionId });
                   finalResults[transformationVersionId]['fail'] = 1 + finalResults[transformationVersionId]['fail'];
                   if (!failedVersions.includes(transformationVersionId)) {
                     failedVersions.push(transformationVersionId)
@@ -399,9 +400,10 @@ if (startDestTransformer) {
                   fs.writeFileSync(`./tout_${transformationVersionId}_${Date.now()%20}.txt`,
                     JSON.stringify(destTransformedEvents, null, 2) + '\n #### v1 ### \n' + JSON.stringify(destTransformedEventsNew, null, 2) 
                     + '\n#### Input ### \n' + JSON.stringify(destEvents, null, 2)
-                  )
+                  );
                 } else {
-                  logger.info('Successful Hit ', transformationVersionId)
+                  logger.info("Successful Hit ", transformationVersionId);
+                  stats.counter("match_success", 1, { transformationVersionId });
                   finalResults[transformationVersionId].success = 1 + finalResults[transformationVersionId].success;
                   if (!successfulVersions.includes(transformationVersionId)) {
                     successfulVersions.push(transformationVersionId);

@@ -424,7 +424,7 @@ if (startDestTransformer) {
                 }
                 if (!responseMatched) {
                   logger.info("Failed Hit ", transformationVersionId);
-                  stats.counter("match_fail", 1, { transformationVersionId, workspace: workspaceMap[transformationVersionId] });
+                  stats.counter("match_fail", 1, { transformationVersionId, kworkspace: workspaceMap[transformationVersionId] });
                   finalResults[transformationVersionId]['fail'] = 1 + finalResults[transformationVersionId]['fail'];
                   if (!failedVersions.includes(transformationVersionId)) {
                     failedVersions.push(transformationVersionId)
@@ -437,7 +437,7 @@ if (startDestTransformer) {
                   );
                 } else {
                   logger.info("Successful Hit ", transformationVersionId);
-                  stats.counter("match_success", 1, { transformationVersionId, workspace: workspaceMap[transformationVersionId] });
+                  stats.counter("match_success", 1, { transformationVersionId, kworkspace: workspaceMap[transformationVersionId] });
                   finalResults[transformationVersionId].success = 1 + finalResults[transformationVersionId].success;
                   if (!successfulVersions.includes(transformationVersionId)) {
                     successfulVersions.push(transformationVersionId);

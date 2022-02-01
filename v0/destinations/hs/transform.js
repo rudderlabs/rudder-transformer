@@ -1,7 +1,7 @@
 const get = require("get-value");
 const set = require("set-value");
 const axios = require("axios");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -9,9 +9,18 @@ const {
   removeUndefinedValues,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError,
+  addExternalIdToTraits,
+  defaultBatchRequestConfig
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  BATCH_CONTACT_ENDPOINT,
+  MAX_BATCH_SIZE
+} = require("./config");
+const { getEmailAndUpdatedProps } = require("./util");
 
 const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -24,11 +33,39 @@ function getKey(key) {
   return modifiedKey;
 }
 
+function getTraits(message) {
+  let traits = getFieldValueFromMessage(message, "traits");
+  if (!traits || !Object.keys(traits).length) {
+    traits = message.properties;
+  }
+
+  return traits;
+}
+
 async function getProperties(destination) {
   if (!hubSpotPropertyMap.length) {
+    let response;
     const { apiKey } = destination.Config;
     const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
-    const response = await axios.get(url);
+    try {
+      response = await axios.get(url);
+    } catch (err) {
+      // check if exists err.response && err.response.status else 500
+
+      if (err.response) {
+        throw new CustomError(
+          JSON.stringify(err.response.data) ||
+            JSON.stringify(err.response.statusText) ||
+            "Failed to get hubspot properties",
+          err.response.status || 500
+        );
+      }
+      throw new CustomError(
+        "Failed to get hubspot properties : indvalid response",
+        500
+      );
+    }
+
     const propertyMap = {};
     response.data.forEach(element => {
       propertyMap[element.name] = element.type;
@@ -38,14 +75,21 @@ async function getProperties(destination) {
   return hubSpotPropertyMap;
 }
 
-async function getTransformedJSON(message, mappingJson, destination) {
+async function getTransformedJSON(
+  message,
+  mappingJson,
+  destination,
+  propertyMap
+) {
   const rawPayload = {};
-
   const sourceKeys = Object.keys(mappingJson);
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getTraits(message);
+
   if (traits) {
     const traitsKeys = Object.keys(traits);
-    const propertyMap = await getProperties(destination);
+    if (!propertyMap) {
+      propertyMap = await getProperties(destination);
+    }
     sourceKeys.forEach(sourceKey => {
       if (get(traits, sourceKey)) {
         set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
@@ -107,20 +151,24 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   return response;
 }
 
-async function processTrack(message, destination) {
+async function processTrack(message, destination, propertyMap) {
   const parameters = {
     _a: destination.Config.hubID,
     _n: message.event
   };
 
-  if (message.properties.revenue || message.properties.value) {
+  if (
+    message.properties &&
+    (message.properties.revenue || message.properties.value)
+  ) {
     // eslint-disable-next-line dot-notation
     parameters["_m"] = message.properties.revenue || message.properties.value;
   }
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
-    destination
+    destination,
+    propertyMap
   );
 
   return responseBuilderSimple(
@@ -135,15 +183,22 @@ async function processTrack(message, destination) {
 //   throw new Error(message);
 // }
 
-async function processIdentify(message, destination) {
+async function processIdentify(message, destination, propertyMap) {
   const traits = getFieldValueFromMessage(message, "traits");
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // If mapped to destination, Add externalId to traits
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+  }
+
   if (!traits || !traits.email) {
-    throw new Error("Identify without email is not supported.");
+    throw new CustomError("Identify without email is not supported.", 400);
   }
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,
-    destination
+    destination,
+    propertyMap
   );
   const properties = getPropertyValueForIdentify(userProperties);
   return responseBuilderSimple(
@@ -154,27 +209,125 @@ async function processIdentify(message, destination) {
   );
 }
 
-async function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination, propertyMap) {
   let response;
-  try {
-    switch (message.type) {
-      case EventType.TRACK:
-        response = await processTrack(message, destination);
-        break;
-      case EventType.IDENTIFY:
-        response = await processIdentify(message, destination);
-        break;
-      default:
-        throw new Error(`message type ${message.type} is not supported`);
-    }
-  } catch (e) {
-    throw new Error(e.message || "error occurred while processing payload.");
+
+  if (!message.type) {
+    throw new CustomError("message type not present", 400);
   }
+
+  switch (message.type) {
+    case EventType.TRACK:
+      response = await processTrack(message, destination, propertyMap);
+      break;
+    case EventType.IDENTIFY:
+      response = await processIdentify(message, destination, propertyMap);
+      break;
+    default:
+      throw new CustomError(
+        `message type ${message.type} is not supported`,
+        400
+      );
+  }
+
   return response;
 }
 
+// has been deprecated - using routerTransform for both the versions
 function process(event) {
   return processSingleMessage(event.message, event.destination);
+}
+
+function batchEvents(destEvents) {
+  const batchedResponseList = [];
+  const trackResponseList = [];
+  let eventsChunk = [];
+  const arrayChunksIdentify = [];
+  destEvents.forEach((event, index) => {
+    // handler for track call
+    if (event.message.method === "GET") {
+      const { message, metadata, destination } = event;
+      const endpoint = get(message, "endpoint");
+
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultGetRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else {
+      eventsChunk.push(event);
+    }
+    if (
+      eventsChunk.length &&
+      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+    ) {
+      arrayChunksIdentify.push(eventsChunk);
+      eventsChunk = [];
+    }
+  });
+
+  // list of chunks [ [..], [..] ]
+  arrayChunksIdentify.forEach(chunk => {
+    const identifyResponseList = [];
+    const metadata = [];
+
+    // extracting destination, apiKey value
+    // from the first event in a batch
+    const { destination } = chunk[0];
+    const { apiKey } = destination.Config;
+    const params = { hapikey: apiKey };
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    chunk.forEach(ev => {
+      const { email, updatedProperties } = getEmailAndUpdatedProps(
+        ev.message.body.JSON.properties
+      );
+      ev.message.body.JSON.properties = updatedProperties;
+      identifyResponseList.push({
+        email,
+        properties: ev.message.body.JSON.properties
+      });
+      metadata.push(ev.metadata);
+    });
+
+    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+      batch: JSON.stringify(identifyResponseList)
+    };
+
+    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+    batchEventResponse.batchedRequest.headers = {
+      "Content-Type": "application/json"
+    };
+    batchEventResponse.batchedRequest.params = params;
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList.concat(trackResponseList);
 }
 
 const processRouterDest = async inputs => {
@@ -183,34 +336,57 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const successRespList = [];
+  const errorRespList = [];
+  // using the first destination config for transforming the batch
+  const { destination } = inputs[0];
+  // reduce the no. of calls for properties endpoint
+  let propertyMap;
+  const traitsFound = inputs.some(input => {
+    return getTraits(input.message) !== undefined;
+  });
+  if (traitsFound) {
+    propertyMap = await getProperties(destination);
+  }
+  await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          successRespList.push({
+            message: input.message,
+            metadata: input.metadata,
+            destination
+          });
+        } else {
+          // event is not transformed
+          successRespList.push({
+            message: await processSingleMessage(
+              input.message,
+              destination,
+              propertyMap
+            ),
+            metadata: input.metadata,
+            destination
+          });
         }
-
-        // event is not transformed
-        return getSuccessRespEvents(
-          await processSingleMessage(input.message, input.destination),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+        errorRespList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response ? error.response.status : 400,
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+
+  let batchedResponseList = [];
+  if (successRespList.length) {
+    batchedResponseList = await batchEvents(successRespList);
+  }
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

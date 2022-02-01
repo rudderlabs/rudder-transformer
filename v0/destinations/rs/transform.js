@@ -8,9 +8,10 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(val, options) {
-  if (options.rsAlterStringToText === "true") {
-    if (val && val.length > RSStringLimit) {
+function getDataTypeOverride(key, val, options) {
+  if (options.rsAlterStringToText === "true" && val) {
+    const stringifiedVal = Array.isArray(val) ? JSON.stringify(val) : val;
+    if (stringifiedVal.length > RSStringLimit) {
       return "text";
     }
   }
@@ -24,6 +25,7 @@ function process(event) {
     event.request.query.rsAlterStringToText || "false";
   const provider = redshift;
   return processSingleMessage(event.message, {
+    metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
     getDataTypeOverride,
@@ -33,4 +35,7 @@ function process(event) {
   });
 }
 
-exports.process = process;
+module.exports = {
+  process,
+  getDataTypeOverride
+};

@@ -40,7 +40,7 @@
   },
   {
     "sourceKeys": "context.campaign.name",
-    "destKey": "utm_name"
+    "destKey": "utm_campaign"
   },
   {
     "sourceKeys": "context.campaign.source",

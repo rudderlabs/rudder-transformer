@@ -2,6 +2,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "channel": "web",
         "context": {
@@ -81,6 +82,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "channel": "web",
         "context": {
@@ -142,6 +144,7 @@
   {
     "body": {
       "XML": {},
+      "JSON_ARRAY": {},
       "JSON": {
         "channel": "web",
         "context": {
@@ -159,7 +162,10 @@
             "logins": 5,
             "createdAt": 1599264000
           },
-          "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.5"
+          },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
           "locale": "en-US",
           "os": { "name": "", "version": "" },

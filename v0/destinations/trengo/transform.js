@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require("handlebars");
-const Axios = require("axios");
+const axios = require("axios");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { EndPoints, BASE_URL } = require("./config");
@@ -17,15 +17,9 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getStringValueOfJSON,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
 
 /**
  *
@@ -87,7 +81,7 @@ const validate = (email, phone, channelIdentifier) => {
 const lookupContact = async (term, destination) => {
   let res;
   try {
-    res = await Axios.get(`${BASE_URL}/contacts?page=1&term=${term}`, {
+    res = await axios.get(`${BASE_URL}/contacts?page=1&term=${term}`, {
       headers: {
         Authorization: `Bearer ${destination.Config.apiToken}`
       }

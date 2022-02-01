@@ -6,7 +6,11 @@ const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 
-const { removeUndefinedAndNullValues } = require("../../util");
+const {
+  removeUndefinedAndNullValues,
+  isObject,
+  isAppleFamily
+} = require("../../util");
 
 function processEvent(event) {
   const messageType = "track";
@@ -32,8 +36,12 @@ function processEvent(event) {
       }
     });
 
+    if (!isObject(message.context.device)) {
+      message.context.device = {};
+    }
+
     if (event.platform) {
-      if (event.platform.toLowerCase() === "ios") {
+      if (isAppleFamily(event.platform)) {
         message.context.device.advertisingId = event.idfa;
       } else if (event.platform.toLowerCase() === "android") {
         message.context.device.advertisingId = event.android_id;

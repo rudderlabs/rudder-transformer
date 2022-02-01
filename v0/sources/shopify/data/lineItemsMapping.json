@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "product_id",
+    "destKey": "product_id"
+  },
+  {
+    "sourceKeys": "sku",
+    "destKey": "sku"
+  },
+  {
+    "sourceKeys": "name",
+    "destKey": "title"
+  },
+  {
+    "sourceKeys": "price",
+    "destKey": "price"
+  },
+  {
+    "sourceKeys": "vendor",
+    "destKey": "brand"
+  },
+  {
+    "sourceKeys": "quantity",
+    "destKey": "quantity"
+  }
+]

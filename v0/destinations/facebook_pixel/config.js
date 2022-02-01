@@ -44,6 +44,7 @@ const CONFIG_CATEGORIES = {
   },
   OTHER_STANDARD: {
     standard: true,
+    type: "otherStandard",
     name: "FBPIXELPSimpleCustomConfig"
   },
   PAGE_VIEW: {

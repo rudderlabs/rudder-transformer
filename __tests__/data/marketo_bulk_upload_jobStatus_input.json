@@ -1,0 +1,102 @@
+[
+  {
+    "request": {
+      "body": {
+        "destType": "marketo_bulk_upload",
+        "importId": 12345,
+        "input": [
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb"
+            },
+            "metadata": {
+              "job_id": 2
+            }
+          },
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb",
+              "phone": "99"
+            },
+            "metadata": {
+              "job_id": 4
+            }
+          },
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb"
+            },
+            "metadata": {
+              "job_id": 3
+            }
+          }
+        ],
+        "config": {
+          "clientId": "b",
+          "clientSecret": "c",
+          "munchkinId": "a",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "metadata": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "destType": "marketo_bulk_upload",
+        "importId": 12345,
+        "input": [
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb"
+            },
+            "metadata": {
+              "job_id": 2
+            }
+          },
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb",
+              "phone": "99"
+            },
+            "metadata": {
+              "job_id": 4
+            }
+          },
+          {
+            "message": {
+              "firstName": "aa",
+              "email": "bb"
+            },
+            "metadata": {
+              "job_id": 3
+            }
+          }
+        ],
+        "config": {
+          "clientId": "b",
+          "clientSecret": "c",
+          "munchkinId": "testMunchkin3",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "metadata": {}
+      }
+    }
+  }
+]

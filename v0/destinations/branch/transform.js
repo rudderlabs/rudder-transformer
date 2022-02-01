@@ -6,10 +6,37 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError,
+  isDefinedAndNotNull,
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
+  const os = get(message, "context.os.name");
+
+  if (isDefinedAndNotNull(os)) {
+    if (isAppleFamily(os)) {
+      payload.idfa = get(message, "context.device.advertisingId");
+      payload.idfv = get(message, "context.device.id");
+    } else if (os.toLowerCase() === "android") {
+      payload.android_id = get(message, "context.device.id");
+      payload.aaid = get(message, "context.device.advertisingId");
+    }
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att == 3) {
+      payload.limit_ad_tracking = false;
+    } else if (att == 2) {
+      payload.limit_ad_tracking = true;
+    }
+  }
+
   const response = defaultRequestConfig();
 
   if (category === "custom") {
@@ -55,10 +82,18 @@ function getCategoryAndName(rudderEventName) {
 
 function getUserData(message) {
   const { context } = message;
+  const { os } = message.context;
+
+  if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
+    throw new CustomError(
+      "os name is missing in the payload and please make sure to insert it at context.os.name",
+      400
+    );
+  }
 
   return removeUndefinedAndNullValues({
-    os: context.os.name,
-    os_version: context.os.version,
+    os: os.name,
+    os_version: os.version,
     app_version: context.app.version,
     screen_dpi: context.screen.density,
     android_id: get(context, "android_id") ? context.android_id : null,
@@ -161,7 +196,7 @@ function getCommonPayload(message, category, evName) {
     rawPayload.custom_data = custom_data;
     rawPayload.content_items = content_items;
     rawPayload.event_data = event_data;
-    rawPayload.user_data = getUserData(message);
+    // rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
       if (Object.keys(rawPayload[key]).length == 0) {
@@ -169,6 +204,7 @@ function getCommonPayload(message, category, evName) {
       }
     });
   }
+  rawPayload.user_data = getUserData(message);
   rawPayload.name = evName;
 
   return rawPayload;
@@ -191,7 +227,7 @@ function processMessage(message, destination) {
       var { evName, category } = getCategoryAndName(message.userId);
       break;
     default:
-      throw new Error("Message type is not supported");
+      throw new CustomError("Message type is not supported", 400);
   }
   const rawPayload = getCommonPayload(message, category, evName);
   return responseBuilder(rawPayload, message, destination, category);
@@ -202,4 +238,43 @@ function process(event) {
   return processMessage(message, destination);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

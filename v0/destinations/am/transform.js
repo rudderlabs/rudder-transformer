@@ -1,3 +1,6 @@
+/* eslint-disable no-lonely-if */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -5,6 +8,7 @@ const {
   SpecedTraits,
   TraitsMapping
 } = require("../../../constants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -13,9 +17,17 @@ const {
   getParsedIP,
   getFieldValueFromMessage,
   getValueFromMessage,
-  deleteObjectProperty
+  deleteObjectProperty,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  generateErrorObject,
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull,
+  isAppleFamily
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
+  DESTINATION,
   ENDPOINT,
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
@@ -64,6 +76,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
 }
 
 function createRevenuePayload(message, rawPayload) {
+  rawPayload.productId = message.properties.product_id;
   rawPayload.revenueType =
     message.properties.revenueType ||
     message.properties.revenue_type ||
@@ -126,6 +139,42 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
+function updateConfigProperty(message, payload, mappingJson, validatePayload) {
+  const sourceKeys = Object.keys(mappingJson);
+  sourceKeys.forEach(sourceKey => {
+    // check if custom processing is required on the payload sourceKey ==> destKey
+    if (typeof mappingJson[sourceKey] === "object") {
+      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+      if (isFunc) {
+        if (validatePayload) {
+          const data = get(payload, outKey);
+          if (!isDefinedAndNotNull(data)) {
+            const val = AMUtils[funcName](message, sourceKey);
+            if (val || val === false || val === 0) {
+              set(payload, outKey, val);
+            }
+          }
+        } else {
+          // get the destKey/outKey value from calling the util function
+          set(payload, outKey, AMUtils[funcName](message, sourceKey));
+        }
+      }
+    } else {
+      if (validatePayload) {
+        const data = get(payload, mappingJson[sourceKey]);
+        if (!isDefinedAndNotNull(data)) {
+          const val = get(message, sourceKey);
+          if (val || val === false || val === 0) {
+            set(payload, mappingJson[sourceKey], val);
+          }
+        }
+      } else {
+        set(payload, mappingJson[sourceKey], get(message, sourceKey));
+      }
+    }
+  });
+}
+
 function responseBuilderSimple(
   groupInfo,
   rootElementName,
@@ -151,19 +200,7 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
-    // check if custom processing is required on the payload sourceKey ==> destKey
-    if (typeof mappingJson[sourceKey] === "object") {
-      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
-      if (isFunc) {
-        // get the destKey/outKey value from calling the util function
-        set(rawPayload, outKey, AMUtils[funcName](message, sourceKey));
-      }
-    } else {
-      set(rawPayload, mappingJson[sourceKey], get(message, sourceKey));
-    }
-  });
+  updateConfigProperty(message, rawPayload, mappingJson, false);
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -202,7 +239,9 @@ function responseBuilderSimple(
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, "traits");
-        traits = handleTraits(traits, destination);
+        if (traits) {
+          traits = handleTraits(traits, destination);
+        }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
           ...message.userProperties
@@ -245,6 +284,7 @@ function responseBuilderSimple(
     default:
       traits = getFieldValueFromMessage(message, "traits");
       set(rawPayload, "event_properties", message.properties);
+
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
@@ -298,14 +338,15 @@ function responseBuilderSimple(
 
         const deviceId = get(message, "context.device.id");
         const platform = get(message, "context.device.type");
-        const tracking = get(message, "context.device.adTrackingEnabled");
         const advertId = get(message, "context.device.advertisingId");
 
-        if (tracking && platform.toLowerCase() === "ios") {
-          set(payload, "idfa", advertId);
-          set(payload, "idfv", deviceId);
-        } else if (tracking && platform.toLowerCase() === "android") {
-          set(payload, "adid", advertId);
+        if (platform) {
+          if (isAppleFamily(platform)) {
+            set(payload, "idfa", advertId);
+            set(payload, "idfv", deviceId);
+          } else if (platform.toLowerCase() === "android") {
+            set(payload, "adid", advertId);
+          }
         }
       }
 
@@ -324,13 +365,21 @@ function responseBuilderSimple(
       }
       payload.session_id = getSessionId(payload);
 
+      updateConfigProperty(
+        message,
+        payload,
+        mappingConfig[ConfigCategory.COMMON_CONFIG.name],
+        true
+      );
+
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
       // for correct versionName
       // ====================
       // fixVersion(payload, message);
 
       payload.ip = getParsedIP(message);
-      payload = removeUndefinedValues(payload);
+      payload.library = "rudderstack";
+      payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
       response.headers = {
@@ -439,7 +488,18 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new Error("Group call parameters are not valid");
+          throw new ErrorBuilder()
+            .setStatus(400)
+            .setMessage("Group call parameters are not valid")
+            .setStatTags({
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .INSTRUMENTATION
+            })
+            .build();
         }
       }
       break;
@@ -455,8 +515,8 @@ function processSingleMessage(message, destination) {
 
       if (
         message.properties &&
-        message.properties.revenue &&
-        message.properties.revenue_type
+        isDefinedAndNotNull(message.properties.revenue) &&
+        isDefinedAndNotNull(message.properties.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
@@ -467,7 +527,17 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new Error("message type not supported");
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage("message type not supported")
+        .setStatTags({
+          destination: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
   return responseBuilderSimple(
     groupInfo,
@@ -534,13 +604,11 @@ function trackRevenueEvent(message, destination) {
       // when product array is not there in payload, will track the revenue of the original event.
       originalEvent.isRevenue = true;
     }
-  } else {
+  } else if (!isProductArrayInPayload(message)) {
     // when the user enables both trackProductsOnce and trackRevenuePerProduct, we will track revenue on each product level.
     // So, if trackProductsOnce is true and there is no products array in payload, we will track the revenue of original event.
     // when trackRevenuePerProduct is false, track the revenue of original event - that is handled in next if block.
-    if (!isProductArrayInPayload(message)) {
-      originalEvent.isRevenue = true;
-    }
+    originalEvent.isRevenue = true;
   }
   // when trackRevenuePerProduct is false, track the revenue of original event.
   if (destination.Config.trackRevenuePerProduct === false) {
@@ -570,7 +638,8 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   const toSendEvents = [];
   if (messageType === EventType.TRACK) {
-    if (message.properties && message.properties.revenue) {
+    const { properties } = message;
+    if (properties && isDefinedAndNotNull(properties.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
       revenueEvents.forEach(revenueEvent => {
         toSendEvents.push(revenueEvent);
@@ -729,5 +798,53 @@ function batch(destEvents) {
   return respList;
 }
 
-exports.process = process;
-exports.batch = batch;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        const errRes = generateErrorObject(
+          error,
+          DESTINATION,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
+        return getErrorRespEvents(
+          [input.metadata],
+          error.status || 400,
+          error.message || "Error occurred while processing payload.",
+          errRes.statTags
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+const responseTransform = input => {
+  return {
+    status: 200,
+    destination: { ...input },
+    message: "Processed Successfully"
+  };
+};
+
+module.exports = { process, processRouterDest, batch, responseTransform };

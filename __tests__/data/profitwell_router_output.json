@@ -1,0 +1,44 @@
+[
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "subscription_alias": "samual",
+          "email": "sample@sample.com",
+          "plan_id": "23",
+          "plan_interval": "month",
+          "plan_currency": "usd",
+          "status": "active",
+          "value": "23",
+          "user_alias": "samual",
+          "effective_date": 1571043797
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "9270161a8e5abaa0e56efddfd9dbcb62"
+      },
+      "version": "1",
+      "endpoint": "https://api.profitwell.com/v2/subscriptions/"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "privateApiKey": "9270161a8e5abaa0e56efddfd9dbcb62"
+      }
+    }
+  }
+]

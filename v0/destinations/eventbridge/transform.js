@@ -1,4 +1,9 @@
-const { removeUndefinedAndNullValues } = require("../../util");
+const {
+  removeUndefinedAndNullValues,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
+} = require("../../util");
 
 function getResouceList(config) {
   let resource;
@@ -30,12 +35,57 @@ function process(event) {
       };
     } else {
       // drop event if config is empty
-      throw new Error("EventBridge: received empty config, dropping event");
+      throw new CustomError(
+        "EventBridge: received empty config, dropping event",
+        400
+      );
     }
   } catch (error) {
-    throw new Error(error.message || "EventBridge: Unknown error");
+    throw new Error(
+      error.message || "EventBridge: Unknown error",
+      error.status || 400
+    );
   }
   return removeUndefinedAndNullValues(response);
 }
 
-exports.process = process;
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

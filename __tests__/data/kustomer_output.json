@@ -65,6 +65,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -99,6 +100,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -128,6 +130,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -162,6 +165,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -197,6 +201,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -227,6 +232,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -257,7 +263,8 @@
           "externalId": "user@doe"
         }
       },
-      "XML": {}
+      "XML": {},
+      "JSON_ARRAY": {}
     },
     "files": {}
   },
@@ -290,6 +297,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -319,6 +327,7 @@
         }
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -389,6 +398,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -459,6 +469,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}
@@ -529,6 +540,7 @@
         ]
       },
       "XML": {},
+      "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {}

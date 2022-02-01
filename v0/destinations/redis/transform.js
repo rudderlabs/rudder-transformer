@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const flatten = require("flat");
 
-const { isEmpty, isObject } = require("../../util");
+const { isEmpty, isObject, CustomError } = require("../../util");
 const { EventType } = require("../../../constants");
 
 // processValues:
@@ -29,7 +29,7 @@ const process = event => {
   }
 
   if (isEmpty(event.message.userId)) {
-    throw new Error("Blank userId passed in identify event");
+    throw new CustomError("Blank userId passed in identify event", 400);
   }
 
   const { prefix } = destination.Config;
@@ -60,7 +60,7 @@ const process = event => {
   processValues(hmap.fields);
 
   if (Object.keys(hmap.fields).length === 0) {
-    throw new Error("context or context.traits or traits is empty");
+    throw new CustomError("context or context.traits or traits is empty", 400);
   }
 
   const result = {

@@ -3,6 +3,7 @@ const stats = require("./stats");
 
 const { getPool } = require("./ivmPool");
 const { getFactory } = require("./ivmFactory");
+const { getMetadata } = require("./../v0/util");
 const logger = require("../logger");
 
 async function transform(isolatevm, events) {
@@ -53,8 +54,11 @@ async function userTransformHandlerV1(
     ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
     : false;
   if (userTransformation.versionId) {
+    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
-      transformerVersionId: userTransformation.versionId
+      transformerVersionId: userTransformation.versionId,
+      version: 1,
+      ...metaTags
     };
 
     // Create isolated VMs in pooled or on demand mode based on env var ON_DEMAND_ISOLATE_VM
@@ -63,7 +67,8 @@ async function userTransformHandlerV1(
       logger.debug(`Isolate VM being created... `);
       isolatevmFactory = await getFactory(
         userTransformation.code,
-        libraryVersionIds
+        libraryVersionIds,
+        userTransformation.versionId
       );
       isolatevm = await isolatevmFactory.create();
       logger.debug(`Isolate VM created... `);

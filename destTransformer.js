@@ -4,12 +4,17 @@ const logger = require("./logger");
 require("dotenv").config();
 
 const { router } = require("./versionedRouter");
+const { testRouter } = require("./testRouter");
 const cluster = require("./util/cluster");
+const { addPrometheusMiddleware } = require("./middleware");
 
-const clusterEnabled = true;
+const clusterEnabled = process.env.CLUSTER_MODE
+  ? process.env.CLUSTER_MODE.toLowerCase() === "true"
+  : false;
 
 const PORT = 9090;
 const app = new Koa();
+addPrometheusMiddleware(app);
 
 app.use(
   bodyParser({
@@ -18,6 +23,7 @@ app.use(
 );
 
 app.use(router.routes()).use(router.allowedMethods());
+app.use(testRouter.routes()).use(testRouter.allowedMethods());
 
 if (clusterEnabled) {
   cluster.start(PORT, app);

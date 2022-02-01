@@ -1,0 +1,94 @@
+[
+  {
+    "statusCode": 200,
+    "importId": "TestImportId",
+    "pollURL": "/pollStatus",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": [],
+      "csvHeader": "Email"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "ENOTFOUND",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "401",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 500,
+    "error": "throttled",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Header field 'a' not found",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 500,
+    "error": "No import id received",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 500,
+    "error": "There are 10 imports currently being processed. Please try again later",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 500,
+    "error": "Empty file",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Any other error",
+    "metadata": {
+      "successfulJobs": [
+        "17"
+      ],
+      "unsuccessfulJobs": []
+    }
+  }
+]

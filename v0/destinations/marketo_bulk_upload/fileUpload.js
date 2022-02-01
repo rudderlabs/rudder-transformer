@@ -9,15 +9,15 @@ const {
   UPLOAD_FILE
 } = require("./util");
 const { CustomError, getHashFromArray } = require("../../util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const getHeaderFields = config => {
   const { columnFieldsMapping } = config;
   const columnField = getHashFromArray(
     columnFieldsMapping,
-    "from",
     "to",
+    "from",
     false
   );
   return Object.keys(columnField);
@@ -113,7 +113,7 @@ const getImportID = async (input, config) => {
         }
       };
       const startTime = Date.now();
-      const resp = await send(requestOptions);
+      const resp = await httpSend(requestOptions);
       const endTime = Date.now();
       const requestTime = endTime - startTime;
       stats.gauge(
@@ -275,7 +275,10 @@ const responseHandler = async (input, config) => {
     status: 500,
     state: "Retryable"
   });
-  throw new CustomError("No import id received", 500);
+  throw new CustomError("No import id received", 500, {
+    successfulJobs,
+    unsuccessfulJobs
+  });
 };
 const processFileData = async event => {
   const { input, config } = event;

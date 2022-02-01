@@ -5,17 +5,18 @@ const {
   THROTTLED_CODES,
   POLL_ACTIVITY
 } = require("./util");
-const { send } = require("../../../adapters/network");
+const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 const stats = require("../../../util/stats");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
+  const { munchkinId } = event.config;
 
   // To see the status of the import job polling is done
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
   const requestOptions = {
-    url: `https://585-AXP-425.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
+    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
     method: "get",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +24,7 @@ const getPollStatus = async event => {
     }
   };
   const startTime = Date.now();
-  const resp = await send(requestOptions);
+  const resp = await httpSend(requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   if (resp.success) {
@@ -56,7 +57,7 @@ const getPollStatus = async event => {
         resp.response.data.errors[0] &&
         ((resp.response.data.errors[0].code >= 1000 &&
           resp.response.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code) > -1)
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -68,7 +69,7 @@ const getPollStatus = async event => {
           resp.response.data.errors[0].message || "Could not poll status",
           400
         );
-      } else if (THROTTLED_CODES.indexOf(resp.response.response.status)) {
+      } else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
           requestTime,

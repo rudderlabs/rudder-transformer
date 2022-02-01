@@ -21,7 +21,11 @@
     "merge-check": "npm run verify || exit 1; codecov",
     "start": "node destTransformer.js",
     "test": "npx jest --runInBand --detectOpenHandles --coverage --notify",
-    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1"
+    "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
+    "testDestinations": "npx jest --runInBand --detectOpenHandles --coverage --notify",
+    "testVersionedRouter": "npx jest versionedRouter --type=all --detectOpenHandles --notify",
+    "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
+    "testTestRouter": "npx jest testRouter"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
@@ -56,6 +60,8 @@
     "node-fetch": "^2.6.1",
     "object-sizeof": "^1.6.1",
     "object-hash": "^2.2.0",
+    "prom-client": "^14.0.1",
+    "parse-static-imports": "^1.1.0",
     "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
@@ -81,6 +87,6 @@
     "prettier": "^1.18.2"
   },
   "precommit": {
-    "run": "lint, testDestinations, testVersioned"
+    "run": "lint, testDestinations, testVersioned, testTestRouter"
   }
 }

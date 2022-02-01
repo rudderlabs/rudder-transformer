@@ -26,7 +26,8 @@ const {
   USER_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
-  DEVICE_DELETE_ENDPOINT
+  DEVICE_DELETE_ENDPOINT,
+  MERGE_USER_ENDPOINT
 } = require("./config");
 const logger = require("../../../logger");
 
@@ -35,6 +36,16 @@ const deviceRelatedEventNames = [
   "Application Opened",
   "Application Uninstalled"
 ];
+
+const isdeviceRelatedEventName = (eventName, destination) => {
+  return (
+    deviceRelatedEventNames.includes(eventName) ||
+    (destination.Config &&
+      destination.Config.deviceTokenEventName &&
+      destination.Config.deviceTokenEventName === eventName)
+  );
+};
+
 const deviceDeleteRelatedEventName = "Application Uninstalled";
 
 // Get the spec'd traits, for now only address needs treatment as 2 layers.
@@ -62,11 +73,9 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     adduserIdFromExternalId(message);
   }
 
-  const userId =
-    message.userId && message.userId !== "" ? message.userId : undefined;
-
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
   const response = defaultRequestConfig();
-  response.userId = message.userId || message.anonymousId;
+  response.userId = userId || message.anonymousId;
   response.headers = {
     Authorization: `Basic ${btoa(
       `${destination.Config.siteID}:${destination.Config.apiKey}`
@@ -144,50 +153,59 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
     endpoint = IDENTITY_ENDPOINT.replace(":id", userId);
     requestConfig = defaultPutRequestConfig;
+  } else if (evType === EventType.ALIAS) {
+    // ref : https://customer.io/docs/api/#operation/merge
+    if (!userId && !message.previousId) {
+      throw new CustomError(
+        "Both userId and previousId is mandatory for merge operation",
+        400
+      );
+    }
+    endpoint = MERGE_USER_ENDPOINT;
+    requestConfig = defaultPostRequestConfig;
+    rawPayload.primary = {};
+    rawPayload.primary.id = userId;
+    rawPayload.secondary = {};
+    rawPayload.secondary.id = message.previousId;
   } else {
     // any other event type except identify
     const token = get(message, "context.device.token");
 
-    if (message.properties) {
-      // use this if only top level keys are to be sent
-      // DEVICE DELETE from CustomerIO
-      if (deviceDeleteRelatedEventName === evName) {
-        if (userId && token) {
-          endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
-            ":device_id",
-            token
-          );
-
-          response.endpoint = endpoint;
-          response.method = "DELETE";
-
-          return response;
-        }
-        throw new CustomError("userId or device_token not present", 400);
-      }
-
-      // DEVICE registration
-      if (userId && deviceRelatedEventNames.includes(evName) && token) {
-        const devProps = message.properties;
-        set(devProps, "id", get(message, "context.device.token"));
-        const deviceType = get(message, "context.device.type");
-        if (deviceType) {
-          set(devProps, "platform", deviceType.toLowerCase());
-        }
-        set(
-          devProps,
-          "last_used",
-          Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+    // use this if only top level keys are to be sent
+    // DEVICE DELETE from CustomerIO
+    if (deviceDeleteRelatedEventName === evName) {
+      if (userId && token) {
+        endpoint = DEVICE_DELETE_ENDPOINT.replace(":id", userId).replace(
+          ":device_id",
+          token
         );
-        set(rawPayload, "device", devProps);
-        requestConfig = defaultPutRequestConfig;
-      } else {
-        rawPayload.data = {};
-        set(rawPayload, "data", message.properties);
+
+        response.endpoint = endpoint;
+        response.method = "DELETE";
+
+        return response;
       }
+      throw new CustomError("userId or device_token not present", 400);
     }
 
-    if (!(deviceRelatedEventNames.includes(evName) && userId && token)) {
+    // DEVICE registration
+    if (isdeviceRelatedEventName(evName, destination) && userId && token) {
+      const devProps = message.properties || {};
+      set(devProps, "id", get(message, "context.device.token"));
+      const deviceType = get(message, "context.device.type");
+      if (deviceType) {
+        set(devProps, "platform", deviceType.toLowerCase());
+      }
+      set(
+        devProps,
+        "last_used",
+        Math.floor(new Date(message.originalTimestamp).getTime() / 1000)
+      );
+      set(rawPayload, "device", devProps);
+      requestConfig = defaultPutRequestConfig;
+    } else {
+      rawPayload.data = {};
+      set(rawPayload, "data", message.properties);
       set(rawPayload, "name", evName);
       set(rawPayload, "type", evType);
       if (getFieldValueFromMessage(message, "historicalTimestamp")) {
@@ -204,7 +222,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     }
 
     if (userId) {
-      if (deviceRelatedEventNames.includes(evName) && token) {
+      if (isdeviceRelatedEventName(evName, destination) && token) {
         endpoint = DEVICE_REGISTER_ENDPOINT.replace(":id", userId);
       } else {
         endpoint = USER_EVENT_ENDPOINT.replace(":id", userId);
@@ -259,6 +277,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = "event";
       evName = message.event;
+      break;
+    case EventType.ALIAS:
+      evType = "alias";
       break;
     default:
       logger.error(`could not determine type ${messageType}`);
@@ -321,6 +342,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

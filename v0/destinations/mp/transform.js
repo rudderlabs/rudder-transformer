@@ -163,7 +163,7 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
   }
 
   if (traits) {
-    // if address attribute is an object, we are storing the attributes in root
+    // if address attribute is an object, we are storing the attributes in the root of traits
     if (traits.address && isObject(traits.address)) {
       const tkeys = Object.keys(traits.address);
       tkeys.forEach(key => {
@@ -222,6 +222,11 @@ function processIdentifyEvents(message, type, destination) {
     mPIdentifyConfigJson,
     useOldMapping
   );
+  const mappedProperties = constructPayload(
+    message,
+    mPEventPropertiesConfigJson
+  );
+  properties = { ...properties, ...mappedProperties };
   const { device } = message.context;
   if (device && device.token) {
     let payload;

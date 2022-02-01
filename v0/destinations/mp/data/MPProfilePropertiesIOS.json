@@ -18,5 +18,9 @@
   {
     "sourceKeys": "context.app.version",
     "destKey": "$ios_app_version"
+  },
+  {
+    "sourceKeys": "properties.iosLibVersion",
+    "destKey": "$ios_lib_version"
   }
 ]

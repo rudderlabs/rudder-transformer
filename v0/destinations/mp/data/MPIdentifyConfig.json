@@ -16,5 +16,6 @@
   "country": "$country_code",
   "state": "$region",
   "geoSource": "$geo_source",
-  "unsubscribed": "$unsubscribed"
+  "unsubscribed": "$unsubscribed",
+  "timezone": "$timezone"
 }

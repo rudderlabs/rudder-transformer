@@ -25,8 +25,8 @@ function responseBuilderSimple(message, destination) {
 */
   const fieldHashmap = getHashFromArray(
     destination.Config.columnFieldsMapping,
-    "from",
     "to",
+    "from",
     false
   );
 

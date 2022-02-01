@@ -14,8 +14,7 @@
         "JSON": {
           "identity": "sampath",
           "properties": {
-            "anonymousId": "sampath",
-            "email": "sampath@gmail.com"
+            "anonymousId": "sampath"
           },
           "app_id": "<APP_ID>"
         },
@@ -46,8 +45,7 @@
         "JSON": {
           "identity": "sampath",
           "properties": {
-            "anonymousId": "sampath",
-            "email": "sampath@gmail.com"
+            "anonymousId": "sampath"
           },
           "app_id": "Test_App_Id"
         },
@@ -78,8 +76,7 @@
         "JSON": {
           "identity": "sampath",
           "properties": {
-            "anonymousId": "sampath",
-            "email": "sampath@gmail.com"
+            "anonymousId": "sampath"
           },
           "app_id": "<app id>"
         },

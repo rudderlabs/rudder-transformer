@@ -386,7 +386,9 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey",
+          "lastName": "Mouse",
+          "createdAt": "2020-01-23T08:54:02.362Z"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -468,7 +470,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -618,7 +620,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -724,7 +726,9 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "first_name": "Mickey",
+          "lastName": "Mouse",
+          "name": "Mickey Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -837,7 +841,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -949,7 +953,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1138,7 +1142,7 @@
         "city": "Disney",
         "country": "USA",
         "email": "mickey@disney.com",
-        "firstname": "Mickey"
+        "firstName": "Mickey"
       },
       "integrations": {
         "All": true
@@ -1346,7 +1350,8 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstname": "Mickey",
+          "lastname": "Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1684,7 +1689,8 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "lastname": "Mickey",
+          "firstName": "Mouse"
         },
         "page": {
           "path": "/destinations/mixpanel",
@@ -1768,7 +1774,8 @@
         "timezone": "Asia/Kolkata",
         "traits": {
           "anonymousId": "5094f5704b9cf2b3",
-          "userId": "test_user_id"
+          "userId": "test_user_id",
+          "createdat": "2020-01-23T08:54:02.362Z"
         },
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
       },
@@ -1785,6 +1792,384 @@
       "originalTimestamp": "2020-03-12T09:05:03.421Z",
       "type": "identify",
       "sentAt": "2020-03-12T09:05:13.042Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "first_name": "Mickey",
+          "last_name": "Mouse"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "first_name": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "first_name": "Mickey",
+          "last_name": "Mouse",
+          "name": "Mickey Mouse"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "first_name": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "city": "Disney",
+        "country": "USA",
+        "email": "mickey@disney.com",
+        "last_name": "Mouse"
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "first_name": "Mickey",
+          "last_name": "Mouse"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "KM Order Completed",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "name": "Mouse"
+      },
+      "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+      "originalTimestamp": "2020-01-24T06:29:02.367Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53712",
+      "sentAt": "2020-01-24T06:29:02.368Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
     }
   }
 ]

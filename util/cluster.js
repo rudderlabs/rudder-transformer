@@ -1,4 +1,6 @@
+/* eslint-disable gaurd-for-in */
 const cluster = require("cluster");
+const gracefulShutdown = require("http-graceful-shutdown");
 const numCPUs = require("os").cpus().length;
 const util = require("util");
 const gracefulShutdown = require("http-graceful-shutdown");
@@ -23,7 +25,7 @@ function finalFunction() {
 // This function works only in master.
 // It sends SIGTERM to all the workers
 function shutdownWorkers() {
-  for (const id in cluster.workers) {
+  for (let id in cluster.workers) {
     process.kill(cluster.workers[id].process.pid);
     logger.info(`Sent kill signal to ${cluster.workers[id].process.pid}`);
   }
@@ -62,7 +64,6 @@ function start(port, app) {
     });
   } else {
     const server = app.listen(port);
-
     gracefulShutdown(server, {
       signals: "SIGINT SIGTERM",
       timeout: 30000, // timeout: 30 secs

@@ -44,8 +44,8 @@ test('Batching', async () => {
   const batchInputData = JSON.parse(batchInputDataFile);
   const batchExpectedData = JSON.parse(batchOutputDataFile);
   const output = await transformer.processRouterDest(batchInputData);
-  console.log(JSON.stringify(batchInputData));
-  console.log(JSON.stringify(output));
+  // console.log(JSON.stringify(batchInputData));
+  // console.log(JSON.stringify(output));
   expect(Array.isArray(output)).toEqual(true);
   expect(output).toEqual(batchExpectedData);
 });

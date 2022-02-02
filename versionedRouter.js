@@ -795,5 +795,8 @@ module.exports = {
   routerHandleDest,
   batchHandler,
   handleProxyRequest,
-  handleDeletionOfUsers
+  handleDeletionOfUsers,
+  fileUpload,
+  pollStatus,
+  getJobStatus
 };

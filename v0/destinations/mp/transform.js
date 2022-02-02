@@ -14,7 +14,8 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   CustomError,
-  isAppleFamily
+  isAppleFamily,
+  getFullName
 } = require("../../util");
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -154,6 +155,12 @@ function getTransformedJSON(message, mappingJson) {
 
   const sourceKeys = Object.keys(mappingJson);
   let traits = getFieldValueFromMessage(message, "traits");
+
+  const fullName = getFullName(message);
+  if (fullName) {
+    traits.name = fullName;
+  }
+
   if (traits) {
     traits = { ...traits };
     const keys = Object.keys(traits);

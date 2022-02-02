@@ -5,7 +5,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage,
+  removeUndefinedAndNullValues,
   constructPayload,
   getBrowserInfo,
   getValuesAsArrayFromConfig,
@@ -16,9 +16,13 @@ const {
   CustomError,
   isAppleFamily,
   getFullName,
-  isObject
+  extractCustomFields
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  MP_IDENTIFY_EXCLUSION_LIST
+} = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
@@ -114,6 +118,7 @@ function getEventValueForTrackEvent(message, destination) {
     mPEventPropertiesConfigJson
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
+  // ??
   const properties = {
     ...message.properties,
     ...message.context.traits,
@@ -152,35 +157,19 @@ function processTrack(message, destination) {
 }
 
 function getTransformedJSON(message, mappingJson, useOldMapping) {
-  const rawPayload = {};
-
-  const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-
-  const fullName = getFullName(message);
-  if (fullName) {
-    traits.name = fullName;
+  let rawPayload = constructPayload(message, mappingJson);
+  const userName = get(rawPayload, "$name");
+  if (!userName) {
+    set(rawPayload, "$name", getFullName(message));
   }
 
-  if (traits) {
-    // if address attribute is an object, we are storing the attributes in the root of traits
-    if (traits.address && isObject(traits.address)) {
-      const tkeys = Object.keys(traits.address);
-      tkeys.forEach(key => {
-        traits[key] = traits.address[key];
-      });
-      delete traits.address;
-    }
-    traits = { ...traits };
-    const keys = Object.keys(traits);
-    keys.forEach(key => {
-      if (sourceKeys.includes(key)) {
-        set(rawPayload, mappingJson[key], get(traits, key));
-      } else {
-        set(rawPayload, key, get(traits, key));
-      }
-    });
-  }
+  rawPayload = extractCustomFields(
+    message,
+    rawPayload,
+    ["traits", "context.traits"],
+    MP_IDENTIFY_EXCLUSION_LIST
+  );
+  rawPayload = removeUndefinedAndNullValues(rawPayload);
 
   set(
     rawPayload,
@@ -217,16 +206,12 @@ function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
   // this variable is used for supporting backward compatibility
   const { useOldMapping } = destination.Config;
+  // user payload created
   let properties = getTransformedJSON(
     message,
     mPIdentifyConfigJson,
     useOldMapping
   );
-  const mappedProperties = constructPayload(
-    message,
-    mPEventPropertiesConfigJson
-  );
-  properties = { ...properties, ...mappedProperties };
   const { device } = message.context;
   if (device && device.token) {
     let payload;

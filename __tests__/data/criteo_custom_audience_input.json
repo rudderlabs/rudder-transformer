@@ -1,0 +1,306 @@
+[
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "audiencelist",
+            "properties": {
+                "listData": {
+                    "add": [
+                        {
+                            "email": "shrouti@abc.com"
+                        },
+                        {
+                            "email": "shrouti2@abc.com"
+                        },
+                        {
+                            "email": "shrouti3@abc.com"
+                        },
+                        {
+                            "gum": "gumid"
+                        },
+                        {
+                            "madid": "ad"
+                        }
+                    ],
+                    "remove": [
+                        {
+                            "email": "shroutiDel@abc.com"
+                        },
+                        {
+                            "email": "shrouti2Del@abc.com"
+                        },
+                        {
+                            "gum": "gumDelid"
+                        },
+                        {
+                            "madid": "adDel"
+                        }
+                    ]
+                }
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "client_id": "test_id",
+                "client_secret": "test secret",
+                "redirectUri": "https://example.com",
+                "publicSigningKey": "sample singning key",
+                "signingSecret": "sample signing secret",
+                "userSchema": [
+                    "email",
+                    "gum",
+                    "madid"
+                ],
+                "audienceId": "test",
+                "gumCallerId": "test"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "metadata": {
+            "secret": {
+                "access_token": "myToken",
+                "refresh_token": "myRefreshToken"
+            }
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "properties": {
+                "listData": {
+                    "add": [
+                        {
+                            "email": "shrouti@abc.com"
+                        },
+                        {
+                            "email": "shrouti2@abc.com"
+                        }
+                    ]
+                }
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "client_id": "test_id",
+                "client_secret": "test secret",
+                "redirectUri": "https://example.com",
+                "publicSigningKey": "sample singning key",
+                "signingSecret": "sample signing secret",
+                "userSchema": [
+                    "email"
+                ],
+                "audienceId": "test",
+                "gumCallerId": ""
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "metadata": {
+            "secret": {
+                "access_token": "myToken",
+                "refresh_token": "myRefreshToken"
+            }
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "track",
+            "properties": {
+                "listData": {
+                    "add": [
+                        {
+                            "email": "shrouti@abc.com"
+                        },
+                        {
+                            "email": "shrouti2@abc.com"
+                        }
+                    ]
+                }
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "client_id": "test_id",
+                "client_secret": "test secret",
+                "redirectUri": "https://example.com",
+                "publicSigningKey": "sample singning key",
+                "signingSecret": "sample signing secret",
+                "userSchema": [
+                    "email",
+                    "gum",
+                    "madid"
+                ],
+                "audienceId": "test",
+                "gumCallerId": "test"
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "metadata": {
+            "secret": {
+                "access_token": "myToken",
+                "refresh_token": "myRefreshToken"
+            }
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "audiencelist",
+            "properties": {
+                "listData": {
+                    "add": [
+                        {
+                            "email": "shrouti3@abc.com"
+                        },
+                        {
+                            "email": "shrouti4@abc.com"
+                        },
+                        {
+                            "gum": "123"
+                        }
+                    ]
+                }
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "client_id": "test_id",
+                "client_secret": "test secret",
+                "redirectUri": "https://example.com",
+                "publicSigningKey": "sample singning key",
+                "signingSecret": "sample signing secret",
+                "userSchema": [
+                    "email",
+                    "gum",
+                    "madid"
+                ],
+                "audienceId": "",
+                "gumCallerId": ""
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "metadata": {
+            "secret": {
+                "access_token": "myToken",
+                "refresh_token": "myRefreshToken"
+            }
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    },
+    {
+        "message": {
+            "userId": "user 1",
+            "anonymousId": "anon-id-new",
+            "event": "event1",
+            "type": "audiencelist",
+            "properties": {
+                "add": [
+                    {
+                        "email": "shrouti3@abc.com"
+                    },
+                    {
+                        "email": "shrouti4@abc.com"
+                    },
+                    {
+                        "gum": "123"
+                    }
+                ]
+            },
+            "context": {
+                "ip": "14.5.67.21",
+                "library": {
+                    "name": "http"
+                }
+            },
+            "timestamp": "2020-02-02T00:23:09.544Z"
+        },
+        "destination": {
+            "Config": {
+                "client_id": "test_id",
+                "client_secret": "test secret",
+                "redirectUri": "https://example.com",
+                "publicSigningKey": "sample singning key",
+                "signingSecret": "sample signing secret",
+                "userSchema": [
+                    "email",
+                    "gum",
+                    "madid"
+                ],
+                "audienceId": "test",
+                "gumCallerId": ""
+            },
+            "Enabled": true,
+            "Transformations": [],
+            "IsProcessorEnabled": true
+        },
+        "metadata": {
+            "secret": {
+                "access_token": "myToken",
+                "refresh_token": "myRefreshToken"
+            }
+        },
+        "libraries": [],
+        "request": {
+            "query": {}
+        }
+    }
+]

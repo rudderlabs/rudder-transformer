@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
 const destinations = ["marketo", "braze"];
-const deleteUserDestinations = ["am", "braze", "intercom"];
+const deleteUserDestinations = ["am", "braze", "intercom","criteo_custom_audience"];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;
 

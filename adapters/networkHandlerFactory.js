@@ -4,6 +4,11 @@ const {
 const {
   networkHandler: MarketoNetworkHandler
 } = require("../v0/destinations/marketo/util");
+
+const {
+  networkHandler: CriteoAudienceNetworkHandler
+} = require("../v0/destinations/criteo_custom_audience/util");
+
 const {
   networkHandler: GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
@@ -11,7 +16,8 @@ const {
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
-  marketo: MarketoNetworkHandler
+  marketo: MarketoNetworkHandler,
+  criteo_custom_audience: CriteoAudienceNetworkHandler
 };
 
 module.exports = {

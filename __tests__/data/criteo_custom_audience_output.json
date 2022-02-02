@@ -1,0 +1,193 @@
+[
+    [
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "add",
+                            "identifierType": "email",
+                            "identifiers": [
+                                "shrouti@abc.com",
+                                "shrouti2@abc.com",
+                                "shrouti3@abc.com"
+                            ]
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "add",
+                            "identifierType": "madid",
+                            "identifiers": [
+                                "ad"
+                            ]
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "add",
+                            "identifierType": "gum",
+                            "identifiers": [
+                                "gumid"
+                            ],
+                            "gumCallerId": "test"
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "remove",
+                            "identifierType": "email",
+                            "identifiers": [
+                                "shroutiDel@abc.com",
+                                "shrouti2Del@abc.com"
+                            ]
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "remove",
+                            "identifierType": "madid",
+                            "identifiers": [
+                                "adDel"
+                            ]
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        },
+        {
+            "version": "1",
+            "type": "REST",
+            "method": "PATCH",
+            "endpoint": "https://api.criteo.com/2022-01/audiences/test/contactlist",
+            "headers": {
+                "Authorization": "Bearer undefined"
+            },
+            "params": {},
+            "body": {
+                "JSON": {
+                    "data": {
+                        "type": "ContactlistAmendment",
+                        "attributes": {
+                            "operation": "remove",
+                            "identifierType": "gum",
+                            "identifiers": [
+                                "gumDelid"
+                            ],
+                            "gumCallerId": "test"
+                        }
+                    }
+                },
+                "JSON_ARRAY": {},
+                "XML": {},
+                "FORM": {}
+            },
+            "files": {}
+        }
+    ],
+    {
+        "statusCode": 400,
+        "error": "Message type not present or invalid"
+    },
+    {
+        "statusCode": 400,
+        "error": "message type track not supported"
+    },
+    {
+        "statusCode": 400,
+        "error": "audience Id not found"
+    },
+    {
+        "statusCode": 400,
+        "error": "listData is missing"
+    }
+]

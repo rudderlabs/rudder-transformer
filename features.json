@@ -13,6 +13,7 @@
     "DELIGHTED": true,
     "DRIP": true,
     "ALGOLIA": true,
-    "OMETRIA": true
+    "OMETRIA": true,
+    "CRITEO_CUSTOM_AUDIENCE": true
   }
 }

@@ -851,5 +851,26 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {},
+      "JSON": {
+        "currentEmail": "old@email.com",
+        "newEmail": "new@email.com"
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.iterable.com/api/users/updateEmail"
+  }
 ]

@@ -872,5 +872,11 @@
     },
     "version": "1",
     "endpoint": "https://api.iterable.com/api/users/updateEmail"
+  },
+  {
+    "message": "Missing required value from \"previousId\""
+  },
+  {
+    "message": "Missing required value from \"userId\""
   }
 ]

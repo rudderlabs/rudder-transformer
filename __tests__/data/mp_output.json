@@ -732,5 +732,43 @@
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "version": "1"
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "message": "Event timestamp is older than 5 days and no apisecret is provided in destination config."
+  },
+  {
+    "statusCode": 400,
+    "message": "Event timestamp should be within last 5 years"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
+      },
+      "params": {
+        "data": "eyJldmVudCI6Ik1haW5BY3Rpdml0eSIsInByb3BlcnRpZXMiOnsibmFtZSI6Ik1haW5BY3Rpdml0eSIsImF1dG9tYXRpYyI6dHJ1ZSwiYW5vbnltb3VzSWQiOiI1MDk0ZjU3MDRiOWNmMmIzIiwidXNlcklkIjoidGVzdF91c2VyX2lkIiwiJHVzZXJfaWQiOiJ0ZXN0X3VzZXJfaWQiLCIkb3MiOiJpT1MiLCIkc2NyZWVuX2hlaWdodCI6MTc5NCwiJHNjcmVlbl93aWR0aCI6MTA4MCwiJHNjcmVlbl9kcGkiOjQyMCwiJGNhcnJpZXIiOiJBbmRyb2lkIiwiJG9zX3ZlcnNpb24iOiI4LjEuMCIsIiRkZXZpY2UiOiJnZW5lcmljX3g4NiIsIiRtYW51ZmFjdHVyZXIiOiJHb29nbGUiLCIkbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwibXBfZGV2aWNlX21vZGVsIjoiQW5kcm9pZCBTREsgYnVpbHQgZm9yIHg4NiIsIiR3aWZpIjp0cnVlLCIkYmx1ZXRvb3RoX2VuYWJsZWQiOmZhbHNlLCJtcF9saWIiOiJjb20ucnVkZGVyc3RhY2suYW5kcm9pZC5zZGsuY29yZSIsInRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsImRpc3RpbmN0X2lkIjoidGVzdF91c2VyX2lkIiwidGltZSI6MTUyMDg0NTUwM319"
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "message": "Either previous id or anonymous id should be present in alias payload"
+  },
+  {
+    "statusCode": 400,
+    "message": "message type not supported"
+  }
 ]

@@ -5,7 +5,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage,
+  removeUndefinedAndNullValues,
   constructPayload,
   getBrowserInfo,
   getValuesAsArrayFromConfig,
@@ -13,9 +13,16 @@ const {
   getTimeDifference,
   getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily,
+  getFullName,
+  extractCustomFields
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  MP_IDENTIFY_EXCLUSION_LIST
+} = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
@@ -111,6 +118,7 @@ function getEventValueForTrackEvent(message, destination) {
     mPEventPropertiesConfigJson
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
+  // ??
   const properties = {
     ...message.properties,
     ...message.context.traits,
@@ -148,45 +156,55 @@ function processTrack(message, destination) {
   return returnValue;
 }
 
-function getTransformedJSON(message, mappingJson) {
-  const rawPayload = {};
-
-  const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (traits) {
-    traits = { ...traits };
-    const keys = Object.keys(traits);
-    keys.forEach(key => {
-      if (sourceKeys.includes(key)) {
-        set(rawPayload, mappingJson[key], get(traits, key));
-      } else {
-        set(rawPayload, key, get(traits, key));
-      }
-    });
+function getTransformedJSON(message, mappingJson, useOldMapping) {
+  let rawPayload = constructPayload(message, mappingJson);
+  const userName = get(rawPayload, "$name");
+  if (!userName) {
+    set(rawPayload, "$name", getFullName(message));
   }
 
-  set(
+  rawPayload = extractCustomFields(
+    message,
     rawPayload,
-    "$initial_referrer",
-    get(message, "context.page.initial_referrer")
+    ["traits", "context.traits"],
+    MP_IDENTIFY_EXCLUSION_LIST
   );
-  set(
-    rawPayload,
-    "$initial_referring_domain",
-    get(message, "context.page.initial_referring_domain")
-  );
+  rawPayload = removeUndefinedAndNullValues(rawPayload);
+
+  /*
+  we are adding backward compatibility using useOldMapping key.
+  TODO :: This portion need to be removed after we deciding to stop 
+  support for old mapping.
+  */
+
+  if (useOldMapping) {
+    if (rawPayload.$first_name) {
+      rawPayload.$firstName = rawPayload.$first_name;
+      delete rawPayload.$first_name;
+    }
+    if (rawPayload.$last_name) {
+      rawPayload.$lastName = rawPayload.$last_name;
+      delete rawPayload.$last_name;
+    }
+  }
 
   return rawPayload;
 }
 
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
-
-  let properties = getTransformedJSON(message, mPIdentifyConfigJson);
+  // this variable is used for supporting backward compatibility
+  const { useOldMapping } = destination.Config;
+  // user payload created
+  let properties = getTransformedJSON(
+    message,
+    mPIdentifyConfigJson,
+    useOldMapping
+  );
   const { device } = message.context;
   if (device && device.token) {
     let payload;
-    if (device.type.toLowerCase() === "ios") {
+    if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
       properties.$ios_devices = [device.token];
     } else if (device.type.toLowerCase() === "android") {

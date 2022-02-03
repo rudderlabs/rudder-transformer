@@ -10,7 +10,7 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  adduserIdFromExternalId
+  isAppleFamily
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -35,7 +35,7 @@ function constructPayloadItem(message, category, destination) {
         mappingConfig[ConfigCategory.DEVICE.name]
       );
       rawPayload.preferUserId = true;
-      if (message.context.device.type.toLowerCase() === "ios") {
+      if (isAppleFamily(message.context.device.type)) {
         rawPayload.device.platform = "APNS";
       } else {
         rawPayload.device.platform = "GCM";
@@ -221,6 +221,9 @@ function constructPayloadItem(message, category, destination) {
 
       rawPayload.items = rawPayloadItemArr;
       break;
+    case "alias":
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
+      break;
     default:
       logger.debug("not supported type");
   }
@@ -294,6 +297,9 @@ function processSingleMessage(message, destination) {
         default:
           category = ConfigCategory.TRACK;
       }
+      break;
+    case EventType.ALIAS:
+      category = ConfigCategory.ALIAS;
       break;
     default:
       throw new CustomError("Message type not supported", 400);

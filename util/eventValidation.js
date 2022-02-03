@@ -23,6 +23,15 @@ const violationTypes = {
     UnplannedEvent: "Unplanned-Event"
 };
 
+const supportedEventTypes = {
+    "group": true,
+    "track": true,
+    "identify": true,
+    "page": false,
+    "screen": false,
+    "alias": false
+};
+
 // TODO: Handle various json schema versions
 let ajv = new Ajv(defaultOptions);
 
@@ -37,6 +46,21 @@ function checkForPropertyMissing(property) {
         throw `${property} doesnt exist for event`;
     }
 }
+
+/**
+ * @param {*} eventType
+ *
+ * Checks if the event type is supported or not.
+ * @returns true If it is supported.
+ * @returns false If it is not supported or it is not present in supportedEventTypes.
+ */
+function isEventTypeSupported(eventType) {
+    if (!supportedEventTypes.hasOwnProperty(eventType)) {
+        return false;
+    }
+    return supportedEventTypes[eventType];
+}
+
 
 /**
  * @param {*} tpId
@@ -73,7 +97,11 @@ async function validate(event) {
         );
 
         // UnPlanned event case - since no event schema is found. Violation is raised
+        // Return this violation error only in case of track calls.
         if (!eventSchema || eventSchema === {}) {
+            if (event.message.type !== "track"){
+                return [];
+            }
             rudderValidationError = {
                 type: violationTypes.UnplannedEvent,
                 message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${event.metadata.trackingPlanId}::${event.metadata.trackingPlanVersion}`,
@@ -190,6 +218,15 @@ async function handleValidation(event) {
             };
         }
 
+        // Checking the evenType is supported or not
+        if (!isEventTypeSupported(event.message.type)) {
+            return {
+                dropEvent: dropEvent,
+                violationType: violationType,
+                validationErrors: []
+            };
+        }
+
         const validationErrors = await validate(event);
         if (validationErrors.length === 0) {
             return {
@@ -215,7 +252,7 @@ async function handleValidation(event) {
                     break;
                 }
                 case "unplannedProperties": {
-                    const exists = violationsByType.has(violationTypes.UnplannedEvent);
+                    const exists = violationsByType.has(violationTypes.AdditionalProperties);
                     if (value === "drop" && exists) {
                         dropEvent = true;
                         violationType = violationTypes.AdditionalProperties;
@@ -265,4 +302,9 @@ async function handleValidation(event) {
     }
 }
 
-exports.handleValidation = handleValidation;
+module.exports = {
+    handleValidation,
+    validate,
+    isEventTypeSupported,
+    violationTypes
+};

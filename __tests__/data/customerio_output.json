@@ -853,5 +853,263 @@
     "files": {},
     "userId": "xaviercharles",
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "from_background": false
+        },
+        "name": "Application Opened",
+        "type": "event",
+        "timestamp": 1641827343
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "from_background": false
+        },
+        "name": "device_token_registered",
+        "type": "event",
+        "timestamp": 1641828016
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
   }
 ]

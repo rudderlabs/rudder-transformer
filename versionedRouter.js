@@ -18,6 +18,7 @@ const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
+const { prometheusRegistry } = require("./middleware");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -55,6 +56,10 @@ const getPollStatusHandler = (version, dest) => {
 
 const getJobStatusHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fetchJobStatus`);
+};
+
+const getDeletionUserHandler = (version, dest) => {
+  return require(`./${version}/destinations/${dest}/deleteUsers`);
 };
 
 const getSourceHandler = (version, source) => {
@@ -692,6 +697,52 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+const handleDeletionOfUsers = async ctx => {
+  const { body } = ctx.request;
+  const respList = [];
+  let response;
+  await Promise.all(
+    body.map(async b => {
+      const { destType } = b;
+      const destUserDeletionHandler = getDeletionUserHandler(
+        "v0",
+        destType.toLowerCase()
+      );
+      if (
+        !destUserDeletionHandler ||
+        !destUserDeletionHandler.processDeleteUsers
+      ) {
+        ctx.status = 404;
+        ctx.body = "Doesn't support deletion of users";
+        return null;
+      }
+
+      try {
+        response = await destUserDeletionHandler.processDeleteUsers(b);
+        if (response) {
+          respList.push(response);
+        }
+      } catch (error) {
+        // adding the status to the request
+        ctx.status = error.response ? error.response.status : 400;
+        respList.push({
+          statusCode: error.response ? error.response.status : 400,
+          error: error.message || "Error occured while processing"
+        });
+      }
+    })
+  );
+  ctx.body = respList;
+  return ctx.body;
+  // const { destType } = ctx.request.body;
+};
+const metricsController = async ctx => {
+  ctx.status = 200;
+  ctx.type = prometheusRegistry.contentType;
+  ctx.body = await prometheusRegistry.metrics();
+  return ctx.body;
+};
+
 router.post("/fileUpload", async ctx => {
   await fileUpload(ctx);
 });
@@ -711,10 +762,39 @@ router.post("/getWarningJobs", async ctx => {
 router.post(`/v0/validate`, async ctx => {
   await handleValidation(ctx);
 });
+
+// Api to handle deletion of users for data regulation
+// {
+//   "destType": "dest name",
+//   "userAttributes": [
+//       {
+//           "userId": "user_1"
+//       },
+//       {
+//           "userId": "user_2"
+//       }
+//   ],
+//   "config": {
+//       "apiKey": "",
+//       "apiSecret": ""
+//   }
+// }
+router.post(`/deleteUsers`, async ctx => {
+  await handleDeletionOfUsers(ctx);
+});
+
+router.get("/metrics", async ctx => {
+  await metricsController(ctx);
+});
+
 module.exports = {
   router,
   handleDest,
   routerHandleDest,
   batchHandler,
-  handleProxyRequest
+  handleProxyRequest,
+  handleDeletionOfUsers,
+  fileUpload,
+  pollStatus,
+  getJobStatus
 };

@@ -85,7 +85,7 @@ const customTagProcessor = async (message, category, destination) => {
     );
   } catch (err) {
     throw new CustomError(
-      "Failed to Create new Contact",
+      `Failed to create new contact (${err.response.statusText})`,
       err.response.status || 400
     );
   }
@@ -116,7 +116,12 @@ const customTagProcessor = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {}
+  } catch (err) {
+    throw new CustomError(
+      `Failed to fetch already created tags (${err.response.statusText})`,
+      err.response.status || 400
+    );
+  }
 
   const storedTags = {};
   if (res.status === 200) {
@@ -162,7 +167,12 @@ const customTagProcessor = async (message, category, destination) => {
               }
             }
           );
-        } catch (err) {}
+        } catch (err) {
+          throw new CustomError(
+            `Failed to create tags (${err.response.statusText})`,
+            err.response.status || 400
+          );
+        }
         // For each tags successfully created the response id is pushed to tagIds
         if (res.status === 201) tagIds.push(res.data.tag.id);
       })
@@ -194,7 +204,12 @@ const customTagProcessor = async (message, category, destination) => {
             }
           }
         );
-      } catch (err) {}
+      } catch (err) {
+        throw new CustomError(
+          `Failed to merge created contact with created tags (${err.response.statusText})`,
+          err.response.status || 400
+        );
+      }
     })
   );
 
@@ -235,7 +250,12 @@ const customFieldProcessor = async (
       }
     );
     responseStaging = res.status === 200 ? res.data.fields : [];
-  } catch (err) {}
+  } catch (err) {
+    throw new CustomError(
+      `Failed to get existing field data (${err.response.statusText})`,
+      err.response.status || 400
+    );
+  }
 
   // From the responseStaging we store the stored field information in K-V struct iin fieldMap
   // In order for easy comparison and retrieval.
@@ -292,7 +312,12 @@ const customFieldProcessor = async (
             }
           }
         );
-      } catch (err) {}
+      } catch (err) {
+        throw new CustomError(
+          `Failed to create mapping request (${err.response.statusText})`,
+          err.response.status || 400
+        );
+      }
     })
   );
 };
@@ -346,7 +371,12 @@ const customListProcessor = async (
               }
             }
           );
-        } catch (err) {}
+        } catch (err) {
+          throw new CustomError(
+            `Failed to map created contact with the list (${err.response.statusText})`,
+            err.response.status || 400
+          );
+        }
       } else {
       }
     })
@@ -399,9 +429,15 @@ const screenRequestHandler = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {}
+  } catch (err) {
+    throw new CustomError(
+      `Failed to retrieve events (${err.response.statusText})`,
+      err.response.status || 400
+    );
+  }
+
   if (res.status !== 200)
-    throw new CustomError("Unable to fetch dest events", res.status || 400);
+    throw new CustomError("Unable to create event", res.status || 400);
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -429,10 +465,15 @@ const screenRequestHandler = async (message, category, destination) => {
           }
         }
       );
-    } catch (err) {}
+    } catch (err) {
+      throw new CustomError(
+        `Failed to create the event (${err.response.statusText})`,
+        err.response.status || 400
+      );
+    }
 
     if (res.status !== 201)
-      throw new CustomError("Unable to create dest event", res.status || 400);
+      throw new CustomError("Unable to create event", res.status || 400);
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -467,9 +508,15 @@ const trackRequestHandler = async (message, category, destination) => {
         }
       }
     );
-  } catch (err) {}
+  } catch (err) {
+    throw new CustomError(
+      `Failed to retrieve events (${err.response.statusText})`,
+      err.response.status || 400
+    );
+  }
+
   if (res.status !== 200)
-    throw new CustomError("Unable to fetch dest events", res.status || 400);
+    throw new CustomError("Unable to create event", res.status || 400);
 
   const storedEventsArr = res.data.eventTrackingEvents;
   const storedEvents = [];
@@ -497,10 +544,15 @@ const trackRequestHandler = async (message, category, destination) => {
           }
         }
       );
-    } catch (err) {}
+    } catch (err) {
+      throw new CustomError(
+        `Failed to create event (${err.response.statusText})`,
+        err.response.status || 400
+      );
+    }
 
     if (res.status !== 201)
-      throw new CustomError("Unable to create dest event", res.status || 400);
+      throw new CustomError("Unable to create event", res.status || 400);
   }
   // Previous operations successfull then
   // Mapping the Event payloads

@@ -22,7 +22,8 @@ const {
   getErrorRespEvents,
   generateErrorObject,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isAppleFamily
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -296,6 +297,13 @@ function responseBuilderSimple(
       if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
+        // deleting the properties price, product_id, quantity and revenue from evemt_properties since it is already in root
+        if (rawPayload.event_properties) {
+          delete rawPayload.event_properties.price;
+          delete rawPayload.event_properties.product_id;
+          delete rawPayload.event_properties.quantity;
+          delete rawPayload.event_properties.revenue;
+        }
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
@@ -340,7 +348,7 @@ function responseBuilderSimple(
         const advertId = get(message, "context.device.advertisingId");
 
         if (platform) {
-          if (platform.toLowerCase() === "ios") {
+          if (isAppleFamily(platform)) {
             set(payload, "idfa", advertId);
             set(payload, "idfv", deviceId);
           } else if (platform.toLowerCase() === "android") {
@@ -376,6 +384,14 @@ function responseBuilderSimple(
       // ====================
       // fixVersion(payload, message);
 
+      if (payload.user_properties) {
+        delete payload.user_properties.city;
+        delete payload.user_properties.country;
+        if (payload.user_properties.address) {
+          delete payload.user_properties.address.city;
+          delete payload.user_properties.address.country;
+        }
+      }
       payload.ip = getParsedIP(message);
       payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);

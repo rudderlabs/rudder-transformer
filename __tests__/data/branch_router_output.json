@@ -20,7 +20,7 @@
             }
           ],
           "user_data": {
-            "os": "",
+            "os": "iOS",
             "os_version": "",
             "app_version": "1.0.0",
             "screen_dpi": 2,
@@ -80,7 +80,7 @@
             {}
           ],
           "user_data": {
-            "os": "",
+            "os": "iOS",
             "os_version": "",
             "app_version": "1.0.0",
             "screen_dpi": 2,

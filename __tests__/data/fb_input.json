@@ -615,7 +615,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Main"
+        "name": "Main"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
@@ -666,7 +666,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
@@ -717,7 +717,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
@@ -768,7 +768,7 @@
       },
       "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
       "properties": {
-          "name": "Viewed Main Screen1 by expicit call Screen"
+        "name": "Viewed Main Screen1 by expicit call Screen"
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
@@ -1020,6 +1020,50 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "versionSessionCount": 2
       }
+    },
+    "destination": {
+      "Config": {
+        "appID": "RudderFbApp"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "destination_props": {
+        "Fb": {
+          "app_id": "RudderFbApp"
+        }
+      },
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "type": "watchos"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "screen": {
+          "height": "100",
+          "density": 50
+        },
+        "traits": {
+          "email": "abc@gmail.com",
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "AM": true,
+        "All": false,
+        "GA": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "name": "Viewed Main Screen1 by expicit call Screen"
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "screen"
     },
     "destination": {
       "Config": {

@@ -129,6 +129,7 @@ function processSingleMessage(message, destination) {
       400
     );
   }
+  const { sendAnonymousId } = destination.Config;
   const messageType = message.type.toLowerCase();
   let category;
 
@@ -153,6 +154,9 @@ function processSingleMessage(message, destination) {
     payload = getFieldValueFromMessage(message, "traits");
   } else {
     payload = constructPayload(message, MappingConfig[category.name]);
+  }
+  if (sendAnonymousId && !payload.user_id) {
+    payload.user_id = message.anonymousId;
   }
   return validateAndBuildResponse(message, payload, category, destination);
 }

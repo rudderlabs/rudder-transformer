@@ -1,4 +1,5 @@
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
+const { isDataLakeProvider } = require("../config/helpers");
 
 const toSnakeCase = str => {
   if (!str) {
@@ -17,9 +18,10 @@ function toSafeDBString(provider, name = "") {
     parsedStr = `_${name}`;
   }
   parsedStr = parsedStr.replace(/[^a-zA-Z0-9_]+/g, "");
+  if (isDataLakeProvider(provider)) {
+    return parsedStr;
+  }
   switch (provider) {
-    case "s3_datalake":
-      return parsedStr
     case "postgres":
       return parsedStr.substr(0, 63);
     default:
@@ -35,7 +37,7 @@ function safeTableName(provider, name = "") {
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
   }
-  if (provider === "rs" || provider === "s3_datalake") {
+  if (provider === "rs" || isDataLakeProvider(provider)) {
     tableName = tableName.toLowerCase();
   }
   if (provider === "postgres") {
@@ -58,7 +60,7 @@ function safeColumnName(provider, name = "") {
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();
   }
-  if (provider === "rs" || provider === "s3_datalake") {
+  if (provider === "rs" || isDataLakeProvider(provider)) {
     columnName = columnName.toLowerCase();
   }
   if (provider === "postgres") {

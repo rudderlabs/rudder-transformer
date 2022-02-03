@@ -7,14 +7,9 @@
       "endpoint": "https://api.mixpanel.com/track/",
       "headers": {},
       "params": {
-        "data": "eyJldmVudCI6IkxvYWRlZCBhIHBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwidG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOjE1Nzk4NDczNDIsIm5hbWUiOiJDb250YWN0IFVzIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9fQ=="
+        "data": "eyJldmVudCI6IkxvYWRlZCBhIHBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwidG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOjE1Nzk4NDczNDIsIm5hbWUiOiJDb250YWN0IFVzIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9fQ=="
       },
-      "body": {
-        "JSON": {},
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
+      "body": { "JSON": {}, "JSON_ARRAY": {}, "XML": {}, "FORM": {} },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
@@ -30,7 +25,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -52,14 +48,9 @@
         "endpoint": "https://api.mixpanel.com/engage/",
         "headers": {},
         "params": {
-          "data": "eyIkc2V0Ijp7ImNpdHkiOiJEaXNuZXkiLCJjb3VudHJ5IjoiVVNBIiwiJGVtYWlsIjoibWlja2V5QGRpc25leS5jb20iLCIkZmlyc3ROYW1lIjoiTWlja2V5IiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9LCIkdG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiJGRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwiJGlwIjoiMC4wLjAuMCIsIiR0aW1lIjoxNTc5ODQ3MzQyfQ=="
+          "data": "eyIkc2V0Ijp7IiRlbWFpbCI6Im1pY2tleUBkaXNuZXkuY29tIiwiJGNvdW50cnlfY29kZSI6IlVTQSIsIiRjaXR5IjoiRGlzbmV5IiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwiJGZpcnN0TmFtZSI6Ik1pY2tleSIsIiRicm93c2VyIjoiQ2hyb21lIiwiJGJyb3dzZXJfdmVyc2lvbiI6Ijc5LjAuMzk0NS4xMTcifSwiJHRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsIiRkaXN0aW5jdF9pZCI6ImU2YWIyYzVlLTJjZGEtNDRhOS1hOTYyLWUyZjY3ZGY3OGJjYSIsIiRpcCI6IjAuMC4wLjAiLCIkdGltZSI6MTU3OTg0NzM0Mn0="
         },
-        "body": {
-          "JSON": {},
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
-        },
+        "body": { "JSON": {}, "JSON_ARRAY": {}, "XML": {}, "FORM": {} },
         "files": {},
         "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }
@@ -76,7 +67,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",

@@ -863,6 +863,21 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+
+// Checks if the traits object has a firstName key and a lastName key as defined in GenericFieldMapping.json
+// If it does have those two keys AND does NOT already have a name key
+// Then this function will return fullName: "<firstName> <lastName>"
+function getFullName(message) {
+  let fullName;
+  const firstName = getFieldValueFromMessage(message, "firstName");
+  const lastName = getFieldValueFromMessage(message, "lastName");
+  const name = getFieldValueFromMessage(message, "name");
+  if (!name && firstName && lastName) {
+    fullName = `${firstName} ${lastName}`;
+  }
+  return fullName;
+}
+
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -1112,6 +1127,10 @@ const isOAuthSupported = (destination, destHandler) => {
   );
 };
 
+function isAppleFamily(platform) {
+  const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
+  return appleOsNames.includes(platform.toLowerCase());
+}
 
 // ========================================================================
 // EXPORTS
@@ -1147,6 +1166,7 @@ module.exports = {
   getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
+  getFullName,
   getHashFromArray,
   getIntegrationsObj,
   getMappingConfig,
@@ -1180,5 +1200,6 @@ module.exports = {
   toUnixTimestamp,
   updatePayload,
   isOAuthSupported,
-  isOAuthDestination
+  isOAuthDestination,
+  isAppleFamily
 };

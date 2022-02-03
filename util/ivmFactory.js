@@ -105,91 +105,91 @@ async function createIvm(code, libraryVersionIds, versionId) {
   const context = await isolate.createContext();
 
   const compiledModules = {};
-  try {
-    await Promise.all(
-      Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
-        compiledModules[moduleName] = {
-          module: await loadModule(isolate, context, moduleCode)
+
+  await Promise.all(
+    Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
+      compiledModules[moduleName] = {
+        module: await loadModule(isolate, context, moduleCode)
+      };
+    })
+  );
+
+  // TODO: Add rudder nodejs sdk to libraries
+
+  const jail = context.global;
+
+  // This make the global object available in the context as 'global'. We use 'derefInto()' here
+  // because otherwise 'global' would actually be a Reference{} object in the new isolate.
+  await jail.set("global", jail.derefInto());
+
+  // The entire ivm module is transferable! We transfer the module to the new isolate so that we
+  // have access to the library from within the isolate.
+  await jail.set("_ivm", ivm);
+  await jail.set(
+    "_fetch",
+    new ivm.Reference(async (resolve, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetch(...args);
+        const data = await res.json();
+        stats.timing("fetch_call_duration", fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      } catch (error) {
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy("ERROR").copyInto()
+        ]);
+      }
+    })
+  );
+
+  await jail.set(
+    "_fetchV2",
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetch(...args);
+        const headersContent = {};
+        res.headers.forEach((value, header) => {
+          headersContent[header] = value;
+        });
+        const data = {
+          url: res.url,
+          status: res.status,
+          headers: headersContent,
+          body: await res.text()
         };
-      })
-    );
 
-    // TODO: Add rudder nodejs sdk to libraries
-
-    const jail = context.global;
-
-    // This make the global object available in the context as 'global'. We use 'derefInto()' here
-    // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-    await jail.set("global", jail.derefInto());
-
-    // The entire ivm module is transferable! We transfer the module to the new isolate so that we
-    // have access to the library from within the isolate.
-    await jail.set("_ivm", ivm);
-    await jail.set(
-      "_fetch",
-      new ivm.Reference(async (resolve, ...args) => {
         try {
-          const fetchStartTime = new Date();
-          const res = await fetch(...args);
-          const data = await res.json();
-          stats.timing("fetch_call_duration", fetchStartTime, { versionId });
-          resolve.applyIgnored(undefined, [
-            new ivm.ExternalCopy(data).copyInto()
-          ]);
-        } catch (error) {
-          resolve.applyIgnored(undefined, [
-            new ivm.ExternalCopy("ERROR").copyInto()
-          ]);
-        }
-      })
-    );
+          data.body = JSON.parse(data.body);
+        } catch (e) {}
 
-    await jail.set(
-      "_fetchV2",
-      new ivm.Reference(async (resolve, reject, ...args) => {
-        try {
-          const fetchStartTime = new Date();
-          const res = await fetch(...args);
-          const headersContent = {};
-          res.headers.forEach((value, header) => {
-            headersContent[header] = value;
-          });
-          const data = {
-            url: res.url,
-            status: res.status,
-            headers: headersContent,
-            body: await res.text()
-          };
+        stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      } catch (error) {
+        const err = JSON.parse(
+          JSON.stringify(error, Object.getOwnPropertyNames(error))
+        );
+        reject.applyIgnored(undefined, [
+          new ivm.ExternalCopy(err).copyInto(),
+        ]);
+      }
+    })
+  );
 
-          try {
-            data.body = JSON.parse(data.body);
-          } catch (e) {}
+  await jail.set(
+    "_log",
+    new ivm.Reference((...args) => {
+      console.log("Log: ", ...args);
+    })
+  );
 
-          stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
-          resolve.applyIgnored(undefined, [
-            new ivm.ExternalCopy(data).copyInto()
-          ]);
-        } catch (error) {
-          const err = JSON.parse(
-            JSON.stringify(error, Object.getOwnPropertyNames(error))
-          );
-          reject.applyIgnored(undefined, [
-            new ivm.ExternalCopy(err).copyInto()
-          ]);
-        }
-      })
-    );
-
-    await jail.set(
-      "_log",
-      new ivm.Reference((...args) => {
-        console.log("Log: ", ...args);
-      })
-    );
-
-    const bootstrap = await isolate.compileScript(
-      "new " +
-        `
+  const bootstrap = await isolate.compileScript(
+    "new " +
+      `
     function() {
       // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
       // only place in the context with a reference to the module. The 'ivm' module is very powerful
@@ -263,64 +263,58 @@ async function createIvm(code, libraryVersionIds, versionId) {
       }
 
         `
-    );
+  );
 
-    // Now we can execute the script we just compiled:
-    const bootstrapScriptResult = await bootstrap.run(context);
-    // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-    const customScriptModule = await isolate.compileModule(
-      `${codeWithWrapper}`
-    );
-    await customScriptModule.instantiate(context, spec => {
-      if (librariesMap[spec]) {
-        return compiledModules[spec].module;
-      }
-      console.log(`import from ${spec} failed. Module not found.`);
-      throw new Error(`import from ${spec} failed. Module not found.`);
-    });
-    await customScriptModule.evaluate();
-
-    const supportedFuncNames = ["transformEvent", "transformBatch"];
-    const supportedFuncs = {};
-
-    await Promise.all(
-      supportedFuncNames.map(async sName => {
-        const funcRef = await customScriptModule.namespace.get(sName);
-        if (funcRef && funcRef.typeof === "function") {
-          supportedFuncs[sName] = funcRef;
-        }
-      })
-    );
-
-    const availableFuncNames = Object.keys(supportedFuncs);
-    if (availableFuncNames.length !== 1) {
-      throw new Error(
-        `Expected one of ${supportedFuncNames}. Found ${Object.values(
-          availableFuncNames
-        )}`
-      );
+  // Now we can execute the script we just compiled:
+  const bootstrapScriptResult = await bootstrap.run(context);
+  // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
+  await customScriptModule.instantiate(context, spec => {
+    if (librariesMap[spec]) {
+      return compiledModules[spec].module;
     }
+    console.log(`import from ${spec} failed. Module not found.`);
+    throw new Error(`import from ${spec} failed. Module not found.`);
+  });
+  await customScriptModule.evaluate();
 
-    const fnRef = await customScriptModule.namespace.get("transformWrapper");
-    const fName = availableFuncNames[0];
-    stats.timing("createivm_duration", createIvmStartTime);
-    // TODO : check if we can resolve this
-    // eslint-disable-next-line no-async-promise-executor
+  const supportedFuncNames = ["transformEvent", "transformBatch"];
+  const supportedFuncs = {};
 
-    return {
-      isolate,
-      jail,
-      bootstrapScriptResult,
-      context,
-      fnRef,
-      isolateStartWallTime,
-      isolateStartCPUTime,
-      fName
-    };
-  } catch (err) {
-    isolate.dispose();
-    throw err;
+  await Promise.all(
+    supportedFuncNames.map(async sName => {
+      const funcRef = await customScriptModule.namespace.get(sName);
+      if (funcRef && funcRef.typeof === "function") {
+        supportedFuncs[sName] = funcRef;
+      }
+    })
+  );
+
+  const availableFuncNames = Object.keys(supportedFuncs);
+  if (availableFuncNames.length !== 1) {
+    throw new Error(
+      `Expected one of ${supportedFuncNames}. Found ${Object.values(
+        availableFuncNames
+      )}`
+    );
   }
+
+  const fnRef = await customScriptModule.namespace.get("transformWrapper");
+  const fName = availableFuncNames[0];
+  stats.timing("createivm_duration", createIvmStartTime);
+  // TODO : check if we can resolve this
+  // eslint-disable-next-line no-async-promise-executor
+
+  return {
+    isolate,
+    jail,
+    bootstrapScriptResult,
+    context,
+    fnRef,
+    isolateStartWallTime,
+    isolateStartCPUTime,
+    fName
+  };
 }
 
 async function getFactory(code, libraryVersionIds, versionId) {

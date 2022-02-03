@@ -3,7 +3,6 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
-const heapdump = require("heapdump");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const {
@@ -723,13 +722,6 @@ router.post(`/v0/validate`, async ctx => {
 
 router.get("/metrics", async ctx => {
   await metricsController(ctx);
-});
-
-router.get("/heapdump", ctx => {
-  heapdump.writeSnapshot((err, filename) => {
-    logger.info("Heap dump written to", filename);
-  });
-  ctx.body = "OK";
 });
 
 module.exports = {

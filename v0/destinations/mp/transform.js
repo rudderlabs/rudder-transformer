@@ -171,17 +171,6 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
   );
   rawPayload = removeUndefinedAndNullValues(rawPayload);
 
-  set(
-    rawPayload,
-    "$initial_referrer",
-    get(message, "context.page.initial_referrer")
-  );
-  set(
-    rawPayload,
-    "$initial_referring_domain",
-    get(message, "context.page.initial_referring_domain")
-  );
-
   /*
   we are adding backward compatibility using useOldMapping key.
   TODO :: This portion need to be removed after we deciding to stop 

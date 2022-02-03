@@ -1,0 +1,5414 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "custom event",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "cart opened",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "checkout started",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "cart viewed",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "order completed",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "product removed",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "product added",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "product viewed",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": 2,
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": true,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "disabled",
+        "timestampOptionalReporting": false,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": true,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": ""
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": "tournament_id"
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "merchEvent"
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "name",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": "tournament_id"
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "merchEvent"
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ],
+        "productMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "scAdd"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3"
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "id",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": "tournament_id"
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "merchEvent"
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ],
+        "productMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "scAdd"
+          }
+        ],
+        "productMerchEvarsMap": [
+          {
+            "from": "product_id",
+            "to": "2"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ]
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3",
+        "product_id": 2
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "trackingServerUrl": "http://sadobemetrics.dr.dk",
+        "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+        "reportSuiteIds": "drdev2",
+        "sslHeartbeat": true,
+        "heartbeatTrackingServerUrl": "",
+        "useUtf8Charset": true,
+        "useSecureServerSide": true,
+        "proxyNormalUrl": "",
+        "proxyHeartbeatUrl": "",
+        "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+        "dropVisitorId": false,
+        "timestampOption": "hybrid",
+        "timestampOptionalReporting": true,
+        "noFallbackVisitorId": false,
+        "preferVisitorId": false,
+        "trackPageName": true,
+        "contextDataPrefix": "",
+        "useLegacyLinkName": true,
+        "pageNameFallbackTostring": true,
+        "sendFalseValues": true,
+        "productIdentifier": "id",
+        "eventsToTypes": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "listDelimiter": [
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "listMapping": [
+          {
+            "from": "map_1",
+            "to": "MAP_1"
+          },
+          {
+            "from": "del_1",
+            "to": "DEL_1"
+          }
+        ],
+        "propsDelimiter": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": "3"
+          }
+        ],
+        "eventMerchProperties": [
+          {
+            "eventMerchProperties": "tournament_id"
+          }
+        ],
+        "productMerchProperties": [
+          {
+            "productMerchProperties": ""
+          }
+        ],
+        "eVarMapping": [
+          {
+            "from": "v1",
+            "to": "1"
+          },
+          {
+            "from": "v2",
+            "to": "2"
+          },
+          {
+            "from": "v3",
+            "to": "3"
+          },
+          {
+            "from": "v12",
+            "to": "12"
+          },
+          {
+            "from": "v13",
+            "to": "13"
+          },
+          {
+            "from": "v16",
+            "to": "16"
+          },
+          {
+            "from": "v17",
+            "to": "17"
+          },
+          {
+            "from": "v40",
+            "to": "40"
+          },
+          {
+            "from": "v41",
+            "to": "41"
+          },
+          {
+            "from": "v42",
+            "to": "42"
+          },
+          {
+            "from": "v69",
+            "to": "69"
+          },
+          {
+            "from": "v70",
+            "to": "70"
+          },
+          {
+            "from": "v89",
+            "to": "89"
+          }
+        ],
+        "eventDelivery": false,
+        "eventDeliveryTS": 1628171489456,
+        "rudderEventsToAdobeEvents": [
+          {
+            "from": "Custom Page View",
+            "to": "event1"
+          },
+          {
+            "from": "App Launch",
+            "to": "event31"
+          },
+          {
+            "from": "App Start",
+            "to": "event31"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "eventMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "merchEvent"
+          }
+        ],
+        "customPropsMapping": [
+          {
+            "from": "c2",
+            "to": "2"
+          },
+          {
+            "from": "c3",
+            "to": 3
+          }
+        ],
+        "contextDataMapping": [
+          {
+            "from": "bet_level",
+            "to": "rudder_bet_level"
+          }
+        ],
+        "hierMapping": [
+          {
+            "from": "game_name",
+            "to": "game_dest"
+          }
+        ],
+        "productMerchEventToAdobeEvent": [
+          {
+            "from": "Custom Page View",
+            "to": "scAdd"
+          }
+        ],
+        "productMerchEvarsMap": [
+          {
+            "from": "product_id",
+            "to": "2"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "traits": {
+          "address": {
+            "city": "Dhaka",
+            "country": "Bangladesh"
+          },
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        },
+        "externalId": [
+          {
+            "type": "AdobeFallbackVisitorId",
+            "id": 1
+          }
+        ],
+        "page": {
+          "url": "https://abc.com",
+          "name": "testName"
+        }
+      },
+      "event": "Custom Page View",
+      "integrations": {
+        "AM": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "additional_bet_index": 0,
+        "battle_id": "N/A",
+        "bet_amount": 9,
+        "bet_level": 1,
+        "bet_multiplier": 1,
+        "coin_balance": 9466052,
+        "current_module_name": "CasinoGameModule",
+        "days_in_game": 0,
+        "extra_param": "N/A",
+        "fb_profile": "0",
+        "featureGameType": "N/A",
+        "game_fps": 30,
+        "game_id": "fireEagleBase",
+        "game_name": "FireEagleSlots",
+        "gem_balance": 0,
+        "graphicsQuality": "HD",
+        "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+        "internetReachability": "ReachableViaLocalAreaNetwork",
+        "isLowEndDevice": "False",
+        "is_auto_spin": "False",
+        "is_turbo": "False",
+        "isf": "False",
+        "ishighroller": "False",
+        "jackpot_win_amount": 90,
+        "jackpot_win_type": "Silver",
+        "level": 6,
+        "lifetime_gem_balance": 0,
+        "no_of_spin": 1,
+        "player_total_battles": 0,
+        "player_total_shields": 0,
+        "start_date": "2019-08-01",
+        "total_payments": 0,
+        "tournament_id": "T1561970819",
+        "versionSessionCount": 2,
+        "win_amount": 0,
+        "v1": 1,
+        "v2": 2,
+        "del_1": "delimeter",
+        "map_1": 1,
+        "c2": [
+          2,
+          3,
+          4
+        ],
+        "c3": "3",
+        "product_id": 2
+      },
+      "userId": "test_user_id",
+      "timestamp": "2019-09-01T15:46:51.693Z",
+      "type": "track"
+    }
+  }
+]

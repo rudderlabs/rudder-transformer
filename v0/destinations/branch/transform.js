@@ -94,15 +94,9 @@ function getUserData(message) {
     app_version: get(message, "context.app.version"),
     screen_dpi: get(message, "context.screen.density"),
     android_id: get(message, "context.android_id"),
-    idfa: get(message, "context.idfa")
-      ? get(message, "context.android_id")
-      : null,
-    idfv: get(message, "context.idfv")
-      ? get(message, "context.android_id")
-      : null,
-    aaid: get(message, "context.aaid")
-      ? get(message, "context.android_id")
-      : null,
+    idfa: get(message, "context.idfa") || get(message, "context.android_id"),
+    idfv: get(message, "context.idfv") || get(message, "context.android_id"),
+    aaid: get(message, "context.aaid") || get(message, "context.android_id"),
     developer_identity: getFieldValueFromMessage(message, "userId")
   });
 }

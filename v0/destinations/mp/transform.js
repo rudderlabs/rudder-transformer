@@ -156,7 +156,7 @@ function processTrack(message, destination) {
   return returnValue;
 }
 
-function getTransformedJSON(message, mappingJson, useOldMapping) {
+function getTransformedJSON(message, mappingJson, useNewMapping) {
   let rawPayload = constructPayload(message, mappingJson);
   const userName = get(rawPayload, "$name");
   if (!userName) {
@@ -172,12 +172,12 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
   rawPayload = removeUndefinedAndNullValues(rawPayload);
 
   /*
-  we are adding backward compatibility using useOldMapping key.
+  we are adding backward compatibility using useNewMapping key.
   TODO :: This portion need to be removed after we deciding to stop 
   support for old mapping.
   */
 
-  if (useOldMapping) {
+  if (!useNewMapping) {
     if (rawPayload.$first_name) {
       rawPayload.$firstName = rawPayload.$first_name;
       delete rawPayload.$first_name;
@@ -194,12 +194,12 @@ function getTransformedJSON(message, mappingJson, useOldMapping) {
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
   // this variable is used for supporting backward compatibility
-  const { useOldMapping } = destination.Config;
+  const { useNewMapping } = destination.Config;
   // user payload created
   let properties = getTransformedJSON(
     message,
     mPIdentifyConfigJson,
-    useOldMapping
+    useNewMapping
   );
   const { device } = message.context;
   if (device && device.token) {

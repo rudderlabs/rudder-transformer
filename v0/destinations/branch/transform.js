@@ -81,10 +81,7 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  const { context } = message;
-  const { os } = message.context;
-
-  if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
+  if (!isDefinedAndNotNullAndNotEmpty(get(message, "context.os.name"))) {
     throw new CustomError(
       "os name is missing in the payload and please make sure to insert it at context.os.name",
       400
@@ -92,14 +89,20 @@ function getUserData(message) {
   }
 
   return removeUndefinedAndNullValues({
-    os: os.name,
-    os_version: os.version,
-    app_version: context.app.version,
-    screen_dpi: context.screen.density,
-    android_id: get(context, "android_id") ? context.android_id : null,
-    idfa: get(context, "idfa") ? context.android_id : null,
-    idfv: get(context, "idfv") ? context.android_id : null,
-    aaid: get(context, "aaid") ? context.android_id : null,
+    os: get(message, "context.os.name"),
+    os_version: get(message, "context.os.version"),
+    app_version: get(message, "context.app.version"),
+    screen_dpi: get(message, "context.screen.density"),
+    android_id: get(message, "context.android_id"),
+    idfa: get(message, "context.idfa")
+      ? get(message, "context.android_id")
+      : null,
+    idfv: get(message, "context.idfv")
+      ? get(message, "context.android_id")
+      : null,
+    aaid: get(message, "context.aaid")
+      ? get(message, "context.android_id")
+      : null,
     developer_identity: getFieldValueFromMessage(message, "userId")
   });
 }

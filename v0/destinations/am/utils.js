@@ -61,13 +61,13 @@ function getPlatform(payload, sourceKey) {
     : payloadVal;
 }
 
-function getBrand(payload, sourceKey) {
-  const payloadVal = get(payload, sourceKey);
-
-  if (payload.channel && payload.channel.toLowerCase() === "web") {
-    return getInfoFromUA("device.brand", payload, payloadVal);
+// eslint-disable-next-line consistent-return
+function getBrand(payload, sourceKey, Config) {
+  // console.log(Config);
+  if (Config.mapDeviceBrand) {
+    const payloadVal = get(payload, sourceKey);
+    return payloadVal;
   }
-  return payloadVal;
 }
 
 module.exports = {

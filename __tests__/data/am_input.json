@@ -2648,5 +2648,149 @@
         "apiKey": "abcde"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "device": {
+          "brand": "testBrand",
+          "manufacturer": "testManufacturer"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "mapDeviceBrand": true,
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "brand": "testBrand",
+          "manufacturer": "testManufacturer"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "Android",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "mapDeviceBrand": false,
+        "apiKey": "abcde"
+      }
+    }
   }
 ]

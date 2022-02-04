@@ -247,5 +247,14 @@
     },
     "files": {},
     "userId": "sampath"
+  },
+  {
+    "statusCode": 400,
+    "error": "Event name is required",
+    "statTags": {
+      "destination": "branch",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

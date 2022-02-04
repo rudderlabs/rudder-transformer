@@ -224,6 +224,9 @@ function getCommonPayload(message, category, evName) {
 function processMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
+      if (!message.event) {
+        throw new CustomError("Event name is required", 400);
+      }
       var { evName, category } = getCategoryAndName(message.event);
       break;
     case EventType.IDENTIFY:

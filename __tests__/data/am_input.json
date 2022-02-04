@@ -2788,7 +2788,7 @@
     },
     "destination": {
       "Config": {
-        "mapDeviceBrand": false,
+        "mapDeviceBrand": true,
         "apiKey": "abcde"
       }
     }

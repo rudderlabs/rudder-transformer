@@ -2754,5 +2754,113 @@
     },
     "files": {},
     "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "city": "kolkata",
+            "country": "India",
+            "platform": "Web",
+            "device_model": "Mac",
+            "library": "rudderstack",
+            "device_id": "123456",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "event_type": "$identify",
+            "device_brand": "testBrand",
+            "device_manufacturer": "testManufacturer",
+            "user_properties": {
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
+            },
+            "time": 1571043797562,
+            "user_id": "123456",
+            "ip": "0.0.0.0"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "9",
+            "library": "rudderstack",
+            "device_id": "0572f78fa49c648e",
+            "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+            "carrier": "Android",
+            "app_name": "AMTestProject",
+            "app_version": "1.0",
+            "language": "en-US",
+            "event_type": "Sample track event BEFORE IDENTIFY1**",
+            "device_brand": "testManufacturer",
+            "device_manufacturer": "testManufacturer",
+            "time": 1600355223515,
+            "user_id": "0572f78fa49c648e",
+            "user_properties": {
+              "id": "0572f78fa49c648e",
+              "userId": "0572f78fa49c648e",
+              "address": {},
+              "company": {},
+              "anonymousId": "0572f78fa49c648e",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "initial_referrer": "https://docs.rudderstack.com"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "0572f78fa49c648e"
   }
 ]

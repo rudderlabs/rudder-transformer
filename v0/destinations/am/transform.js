@@ -349,11 +349,13 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(
-          payload,
-          "device_brand",
-          get(message, "context.device.manufacturer")
-        );
+        if (!destination.Config.mapDeviceBrand) {
+          set(
+            payload,
+            "device_brand",
+            get(message, "context.device.manufacturer")
+          );
+        }
 
         const deviceId = get(message, "context.device.id");
         const platform = get(message, "context.device.type");

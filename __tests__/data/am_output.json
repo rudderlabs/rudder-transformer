@@ -2834,7 +2834,7 @@
             "app_version": "1.0",
             "language": "en-US",
             "event_type": "Sample track event BEFORE IDENTIFY1**",
-            "device_brand": "testManufacturer",
+            "device_brand": "testBrand",
             "device_manufacturer": "testManufacturer",
             "time": 1600355223515,
             "user_id": "0572f78fa49c648e",

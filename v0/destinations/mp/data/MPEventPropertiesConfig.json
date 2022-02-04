@@ -1,9 +1,6 @@
 [
   {
-    "sourceKeys": [
-      "context.ip",
-      "request_ip"
-    ],
+    "sourceKeys": ["context.ip", "request_ip"],
     "destKey": "ip"
   },
   {
@@ -95,19 +92,63 @@
     "destKey": "$bluetooth_enabled"
   },
   {
-    "sourceKeys": "context.network.bluetooth",
-    "destKey": "$bluetooth_enabled"
+    "sourceKeys": "properties.bluetoothVersion",
+    "destKey": "$bluetooth_version"
   },
   {
     "sourceKeys": "context.library.name",
     "destKey": "mp_lib"
   },
   {
-    "sourceKeys": "context.page.initial_referrer",
+    "sourceKeys": "context.page.initialReferrer",
     "destKey": "$initial_referrer"
   },
   {
-    "sourceKeys": "context.page.initial_referring_domain",
+    "sourceKeys": "context.page.initialReferringDomain",
     "destKey": "$initial_referring_domain"
+  },
+  {
+    "sourceKeys": "properties.mpProcessingTimeMs",
+    "destKey": "mp_processing_time_ms"
+  },
+  {
+    "sourceKeys": "properties.appBuildNumber",
+    "destKey": "$app_build_number"
+  },
+  {
+    "sourceKeys": "properties.appVersionString",
+    "destKey": "$app_version_string"
+  },
+  {
+    "sourceKeys": "properties.brand",
+    "destKey": "$brand"
+  },
+  {
+    "sourceKeys": "properties.radio",
+    "destKey": "$radio"
+  },
+  {
+    "sourceKeys": "properties.libVersion",
+    "destKey": "$lib_version"
+  },
+  {
+    "sourceKeys": "properties.searchEngine",
+    "destKey": "$search_engine"
+  },
+  {
+    "sourceKeys": "properties.mpKeyword",
+    "destKey": "mp_keyword"
+  },
+  {
+    "sourceKeys": "properties.hasNfc",
+    "destKey": "$has_nfc"
+  },
+  {
+    "sourceKeys": "properties.hasTelephone",
+    "destKey": "$has_telephone"
+  },
+  {
+    "sourceKeys": "properties.googlePlayServices",
+    "destKey": "$google_play_services"
   }
 ]

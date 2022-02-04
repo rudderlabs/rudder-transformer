@@ -61,12 +61,12 @@ function getPlatform(payload, sourceKey) {
     : payloadVal;
 }
 
-// eslint-disable-next-line consistent-return
 function getBrand(payload, sourceKey, Config) {
   if (Config.mapDeviceBrand) {
     const payloadVal = get(payload, sourceKey);
     return payloadVal;
   }
+  return undefined;
 }
 
 module.exports = {

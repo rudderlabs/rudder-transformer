@@ -61,10 +61,20 @@ function getPlatform(payload, sourceKey) {
     : payloadVal;
 }
 
+function getBrand(payload, sourceKey) {
+  const payloadVal = get(payload, sourceKey);
+
+  if (payload.channel && payload.channel.toLowerCase() === "web") {
+    return getInfoFromUA("device.brand", payload, payloadVal);
+  }
+  return payloadVal;
+}
+
 module.exports = {
   getOSName,
   getOSVersion,
   getDeviceModel,
   getDeviceManufacturer,
-  getPlatform
+  getPlatform,
+  getBrand
 };

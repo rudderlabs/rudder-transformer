@@ -1152,9 +1152,9 @@
                 "sku": "45790-32",
                 "url": "https://www.example.com/product/path",
                 "name": "Monopoly: 3rd Edition",
-                
+
                 "category": "Games",
-                
+
                 "image_url": "https:///www.example.com/product/path.jpg"
               },
               "price": 19,
@@ -1200,7 +1200,7 @@
               "event_properties": {
                 "sku": "46493-32",
                 "name": "Uno Card Game",
-                
+
                 "category": "Games"
               },
               "price": 3,
@@ -2036,10 +2036,8 @@
               "event_properties": {
                 "sku": "46493-32",
                 "name": "Uno Card Game",
-                
+
                 "category": "Games"
-                
-                
               },
               "country": "United States",
               "city": "San Francisco",
@@ -2394,7 +2392,7 @@
                 "url": "https://www.example.com/product/path",
                 "name": "Monopoly: 3rd Edition",
                 "category": "Games",
-                
+
                 "image_url": "https:///www.example.com/product/path.jpg"
               },
               "country": "India",
@@ -2862,5 +2860,46 @@
     },
     "files": {},
     "userId": "0572f78fa49c648e"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "anon-id-new",
+            "device_brand": "testBrand",
+            "device_manufacturer": "testManufacturer",
+            "library": "rudderstack",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen View"
+            },
+            "event_type": "Viewed Screen View Screen",
+            "time": 1580602989544,
+            "user_id": "identified user id",
+            "user_properties": {},
+            "session_id": -1,
+            "ip": "14.5.67.21"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
   }
 ]

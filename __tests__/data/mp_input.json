@@ -5,8 +5,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -84,8 +83,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -164,8 +162,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -226,8 +223,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -293,8 +289,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -352,7 +347,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useNewMapping":true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -436,8 +432,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -514,8 +509,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -588,8 +582,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -695,8 +688,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -811,8 +803,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -924,8 +915,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1037,8 +1027,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1103,8 +1092,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1181,8 +1169,7 @@
           {
             "groupKey": "company"
           }
-        ],
-        "useOldMapping": true
+        ]
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1256,8 +1243,7 @@
           {
             "groupKey": "company"
           }
-        ],
-        "useOldMapping": true
+        ]
       },
       "destinationdefinition": {
         "displayname": "kiss metrics",
@@ -1326,8 +1312,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "dataResidency": "eu",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1435,8 +1420,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "dataResidency": "eu",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1514,8 +1498,7 @@
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1593,8 +1576,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1669,8 +1651,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1745,8 +1726,7 @@
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1821,8 +1801,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1896,8 +1875,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -1970,8 +1948,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2049,8 +2026,7 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2130,7 +2106,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": true
+        "useNewMapping": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2208,7 +2184,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": false
+        "useNewMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2283,7 +2259,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": false
+        "useNewMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2357,7 +2333,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": false
+        "useNewMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2436,7 +2412,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": false
+        "useNewMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2517,7 +2493,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": true
+        "useNewMapping": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2612,7 +2588,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": true
+        "useNewMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2709,8 +2685,7 @@
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2790,8 +2765,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "apiSecret": "someApiSecret",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -2863,8 +2837,7 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "apiSecret": "someApiSecret",
-        "useNativeSDK": false,
-        "useOldMapping": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",

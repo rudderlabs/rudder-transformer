@@ -578,6 +578,9 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.TRACK:
+      if (!message.event) {
+        throw new CustomError("Event name is required", 400);
+      }
       standard = eventsToEvents;
       if (standard) {
         standardTo = standard.reduce((filtered, standards) => {

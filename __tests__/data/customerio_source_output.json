@@ -1,0 +1,542 @@
+[
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Customer Subscribed",
+    "properties": {
+      "eventId": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:16:39.000Z",
+    "sentAt": "2020-03-26T19:16:39.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Customer Unsubscribed",
+    "properties": {
+      "eventId": "01E4C4C6P79C12J5A6KPE6XNFD"
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:16:19.000Z",
+    "sentAt": "2020-03-26T19:16:19.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Email Drafted",
+    "properties": {
+      "eventId": "01E4C4G1S0AMNG0XVF2M7RPH5S",
+      "deliveryId": "RPILAgABcRhIBqSp7kiPekGBIeVh",
+      "actionId": 36,
+      "broadcastId": 9
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:18:25.000Z",
+    "sentAt": "2020-03-26T19:18:25.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Email Bounced",
+    "properties": {
+      "eventId": "12ASDG7S9P6MAZPTJ78DAND9GDC",
+      "deliveryId": "RMehBAAAAXE7r_ONUGXly9DBGkpq1JS31=",
+      "contentId": 1146,
+      "emailSubject": "Thanks for joining!",
+      "reason": "550 5.5.0 Requested action not taken: mailbox unavailable",
+      "newsletterId": 736
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2009-02-13T23:31:30.000Z",
+    "sentAt": "2009-02-13T23:31:30.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Email Link Clicked",
+    "properties": {
+      "eventId": "01E4C8BES5XT87ZWRJFTB35YJ3",
+      "deliveryId": "RPILAgABcRhIBqSp7kiPekGBIeVh",
+      "actionId": 36,
+      "broadcastId": 9,
+      "emailSubject": "hello",
+      "link": {
+        "url": "http://google.com",
+        "id": 1
+      }
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T20:25:48.000Z",
+    "sentAt": "2020-03-26T20:25:48.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Email Sent",
+    "properties": {
+      "eventId": "01E2EMRMM6TZ12TF9WGZN0WJQT",
+      "deliveryId": "RAECAAFwnUSneIa0ZXkmq8EdkAM==",
+      "actionId": 42,
+      "content": "Welcome to the club, we are with you.",
+      "emailSubject": "Thanks for signing up",
+      "campaignId": 23
+    },
+    "userId": "user-123",
+    "originalTimestamp": "2022-02-07T09:58:57.000Z",
+    "sentAt": "2022-02-07T09:58:57.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Push Attempted",
+    "properties": {
+      "eventId": "01E4VSX8SZ0T9AQMH4Q16NRB89",
+      "deliveryId": "RAEABQFxN56fWzydfV4_EGvfobI=",
+      "actionId": 38,
+      "reason": "NoDevicesSynced",
+      "campaignId": 6
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-01T21:21:15.000Z",
+    "sentAt": "2020-04-01T21:21:15.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Push Sent",
+    "properties": {
+      "eventId": "01E4C4HDQ7P1X9KTKF0ZX7PWHE",
+      "deliveryId": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+      "actionId": 37,
+      "broadcastId": 9,
+      "recipients": [
+        {
+          "device_id": "eeC2XC_NVPo:APA91bEYRSgmu-dAZcOWi7RzKBbT9gdY3WJACOpLQEMAmAOsChJMAZWirvSlSF3EuHxb7qdwlYeOyCWtbsnR14Vyx5nwBmg5J3SyPxfNn-ey1tNgXIj5UOq8IBk2VwzMApk-xzD4JJof",
+          "device_platform": "android"
+        }
+      ]
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:19:10.000Z",
+    "sentAt": "2020-03-26T19:19:10.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Push Link Clicked",
+    "properties": {
+      "eventId": "01E4V2SBHYK4TNTG8WKMP39G9R",
+      "deliveryId": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+      "actionId": 37,
+      "broadcastId": 9,
+      "link": {
+        "url": "ciosas://product/2",
+        "id": 1
+      },
+      "recipients": [
+        {
+          "device_id": "eeC2XC_NVPo:APA91bEYRSgmu-dAZcOWi7RzKBbT9gdY3WJACOpLQEMAmAOsChJMAZWirvSlSF3EuHxb7qdwlYeOyCWtbsnR14Vyx5nwBmg5J3SyPxfNn-ey1tNgXIj5UOq8IBk2VwzMApk-xzD4JJof"
+        }
+      ]
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-01T14:37:09.000Z",
+    "sentAt": "2020-04-01T14:37:09.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "SMS Attempted",
+    "properties": {
+      "eventId": "01E4F3DCS83P8HT7R3E6DWQN1X",
+      "deliveryId": "ROk1AAIBcR4iT6mueuxiDtzO8HXv",
+      "actionId": 41,
+      "reason": "Twilio Error 21408: Permission to send an SMS has not been enabled for the region indicated by the 'To' number: +18008675309.",
+      "campaignId": 7
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2009-02-13T23:31:30.000Z",
+    "sentAt": "2009-02-13T23:31:30.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "+18008675309"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "SMS Link Clicked",
+    "properties": {
+      "eventId": "01E4XXPN42JDF4B1ATQKTZ8WHV",
+      "deliveryId": "RPILAgIBcRh6qzHz-8gKvscP2UZa",
+      "actionId": 38,
+      "broadcastId": 9,
+      "link": {
+        "url": "https://app.com/verify",
+        "id": 1
+      }
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-02T17:06:01.000Z",
+    "sentAt": "2020-04-02T17:06:01.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "#signups"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Slack Message Sent",
+    "properties": {
+      "eventId": "01E4C4TQKD6KJ274870J5DE2HB",
+      "deliveryId": "RPILAgQBcRhNAufb0s30bmz5HD7Y",
+      "actionId": 39,
+      "broadcastId": 9
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:24:15.000Z",
+    "sentAt": "2020-03-26T19:24:15.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "#signups"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Slack Message Link Clicked",
+    "properties": {
+      "eventId": "01E4C6HJTBNDX18XC4B88M3Y2G",
+      "deliveryId": "RPILAgQBcRhocpCJE3mFfwvRzNe6",
+      "actionId": 39,
+      "broadcastId": 9,
+      "link": {
+        "url": "http://bing.com",
+        "id": 1
+      }
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:54:11.000Z",
+    "sentAt": "2020-03-26T19:54:11.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Slack Message Failed",
+    "properties": {
+      "eventId": "01E4C4HDQ77BCN0X23Z3WBE764",
+      "deliveryId": "RPILAgQBcRhIBqRiZAc0fyQiLvkC",
+      "actionId": 39,
+      "broadcastId": 9,
+      "reason": "value passed for channel was invalid"
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:19:10.000Z",
+    "sentAt": "2020-03-26T19:19:10.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Webhook Message Drafted",
+    "properties": {
+      "eventId": "01E4C4G1S04QCV1NASF4NWMQNR",
+      "deliveryId": "RPILAgEBcRhIBqSrYcXDr2ks6Pj9",
+      "actionId": 40,
+      "broadcastId": 9
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:18:25.000Z",
+    "sentAt": "2020-03-26T19:18:25.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Webhook Message Attempted",
+    "properties": {
+      "eventId": "01E4TYA2KA9T0XGHCRJ784B774",
+      "deliveryId": "RAECAQFxNeUBx6LqgjqrN1j-BJc=",
+      "actionId": 38,
+      "broadcastId": 6,
+      "reason": "Variable 'customer.test' is missing"
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-01T13:18:54.000Z",
+    "sentAt": "2020-04-01T13:18:54.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "https://test.example.com/process"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Webhook Message Sent",
+    "properties": {
+      "eventId": "01E4C6EP0HCKRHKFARMZ5XEH7A",
+      "deliveryId": "RPILAgEBcRhNAufr2aU82jtDZEh6",
+      "actionId": 40,
+      "broadcastId": 9
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:52:37.000Z",
+    "sentAt": "2020-03-26T19:52:37.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "https://test.example.com/process"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Webhook Message Link Clicked",
+    "properties": {
+      "eventId": "01E4C6F5N1Y54TVGJTN64Y1ZS9",
+      "deliveryId": "RPILAgEBcRhNAufr2aU82jtDZEh6",
+      "actionId": 40,
+      "broadcastId": 9,
+      "link": {
+        "url": "http://bing.com",
+        "id": 1
+      }
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-03-26T19:52:53.000Z",
+    "sentAt": "2020-03-26T19:52:53.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Webhook Message Failed",
+    "properties": {
+      "eventId": "01E4TY5FVB0ZQ4KVDKRME0XSYZ",
+      "deliveryId": "RAECAQFxNeK3bC4SYqhQqFGBQrQ=",
+      "actionId": 38,
+      "broadcastId": 6,
+      "reason": "HTTP 404 Not Found []"
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-01T13:16:24.000Z",
+    "sentAt": "2020-04-01T13:16:24.000Z"
+  }
+]

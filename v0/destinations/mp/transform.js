@@ -393,6 +393,12 @@ function processGroupEvents(message, type, destination) {
 }
 
 function processSingleMessage(message, destination) {
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
   switch (message.type) {
     case EventType.TRACK:
       return processTrack(message, destination);

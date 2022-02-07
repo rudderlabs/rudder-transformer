@@ -30,9 +30,9 @@ function responseBuilder(payload, message, destination, category) {
 
   const att = get(message, "context.device.attTrackingStatus");
   if (isDefinedAndNotNull(att)) {
-    if (att == 3) {
+    if (att === 3) {
       payload.limit_ad_tracking = false;
-    } else if (att == 2) {
+    } else if (att === 2) {
       payload.limit_ad_tracking = true;
     }
   }
@@ -102,18 +102,20 @@ function getUserData(message) {
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
-  const content_items = {};
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = {};
+  const eventData = {};
+  const customData = {};
 
   let valFound = false;
   if (category.content_items) {
     Object.keys(category.content_items).find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
+        return true;
       }
+      return false;
     });
   }
 
@@ -121,29 +123,31 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
     if (category.event_data) {
       category.event_data.find(branchMappingProperty => {
         if (branchMappingProperty === rudderProperty) {
-          event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+          eventData[rudderProperty] = rudderPropertiesObj[rudderProperty];
           valFound = true;
+          return true;
         }
+        return false;
       });
     }
   }
 
   if (!valFound) {
-    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+    customData[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
   return {
-    content_itemsObj: content_items,
-    event_dataObj: event_data,
-    custom_dataObj: custom_data
+    contentItemsObj: contentItems,
+    eventDataObj: eventData,
+    customDataObj: customData
   };
 }
 
 function getCommonPayload(message, category, evName) {
   const rawPayload = {};
   let rudderPropertiesObj;
-  const content_items = [];
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = [];
+  const eventData = {};
+  const customData = {};
   let productObj = {};
 
   // eslint-disable-next-line default-case
@@ -166,37 +170,37 @@ function getCommonPayload(message, category, evName) {
           const product = rudderPropertiesObj.products[i];
           // eslint-disable-next-line no-loop-func
           Object.keys(product).map(productProp => {
-            const {
-              content_itemsObj,
-              event_dataObj,
-              custom_dataObj
-            } = mapPayload(category, productProp, product);
-            Object.assign(productObj, content_itemsObj);
-            Object.assign(event_data, event_dataObj);
-            Object.assign(custom_data, custom_dataObj);
+            const { contentItemsObj, eventDataObj, customDataObj } = mapPayload(
+              category,
+              productProp,
+              product
+            );
+            Object.assign(productObj, contentItemsObj);
+            Object.assign(eventData, eventDataObj);
+            Object.assign(customData, customDataObj);
           });
-          content_items.push(productObj);
+          contentItems.push(productObj);
           productObj = {};
         }
       } else {
-        const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
+        const { contentItemsObj, eventDataObj, customDataObj } = mapPayload(
           category,
           rudderProperty,
           rudderPropertiesObj
         );
-        Object.assign(productObj, content_itemsObj);
-        Object.assign(event_data, event_dataObj);
-        Object.assign(custom_data, custom_dataObj);
+        Object.assign(productObj, contentItemsObj);
+        Object.assign(eventData, eventDataObj);
+        Object.assign(customData, customDataObj);
       }
     });
-    content_items.push(productObj);
-    rawPayload.custom_data = custom_data;
-    rawPayload.content_items = content_items;
-    rawPayload.event_data = event_data;
+    contentItems.push(productObj);
+    rawPayload.custom_data = customData;
+    rawPayload.content_items = contentItems;
+    rawPayload.event_data = eventData;
     // rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
-      if (Object.keys(rawPayload[key]).length == 0) {
+      if (Object.keys(rawPayload[key]).length === 0) {
         rawPayload[key] = null;
       }
     });

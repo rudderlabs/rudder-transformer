@@ -81,13 +81,6 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  if (!isDefinedAndNotNullAndNotEmpty(get(message, "context.os.name"))) {
-    throw new CustomError(
-      "os name is missing in the payload and please make sure to insert it at context.os.name",
-      400
-    );
-  }
-
   return removeUndefinedAndNullValues({
     os: get(message, "context.os.name"),
     os_version: get(message, "context.os.version"),

@@ -205,23 +205,22 @@ function processTrack(message, destination) {
       if (channelConfig.eventRegex) {
         logger.debug(
           "regex: ",
-          `${channelConfig.eventName} trying to match with ${eventName}`
+          `${configEventName} trying to match with ${eventName}`
         );
         logger.debug(
           "match:: ",
-          channelConfig.eventName,
+          configEventName,
           eventName,
-          eventName.match(new RegExp(channelConfig.eventName, "g"))
+          eventName.match(new RegExp(configEventName, "g"))
         );
         if (
-          eventName.match(new RegExp(channelConfig.eventName, "g")) &&
-          eventName.match(new RegExp(channelConfig.eventName, "g")).length > 0
+          eventName.match(new RegExp(configEventName, "g")) &&
+          eventName.match(new RegExp(configEventName, "g")).length > 0
         ) {
-          channelListToSendThisEvent.add(channelConfig.eventChannel);
+          channelListToSendThisEvent.add(configEventChannel);
         }
-      }
-      if (channelConfig.eventName === eventName) {
-        channelListToSendThisEvent.add(channelConfig.eventChannel);
+      } else if (configEventName === eventName) {
+        channelListToSendThisEvent.add(configEventChannel);
       }
     }
   });
@@ -243,13 +242,13 @@ function processTrack(message, destination) {
     if (configEventName && configEventTemplate) {
       if (templateConfig.eventRegex) {
         if (
-          eventName.match(new RegExp(templateConfig.eventName, "g")) &&
-          eventName.match(new RegExp(templateConfig.eventName, "g")).length > 0
+          eventName.match(new RegExp(configEventName, "g")) &&
+          eventName.match(new RegExp(configEventName, "g")).length > 0
         ) {
-          templateListForThisEvent.add(templateConfig.eventTemplate);
+          templateListForThisEvent.add(configEventTemplate);
         }
-      } else if (templateConfig.eventName === eventName) {
-        templateListForThisEvent.add(templateConfig.eventTemplate);
+      } else if (configEventName === eventName) {
+        templateListForThisEvent.add(configEventTemplate);
       }
     }
   });

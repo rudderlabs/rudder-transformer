@@ -23,8 +23,7 @@
   "data.campaign_id": "properties.campaignId",
   "data.device_id": "properties.deviceId",
   "data.device_platform": "properties.devicePlatform",
-  "data.recipients.device_id": "properties.deviceId",
-  "data.recipients.device_platform": "properties.devicePlatform",
+  "data.recipients": "properties.recipients",
   "data.event_type": "properties.type",
   "data.newsletter_id": "properties.newsletterId"
 }

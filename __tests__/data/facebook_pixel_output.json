@@ -460,5 +460,14 @@
       }
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Event name is required",
+    "statTags": {
+      "destination": "facebook_pixel",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

@@ -86,7 +86,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
   response.headers = headers;
-  response.userId = get(message, "anonymousId") || get(message, "userId");
+  response.userId = message.anonymousId || message.userId;
   response.params = { data: encodedData };
 
   return response;
@@ -101,7 +101,7 @@ function processRevenueEvents(message, destination) {
   const parameters = {
     $append: { $transactions: transactions },
     $token: destination.Config.token,
-    $distinct_id: get(message, "userId") || get(message, "anonymousId")
+    $distinct_id: message.userId || message.anonymousId
   };
 
   return responseBuilderSimple(
@@ -120,11 +120,11 @@ function getEventValueForTrackEvent(message, destination) {
   const unixTimestamp = toUnixTimestamp(message.timestamp);
   // ??
   const properties = {
-    ...get(message, "properties"),
+    ...message.properties,
     ...get(message, "context.traits"),
     ...mappedProperties,
     token: destination.Config.token,
-    distinct_id: get(message, "userId") || get(message, "anonymousId"),
+    distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp
   };
 
@@ -223,8 +223,8 @@ function processIdentifyEvents(message, type, destination) {
   const parameters = {
     $set: properties,
     $token: destination.Config.token,
-    $distinct_id: get(message, "userId") || get(message, "anonymousId"),
-    $ip: get(message, "context.ip") || get(message, "request_ip"),
+    $distinct_id: message.userId || message.anonymousId,
+    $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
   returnValue.push(
@@ -291,10 +291,10 @@ function processPageOrScreenEvents(message, type, destination) {
   const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
     ...get(message, "context.traits"),
-    ...get(message, "properties"),
+    ...message.properties,
     ...mappedProperties,
     token: destination.Config.token,
-    distinct_id: get(message, "userId") || get(message, "anonymousId"),
+    distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp
   };
 
@@ -349,7 +349,7 @@ function processGroupEvents(message, type, destination) {
       if (groupKeyVal) {
         const parameters = {
           $token: destination.Config.token,
-          $distinct_id: get(message, "userId") || get(message, "anonymousId"),
+          $distinct_id: message.userId || message.anonymousId,
           $set: {
             [groupKey]: [get(message.traits, groupKey)]
           }

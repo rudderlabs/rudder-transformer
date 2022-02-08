@@ -11,8 +11,7 @@ const {
   getErrorRespEvents,
   CustomError,
   isDefinedAndNotNull,
-  isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isAppleFamily
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {

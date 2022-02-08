@@ -93,7 +93,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
 }
 
 function processRevenueEvents(message, destination) {
-  const revenueValue = message.properties.revenue;
+  const revenueValue = get(message, "properties.revenue");
   const transactions = {
     $time: getEventTime(message),
     $amount: revenueValue
@@ -121,7 +121,7 @@ function getEventValueForTrackEvent(message, destination) {
   // ??
   const properties = {
     ...message.properties,
-    ...message.context.traits,
+    ...get(message, "context.traits"),
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
@@ -201,7 +201,7 @@ function processIdentifyEvents(message, type, destination) {
     mPIdentifyConfigJson,
     useNewMapping
   );
-  const { device } = message.context;
+  const device = get(message, "context.device");
   if (device && device.token) {
     let payload;
     if (isAppleFamily(device.type)) {
@@ -224,7 +224,7 @@ function processIdentifyEvents(message, type, destination) {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: (message.context && message.context.ip) || message.request_ip,
+    $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
   returnValue.push(
@@ -290,7 +290,7 @@ function processPageOrScreenEvents(message, type, destination) {
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
-    ...message.context.traits,
+    ...get(message, "context.traits"),
     ...message.properties,
     ...mappedProperties,
     token: destination.Config.token,
@@ -393,6 +393,12 @@ function processGroupEvents(message, type, destination) {
 }
 
 function processSingleMessage(message, destination) {
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
   switch (message.type) {
     case EventType.TRACK:
       return processTrack(message, destination);

@@ -76,12 +76,17 @@ function getUserData(message) {
 
   if (isDefinedAndNotNull(os)) {
     if (isAppleFamily(os)) {
-      userData.idfa = get(message, "context.device.advertisingId");
-      userData.idfv = get(message, "context.device.id");
+      userData.idfa =
+        get(message, "context.device.advertisingId") ||
+        get(message, "context.idfa");
+      userData.idfv =
+        get(message, "context.device.id") || get(message, "context.idfv");
     } else if (os.toLowerCase() === "android") {
       userData.android_id =
         get(message, "context.device.id") || get(message, "context.android_id");
-      userData.aaid = get(message, "context.device.advertisingId");
+      userData.aaid =
+        get(message, "context.device.advertisingId") ||
+        get(message, "context.aaid");
     }
   }
 

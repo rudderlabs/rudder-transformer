@@ -59,8 +59,12 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
+  // os field is not mandatory as based on device type it can be one of
+  // "Android" or "iOS" but it does not apply & is not valid in case of web events
+  const os = get(message, "context.os.name");
+
   let userData = {
-    os: get(message, "context.os.name"),
+    os,
     os_version: get(message, "context.os.version"),
     app_version: get(message, "context.app.version"),
     model: get(message, "context.device.model"),
@@ -72,21 +76,20 @@ function getUserData(message) {
     user_agent: get(message, "context.userAgent")
   };
 
-  const os = get(message, "context.os.name");
-
   if (isDefinedAndNotNull(os)) {
     if (isAppleFamily(os)) {
       userData.idfa =
-        get(message, "context.device.advertisingId") ||
-        get(message, "context.idfa");
+        get(message, "context.idfa") ||
+        get(message, "context.device.advertisingId");
+
       userData.idfv =
-        get(message, "context.device.id") || get(message, "context.idfv");
+        get(message, "context.idfv") || get(message, "context.device.id");
     } else if (os.toLowerCase() === "android") {
       userData.android_id =
-        get(message, "context.device.id") || get(message, "context.android_id");
+        get(message, "context.android_id") || get(message, "context.device.id");
       userData.aaid =
-        get(message, "context.device.advertisingId") ||
-        get(message, "context.aaid");
+        get(message, "context.aaid") ||
+        get(message, "context.device.advertisingId");
     }
   }
 

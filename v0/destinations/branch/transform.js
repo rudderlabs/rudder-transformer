@@ -15,27 +15,6 @@ const {
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
-  const os = get(message, "context.os.name");
-
-  if (isDefinedAndNotNull(os)) {
-    if (isAppleFamily(os)) {
-      payload.idfa = get(message, "context.device.advertisingId");
-      payload.idfv = get(message, "context.device.id");
-    } else if (os.toLowerCase() === "android") {
-      payload.android_id = get(message, "context.device.id");
-      payload.aaid = get(message, "context.device.advertisingId");
-    }
-  }
-
-  const att = get(message, "context.device.attTrackingStatus");
-  if (isDefinedAndNotNull(att)) {
-    if (att === 3) {
-      payload.limit_ad_tracking = false;
-    } else if (att === 2) {
-      payload.limit_ad_tracking = true;
-    }
-  }
-
   const response = defaultRequestConfig();
 
   if (category === "custom") {
@@ -80,17 +59,44 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  return removeUndefinedAndNullValues({
+  let userData = {
     os: get(message, "context.os.name"),
     os_version: get(message, "context.os.version"),
     app_version: get(message, "context.app.version"),
+    model: get(message, "context.device.model"),
+    brand: get(message, "context.device.brand"),
     screen_dpi: get(message, "context.screen.density"),
-    android_id: get(message, "context.android_id"),
-    idfa: get(message, "context.idfa") || get(message, "context.android_id"),
-    idfv: get(message, "context.idfv") || get(message, "context.android_id"),
-    aaid: get(message, "context.aaid") || get(message, "context.android_id"),
-    developer_identity: getFieldValueFromMessage(message, "userId")
-  });
+    screen_height: get(message, "context.screen.height"),
+    screen_width: get(message, "context.screen.width"),
+    developer_identity: getFieldValueFromMessage(message, "userId"),
+    user_agent: get(message, "context.userAgent")
+  };
+
+  const os = get(message, "context.os.name");
+
+  if (isDefinedAndNotNull(os)) {
+    if (isAppleFamily(os)) {
+      userData.idfa = get(message, "context.device.advertisingId");
+      userData.idfv = get(message, "context.device.id");
+    } else if (os.toLowerCase() === "android") {
+      userData.android_id =
+        get(message, "context.device.id") || get(message, "context.android_id");
+      userData.aaid = get(message, "context.device.advertisingId");
+    }
+  }
+
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att === 3) {
+      userData.limit_ad_tracking = false;
+    } else if (att === 2) {
+      userData.limit_ad_tracking = true;
+    }
+  }
+
+  userData = removeUndefinedAndNullValues(userData);
+
+  return userData;
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
@@ -189,7 +195,6 @@ function getCommonPayload(message, category, evName) {
     rawPayload.custom_data = customData;
     rawPayload.content_items = contentItems;
     rawPayload.event_data = eventData;
-    // rawPayload.user_data = getUserData(message);
 
     Object.keys(rawPayload).map(key => {
       if (Object.keys(rawPayload[key]).length === 0) {

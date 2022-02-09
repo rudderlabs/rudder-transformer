@@ -139,7 +139,13 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
-function updateConfigProperty(message, payload, mappingJson, validatePayload) {
+function updateConfigProperty(
+  message,
+  payload,
+  mappingJson,
+  validatePayload,
+  Config
+) {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     // check if custom processing is required on the payload sourceKey ==> destKey
@@ -149,14 +155,14 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload) {
         if (validatePayload) {
           const data = get(payload, outKey);
           if (!isDefinedAndNotNull(data)) {
-            const val = AMUtils[funcName](message, sourceKey);
+            const val = AMUtils[funcName](message, sourceKey, Config);
             if (val || val === false || val === 0) {
               set(payload, outKey, val);
             }
           }
         } else {
           // get the destKey/outKey value from calling the util function
-          set(payload, outKey, AMUtils[funcName](message, sourceKey));
+          set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
         }
       }
     } else {
@@ -200,7 +206,13 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  updateConfigProperty(message, rawPayload, mappingJson, false);
+  updateConfigProperty(
+    message,
+    rawPayload,
+    mappingJson,
+    false,
+    destination.Config
+  );
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -297,6 +309,13 @@ function responseBuilderSimple(
       if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
+        // deleting the properties price, product_id, quantity and revenue from evemt_properties since it is already in root
+        if (rawPayload.event_properties) {
+          delete rawPayload.event_properties.price;
+          delete rawPayload.event_properties.product_id;
+          delete rawPayload.event_properties.quantity;
+          delete rawPayload.event_properties.revenue;
+        }
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
@@ -330,11 +349,13 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(
-          payload,
-          "device_brand",
-          get(message, "context.device.manufacturer")
-        );
+        if (!destination.Config.mapDeviceBrand) {
+          set(
+            payload,
+            "device_brand",
+            get(message, "context.device.manufacturer")
+          );
+        }
 
         const deviceId = get(message, "context.device.id");
         const platform = get(message, "context.device.type");
@@ -369,7 +390,8 @@ function responseBuilderSimple(
         message,
         payload,
         mappingConfig[ConfigCategory.COMMON_CONFIG.name],
-        true
+        true,
+        destination.Config
       );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
@@ -377,6 +399,14 @@ function responseBuilderSimple(
       // ====================
       // fixVersion(payload, message);
 
+      if (payload.user_properties) {
+        delete payload.user_properties.city;
+        delete payload.user_properties.country;
+        if (payload.user_properties.address) {
+          delete payload.user_properties.address.city;
+          delete payload.user_properties.address.country;
+        }
+      }
       payload.ip = getParsedIP(message);
       payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);

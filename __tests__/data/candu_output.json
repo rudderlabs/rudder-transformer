@@ -1,0 +1,139 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.candu.ai/api/eventWebhook",
+    "headers": {
+      "Authorization": "Basic RlhMa0xVRWhHSnl2bVk0",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "traits": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female"
+        },
+        "type": "identify",
+        "userId": "user123456001",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "context": {
+          "source": "RudderStack"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.candu.ai/api/eventWebhook",
+    "headers": {
+      "Authorization": "Basic RlhMa0xVRWhHSnl2bVk0",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "type": "track",
+        "event": "testEventWithoutProp",
+        "traits": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female"
+        },
+        "userId": "user123456001",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "e9f3dfb4-562c-48f4-b0cf-85782dfc9b1e",
+        "context": {
+          "source": "RudderStack"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"event\"",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[CANDU]:: Message type page not supported.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[CANDU]:: apiKey cannot be empty.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[CANDU]:: Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "candu",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.candu.ai/api/eventWebhook",
+    "headers": {
+      "Authorization": "Basic RlhMa0xVRWhHSnl2bVk0",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "traits": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female",
+          "userId": "user123456001"
+        },
+        "type": "identify",
+        "userId": "user123456001",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "context": {
+          "source": "RudderStack"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

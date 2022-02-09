@@ -1,0 +1,272 @@
+[
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "a",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "wrongMunchkin",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "a",
+          "clientId": "wrongClientId",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "a",
+          "clientId": "b",
+          "clientSecret": "forThrottle",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "testMunchkin",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "testMunchkin1",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "testMunchkin2",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "testMunchkin3",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "config": {
+          "munchkinId": "testMunchkin4",
+          "clientId": "b",
+          "clientSecret": "c",
+          "columnFieldsMapping": [
+            {
+              "to": "Email",
+              "from": "email"
+            }
+          ]
+        },
+        "input": [
+          {
+            "message": {
+              "name__c": "Carlo Lombard",
+              "email__c": "carlo@enuffsaid.media",
+              "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+            },
+            "metadata": {
+              "job_id": 17
+            }
+          }
+        ],
+        "destType": "marketo_bulk_upload"
+      }
+    }
+  }
+]

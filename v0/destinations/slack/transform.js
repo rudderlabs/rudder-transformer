@@ -178,6 +178,9 @@ function processTrack(message, destination) {
   const eventChannelConfig = destination.Config.eventChannelSettings;
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
+  if (!message.event) {
+    throw new CustomError("Event name is required", 400);
+  }
   const eventName = message.event;
   const channelListToSendThisEvent = new Set();
   const templateListForThisEvent = new Set();
@@ -304,6 +307,12 @@ function process(event) {
   const respList = [];
   let response;
   const { message, destination } = event;
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
   const messageType = message.type.toLowerCase();
   logger.debug("messageType: ", messageType);
 

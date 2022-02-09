@@ -13,12 +13,12 @@ async function loadModule(isolateInternal, contextInternal, moduleCode) {
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId) {
+async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
-      getLibraryCodeV1(libraryVersionId)
+      getLibraryCodeV1(libraryVersionId, testMode)
     )
   );
   const librariesMap = {};
@@ -336,10 +336,10 @@ async function compileUserLibrary(code) {
   return loadModule(isolate, context, code);
 }
 
-async function getFactory(code, libraryVersionIds, versionId) {
+async function getFactory(code, libraryVersionIds, versionId, testMode) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId);
+      return createIvm(code, libraryVersionIds, versionId, testMode);
     },
     destroy: async client => {
       await client.isolate.dispose();

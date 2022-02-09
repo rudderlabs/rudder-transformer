@@ -21,7 +21,6 @@ const util = require("util");
 const fs = require("fs");
 const path = require("path");
 const { parserForImport } = require("../util/parser");
-const { compileUserLibrary } = require("../util/ivmFactory");
 
 const randomID = () =>
   Math.random()
@@ -855,7 +854,7 @@ possibleEnvs.forEach(envValue => {
       export default self;
       `;
 
-      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibraryRevision/getByVersionId?versionId=${libraryVersionId}`;
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({

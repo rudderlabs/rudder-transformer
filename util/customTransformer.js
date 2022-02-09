@@ -260,7 +260,8 @@ async function userTransformHandler(
         const result = await userTransformHandlerV1(
           events,
           res,
-          libraryVersionIDs
+          libraryVersionIDs,
+          testMode
         );
 
         userTransformedEvents = !testMode

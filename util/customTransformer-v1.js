@@ -43,7 +43,8 @@ function calculateMsFromIvmTime(value) {
 async function userTransformHandlerV1(
   events,
   userTransformation,
-  libraryVersionIds
+  libraryVersionIds,
+  testMode = false
 ) {
   /*
  Transform VM aquire mode is
@@ -68,13 +69,14 @@ async function userTransformHandlerV1(
       isolatevmFactory = await getFactory(
         userTransformation.code,
         libraryVersionIds,
-        userTransformation.versionId
+        userTransformation.versionId,
+        testMode
       );
       isolatevm = await isolatevmFactory.create();
       logger.debug(`Isolate VM created... `);
     } else {
       logger.debug(`Pooled transformer VM being created... `);
-      isolatevmPool = await getPool(userTransformation, libraryVersionIds);
+      isolatevmPool = await getPool(userTransformation, libraryVersionIds, testMode);
       isolatevm = await isolatevmPool.acquire();
       stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
       stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);

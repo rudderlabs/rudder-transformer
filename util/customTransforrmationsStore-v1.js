@@ -10,6 +10,7 @@ const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
+const getLibraryRevisionUrl = `${CONFIG_BACKEND_URL}/transformationLibraryRevision/getByVersionId`;
 
 // Gets the transformation from config backend.
 // Stores the transformation object in memory with time to live after which it expires.
@@ -38,7 +39,7 @@ async function getTransformationCodeV1(versionId) {
   }
 }
 
-async function getLibraryCodeV1(versionId) {
+async function getLibraryCodeV1(versionId, testMode = false) {
   const library = libraryCache[versionId];
   if (library) return library;
   const tags = {
@@ -48,7 +49,9 @@ async function getLibraryCodeV1(versionId) {
   try {
     const startTime = new Date();
     const response = await fetchWithProxy(
-      `${getLibrariesUrl}?versionId=${versionId}`
+      `${
+        testMode ? getLibraryRevisionUrl : getLibrariesUrl
+      }?versionId=${versionId}`
     );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);

@@ -14,8 +14,10 @@ const {
   getHashFromArray,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isEmpty
 } = require("../../util");
+const { nodeSysErrorToStatus } = require("../../../adapters/utils/networkUtils");
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
@@ -37,7 +39,18 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     }
     throw new CustomError("Could not retrieve authorisation token", 400);
   } catch (error) {
-    throw new CustomError(error.response.statusText, error.response.status);
+    if (!isEmpty(error.response)) {
+      throw new CustomError(
+        `Authorization Failed ${error.response.statusText}`,
+        error.response.status
+      );
+    } else {
+      const httpError = nodeSysErrorToStatus(error.code);
+      throw new CustomError(
+        `Authorization Failed ${httpError.message}`,
+        httpError.status
+      );
+    }
   }
 };
 
@@ -276,8 +289,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }

@@ -24,7 +24,8 @@
             "os_version": "",
             "app_version": "1.0.0",
             "screen_dpi": 2,
-            "developer_identity": "sampath"
+            "developer_identity": "sampath",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
           }
         },
         "XML": {},
@@ -76,15 +77,14 @@
             "anonymousId": "sampath",
             "email": "sampath@gmail.com"
           },
-          "content_items": [
-            {}
-          ],
+          "content_items": [{}],
           "user_data": {
             "os": "iOS",
             "os_version": "",
             "app_version": "1.0.0",
             "screen_dpi": 2,
-            "developer_identity": "sampath"
+            "developer_identity": "sampath",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
           }
         },
         "XML": {},

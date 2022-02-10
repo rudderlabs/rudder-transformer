@@ -46,8 +46,10 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 
 const { CONFIG_CATEGORIES } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  * Get access token to be bound to the event req headers
@@ -96,9 +98,9 @@ const isExtIdNotProperlyDefined = externalId => {
  * @returns {properUrl} - The complete url used for sending event to Pardot
  */
 const getUrl = urlParams => {
-  const { externalId, category, email } = urlParams;
+  const { externalId, category, email, nonProperExtId } = urlParams;
   let properUrl = `${category.endPointUpsert}/email/${email}`;
-  if (isExtIdNotProperlyDefined(externalId)) {
+  if (nonProperExtId) {
     logger.debug(`PARDOT: externalId doesn't exist/invalid datastructure`);
     return properUrl;
   }
@@ -127,8 +129,22 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const email = getFieldValueFromMessage(message, "email");
 
   const prospectObject = constructPayload(message, identifyConfig);
-
+  const nonProperExtId = isExtIdNotProperlyDefined(extId);
+  if (nonProperExtId && !email) {
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Without externalId, email is required")
+      .setStatTags({
+        destination: "pardot",
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE,
+        scope:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
+      })
+      .build();
+  }
   const url = getUrl({
+    nonProperExtId,
     externalId: extId,
     category,
     email

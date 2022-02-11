@@ -5,7 +5,7 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage,
+  removeUndefinedAndNullValues,
   constructPayload,
   getBrowserInfo,
   getValuesAsArrayFromConfig,
@@ -14,9 +14,15 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   CustomError,
-  isAppleFamily
+  isAppleFamily,
+  getFullName,
+  extractCustomFields
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  MP_IDENTIFY_EXCLUSION_LIST
+} = require("./config");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
@@ -87,7 +93,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
 }
 
 function processRevenueEvents(message, destination) {
-  const revenueValue = message.properties.revenue;
+  const revenueValue = get(message, "properties.revenue");
   const transactions = {
     $time: getEventTime(message),
     $amount: revenueValue
@@ -112,9 +118,10 @@ function getEventValueForTrackEvent(message, destination) {
     mPEventPropertiesConfigJson
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
+  // ??
   const properties = {
     ...message.properties,
-    ...message.context.traits,
+    ...get(message, "context.traits"),
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
@@ -149,42 +156,52 @@ function processTrack(message, destination) {
   return returnValue;
 }
 
-function getTransformedJSON(message, mappingJson) {
-  const rawPayload = {};
-
-  const sourceKeys = Object.keys(mappingJson);
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (traits) {
-    traits = { ...traits };
-    const keys = Object.keys(traits);
-    keys.forEach(key => {
-      if (sourceKeys.includes(key)) {
-        set(rawPayload, mappingJson[key], get(traits, key));
-      } else {
-        set(rawPayload, key, get(traits, key));
-      }
-    });
+function getTransformedJSON(message, mappingJson, useNewMapping) {
+  let rawPayload = constructPayload(message, mappingJson);
+  const userName = get(rawPayload, "$name");
+  if (!userName) {
+    set(rawPayload, "$name", getFullName(message));
   }
 
-  set(
+  rawPayload = extractCustomFields(
+    message,
     rawPayload,
-    "$initial_referrer",
-    get(message, "context.page.initial_referrer")
+    ["traits", "context.traits"],
+    MP_IDENTIFY_EXCLUSION_LIST
   );
-  set(
-    rawPayload,
-    "$initial_referring_domain",
-    get(message, "context.page.initial_referring_domain")
-  );
+  rawPayload = removeUndefinedAndNullValues(rawPayload);
+
+  /*
+  we are adding backward compatibility using useNewMapping key.
+  TODO :: This portion need to be removed after we deciding to stop 
+  support for old mapping.
+  */
+
+  if (!useNewMapping) {
+    if (rawPayload.$first_name) {
+      rawPayload.$firstName = rawPayload.$first_name;
+      delete rawPayload.$first_name;
+    }
+    if (rawPayload.$last_name) {
+      rawPayload.$lastName = rawPayload.$last_name;
+      delete rawPayload.$last_name;
+    }
+  }
 
   return rawPayload;
 }
 
 function processIdentifyEvents(message, type, destination) {
   const returnValue = [];
-
-  let properties = getTransformedJSON(message, mPIdentifyConfigJson);
-  const { device } = message.context;
+  // this variable is used for supporting backward compatibility
+  const { useNewMapping } = destination.Config;
+  // user payload created
+  let properties = getTransformedJSON(
+    message,
+    mPIdentifyConfigJson,
+    useNewMapping
+  );
+  const device = get(message, "context.device");
   if (device && device.token) {
     let payload;
     if (isAppleFamily(device.type)) {
@@ -207,7 +224,7 @@ function processIdentifyEvents(message, type, destination) {
     $set: properties,
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: (message.context && message.context.ip) || message.request_ip,
+    $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
   returnValue.push(
@@ -273,7 +290,7 @@ function processPageOrScreenEvents(message, type, destination) {
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
-    ...message.context.traits,
+    ...get(message, "context.traits"),
     ...message.properties,
     ...mappedProperties,
     token: destination.Config.token,
@@ -376,6 +393,12 @@ function processGroupEvents(message, type, destination) {
 }
 
 function processSingleMessage(message, destination) {
+  if (!message.type) {
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
+  }
   switch (message.type) {
     case EventType.TRACK:
       return processTrack(message, destination);

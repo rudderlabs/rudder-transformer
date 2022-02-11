@@ -11,32 +11,10 @@ const {
   getErrorRespEvents,
   CustomError,
   isDefinedAndNotNull,
-  isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isAppleFamily
 } = require("../../util");
 
 function responseBuilder(payload, message, destination, category) {
-  const os = get(message, "context.os.name");
-
-  if (isDefinedAndNotNull(os)) {
-    if (isAppleFamily(os)) {
-      payload.idfa = get(message, "context.device.advertisingId");
-      payload.idfv = get(message, "context.device.id");
-    } else if (os.toLowerCase() === "android") {
-      payload.android_id = get(message, "context.device.id");
-      payload.aaid = get(message, "context.device.advertisingId");
-    }
-  }
-
-  const att = get(message, "context.device.attTrackingStatus");
-  if (isDefinedAndNotNull(att)) {
-    if (att == 3) {
-      payload.limit_ad_tracking = false;
-    } else if (att == 2) {
-      payload.limit_ad_tracking = true;
-    }
-  }
-
   const response = defaultRequestConfig();
 
   if (category === "custom") {
@@ -81,42 +59,69 @@ function getCategoryAndName(rudderEventName) {
 }
 
 function getUserData(message) {
-  const { context } = message;
-  const { os } = message.context;
+  // os field is not mandatory as based on device type it can be one of
+  // "Android" or "iOS" but it does not apply & is not valid in case of web events
+  const os = get(message, "context.os.name");
 
-  if (!os || !isDefinedAndNotNullAndNotEmpty(os.name)) {
-    throw new CustomError(
-      "os name is missing in the payload and please make sure to insert it at context.os.name",
-      400
-    );
+  let userData = {
+    os,
+    os_version: get(message, "context.os.version"),
+    app_version: get(message, "context.app.version"),
+    model: get(message, "context.device.model"),
+    brand: get(message, "context.device.brand"),
+    screen_dpi: get(message, "context.screen.density"),
+    screen_height: get(message, "context.screen.height"),
+    screen_width: get(message, "context.screen.width"),
+    developer_identity: getFieldValueFromMessage(message, "userId"),
+    user_agent: get(message, "context.userAgent")
+  };
+
+  if (isDefinedAndNotNull(os)) {
+    if (isAppleFamily(os)) {
+      userData.idfa =
+        get(message, "context.idfa") ||
+        get(message, "context.device.advertisingId");
+
+      userData.idfv =
+        get(message, "context.idfv") || get(message, "context.device.id");
+    } else if (os.toLowerCase() === "android") {
+      userData.android_id =
+        get(message, "context.android_id") || get(message, "context.device.id");
+      userData.aaid =
+        get(message, "context.aaid") ||
+        get(message, "context.device.advertisingId");
+    }
   }
 
-  return removeUndefinedAndNullValues({
-    os: os.name,
-    os_version: os.version,
-    app_version: context.app.version,
-    screen_dpi: context.screen.density,
-    android_id: get(context, "android_id") ? context.android_id : null,
-    idfa: get(context, "idfa") ? context.android_id : null,
-    idfv: get(context, "idfv") ? context.android_id : null,
-    aaid: get(context, "aaid") ? context.android_id : null,
-    developer_identity: getFieldValueFromMessage(message, "userId")
-  });
+  const att = get(message, "context.device.attTrackingStatus");
+  if (isDefinedAndNotNull(att)) {
+    if (att === 3) {
+      userData.limit_ad_tracking = false;
+    } else if (att === 2) {
+      userData.limit_ad_tracking = true;
+    }
+  }
+
+  userData = removeUndefinedAndNullValues(userData);
+
+  return userData;
 }
 
 function mapPayload(category, rudderProperty, rudderPropertiesObj) {
-  const content_items = {};
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = {};
+  const eventData = {};
+  const customData = {};
 
   let valFound = false;
   if (category.content_items) {
     Object.keys(category.content_items).find(branchMappingProperty => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
-        content_items[tmpKeyName] = rudderPropertiesObj[rudderProperty];
+        contentItems[tmpKeyName] = rudderPropertiesObj[rudderProperty];
         valFound = true;
+        return true;
       }
+      return false;
     });
   }
 
@@ -124,29 +129,31 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
     if (category.event_data) {
       category.event_data.find(branchMappingProperty => {
         if (branchMappingProperty === rudderProperty) {
-          event_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+          eventData[rudderProperty] = rudderPropertiesObj[rudderProperty];
           valFound = true;
+          return true;
         }
+        return false;
       });
     }
   }
 
   if (!valFound) {
-    custom_data[rudderProperty] = rudderPropertiesObj[rudderProperty];
+    customData[rudderProperty] = rudderPropertiesObj[rudderProperty];
   }
   return {
-    content_itemsObj: content_items,
-    event_dataObj: event_data,
-    custom_dataObj: custom_data
+    contentItemsObj: contentItems,
+    eventDataObj: eventData,
+    customDataObj: customData
   };
 }
 
 function getCommonPayload(message, category, evName) {
   const rawPayload = {};
   let rudderPropertiesObj;
-  const content_items = [];
-  const event_data = {};
-  const custom_data = {};
+  const contentItems = [];
+  const eventData = {};
+  const customData = {};
   let productObj = {};
 
   // eslint-disable-next-line default-case
@@ -169,37 +176,36 @@ function getCommonPayload(message, category, evName) {
           const product = rudderPropertiesObj.products[i];
           // eslint-disable-next-line no-loop-func
           Object.keys(product).map(productProp => {
-            const {
-              content_itemsObj,
-              event_dataObj,
-              custom_dataObj
-            } = mapPayload(category, productProp, product);
-            Object.assign(productObj, content_itemsObj);
-            Object.assign(event_data, event_dataObj);
-            Object.assign(custom_data, custom_dataObj);
+            const { contentItemsObj, eventDataObj, customDataObj } = mapPayload(
+              category,
+              productProp,
+              product
+            );
+            Object.assign(productObj, contentItemsObj);
+            Object.assign(eventData, eventDataObj);
+            Object.assign(customData, customDataObj);
           });
-          content_items.push(productObj);
+          contentItems.push(productObj);
           productObj = {};
         }
       } else {
-        const { content_itemsObj, event_dataObj, custom_dataObj } = mapPayload(
+        const { contentItemsObj, eventDataObj, customDataObj } = mapPayload(
           category,
           rudderProperty,
           rudderPropertiesObj
         );
-        Object.assign(productObj, content_itemsObj);
-        Object.assign(event_data, event_dataObj);
-        Object.assign(custom_data, custom_dataObj);
+        Object.assign(productObj, contentItemsObj);
+        Object.assign(eventData, eventDataObj);
+        Object.assign(customData, customDataObj);
       }
     });
-    content_items.push(productObj);
-    rawPayload.custom_data = custom_data;
-    rawPayload.content_items = content_items;
-    rawPayload.event_data = event_data;
-    // rawPayload.user_data = getUserData(message);
+    contentItems.push(productObj);
+    rawPayload.custom_data = customData;
+    rawPayload.content_items = contentItems;
+    rawPayload.event_data = eventData;
 
     Object.keys(rawPayload).map(key => {
-      if (Object.keys(rawPayload[key]).length == 0) {
+      if (Object.keys(rawPayload[key]).length === 0) {
         rawPayload[key] = null;
       }
     });
@@ -221,6 +227,9 @@ function getCommonPayload(message, category, evName) {
 function processMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
+      if (!message.event) {
+        throw new CustomError("Event name is required", 400);
+      }
       var { evName, category } = getCategoryAndName(message.event);
       break;
     case EventType.IDENTIFY:

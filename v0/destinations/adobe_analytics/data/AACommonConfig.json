@@ -1,0 +1,85 @@
+[
+  {
+    "destKey": "browserHeight",
+    "sourceKeys": "context.screen.height",
+    "required": false
+  },
+  {
+    "destKey": "browserWidth",
+    "sourceKeys": "context.screen.width",
+    "required": false
+  },
+  {
+    "destKey": "campaign",
+    "sourceKeys": "context.campaign.name",
+    "required": false
+  },
+  {
+    "destKey": "channel",
+    "sourceKeys": "channel",
+    "required": false
+  },
+  {
+    "destKey": "currencyCode",
+    "sourceKeys": "properties.currency",
+    "required": false,
+    "metadata": {
+      "default": "USD"
+    }
+  },
+  {
+    "destKey": "ipaddress",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "language",
+    "sourceKeys": "context.locale",
+    "required": false
+  },
+  {
+    "destKey": "purchaseID",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+      "context.traits.address.state",
+      "context.traits.state",
+      "traits.address.state",
+      "traits.state"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "timezone",
+    "sourceKeys": "context.timezone",
+    "required": false
+  },
+  {
+    "destKey": "transactionId",
+    "sourceKeys": "properties.transaction_id",
+    "required": false
+  },
+  {
+    "destKey": "userAgent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": [
+      "context.traits.address.postalCode",
+      "context.traits.postalCode",
+      "traits.address.postalCode",
+      "traits.postalCode"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  }
+]

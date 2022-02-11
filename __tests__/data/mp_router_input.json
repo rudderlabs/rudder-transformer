@@ -5,7 +5,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -86,7 +87,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -128,7 +130,7 @@
           "city": "Disney",
           "country": "USA",
           "email": "mickey@disney.com",
-          "firstname": "Mickey"
+          "firstName": "Mickey"
         },
         "page": {
           "path": "/destinations/mixpanel",

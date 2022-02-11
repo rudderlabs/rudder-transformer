@@ -52,6 +52,11 @@ const ConfigCategory = {
     name: "IterableDeviceConfig",
     action: "product",
     endpoint: ""
+  },
+  ALIAS: {
+    name: "IterableAliasConfig",
+    action: "alias",
+    endpoint: `${BASE_URL}users/updateEmail`
   }
 };
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

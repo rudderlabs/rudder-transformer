@@ -1,10 +1,10 @@
 const { removeUndefinedAndNullValues, generateUUID } = require("../../util");
 
-function processEvent(events) {
+function processEvent(event) {
   const payload = {
     type: "track",
     event: "webhook_source_event",
-    properties: events,
+    properties: event,
     anonymousId: generateUUID()
   };
   return payload;

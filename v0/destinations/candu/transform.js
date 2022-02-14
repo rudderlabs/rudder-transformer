@@ -1,5 +1,4 @@
 const { EventType } = require("../../../constants");
-const _ = require("lodash");
 const {
   CustomError,
   defaultRequestConfig,
@@ -18,20 +17,9 @@ const responseBuilder = (body, { Config }) => {
   if (payload.userId) {
     payload.userId = `${payload.userId}`;
   }
-  const revisedPayload = {};
-  // here we are trying to check if there is any empty object, array or string inside the payload.
-  for (const [key, value] of Object.entries(payload)) {
-    if (_.isObject(value) || _.isArray(value) || _.isString(value)) {
-      if (!_.isEmpty(value)) {
-        revisedPayload[key] = value;
-      }
-    } else {
-      revisedPayload[key] = value;
-    }
-  }
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.body.JSON = removeUndefinedAndNullValues(revisedPayload);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,

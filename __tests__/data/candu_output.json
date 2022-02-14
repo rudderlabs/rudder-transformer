@@ -53,6 +53,7 @@
           "title": "VP",
           "gender": "female"
         },
+        "properties": {},
         "userId": "user123456001",
         "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
         "messageId": "e9f3dfb4-562c-48f4-b0cf-85782dfc9b1e",
@@ -191,6 +192,7 @@
           "title": "VP",
           "gender": "female"
         },
+        "properties": [],
         "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
         "messageId": "e9f3dfb4-562c-48f4-b0cf-85782dfc9b1e",
         "type": "track",

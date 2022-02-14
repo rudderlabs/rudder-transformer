@@ -15,11 +15,8 @@ const responseBuilder = (body, { Config }) => {
   payload.context = {
     source: "RudderStack"
   };
-  if (payload.userId && !_.isString(payload.userId)) {
-    throw new CustomError(
-      "[CANDU]:: userId must be a string. Aborting message.",
-      400
-    );
+  if (payload.userId) {
+    payload.userId = `${payload.userId}`;
   }
   const revisedPayload = {};
   // here we are trying to check if there is any empty object, array or string inside the payload.

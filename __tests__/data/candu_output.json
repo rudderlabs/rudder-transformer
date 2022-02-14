@@ -103,13 +103,38 @@
     }
   },
   {
-    "statusCode": 400,
-    "error": "[CANDU]:: userId must be a string. Aborting message.",
-    "statTags": {
-      "destination": "candu",
-      "stage": "transform",
-      "scope": "exception"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.candu.ai/api/eventWebhook",
+    "headers": {
+      "Authorization": "Basic RlhMa0xVRWhHSnl2bVk0",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "traits": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female",
+          "userId": 2399229
+        },
+        "userId": "2399229",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "type": "identify",
+        "context": {
+          "source": "RudderStack"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "version": "1",

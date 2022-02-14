@@ -76,6 +76,7 @@ const functionsEnabled = () => {
 };
 
 async function handleDest(ctx, version, destination) {
+  // To check for the code how destination is handling the message
   const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
   const reqParams = ctx.request.query;
@@ -94,6 +95,8 @@ async function handleDest(ctx, version, destination) {
   await Promise.all(
     events.map(async event => {
       try {
+        // look for traits under every object in file v0\util\data\GenericFieldMapping.json like
+        // "traits": ["traits", "context.traits"]
         let parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);

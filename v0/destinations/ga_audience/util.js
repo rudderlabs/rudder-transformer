@@ -1,0 +1,161 @@
+const { httpSend } = require("../../../adapters/network");
+const { isHttpStatusSuccess } = require("../../util/index");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
+const {
+  DISABLE_DEST,
+  REFRESH_TOKEN
+} = require("../../../adapters/networkhandler/authConstants");
+
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+
+/**
+ * This function helps to create a offlineUserDataJobs
+ * @param endpoint
+ * @param customerId
+ * @param listId
+ * @param headers
+ * @param method
+ */
+
+const createJob = async (endpoint, customerId, listId, headers, method) => {
+  const jobCreatingUrl = `${endpoint}:create`;
+  const jobCreatingRequest = {
+    url: jobCreatingUrl,
+    data: {
+      job: {
+        type: "CUSTOMER_MATCH_USER_LIST",
+        customerMatchUserListMetadata: {
+          userList: `customers/${customerId}/userLists/${listId}`
+        }
+      }
+    },
+    headers,
+    method
+  };
+  const response = await httpSend(jobCreatingRequest);
+  return response;
+};
+/**
+ * This function helps to put user details in a offlineUserDataJobs
+ * @param endpoint
+ * @param headers
+ * @param method
+ * @param jobId
+ * @param body
+ */
+
+const addUserToJob = async (endpoint, headers, method, jobId, body) => {
+  const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
+  const secondRequest = {
+    url: jobAddingUrl,
+    data: body.JSON,
+    headers,
+    method
+  };
+  const response = await httpSend(secondRequest);
+  return response;
+};
+
+/**
+ * This function helps to run a offlineUserDataJobs
+ * @param endpoint
+ * @param headers
+ * @param method
+ * @param jobId
+ */
+const runTheJob = async (endpoint, headers, method, jobId) => {
+  const jobRunningUrl = `${endpoint}/${jobId}:run`;
+  const thirdRequest = {
+    url: jobRunningUrl,
+
+    headers,
+    method
+  };
+  const response = await httpSend(thirdRequest);
+  return response;
+};
+const gaAudienceProxyRequest = async request => {
+  const { body, method, params, endpoint } = request;
+  const { headers } = request;
+  const { customerId, listId } = params;
+
+  // step1: offlineUserDataJobs creation
+
+  const firstResponse = await createJob(
+    endpoint,
+    customerId,
+    listId,
+    headers,
+    method
+  );
+  if (!isHttpStatusSuccess(firstResponse.response.status)) return firstResponse;
+
+  // step2: putting users into the job
+  const jobId = firstResponse.response.data.resourceName.split("/")[3];
+  const secondResponse = await addUserToJob(
+    endpoint,
+    headers,
+    method,
+    jobId,
+    body
+  );
+  if (!isHttpStatusSuccess(secondResponse.response.status))
+    return secondResponse;
+
+  // step3: running the job
+  const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
+  return thirdResponse;
+};
+// const responseHandler = async () => {};
+const getAuthErrCategory = code => {
+  switch (code) {
+    case 401:
+      return REFRESH_TOKEN;
+    case 403: // Access Denied
+      return DISABLE_DEST;
+    default:
+      return "";
+  }
+};
+
+const gaAudienceRespHandler = (destResponse, stageMsg) => {
+  const { status, response } = destResponse;
+  // const respAttributes = response["@attributes"] || null;
+  // const { stat, err_code: errorCode } = respAttributes;
+
+  if (isHttpStatusSuccess(status)) {
+    // Mostly any error will not have a status of 2xx
+    return response;
+  }
+  throw new ErrorBuilder()
+    .setStatus(status)
+    .setDestinationResponse(response)
+    .setMessage(`ga_audience: ${response.error.message} ${stageMsg}`)
+    .setAuthErrorCategory(getAuthErrCategory(status))
+    .build();
+};
+
+const responseHandler = (destinationResponse, _dest) => {
+  const message = `[Ga_audience Response Handler] - Request Processed Successfully`;
+  const { status } = destinationResponse;
+  // else successfully return status, message and original destination response
+  gaAudienceRespHandler(
+    destinationResponse,
+    "during ga_audience response transformation",
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+  );
+  return {
+    status,
+    message,
+    destinationResponse
+  };
+};
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = gaAudienceProxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+module.exports = { networkHandler };

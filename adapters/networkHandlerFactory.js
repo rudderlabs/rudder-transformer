@@ -7,11 +7,15 @@ const {
 const {
   networkHandler: GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
+const {
+  networkHandler: GAAudienceNetwoekHandler
+} = require("../v0/destinations/ga_audience/util");
 
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
-  marketo: MarketoNetworkHandler
+  marketo: MarketoNetworkHandler,
+  ga_audience: GAAudienceNetwoekHandler
 };
 
 module.exports = {

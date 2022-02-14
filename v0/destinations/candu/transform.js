@@ -1,11 +1,12 @@
 const { EventType } = require("../../../constants");
+const _ = require("lodash");
 const {
   CustomError,
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullValues
 } = require("../../util");
 const { endpoint, identifyDataMapping, trackDataMapping } = require("./config");
 
@@ -14,9 +15,26 @@ const responseBuilder = (body, { Config }) => {
   payload.context = {
     source: "RudderStack"
   };
+  if (payload.userId && !_.isString(payload.userId)) {
+    throw new CustomError(
+      "[CANDU]:: userId must be a string. Aborting message.",
+      400
+    );
+  }
+  const revisedPayload = {};
+  // here we are trying to check if there is any empty object, array or string inside the payload.
+  for (const [key, value] of Object.entries(payload)) {
+    if (_.isObject(value) || _.isArray(value) || _.isString(value)) {
+      if (!_.isEmpty(value)) {
+        revisedPayload[key] = value;
+      }
+    } else {
+      revisedPayload[key] = value;
+    }
+  }
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+  response.body.JSON = removeUndefinedAndNullValues(revisedPayload);
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,

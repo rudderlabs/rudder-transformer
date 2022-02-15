@@ -109,7 +109,7 @@ const gaAudienceProxyRequest = async request => {
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;
 };
-// const responseHandler = async () => {};
+
 const getAuthErrCategory = code => {
   switch (code) {
     case 401:
@@ -133,13 +133,15 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   throw new ErrorBuilder()
     .setStatus(status)
     .setDestinationResponse(response)
-    .setMessage(`ga_audience: ${response.error.message} ${stageMsg}`)
+    .setMessage(
+      `Google_adwords_remarketing_list: ${response.error.message} ${stageMsg}`
+    )
     .setAuthErrorCategory(getAuthErrCategory(status))
     .build();
 };
 
 const responseHandler = (destinationResponse, _dest) => {
-  const message = `[Ga_audience Response Handler] - Request Processed Successfully`;
+  const message = `[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response
   gaAudienceRespHandler(

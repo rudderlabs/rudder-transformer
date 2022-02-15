@@ -35,7 +35,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   const { accessToken } = metadata.secret;
   response.params = { listId: Config.listId, customerId: Config.customerId };
   response.headers = {
-    Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer asdadadasd${accessToken}`,
     "Content-Type": "application/json",
     "developer-token": Config.developerToken
   };
@@ -106,7 +106,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
   }
   if (userIdentifier.length === 0)
     throw new CustomError(
-      `[GA_Audience]:: Their is not ${attribute} to put in userIdentifier.`,
+      `[Google_adwords_remarketing_list]:: Their is not ${attribute} to put in userIdentifier.`,
       400
     );
   return userIdentifier;
@@ -154,7 +154,7 @@ const createPayload = (message, destination) => {
   // });
   if (!listData.create) {
     throw new CustomError(
-      "[GA_audience]::create is not present inside listData. Aborting message.",
+      "[Google_adwords_remarketing_list]::create is not present inside listData. Aborting message.",
       400
     );
   }
@@ -185,35 +185,41 @@ const createPayload = (message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   if (!message.type) {
     throw new CustomError(
-      "[GA_audience]::Message Type is not present. Aborting message.",
+      "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
       400
     );
   }
   if (!message.properties) {
     throw new CustomError(
-      "[GA_audience]::Message properties is not present. Aborting message.",
+      "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message.",
       400
     );
   }
   if (!message.properties.listData) {
     throw new CustomError(
-      "[GA_audience]::listData is not present inside properties. Aborting message.",
+      "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message.",
       400
     );
   }
-  if (message.type === "audienceList") {
+  if (message.type === "audiencelist") {
     const createdPayload = createPayload(message, destination);
     return responseBuilder(metadata, createdPayload, destination);
   }
 
   throw new CustomError(
-    `[GA_audience]::Message Type ${message.type} not supported.`,
+    `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`,
     400
   );
 };
 
 const process = async event => {
-  return processEvent(event.metadata, event.message, event.destination);
+  const response = processEvent(
+    event.metadata,
+    event.message,
+    event.destination
+  );
+  console.log(JSON.stringify(response));
+  return response;
 };
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {

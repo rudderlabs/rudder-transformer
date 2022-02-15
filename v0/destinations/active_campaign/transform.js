@@ -131,13 +131,23 @@ const customTagProcessor = async (message, category, destination) => {
     res.data.tags.map(t => {
       storedTags[t.tag] = t.id;
     });
-
-    if (res.data.meta && res.data.meta.total && parseInt(res.data.meta.total) > 100) {
-      for (i = 0; i < Math.floor(parseInt(res.data.meta.total)/100); i++) {
+    const promises = [];
+    if (
+      res.data.meta &&
+      res.data.meta.total &&
+      parseInt(res.data.meta.total, 10) > 100
+    ) {
+      for (
+        let i = 0;
+        i < Math.floor(parseInt(res.data.meta.total, 10) / 100);
+        i++
+      ) {
         try {
-          res = await axios.get(
+          const resp = axios.get(
             `${destination.Config.apiUrl}${
-              category.tagEndPoint ? `${category.tagEndPoint}?limit=100&offset=${100*(i+1)}` : ""
+              category.tagEndPoint
+                ? `${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`
+                : ""
             }`,
             {
               headers: {
@@ -146,21 +156,24 @@ const customTagProcessor = async (message, category, destination) => {
               }
             }
           );
+          promises.push(resp);
         } catch (err) {
           throw new CustomError(
             `Failed to fetch already created tags (${err.response.statusText})`,
             err.response.status || 400
           );
         }
-
-        if (res.status === 200) {    
-          res.data.tags.map(t => {
+      }
+      const results = await Promise.all(promises);
+      results.forEach(resp => {
+        if (resp.status === 200) {
+          resp.data.tags.map(t => {
             storedTags[t.tag] = t.id;
           });
         }
-      }
+      });
     }
-    
+
     // Step - 3
     // Check if tags already present then we push it to tagIds
     // the ones which are not stored we push it to tagsToBeCreated

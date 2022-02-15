@@ -76,6 +76,10 @@ router.use(async (ctx, next) => {
   const currentTransformerResponse = ctx.response.body;
 
   if (!match(oldTransformerResponse, currentTransformerResponse)) {
+    stats.counter("payload_fail_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
     logger.error(`API comparison: payload mismatch `);
     logger.error(`node 10 Url : ${url}`);
     logger.error(`node14 Params : ${ctx.request.url}`);
@@ -88,6 +92,11 @@ router.use(async (ctx, next) => {
     logger.error(
       `diff: ${jsonDiff.diffString(oldTransformerResponse, currentTransformerResponse)}`
     );
+  } else {
+    stats.counter("payload_success_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
   }
 });
 

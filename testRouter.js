@@ -5,7 +5,11 @@
 const fs = require("fs");
 const path = require("path");
 const Router = require("koa-router");
-const { sendToDestination, userTransformHandler } = require("./routerUtils");
+const {
+  sendToDestination,
+  userTransformHandler,
+  blacklistedDestinations
+} = require("./routerUtils");
 
 const version = "v0";
 const API_VERSION = "1";
@@ -214,8 +218,18 @@ getDestinations().forEach(async destination => {
   });
 });
 
+// this is a dummy route
 testRouter.get(`/${version}/health`, ctx => {
   ctx.body = "OK";
+});
+
+testRouter.get(`/${version}/blacklist/:destName`, ctx => {
+  const { destName } = ctx.params;
+  ctx.body = {
+    blacklisted: blacklistedDestinations.includes(destName.toUpperCase())
+  };
+  ctx.status = 200;
+  return ctx;
 });
 
 module.exports = { testRouter, handleTestEvent };

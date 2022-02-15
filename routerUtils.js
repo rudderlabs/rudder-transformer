@@ -55,7 +55,30 @@ async function sendToDestination(destination, payload) {
   return parsedResponse;
 }
 
+const blacklistedDestinations = [
+  "KINESIS",
+  "KAFKA",
+  "AZURE_EVENT_HUB",
+  "FIREHOSE",
+  "EVENTBRIDGE",
+  "GOOGLEPUBSUB",
+  "CONFLUENT_CLOUD",
+  "PERSONALIZE",
+  "GOOGLESHEETS",
+  "REDIS",
+  "BQ",
+  "CLICKHOUSE",
+  "AZURE_SYNAPSE",
+  "MSSQL",
+  "POSTGRES",
+  "REDIS",
+  "SNOWFLAKE",
+  "S3",
+  "BQSTREAM"
+];
+
 module.exports = {
   sendToDestination,
-  userTransformHandler
+  userTransformHandler,
+  blacklistedDestinations
 };

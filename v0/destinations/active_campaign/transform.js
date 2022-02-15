@@ -131,6 +131,10 @@ const customTagProcessor = async (message, category, destination) => {
     res.data.tags.map(t => {
       storedTags[t.tag] = t.id;
     });
+
+    // utilized limit and offset query parameters to fetch more than the default limit which is 20.
+    // We are retrieving 100 tags which is the maximum limit, in each iteration, until all tags are retrieved.
+    // Ref - https://developers.activecampaign.com/reference#pagination
     const promises = [];
     if (
       res.data.meta &&

@@ -14,6 +14,62 @@
         "events": [
           {
             "os_name": "Chrome",
+            "os_version": "test os",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "lynnanderson@smith.net",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "ip": "0.0.0.0",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "device_id": "lynnanderson@smith.net"
+            },
+            "event_type": "$identify",
+            "time": 1571043797562,
+            "user_id": "123456",
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
             "os_version": "77.0.3865.90",
             "city": "kolkata",
             "country": "India",
@@ -1152,9 +1208,7 @@
                 "sku": "45790-32",
                 "url": "https://www.example.com/product/path",
                 "name": "Monopoly: 3rd Edition",
-
                 "category": "Games",
-
                 "image_url": "https:///www.example.com/product/path.jpg"
               },
               "price": 19,
@@ -1200,7 +1254,6 @@
               "event_properties": {
                 "sku": "46493-32",
                 "name": "Uno Card Game",
-
                 "category": "Games"
               },
               "price": 3,
@@ -2036,7 +2089,6 @@
               "event_properties": {
                 "sku": "46493-32",
                 "name": "Uno Card Game",
-
                 "category": "Games"
               },
               "country": "United States",
@@ -2392,7 +2444,6 @@
                 "url": "https://www.example.com/product/path",
                 "name": "Monopoly: 3rd Edition",
                 "category": "Games",
-
                 "image_url": "https:///www.example.com/product/path.jpg"
               },
               "country": "India",

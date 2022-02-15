@@ -3,6 +3,10 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const match = require("match-json");
+const axios = require("axios");
+const combineURLs = require("axios/lib/helpers/combineURLs");
+const jsonDiff = require("json-diff");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const {
@@ -29,8 +33,63 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
+// eslint-disable-next-line prefer-destructuring
+const OLD_TRANSFORMER_URL = process.env["OLD_TRANSFORMER_URL"];
 
 const router = new Router();
+
+router.use(async (ctx, next) => {
+  if (!OLD_TRANSFORMER_URL) {
+    logger.error("OLD TRANSFORMER URL not configured.consider removing the comparison middleware");
+    await next();
+    return;
+  }
+
+  if (
+    !ctx.request.url.includes("/v0/") &&
+    !ctx.request.url.includes("/customTransform")
+  ) {
+    logger.debug("url does not contain path v0 or customTransform. Omitting request");
+    await next();
+    return;
+  }
+
+  const url = combineURLs(OLD_TRANSFORMER_URL, ctx.request.url);
+  let response;
+  try {
+    if (ctx.request.method.toLowerCase() === "get") {
+      response = await axios.get(url, {
+        headers: ctx.request.headers
+      });
+    } else {
+      response = await axios.post(url, ctx.request.body);
+    }
+  } catch (e) {
+    logger.error(`Failed to send request to node 10 - ${e.message}`);
+    await next();
+    return;
+  }
+
+  const oldTransformerResponse = response.data;
+  // send req to current service
+  await next();
+  const currentTransformerResponse = ctx.response.body;
+
+  if (!match(oldTransformerResponse, currentTransformerResponse)) {
+    logger.error(`API comparison: payload mismatch `);
+    logger.error(`node 10 Url : ${url}`);
+    logger.error(`node14 Params : ${ctx.request.url}`);
+    logger.error(`node 14 Method : ${ctx.request.method}`);
+    logger.error(`node 14 Body : ${JSON.stringify(ctx.request.body)}`);
+    logger.error(
+      `node 14 Payload: ${JSON.stringify(currentTransformerResponse)}`
+    );
+    logger.error(`node 10 Payload: ${JSON.stringify(oldTransformerResponse)} `);
+    logger.error(
+      `diff: ${jsonDiff.diffString(oldTransformerResponse, currentTransformerResponse)}`
+    );
+  }
+});
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();

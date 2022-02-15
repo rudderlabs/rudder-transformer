@@ -507,7 +507,6 @@ function processWarehouseMessage(message, options) {
   const eventType = message.type.toLowerCase();
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping = options.integrationOptions.skipReservedKeywordsEscaping || false;
-  console.log('integrations:', JSON.stringify(options.integrationOptions, null, 2));
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -523,20 +522,7 @@ function processWarehouseMessage(message, options) {
         ? options.metadata.receivedAt
         : new Date().toISOString();
   }
-  // {
-  // "integrations": {
-  //   "AF": {
-  //     "af_uid": "afUid"
-  //   },
-  //   "RS": {
-  //     "options": {
-  //        "skipReservedKeywordsEscaping": true,
-  //        "skipTracksTable": true,
-  //        "skipTableNameSnakeCasing": true,
-  //        "skipColumnNameSnakeCasing": true,
-  //      }
-  //   }
-  // }
+
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
     case "track": {
@@ -578,7 +564,6 @@ function processWarehouseMessage(message, options) {
       commonColumnTypes[eventColName] = "string";
 
       // -----start: tracks table------
-      // console.log("Common props:", JSON.stringify(commonProps, null, 2));
       if (!skipTracksTable) {
         const tracksColumnTypes = {};
         // shallow copy is sufficient since it does not contains nested objects

@@ -5,7 +5,7 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullValues
 } = require("../../util");
 const { endpoint, identifyDataMapping, trackDataMapping } = require("./config");
 
@@ -14,9 +14,12 @@ const responseBuilder = (body, { Config }) => {
   payload.context = {
     source: "RudderStack"
   };
+  if (payload.userId) {
+    payload.userId = `${payload.userId}`;
+  }
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,

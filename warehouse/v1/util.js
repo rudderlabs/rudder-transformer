@@ -3,7 +3,7 @@ const _ = require("lodash");
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
 const { isDataLakeProvider } = require("../config/helpers");
 
-function safeTableName(provider, name = "") {
+function safeTableName(provider, name = "", integrationOptions = {}) {
   let tableName = name;
   if (tableName === "") {
     throw new Error("Table name cannot be empty.");
@@ -17,7 +17,8 @@ function safeTableName(provider, name = "") {
     tableName = tableName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()] &&
+    !integrationOptions.skipReservedKeywordsEscaping
   ) {
     tableName = `_${tableName}`;
   }
@@ -29,7 +30,7 @@ function safeTableName(provider, name = "") {
   return tableName.substr(0, 127);
 }
 
-function safeColumnName(provider, name = "") {
+function safeColumnName(provider, name = "", integrationOptions = {}) {
   let columnName = name;
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
@@ -43,7 +44,8 @@ function safeColumnName(provider, name = "") {
     columnName = columnName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
+    !integrationOptions.skipReservedKeywordsEscaping
   ) {
     columnName = `_${columnName}`;
   }

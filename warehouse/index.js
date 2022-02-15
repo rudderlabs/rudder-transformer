@@ -77,8 +77,14 @@ const rudderReservedColums = {
   alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules }
 };
 
-function excludeRudderCreatedTableNames(name) {
-  if (rudderCreatedTables.includes(name.toLowerCase())) {
+function excludeRudderCreatedTableNames(
+  name,
+  skipReservedKeywordsEscaping = false
+) {
+  if (
+    rudderCreatedTables.includes(name.toLowerCase()) &&
+    !skipReservedKeywordsEscaping
+  ) {
     return `_${name}`;
   }
   return name;
@@ -125,7 +131,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
       val = get(input, valInMap);
     }
 
-    const columnName = utils.safeColumnName(options.provider, key);
+    const columnName = utils.safeColumnName(options.provider, key, options.integrationOptions);
     // do not set column if val is null/empty/object
     if (typeof val === "object" || isBlank(val)) {
       // delete in output and columnTypes, so as to remove if we user
@@ -216,7 +222,7 @@ function setDataFromInputAndComputeColumnTypes(
       }
       let safeKey = utils.transformColumnName(options.provider, prefix + key);
       if (safeKey !== "") {
-        safeKey = utils.safeColumnName(options.provider, safeKey);
+        safeKey = utils.safeColumnName(options.provider, safeKey, options.integrationOptions);
         // remove rudder reserved columns name if set by user
         if (
           rudderReservedColums[eventType] &&
@@ -480,21 +486,28 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
   if (!metadata) {
     return;
   }
-  context = message.context || {};
+  const context = message.context || {};
   context.sourceId = metadata.sourceId;
   context.sourceType = metadata.sourceType;
   context.destinationId = metadata.destinationId;
   context.destinationType = metadata.destinationType;
 
-  message.context = context
+  message.context = context;
 }
 
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
-
+  // integration options
+  options.integrationOptions =
+    message.integrations && message.integrations[options.provider.toUpperCase()]
+      ? message.integrations[options.provider.toUpperCase()].options
+      : {};
   const responses = [];
   const eventType = message.type.toLowerCase();
+  const skipTracksTable = options.integrationOptions.skipTracksTable || false;
+  const skipReservedKeywordsEscaping = options.integrationOptions.skipReservedKeywordsEscaping || false;
+  console.log('integrations:', JSON.stringify(options.integrationOptions, null, 2));
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -502,7 +515,7 @@ function processWarehouseMessage(message, options) {
   }
 
   // Adding source and destination specific information.
-  enhanceContextWithSourceDestInfo(message, options.metadata)
+  enhanceContextWithSourceDestInfo(message, options.metadata);
 
   if (isBlank(message.receivedAt) || !validTimestamp(message.receivedAt)) {
     message.receivedAt =
@@ -510,7 +523,20 @@ function processWarehouseMessage(message, options) {
         ? options.metadata.receivedAt
         : new Date().toISOString();
   }
-
+  // {
+  // "integrations": {
+  //   "AF": {
+  //     "af_uid": "afUid"
+  //   },
+  //   "RS": {
+  //     "options": {
+  //        "skipReservedKeywordsEscaping": true,
+  //        "skipTracksTable": true,
+  //        "skipTableNameSnakeCasing": true,
+  //        "skipColumnNameSnakeCasing": true,
+  //      }
+  //   }
+  // }
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
     case "track": {
@@ -552,37 +578,41 @@ function processWarehouseMessage(message, options) {
       commonColumnTypes[eventColName] = "string";
 
       // -----start: tracks table------
-      const tracksColumnTypes = {};
-      // shallow copy is sufficient since it does not contains nested objects
-      const tracksEvent = { ...commonProps };
-      setDataFromColumnMappingAndComputeColumnTypes(
-        utils,
-        tracksEvent,
-        message,
-        whTracksTableColumnMappingRules,
-        tracksColumnTypes,
-        options
-      );
-      storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
-      const tracksMetadata = {
-        table: utils.safeTableName(options.provider, "tracks"),
-        columns: getColumns(options, tracksEvent, {
-          ...tracksColumnTypes,
-          ...commonColumnTypes
-        }), // override tracksColumnTypes with columnTypes from commonColumnTypes
-        receivedAt: message.receivedAt
-      };
-      responses.push({
-        metadata: tracksMetadata,
-        data: tracksEvent
-      });
+      // console.log("Common props:", JSON.stringify(commonProps, null, 2));
+      if (!skipTracksTable) {
+        const tracksColumnTypes = {};
+        // shallow copy is sufficient since it does not contains nested objects
+        const tracksEvent = { ...commonProps };
+
+        setDataFromColumnMappingAndComputeColumnTypes(
+          utils,
+          tracksEvent,
+          message,
+          whTracksTableColumnMappingRules,
+          tracksColumnTypes,
+          options
+        );
+        storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
+        const tracksMetadata = {
+          table: utils.safeTableName(options.provider, "tracks"),
+          columns: getColumns(options, tracksEvent, {
+            ...tracksColumnTypes,
+            ...commonColumnTypes
+          }), // override tracksColumnTypes with columnTypes from commonColumnTypes
+          receivedAt: message.receivedAt
+        };
+        responses.push({
+          metadata: tracksMetadata,
+          data: tracksEvent
+        });
+      }
 
       // -----end: tracks table------
 
       // -----start: event table------
 
       // do not create event table in case of empty event name (after utils.transformColumnName)
-      if (_.toString(tracksEvent[eventColName]).trim() === "") {
+      if (_.toString(commonProps[eventColName]).trim() === "") {
         break;
       }
       const trackProps = {};
@@ -625,8 +655,10 @@ function processWarehouseMessage(message, options) {
             utils.transformColumnName(
               options.provider,
               eventTableEvent[eventColName]
-            )
-          )
+            ),
+            options.integrationOptions
+          ),
+          skipReservedKeywordsEscaping
         ),
         columns: getColumns(options, eventTableEvent, {
           ...eventTableColumnTypes,

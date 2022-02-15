@@ -190,8 +190,6 @@ function updateConfigProperty(
             if (val || val === false || val === 0) {
               set(payload, mappingJson[sourceKey], val);
             }
-          } else {
-            set(payload, mappingJson[sourceKey], data);
           }
         }
       } else {

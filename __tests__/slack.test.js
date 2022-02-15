@@ -30,23 +30,19 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 inputData.forEach((input, index) => {
   test(`${name} Tests - payload: %{index}`, () => {
-    if (input.message.type == "page") {
-      expect(() => transformer.process(input)).toThrow(
-        new Error("Message type not supported")
-      );
-    } else {
+    try {
       const output = transformer.process(input);
       expect(output).toEqual([expectedData[index]]);
+    } catch (error) {
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });
 describe(`${name} Tests`, () => {
-describe("Router Tests", () => {
-  it("Payload", async () => {
-    const routerOutput = await transformer.processRouterDest(inputRouterData);
-    expect(routerOutput).toEqual(expectedRouterData);
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
   });
 });
-
-});
-

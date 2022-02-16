@@ -38,6 +38,24 @@ const OLD_TRANSFORMER_URL = process.env["OLD_TRANSFORMER_URL"];
 
 const router = new Router();
 
+const isRouteIncluded = path => {
+  const includeRoutes = ["/v0/", "/customTransform"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of includeRoutes) {
+    if (path.includes(route)) return true;
+  }
+  return false;
+};
+
+const isRouteExcluded = path => {
+  const excludeRoutes = ["/v0/sources/webhook"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of excludeRoutes) {
+    if (path.includes(route)) return false;
+  }
+  return true;
+};
+
 router.use(async (ctx, next) => {
   if (!OLD_TRANSFORMER_URL) {
     logger.error("OLD TRANSFORMER URL not configured.consider removing the comparison middleware");
@@ -45,10 +63,7 @@ router.use(async (ctx, next) => {
     return;
   }
 
-  if (
-    !ctx.request.url.includes("/v0/") &&
-    !ctx.request.url.includes("/customTransform")
-  ) {
+  if (!isRouteIncluded(ctx.request.url) || !isRouteExcluded(ctx.request.url)) {
     logger.debug("url does not contain path v0 or customTransform. Omitting request");
     await next();
     return;
@@ -70,10 +85,10 @@ router.use(async (ctx, next) => {
     return;
   }
 
-  const oldTransformerResponse = response.data;
+  const oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
   // send req to current service
   await next();
-  const currentTransformerResponse = ctx.response.body;
+  const currentTransformerResponse = JSON.parse(JSON.stringify( ctx.response.body ));
 
   if (!match(oldTransformerResponse, currentTransformerResponse)) {
     stats.counter("payload_fail_match", 1, {

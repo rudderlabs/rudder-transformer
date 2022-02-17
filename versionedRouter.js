@@ -56,6 +56,44 @@ const isRouteExcluded = path => {
   return true;
 };
 
+const formatResponsePayload = (payload, path) => {
+  if (path.includes("/v0/ga") || path.includes("/v0/ga360")) {
+    payload.forEach(res => {
+      if (res.output && res.output.params && res.output.params.qt) {
+        delete res.output.params.qt;
+      }
+    });
+  }
+
+  if (path.includes("/v0/facebook_pixel")) {
+    payload.forEach(res => {
+      if (res.output && res.output.body && res.output.body.FORM && res.output.body.FORM.data) {
+        delete res.output.body.FORM.data;
+      }
+    });
+  }
+
+  if (path.includes("/v0/snowflake")) {
+    payload.forEach(res => {
+      if (res.output && res.output.metadata && res.output.metadata.receivedAt) {
+        delete res.output.metadata.receivedAt;
+      }
+      if (res.output && res.output.data && res.output.data.ID) {
+        delete res.output.data.ID;
+      }
+      if (res.output && res.output.data && res.output.data.RECEIVED_AT) {
+        delete res.output.data.RECEIVED_AT;
+      }
+    });
+  }
+
+  if (path.includes("/customTransform")) {
+    payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
+  }
+
+  return payload;
+};
+
 router.use(async (ctx, next) => {
   if (!OLD_TRANSFORMER_URL) {
     logger.error("OLD TRANSFORMER URL not configured.consider removing the comparison middleware");
@@ -85,10 +123,13 @@ router.use(async (ctx, next) => {
     return;
   }
 
-  const oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
+  let oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
   // send req to current service
   await next();
-  const currentTransformerResponse = JSON.parse(JSON.stringify( ctx.response.body ));
+  let currentTransformerResponse = JSON.parse(JSON.stringify( ctx.response.body ));
+
+  oldTransformerResponse = formatResponsePayload(oldTransformerResponse, ctx.request.url);
+  currentTransformerResponse = formatResponsePayload(currentTransformerResponse, ctx.request.url);
 
   if (!match(oldTransformerResponse, currentTransformerResponse)) {
     stats.counter("payload_fail_match", 1, {

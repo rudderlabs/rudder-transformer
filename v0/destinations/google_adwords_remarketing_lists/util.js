@@ -77,6 +77,13 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
   const response = await httpSend(thirdRequest);
   return response;
 };
+
+/**
+ * This function is responsible for making the three steps required for uploding
+ * data to customer list.
+ * @param {*} request
+ * @returns
+ */
 const gaAudienceProxyRequest = async request => {
   const { body, method, params, endpoint } = request;
   const { headers } = request;
@@ -110,10 +117,19 @@ const gaAudienceProxyRequest = async request => {
   return thirdResponse;
 };
 
-const getAuthErrCategory = code => {
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to disable the destination.
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategory = (code, response) => {
   switch (code) {
     case 401:
-      return REFRESH_TOKEN;
+      if (!response.error.details) return REFRESH_TOKEN;
+      return "";
     case 403: // Access Denied
       return DISABLE_DEST;
     default:
@@ -136,7 +152,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
     .setMessage(
       `Google_adwords_remarketing_list: ${response.error.message} ${stageMsg}`
     )
-    .setAuthErrorCategory(getAuthErrCategory(status))
+    .setAuthErrorCategory(getAuthErrCategory(status, response))
     .build();
 };
 

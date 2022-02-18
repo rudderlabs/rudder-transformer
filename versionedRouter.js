@@ -87,7 +87,7 @@ const formatResponsePayload = (payload, path) => {
     });
   }
 
-  if (path.includes("/v0/sfmc")) {
+  if (path.includes("/v0/sfmc") || path.includes("/v0/salesforce")) {
     payload.forEach(res => {
       if (res.output && res.output.headers && res.output.headers.hasOwnProperty("Authorization")) {
         delete res.output.headers.Authorization;

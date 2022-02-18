@@ -59,7 +59,7 @@ const isRouteExcluded = path => {
 const formatResponsePayload = (payload, path) => {
   if (path.includes("/v0/ga") || path.includes("/v0/ga360")) {
     payload.forEach(res => {
-      if (res.output && res.output.params && res.output.params.qt) {
+      if (res.output && res.output.params && res.output.params.hasOwnProperty("qt")) {
         delete res.output.params.qt;
       }
     });
@@ -67,7 +67,7 @@ const formatResponsePayload = (payload, path) => {
 
   if (path.includes("/v0/facebook_pixel")) {
     payload.forEach(res => {
-      if (res.output && res.output.body && res.output.body.FORM && res.output.body.FORM.data) {
+      if (res.output && res.output.body && res.output.body.FORM && res.output.body.FORM.hasOwnProperty("data")) {
         delete res.output.body.FORM.data;
       }
     });
@@ -75,19 +75,27 @@ const formatResponsePayload = (payload, path) => {
 
   if (path.includes("/v0/snowflake")) {
     payload.forEach(res => {
-      if (res.output && res.output.metadata && res.output.metadata.receivedAt) {
+      if (res.output && res.output.metadata && res.output.metadata.hasOwnProperty("receivedAt")) {
         delete res.output.metadata.receivedAt;
       }
-      if (res.output && res.output.data && res.output.data.ID) {
+      if (res.output && res.output.data && res.output.data.hasOwnProperty("ID")) {
         delete res.output.data.ID;
       }
-      if (res.output && res.output.data && res.output.data.RECEIVED_AT) {
+      if (res.output && res.output.data && res.output.data.hasOwnProperty("RECEIVED_AT")) {
         delete res.output.data.RECEIVED_AT;
       }
     });
   }
 
-  if (path.includes("/customTransform")) {
+  if (path.includes("/v0/sfmc")) {
+    payload.forEach(res => {
+      if (res.output && res.output.headers && res.output.headers.hasOwnProperty("Authorization")) {
+        delete res.output.headers.Authorization;
+      }
+    });
+  }
+
+  if (!path.includes("/v0/sources") && !path.includes("/v0/destinations")) {
     payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
   }
 
@@ -128,8 +136,12 @@ router.use(async (ctx, next) => {
   await next();
   let currentTransformerResponse = JSON.parse(JSON.stringify( ctx.response.body ));
 
-  oldTransformerResponse = formatResponsePayload(oldTransformerResponse, ctx.request.url);
-  currentTransformerResponse = formatResponsePayload(currentTransformerResponse, ctx.request.url);
+  try {
+    oldTransformerResponse = formatResponsePayload(oldTransformerResponse, ctx.request.url);
+    currentTransformerResponse = formatResponsePayload(currentTransformerResponse, ctx.request.url);
+  } catch (err) {
+    logger.error(`Failed to sort metadata message id : ${ctx.request.url}`);
+  }
 
   if (!match(oldTransformerResponse, currentTransformerResponse)) {
     stats.counter("payload_fail_match", 1, {

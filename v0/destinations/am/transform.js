@@ -166,7 +166,7 @@ function updateConfigProperty(
         } else {
           const data = get(message.traits, outKey); // when in identify(or any other call) it checks whether outKey is present in traits
           // then that value is assigned else function is applied.
-          // that key (outKey) will be a default key for wh actions and thus removed from the payload.
+          // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
           if (isDefinedAndNotNull(data)) {
             set(payload, outKey, data);
             delete message.traits[outKey];

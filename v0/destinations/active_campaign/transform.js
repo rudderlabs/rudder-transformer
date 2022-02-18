@@ -107,7 +107,7 @@ const customTagProcessor = async (message, category, destination) => {
   try {
     res = await axios.get(
       `${destination.Config.apiUrl}${
-        category.tagEndPoint ? category.tagEndPoint : ""
+        category.tagEndPoint ? `${category.tagEndPoint}?limit=100` : ""
       }`,
       {
         headers: {
@@ -131,6 +131,52 @@ const customTagProcessor = async (message, category, destination) => {
     res.data.tags.map(t => {
       storedTags[t.tag] = t.id;
     });
+
+    // utilized limit and offset query parameters to fetch more than the default limit which is 20.
+    // We are retrieving 100 tags which is the maximum limit, in each iteration, until all tags are retrieved.
+    // Ref - https://developers.activecampaign.com/reference#pagination
+    const promises = [];
+    if (
+      res.data.meta &&
+      res.data.meta.total &&
+      parseInt(res.data.meta.total, 10) > 100
+    ) {
+      for (
+        let i = 0;
+        i < Math.floor(parseInt(res.data.meta.total, 10) / 100);
+        i++
+      ) {
+        try {
+          const resp = axios.get(
+            `${destination.Config.apiUrl}${
+              category.tagEndPoint
+                ? `${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`
+                : ""
+            }`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Api-Token": destination.Config.apiKey
+              }
+            }
+          );
+          promises.push(resp);
+        } catch (err) {
+          throw new CustomError(
+            `Failed to fetch already created tags (${err.response.statusText})`,
+            err.response.status || 400
+          );
+        }
+      }
+      const results = await Promise.all(promises);
+      results.forEach(resp => {
+        if (resp.status === 200) {
+          resp.data.tags.map(t => {
+            storedTags[t.tag] = t.id;
+          });
+        }
+      });
+    }
 
     // Step - 3
     // Check if tags already present then we push it to tagIds

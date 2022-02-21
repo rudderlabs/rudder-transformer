@@ -169,8 +169,6 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     ["traits", "context.traits"],
     MP_IDENTIFY_EXCLUSION_LIST
   );
-  rawPayload = removeUndefinedAndNullValues(rawPayload);
-
   /*
   we are adding backward compatibility using useNewMapping key.
   TODO :: This portion need to be removed after we deciding to stop 

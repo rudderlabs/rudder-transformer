@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { logger } = require("handlebars");
 const { isArray } = require("lodash");
 const sha256 = require("sha256");
@@ -46,7 +47,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
-    "developer-token": Config.developerToken
+    "developer-token": get(metadata, "secret.developer_token")
   };
   if (Config.subAccount)
     if (Config.loginCustomerId)

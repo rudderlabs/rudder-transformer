@@ -4,11 +4,11 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://googleads.googleapis.com/v9/customers/7693729833/offlineUserDataJobs",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
       "headers": {
         "Authorization": "Bearer abcd1234",
         "Content-Type": "application/json",
-        "developer-token": "3FdS-r4RLKMEeOAbxSn8I"
+        "developer-token": "ijkl9101"
       },
       "params": { "listId": "7090784486", "customerId": "7693729833" },
       "body": {
@@ -42,7 +42,15 @@
       },
       "files": {}
     },
-    "metadata": [{ "secret": { "access_token": "abcd1234" } }],
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -50,7 +58,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -64,11 +71,11 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://googleads.googleapis.com/v9/customers/7693729833/offlineUserDataJobs",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
       "headers": {
         "Authorization": "Bearer abcd1234",
         "Content-Type": "application/json",
-        "developer-token": "3FdS-r4RLKMEeOAbxSn8I"
+        "developer-token": "ijkl9101"
       },
       "params": { "listId": "7090784486", "customerId": "7693729833" },
       "body": {
@@ -91,7 +98,15 @@
       },
       "files": {}
     },
-    "metadata": [{ "secret": { "access_token": "abcd1234" } }],
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -99,7 +114,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],

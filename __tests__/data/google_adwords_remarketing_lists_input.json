@@ -2,7 +2,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -10,7 +12,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -50,7 +51,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -58,7 +61,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "abcd1234",
         "subAccount": true,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -99,7 +101,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -107,7 +111,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -149,7 +152,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -157,7 +162,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -216,7 +220,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -224,7 +230,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -265,7 +270,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -273,7 +280,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -313,7 +319,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -321,7 +329,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -349,7 +356,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -357,7 +366,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": true,
         "userSchema": ["email", "phone", "addressInfo"],
@@ -405,7 +413,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl9101"
       }
     },
     "destination": {
@@ -413,7 +423,6 @@
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
         "customerId": "7693729833",
-        "developerToken": "3FdS-r4RLKMEeOAbxSn8I",
         "loginCustomerId": "",
         "subAccount": false,
         "userSchema": ["email", "phone", "addressInfo"],

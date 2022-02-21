@@ -13,6 +13,7 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
+const { errorHandler } = require("./util");
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
@@ -84,10 +85,7 @@ const customTagProcessor = async (message, category, destination) => {
       }
     );
   } catch (err) {
-    throw new CustomError(
-      `Failed to create new contact (${err.response.statusText})`,
-      err.response.status || 400
-    );
+    errorHandler(err, "Failed to create new contact");
   }
   const createdContact = res.data.contact;
 
@@ -117,10 +115,7 @@ const customTagProcessor = async (message, category, destination) => {
       }
     );
   } catch (err) {
-    throw new CustomError(
-      `Failed to fetch already created tags (${err.response.statusText})`,
-      err.response.status || 400
-    );
+    errorHandler(err, "Failed to fetch already created tags");
   }
 
   const storedTags = {};
@@ -162,10 +157,7 @@ const customTagProcessor = async (message, category, destination) => {
           );
           promises.push(resp);
         } catch (err) {
-          throw new CustomError(
-            `Failed to fetch already created tags (${err.response.statusText})`,
-            err.response.status || 400
-          );
+          errorHandler(err, "Failed to fetch already created tags");
         }
       }
       const results = await Promise.all(promises);
@@ -214,10 +206,7 @@ const customTagProcessor = async (message, category, destination) => {
             }
           );
         } catch (err) {
-          throw new CustomError(
-            `Failed to create tags (${err.response.statusText})`,
-            err.response.status || 400
-          );
+          errorHandler(err, "Failed to create tags");
         }
         // For each tags successfully created the response id is pushed to tagIds
         if (res.status === 201) tagIds.push(res.data.tag.id);
@@ -251,10 +240,7 @@ const customTagProcessor = async (message, category, destination) => {
           }
         );
       } catch (err) {
-        throw new CustomError(
-          `Failed to merge created contact with created tags (${err.response.statusText})`,
-          err.response.status || 400
-        );
+        errorHandler(err, "Failed to merge created contact with created tags");
       }
     })
   );
@@ -297,10 +283,7 @@ const customFieldProcessor = async (
     );
     responseStaging = res.status === 200 ? res.data.fields : [];
   } catch (err) {
-    throw new CustomError(
-      `Failed to get existing field data (${err.response.statusText})`,
-      err.response.status || 400
-    );
+    errorHandler(err, "Failed to get existing field data");
   }
 
   // From the responseStaging we store the stored field information in K-V struct iin fieldMap
@@ -359,10 +342,7 @@ const customFieldProcessor = async (
           }
         );
       } catch (err) {
-        throw new CustomError(
-          `Failed to create mapping request (${err.response.statusText})`,
-          err.response.status || 400
-        );
+        errorHandler(err, "Failed to create mapping request");
       }
     })
   );
@@ -418,10 +398,7 @@ const customListProcessor = async (
             }
           );
         } catch (err) {
-          throw new CustomError(
-            `Failed to map created contact with the list (${err.response.statusText})`,
-            err.response.status || 400
-          );
+          errorHandler(err, "Failed to map created contact with the list");
         }
       } else {
       }
@@ -476,10 +453,7 @@ const screenRequestHandler = async (message, category, destination) => {
       }
     );
   } catch (err) {
-    throw new CustomError(
-      `Failed to retrieve events (${err.response.statusText})`,
-      err.response.status || 400
-    );
+    errorHandler(err, "Failed to retrieve events");
   }
 
   if (res.status !== 200)
@@ -512,14 +486,12 @@ const screenRequestHandler = async (message, category, destination) => {
         }
       );
     } catch (err) {
-      throw new CustomError(
-        `Failed to create the event (${err.response.statusText})`,
-        err.response.status || 400
-      );
+      errorHandler(err, "Failed to create event");
     }
 
-    if (res.status !== 201)
+    if (res.status !== 201) {
       throw new CustomError("Unable to create event", res.status || 400);
+    }
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -529,11 +501,8 @@ const screenRequestHandler = async (message, category, destination) => {
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
   payload.visit = encodeURIComponent(
-    `{email : ${
-      message.context.traits.email
-        ? message.context.traits.email
-        : message.context.traits.traits.email
-    }}`
+    `{"email":"${get(message, "context.traits.email") ||
+      get(message, "context.traits.traits.email")}"}`
   );
   return responseBuilderSimple(payload, category, destination);
 };
@@ -555,10 +524,7 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     );
   } catch (err) {
-    throw new CustomError(
-      `Failed to retrieve events (${err.response.statusText})`,
-      err.response.status || 400
-    );
+    errorHandler(err, "Failed to retrieve events");
   }
 
   if (res.status !== 200)
@@ -591,14 +557,12 @@ const trackRequestHandler = async (message, category, destination) => {
         }
       );
     } catch (err) {
-      throw new CustomError(
-        `Failed to create event (${err.response.statusText})`,
-        err.response.status || 400
-      );
+      errorHandler(err, "Failed to create event");
     }
 
-    if (res.status !== 201)
+    if (res.status !== 201) {
       throw new CustomError("Unable to create event", res.status || 400);
+    }
   }
   // Previous operations successfull then
   // Mapping the Event payloads
@@ -608,11 +572,8 @@ const trackRequestHandler = async (message, category, destination) => {
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
   payload.visit = encodeURIComponent(
-    `{email : ${
-      message.context.traits.email
-        ? message.context.traits.email
-        : message.context.traits.traits.email
-    }}`
+    `{"email":"${get(message, "context.traits.email") ||
+      get(message, "context.traits.traits.email")}"}`
   );
   return responseBuilderSimple(payload, category, destination);
 };

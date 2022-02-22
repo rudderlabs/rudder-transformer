@@ -4,7 +4,13 @@ const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
 
-async function runUserTransform(events, code, eventsMetadata, versionId) {
+async function runUserTransform(
+  events,
+  code,
+  eventsMetadata,
+  versionId,
+  testMode = false
+) {
   const tags = {
     transformerVersionId: versionId,
     version: 0
@@ -78,16 +84,18 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference((...args) => {
-      let logString = "Log:";
-      args.forEach(arg => {
-        logString = logString.concat(
-          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-        );
-      });
-      logs.push(logString);
-      // console.log("Log: ", ...args);
-    })
+    testMode
+      ? new ivm.Reference((...args) => {
+          let logString = "Log:";
+          args.forEach(arg => {
+            logString = logString.concat(
+              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+            );
+          });
+          logs.push(logString);
+          // console.log("Log: ", ...args);
+        })
+      : new ivm.Reference(() => {})
   );
 
   jail.setSync(
@@ -275,7 +283,8 @@ async function userTransformHandler(
           eventMessages,
           res.code,
           eventsMetadata,
-          versionId
+          versionId,
+          testMode
         );
 
         userTransformedEvents = testMode

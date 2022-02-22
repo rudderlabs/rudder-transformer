@@ -18,7 +18,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const logs = [];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
-      getLibraryCodeV1(libraryVersionId, testMode)
+      getLibraryCodeV1(libraryVersionId)
     )
   );
   const librariesMap = {};
@@ -188,15 +188,17 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 
   await jail.set(
     "_log",
-    new ivm.Reference((...args) => {
-      let logString = "Log:";
-      args.forEach(arg => {
-        logString = logString.concat(
-          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-        );
-      });
-      logs.push(logString);
-    })
+    testMode
+      ? new ivm.Reference((...args) => {
+          let logString = "Log:";
+          args.forEach(arg => {
+            logString = logString.concat(
+              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+            );
+          });
+          logs.push(logString);
+        })
+      : new ivm.Reference(() => {})
   );
 
   const bootstrap = await isolate.compileScript(

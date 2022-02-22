@@ -9,7 +9,7 @@ const opts = {
   max: 10 // maximum size of the pool
 };
 
-async function getPool(userTransformation, libraryVersionIds, testMode) {
+async function getPool(userTransformation, libraryVersionIds) {
   const { versionId } = userTransformation;
   const sortedLibrariesIdString = libraryVersionIds.sort().toString();
   if (
@@ -25,8 +25,7 @@ async function getPool(userTransformation, libraryVersionIds, testMode) {
     const factory = await getFactory(
       userTransformation.code,
       libraryVersionIds,
-      versionId,
-      testMode
+      versionId
     );
     transformationPoolCache[versionId] = genericPool.createPool(factory, opts);
     transformationLibraryCache[versionId] = sortedLibrariesIdString;

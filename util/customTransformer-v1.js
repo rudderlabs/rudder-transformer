@@ -52,9 +52,10 @@ async function userTransformHandlerV1(
  Pooled otherwise
 */
   const isAcquireTransformerIsolatedVMMode =
-    process.env.ON_DEMAND_ISOLATE_VM && !testMode
+    testMode ||
+    (process.env.ON_DEMAND_ISOLATE_VM
       ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
-      : false;
+      : false);
   if (userTransformation.versionId) {
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
@@ -77,7 +78,7 @@ async function userTransformHandlerV1(
       logger.debug(`Isolate VM created... `);
     } else {
       logger.debug(`Pooled transformer VM being created... `);
-      isolatevmPool = await getPool(userTransformation, libraryVersionIds, testMode);
+      isolatevmPool = await getPool(userTransformation, libraryVersionIds);
       isolatevm = await isolatevmPool.acquire();
       stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
       stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);

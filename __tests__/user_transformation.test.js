@@ -854,7 +854,7 @@ possibleEnvs.forEach(envValue => {
       export default self;
       `;
 
-      const libraryUrl = `https://api.rudderlabs.com/transformationLibraryRevision/getByVersionId?versionId=${libraryVersionId}`;
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({

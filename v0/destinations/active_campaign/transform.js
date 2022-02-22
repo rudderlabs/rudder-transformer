@@ -254,7 +254,7 @@ const customFieldProcessor = async (
   destination,
   createdContact
 ) => {
-  let responseStaging;
+  const responseStaging = [];
   let res;
   // Step - 1
   // Extract the custom field info from the message
@@ -273,7 +273,7 @@ const customFieldProcessor = async (
   try {
     res = await axios.get(
       `${destination.Config.apiUrl}${
-        category.fieldEndPoint ? category.fieldEndPoint : ""
+        category.fieldEndPoint ? `${category.fieldEndPoint}?limit=100` : ""
       }`,
       {
         headers: {
@@ -281,16 +281,60 @@ const customFieldProcessor = async (
         }
       }
     );
-    responseStaging = res.status === 200 ? res.data.fields : [];
+    responseStaging.push(res.status === 200 ? res.data.fields : []);
   } catch (err) {
     errorHandler(err, "Failed to get existing field data");
+  }
+
+  const promises = [];
+  if (
+    res.data.meta &&
+    res.data.meta.total &&
+    parseInt(res.data.meta.total, 10) > 100
+  ) {
+    for (
+      let i = 0;
+      i < Math.floor(parseInt(res.data.meta.total, 10) / 100);
+      i++
+    ) {
+      try {
+        const resp = axios.get(
+          `${destination.Config.apiUrl}${
+            category.fieldEndPoint
+              ? `${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`
+              : ""
+          }`,
+          {
+            headers: {
+              "Api-Token": destination.Config.apiKey
+            }
+          }
+        );
+        // responseStaging.push(resp.status === 200 ? resp.data.fields : []);
+        promises.push(resp);
+      } catch (err) {
+        errorHandler(
+          err,
+          `Failed to get existing field data (${err.response.statusText})`
+        );
+      }
+    }
+    const results = await Promise.all(promises);
+    results.forEach(resp => {
+      if (resp.status === 200) {
+        responseStaging.push(resp.data.fields);
+      }
+    });
   }
 
   // From the responseStaging we store the stored field information in K-V struct iin fieldMap
   // In order for easy comparison and retrieval.
   const fieldMap = {};
-  responseStaging.map(field => {
-    fieldMap[field.title] = field.id;
+
+  responseStaging.forEach(respStag => {
+    respStag.map(field => {
+      fieldMap[field.title] = field.id;
+    });
   });
 
   const storedFields = Object.keys(fieldMap);

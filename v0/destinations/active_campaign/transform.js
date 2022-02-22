@@ -310,7 +310,6 @@ const customFieldProcessor = async (
             }
           }
         );
-        // responseStaging.push(resp.status === 200 ? resp.data.fields : []);
         promises.push(resp);
       } catch (err) {
         errorHandler(

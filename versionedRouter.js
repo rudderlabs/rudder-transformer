@@ -99,6 +99,10 @@ const formatResponsePayload = (payload, path) => {
     payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
   }
 
+  if (path.includes("/customTransform")) {
+    payload.sort((a,b) => a.output.messageId > b.output.messageId ? 1 : (a.output.messageId < b.output.messageId ? -1 : 0));
+  }
+
   return payload;
 };
 

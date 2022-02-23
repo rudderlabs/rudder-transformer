@@ -1,5 +1,7 @@
 [
-  {},
+  {
+    "error": "Message type not supported"
+  },
   {
     "version": "1",
     "type": "REST",
@@ -56,5 +58,11 @@
     "files": {},
     "userId": "12345",
     "statusCode": 200
+  },
+  {
+    "error": "Message Type is not present. Aborting message."
+  },
+  {
+    "error": "Event name is required"
   }
 ]

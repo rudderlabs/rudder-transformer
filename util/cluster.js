@@ -3,7 +3,6 @@ const cluster = require("cluster");
 const gracefulShutdown = require("http-graceful-shutdown");
 const numCPUs = require("os").cpus().length;
 const util = require("util");
-const gracefulShutdown = require("http-graceful-shutdown");
 const logger = require("../logger");
 
 const numWorkers = process.env.NUM_PROCS || numCPUs;

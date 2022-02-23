@@ -153,10 +153,6 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   // const respAttributes = response["@attributes"] || null;
   // const { stat, err_code: errorCode } = respAttributes;
 
-  if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
-    return response;
-  }
   throw new ErrorBuilder()
     .setStatus(status)
     .setDestinationResponse(response)
@@ -170,17 +166,20 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
 const responseHandler = destinationResponse => {
   const message = `[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
+  if (isHttpStatusSuccess(status)) {
+    // Mostly any error will not have a status of 2xx
+    return {
+      status,
+      message,
+      destinationResponse
+    };
+  }
   // else successfully return status, message and original destination response
   gaAudienceRespHandler(
     destinationResponse,
     "during ga_audience response transformation",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
-  return {
-    status,
-    message,
-    destinationResponse
-  };
 };
 const networkHandler = function() {
   this.responseHandler = responseHandler;

@@ -511,6 +511,10 @@ if (startDestTransformer) {
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   if (ev.error) {
+                    stats.counter("user_transform_errors", 1, {
+                      transformationVersionId,
+                      ...metaTags
+                    });
                     return {
                       statusCode: 400,
                       error: ev.error,

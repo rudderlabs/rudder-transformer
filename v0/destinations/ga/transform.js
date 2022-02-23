@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const md5 = require("md5");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   Event,
   GA_ENDPOINT,
@@ -13,6 +13,8 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const {
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -223,6 +225,7 @@ function responseBuilderSimple(
     contentGroupings
   } = destination.Config;
   const { trackingID } = destination.Config;
+  const traits = getFieldValueFromMessage(message, "traits");
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
@@ -237,7 +240,7 @@ function responseBuilderSimple(
     v: "1",
     t: hitType,
     tid: trackingID,
-    ds: message.channel
+    ds: traits.ds || message.channel
   };
 
   if (doubleClick) {
@@ -250,22 +253,34 @@ function responseBuilderSimple(
     rawPayload.linkid = message.properties.linkid;
   }
 
+  // Check if present in traits and assign otherwise find the values
+  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = traits;
+  rawPayload.ua = ua;
+  rawPayload.ul = ul;
+  rawPayload.cn = cn;
+  rawPayload.cs = cs;
+  rawPayload.cm = cm;
+  rawPayload.cc = cc;
+  rawPayload.ck = ck;
+  rawPayload.an = an;
+  rawPayload.av = av;
+  rawPayload.aiid = aiid;
   if (message.context) {
     const { campaign, userAgent, locale, app } = message.context;
-    rawPayload.ua = userAgent;
-    rawPayload.ul = locale;
+    rawPayload.ua = ua || userAgent;
+    rawPayload.ul = ul || locale;
     if (app) {
-      rawPayload.an = app.name;
-      rawPayload.av = app.version;
-      rawPayload.aiid = app.namespace;
+      rawPayload.an = an || app.name;
+      rawPayload.av = av || app.version;
+      rawPayload.aiid = aiid || app.namespace;
     }
     if (campaign) {
       const { name, source, medium, content, term } = campaign;
-      rawPayload.cn = name;
-      rawPayload.cs = source;
-      rawPayload.cm = medium;
-      rawPayload.cc = content;
-      rawPayload.ck = term;
+      rawPayload.cn = cn || name;
+      rawPayload.cs = cs || source;
+      rawPayload.cm = cm || medium;
+      rawPayload.cc = cc || content;
+      rawPayload.ck = ck || term;
     }
   }
 
@@ -329,16 +344,18 @@ function responseBuilderSimple(
     finalPayload.cid =
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
+      traits.cid || // if for rETL cid is mapped in traits
       message.anonymousId ||
       undefined;
   } else {
     finalPayload.cid =
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
+      traits.cid ||
       message.anonymousId ||
       checkmd5(message);
   }
-  finalPayload.uip = getParsedIP(message);
+  finalPayload.uip = traits.uip || getParsedIP(message);
 
   const timestamp = message.originalTimestamp
     ? new Date(message.originalTimestamp)
@@ -355,6 +372,15 @@ function responseBuilderSimple(
 }
 
 function processIdentify(message, destination) {
+  // If mapped to destination, Add externalId to traits
+  if (get(message, MappedToDestinationKey)) {
+    addExternalIdToTraits(message);
+    const identifierType = get(message, "context.externalId.0.identifierType");
+    if (identifierType === "uid") {
+      // this can be either uid / cid
+      adduserIdFromExternalId(message);
+    }
+  }
   let {
     serverSideIdentifyEventCategory,
     serverSideIdentifyEventAction

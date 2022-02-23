@@ -4,7 +4,7 @@ message:
     - track
   identify:
     transformation:
-      mapperPath: ./mapping/identifyMapping.yaml
+      mapperPath: ./mapping/identify.yaml
       postMapper:
         name: "identifyPostMapper"
       response:
@@ -18,7 +18,7 @@ message:
         userId: "{{ message.anonymousId }}"
   track:
     transformation:
-      mapperPath: ./mapping/trackMapping.yaml
+      mapperPath: ./mapping/track.yaml
       postMapper:
         name: "trackPostMapper"
       response:

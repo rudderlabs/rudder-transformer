@@ -2,4 +2,3 @@
   sourceKeys:
     - "context.ip"
     - "request_ip"
-  required: false

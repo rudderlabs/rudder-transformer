@@ -11,7 +11,8 @@ const urlDirectoryMap = {
   "api.aptrinsic.com": "gainsight_px",
   "api.amplitude.com": "am",
   "braze.com": "braze",
-  "bigquery.googleapis.com": "bqstream"
+  "bigquery.googleapis.com": "bqstream",
+  "googleads.googleapis.com": "google_adwords_remarketing_lists"
 };
 
 function getData(url) {

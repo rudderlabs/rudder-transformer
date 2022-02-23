@@ -11,9 +11,14 @@ const attributeMapping = {
 };
 const hashAttributes = ["email", "phone", "firstName", "lastName"];
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const TYPEOFLIST = Object.freeze({
+  userID: "thirdPartyUserId",
+  mobileDeviceID: "mobileId"
+});
 
 module.exports = {
   BASE_ENDPOINT,
+  TYPEOFLIST,
   attributeMapping,
   hashAttributes,
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],

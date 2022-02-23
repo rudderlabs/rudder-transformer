@@ -1,4 +1,3 @@
-const get = require("get-value");
 const { logger } = require("handlebars");
 const { isArray } = require("lodash");
 const sha256 = require("sha256");
@@ -10,21 +9,23 @@ const {
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullAndEmptyValues,
+  getValueFromMessage
 } = require("../../util");
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
   BASE_ENDPOINT,
   attributeMapping,
-  hashAttributes
+  hashAttributes,
+  TYPEOFLIST
 } = require("./config");
 
 const hashEncrypt = object => {
   Object.keys(object).forEach(key => {
     if (hashAttributes.includes(key)) {
       // eslint-disable-next-line no-param-reassign
-      object[`${key}`] = sha256(object[`${key}`]);
+      object[key] = sha256(object[key]);
     }
   });
 };
@@ -47,7 +48,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
-    "developer-token": get(metadata, "secret.developer_token")
+    "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
   if (Config.subAccount)
     if (Config.loginCustomerId)
@@ -73,16 +74,10 @@ const populateIdentifiers = (attributeArray, { Config }) => {
   const { typeOfList } = Config;
   const { isHashRequired } = Config;
   let attribute;
-  // setting attribute name according to type of list
-  switch (typeOfList) {
-    case "userID":
-      attribute = "thirdPartyUserId";
-      break;
-    case "mobileDeviceID":
-      attribute = "mobileId";
-      break;
-    default:
-      attribute = Config.userSchema;
+  if (TYPEOFLIST[typeOfList]) {
+    attribute = TYPEOFLIST[typeOfList];
+  } else {
+    attribute = Config.userSchema;
   }
   if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
     // traversing through every element in the add array
@@ -92,8 +87,8 @@ const populateIdentifiers = (attributeArray, { Config }) => {
       }
       // checking if the attribute is an array or not for generic type list
       if (!Array.isArray(attribute)) {
-        if (element[`${attribute}`]) {
-          userIdentifier.push({ [attribute]: element[`${attribute}`] });
+        if (element[attribute]) {
+          userIdentifier.push({ [attribute]: element[attribute] });
         } else {
           logger.log(` ${attribute} is not present in index:`, index);
         }
@@ -238,15 +233,6 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
         return getSuccessRespEvents(
           await process(input),
           [input.metadata],

@@ -98,10 +98,17 @@ const gaAudienceProxyRequest = async request => {
     headers,
     method
   );
-  if (!isHttpStatusSuccess(firstResponse.response.status)) return firstResponse;
+  if (
+    !firstResponse.success &&
+    !isHttpStatusSuccess(firstResponse.response.status)
+  )
+    return firstResponse;
 
   // step2: putting users into the job
-  const jobId = firstResponse.response.data.resourceName.split("/")[3];
+  let jobId;
+  if (firstResponse.response.data && firstResponse.response.data.resourceName)
+    // eslint-disable-next-line prefer-destructuring
+    jobId = firstResponse.response.data.resourceName.split("/")[3];
   const secondResponse = await addUserToJob(
     endpoint,
     headers,
@@ -109,7 +116,11 @@ const gaAudienceProxyRequest = async request => {
     jobId,
     body
   );
-  if (!isHttpStatusSuccess(secondResponse.response.status))
+  // console.log(JSON.stringify(secondResponse.response.response));
+  if (
+    !secondResponse.success &&
+    !isHttpStatusSuccess(secondResponse.response.status)
+  )
     return secondResponse;
 
   // step3: running the job
@@ -156,7 +167,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
     .build();
 };
 
-const responseHandler = (destinationResponse, _dest) => {
+const responseHandler = destinationResponse => {
   const message = `[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response

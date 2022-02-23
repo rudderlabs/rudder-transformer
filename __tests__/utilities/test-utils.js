@@ -22,11 +22,11 @@ function formTestParams(dest, transformAt) {
   );
   const inputData = JSON.parse(inputDataFile);
   const expected = JSON.parse(outputDataFile);
-	const cdkDest = ['variance', 'autopilot', 'statsig'].filter(({ name }) => name === dest)[0];
+	const cdkDest = ['variance', 'autopilot', 'statsig'].filter((name) => name === dest)[0];
 	return {
 		input: inputData,
 		expected,
-		iscdkDest: _.isEmpty(cdkDest)
+		iscdkDest: !_.isEmpty(cdkDest)
 	};
 }
 
@@ -45,7 +45,7 @@ function executeTransformationTest(dest, transformAt) {
           if(iscdkDest && transformAt === 'processor') {
             // We currently support processor transformation only in CDK
             actualData = await RudderCDK.Executor.executeStages(
-              inp,
+                tcInput,
               factory.getConfig(dest)
             )
           } else {

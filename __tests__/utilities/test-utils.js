@@ -39,10 +39,11 @@ function executeTransformationTest(dest, transformAt) {
 
   describe(`${dest} ${transformAt} tests`, () => {
     input.map((tcInput, index) => {
-      return it(`test name - ${index}`, async () => {
+      return it(`${dest} ${transformAt} tests - ${index}`, async () => {
         let actualData;
         try {
-          if(iscdkDest) {
+          if(iscdkDest && transformAt === 'processor') {
+            // We currently support processor transformation only in CDK
             actualData = await RudderCDK.Executor.executeStages(
               inp,
               factory.getConfig(dest)

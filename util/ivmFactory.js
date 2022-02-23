@@ -7,6 +7,13 @@ const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 const { parserForImport } = require("./parser");
 
 const isolateVmMem = 128;
+async function evaluateModule(isolate, context, moduleCode) {
+  const module = await isolate.compileModule(moduleCode);
+  await module.instantiate(context, (specifier, referrer) => referrer);
+  await module.evaluate();
+  return true;
+}
+
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -119,6 +126,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       };
     })
   );
+  console.log(compiledModules);
 
   // TODO: Add rudder nodejs sdk to libraries
 
@@ -335,7 +343,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 async function compileUserLibrary(code) {
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
-  return loadModule(isolate, context, code);
+  return evaluateModule(isolate, context, code);
 }
 
 async function getFactory(code, libraryVersionIds, versionId, testMode) {

@@ -3,8 +3,11 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const path = require("path");
+const RudderCDK = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
+
 const {
   isNonFuncObject,
   getMetadata,
@@ -19,6 +22,9 @@ const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
+
+const basePath = path.resolve(__dirname, "./cdk");
+const factory = new RudderCDK.ConfigFactory(basePath);
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -97,6 +103,10 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
+        // let respEvents = RudderCDK.Executor.executeStages(
+        //   event,
+        //   factory.getConfig(destination)
+        // );
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];

@@ -1,0 +1,19 @@
+message:
+  # Here since supportedMessageTypes is not present
+  # We'd assume that the below mentioned transformation
+  # is valid for all message types
+  default:
+    transformation:
+      # Here first the message would be spread on that
+      # the mappings would be overridden
+      # ResponsePayload = { ...message, ...mappedPayload }
+      spreadMessage: true
+      mapperPath: ./mappings/default.yaml
+      response:
+        format: JSON
+        method: POST
+        endpoint: "{{ destConfig.webhookUrl }}"
+        headers:
+          authorization: "{{ destConfig.authHeader }}"
+          content-type: "application/json"
+        userId: "{{ message.anonymousId }}"

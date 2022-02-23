@@ -1,0 +1,21 @@
+message:
+  supportedMessageTypes:
+    - identify
+    - page
+    - screen
+    - alias
+    - track
+    - group
+  default:
+    transformation:
+      # Here no mapping is mentioned, so we'd check for mappings existence
+      # Since no mapping file(mapperPath) is found, we will simply send message here
+      # If spreadMessage is also not present, we should probably throw an error
+      spreadMessage: true
+      response:
+        endpoint: "https://api.statsig.com/v1/webhooks/rudderstack"
+        method: post
+        # based on the format set, we can formulate
+        format: JSON
+        headers:
+          STATSIG-API-KEY: {{ destConfig.secretKey }}

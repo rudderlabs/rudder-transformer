@@ -41,8 +41,8 @@ function start(port, app) {
 
     cluster.on("online", worker => {
       logger.info(`Worker ${worker.process.pid} is online`);
+      // To provide caching at pod-level
     });
-
     let isShuttingDown = false;
     cluster.on("exit", worker => {
       if (!isShuttingDown) {
@@ -74,4 +74,7 @@ function start(port, app) {
   logger.debug("transformerServer: started");
 }
 
-exports.start = start;
+module.exports = {
+  start,
+  processInfo
+};

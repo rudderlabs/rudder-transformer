@@ -10,12 +10,16 @@ const {
 const {
   networkHandler: GenericNetworkHandler
 } = require("./networkhandler/genericNetworkHandler");
+const {
+  networkHandler: GoogleAdwordsRemarketingListNetworkHandler
+} = require("../v0/destinations/google_adwords_remarketing_lists/util");
 
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
   marketo: MarketoNetworkHandler,
-  pardot: PardotNetworkHandler
+  pardot: PardotNetworkHandler,
+  google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler
 };
 
 const getNetworkHandler = type => {

@@ -396,7 +396,7 @@ const customListProcessor = async (
             "Api-Token": destination.Config.apiKey
           }
         };
-        const res = await httpPOST(endpoint, requestData, requestOptions);
+        const res = httpPOST(endpoint, requestData, requestOptions);
         responsesArr.push(res);
       }
     })

@@ -142,9 +142,13 @@ router.use(async (ctx, next) => {
 
   try {
     oldTransformerResponse = formatResponsePayload(oldTransformerResponse, ctx.request.url);
+  } catch (err) {
+    logger.error(`Failed to sort metadata message id node 10: ${ctx.request.url}`);
+  }
+  try {
     currentTransformerResponse = formatResponsePayload(currentTransformerResponse, ctx.request.url);
   } catch (err) {
-    logger.error(`Failed to sort metadata message id : ${ctx.request.url}`);
+    logger.error(`Failed to sort metadata message id node 14: ${ctx.request.url}`);
   }
 
   if (!match(oldTransformerResponse, currentTransformerResponse)) {
@@ -511,6 +515,8 @@ if (startDestTransformer) {
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   if (ev.error) {
+                    logger.error(`user_transform_errors: ${JSON.stringify(ev)}`);
+                    logger.error(`[CT] Input events: ${JSON.stringify(events)}`);
                     stats.counter("user_transform_errors", 1, {
                       transformationVersionId,
                       ...metaTags

@@ -9,6 +9,7 @@ const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+const logger = require("../../../logger");
 const ErrorBuilder = require("../../util/error");
 const { DESTINATION } = require("./config");
 
@@ -83,7 +84,7 @@ const pardotRespHandler = (destResponse, stageMsg, stage) => {
     .build();
 };
 
-const responseHandler = (destinationResponse, _dest) => {
+const responseHandler = destinationResponse => {
   const message = `[Pardot Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response
@@ -146,7 +147,7 @@ const pardotProxyRequest = async request => {
       // TODO:
       break;
     default:
-      console.debug(`body format ${payloadFormat} not supported`);
+      logger.debug(`body format ${payloadFormat} not supported`);
   }
   const requestOptions = {
     url: endpoint,

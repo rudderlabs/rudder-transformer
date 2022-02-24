@@ -125,7 +125,8 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const { campaignId } = destination.Config;
   const accessToken = getAccessToken(metadata);
 
-  const extId = get(message, "context.externalId");
+  let extId = get(message, "context.externalId");
+  extId = extId && extId.length > 0 ? extId[0] : null;
   const email = getFieldValueFromMessage(message, "email");
 
   const prospectObject = constructPayload(message, identifyConfig);

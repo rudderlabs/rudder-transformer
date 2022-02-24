@@ -34,15 +34,9 @@
             "cordova"
           ],
           "destConfig": {
-            "defaultConfig": [
-              "rudderAccountId",
-              "businessUnitId",
-              "campaignId"
-            ]
+            "defaultConfig": ["rudderAccountId", "businessUnitId", "campaignId"]
           },
-          "secretKeys": [
-            "businessUnitId"
-          ]
+          "secretKeys": ["businessUnitId"]
         }
       },
       "Enabled": true,
@@ -99,10 +93,12 @@
         },
         "campaign": {},
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "externalId": {
-          "type": "pardotId",
-          "id": 123435
-        }
+        "externalId": [
+          {
+            "type": "pardotId",
+            "id": 123435
+          }
+        ]
       },
       "rudderId": "fa2994a5-2a81-45fd-9919-fcf5596ad380",
       "messageId": "e2d1a383-d9a2-4e03-a9dc-131d153c4d95",
@@ -160,15 +156,9 @@
             "cordova"
           ],
           "destConfig": {
-            "defaultConfig": [
-              "rudderAccountId",
-              "businessUnitId",
-              "campaignId"
-            ]
+            "defaultConfig": ["rudderAccountId", "businessUnitId", "campaignId"]
           },
-          "secretKeys": [
-            "businessUnitId"
-          ]
+          "secretKeys": ["businessUnitId"]
         }
       },
       "Enabled": true,
@@ -282,15 +272,9 @@
             "cordova"
           ],
           "destConfig": {
-            "defaultConfig": [
-              "rudderAccountId",
-              "businessUnitId",
-              "campaignId"
-            ]
+            "defaultConfig": ["rudderAccountId", "businessUnitId", "campaignId"]
           },
-          "secretKeys": [
-            "businessUnitId"
-          ]
+          "secretKeys": ["businessUnitId"]
         }
       },
       "Enabled": true,
@@ -347,10 +331,12 @@
         },
         "campaign": {},
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "externalId": {
-          "type": "crmfid",
-          "id": "00Q6r000002LKhTPVR"
-        }
+        "externalId": [
+          {
+            "type": "crmfid",
+            "id": "00Q6r000002LKhTPVR"
+          }
+        ]
       },
       "rudderId": "fa2994a5-2a81-45fd-9919-fcf5596ad380",
       "messageId": "e2d1a383-d9a2-4e03-a9dc-131d153c4d95",
@@ -408,15 +394,9 @@
             "cordova"
           ],
           "destConfig": {
-            "defaultConfig": [
-              "rudderAccountId",
-              "businessUnitId",
-              "campaignId"
-            ]
+            "defaultConfig": ["rudderAccountId", "businessUnitId", "campaignId"]
           },
-          "secretKeys": [
-            "businessUnitId"
-          ]
+          "secretKeys": ["businessUnitId"]
         }
       },
       "Enabled": true,

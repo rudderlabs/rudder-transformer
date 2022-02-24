@@ -24,6 +24,11 @@
     "funcName": "getPlatform",
     "outKey": "platform"
   },
+  "context.device.brand": {
+    "isFunc": true,
+    "funcName": "getBrand",
+    "outKey": "device_brand"
+  },
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",

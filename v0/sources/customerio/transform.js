@@ -5,30 +5,17 @@ const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 const Message = require("../message");
-
-const eventNameMap = {
-  clicked: "Email Link Clicked",
-  opened: "Email Opened",
-  bounced: "Email Bounced",
-  delivered: "Email Delivered",
-  spammed: "Email Marked as Spam",
-  unsubscribed: "Email Unsubscribed",
-  sent: "Email Sent"
-};
+const { mappingConfig } = require("./config");
 
 function process(event) {
-  // support only email status events
-  if (event.object_type !== "email") {
-    throw new Error("Only email status events are supported");
-  }
-
   const message = new Message(`Customer.io`);
 
-  // since only email status events are supported, event type is always track
+  // since customer, email, sms, push, slack, webhook
+  // status events are supported, event type is always track
   const eventType = "track";
   message.setEventType(eventType);
 
-  let eventName = eventNameMap[event.metric];
+  let eventName = mappingConfig[event.object_type.toLowerCase()][event.metric];
   if (!eventName) {
     // throw new Error("Metric not supported");
     eventName = "Unknown Event";
@@ -57,4 +44,4 @@ function process(event) {
   return message;
 }
 
-exports.process = process;
+module.exports = { process };

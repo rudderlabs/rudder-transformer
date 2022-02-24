@@ -61,10 +61,19 @@ function getPlatform(payload, sourceKey) {
     : payloadVal;
 }
 
+function getBrand(payload, sourceKey, Config) {
+  if (Config.mapDeviceBrand) {
+    const payloadVal = get(payload, sourceKey);
+    return payloadVal;
+  }
+  return undefined;
+}
+
 module.exports = {
   getOSName,
   getOSVersion,
   getDeviceModel,
   getDeviceManufacturer,
-  getPlatform
+  getPlatform,
+  getBrand
 };

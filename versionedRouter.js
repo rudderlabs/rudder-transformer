@@ -103,6 +103,9 @@ const formatResponsePayload = (payload, path) => {
       if (res.output && res.output.hasOwnProperty("userId")) {
         delete res.output.userId;
       }
+      if (res.output && res.output.hasOwnProperty("event_time")) {
+        delete res.output.event_time;
+      }
     });
   }
 

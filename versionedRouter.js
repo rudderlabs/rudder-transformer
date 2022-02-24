@@ -95,10 +95,6 @@ const formatResponsePayload = (payload, path) => {
     });
   }
 
-  if (!path.includes("/v0/sources") && !path.includes("/v0/destinations")) {
-    payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
-  }
-
   if (path.includes("/customTransform")) {
     payload.forEach(res => {
       if (res.output && res.output.header && res.output.header.hasOwnProperty("Authorization")) {
@@ -108,6 +104,13 @@ const formatResponsePayload = (payload, path) => {
         delete res.output.userId;
       }
     });
+  }
+
+  if (!path.includes("/v0/sources") && !path.includes("/v0/destinations")) {
+    payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
+  }
+
+  if (path.includes("/customTransform")) {
     payload.sort((a,b) => a.output.messageId > b.output.messageId ? 1 : (a.output.messageId < b.output.messageId ? -1 : 0));
   }
 

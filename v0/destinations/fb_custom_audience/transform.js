@@ -69,11 +69,9 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let userInformationTrimmed;
   switch (userProperty) {
     case "EMAIL":
-    case "EMAIL_SHA256":
       updatedProperty = userInformation.trim().toLowerCase();
       break;
     case "PHONE":
-    case "PHONE_SHA256":
       // remove all non-numerical characters
       updatedProperty = userInformation.replace(/[^0-9]/g, "");
       // remove all leading zeros
@@ -122,7 +120,6 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       }
       break;
     case "MADID":
-    case "MOBILE_ADVERTISER_ID":
       updatedProperty = userInformation.toLowerCase();
       break;
     case "COUNTRY":
@@ -185,7 +182,6 @@ const prepareDataField = (
         if (
           isHashRequired &&
           eachProperty !== "MADID" &&
-          eachProperty !== "MOBILE_ADVERTISER_ID" &&
           eachProperty !== "EXTERN_ID"
         ) {
           // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash

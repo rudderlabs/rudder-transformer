@@ -1,0 +1,267 @@
+[
+    {
+      "destKey": "email",
+      "sourceKeys": ["email", "context.traits.email"],
+      "required": false,
+      "sourceFromGenericMap": true
+    },
+    {
+      "destKey": "salutation",
+      "sourceKeys": [
+        "traits.salutation",
+        "context.traits.salutation"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "first_name",
+      "sourceKeys": [
+        "traits.first_name",
+        "context.traits.first_name",
+        "traits.firstName",
+        "context.traits.firstName"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "last_name",
+      "sourceKeys": [
+        "traits.last_name",
+        "context.traits.last_name",
+        "traits.lastName",
+        "context.traits.lastName"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "company",
+      "sourceKeys": [
+        "traits.company.name",
+        "context.traits.company.name",
+        "traits.company",
+        "context.traits.company"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "prospect_account_id",
+      "sourceKeys": [
+        "prospect_account_id",
+        "traits.prospect_account_id",
+        "traits.prospectAccountId",
+        "context.traits.prospect_account_id",
+        "context.traits.prospectAccountId"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "website",
+      "sourceKeys": [
+        "traits.website",
+        "context.traits.website"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "notes",
+      "sourceKeys": [
+        "traits.notes",
+        "context.traits.notes"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "job_title",
+      "sourceKeys": [
+        "traits.job_title",
+        "traits.jobTitle",
+        "context.traits.job_title",
+        "context.traits.jobTitle"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "department",
+      "sourceKeys": [
+        "traits.department",
+        "context.traits.department"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "country",
+      "sourceKeys": [
+        "traits.address.country",
+        "context.traits.address.country",
+        "traits.country",
+        "context.traits.country"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "address_one",
+      "sourceKeys": [
+        "traits.address.street",
+        "context.traits.address.street"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "address_two",
+      "sourceKeys": [
+        "traits.address_two",
+        "context.traits.address_two"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "city",
+      "sourceKeys": [
+        "traits.address.city",
+        "context.traits.address.city"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "state",
+      "sourceKeys": [
+        "traits.address.state",
+        "context.traits.address.state"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "zip",
+      "sourceKeys": [
+        "traits.address.zip",
+        "context.traits.address.zip"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "phone",
+      "sourceKeys": [
+        "traits.phone",
+        "context.traits.phone"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "fax",
+      "sourceKeys": [
+        "traits.fax",
+        "context.traits.fax"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "annual_revenue",
+      "sourceKeys": [
+        "traits.annual_revenue",
+        "context.traits.annual_revenue",
+        "traits.annualRevenue",
+        "context.traits.annualRevenue"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "employees",
+      "sourceKeys": [
+        "traits.employees",
+        "context.traits.employees"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "industry",
+      "sourceKeys": [
+        "traits.industry",
+        "context.traits.industry"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "years_in_business",
+      "sourceKeys": [
+        "traits.years_in_business",
+        "context.traits.years_in_business"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "score",
+      "sourceKeys": [
+        "traits.score",
+        "context.traits.score"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "comments",
+      "sourceKeys": [
+        "traits.comments",
+        "context.traits.comments"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "is_do_not_email",
+      "sourceKeys": [
+        "is_do_not_email",
+        "traits.is_do_not_email",
+        "context.traits.is_do_not_email"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "is_do_not_call",
+      "sourceKeys": [
+        "is_do_not_call",
+        "traits.is_do_not_call",
+        "context.traits.is_do_not_call"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "opted_out",
+      "sourceKeys": [
+        "traits.opted_out",
+        "context.traits.opted_out"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "is_reviewed",
+      "sourceKeys": [
+        "traits.is_reviewed",
+        "context.traits.is_reviewed"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "is_starred",
+      "sourceKeys": [
+        "traits.is_starred",
+        "context.traits.is_starred"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "territory",
+      "sourceKeys": [
+        "traits.territory",
+        "context.traits.territory"
+      ],
+      "required": false
+    },
+    {
+      "destKey": "campaign_id",
+      "sourceKeys": [
+        "traits.campaignId",
+        "traits.campaign_id",
+        "context.traits.campaignId",
+        "context.traits.campaign_id"
+      ],
+      "required": false
+    }
+  ]

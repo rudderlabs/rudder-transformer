@@ -78,6 +78,7 @@ possibleEnvs.forEach(envValue => {
             `
       };
       fetch.mockResolvedValue({
+        status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
 
@@ -112,6 +113,7 @@ possibleEnvs.forEach(envValue => {
             `
       };
       fetch.mockResolvedValue({
+        status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
 
@@ -149,6 +151,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -194,6 +197,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -247,6 +251,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -261,6 +266,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -308,6 +314,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -322,6 +329,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -372,6 +380,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -386,6 +395,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -429,6 +439,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -443,6 +454,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -494,6 +506,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -508,6 +521,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -560,6 +574,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -574,6 +589,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -620,6 +636,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -634,6 +651,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -672,6 +690,7 @@ possibleEnvs.forEach(envValue => {
                         `
       };
       fetch.mockResolvedValue({
+        status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
       const output = await userTransformHandler(inputData, versionId, []);
@@ -709,6 +728,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -726,6 +746,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest
             .fn()
             .mockResolvedValue({ code: lodashCode, name: "lodash" })
@@ -767,6 +788,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(transformerUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
 
@@ -781,6 +803,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
@@ -848,6 +871,7 @@ possibleEnvs.forEach(envValue => {
                 `
           };
           fetch.mockResolvedValue({
+            status: 200,
             json: jest.fn().mockResolvedValue(respBody)
           });
 
@@ -876,6 +900,7 @@ possibleEnvs.forEach(envValue => {
           };
           respBody["versionId"] = versionId;
           fetch.mockResolvedValue({
+            status: 200,
             json: jest.fn().mockResolvedValue(respBody)
           });
 
@@ -905,6 +930,7 @@ possibleEnvs.forEach(envValue => {
           };
           respBody["versionId"] = versionId;
           fetch.mockResolvedValue({
+            status: 200,
             json: jest.fn().mockResolvedValue(respBody)
           });
 

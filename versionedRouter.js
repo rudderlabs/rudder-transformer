@@ -100,6 +100,14 @@ const formatResponsePayload = (payload, path) => {
   }
 
   if (path.includes("/customTransform")) {
+    payload.forEach(res => {
+      if (res.output && res.output.header && res.output.header.hasOwnProperty("Authorization")) {
+        delete res.output.header.Authorization;
+      }
+      if (res.output && res.output.hasOwnProperty("userId")) {
+        delete res.output.userId;
+      }
+    });
     payload.sort((a,b) => a.output.messageId > b.output.messageId ? 1 : (a.output.messageId < b.output.messageId ? -1 : 0));
   }
 

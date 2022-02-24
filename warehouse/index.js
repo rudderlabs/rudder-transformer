@@ -54,14 +54,14 @@ const getDataType = (key, val, options) => {
 
 const rudderCreatedTables = [
   "tracks",
-  "users",
-  "identifies",
   "pages",
   "screens",
   "aliases",
   "groups",
   "accounts"
 ];
+
+const rudderIsolatedTables = ["users", "identifies"];
 
 const rudderReservedColums = {
   track: {
@@ -82,8 +82,9 @@ function excludeRudderCreatedTableNames(
   skipReservedKeywordsEscaping = false
 ) {
   if (
-    rudderCreatedTables.includes(name.toLowerCase()) &&
-    !skipReservedKeywordsEscaping
+    rudderIsolatedTables.includes(name.toLowerCase()) ||
+    (rudderCreatedTables.includes(name.toLowerCase()) &&
+      !skipReservedKeywordsEscaping)
   ) {
     return `_${name}`;
   }
@@ -131,7 +132,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
       val = get(input, valInMap);
     }
 
-    const columnName = utils.safeColumnName(options.provider, key, options.integrationOptions);
+    const columnName = utils.safeColumnName(options, key);
     // do not set column if val is null/empty/object
     if (typeof val === "object" || isBlank(val)) {
       // delete in output and columnTypes, so as to remove if we user
@@ -222,7 +223,7 @@ function setDataFromInputAndComputeColumnTypes(
       }
       let safeKey = utils.transformColumnName(options.provider, prefix + key);
       if (safeKey !== "") {
-        safeKey = utils.safeColumnName(options.provider, safeKey, options.integrationOptions);
+        safeKey = utils.safeColumnName(options, safeKey);
         // remove rudder reserved columns name if set by user
         if (
           rudderReservedColums[eventType] &&
@@ -287,7 +288,7 @@ const fullEventColumnTypeByProvider = {
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
   if (options.whStoreEvent === true) {
-    const colName = utils.safeColumnName(options.provider, "rudder_event");
+    const colName = utils.safeColumnName(options, "rudder_event");
     // eslint-disable-next-line no-param-reassign
     output[colName] = JSON.stringify(message);
     // eslint-disable-next-line no-param-reassign
@@ -498,7 +499,19 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
-  // integration options
+  /* 
+   * integration options example
+    "integrations": {
+      "RS": {
+        "options": {
+          "skipReservedKeywordsEscaping": true,
+          "skipTracksTable": true,
+          "skipTableNameSnakeCasing": true,
+          "skipColumnNameSnakeCasing": true,
+        }
+      }
+    }
+  */
   options.integrationOptions =
     message.integrations && message.integrations[options.provider.toUpperCase()]
       ? message.integrations[options.provider.toUpperCase()].options
@@ -506,7 +519,8 @@ function processWarehouseMessage(message, options) {
   const responses = [];
   const eventType = message.type.toLowerCase();
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
-  const skipReservedKeywordsEscaping = options.integrationOptions.skipReservedKeywordsEscaping || false;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -557,9 +571,9 @@ function processWarehouseMessage(message, options) {
       );
 
       // set event column based on event_text in the tracks table
-      const eventColName = utils.safeColumnName(options.provider, "event");
+      const eventColName = utils.safeColumnName(options, "event");
       commonProps[eventColName] = utils.transformTableName(
-        commonProps[utils.safeColumnName(options.provider, "event_text")]
+        commonProps[utils.safeColumnName(options, "event_text")]
       );
       commonColumnTypes[eventColName] = "string";
 
@@ -579,7 +593,7 @@ function processWarehouseMessage(message, options) {
         );
         storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
         const tracksMetadata = {
-          table: utils.safeTableName(options.provider, "tracks"),
+          table: utils.safeTableName(options, "tracks"),
           columns: getColumns(options, tracksEvent, {
             ...tracksColumnTypes,
             ...commonColumnTypes
@@ -636,12 +650,11 @@ function processWarehouseMessage(message, options) {
       const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
-            options.provider,
+            options,
             utils.transformColumnName(
               options.provider,
               eventTableEvent[eventColName]
-            ),
-            options.integrationOptions
+            )
           ),
           skipReservedKeywordsEscaping
         ),
@@ -707,7 +720,7 @@ function processWarehouseMessage(message, options) {
       );
 
       // TODO: create a list of reserved keywords and append underscore for all in setDataFromInputAndComputeColumnTypes
-      const userIdColumn = utils.safeColumnName(options.provider, "user_id");
+      const userIdColumn = utils.safeColumnName(options, "user_id");
       if (_.has(commonProps, userIdColumn)) {
         const newUserIdColumn = `_${userIdColumn}`;
         commonProps[newUserIdColumn] = commonProps[userIdColumn];
@@ -735,7 +748,7 @@ function processWarehouseMessage(message, options) {
         options
       );
       const identifiesMetadata = {
-        table: utils.safeTableName(options.provider, "identifies"),
+        table: utils.safeTableName(options, "identifies"),
         columns: getColumns(options, identifiesEvent, {
           ...commonColumnTypes,
           ...identifiesColumnTypes
@@ -771,25 +784,23 @@ function processWarehouseMessage(message, options) {
         options
       );
       // set id
-      usersEvent[utils.safeColumnName(options.provider, "id")] = message.userId;
-      usersColumnTypes[
-        utils.safeColumnName(options.provider, "id")
-      ] = getDataType(
-        utils.safeColumnName(options.provider, "id"),
+      usersEvent[utils.safeColumnName(options, "id")] = message.userId;
+      usersColumnTypes[utils.safeColumnName(options, "id")] = getDataType(
+        utils.safeColumnName(options, "id"),
         message.userId,
         options
       );
       // set received_at
       usersEvent[
-        utils.safeColumnName(options.provider, "received_at")
+        utils.safeColumnName(options, "received_at")
       ] = message.receivedAt
         ? new Date(message.receivedAt).toISOString()
         : new Date().toISOString();
-      usersColumnTypes[utils.safeColumnName(options.provider, "received_at")] =
+      usersColumnTypes[utils.safeColumnName(options, "received_at")] =
         "datetime";
 
       const usersMetadata = {
-        table: utils.safeTableName(options.provider, "users"),
+        table: utils.safeTableName(options, "users"),
         columns: getColumns(options, usersEvent, {
           ...commonColumnTypes,
           ...usersColumnTypes
@@ -856,7 +867,7 @@ function processWarehouseMessage(message, options) {
       }
 
       const metadata = {
-        table: utils.safeTableName(options.provider, `${eventType}s`),
+        table: utils.safeTableName(options, `${eventType}s`),
         columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -910,7 +921,7 @@ function processWarehouseMessage(message, options) {
       storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
-        table: utils.safeTableName(options.provider, "groups"),
+        table: utils.safeTableName(options, "groups"),
         columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };
@@ -964,7 +975,7 @@ function processWarehouseMessage(message, options) {
       storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
-        table: utils.safeTableName(options.provider, "aliases"),
+        table: utils.safeTableName(options, "aliases"),
         columns: getColumns(options, event, columnTypes),
         receivedAt: message.receivedAt
       };

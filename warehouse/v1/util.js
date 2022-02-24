@@ -3,7 +3,10 @@ const _ = require("lodash");
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
 const { isDataLakeProvider } = require("../config/helpers");
 
-function safeTableName(provider, name = "", integrationOptions = {}) {
+function safeTableName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let tableName = name;
   if (tableName === "") {
     throw new Error("Table name cannot be empty.");
@@ -18,7 +21,7 @@ function safeTableName(provider, name = "", integrationOptions = {}) {
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()] &&
-    !integrationOptions.skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping
   ) {
     tableName = `_${tableName}`;
   }
@@ -30,7 +33,10 @@ function safeTableName(provider, name = "", integrationOptions = {}) {
   return tableName.substr(0, 127);
 }
 
-function safeColumnName(provider, name = "", integrationOptions = {}) {
+function safeColumnName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let columnName = name;
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
@@ -45,7 +51,7 @@ function safeColumnName(provider, name = "", integrationOptions = {}) {
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
-    !integrationOptions.skipReservedKeywordsEscaping
+    skipReservedKeywordsEscaping
   ) {
     columnName = `_${columnName}`;
   }
@@ -60,18 +66,19 @@ function safeColumnName(provider, name = "", integrationOptions = {}) {
   it removes symbols and joins continuous letters and numbers with single underscore and if first char is a number will append a underscore before the first number
   few more examples
   omega     to omega
-  omega v2  to omega_v2
-  9mega     to _9mega
+  omega v2  to omega_v_2
+  9mega     to _9_mega
   mega&     to mega
   ome$ga    to ome_ga
   omega$    to omega
   ome_ ga   to ome_ga
-  9mega________-________90 to _9mega_90
+  9mega________-________90 to _9_mega_90
   it also handles char's where its ascii values are more than 127
   example:
   Cízǔ to C_z
-  CamelCase123Key to camel_case123_key
+  CamelCase123Key to camel_case_123_key
   1CComega to _1_c_comega
+  path to $1,00,000 to path_to_1_00_000
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
 function transformName(provider, name = "") {

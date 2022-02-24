@@ -29,7 +29,10 @@ function toSafeDBString(provider, name = "") {
   }
 }
 
-function safeTableName(provider, name = "", integrationOptions = {}) {
+function safeTableName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let tableName = name;
   if (tableName === "") {
     tableName = "STRINGEMPTY";
@@ -46,14 +49,17 @@ function safeTableName(provider, name = "", integrationOptions = {}) {
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()] &&
-    !integrationOptions.skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping
   ) {
     tableName = `_${tableName}`;
   }
   return tableName;
 }
 
-function safeColumnName(provider, name = "", integrationOptions = {}) {
+function safeColumnName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let columnName = name;
   if (columnName === "") {
     columnName = "STRINGEMPTY";
@@ -70,7 +76,7 @@ function safeColumnName(provider, name = "", integrationOptions = {}) {
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
-    !integrationOptions.skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping
   ) {
     columnName = `_${columnName}`;
   }

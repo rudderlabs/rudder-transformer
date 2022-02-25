@@ -15,4 +15,5 @@ message:
         # based on the format set, we can formulate
         format: JSON
         headers:
-          STATSIG-API-KEY: {{ destConfig.secretKey }}
+          STATSIG-API-KEY: "{{ destConfig.secretKey }}"
+          Content-Type: "application/json"

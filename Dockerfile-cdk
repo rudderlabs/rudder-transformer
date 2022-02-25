@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 RUN apk update
 RUN apk upgrade
+RUN apk add --no-cache tini python make g++
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied

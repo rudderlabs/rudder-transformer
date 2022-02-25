@@ -51,7 +51,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message."
+    "error": "invalid message type for heap"
   },
-  { "statusCode": 400, "error": "Message type not supported" }
+  { "statusCode": 400, "error": "message type page not supported for heap" }
 ]

@@ -102,11 +102,11 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-        // let respEvents = RudderCDK.Executor.executeStages(
-        //   event,
-        //   factory.getConfig(destination)
-        // );
+        // let respEvents = await destHandler.process(parsedEvent);
+        let respEvents = RudderCDK.Executor.executeStages(
+          event,
+          factory.getConfig(destination)
+        );
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];

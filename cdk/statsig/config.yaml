@@ -11,7 +11,7 @@ message:
       spreadMessage: true
       response:
         endpoint: "https://api.statsig.com/v1/webhooks/rudderstack"
-        method: post
+        method: POST
         # based on the format set, we can formulate
         format: JSON
         headers:

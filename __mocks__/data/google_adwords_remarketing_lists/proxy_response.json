@@ -1,0 +1,63 @@
+{
+  "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs:create": {
+    "status": 200,
+    "data": {
+      "resourceName": "customers/9249589672/offlineUserDataJobs/18025019461"
+    }
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:addOperations": {
+    "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run": {
+    "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729834/offlineUserDataJobs:create": {
+    "status": 200,
+    "data": {
+      "resourceName": "customers/9249589672/offlineUserDataJobs/18025019462"
+    }
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729834/offlineUserDataJobs/18025019462:addOperations": {
+    "response": {
+      "data": {
+        "error": {
+          "code": 400,
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure",
+              "errors": [
+                {
+                  "errorCode": {
+                    "offlineUserDataJobError": "INVALID_SHA256_FORMAT"
+                  },
+                  "message": "The SHA256 encoded value is malformed.",
+                  "location": {
+                    "fieldPathElements": [
+                      {
+                        "fieldName": "operations",
+                        "index": 0
+                      },
+                      {
+                        "fieldName": "remove"
+                      },
+                      {
+                        "fieldName": "user_identifiers",
+                        "index": 0
+                      },
+                      {
+                        "fieldName": "hashed_email"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "message": "Request contains an invalid argument.",
+          "status": "INVALID_ARGUMENT"
+        }
+      },
+      "status": 400
+    }
+  }
+}

@@ -21,6 +21,11 @@ async function getTransformationCode(versionId) {
     const response = await fetchWithProxy(
       `${getTransformationURL}?versionId=${versionId}`
     );
+    if (response.status !== 200) {
+      throw new Error(
+        `Transformation not found at ${getTransformationURL}?versionId=${versionId}`
+      );
+    }
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime, { versionId });
     const myJson = await response.json();

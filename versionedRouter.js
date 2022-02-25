@@ -96,6 +96,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
+  const executeStartTime = new Date();
   await Promise.all(
     events.map(async event => {
       try {
@@ -141,6 +142,10 @@ async function handleDest(ctx, version, destination) {
       }
     })
   );
+  stats.timing("cdk_events_latency", executeStartTime, {
+    destination,
+    ...metaTags
+  });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,

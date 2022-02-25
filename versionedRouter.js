@@ -800,3 +800,4 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
+

@@ -86,6 +86,7 @@ const customTagProcessor = async (message, category, destination) => {
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
     throw CustomError("Unable to Create Contact", 400);
+
   }
 
   // Here we extract the tags which are to be mapped to the created contact from the message
@@ -502,6 +503,7 @@ const screenRequestHandler = async (message, category, destination) => {
   payload.key = destination.Config.eventKey;
   payload.visit = encodeURIComponent(
     `{"email":"${get(message, "context.traits.email")}"}`
+
   );
   return responseBuilderSimple(payload, category, destination);
 };

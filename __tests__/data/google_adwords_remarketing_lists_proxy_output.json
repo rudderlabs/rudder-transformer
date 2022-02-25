@@ -1,0 +1,48 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully",
+      "destinationResponse": { "response": "", "status": 200 }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "[Error occurred while processing response for destination google_adwords_remarketing_lists]: Google_adwords_remarketing_list: Request contains an invalid argument. during ga_audience response transformation",
+      "destinationResponse": {
+        "error": {
+          "code": 400,
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure",
+              "errors": [
+                {
+                  "errorCode": {
+                    "offlineUserDataJobError": "INVALID_SHA256_FORMAT"
+                  },
+                  "message": "The SHA256 encoded value is malformed.",
+                  "location": {
+                    "fieldPathElements": [
+                      { "fieldName": "operations", "index": 0 },
+                      { "fieldName": "remove" },
+                      { "fieldName": "user_identifiers", "index": 0 },
+                      { "fieldName": "hashed_email" }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "message": "Request contains an invalid argument.",
+          "status": "INVALID_ARGUMENT"
+        }
+      },
+      "statTags": {
+        "destination": "google_adwords_remarketing_lists",
+        "stage": "responseTransform",
+        "scope": "exception"
+      }
+    }
+  }
+]

@@ -798,3 +798,4 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
+

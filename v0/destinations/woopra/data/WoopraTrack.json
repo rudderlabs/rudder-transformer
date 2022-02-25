@@ -1,0 +1,57 @@
+[
+  {
+    "destKey": "response",
+    "sourceKeys": "properties.response",
+    "required": false
+  },
+  {
+    "destKey": "cookie",
+    "sourceKeys": "properties.cookie",
+    "required": false
+  },
+  {
+    "destKey": "timeout",
+    "sourceKeys": "properties.timeout",
+    "required": false
+  },
+  {
+    "destKey": "cv_username",
+    "sourceKeys": ["properties.username", "context.traits.username", "traits.username"],
+    "required": false
+  },
+  {
+    "destKey": "cv_email",
+    "sourceKeys": ["properties.email", "context.traits.email", "traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "ce_amount",
+    "sourceKeys": "properties.amount",
+    "required": false
+  },
+  {
+    "destKey": "ce_type",
+    "sourceKeys": "properties.type",
+    "required": false
+  },
+  {
+    "destKey": "ce_package",
+    "sourceKeys": "properties.package",
+    "required": false
+  },
+  {
+    "destKey": "ce_item",
+    "sourceKeys": "properties.item",
+    "required": false
+  },
+  {
+    "destKey": "ce_category",
+    "sourceKeys": "properties.category",
+    "required": false
+  },
+  {
+    "destKey": "ce_sku",
+    "sourceKeys": "properties.sku",
+    "required": false
+  }
+]

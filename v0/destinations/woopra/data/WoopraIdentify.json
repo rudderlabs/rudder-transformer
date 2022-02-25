@@ -1,0 +1,18 @@
+[
+    {
+      "destKey": "cookie",
+      "sourceKeys": "properties.cookie",
+      "required": false
+    },
+    {
+      "destKey": "cv_first_name",
+      "sourceKeys": ["properties.username", "context.traits.username", "traits.username"],
+      "required": false
+    },
+    {
+      "destKey": "cv_email",
+      "sourceKeys": ["properties.email", "context.traits.email", "traits.email"],
+      "required": false
+    }
+  ]
+  

@@ -44,7 +44,7 @@ function executeTransformationTest(dest, transformAt) {
         try {
           if(iscdkDest && transformAt === 'processor') {
             // We currently support processor transformation only in CDK
-            actualData = await RudderCDK.Executor.executeStages(
+            actualData = await RudderCDK.Executor.execute(
                 tcInput,
               factory.getConfig(dest)
             )

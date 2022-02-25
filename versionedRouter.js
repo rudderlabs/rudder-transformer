@@ -24,7 +24,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 
 const basePath = path.resolve(__dirname, "./cdk");
-const factory = new RudderCDK.ConfigFactory(basePath);
+const factory = new RudderCDK.ConfigFactory(basePath, "dev");
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -103,7 +103,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         // let respEvents = await destHandler.process(parsedEvent);
-        let respEvents = RudderCDK.Executor.executeStages(
+        let respEvents = RudderCDK.Executor.execute(
           event,
           factory.getConfig(destination)
         );

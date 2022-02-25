@@ -35,7 +35,7 @@ function executeTransformationTest(dest, transformAt) {
   const { iscdkDest, expected, input } = testParams;
   
   const basePath = path.resolve(__dirname, "../../cdk");
-  const factory = new RudderCDK.ConfigFactory(basePath);
+  const factory = new RudderCDK.ConfigFactory(basePath, 'dev');
 
   describe(`${dest} ${transformAt} tests`, () => {
     input.map((tcInput, index) => {

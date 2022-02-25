@@ -16,6 +16,7 @@ message:
           autopilotapikey: "{{ destConfig.apiKey }}"
           Content-Type: "application/json"
         userId: "{{ message.anonymousId }}"
+        
   track:
     transformation:
       mapperPath: ./mapping/track.yaml

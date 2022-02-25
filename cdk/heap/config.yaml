@@ -1,12 +1,9 @@
 message:
-  supportedMessageTypes:
-    - identify
-    - track
   identify:
     transformation:
       mapperPath: ./mapping/identify.yaml
       postMapper:
-        name: "identifyPostMapper"
+        name: "commonPostMapper"
       response:
         method: POST
         format: JSON
@@ -20,7 +17,7 @@ message:
     transformation:
       mapperPath: ./mapping/track.yaml
       postMapper:
-        name: "trackPostMapper"
+        name: "commonPostMapper"
       response:
         method: POST
         format: JSON

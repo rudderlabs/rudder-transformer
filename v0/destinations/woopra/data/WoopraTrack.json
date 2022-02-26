@@ -1,7 +1,7 @@
 [
     {
       "destKey": "response",
-      "sourceKeys": "properties.reponse",
+      "sourceKeys": "properties.response",
       "required": true
     },
     {

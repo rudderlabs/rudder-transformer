@@ -2,7 +2,7 @@
     {
         "destKey": "cookie",
         "sourceKeys": "properties.cookie",
-        "required": true
+        "required": false
     }
     ,
     {

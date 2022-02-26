@@ -7,7 +7,7 @@
     {
         "destKey": "cookie",
         "sourceKeys": "properties.cookie",
-        "required": true
+        "required": false
     }
     ,
     {
@@ -43,17 +43,17 @@
     {
         "destKey": "ce_item",
         "sourceKeys": "properties.item",
-        "required": true
+        "required": false
     },
     {
         "destKey": "ce_category",
         "sourceKeys": "properties.category",
-        "required": true
+        "required": false
     },
     {
         "destKey": "ce_sku",
         "sourceKeys": "properties.sku",
-        "required": true
+        "required": false
     }
   ]
   

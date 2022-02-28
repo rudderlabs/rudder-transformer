@@ -225,7 +225,7 @@ function responseBuilderSimple(
     contentGroupings
   } = destination.Config;
   const { trackingID } = destination.Config;
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, "traits") || {};
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
@@ -253,34 +253,24 @@ function responseBuilderSimple(
     rawPayload.linkid = message.properties.linkid;
   }
 
-  // Check if present in traits and assign otherwise find the values
-  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = traits;
-  rawPayload.ua = ua;
-  rawPayload.ul = ul;
-  rawPayload.cn = cn;
-  rawPayload.cs = cs;
-  rawPayload.cm = cm;
-  rawPayload.cc = cc;
-  rawPayload.ck = ck;
-  rawPayload.an = an;
-  rawPayload.av = av;
-  rawPayload.aiid = aiid;
+  const params = removeUndefinedAndNullValues(parameters);
+
   if (message.context) {
     const { campaign, userAgent, locale, app } = message.context;
-    rawPayload.ua = ua || userAgent;
-    rawPayload.ul = ul || locale;
+    rawPayload.ua = params.ua || userAgent;
+    rawPayload.ul = params.ul || locale;
     if (app) {
-      rawPayload.an = an || app.name;
-      rawPayload.av = av || app.version;
-      rawPayload.aiid = aiid || app.namespace;
+      rawPayload.an = params.an || app.name;
+      rawPayload.av = params.av || app.version;
+      rawPayload.aiid = params.aiid || app.namespace;
     }
     if (campaign) {
       const { name, source, medium, content, term } = campaign;
-      rawPayload.cn = cn || name;
-      rawPayload.cs = cs || source;
-      rawPayload.cm = cm || medium;
-      rawPayload.cc = cc || content;
-      rawPayload.ck = ck || term;
+      rawPayload.cn = params.cn || name;
+      rawPayload.cs = params.cs || source;
+      rawPayload.cm = params.cm || medium;
+      rawPayload.cc = params.cc || content;
+      rawPayload.ck = params.ck || term;
     }
   }
 
@@ -296,8 +286,6 @@ function responseBuilderSimple(
 
   // Remove keys with undefined values
   const payload = removeUndefinedAndNullValues(rawPayload);
-
-  const params = removeUndefinedAndNullValues(parameters);
 
   // Get dimensions  from destination config
   let dimensionsParam = getParamsFromConfig(message, dimensions, "dimensions");
@@ -395,6 +383,9 @@ function processIdentify(message, destination) {
   }
   let ec;
   const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
+  // Check if present in traits and assign otherwise find the values
+  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = identifyTraits;
+
   if (
     serverSideIdentifyEventAction &&
     identifyTraits[serverSideIdentifyEventCategory]
@@ -407,7 +398,17 @@ function processIdentify(message, destination) {
   return {
     ea,
     ec,
-    ni: 1
+    ni: 1,
+    ua,
+    ul,
+    cn,
+    cs,
+    cm,
+    cc,
+    ck,
+    an,
+    av,
+    aiid
   };
 }
 

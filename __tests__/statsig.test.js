@@ -2,5 +2,5 @@
 
 const { executeTransformationTest } = require("./utilities/test-utils");
 
-executeTransformationTest('variance', 'processor')
+executeTransformationTest('statsig', 'processor')
 // executeTransformationTest('variance', 'router')

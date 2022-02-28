@@ -16,4 +16,4 @@ message:
         format: JSON
         headers:
           STATSIG-API-KEY: "{{ destConfig.secretKey }}"
-          Content-Type: "application/json"
+          content-type: "application/json"

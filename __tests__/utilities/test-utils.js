@@ -22,30 +22,48 @@ function formTestParams(dest, transformAt) {
   );
   const inputData = JSON.parse(inputDataFile);
   const expected = JSON.parse(outputDataFile);
-	const cdkDest = ['variance', 'autopilot', 'statsig', 'heap'].filter((name) => name === dest)[0];
-	return {
-		input: inputData,
-		expected,
-		iscdkDest: !_.isEmpty(cdkDest)
-	};
+  const cdkDest = ['variance', 'autopilot', 'statsig', 'heap'].filter((name) => name === dest)[0];
+  return {
+    input: inputData,
+    expected,
+    iscdkDest: !_.isEmpty(cdkDest)
+  };
+}
+
+function routerCommonformTestParams() {
+  const inputDataFile = fs.readFileSync(
+    path.resolve(__dirname, `../data/routerCommonInput.json`)
+  );
+  const outputDataFile = fs.readFileSync(
+    path.resolve(__dirname, `../data/routerCommonOutput.json`)
+  );
+
+  const inputData = JSON.parse(inputDataFile);
+  const expected = JSON.parse(outputDataFile);
+  return {
+    commonInput: inputData,
+    commonExpected: expected
+  };
 }
 
 function executeTransformationTest(dest, transformAt) {
   const testParams = formTestParams(dest, transformAt);
+  const routerCommonTestParams = routerCommonformTestParams();
   const { iscdkDest, expected, input } = testParams;
-  
+  const { commonInput, commonExpected } = routerCommonTestParams;
+
   const basePath = path.resolve(__dirname, "../../cdk");
-  const factory = new RudderCDK.ConfigFactory(basePath, 'dev');
+  const factory = new RudderCDK.ConfigFactory(basePath, 'production');
 
   describe(`${dest} ${transformAt} tests`, () => {
     input.map((tcInput, index) => {
       return it(`${dest} ${transformAt} tests - ${index}`, async () => {
         let actualData;
         try {
-          if(iscdkDest && transformAt === 'processor') {
+          if (iscdkDest && transformAt === 'processor') {
             // We currently support processor transformation only in CDK
             actualData = await RudderCDK.Executor.execute(
-                tcInput,
+              tcInput,
               factory.getConfig(dest)
             )
           } else {
@@ -68,6 +86,29 @@ function executeTransformationTest(dest, transformAt) {
       });
     });
   });
+  if (transformAt == "router") {
+    describe(`${dest} ${transformAt} Common tests`, () => {
+      it(`${dest} ${transformAt} Common tests`, async () => {
+        let actualData;
+        try {
+          const version = "v0";
+          const transformer = require(
+            path.resolve(__dirname + `../../../${version}/destinations/${dest}/transform`)
+          );
+          actualData = (await transformer.processRouterDest(commonInput));
+          const cloneActual = _.cloneDeep(actualData)
+          cloneActual[0].statTags = "undefined";
+          // Compare actual and expected data
+          expect(cloneActual).toEqual(commonExpected)
+        } catch (error) {
+          // Force fail the test case if the expected exception is not raised
+          expect(error.message).toEqual(commonExpected)
+        }
+
+      });
+    });
+  }
+
 }
 
 module.exports = { getDestFromTestFile, executeTransformationTest };

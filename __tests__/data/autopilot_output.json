@@ -92,5 +92,13 @@
         },
         "files": {},
         "userId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd"
+},
+{
+  "statusCode": 400,
+  "error":  "invalid message type for autopilot"
+},
+{
+  "statusCode": 400,
+  "error":  "message type group not supported for autopilot"
 }
 ]

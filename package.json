@@ -61,7 +61,7 @@
     "object-hash": "^2.2.0",
     "parse-static-imports": "^1.1.0",
     "prom-client": "^14.0.1",
-    "rudder-transformer-cdk": "git+ssh://git@github.com/rudderlabs/rudder-transformer-cdk.git#add-parser",
+    "rudder-transformer-cdk": "git+ssh://git@github.com/rudderlabs/rudder-transformer-cdk.git",
     "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",

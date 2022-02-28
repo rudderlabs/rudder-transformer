@@ -24,7 +24,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 
 const basePath = path.resolve(__dirname, "./cdk");
-const factory = new RudderCDK.ConfigFactory(basePath, "dev");
+const factory = new RudderCDK.ConfigFactory(basePath, "production");
 
 const versions = ["v0"];
 const API_VERSION = "2";

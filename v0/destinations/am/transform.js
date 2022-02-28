@@ -26,7 +26,8 @@ const {
   generateErrorObject,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -585,7 +586,19 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = message.event;
-
+      if (!isDefinedAndNotNullAndNotEmpty(evType)) {
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("message type not defined")
+          .setStatTags({
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
       if (
         message.properties &&
         isDefinedAndNotNull(message.properties.revenue) &&

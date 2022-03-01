@@ -155,6 +155,7 @@ function processPageViews(message, destination) {
       }
     }
   }
+  documentPath = encodeURIComponent(documentPath);
   const parameters = {
     dp: documentPath,
     dl: documentUrl,

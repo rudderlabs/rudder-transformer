@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "validateOnly",
+    "sourceKeys": "properties.validateOnly",
+    "required": false
+  },
+  {
+    "destKey": "enablePartialFailure",
+    "sourceKeys": "properties.enablePartialFailure",
+    "required": false
+  },
+  {
+    "destKey": "enableWarnings",
+    "sourceKeys": "properties.enableWarnings",
+    "required": false
+  }
+]

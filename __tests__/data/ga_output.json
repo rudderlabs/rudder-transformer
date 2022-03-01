@@ -58,7 +58,7 @@
       "ul": "en-US",
       "dh": "www.example.com",
       "dl": "https://www.example.com/abc",
-      "dp": "/abc",
+      "dp": "%2Fabc",
       "dr": "q",
       "dt": "a"
     },
@@ -1190,7 +1190,7 @@
       "uip": "0.0.0.0",
       "dh": "www.example.com",
       "dl": "https://www.example.com/abc",
-      "dp": "/abc?xyz=1"
+      "dp": "%2Fabc%3Fxyz%3D1"
     },
     "body": {
       "JSON": {},
@@ -1467,7 +1467,7 @@
       "st": "https://www.example.com/abc",
       "dh": "www.example.com",
       "dl": "https://www.example.com/abc",
-      "dp": "/abc",
+      "dp": "%2Fabc",
       "ul": "en-US"
     },
     "body": {

@@ -140,6 +140,7 @@ function processPageViews(message, destination) {
         if (search && includeSearch) {
           documentPath += search;
         }
+        documentPath = encodeURIComponent(documentPath);
       } catch (error) {
         throw new ErrorBuilder()
           .setStatus(400)
@@ -155,7 +156,6 @@ function processPageViews(message, destination) {
       }
     }
   }
-  documentPath = encodeURIComponent(documentPath);
   const parameters = {
     dp: documentPath,
     dl: documentUrl,

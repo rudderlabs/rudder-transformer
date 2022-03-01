@@ -122,12 +122,41 @@ function transformName(provider, name = "") {
   return key;
 }
 
-function transformTableName(name = "") {
-  return transformName("", name);
+/* converts special characters other than '\' or '$' to _ 
+  adds _ if word doesnot starts with alphabet or _
+  Cízǔ to C_z_
+  CamelCase123Key to camelcase123key
+  1CComega to _1ccomega
+  path to $1,00,000 to path_to_$1_00_000
+  return an empty string if it couldn't find a char
+*/
+function transformNameToBlendoCase(provider, name = "") {
+  let key = name.replaceAll(/[^a-zA-Z0-9\\$]/g, "_");
+
+  const re = /^[a-zA-Z_].*/;
+  if (!re.test(key)) {
+    key = `_${key}`;
+  }
+  if (provider === "postgres") {
+    key = key.substr(0, 63);
+  }
+  return key.toLowerCase();
 }
 
-function transformColumnName(provider, name = "") {
-  return transformName(provider, name);
+function toBlendoCase(name = "") {
+  return name.trim().toLowerCase();
+}
+
+function transformTableName(name = "", useBlendoCasing = false) {
+  return useBlendoCasing ? toBlendoCase(name) : transformName("", name);
+}
+
+function transformColumnName(options, name = "") {
+  const { provider } = options;
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  return useBlendoCasing
+    ? transformNameToBlendoCase(provider, name)
+    : transformName(provider, name);
 }
 
 module.exports = {

@@ -29,6 +29,19 @@ function toSafeDBString(provider, name = "") {
   }
 }
 
+function transformNameToBlendoCase(provider, name = "") {
+  let key = name.replaceAll(/[^a-zA-Z0-9\\$]/g, "_");
+
+  const re = /^[a-zA-Z_].*/;
+  if (!re.test(key)) {
+    key = `_${key}`;
+  }
+  if (provider === "postgres") {
+    key = key.substr(0, 63);
+  }
+  return key.toLowerCase();
+}
+
 function safeTableName(options, name = "") {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
@@ -83,12 +96,20 @@ function safeColumnName(options, name = "") {
   return columnName;
 }
 
-function transformTableName(name = "") {
-  return toSnakeCase(name);
+function toBlendoCase(name = "") {
+  return name.trim().toLowerCase();
 }
 
-function transformColumnName(provider, name = "") {
-  return toSafeDBString(provider, name);
+function transformTableName(name = "", useBlendoCasing = false) {
+  return useBlendoCasing ? toBlendoCase(name) : toSnakeCase(name);
+}
+
+function transformColumnName(options, name = "") {
+  const { provider } = options;
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  return useBlendoCasing
+    ? transformNameToBlendoCase(provider, name)
+    : toSafeDBString(provider, name);
 }
 
 module.exports = {

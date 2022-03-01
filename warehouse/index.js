@@ -221,7 +221,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (datatype === "datetime") {
         val = new Date(val).toISOString();
       }
-      let safeKey = utils.transformColumnName(options.provider, prefix + key);
+      let safeKey = utils.transformColumnName(options, prefix + key);
       if (safeKey !== "") {
         safeKey = utils.safeColumnName(options, safeKey);
         // remove rudder reserved columns name if set by user
@@ -521,6 +521,7 @@ function processWarehouseMessage(message, options) {
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -573,7 +574,8 @@ function processWarehouseMessage(message, options) {
       // set event column based on event_text in the tracks table
       const eventColName = utils.safeColumnName(options, "event");
       commonProps[eventColName] = utils.transformTableName(
-        commonProps[utils.safeColumnName(options, "event_text")]
+        commonProps[utils.safeColumnName(options, "event_text")],
+        useBlendoCasing
       );
       commonColumnTypes[eventColName] = "string";
 
@@ -651,10 +653,7 @@ function processWarehouseMessage(message, options) {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options,
-            utils.transformColumnName(
-              options.provider,
-              eventTableEvent[eventColName]
-            )
+            utils.transformColumnName(options, eventTableEvent[eventColName])
           ),
           skipReservedKeywordsEscaping
         ),

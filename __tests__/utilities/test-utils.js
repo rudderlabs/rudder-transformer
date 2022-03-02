@@ -22,7 +22,7 @@ function formTestParams(dest, transformAt) {
   );
   const inputData = JSON.parse(inputDataFile);
   const expected = JSON.parse(outputDataFile);
-  const cdkDest = ['variance', 'autopilot', 'statsig', 'heap'].filter((name) => name === dest)[0];
+  const cdkDest = ['variance', 'autopilot', 'statsig', 'heap', 'userlist', 'lytics'].filter((name) => name === dest)[0];
   return {
     input: inputData,
     expected,

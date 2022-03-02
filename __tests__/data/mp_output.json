@@ -770,5 +770,45 @@
   {
     "statusCode": 400,
     "message": "message type not supported"
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": "eyIkc2V0Ijp7IiRjcmVhdGVkIjoiMjAyMC0wMS0yM1QwODo1NDowMi4zNjJaIiwiJGVtYWlsIjoibWlja2V5QGRpc25leS5jb20iLCIkZmlyc3RfbmFtZSI6Ik1pY2tleSIsIiRsYXN0X25hbWUiOiJNb3VzZSIsIiRjb3VudHJ5X2NvZGUiOiJVU0EiLCIkY2l0eSI6IkRpc25leSIsIiRpbml0aWFsX3JlZmVycmVyIjoiaHR0cHM6Ly9kb2NzLnJ1ZGRlcnN0YWNrLmNvbSIsIiRpbml0aWFsX3JlZmVycmluZ19kb21haW4iOiJkb2NzLnJ1ZGRlcnN0YWNrLmNvbSIsIiRuYW1lIjoiTWlja2V5IE1vdXNlIiwiJGlnbm9yZV90aW1lIjp0cnVlLCIkYnJvd3NlciI6IkNocm9tZSIsIiRicm93c2VyX3ZlcnNpb24iOiI3OS4wLjM5NDUuMTE3In0sIiR0b2tlbiI6Ijk0MzJmMTFmNzBmOGNlMzg2ZjUxMTBjOGM5MjRiM2VjNGY4MjUyNTYiLCIkZGlzdGluY3RfaWQiOiJlNmFiMmM1ZS0yY2RhLTQ0YTktYTk2Mi1lMmY2N2RmNzhiY2EiLCIkaXAiOiIwLjAuMC4wIiwiJHRpbWUiOjE1Nzk4NDczNDJ9"
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": "eyIkc2V0Ijp7IiRjcmVhdGVkIjoiMjAyMC0wMS0yM1QwODo1NDowMi4zNjJaIiwiJGVtYWlsIjoibWlja2V5QGRpc25leS5jb20iLCIkZmlyc3RfbmFtZSI6Ik1pY2tleSIsIiRsYXN0X25hbWUiOiJNb3VzZSIsIiRjb3VudHJ5X2NvZGUiOiJVU0EiLCIkY2l0eSI6IkRpc25leSIsIiRpbml0aWFsX3JlZmVycmVyIjoiaHR0cHM6Ly9kb2NzLnJ1ZGRlcnN0YWNrLmNvbSIsIiRpbml0aWFsX3JlZmVycmluZ19kb21haW4iOiJkb2NzLnJ1ZGRlcnN0YWNrLmNvbSIsIiRuYW1lIjoiTWlja2V5IE1vdXNlIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9LCIkdG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiJGRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwiJGlwIjoiMC4wLjAuMCIsIiR0aW1lIjoxNTc5ODQ3MzQyfQ=="
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ]
 ]

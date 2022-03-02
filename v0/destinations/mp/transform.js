@@ -163,7 +163,7 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     set(rawPayload, "$name", getFullName(message));
   }
 
-  if (message.context.active && message.context.active === false) {
+  if (!message.context.active && message.context.active === false) {
     rawPayload.$ignore_time = true;
   }
 

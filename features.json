@@ -13,9 +13,11 @@
     "DELIGHTED": true,
     "DRIP": true,
     "ALGOLIA": true,
-    "PROFITWELL": true,
     "OMETRIA": true,
+    "PROFITWELL": true,
     "CANDU": true,
-    "TIKTOK_ADS": true
+    "TIKTOK_ADS": true,
+    "PARDOT": true,
+    "GOOGLE_ADWORDS_REMARKETING_LISTS": true
   }
 }

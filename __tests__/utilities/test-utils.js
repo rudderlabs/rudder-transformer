@@ -1,7 +1,7 @@
 const fs = require('fs');
 const _ = require('lodash');
 const path = require("path");
-const RudderCDK = require("rudder-transformer-cdk");
+const {ConfigFactory, Executor} = require("rudder-transformer-cdk");
 
 function getDestFromTestFile(filePath) {
   const filePathArr = filePath.split('/');
@@ -53,7 +53,8 @@ function executeTransformationTest(dest, transformAt) {
   const { commonInput, commonExpected } = routerCommonTestParams;
 
   const basePath = path.resolve(__dirname, "../../cdk");
-  const factory = new RudderCDK.ConfigFactory(basePath, 'production');
+  // const factory = new ConfigFactory(basePath, 'dev');
+  ConfigFactory.init({ basePath, loggingMode: 'production' })
 
   describe(`${dest} ${transformAt} tests`, () => {
     input.map((tcInput, index) => {
@@ -62,9 +63,9 @@ function executeTransformationTest(dest, transformAt) {
         try {
           if (iscdkDest && transformAt === 'processor') {
             // We currently support processor transformation only in CDK
-            actualData = await RudderCDK.Executor.execute(
+            actualData = await Executor.execute(
               tcInput,
-              factory.getConfig(dest)
+              ConfigFactory.getConfig(dest)
             )
           } else {
             const version = "v0";

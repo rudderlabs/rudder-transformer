@@ -13,7 +13,7 @@
       "params": { "listId": "7090784486", "customerId": "7693729833" },
       "body": {
         "JSON": {
-          "0": {
+          "create": {
             "enablePartialFailure": true,
             "operations": [
               {
@@ -83,7 +83,7 @@
       "params": { "listId": "7090784486", "customerId": "7693729833" },
       "body": {
         "JSON": {
-          "0": {
+          "create": {
             "enablePartialFailure": true,
             "operations": [
               {

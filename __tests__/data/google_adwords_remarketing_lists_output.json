@@ -15,7 +15,7 @@
     },
     "body": {
       "JSON": {
-        "0": {
+        "create": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -64,7 +64,7 @@
     },
     "body": {
       "JSON": {
-        "0": {
+        "create": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -101,7 +101,7 @@
     },
     "body": {
       "JSON": {
-        "0": {
+        "create": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -208,7 +208,7 @@
     },
     "body": {
       "JSON": {
-        "0": {
+        "create": {
           "enablePartialFailure": true,
           "operations": [
             {

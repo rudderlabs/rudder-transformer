@@ -133,7 +133,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
 
-  const outputPayloads = [];
+  let outputPayloads = [];
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach(key => {
     const userIdentifiersList = populateIdentifiers(
@@ -170,6 +170,10 @@ const createPayload = (message, destination) => {
     outputPayloads.push(outputPayload);
   });
 
+  outputPayloads = {
+    create: outputPayloads[0],
+    remove: outputPayloads[1]
+  };
   return outputPayloads;
 };
 

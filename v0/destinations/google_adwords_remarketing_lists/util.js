@@ -100,8 +100,9 @@ const gaAudienceProxyRequest = async (request, data) => {
   if (
     !firstResponse.success &&
     !isHttpStatusSuccess(firstResponse.response.response.status)
-  )
+  ) {
     return firstResponse;
+  }
 
   // step2: putting users into the job
   let jobId;
@@ -119,8 +120,9 @@ const gaAudienceProxyRequest = async (request, data) => {
   if (
     !secondResponse.success &&
     !isHttpStatusSuccess(secondResponse.response.response.status)
-  )
+  ) {
     return secondResponse;
+  }
 
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
@@ -128,10 +130,13 @@ const gaAudienceProxyRequest = async (request, data) => {
 };
 
 const gaAudienceProxyRequestHandler = async request => {
-  Object.keys(request.body.JSON).forEach(key => {
-    const data = request.body.JSON[key];
-    gaAudienceProxyRequest(request, data);
-  });
+  let response;
+  response = await gaAudienceProxyRequest(request, request.body.JSON.create);
+  if (!response.success) {
+    return response;
+  }
+  response = await gaAudienceProxyRequest(request, request.body.JSON.remove);
+  return response;
 };
 
 /**

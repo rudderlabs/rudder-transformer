@@ -47,11 +47,11 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
  * @param body
  */
 
-const addUserToJob = async (endpoint, headers, method, jobId, body) => {
+const addUserToJob = async (endpoint, headers, method, jobId, data) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
-    data: body.JSON,
+    data,
     headers,
     method
   };
@@ -70,7 +70,6 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
-
     headers,
     method
   };
@@ -84,8 +83,8 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @param {*} request
  * @returns
  */
-const gaAudienceProxyRequest = async request => {
-  const { body, method, params, endpoint } = request;
+const gaAudienceProxyRequest = async (request, data) => {
+  const { method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
 
@@ -100,7 +99,7 @@ const gaAudienceProxyRequest = async request => {
   );
   if (
     !firstResponse.success &&
-    !isHttpStatusSuccess(firstResponse.response.status)
+    !isHttpStatusSuccess(firstResponse.response.response.status)
   )
     return firstResponse;
 
@@ -114,18 +113,25 @@ const gaAudienceProxyRequest = async request => {
     headers,
     method,
     jobId,
-    body
+    data
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
     !secondResponse.success &&
-    !isHttpStatusSuccess(secondResponse.response.status)
+    !isHttpStatusSuccess(secondResponse.response.response.status)
   )
     return secondResponse;
 
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;
+};
+
+const gaAudienceProxyRequestHandler = async request => {
+  Object.keys(request.body.JSON).forEach(key => {
+    const data = request.body.JSON[key];
+    gaAudienceProxyRequest(request, data);
+  });
 };
 
 /**
@@ -181,9 +187,10 @@ const responseHandler = destinationResponse => {
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
 };
+
 const networkHandler = function() {
-  this.responseHandler = responseHandler;
-  this.proxy = gaAudienceProxyRequest;
+  this.proxy = gaAudienceProxyRequestHandler;
   this.processAxiosResponse = processAxiosResponse;
+  this.responseHandler = responseHandler;
 };
 module.exports = { networkHandler };

@@ -1,5 +1,4 @@
 const { logger } = require("handlebars");
-const { isArray } = require("lodash");
 const sha256 = require("sha256");
 const {
   isDefinedAndNotNullAndNotEmpty,
@@ -9,8 +8,8 @@ const {
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullAndEmptyValues,
-  getValueFromMessage
+  getValueFromMessage,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   offlineDataJobsMapping,
@@ -41,8 +40,9 @@ const hashEncrypt = object => {
 const responseBuilder = (metadata, body, { Config }) => {
   const payload = body;
   const response = defaultRequestConfig();
+  Config.customerId = Config.customerId.replace(/-/g, "");
   response.endpoint = `${BASE_ENDPOINT}/${Config.customerId}/offlineUserDataJobs`;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = metadata.secret.access_token;
   response.params = { listId: Config.listId, customerId: Config.customerId };
   response.headers = {
@@ -114,7 +114,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
   }
   if (userIdentifier.length === 0)
     throw new CustomError(
-      `[Google_adwords_remarketing_list]:: Their is not ${attribute} to put in userIdentifier.`,
+      `[Google_adwords_remarketing_list]:: ${attribute} is not present.`,
       400
     );
   return userIdentifier;
@@ -133,62 +133,44 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
 
-  if (!listData.add || !isArray(listData.add)) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::add is not present inside listData. Aborting message.",
-      400
+  const outputPayloads = [];
+  const typeOfOperation = Object.keys(listData);
+  typeOfOperation.forEach(key => {
+    const userIdentifiersList = populateIdentifiers(
+      listData[`${key}`],
+      destination
     );
-  }
-  const userIdentidtifiersList = populateIdentifiers(listData.add, destination);
-  const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  outputPayload.operations = [];
-  // breaking the userIdentiFier array in chunks of 20
-  const userIdentifierChunks = returnArrayOfSubarrays(
-    userIdentidtifiersList,
-    20
-  );
-  // putting each chunk in different create/remove operations
-  userIdentifierChunks.forEach(element => {
-    const operations = {
-      create: {}
-    };
-    operations.create.userIdentifiers = element;
-    outputPayload.operations.push(operations);
+    const outputPayload = constructPayload(message, offlineDataJobsMapping);
+    outputPayload.operations = [];
+    // breaking the userIdentiFier array in chunks of 20
+    const userIdentifierChunks = returnArrayOfSubarrays(
+      userIdentifiersList,
+      20
+    );
+    // putting each chunk in different create/remove operations
+    if (key === "add") {
+      // for add operation
+      userIdentifierChunks.forEach(element => {
+        const operations = {
+          create: {}
+        };
+        operations.create.userIdentifiers = element;
+        outputPayload.operations.push(operations);
+      });
+    } else {
+      // for remove operation
+      userIdentifierChunks.forEach(element => {
+        const operations = {
+          remove: {}
+        };
+        operations.remove.userIdentifiers = element;
+        outputPayload.operations.push(operations);
+      });
+    }
+    outputPayloads.push(outputPayload);
   });
 
-  return outputPayload;
-  /**
-   * This portion is to support remove and create both.
-   * If we need to support for remove too then need to uncomment this section
-   * and update addUserToJob function in util to handle add and remove both.
-   * Now we are directly sending the the body.JSON but to support remove we have to make two calls
-   * by setting data = body.JSON[0] and data = body.JSON[1] synultaneously.
-   */
-  // const outputPayloads = [];
-  // const typeOfOperation = Object.keys(listData);
-  // typeOfOperation.forEach(key => {
-  //   const userIdentidtifiersList = populateIdentifiers(
-  //     listData[`${key}`],
-  //     destination
-  //   );
-  //   const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  //   outputPayload.operations = [];
-  //   // breaking the userIdentiFier array in chunks of 20
-  //   const userIdentifierChunks = returnArrayOfSubarrays(
-  //     userIdentidtifiersList,
-  //     20
-  //   );
-  //   // putting each chunk in different create/remove operations
-  //   userIdentifierChunks.forEach(element => {
-  //     const operations = {
-  //       [`${key}`]: {}
-  //     };
-  //     operations[`${key}`].userIdentifiers = element;
-  //     outputPayload.operations.push(operations);
-  //   });
-  //   outputPayloads.push(outputPayload);
-  // });
-  // return outputPayloads;
+  return outputPayloads;
 };
 
 const processEvent = async (metadata, message, destination) => {

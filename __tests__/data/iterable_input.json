@@ -1564,46 +1564,6 @@
   },
   {
     "message": {
-      "type": "identify",
-      "sentAt": "2020-08-28T16:26:06.466Z",
-      "traits": {
-        "city": "Hyderabad",
-        "name": "Ram",
-        "email": "ram@website.com",
-        "country": "India"
-      },
-      "context": {
-        "traits": {
-          "city": "Hyderabad",
-          "name": "ram",
-          "email": "ram@website.com",
-          "country": "India"
-        },
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
-      },
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      },
-      "messageId": "node-cc3ef811f686139ee527b806ee0129ef-163a3a88-266f-447e-8cce-34a8f42f8dcd",
-      "anonymousId": "abcdeeeeeeeexxxx102",
-      "originalTimestamp": "2020-08-28T16:26:06.462Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-        "mapToSingleEvent": false,
-        "trackAllPages": true,
-        "trackCategorisedPages": false,
-        "trackNamedPages": false
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "message": {
       "channel": "web",
       "context": {
         "app": {
@@ -1648,7 +1608,7 @@
             "name": "Monopoly: 3rd Edition",
             "price": "19",
             "position": "1",
-            "category": "bikes",
+            "category": ["bikes", "cars", "motors"],
             "url": "https://www.example.com/product/path",
             "image_url": "https://www.example.com/product/path.jpg",
             "quantity": "2"
@@ -1660,7 +1620,7 @@
             "price": "192",
             "quantity": 22,
             "position": "12",
-            "category": "Bikes2",
+            "category": ["Bikes2", "cars2", "motors2"],
             "url": "https://www.example.com/product/path2",
             "image_url": "https://www.example.com/product/path.jpg2"
           }

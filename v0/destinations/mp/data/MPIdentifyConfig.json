@@ -30,11 +30,6 @@
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$ignore_time",
-    "sourceKeys": "ignoreTime",
-    "required": false
-  },
-  {
     "destKey": "$username",
     "sourceKeys": [
       "traits.username",

@@ -13,6 +13,7 @@ const {
   isAppleFamily
 } = require("../../util");
 const logger = require("../../../logger");
+const { string } = require("is");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {

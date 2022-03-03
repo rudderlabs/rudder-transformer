@@ -163,6 +163,10 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     set(rawPayload, "$name", getFullName(message));
   }
 
+  if (message.context?.active === false) {
+    rawPayload.$ignore_time = true;
+  }
+
   rawPayload = extractCustomFields(
     message,
     rawPayload,

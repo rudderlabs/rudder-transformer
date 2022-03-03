@@ -140,6 +140,8 @@ function processPageViews(message, destination) {
         if (search && includeSearch) {
           documentPath += search;
         }
+        // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#encoding
+        documentPath = encodeURIComponent(documentPath);
       } catch (error) {
         throw new ErrorBuilder()
           .setStatus(400)

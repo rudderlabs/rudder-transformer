@@ -29,9 +29,12 @@ const {
  */
 
 const formatRevenue = revenue => {
-  return Number((revenue || 0).toFixed(2));
+  const formattedRevenue = Number(Number(revenue || 0).toFixed(2));
+  if (!isNaN(formattedRevenue)) {
+    return formattedRevenue;
+  }
+  throw new CustomError("Revenue could not be converted to number", 400);
 };
-
 /**
  *
  * @param {*} message Rudder Payload

@@ -13,7 +13,7 @@ phases:
     commands:
       - wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 -O /usr/bin/yq
       - chmod +x /usr/bin/yq
-      # - apt install -y hub
+      - apt install -y hub
   pre_build:
     commands:
       - docker login --username rudderlabs --password $dockerhub_passwd
@@ -30,16 +30,16 @@ phases:
     commands:
       - docker push rudderlabs/rudder-transformer:$VERSION
       - docker push rudderlabs/rudder-transformer:latest
-      # - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
-      # - git config --global user.email \"$MAIL\"
-      # - git config --global user.name \"$USER_NAME\"
-      # - cd rudder-devops/helm-charts/shared-services/per-az
-      # - git checkout -b shared-transformer-\"$VERSION\"
-      # - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-      # - git add values.blue-release.yaml
-      # - git commit -m "changing version for shared transformer"
-      # - git push -u origin shared-transformer-\"$VERSION\"
-      # - hub pull-request -m "rudder-transformer version change-\"$VERSION\" "
+      - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
+      - git config --global user.email \"$MAIL\"
+      - git config --global user.name \"$USER_NAME\"
+      - cd rudder-devops/helm-charts/shared-services/per-az
+      - git checkout -b shared-transformer-\"$VERSION\"
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
+      - git add values.blue-release.yaml
+      - git commit -m "changing version for shared transformer"
+      - git push -u origin shared-transformer-\"$VERSION\"
+      - hub pull-request -m "rudder-transformer version change-\"$VERSION\" "
 artifacts:
   files:
     - "**/*"

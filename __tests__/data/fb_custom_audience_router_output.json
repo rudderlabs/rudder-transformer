@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "DELETE",
-      "endpoint": "https://graph.facebook.com/v12.0/aud1/users",
+      "endpoint": "https://graph.facebook.com/v13.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
@@ -22,7 +22,7 @@
             "PHONE",
             "GEN",
             "FI",
-            "MOBILE_ADVERTISER_ID",
+            "MADID",
             "ZIP",
             "ST",
             "COUNTRY"
@@ -70,7 +70,7 @@
           "PHONE",
           "GEN",
           "FI",
-          "MOBILE_ADVERTISER_ID",
+          "MADID",
           "ZIP",
           "ST",
           "COUNTRY"
@@ -93,7 +93,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://graph.facebook.com/v12.0/aud1/users",
+      "endpoint": "https://graph.facebook.com/v13.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
@@ -111,7 +111,7 @@
             "PHONE",
             "GEN",
             "FI",
-            "MOBILE_ADVERTISER_ID",
+            "MADID",
             "ZIP",
             "ST",
             "COUNTRY"
@@ -159,7 +159,7 @@
           "PHONE",
           "GEN",
           "FI",
-          "MOBILE_ADVERTISER_ID",
+          "MADID",
           "ZIP",
           "ST",
           "COUNTRY"
@@ -182,7 +182,7 @@
       "version": "1",
       "type": "REST",
       "method": "DELETE",
-      "endpoint": "https://graph.facebook.com/v12.0/aud1/users",
+      "endpoint": "https://graph.facebook.com/v13.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
@@ -199,7 +199,7 @@
             "PHONE",
             "GEN",
             "FI",
-            "MOBILE_ADVERTISER_ID",
+            "MADID",
             "ZIP",
             "ST",
             "COUNTRY"
@@ -247,7 +247,7 @@
           "PHONE",
           "GEN",
           "FI",
-          "MOBILE_ADVERTISER_ID",
+          "MADID",
           "ZIP",
           "ST",
           "COUNTRY"
@@ -270,7 +270,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://graph.facebook.com/v12.0/aud1/users",
+      "endpoint": "https://graph.facebook.com/v13.0/aud1/users",
       "headers": {},
       "params": {
         "access_token": "ABC",
@@ -287,7 +287,7 @@
             "PHONE",
             "GEN",
             "FI",
-            "MOBILE_ADVERTISER_ID",
+            "MADID",
             "ZIP",
             "ST",
             "COUNTRY"
@@ -335,7 +335,7 @@
           "PHONE",
           "GEN",
           "FI",
-          "MOBILE_ADVERTISER_ID",
+          "MADID",
           "ZIP",
           "ST",
           "COUNTRY"

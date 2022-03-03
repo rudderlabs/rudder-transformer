@@ -133,7 +133,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
 
-  let outputPayloads = [];
+  let outputPayloads = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach(key => {
     const userIdentifiersList = populateIdentifiers(
@@ -157,6 +157,7 @@ const createPayload = (message, destination) => {
         operations.create.userIdentifiers = element;
         outputPayload.operations.push(operations);
       });
+      outputPayloads = { ...outputPayloads, create: outputPayload };
     } else {
       // for remove operation
       userIdentifierChunks.forEach(element => {
@@ -166,14 +167,10 @@ const createPayload = (message, destination) => {
         operations.remove.userIdentifiers = element;
         outputPayload.operations.push(operations);
       });
+      outputPayloads = { ...outputPayloads, remove: outputPayload };
     }
-    outputPayloads.push(outputPayload);
   });
 
-  outputPayloads = {
-    create: outputPayloads[0],
-    remove: outputPayloads[1]
-  };
   return outputPayloads;
 };
 

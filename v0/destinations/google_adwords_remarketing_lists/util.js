@@ -131,11 +131,24 @@ const gaAudienceProxyRequest = async (request, data) => {
 
 const gaAudienceProxyRequestHandler = async request => {
   let response;
-  response = await gaAudienceProxyRequest(request, request.body.JSON.create);
+
+  response = await gaAudienceProxyRequest(
+    request,
+    Object.values(request.body.JSON)[0]
+  );
+
   if (!response.success) {
     return response;
   }
-  response = await gaAudienceProxyRequest(request, request.body.JSON.remove);
+
+  // If two operations are needed i.e create and remove both
+  if (Object.keys(request.body.JSON).length > 1) {
+    response = await gaAudienceProxyRequest(
+      request,
+      Object.values(request.body.JSON)[1]
+    );
+  }
+
   return response;
 };
 

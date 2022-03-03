@@ -9,7 +9,7 @@
 - destKey: device_ua
   sourceKeys: context.userAgent
   metadata:
-    default: ''
+    defaultValue: ''
 - destKey: origination_ip
   sourceKeys:
   - context.ip
@@ -24,10 +24,4 @@
   sourceKeys: context.os.version
 - destKey: screen_dpi
   sourceKeys: context.screen.density
-- destKey: kochava_device_id
-  sourceKeys:
-  - context.device.id
-  - anonymousId
-- destKey: kochava_app_id
-  sourceKeys: apiKey
-  context: destConfig
+

@@ -1,16 +1,15 @@
 message:
-  screen:
+  supportedMessageTypes:
+    - screen
+    - track
+  default:
     transformation:
-      mapperPath: ./mapping/default.yaml
+      mapperPath: ./mappings/default.yaml
       postMapper:
-        name: "screenPostMapper"
+        name: processExtraPayloadParams
       response:
-        method: POST
-        format: JSON
-        endpoint: "https://control.kochava.com/track/json"
+        endpoint: https://control.kochava.com/track/json
         userId: "{{ message.anonymousId }}"
-        # headers:
-        #   Accept: "application/json"
-        #   Content-Type: "application/json"
+        format: JSON
+        method: POST
         headers: {}
-

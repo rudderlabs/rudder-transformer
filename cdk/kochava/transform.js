@@ -1,74 +1,75 @@
 const { Utils } = require("rudder-transformer-cdk");
 
-function screenPostMapper(event, mappedPayload, rudderContext) {
-  // TODO: throw error here if destination.Config.apiKey is missing?
-  const { message, destination } = event;
+ const eventNameMapping = {
+  "product added": "Add to Cart",
+  "product added to wishlist": "Add to Wishlist",
+  "checkout started": "Checkout Start",
+  "order completed": "Purchase",
+  "product reviewed": "Rating",
+  "products searched": "Search"
+};
+
+function processExtraPayloadParams(event, mappedPayload) {
+  const { message } = event;
+  let eventName = message.event;
   const eventData = message.properties || {};
-  const eventJson = {
-    action: "event",
-    kochava_app_id: destination.Config.apiKey,
-    kochava_device_id: Utils.getValueFromMessage(message, ["context.device.id", "anonymousId"])
+  switch(message.type.toLowerCase()) {
+    case 'screen':
+      eventName = "screen view";
+      if (message.properties && message.properties.name) {
+        eventName += ` ${message.properties.name}`;
+      }
+      break;
+    case 'track':
+      if (eventName) {
+        const evName = eventName.toLowerCase();
+        if (eventNameMapping[evName] !== undefined) {
+          eventName = eventNameMapping[evName];
+        }
+      }
+      break;
   };
 
-  let eventName = "screen view";
-  if (message.properties && message.properties.name) {
-    eventName += ` ${message.properties.name}`;
-  }
-  const additionalMapping = {
-    action: "event",
+  const extraParams = {
+    // This kind of formatting multiple fields into a single one
+    // is currently not supported in cdk
     app_tracking_transparency: {
-      att:
-        Utils.getValueFromMessage(
-          message,
-          "context.device.attTrackingStatus"
-        ) === 3 || false
+      att: message.context?.device?.attTrackingStatus === 3 || false
     },
-    app_version: Utils.getValueFromMessage(message, "context.app.build"),
-    device_ver:
-      message.context &&
-      message.context.device &&
-      message.context.device.model &&
-      message.context.os &&
-      message.context.os.name &&
-      message.context.os.version
-        ? `${message.context.device.model}-${message.context.os.name}-${message.context.os.version}`
+    device_ver: message.context?.device?.model &&
+      message.context?.os?.version
+        ? `${message.context?.device?.model}-${message.context?.os?.name}-${message.context?.os?.version}`
         : "",
     device_ids: {
-      idfa:
-        message.context &&
-        message.context.os &&
-        message.context.os.name &&
-        isAppleFamily(message.context.os.name)
-          ? message.context.device.advertisingId || ""
+      idfa: message.context?.os?.name &&
+        Utils.isAppleFamily(message.context?.os?.name)
+          ? message.context?.device?.advertisingId || ""
           : "",
-      idfv:
-        message.context &&
-        message.context.os &&
-        message.context.os.name &&
-        isAppleFamily(message.context.os.name)
-          ? message.context.device.id || message.anonymousId || ""
+      idfv: message.context?.os?.name &&
+        Utils.isAppleFamily(message.context?.os?.name)
+          ? message.context?.device?.id || message.anonymousId || ""
           : "",
-      adid:
-        message.context &&
-        message.context.os &&
-        message.context.os.name &&
+      adid: message.context?.os?.name &&
         message.context.os.name.toLowerCase() === "android"
-          ? message.context.device.advertisingId || ""
+          ? message.context?.device?.advertisingId || ""
           : "",
-      android_id:
-        message.context &&
-        message.context.os &&
-        message.context.os.name &&
+      android_id: message.context?.os?.name &&
         message.context.os.name.toLowerCase() === "android"
-          ? message.context.device.id || message.anonymousId || ""
-          : ""
+          ? message.context?.device?.id || message.anonymousId || ""
+          : "",
     },
-    currency: (eventData && eventData.currency) || "USD",
-    event_data: eventData,
-    event_name: eventName
+    event_name: eventName,
+    device_ua: message.context?.userAgent || "",
+    currency: eventData?.currency || "USD",
   };
-
-  return { ...eventJson, data: { ...mappedPayload, ...additionalMapping } };
+  mappedPayload.data = { ...mappedPayload.data, ...extraParams }
+  // Note: "defaultValue" cannot be empty string hence had to manually set it here since kochava requires it
+  if (Utils.getValueFromMessage(message, 'context.os.version') === '') {
+    mappedPayload.data.os_version = ''
+  }
+  return mappedPayload
 }
 
-module.exports = { screenPostMapper };
+module.exports = {
+  processExtraPayloadParams
+}; 

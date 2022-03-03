@@ -1,27 +1,49 @@
-- destKey: app_tracking_transparency
-  sourceKeys: context.device.attTrackingStatus
-- destKey: usertime
+- destKey: data.event_data
   sourceKeys:
-  - originalTimestamp
-  - timestamp
-- destKey: app_version
-  sourceKeys: context.app.build
-- destKey: device_ua
-  sourceKeys: context.userAgent
+    - properties
   metadata:
-    defaultValue: ''
-- destKey: origination_ip
+    defaultValue: {}
+
+- destKey: kochava_app_id
+  sourceKeys: apiKey
+  context: destConfig
+
+- destKey: kochava_device_id
   sourceKeys:
-  - context.ip
-  - request_ip
-- destKey: app_name
+    - context.device.id
+    - anonymousId
+
+- destKey: data.usertime
+  sourceKeys:
+    - originalTimestamp
+    - timestamp
+  metadata:
+    type: timestamp
+
+- destKey: data.app_version
+  sourceKeys: context.app.build
+
+- destKey: data.origination_ip
+  sourceKeys:
+    - context.ip
+    - request_ip
+
+- destKey: data.app_name
   sourceKeys: context.app.name
-- destKey: app_short_string
+
+- destKey: data.app_short_string
   sourceKeys: context.app.version
-- destKey: locale
+
+- destKey: data.locale
   sourceKeys: context.locale
-- destKey: os_version
+
+- destKey: data.os_version
   sourceKeys: context.os.version
-- destKey: screen_dpi
+
+- destKey: data.screen_dpi
   sourceKeys: context.screen.density
 
+- destKey: action
+  sourceKeys: rudderAction # This will not be available
+  metadata:
+    defaultValue: 'event'

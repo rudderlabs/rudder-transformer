@@ -147,7 +147,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -160,7 +160,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);
@@ -197,7 +197,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -210,7 +210,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);

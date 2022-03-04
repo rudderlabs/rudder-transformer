@@ -87,6 +87,7 @@ const gaAudienceProxyRequest = async request => {
   const { method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
+  const { JSON } = request.body;
 
   // step1: offlineUserDataJobs creation
 
@@ -114,7 +115,7 @@ const gaAudienceProxyRequest = async request => {
     headers,
     method,
     jobId,
-    request.body.JSON
+    JSON
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (

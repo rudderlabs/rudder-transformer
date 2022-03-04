@@ -1,7 +1,9 @@
 const fs = require('fs');
 const _ = require('lodash');
 const path = require("path");
-const {ConfigFactory, Executor} = require("rudder-transformer-cdk");
+const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const { cdkDestSet } = require("../../v0/util");
+const { CDK_DESTINAITON_SET } = require('../../v0/util/constant');
 
 function getDestFromTestFile(filePath) {
   const filePathArr = filePath.split('/');
@@ -22,11 +24,10 @@ function formTestParams(dest, transformAt) {
   );
   const inputData = JSON.parse(inputDataFile);
   const expected = JSON.parse(outputDataFile);
-  const cdkDest = ['variance', 'autopilot', 'statsig', 'heap', 'userlist', 'lytics', 'kochava'].filter((name) => name === dest)[0];
   return {
     input: inputData,
     expected,
-    iscdkDest: !_.isEmpty(cdkDest)
+    iscdkDest: CDK_DESTINAITON_SET.has(dest)
   };
 }
 

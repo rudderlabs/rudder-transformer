@@ -208,7 +208,7 @@ const processEvent = async (metadata, message, destination) => {
 
     if (!Object.keys(createdPayload).length) {
       throw new CustomError(
-        "[Google_adwords_remarketing_list]::either of add or remove property is not present inside listData. Aborting message.",
+        "[Google_adwords_remarketing_list]:: add or remove property is not present inside listData. Aborting message.",
         400
       );
     }

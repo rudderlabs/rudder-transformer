@@ -47,11 +47,11 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
  * @param body
  */
 
-const addUserToJob = async (endpoint, headers, method, jobId, data) => {
+const addUserToJob = async (endpoint, headers, method, jobId, body) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
-    data,
+    data: body.JSON,
     headers,
     method
   };
@@ -84,10 +84,9 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @returns
  */
 const gaAudienceProxyRequest = async request => {
-  const { method, params, endpoint } = request;
+  const { body, method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
-  const { JSON } = request.body;
 
   // step1: offlineUserDataJobs creation
 
@@ -115,7 +114,7 @@ const gaAudienceProxyRequest = async request => {
     headers,
     method,
     jobId,
-    JSON
+    body
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (

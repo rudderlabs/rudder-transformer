@@ -132,11 +132,12 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
+  const properties = ["add", "remove"];
 
   let outputPayloads = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach(key => {
-    if (key === "add" || key === "remove") {
+    if (properties.includes(key)) {
       const userIdentifiersList = populateIdentifiers(
         listData[key],
         destination
@@ -149,26 +150,30 @@ const createPayload = (message, destination) => {
         20
       );
       // putting each chunk in different create/remove operations
-      if (key === "add") {
-        // for add operation
-        userIdentifierChunks.forEach(element => {
-          const operations = {
-            create: {}
-          };
-          operations.create.userIdentifiers = element;
-          outputPayload.operations.push(operations);
-        });
-        outputPayloads = { ...outputPayloads, create: outputPayload };
-      } else {
-        // for remove operation
-        userIdentifierChunks.forEach(element => {
-          const operations = {
-            remove: {}
-          };
-          operations.remove.userIdentifiers = element;
-          outputPayload.operations.push(operations);
-        });
-        outputPayloads = { ...outputPayloads, remove: outputPayload };
+      switch (key) {
+        case "add":
+          // for add operation
+          userIdentifierChunks.forEach(element => {
+            const operations = {
+              create: {}
+            };
+            operations.create.userIdentifiers = element;
+            outputPayload.operations.push(operations);
+          });
+          outputPayloads = { ...outputPayloads, create: outputPayload };
+          break;
+        case "remove":
+          // for remove operation
+          userIdentifierChunks.forEach(element => {
+            const operations = {
+              remove: {}
+            };
+            operations.remove.userIdentifiers = element;
+            outputPayload.operations.push(operations);
+          });
+          outputPayloads = { ...outputPayloads, remove: outputPayload };
+          break;
+        default:
       }
     } else {
       logger.log(`listData's ${key} is not valid.`);

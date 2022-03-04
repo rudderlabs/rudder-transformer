@@ -548,10 +548,13 @@ const trackRequestHandler = async (message, category, destination) => {
         "Api-Token": destination.Config.apiKey
       }
     };
+    if (res.response.status !== 201) {
+      throw new CustomError(
+        "Unable to create event",
+        res.response.status || 400
+      );
+    }
     res = await httpPOST(endpoint, requestData, requestOpt);
-  }
-  if (res.response.status !== 201) {
-    throw new CustomError("Unable to create event", res.response.status || 400);
   }
 
   // Previous operations successfull then

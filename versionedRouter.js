@@ -119,6 +119,7 @@ async function handleDest(ctx, version, destination) {
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }
+
               return {
                 output: { ...ev, userId },
                 metadata: event.metadata,
@@ -814,3 +815,4 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
+

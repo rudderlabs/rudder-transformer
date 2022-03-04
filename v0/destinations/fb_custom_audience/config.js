@@ -1,13 +1,10 @@
-const BASE_URL = "https://graph.facebook.com/v12.0";
+const BASE_URL = "https://graph.facebook.com/v13.0";
 
 function getEndPoint(audienceId) {
   return `${BASE_URL}/${audienceId}/users`;
 }
 
 const schemaFields = [
-  "EMAIL_SHA256",
-  "PHONE_SHA256",
-  "MOBILE_ADVERTISER_ID",
   "EXTERN_ID",
   "EMAIL",
   "PHONE",

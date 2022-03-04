@@ -1,5 +1,5 @@
-const { logger } = require("handlebars");
 const sha256 = require("sha256");
+const logger = require("../../../logger");
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -90,7 +90,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
         if (element[attribute]) {
           userIdentifier.push({ [attribute]: element[attribute] });
         } else {
-          logger.log(` ${attribute} is not present in index:`, index);
+          logger.info(` ${attribute} is not present in index:`, index);
         }
       } else {
         attribute.forEach((attributeElement, index2) => {
@@ -106,7 +106,10 @@ const populateIdentifiers = (attributeArray, { Config }) => {
               ]
             });
           } else {
-            logger.log(` ${attribute[index2]} is not present in index:`, index);
+            logger.info(
+              ` ${attribute[index2]} is not present in index:`,
+              index
+            );
           }
         });
       }
@@ -176,7 +179,9 @@ const createPayload = (message, destination) => {
         default:
       }
     } else {
-      logger.log(`listData's ${key} is not valid.`);
+      logger.info(
+        `listData "${key}" is not valid. Supported types are "add" and "remove"`
+      );
     }
   });
 

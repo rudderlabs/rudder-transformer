@@ -76,10 +76,7 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type for autopilot", 400);
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -91,7 +88,10 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message  not supported", 400);
+      throw new CustomError(
+        `message type ${message.type} not supported for autopilot`,
+        400
+      );
   }
 
   // build the response

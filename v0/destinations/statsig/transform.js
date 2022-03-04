@@ -26,7 +26,10 @@ function process(event) {
     case EventType.GROUP:
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(
+        `message type ${message.type} not supported for statsig`,
+        400
+      );
   }
 
   const response = defaultRequestConfig();

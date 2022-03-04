@@ -83,7 +83,7 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @param {*} request
  * @returns
  */
-const gaAudienceProxyRequest = async (request, data) => {
+const gaAudienceProxyRequest = async request => {
   const { method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
@@ -114,7 +114,7 @@ const gaAudienceProxyRequest = async (request, data) => {
     headers,
     method,
     jobId,
-    data
+    request.body.JSON
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
@@ -127,29 +127,6 @@ const gaAudienceProxyRequest = async (request, data) => {
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;
-};
-
-const gaAudienceProxyRequestHandler = async request => {
-  let response;
-
-  response = await gaAudienceProxyRequest(
-    request,
-    Object.values(request.body.JSON)[0]
-  );
-
-  if (!response.success) {
-    return response;
-  }
-
-  // If two operations are needed i.e create and remove both
-  if (Object.keys(request.body.JSON).length > 1) {
-    response = await gaAudienceProxyRequest(
-      request,
-      Object.values(request.body.JSON)[1]
-    );
-  }
-
-  return response;
 };
 
 /**
@@ -207,7 +184,7 @@ const responseHandler = destinationResponse => {
 };
 
 const networkHandler = function() {
-  this.proxy = gaAudienceProxyRequestHandler;
+  this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = responseHandler;
 };

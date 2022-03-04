@@ -40,11 +40,11 @@ const hashEncrypt = object => {
 const responseBuilder = (metadata, body, { Config }) => {
   const payload = body;
   const response = defaultRequestConfig();
-  Config.customerId = Config.customerId.replace(/-/g, "");
-  response.endpoint = `${BASE_ENDPOINT}/${Config.customerId}/offlineUserDataJobs`;
+  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = metadata.secret.access_token;
-  response.params = { listId: Config.listId, customerId: Config.customerId };
+  response.params = { listId: Config.listId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
@@ -136,38 +136,42 @@ const createPayload = (message, destination) => {
   let outputPayloads = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach(key => {
-    const userIdentifiersList = populateIdentifiers(
-      listData[`${key}`],
-      destination
-    );
-    const outputPayload = constructPayload(message, offlineDataJobsMapping);
-    outputPayload.operations = [];
-    // breaking the userIdentiFier array in chunks of 20
-    const userIdentifierChunks = returnArrayOfSubarrays(
-      userIdentifiersList,
-      20
-    );
-    // putting each chunk in different create/remove operations
-    if (key === "add") {
-      // for add operation
-      userIdentifierChunks.forEach(element => {
-        const operations = {
-          create: {}
-        };
-        operations.create.userIdentifiers = element;
-        outputPayload.operations.push(operations);
-      });
-      outputPayloads = { ...outputPayloads, create: outputPayload };
+    if (key === "add" || key === "remove") {
+      const userIdentifiersList = populateIdentifiers(
+        listData[key],
+        destination
+      );
+      const outputPayload = constructPayload(message, offlineDataJobsMapping);
+      outputPayload.operations = [];
+      // breaking the userIdentiFier array in chunks of 20
+      const userIdentifierChunks = returnArrayOfSubarrays(
+        userIdentifiersList,
+        20
+      );
+      // putting each chunk in different create/remove operations
+      if (key === "add") {
+        // for add operation
+        userIdentifierChunks.forEach(element => {
+          const operations = {
+            create: {}
+          };
+          operations.create.userIdentifiers = element;
+          outputPayload.operations.push(operations);
+        });
+        outputPayloads = { ...outputPayloads, create: outputPayload };
+      } else {
+        // for remove operation
+        userIdentifierChunks.forEach(element => {
+          const operations = {
+            remove: {}
+          };
+          operations.remove.userIdentifiers = element;
+          outputPayload.operations.push(operations);
+        });
+        outputPayloads = { ...outputPayloads, remove: outputPayload };
+      }
     } else {
-      // for remove operation
-      userIdentifierChunks.forEach(element => {
-        const operations = {
-          remove: {}
-        };
-        operations.remove.userIdentifiers = element;
-        outputPayload.operations.push(operations);
-      });
-      outputPayloads = { ...outputPayloads, remove: outputPayload };
+      logger.log(`listData's ${key} is not valid.`);
     }
   });
 
@@ -175,6 +179,7 @@ const createPayload = (message, destination) => {
 };
 
 const processEvent = async (metadata, message, destination) => {
+  const response = [];
   if (!message.type) {
     throw new CustomError(
       "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
@@ -195,7 +200,18 @@ const processEvent = async (metadata, message, destination) => {
   }
   if (message.type.toLowerCase() === "audiencelist") {
     const createdPayload = createPayload(message, destination);
-    return responseBuilder(metadata, createdPayload, destination);
+
+    if (!Object.keys(createdPayload).length) {
+      throw new CustomError(
+        "[Google_adwords_remarketing_list]::either of add or remove property is not present inside listData. Aborting message.",
+        400
+      );
+    }
+
+    Object.values(createdPayload).forEach(data => {
+      response.push(responseBuilder(metadata, data, destination));
+    });
+    return response;
   }
 
   throw new CustomError(

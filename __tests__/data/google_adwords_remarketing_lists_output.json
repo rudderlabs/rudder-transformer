@@ -1,21 +1,21 @@
 [
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
-    "headers": {
-      "Authorization": "Bearer abcd1234",
-      "Content-Type": "application/json",
-      "developer-token": "ijkl9101"
-    },
-    "params": {
-      "listId": "7090784486",
-      "customerId": "7693729833"
-    },
-    "body": {
-      "JSON": {
-        "create": {
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -39,32 +39,32 @@
               }
             }
           ]
-        }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
-    "headers": {
-      "Authorization": "Bearer abcd1234",
-      "Content-Type": "application/json",
-      "developer-token": "ijkl9101",
-      "login-customer-id": "abcd1234"
-    },
-    "params": {
-      "listId": "7090784486",
-      "customerId": "7693729833"
-    },
-    "body": {
-      "JSON": {
-        "create": {
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101",
+        "login-customer-id": "abcd1234"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -77,31 +77,31 @@
               }
             }
           ]
-        }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
-    "headers": {
-      "Authorization": "Bearer abcd1234",
-      "Content-Type": "application/json",
-      "developer-token": "ijkl9101"
-    },
-    "params": {
-      "listId": "7090784486",
-      "customerId": "7693729833"
-    },
-    "body": {
-      "JSON": {
-        "create": {
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -114,14 +114,14 @@
               }
             }
           ]
-        }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
+      "files": {}
+    }
+  ],
   {
     "metadata": {
       "secret": {
@@ -192,23 +192,23 @@
       "scope": "exception"
     }
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
-    "headers": {
-      "Authorization": "Bearer abcd1234",
-      "Content-Type": "application/json",
-      "developer-token": "ijkl9101"
-    },
-    "params": {
-      "listId": "7090784486",
-      "customerId": "7693729833"
-    },
-    "body": {
-      "JSON": {
-        "create": {
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
           "enablePartialFailure": true,
           "operations": [
             {
@@ -1206,12 +1206,12 @@
               }
             }
           ]
-        }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  }
+      "files": {}
+    }
+  ]
 ]

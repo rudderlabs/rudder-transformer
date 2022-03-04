@@ -155,7 +155,8 @@ const prepareDataField = (
   userSchema,
   userUpdateList,
   isHashRequired,
-  disableFormat
+  disableFormat,
+  skipVerify
 ) => {
   const data = [];
   let updatedProperty;
@@ -163,21 +164,26 @@ const prepareDataField = (
   userUpdateList.forEach(eachUser => {
     dataElement = [];
     userSchema.forEach(eachProperty => {
-      if (isDefinedAndNotNull(eachUser[eachProperty])) {
+      // if skip verify is true we replace undefined/null user properties with empty string
+      let userProperty = eachUser[eachProperty];
+      if (skipVerify && !isDefinedAndNotNull(userProperty)) {
+        userProperty = "";
+      }
+      if (isDefinedAndNotNull(userProperty)) {
         if (isHashRequired) {
           if (!disableFormat) {
             // when user requires formatting
             updatedProperty = ensureApplicableFormat(
               eachProperty,
-              eachUser[eachProperty]
+              userProperty
             );
           } else {
             // when user requires hashing but does not require formatting
-            updatedProperty = eachUser[eachProperty];
+            updatedProperty = userProperty;
           }
         } else {
           // when hashing is not required
-          updatedProperty = eachUser[eachProperty];
+          updatedProperty = userProperty;
         }
         if (
           isHashRequired &&
@@ -210,7 +216,8 @@ const preparePayload = (
   userSchema,
   paramsPayload,
   isHashRequired,
-  disableFormat
+  disableFormat,
+  skipVerify
 ) => {
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
@@ -223,7 +230,8 @@ const preparePayload = (
     userSchema,
     userUpdateList,
     isHashRequired,
-    disableFormat
+    disableFormat,
+    skipVerify
   );
   return prepareFinalPayload;
 };
@@ -242,7 +250,8 @@ const prepareResponse = (
     disableFormat,
     type,
     subType,
-    isRaw
+    isRaw,
+    skipVerify
   } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -281,7 +290,8 @@ const prepareResponse = (
     userSchema,
     paramsPayload,
     isHashRequired,
-    disableFormat
+    disableFormat,
+    skipVerify
   );
 
   return prepareParams;

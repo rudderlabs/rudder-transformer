@@ -2,17 +2,26 @@
   {
     "destKey": "partialFailure",
     "sourceKeys": "properties.partialFailure",
-    "required": true
+    "required": true,
+    "metadata": {
+      "type": "IsBoolean"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].gclidDateTimePair.gclid",
     "sourceKeys": "properties.gclid",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].gclidDateTimePair.conversionDateTime",
     "sourceKeys": "properties.conversionDateTime",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].restatementValue.adjustedValue",
@@ -43,51 +52,81 @@
   {
     "destKey": "conversionAdjustments[0].userAgent",
     "sourceKeys": "context.userAgent",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[0].hashedEmail",
     "sourceKeys": ["context.traits.email"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[1].hashedPhoneNumber",
     "sourceKeys": ["context.traits.phone"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedFirstName",
     "sourceKeys": ["context.traits.firstName"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedLastName",
     "sourceKeys": ["context.traits.lastName"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
   },
   {
-    "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedLastName",
-    "sourceKeys": ["context.traits.lastName"],
-    "required": false
+    "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.state",
+    "sourceKeys": "context.traits.state",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.city",
-    "sourceKeys": ["context.traits.city"],
-    "required": false
+    "sourceKeys": "context.traits.city",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.countryCode",
-    "sourceKeys": ["context.traits.countryCode"],
-    "required": false
+    "sourceKeys": "context.traits.countryCode",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.postalCode",
-    "sourceKeys": ["context.traits.postalCode"],
-    "required": false
+    "sourceKeys": "context.traits.postalCode",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedStreetAddress",
-    "sourceKeys": ["context.traits.streetAddress"],
-    "required": false
+    "sourceKeys": "context.traits.streetAddress",
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
   }
 ]

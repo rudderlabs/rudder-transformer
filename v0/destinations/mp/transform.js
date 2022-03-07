@@ -169,8 +169,6 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     ["traits", "context.traits"],
     MP_IDENTIFY_EXCLUSION_LIST
   );
-  rawPayload = removeUndefinedAndNullValues(rawPayload);
-
   /*
   we are adding backward compatibility using useNewMapping key.
   TODO :: This portion need to be removed after we deciding to stop 
@@ -227,6 +225,9 @@ function processIdentifyEvents(message, type, destination) {
     $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
+  if (message.context?.active === false) {
+    parameters.$ignore_time = true;
+  }
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)
   );

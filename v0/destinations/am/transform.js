@@ -6,10 +6,13 @@ const set = require("set-value");
 const {
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  MappedToDestinationKey
 } = require("../../../constants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -23,7 +26,8 @@ const {
   generateErrorObject,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -161,21 +165,41 @@ function updateConfigProperty(
             }
           }
         } else {
-          // get the destKey/outKey value from calling the util function
-          set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
+          const data = get(message.traits, outKey); // when in identify(or any other call) it checks whether outKey is present in traits
+          // then that value is assigned else function is applied.
+          // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
+          if (isDefinedAndNotNull(data)) {
+            set(payload, outKey, data);
+            delete message.traits[outKey];
+          } else {
+            // get the destKey/outKey value from calling the util function
+            set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
+          }
         }
       }
     } else {
+      // For common config
       if (validatePayload) {
-        const data = get(payload, mappingJson[sourceKey]);
-        if (!isDefinedAndNotNull(data)) {
-          const val = get(message, sourceKey);
-          if (val || val === false || val === 0) {
-            set(payload, mappingJson[sourceKey], val);
+        // if data is present in traits assign
+        const messageData = get(message.traits, mappingJson[sourceKey]);
+        if (isDefinedAndNotNull(messageData)) {
+          set(payload, mappingJson[sourceKey], messageData);
+        } else {
+          const data = get(payload, mappingJson[sourceKey]);
+          if (!isDefinedAndNotNull(data)) {
+            const val = get(message, sourceKey);
+            if (val || val === false || val === 0) {
+              set(payload, mappingJson[sourceKey], val);
+            }
           }
         }
       } else {
-        set(payload, mappingJson[sourceKey], get(message, sourceKey));
+        const data = get(message.traits, mappingJson[sourceKey]);
+        if (isDefinedAndNotNull(data)) {
+          set(payload, mappingJson[sourceKey], data);
+        } else {
+          set(payload, mappingJson[sourceKey], get(message, sourceKey));
+        }
       }
     }
   });
@@ -200,6 +224,21 @@ function responseBuilderSimple(
 
   let endpoint = ENDPOINT;
   let traits;
+
+  if (EventType.IDENTIFY) {
+    // If mapped to destination, Add externalId to traits
+    if (get(message, MappedToDestinationKey)) {
+      addExternalIdToTraits(message);
+      const identifierType = get(
+        message,
+        "context.externalId.0.identifierType"
+      );
+      if (identifierType === "user_id") {
+        // this can be either device_id / user_id
+        adduserIdFromExternalId(message);
+      }
+    }
+  }
 
   // 1. first populate the dest keys from the config files.
   // Group config file is similar to Identify config file
@@ -263,11 +302,16 @@ function responseBuilderSimple(
             if (SpecedTraits.includes(trait)) {
               const mapping = TraitsMapping[trait];
               Object.keys(mapping).forEach(key => {
-                set(
-                  rawPayload,
-                  `user_properties.${key}`,
-                  get(traits, mapping[key])
-                );
+                const checkKey = get(rawPayload.user_properties, key);
+                // this is done only if we want to add default values under address to the user_properties
+                // these values are also sent to the destination at the top level.
+                if (!isDefinedAndNotNull(checkKey)) {
+                  set(
+                    rawPayload,
+                    `user_properties.${key}`,
+                    get(traits, mapping[key])
+                  );
+                }
               });
             } else {
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
@@ -542,7 +586,19 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = message.event;
-
+      if (!isDefinedAndNotNullAndNotEmpty(evType)) {
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("message type not defined")
+          .setStatTags({
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
       if (
         message.properties &&
         isDefinedAndNotNull(message.properties.revenue) &&

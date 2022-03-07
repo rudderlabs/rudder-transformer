@@ -881,6 +881,7 @@ possibleEnvs.forEach(envValue => {
       when(fetch)
         .calledWith(libraryUrl)
         .mockResolvedValue({
+          status: 200,
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 

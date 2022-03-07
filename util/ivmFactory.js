@@ -126,7 +126,6 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       };
     })
   );
-  console.log(compiledModules);
 
   // TODO: Add rudder nodejs sdk to libraries
 

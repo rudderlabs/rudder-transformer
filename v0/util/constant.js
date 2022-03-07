@@ -42,6 +42,9 @@ const TRANSFORMER_METRIC = {
     },
     EXCEPTION: {
       SCOPE: "exception"
+    },
+    DEFAULT: {
+      SCOPE: "default"
     }
   }
 };

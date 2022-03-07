@@ -1055,6 +1055,10 @@ class CustomError extends Error {
  */
 function generateErrorObject(error, destination, transformStage) {
   // check err is object
+  // filter to check if it is coming from cdk
+  if (error.fromCdk) {
+    return error;
+  }
   const { status, message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {

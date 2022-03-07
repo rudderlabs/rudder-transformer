@@ -29,7 +29,7 @@ const {
  */
 
 const formatRevenue = revenue => {
-  const formattedRevenue = Number(Number(revenue || 0).toFixed(2));
+  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
   if (!isNaN(formattedRevenue)) {
     return formattedRevenue;
   }

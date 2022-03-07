@@ -712,7 +712,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
       if (value || value === 0 || value === false) {
         if (destKey) {
           // set the value only if correct
-          set(payload, destKey, value);
+          _.set(payload, destKey, value);
         } else {
           // to set to root and flatten later
           payload[""] = value;

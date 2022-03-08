@@ -23,6 +23,7 @@ const { cdkEnabled } = require("./features.json");
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
+const { compileUserLibrary } = require("./util/ivmFactory");
 
 const basePath = path.resolve(__dirname, "./cdk");
 ConfigFactory.init({ basePath, loggingMode: "production" });
@@ -36,6 +37,9 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
+const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
+  ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
+  : false;
 
 const router = new Router();
 
@@ -471,6 +475,54 @@ if (startDestTransformer) {
       });
     });
   }
+}
+
+if (transformerTestModeEnabled) {
+  router.post("/transformation/test", async ctx => {
+    try {
+      const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+      if (!events || events.length === 0) {
+        throw new Error("Invalid request. Missing events");
+      }
+
+      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      trRevCode.versionId = "testVersionId";
+      const res = await userTransformHandler()(
+        events,
+        trRevCode.versionId,
+        libraryVersionIDs,
+        trRevCode,
+        true
+      );
+      logger.debug(
+        `[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`
+      );
+      ctx.body = res;
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = { error: error.message };
+    }
+  });
+
+  router.post("/transformationLibrary/test", async ctx => {
+    try {
+      const { code } = ctx.request.body;
+      if (!code) {
+        throw new Error("Invalid request. Missing code");
+      }
+
+      const res = await compileUserLibrary(code);
+      ctx.body = res;
+    } catch (error) {
+      ctx.body = { error: error.message };
+      ctx.status = 400;
+    }
+  });
 }
 
 async function handleSource(ctx, version, source) {

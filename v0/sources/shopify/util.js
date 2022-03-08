@@ -19,7 +19,7 @@ const {
  */
 const getShopifyTopic = event => {
   const { query_parameters: qParams } = event;
-  console.log("query_params", qParams);
+  // console.log("query_params", qParams);
   if (!qParams) {
     throw new CustomError("[Shopify Source] query_parameters is missing", 400);
   }

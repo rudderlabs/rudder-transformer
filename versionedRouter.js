@@ -16,11 +16,9 @@ const {
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
-const {
-  TRANSFORMER_METRIC,
-  CDK_DESTINAITON_SET
-} = require("./v0/util/constant");
+const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const { cdkEnabled } = require("./features.json");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
@@ -107,7 +105,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (CDK_DESTINAITON_SET.has(destination)) {
+        if (cdkEnabled[destination.toUpperCase()]) {
           respEvents = await Executor.execute(
             event,
             ConfigFactory.getConfig(destination)
@@ -115,7 +113,6 @@ async function handleDest(ctx, version, destination) {
         } else {
           respEvents = await destHandler.process(parsedEvent);
         }
-        // TODO: Check for CDK destinations & only then use cdk execute
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];

@@ -2,8 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const { cdkDestSet } = require("../../v0/util");
-const { CDK_DESTINAITON_SET } = require('../../v0/util/constant');
+const { cdkEnabled } = require("../../features.json");
 
 function getDestFromTestFile(filePath) {
   const filePathArr = filePath.split('/');
@@ -27,7 +26,7 @@ function formTestParams(dest, transformAt) {
   return {
     input: inputData,
     expected,
-    iscdkDest: CDK_DESTINAITON_SET.has(dest)
+    iscdkDest: cdkEnabled[dest]
   };
 }
 
@@ -54,7 +53,6 @@ function executeTransformationTest(dest, transformAt) {
   const { commonInput, commonExpected } = routerCommonTestParams;
 
   const basePath = path.resolve(__dirname, "../../cdk");
-  // const factory = new ConfigFactory(basePath, 'dev');
   ConfigFactory.init({ basePath, loggingMode: 'production' })
 
   describe(`${dest} ${transformAt} tests`, () => {

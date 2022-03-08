@@ -1,6 +1,3 @@
-/* eslint-disable func-names */
-const _ = require("lodash");
-
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -58,7 +55,7 @@ const processTrackEvent = async (metadata, message, destination) => {
       400
     );
   }
-  if (!payload.partialFailure) {
+  if (typeof payload.partialFailure !== "boolean") {
     throw new CustomError(
       `[Google_ads_enhanced_marketing]:: partialFailure should be a boolean.`,
       400
@@ -77,7 +74,7 @@ const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (type.toLowerCase() !== "track") {
     throw new CustomError(
-      "[Google_ads_enhanced_conversion]::Message Type is not present. Aborting message.",
+      `[Google_ads_enhanced_conversion]::Message Type ${type} is not present. Aborting message.`,
       400
     );
   } else {

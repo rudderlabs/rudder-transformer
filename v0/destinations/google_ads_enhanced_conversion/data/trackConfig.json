@@ -2,10 +2,7 @@
   {
     "destKey": "partialFailure",
     "sourceKeys": "properties.partialFailure",
-    "required": true,
-    "metadata": {
-      "type": "IsBoolean"
-    }
+    "required": true
   },
   {
     "destKey": "conversionAdjustments[0].gclidDateTimePair.gclid",

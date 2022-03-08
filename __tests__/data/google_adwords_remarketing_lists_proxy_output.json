@@ -44,5 +44,12 @@
         "scope": "exception"
       }
     }
+  },
+  {
+    "output": {
+      "status": 200,
+      "message": "[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully",
+      "destinationResponse": { "response": "", "status": 200 }
+    }
   }
 ]

@@ -20,6 +20,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { cdkEnabled } = require("../../features.json");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1136,6 +1137,10 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+function isCdkDestination(destName) {
+  return cdkEnabled && cdkEnabled[destName.toUpperCase()];
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1205,5 +1210,6 @@ module.exports = {
   updatePayload,
   isOAuthSupported,
   isOAuthDestination,
-  isAppleFamily
+  isAppleFamily,
+  isCdkDestination
 };

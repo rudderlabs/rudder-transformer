@@ -2,7 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const { cdkEnabled } = require("../../features.json");
+const { isCdkDestination } = require('../../v0/util');
 
 function getDestFromTestFile(filePath) {
   const filePathArr = filePath.split('/');
@@ -26,7 +26,7 @@ function formTestParams(dest, transformAt) {
   return {
     input: inputData,
     expected,
-    iscdkDest: cdkEnabled[dest]
+    iscdkDest: isCdkDestination(dest)
   };
 }
 

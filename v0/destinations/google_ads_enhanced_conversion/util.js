@@ -1,4 +1,5 @@
 const { get, set } = require("lodash");
+const sha256 = require("sha256");
 const { httpSend } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
@@ -7,6 +8,9 @@ const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+const Cache = require("../../util/cache");
+
+const conversionActionIdCache = new Cache(24 * 60 * 60);
 
 const {
   processAxiosResponse
@@ -20,18 +24,24 @@ const { BASE_ENDPOINT } = require("./config");
  * @param {*} params
  * @returns
  */
+
 const getConversionActionId = async (method, headers, params) => {
-  const data = {
-    query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`
-  };
-  const requestBody = {
-    url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
-    data,
-    headers,
-    method
-  };
-  const response = await httpSend(requestBody);
-  return response;
+  const conversionActionIdKey = sha256(
+    params.event + params.customerId
+  ).toString();
+  return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const data = {
+      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`
+    };
+    const requestBody = {
+      url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
+      data,
+      headers,
+      method
+    };
+    const response = await httpSend(requestBody);
+    return response;
+  });
 };
 
 /**

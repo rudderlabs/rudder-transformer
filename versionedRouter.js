@@ -110,7 +110,9 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        const clonedParsedEvent = _.clone({}, parsedEvent);
+        // cloning the parsedEvent here because object mutation happens inside some
+        // destination transformations.
+        const clonedParsedEvent = _.cloneDeep(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
         logger.info(
           `[${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(

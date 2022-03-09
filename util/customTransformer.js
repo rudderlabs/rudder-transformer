@@ -4,7 +4,13 @@ const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
 
-async function runUserTransform(events, code, eventsMetadata, versionId) {
+async function runUserTransform(
+  events,
+  code,
+  eventsMetadata,
+  versionId,
+  testMode = false
+) {
   const tags = {
     transformerVersionId: versionId,
     version: 0
@@ -12,6 +18,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
+  const logs = [];
   const jail = context.global;
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
@@ -77,9 +84,18 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
 
   jail.setSync(
     "_log",
-    new ivm.Reference(() => {
-      // console.log("Log: ", ...args);
-    })
+    testMode
+      ? new ivm.Reference((...args) => {
+          let logString = "Log:";
+          args.forEach(arg => {
+            logString = logString.concat(
+              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+            );
+          });
+          logs.push(logString);
+          // console.log("Log: ", ...args);
+        })
+      : new ivm.Reference(() => {})
   );
 
   jail.setSync(
@@ -223,12 +239,21 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
     throw error;
   }
   isolate.dispose();
-  return result;
+  return {
+    transformedEvents: result,
+    logs
+  };
 }
 
-async function userTransformHandler(events, versionId, libraryVersionIDs) {
+async function userTransformHandler(
+  events,
+  versionId,
+  libraryVersionIDs,
+  trRevCode = {},
+  testMode = false
+) {
   if (versionId) {
-    const res = await getTransformationCode(versionId);
+    const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
       // And put back the destination after transforrmation
@@ -240,22 +265,34 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
 
       let userTransformedEvents = [];
       if (res.codeVersion && res.codeVersion === "1") {
-        userTransformedEvents = await userTransformHandlerV1(
+        const result = await userTransformHandlerV1(
           events,
           res,
-          libraryVersionIDs
+          libraryVersionIDs,
+          testMode
         );
+
+        userTransformedEvents = !testMode
+          ? result.transformedEvents
+          : {
+              transformedEvents: result.transformedEvents.map(ev => ev.transformedEvent),
+              logs: result.logs
+            };
       } else {
-        userTransformedEvents = await runUserTransform(
+        const result = await runUserTransform(
           eventMessages,
           res.code,
           eventsMetadata,
-          versionId
+          versionId,
+          testMode
         );
-        userTransformedEvents = userTransformedEvents.map(ev => ({
-          transformedEvent: ev,
-          metadata: {}
-        }));
+
+        userTransformedEvents = testMode
+          ? result
+          : result.transformedEvents.map(ev => ({
+              transformedEvent: ev,
+              metadata: {}
+            }));
       }
       return userTransformedEvents;
     }

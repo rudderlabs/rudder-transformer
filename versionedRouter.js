@@ -4,6 +4,8 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
+const jsonDiff = require("json-diff");
+const match = require("match-json");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
@@ -110,10 +112,35 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkDestination(destination)) {
-          respEvents = await Executor.execute(
+          const cdkResponse = await Executor.execute(
             event,
             ConfigFactory.getConfig(destination)
           );
+          respEvents = await destHandler.process(parsedEvent);
+          /// // Comparing CDK and Transformer Response and returning the original transformer response
+          if (!match(respEvents, cdkResponse)) {
+            stats.counter("cdk_response_match_failure", 1, {
+              destination,
+              path: ctx.request.path
+            });
+            logger.error(`comparison: payload mismatch `);
+            logger.error(
+              `Transformer input : ${JSON.stringify(ctx.request.body)}`
+            );
+            logger.error(`CDK Response: ${JSON.stringify(cdkResponse)}`);
+            logger.error(
+              `Original Transformer Response: ${JSON.stringify(respEvents)} `
+            );
+            logger.error(
+              `diff: ${jsonDiff.diffString(respEvents, cdkResponse)}`
+            );
+          } else {
+            stats.counter("cdk_response_match_success", 1, {
+              destination,
+              path: ctx.request.path
+            });
+          }
+          // //////////////////////////////////////////
         } else {
           respEvents = await destHandler.process(parsedEvent);
         }

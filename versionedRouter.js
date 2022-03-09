@@ -110,10 +110,17 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
+        const clonedParsedEvent = _.clone({}, parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
+        logger.info(
+          `[${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
+            parsedEvent,
+            clonedParsedEvent
+          )}`
+        );
         if (isCdkDestination(destination)) {
           const cdkResponse = await Executor.execute(
-            event,
+            clonedParsedEvent,
             ConfigFactory.getConfig(destination)
           );
           /// // Comparing CDK and Transformer Response and returning the original transformer response
@@ -124,7 +131,7 @@ async function handleDest(ctx, version, destination) {
             });
             logger.error(`comparison: payload mismatch for: ${destination}`);
             logger.error(
-              `Transformer input : ${JSON.stringify(ctx.request.body)}`
+              `Transformer Event : ${JSON.stringify(clonedParsedEvent)}`
             );
             logger.error(`CDK Response: ${JSON.stringify(cdkResponse)}`);
             logger.error(

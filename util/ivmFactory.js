@@ -7,14 +7,22 @@ const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 const { parserForImport } = require("./parser");
 
 const isolateVmMem = 128;
+async function evaluateModule(isolate, context, moduleCode) {
+  const module = await isolate.compileModule(moduleCode);
+  await module.instantiate(context, (specifier, referrer) => referrer);
+  await module.evaluate();
+  return true;
+}
+
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId) {
+async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const createIvmStartTime = new Date();
+  const logs = [];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCodeV1(libraryVersionId)
@@ -187,9 +195,17 @@ async function createIvm(code, libraryVersionIds, versionId) {
 
   await jail.set(
     "_log",
-    new ivm.Reference((...args) => {
-      console.log("Log: ", ...args);
-    })
+    testMode
+      ? new ivm.Reference((...args) => {
+          let logString = "Log:";
+          args.forEach(arg => {
+            logString = logString.concat(
+              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+            );
+          });
+          logs.push(logString);
+        })
+      : new ivm.Reference(() => {})
   );
 
   const bootstrap = await isolate.compileScript(
@@ -318,14 +334,21 @@ async function createIvm(code, libraryVersionIds, versionId) {
     fnRef,
     isolateStartWallTime,
     isolateStartCPUTime,
-    fName
+    fName,
+    logs
   };
 }
 
-async function getFactory(code, libraryVersionIds, versionId) {
+async function compileUserLibrary(code) {
+  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const context = await isolate.createContext();
+  return evaluateModule(isolate, context, code);
+}
+
+async function getFactory(code, libraryVersionIds, versionId, testMode) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId);
+      return createIvm(code, libraryVersionIds, versionId, testMode);
     },
     destroy: async client => {
       await client.isolate.dispose();
@@ -335,4 +358,7 @@ async function getFactory(code, libraryVersionIds, versionId) {
   return factory;
 }
 
-exports.getFactory = getFactory;
+module.exports = {
+  getFactory,
+  compileUserLibrary
+};

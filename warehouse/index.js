@@ -506,8 +506,7 @@ function processWarehouseMessage(message, options) {
         "options": {
           "skipReservedKeywordsEscaping": true,
           "skipTracksTable": true,
-          "skipTableNameSnakeCasing": true,
-          "skipColumnNameSnakeCasing": true,
+          "useBlendoCasing": true
         }
       }
     }

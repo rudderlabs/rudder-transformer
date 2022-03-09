@@ -51,7 +51,7 @@ function safeColumnName(options, name = "") {
   }
   if (
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
-    skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping
   ) {
     columnName = `_${columnName}`;
   }
@@ -131,7 +131,7 @@ function transformName(provider, name = "") {
   return an empty string if it couldn't find a char
 */
 function transformNameToBlendoCase(provider, name = "") {
-  let key = name.replaceAll(/[^a-zA-Z0-9\\$]/g, "_");
+  let key = name.replace(/[^a-zA-Z0-9\\$]/g, "_");
 
   const re = /^[a-zA-Z_].*/;
   if (!re.test(key)) {

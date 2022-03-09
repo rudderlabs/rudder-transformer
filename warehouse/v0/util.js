@@ -30,7 +30,7 @@ function toSafeDBString(provider, name = "") {
 }
 
 function transformNameToBlendoCase(provider, name = "") {
-  let key = name.replaceAll(/[^a-zA-Z0-9\\$]/g, "_");
+  let key = name.replace(/[^a-zA-Z0-9\\$]/g, "_");
 
   const re = /^[a-zA-Z_].*/;
   if (!re.test(key)) {

@@ -110,13 +110,12 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents;
+        let respEvents = await destHandler.process(parsedEvent);
         if (isCdkDestination(destination)) {
           const cdkResponse = await Executor.execute(
             event,
             ConfigFactory.getConfig(destination)
           );
-          respEvents = await destHandler.process(parsedEvent);
           /// // Comparing CDK and Transformer Response and returning the original transformer response
           if (!match(respEvents, cdkResponse)) {
             stats.counter("cdk_response_match_failure", 1, {
@@ -141,8 +140,6 @@ async function handleDest(ctx, version, destination) {
             });
           }
           // //////////////////////////////////////////
-        } else {
-          respEvents = await destHandler.process(parsedEvent);
         }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {

@@ -115,14 +115,6 @@ async function handleDest(ctx, version, destination) {
         // destination transformations.
         const clonedParsedEvent = _.cloneDeep(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
-        // logger.info(
-        //   `[${moment().format(
-        //     "MMM DD h:mm:ss.SSS A"
-        //   )}] [${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
-        //     parsedEvent,
-        //     clonedParsedEvent
-        //   )}`
-        // );
         if (isCdkDestination(destination)) {
           const cdkResponse = await Executor.execute(
             clonedParsedEvent,
@@ -130,6 +122,14 @@ async function handleDest(ctx, version, destination) {
           );
           /// // Comparing CDK and Transformer Response and returning the original transformer response
           if (!match(respEvents, cdkResponse)) {
+            logger.info(
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] [${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
+                parsedEvent,
+                clonedParsedEvent
+              )}`
+            );
             stats.counter("cdk_response_match_failure", 1, {
               destination
             });

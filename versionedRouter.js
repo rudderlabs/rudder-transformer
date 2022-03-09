@@ -122,7 +122,7 @@ async function handleDest(ctx, version, destination) {
               destination,
               path: ctx.request.path
             });
-            logger.error(`comparison: payload mismatch `);
+            logger.error(`comparison: payload mismatch for: ${destination}`);
             logger.error(
               `Transformer input : ${JSON.stringify(ctx.request.body)}`
             );
@@ -131,7 +131,10 @@ async function handleDest(ctx, version, destination) {
               `Original Transformer Response: ${JSON.stringify(respEvents)} `
             );
             logger.error(
-              `diff: ${jsonDiff.diffString(respEvents, cdkResponse)}`
+              `[${destination}] diff: ${jsonDiff.diffString(
+                respEvents,
+                cdkResponse
+              )}`
             );
           } else {
             stats.counter("cdk_response_match_success", 1, {

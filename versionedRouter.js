@@ -4,6 +4,7 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
+const moment = require("moment");
 const jsonDiff = require("json-diff");
 const match = require("match-json");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
@@ -115,7 +116,9 @@ async function handleDest(ctx, version, destination) {
         const clonedParsedEvent = _.cloneDeep(parsedEvent);
         let respEvents = await destHandler.process(parsedEvent);
         logger.info(
-          `[${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
+          `[${moment().format(
+            "MMM DD h:mm:ss.SSS A"
+          )}] [${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
             parsedEvent,
             clonedParsedEvent
           )}`
@@ -128,27 +131,39 @@ async function handleDest(ctx, version, destination) {
           /// // Comparing CDK and Transformer Response and returning the original transformer response
           if (!match(respEvents, cdkResponse)) {
             stats.counter("cdk_response_match_failure", 1, {
-              destination,
-              path: ctx.request.path
+              destination
             });
-            logger.error(`comparison: payload mismatch for: ${destination}`);
             logger.error(
-              `Transformer Event : ${JSON.stringify(clonedParsedEvent)}`
-            );
-            logger.error(`CDK Response: ${JSON.stringify(cdkResponse)}`);
-            logger.error(
-              `Original Transformer Response: ${JSON.stringify(respEvents)} `
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] comparison: payload mismatch for: ${destination}`
             );
             logger.error(
-              `[${destination}] diff: ${jsonDiff.diffString(
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] Transformer Event : ${JSON.stringify(clonedParsedEvent)}`
+            );
+            logger.error(
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] CDK Response: ${JSON.stringify(cdkResponse)}`
+            );
+            logger.error(
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] Original Transformer Response: ${JSON.stringify(respEvents)} `
+            );
+            logger.error(
+              `[${moment().format(
+                "MMM DD h:mm:ss.SSS A"
+              )}] [${destination}] diff: ${jsonDiff.diffString(
                 respEvents,
                 cdkResponse
               )}`
             );
           } else {
             stats.counter("cdk_response_match_success", 1, {
-              destination,
-              path: ctx.request.path
+              destination
             });
           }
           // //////////////////////////////////////////

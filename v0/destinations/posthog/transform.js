@@ -128,6 +128,7 @@ const processEvent = (message, destination) => {
   if (!category) {
     throw new CustomError(ErrorMessage.TypeNotSupported, 400);
   }
+  
   return responseBuilderSimple(message, category, destination);
 };
 

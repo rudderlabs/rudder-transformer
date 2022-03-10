@@ -79,6 +79,14 @@ const responseBuilderSimple = (message, category, destination) => {
     ...payload.properties
   };
 
+  // This is to ensure groupType delete in traits, as it is properly mapped in 'properties.$group_type'.
+  if (
+    payload.properties &&
+    isDefinedAndNotNull(payload.properties.$group_set) &&
+    isDefinedAndNotNull(payload.properties.$group_set.groupType)
+  )
+    delete payload.properties.$group_set.groupType;
+
   // Convert the distinct_id to string as that is the needed type in destinations.
   if (isDefinedAndNotNull(payload.distinct_id)) {
     payload.distinct_id = payload.distinct_id.toString();
@@ -120,7 +128,6 @@ const processEvent = (message, destination) => {
   if (!category) {
     throw new CustomError(ErrorMessage.TypeNotSupported, 400);
   }
-
   return responseBuilderSimple(message, category, destination);
 };
 

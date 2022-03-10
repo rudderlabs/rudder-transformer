@@ -56,7 +56,7 @@
         "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
         "actid": "476550467",
         "event": "ScreenViewed",
-        "visit": "%7B%22email%22%3A%22jamesDoe@gmail.com%22%7D",
+        "visit": "{\"email\":\"jamesDoe@gmail.com\"}",
         "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "eventdata": "Rudder_Event_Screen_Test"
       },
@@ -81,7 +81,7 @@
         "key": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03",
         "actid": "476550467",
         "event": "Tracking Action",
-        "visit": "%7B%22email%22%3A%22jamesDoe%40gmail.com%22%7D",
+        "visit": "{\"email\":\"jamesDoe@gmail.com\"}",
         "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "eventdata": "Rudder_Event_Track_Test"
       },

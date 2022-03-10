@@ -503,6 +503,7 @@ const screenRequestHandler = async (message, category, destination) => {
   payload.visit = encodeURIComponent(
     `{"email":"${get(message, "context.traits.email")}"}`
   );
+  payload.visit = payload.visit.replace("%40", "@");
   return responseBuilderSimple(payload, category, destination);
 };
 

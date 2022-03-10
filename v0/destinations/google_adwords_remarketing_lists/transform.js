@@ -142,7 +142,7 @@ const createPayload = (message, destination) => {
       );
       if (userIdentifiersList.length === 0) {
         logger.info(
-          `[Google_adwords_remarketing_list]:: No attributes are there in the ${key}.`
+          `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`
         );
         return;
       }
@@ -215,7 +215,7 @@ const processEvent = async (metadata, message, destination) => {
 
     if (!Object.keys(createdPayload).length) {
       throw new CustomError(
-        "[Google_adwords_remarketing_list]:: add or remove property is not present inside listData or there is not any attribute inside add or remove matching with the schemafields. Aborting message.",
+        "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
         400
       );
     }

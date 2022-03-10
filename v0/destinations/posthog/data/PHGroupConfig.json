@@ -9,10 +9,7 @@
   },
   {
     "destKey": "properties.$group_key",
-    "sourceKeys": [
-      "traits.groupKey", 
-      "groupId"
-    ],
+    "sourceKeys": "groupId",
     "required": false
   },
   {

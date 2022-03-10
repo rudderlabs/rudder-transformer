@@ -79,17 +79,14 @@ const responseBuilderSimple = (message, category, destination) => {
     ...payload.properties
   };
 
-  // This is to ensure groupType, groupKey delete from $group_set, as it is properly mapped
-  // in 'properties.$group_type' and 'properties.$group_key' respectively.
+  // This is to ensure groupType delete from $group_set, as it is properly mapped
+  // in 'properties.$group_type'.
   if (
     payload.properties &&
-    isDefinedAndNotNull(payload.properties.$group_set)
+    isDefinedAndNotNull(payload.properties.$group_set) &&
+    isDefinedAndNotNull(payload.properties.$group_set.groupType)
   ) {
-    if (isDefinedAndNotNull(payload.properties.$group_set.groupType))
-      delete payload.properties.$group_set.groupType;
-
-    if (isDefinedAndNotNull(payload.properties.$group_set.groupKey))
-      delete payload.properties.$group_set.groupKey;
+    delete payload.properties.$group_set.groupType;
   }
 
   // Convert the distinct_id to string as that is the needed type in destinations.

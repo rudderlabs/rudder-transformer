@@ -188,7 +188,9 @@ async function handleDest(ctx, version, destination) {
           );
         }
       } catch (error) {
-        logger.error(error);
+        if (isCdkDestination(destination)) {
+          logger.error(error);
+        }
         const errObj = generateErrorObject(
           error,
           destination,

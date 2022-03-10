@@ -64,7 +64,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
-  payload.conversionAdjustments[0].userIdentifiers = arr.filter(function() {
+  payload.conversionAdjustments[0].userIdentifiers = arr.filter(() => {
     return true;
   });
   return responseBuilder(metadata, message, destination, payload);
@@ -72,6 +72,9 @@ const processTrackEvent = async (metadata, message, destination) => {
 
 const processEvent = async (metadata, message, destination) => {
   const { type } = message;
+  if (!type) {
+    throw new CustomError("Invalid payload. Property Type is not present", 400);
+  }
   if (type.toLowerCase() !== "track") {
     throw new CustomError(
       `[Google_ads_enhanced_conversion]::Message Type ${type} is not present. Aborting message.`,

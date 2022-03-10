@@ -77,13 +77,14 @@ const gaemProxyRequest = async request => {
     conversionActionIdResponse,
     "response.data[0].results[0].conversionAction.id"
   );
-  if (!conversionActionId)
+  if (!conversionActionId) {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
         `Google_ads_enhanced_conversion: Unable to find conversionActionId for conversion:${params.event}`
       )
       .build();
+  }
   set(
     body.JSON,
     "conversionAdjustments[0].conversionAction",
@@ -114,23 +115,6 @@ const getAuthErrCategory = (code, response) => {
   }
 };
 
-/**
- * This function will handle the responses from google ads api
- * @param {*} destResponse
- * @param {*} stageMsg
- */
-const gaecRespHandler = (destResponse, stageMsg) => {
-  const { status, response } = destResponse;
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Google_ads_enhanced_conversion: ${response.error.message} ${stageMsg}`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
-    .build();
-};
-
 const responseHandler = destinationResponse => {
   const message = `[Google_ads_enhanced_conversion Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
@@ -143,11 +127,15 @@ const responseHandler = destinationResponse => {
     };
   }
   // else successfully return status, message and original destination response
-  gaecRespHandler(
-    destinationResponse,
-    "during Google_ads_enhanced_conversion response transformation",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-  );
+  const { response } = destinationResponse;
+  throw new ErrorBuilder()
+    .setStatus(status)
+    .setDestinationResponse(response)
+    .setMessage(
+      `Google_ads_enhanced_conversion: ${response.error.message} during Google_ads_enhanced_conversion response transformation`
+    )
+    .setAuthErrorCategory(getAuthErrCategory(status, response))
+    .build();
 };
 // eslint-disable-next-line func-names
 class networkHandler {
@@ -157,4 +145,4 @@ class networkHandler {
     this.processAxiosResponse = processAxiosResponse;
   }
 }
-module.exports = { networkHandler, responseHandler };
+module.exports = { networkHandler };

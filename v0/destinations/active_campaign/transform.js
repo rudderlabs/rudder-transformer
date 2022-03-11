@@ -500,9 +500,10 @@ const screenRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  payload.visit = encodeURIComponent(
-    `{"email":"${get(message, "context.traits.email")}"}`
-  );
+  if (get(message, "properties.eventData")) {
+    payload.eventdata = get(message, "properties.eventData");
+  }
+  payload.visit = `{"email":"${get(message, "context.traits.email")}"}`;
   return responseBuilderSimple(payload, category, destination);
 };
 
@@ -565,9 +566,11 @@ const trackRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  payload.visit = encodeURIComponent(
-    `{"email":"${get(message, "context.traits.email")}"}`
-  );
+  if (get(message, "properties.eventData")) {
+    payload.eventdata = get(message, "properties.eventData");
+  }
+  payload.visit = `{"email":"${get(message, "context.traits.email")}"}`;
+
   return responseBuilderSimple(payload, category, destination);
 };
 

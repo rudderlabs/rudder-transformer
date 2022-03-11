@@ -13,3 +13,5 @@
     - traits
     - context.traits
   required: true
+  metadata:
+    type: flatJson

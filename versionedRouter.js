@@ -121,7 +121,7 @@ async function handleDest(ctx, version, destination) {
             ConfigFactory.getConfig(destination)
           );
           /// // Comparing CDK and Transformer Response and returning the original transformer response
-          if (!match(respEvents, cdkResponse)) {
+          if (!match(JSON.stringify(respEvents), JSON.stringify(cdkResponse))) {
             logger.info(
               `[${moment().format(
                 "MMM DD h:mm:ss.SSS A"

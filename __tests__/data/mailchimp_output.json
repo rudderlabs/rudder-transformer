@@ -79,6 +79,6 @@
     "userId": "userId12345"
   },
   {
-    "error": "Invalid status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+    "error": "The status mapped from [traits.status] in the payload is invalid"
   }
 ]

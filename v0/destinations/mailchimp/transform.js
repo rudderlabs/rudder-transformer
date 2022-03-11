@@ -5,7 +5,8 @@ const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   getEndpoint,
   destinationConfigKeys,
-  subscriptionStatus
+  subscriptionStatus,
+  validStatuses
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -100,16 +101,9 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   const basicAuth = Buffer.from(`apiKey:${mailChimpConfig.apiKey}`).toString(
     "base64"
   );
-  const validStatus = [
-    "subscribed",
-    "unsubscribed",
-    "cleaned",
-    "pending",
-    "transactional"
-  ];
-  if (payload.status && !validStatus.includes(payload.status)) {
+  if (payload.status && !validStatuses.includes(payload.status)) {
     throw new CustomError(
-      "The status does not contain any possible value",
+      "Invalid status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
       400
     );
   }

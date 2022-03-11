@@ -70,7 +70,6 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
-
     headers,
     method
   };
@@ -100,9 +99,10 @@ const gaAudienceProxyRequest = async request => {
   );
   if (
     !firstResponse.success &&
-    !isHttpStatusSuccess(firstResponse.response.status)
-  )
+    !isHttpStatusSuccess(firstResponse.response.response.status)
+  ) {
     return firstResponse;
+  }
 
   // step2: putting users into the job
   let jobId;
@@ -119,9 +119,10 @@ const gaAudienceProxyRequest = async request => {
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
     !secondResponse.success &&
-    !isHttpStatusSuccess(secondResponse.response.status)
-  )
+    !isHttpStatusSuccess(secondResponse.response.response.status)
+  ) {
     return secondResponse;
+  }
 
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
@@ -181,9 +182,10 @@ const responseHandler = destinationResponse => {
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
 };
+
 const networkHandler = function() {
-  this.responseHandler = responseHandler;
   this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
+  this.responseHandler = responseHandler;
 };
 module.exports = { networkHandler };

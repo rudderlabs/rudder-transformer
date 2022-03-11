@@ -584,7 +584,8 @@
     "destination": {
       "Config": {
         "teamApiKey": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
-        "yourInstance": "https://app.posthog.com/"
+        "yourInstance": "https://app.posthog.com/",
+        "useV2Group": false,
       }
     },
     "message": {

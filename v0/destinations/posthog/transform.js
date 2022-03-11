@@ -70,7 +70,7 @@ const generatePropertyDefination = message => {
 const responseBuilderSimple = (message, category, destination) => {
   // This is to ensure backward compatibility of group calls.
   let payload;
-  if (destination.Config.useV2Group) {
+  if (category.type === "group" && destination.Config.useV2Group) {
     payload = constructPayload(
       message,
       MAPPING_CONFIG[CONFIG_CATEGORIES.GROUPV2.name]
@@ -88,7 +88,7 @@ const responseBuilderSimple = (message, category, destination) => {
     ...payload.properties
   };
 
-  if (destination.Config.useV2Group) {
+  if (category.type === "group" && destination.Config.useV2Group) {
     // This is to ensure groupType delete from $group_set, as it is properly mapped
     // in 'properties.$group_type'.
     delete payload?.properties?.$group_set?.groupType;

@@ -465,8 +465,8 @@
     "body": {
       "JSON": {
         "action": "event",
-        "kochava_app_id": "koneighbor-android-vdho9qj",
-        "kochava_device_id": "KA31011646984614t22a173532c864c75813bc72177842d3a",
+        "kochava_app_id": "abcd",
+        "kochava_device_id": "id123",
         "data": {
           "app_tracking_transparency": {
             "att": false

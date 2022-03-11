@@ -26,10 +26,7 @@
   },
   {
     "destKey": "properties.$group_set",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": "traits",
     "required": false
   },
   {

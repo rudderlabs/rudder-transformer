@@ -100,6 +100,19 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   const basicAuth = Buffer.from(`apiKey:${mailChimpConfig.apiKey}`).toString(
     "base64"
   );
+  const validStatus = [
+    "subscribed",
+    "unsubscribed",
+    "cleaned",
+    "pending",
+    "transactional"
+  ];
+  if (payload.status && !validStatus.includes(payload.status)) {
+    throw new CustomError(
+      "The status does not contain any possible value",
+      400
+    );
+  }
   return {
     ...response,
     headers: {
@@ -159,9 +172,8 @@ async function getPayload(
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
-  
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
     return getFieldValueFromMessage(message, "traits");
   }

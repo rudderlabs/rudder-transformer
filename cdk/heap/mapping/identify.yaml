@@ -12,4 +12,6 @@
   sourceKeys:
     - traits
     - context.traits
+  metadata:
+    type: flatJson
   required: true

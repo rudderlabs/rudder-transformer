@@ -14,3 +14,5 @@
   
 - destKey: properties
   sourceKeys: properties
+  metadata:
+    type: flatJson

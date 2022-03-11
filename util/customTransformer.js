@@ -272,12 +272,18 @@ async function userTransformHandler(
           testMode
         );
 
-        userTransformedEvents = !testMode
-          ? result.transformedEvents
-          : {
-              transformedEvents: result.transformedEvents.map(ev => ev.transformedEvent),
-              logs: result.logs
-            };
+        userTransformedEvents = result.transformedEvents;
+        if (testMode) {
+          userTransformedEvents = {
+            transformedEvents: result.transformedEvents.map(ev => {
+              if (ev.error) {
+                return { error: ev.error };
+              }
+              return ev.transformedEvent;
+            }),
+            logs: result.logs
+          };
+        }
       } else {
         const result = await runUserTransform(
           eventMessages,

@@ -129,7 +129,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: mobileId is not present.",
+    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -143,7 +143,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: mobileId is not present.",
+    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -3446,7 +3446,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: add or remove property is not present inside listData. Aborting message.",
+    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",

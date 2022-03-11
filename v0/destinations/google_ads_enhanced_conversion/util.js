@@ -51,7 +51,7 @@ const getConversionActionId = async (method, headers, params) => {
  * @param {*} request
  * @returns
  */
-const gaemProxyRequest = async request => {
+const ProxyRequest = async request => {
   const { body, method, endpoint, params } = request;
   const { headers } = request;
 
@@ -140,7 +140,7 @@ const responseHandler = destinationResponse => {
 // eslint-disable-next-line func-names
 class networkHandler {
   constructor() {
-    this.proxy = gaemProxyRequest;
+    this.proxy = ProxyRequest;
     this.responseHandler = responseHandler;
     this.processAxiosResponse = processAxiosResponse;
   }

@@ -103,7 +103,7 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   );
   if (payload.status && !validStatuses.includes(payload.status)) {
     throw new CustomError(
-      "Invalid status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
       400
     );
   }

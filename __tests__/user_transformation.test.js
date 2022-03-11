@@ -845,6 +845,80 @@ possibleEnvs.forEach(envValue => {
       expect(output).toEqual(outputImport);
     });
 
+    it(`Simple ${name} async test for V1 transformation code`, async () => {
+      const libraryVersionId = randomID();
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_code_test_output.json`);
+
+      const trRevCode = {
+        code: `
+          import url from 'url';
+          async function foo() {
+            return 'resolved';
+          }
+          export async function transformEvent(event, metadata) {
+              const pr = await foo();
+              log('Transformation test');
+              if(event.properties && event.properties.url){
+                const x = new url.URLSearchParams(event.properties.url).get("client");
+              }
+              event.promise = pr;
+              return event;
+            }
+        `,
+        codeVersion: "1",
+        versionId: "testVersionId"
+      };
+
+      const urlCode = `${fs.readFileSync(
+        "./util/url-search-params.min.js",
+        "utf8"
+      )};
+      export default self;
+      `;
+
+      const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+      when(fetch)
+        .calledWith(libraryUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+        });
+
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId], trRevCode, true);
+
+      expect(fetch).toHaveBeenCalledWith(libraryUrl);
+
+      expect(output).toEqual(expectedData);
+    });
+
+    it(`Simple async ${name} Test for V0 transformation code`, async () => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const expectedData = require(`./data/${integration}_code_test_output.json`);
+
+      const trRevCode = {
+        codeVersion: "0",
+        code: `
+          async function foo() {
+            return 'resolved';
+          }
+          async function transform(events) {
+            const pr = await foo();
+            const filteredEvents = events.map(event => {
+              log('Transformation test');
+              event.promise = pr;
+              return event;
+            });
+            return filteredEvents;
+          }
+        `,
+        versionId: "testVersionId"
+      };
+
+      const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
+      expect(output).toEqual(expectedData);
+    });
+
     // Running timeout tests only for one possible env value to reduce time taken for tests
     if (envValue === "true") {
       describe("Timeout tests", () => {

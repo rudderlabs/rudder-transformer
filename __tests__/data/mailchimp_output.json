@@ -79,6 +79,6 @@
     "userId": "userId12345"
   },
   {
-    "error": "The status does not contain any possible value"
+    "error": "Invalid status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   }
 ]

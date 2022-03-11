@@ -8,7 +8,7 @@
     "required": false
   },
   {
-    "destKey": "groupId",
+    "destKey": "properties.$group_key",
     "sourceKeys": "groupId",
     "required": false
   },
@@ -25,16 +25,18 @@
     "required": true
   },
   {
-    "destKey": "traits",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "destKey": "properties.$group_set",
+    "sourceKeys": "traits",
     "required": false
   },
   {
     "destKey": "messageId",
     "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "destKey": "properties.$group_type",
+    "sourceKeys": "traits.groupType",
     "required": false
   }
 ]

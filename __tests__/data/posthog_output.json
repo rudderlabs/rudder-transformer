@@ -459,5 +459,117 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.posthog.com/batch",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "groupId": "Sample_groupId27",
+        "distinct_id": "sampleusrRudder7",
+        "traits": {
+          "groupType": "company",
+          "KEY_3": {
+            "CHILD_KEY_92": "value_95",
+            "CHILD_KEY_102": "value_103"
+          },
+          "KEY_2": {
+            "CHILD_KEY_92": "value_95",
+            "CHILD_KEY_102": "value_103"
+          },
+          "name_trait": "Company",
+          "value_trait": "Comapny-ABC"
+        },
+        "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+        "properties": {
+          "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
+          "$pathname": "/destinations/amplitude",
+          "$lib": "RudderLabs JavaScript SDK",
+          "$lib_version": "1.1.5",
+          "$anon_distinct_id": "my-anonymous-id-new",
+          "distinct_id": "sampleusrRudder7",
+          "$screen_density": 0.8999999761581421,
+          "$locale": "en-US",
+          "$user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+          "$app_version": "1.1.5",
+          "$app_name": "RudderLabs JavaScript SDK",
+          "$app_namespace": "com.rudderlabs.javascript",
+          "$app_build": "1.0.0",
+          "$os": "Mac OS",
+          "$browser": "Chrome",
+          "$browser_version": "85.0.4183.121",
+          "$host": "docs.rudderstack.com"
+        },
+        "event": "$group",
+        "api_key": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
+        "type": "group"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://app.posthog.com/batch",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "distinct_id": "sampleusrRudder7",
+        "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+        "properties": {
+          "$group_key": "Sample_groupId27",
+          "$group_type": "company",
+          "$group_set": {
+            "KEY_3": {
+              "CHILD_KEY_92": "value_95",
+              "CHILD_KEY_102": "value_103"
+            },
+            "KEY_2": {
+              "CHILD_KEY_92": "value_95",
+              "CHILD_KEY_102": "value_103"
+            },
+            "name_trait": "Company",
+            "value_trait": "Comapny-ABC"
+          },
+          "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
+          "$pathname": "/destinations/amplitude",
+          "$lib": "RudderLabs JavaScript SDK",
+          "$lib_version": "1.1.5",
+          "$anon_distinct_id": "my-anonymous-id-new",
+          "distinct_id": "sampleusrRudder7",
+          "$screen_density": 0.8999999761581421,
+          "$locale": "en-US",
+          "$user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+          "$app_version": "1.1.5",
+          "$app_name": "RudderLabs JavaScript SDK",
+          "$app_namespace": "com.rudderlabs.javascript",
+          "$app_build": "1.0.0",
+          "$os": "Mac OS",
+          "$browser": "Chrome",
+          "$browser_version": "85.0.4183.121",
+          "$host": "docs.rudderstack.com"
+        },
+        "event": "$group",
+        "api_key": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
+        "type": "group"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

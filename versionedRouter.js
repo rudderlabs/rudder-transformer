@@ -10,7 +10,7 @@ const match = require("match-json");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
-const { removeUndefinedValues } = require("./v0/util");
+const { recursiveRemoveUndefined } = require("./v0/util");
 
 const {
   isNonFuncObject,
@@ -122,8 +122,9 @@ async function handleDest(ctx, version, destination) {
             ConfigFactory.getConfig(destination)
           );
 
-          const updatedRespEvents = removeUndefinedValues(respEvents);
-          const updatedCdkResponse = removeUndefinedValues(cdkResponse);
+          // recusrively removing all undefined val-type keys before comparsion
+          const updatedRespEvents = recursiveRemoveUndefined(respEvents);
+          const updatedCdkResponse = recursiveRemoveUndefined(cdkResponse);
 
           /// // Comparing CDK and Transformer Response and returning the original transformer response
           if (!match(updatedRespEvents, updatedCdkResponse)) {

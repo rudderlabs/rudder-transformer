@@ -235,29 +235,33 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
         leadObjectId = leadQueryResponse.data.searchRecords[0].Id;
       }
     }
+    if (leadObjectId) {
+      const convertedDetails = await axios.get(
+        `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/Lead/${leadObjectId}?fields=IsConverted,ConvertedContactId,IsDeleted`,
+        {
+          headers: { Authorization: authorizationData.token }
+        }
+      );
 
-    const convertedDetails = await axios.get(
-      `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/Lead/${leadObjectId}?fields=IsConverted,ConvertedContactId,IsDeleted`,
-      {
-        headers: { Authorization: authorizationData.token }
+      if (convertedDetails.data.IsConverted) {
+        leadObjectId = convertedDetails.data.ConvertedContactId;
       }
-    );
 
-    if (convertedDetails.data.IsConverted) {
-      leadObjectId = convertedDetails.data.ConvertedContactId;
-    }
-
-    // add a Lead Object to the response
-    if (convertedDetails.data.IsDeleted === false)
+      if (convertedDetails.data.IsDeleted === false)
+        salesforceMaps.push({
+          salesforceType: "Lead",
+          salesforceId: leadObjectId
+        });
+      else {
+        throw new CustomError("The lead/contact has been deleted.", 400);
+      }
+    } else {
       salesforceMaps.push({
         salesforceType: "Lead",
         salesforceId: leadObjectId
       });
-    else {
-      throw new CustomError("The lead/contact has been deleted.", 400);
     }
   }
-
   return salesforceMaps;
 }
 

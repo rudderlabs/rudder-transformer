@@ -19,14 +19,5 @@
     "TIKTOK_ADS": true,
     "PARDOT": true,
     "GOOGLE_ADWORDS_REMARKETING_LISTS": true
-  },
-  "cdkEnabled": {
-    "VARIANCE": true,
-    "AUTOPILOT": true,
-    "HEAP": true,
-    "USERLIST": true,
-    "LYTICS": true,
-    "KOCHAVA": true,
-    "STATSIG": true
   }
 }

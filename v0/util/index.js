@@ -1137,8 +1137,14 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
-function isCdkDestination(destName) {
-  return cdkEnabled && cdkEnabled[destName.toUpperCase()];
+function isCdkDestination(event) {
+  // TODO: maybe dont need all these checks in place
+  return (
+    event.destination &&
+    event.destination.DestinationDefinition &&
+    event.destination.DestinationDefinition.Config &&
+    event.destination.DestinationDefinition.Config.cdkEnabled
+  );
 }
 
 // ========================================================================

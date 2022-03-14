@@ -59,5 +59,13 @@ const ConfigCategory = {
     endpoint: `${BASE_URL}users/updateEmail`
   }
 };
+
+const MAX_BATCH_SIZE = 8000;
+const BATCH_ENDPOINT = "https://api.iterable.com/api/events/trackBulk";
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-module.exports = { ConfigCategory, mappingConfig };
+module.exports = {
+  ConfigCategory,
+  mappingConfig,
+  BATCH_ENDPOINT,
+  MAX_BATCH_SIZE
+};

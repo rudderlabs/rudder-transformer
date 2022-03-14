@@ -14,7 +14,9 @@ const {
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
-    payload.properties = flattenJson(payload.properties);
+    if (payload.properties) {
+      payload.properties = flattenJson(payload.properties);
+    }
     const responseBody = {
       ...payload,
       app_id: destination.Config.appId

@@ -1,14 +1,11 @@
 [
   {
     "destKey": "timestamp",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": false
   },
   {
-    "destKey": "properties.$group_key",
+    "destKey": "groupId",
     "sourceKeys": "groupId",
     "required": false
   },
@@ -25,18 +22,13 @@
     "required": true
   },
   {
-    "destKey": "properties.$group_set",
-    "sourceKeys": "traits",
+    "destKey": "traits",
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
   {
     "destKey": "messageId",
     "sourceKeys": "messageId",
-    "required": false
-  },
-  {
-    "destKey": "properties.$group_type",
-    "sourceKeys": "traits.groupType",
     "required": false
   }
 ]

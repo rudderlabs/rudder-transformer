@@ -68,7 +68,16 @@ const generatePropertyDefination = message => {
 };
 
 const responseBuilderSimple = (message, category, destination) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // This is to ensure backward compatibility of group calls.
+  let payload;
+  if (category.type === "group" && destination.Config.useV2Group) {
+    payload = constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.GROUPV2.name]
+    );
+  } else {
+    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  }
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
@@ -78,6 +87,12 @@ const responseBuilderSimple = (message, category, destination) => {
     ...generatePropertyDefination(message),
     ...payload.properties
   };
+
+  if (category.type === "group" && destination.Config.useV2Group) {
+    // This is to ensure groupType delete from $group_set, as it is properly mapped
+    // in 'properties.$group_type'.
+    delete payload?.properties?.$group_set?.groupType;
+  }
 
   // Convert the distinct_id to string as that is the needed type in destinations.
   if (isDefinedAndNotNull(payload.distinct_id)) {

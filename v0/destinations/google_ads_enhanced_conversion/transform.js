@@ -49,15 +49,10 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
 
 const processTrackEvent = async (metadata, message, destination) => {
   const payload = constructPayload(message, trackMapping);
+  payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new CustomError(
       `[Google_ads_enhanced_marketing]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
-      400
-    );
-  }
-  if (typeof payload.partialFailure !== "boolean") {
-    throw new CustomError(
-      `[Google_ads_enhanced_marketing]:: partialFailure should be a boolean.`,
       400
     );
   }

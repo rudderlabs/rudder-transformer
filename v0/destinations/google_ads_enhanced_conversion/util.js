@@ -2,15 +2,15 @@ const { get, set } = require("lodash");
 const sha256 = require("sha256");
 const { httpSend } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
+const { CONVERSION_ACTION_ID_CACHE_TTL } = require("./config.js");
 const Cache = require("../../util/cache");
 
-const conversionActionIdCache = new Cache(24 * 60 * 60);
+const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
 const {
   processAxiosResponse

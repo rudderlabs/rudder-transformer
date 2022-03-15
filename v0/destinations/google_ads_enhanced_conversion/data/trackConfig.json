@@ -1,10 +1,5 @@
 [
   {
-    "destKey": "partialFailure",
-    "sourceKeys": "properties.partialFailure",
-    "required": true
-  },
-  {
     "destKey": "conversionAdjustments[0].gclidDateTimePair.gclid",
     "sourceKeys": "properties.gclid",
     "required": false,
@@ -56,7 +51,8 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[0].hashedEmail",
-    "sourceKeys": ["context.traits.email"],
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -64,7 +60,8 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[1].hashedPhoneNumber",
-    "sourceKeys": ["context.traits.phone"],
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -72,7 +69,8 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedFirstName",
-    "sourceKeys": ["context.traits.firstName"],
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -80,7 +78,8 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedLastName",
-    "sourceKeys": ["context.traits.lastName"],
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -88,7 +87,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.state",
-    "sourceKeys": "context.traits.state",
+    "sourceKeys": ["context.traits.state", "context.traits.address.state"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -96,7 +95,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.city",
-    "sourceKeys": "context.traits.city",
+    "sourceKeys": ["context.traits.city", "context.traits.address.city"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -104,7 +103,10 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.countryCode",
-    "sourceKeys": "context.traits.countryCode",
+    "sourceKeys": [
+      "context.traits.countryCode",
+      "context.traits.address.countryCode"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -112,7 +114,10 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.postalCode",
-    "sourceKeys": "context.traits.postalCode",
+    "sourceKeys": [
+      "context.traits.postalCode",
+      "context.traits.address.postalCode"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -120,7 +125,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.hashedStreetAddress",
-    "sourceKeys": "context.traits.streetAddress",
+    "sourceKeys": ["context.traits.streetAddress", "context.traits.address"],
     "required": false,
     "metadata": {
       "type": "hashToSha256"

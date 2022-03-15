@@ -347,9 +347,11 @@
         "traits": {
           "firstName": "John",
           "lastName": "Gomes",
-          "city": "London",
-          "state": "UK",
-          "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK"
+          "address": {
+            "city": "London",
+            "state": "UK",
+            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK"
+          }
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

@@ -15,8 +15,17 @@ const subscriptionStatus = {
   pending: "pending"
 };
 
+const validStatuses = [
+  "subscribed",
+  "unsubscribed",
+  "cleaned",
+  "pending",
+  "transactional"
+];
+
 module.exports = {
   getEndpoint,
   destinationConfigKeys,
-  subscriptionStatus
+  subscriptionStatus,
+  validStatuses
 };

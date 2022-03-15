@@ -109,6 +109,14 @@ async function handleDest(ctx, version, destination) {
           respList.push(
             ...respEvents.map(ev => {
               let { userId } = ev;
+              // Set the user ID to an empty string for 
+              // all the falsy values (including 0 and false)
+              // Otherwise, server panics while un-marshalling the response
+              // while expecting only strings.
+              if (!userId) {
+                userId = "";
+              }
+
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }

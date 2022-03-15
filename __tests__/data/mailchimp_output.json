@@ -77,5 +77,8 @@
     },
     "files": {},
     "userId": "userId12345"
+  },
+  {
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   }
 ]

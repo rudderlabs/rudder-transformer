@@ -15,8 +15,8 @@ const {
 } = require("../v0/destinations/google_adwords_remarketing_lists/util");
 
 const {
-  networkHandler: GoogleAdwordsEnhancedConversion
-} = require("../v0/destinations/google_adwords_enhanced_conversion/util");
+  networkHandler: GoogleAdwordsEnhancedConversions
+} = require("../v0/destinations/google_adwords_enhanced_conversions/util");
 
 const handler = {
   generic: GenericNetworkHandler,
@@ -24,7 +24,7 @@ const handler = {
   marketo: MarketoNetworkHandler,
   pardot: PardotNetworkHandler,
   google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
-  google_adwords_enhanced_conversion: GoogleAdwordsEnhancedConversion
+  google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions
 };
 
 const getNetworkHandler = type => {

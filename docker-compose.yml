@@ -14,3 +14,5 @@ services:
       context: .
     ports:
       - "9091:9090"
+    environment:
+      - CLUSTER_ENABLED=false

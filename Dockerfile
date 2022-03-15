@@ -27,7 +27,7 @@ RUN npm install
 COPY --chown=node:node . .
 
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD [ "npm", "start" ]
+CMD [ "npm", "--abort_on_uncaught_exception", "start" ]
 
 
 EXPOSE 9090/tcp

@@ -81,7 +81,7 @@ const ProxyRequest = async request => {
     throw new ErrorBuilder()
       .setStatus(400)
       .setMessage(
-        `Google_ads_enhanced_conversion: Unable to find conversionActionId for conversion:${params.event}`
+        `Google_adwords_enhanced_conversion: Unable to find conversionActionId for conversion:${params.event}`
       )
       .build();
   }
@@ -116,7 +116,7 @@ const getAuthErrCategory = (code, response) => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Google_ads_enhanced_conversion Response Handler] - Request Processed Successfully`;
+  const message = `[Google_adwords_enhanced_conversion Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx
@@ -132,7 +132,7 @@ const responseHandler = destinationResponse => {
     .setStatus(status)
     .setDestinationResponse(response)
     .setMessage(
-      `Google_ads_enhanced_conversion: ${response.error.message} during Google_ads_enhanced_conversion response transformation`
+      `Google_awordds_enhanced_conversion: ${response.error.message} during Google_adwords_enhanced_conversion response transformation`
     )
     .setAuthErrorCategory(getAuthErrCategory(status, response))
     .build();

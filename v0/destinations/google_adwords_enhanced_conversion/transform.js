@@ -22,7 +22,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   }
   if (event === undefined || event === "" || flag === 0) {
     throw new CustomError(
-      `[Google_ads_enhanced_marketing]:: Conversion named ${event} is not exist in rudderstack dashboard`,
+      `[Google_adwords_enhanced_marketing]:: Conversion named ${event} is not exist in rudderstack dashboard`,
       400
     );
   }
@@ -41,7 +41,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       response.headers["login-customer-id"] = Config.loginCustomerId;
     else
       throw new CustomError(
-        `[Google_ads_enhanced_marketing]:: loginCustomerId is required as subAccount is true.`,
+        `[Google_adwords_enhanced_marketing]:: loginCustomerId is required as subAccount is true.`,
         400
       );
   return response;
@@ -52,7 +52,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new CustomError(
-      `[Google_ads_enhanced_marketing]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
+      `[Google_adwords_enhanced_marketing]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
       400
     );
   }
@@ -72,7 +72,7 @@ const processEvent = async (metadata, message, destination) => {
   }
   if (type.toLowerCase() !== "track") {
     throw new CustomError(
-      `[Google_ads_enhanced_conversion]::Message Type ${type} is not present. Aborting message.`,
+      `[Google_adwords_enhanced_conversion]::Message Type ${type} is not present. Aborting message.`,
       400
     );
   } else {

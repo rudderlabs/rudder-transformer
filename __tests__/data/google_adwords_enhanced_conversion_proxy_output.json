@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 401,
-      "message": "[Error occurred while processing response for destination google_ads_enhanced_conversion]: Google_ads_enhanced_conversion: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_ads_enhanced_conversion response transformation",
+      "message": "[Error occurred while processing response for destination google_adwords_enhanced_conversion]: Google_awordds_enhanced_conversion: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversion response transformation",
       "destinationResponse": {
         "error": {
           "code": 401,
@@ -11,7 +11,7 @@
         }
       },
       "statTags": {
-        "destination": "google_ads_enhanced_conversion",
+        "destination": "google_adwords_enhanced_conversion",
         "stage": "responseTransform",
         "scope": "exception"
       },
@@ -21,7 +21,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[Google_ads_enhanced_conversion Response Handler] - Request Processed Successfully",
+      "message": "[Google_adwords_enhanced_conversion Response Handler] - Request Processed Successfully",
       "destinationResponse": {
         "response": [
           {

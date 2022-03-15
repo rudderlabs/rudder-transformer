@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const integration = "google_ads_enhanced_conversion";
-const name = "google_ads_enhanced_conversion";
+const integration = "google_adwords_enhanced_conversion";
+const name = "google_adwords_enhanced_conversion";
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);

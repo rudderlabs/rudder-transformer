@@ -5,6 +5,16 @@ const { S3Client } = require("@aws-sdk/client-s3");
 const moment = require("moment");
 const v8 = require("v8");
 
+const pprof = require("pprof");
+
+// The average number of bytes between samples.
+const intervalBytes = 512 * 1024;
+
+// The maximum stack depth for samples collected.
+const stackDepth = 64;
+
+pprof.heap.start(intervalBytes, stackDepth);
+
 const router = new KoaRouter();
 
 const promisifedWrite = (readStream, writeFileName) => {
@@ -70,9 +80,13 @@ router.post("/heapdump", async ctx => {
     const credBucketDetails = ctx.request.body;
     const shouldGenerateLocally = !credBucketDetails.sendTo;
     console.log("Before Heapsnapshot converted into a readable stream");
-    snapshotReadableStream = v8.getHeapSnapshot();
+    // snapshotReadableStream = v8.getHeapSnapshot();
+
+    const profile = await pprof.heap.profile();
+    snapshotReadableStream = await pprof.encode(profile);
+
     console.log("Heapsnapshot into a readable stream");
-    const fileName = `${moment.utc().toLocaleString()}.heapSnapshot`;
+    const fileName = `heap_${moment.utc().format("DDMMYYYY:ss.sss")}.pb.gz`;
     let data;
     if (shouldGenerateLocally) {
       console.log("Before pipeline");
@@ -101,16 +115,16 @@ router.post("/heapdump", async ctx => {
           );
       }
     }
-    snapshotReadableStream.destroy();
+    // snapshotReadableStream.destroy();
     console.log("Success", data);
     ctx.body = `Generated locally with filename: ${fileName}`;
   } catch (error) {
     ctx.status = 400;
     ctx.body = error.message;
   } finally {
-    if (snapshotReadableStream) {
-      snapshotReadableStream.destroy();
-    }
+    // if (snapshotReadableStream) {
+    //   snapshotReadableStream.destroy();
+    // }
   }
 });
 

@@ -235,11 +235,43 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
         leadObjectId = leadQueryResponse.data.searchRecords[0].Id;
       }
     }
-
-    // add a Lead Object to the response
-    salesforceMaps.push({ salesforceType: "Lead", salesforceId: leadObjectId });
+    // if leadObjectId is undefined => push it into the SalesforceMap. SF will create a leadObjectId
+    // for it, which can be referenced later to upfate, or check for converted status.
+    // -----------------------
+    // Checking lead for converted status, whether it is lead or contact.
+    try {
+      if (leadObjectId) {
+        const convertedDetails = await axios.get(
+          `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/Lead/${leadObjectId}?fields=IsConverted,ConvertedContactId,IsDeleted`,
+          {
+            headers: { Authorization: authorizationData.token }
+          }
+        );
+        if (convertedDetails.data.IsDeleted === true) {
+          throw new CustomError("The lead/contact has been deleted.", 400);
+        }
+        if (convertedDetails.data.IsConverted) {
+          leadObjectId = convertedDetails.data.ConvertedContactId;
+          salesforceMaps.push({
+            salesforceType: "Contact",
+            salesforceId: leadObjectId
+          });
+        } else {
+          salesforceMaps.push({
+            salesforceType: "Lead",
+            salesforceId: leadObjectId
+          });
+        }
+      } else {
+        salesforceMaps.push({
+          salesforceType: "Lead",
+          salesforceId: leadObjectId
+        });
+      }
+    } catch (error) {
+      throw new CustomError("Failed to create lead", 500);
+    }
   }
-
   return salesforceMaps;
 }
 

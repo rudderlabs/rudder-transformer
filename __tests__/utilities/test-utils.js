@@ -12,7 +12,6 @@ const cdkEnabledDestinations = {
   "lytics": true,
   "kochava": true,
   "statsig": true,
-  "splitio": true,
 }
 
 function getDestFromTestFile(filePath) {

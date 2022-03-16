@@ -88,16 +88,6 @@
         "GMV": true,
         "abc": "new-val"
       },
-      "context": {
-        "ip": "14.5.67.21",
-        "traits": {
-          "abc": "new-val",
-          "key": "key_user_0"
-        },
-        "library": {
-          "name": "http"
-        }
-      },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
       "timestamp": "2021-03-01T22:55:54.771Z",
@@ -127,16 +117,6 @@
         "GMV": true,
         "abc": "new-val"
       },
-      "context": {
-        "ip": "14.5.67.21",
-        "traits": {
-          "abc": "new-val",
-          "key": "key_user_0"
-        },
-        "library": {
-          "name": "http"
-        }
-      },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
       "timestamp": "2021-03-01T22:55:54.771Z",
@@ -165,16 +145,6 @@
         "vertical": "restaurant",
         "GMV": true,
         "abc": "new-val"
-      },
-      "context": {
-        "ip": "14.5.67.21",
-        "traits": {
-          "abc": "new-val",
-          "key": "key_user_0"
-        },
-        "library": {
-          "name": "http"
-        }
       },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
@@ -297,16 +267,6 @@
         "GMV": true,
         "abc": "new-val"
       },
-      "context": {
-        "ip": "14.5.67.21",
-        "traits": {
-          "abc": "new-val",
-          "key": "key_user_0"
-        },
-        "library": {
-          "name": "http"
-        }
-      },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
       "timestamp": "2021-03-01T22:55:54.771Z",
@@ -340,16 +300,6 @@
         "GMV": true,
         "abc": "new-val"
       },
-      "context": {
-        "ip": "14.5.67.21",
-        "traits": {
-          "abc": "new-val",
-          "key": "key_user_0"
-        },
-        "library": {
-          "name": "http"
-        }
-      },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",
       "timestamp": "2021-03-01T22:55:54.771Z",
@@ -360,6 +310,31 @@
       "Config": {
         "apiKey": "abcde",
         "environment": "production",
+        "trafficType": "user"
+      }
+    }
+  },
+  {
+    "message": {
+      "userId": "user123",
+      "messageId": "c73198a8-41d8-4426-9fd9-de167194d5f3",
+      "rudderId": "bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "type": "identify",
+      "timestamp": "2020-01-21T00:21:34.208Z",
+      "writeKey": "1pe7u01A7rYOrvacE6WSgI6ESXh",
+      "receivedAt": "2021-04-19T14:53:18.215+05:30",
+      "requestIP": "[::1]"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "environment": "staging",
         "trafficType": "user"
       }
     }

@@ -128,6 +128,36 @@
         "identity": "sampath",
         "event": "Send Transactional Email",
         "properties": {
+          "Location.City": "Los Angeles",
+          "Location.State": "CA",
+          "hobbies[0]": "Music",
+          "hobbies[1]": "Running"
+        },
+        "timestamp": "2020-01-17T13:23:20.844Z",
+        "app_id": "<app id>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sampath",
+        "event": "Send Transactional Email",
+        "properties": {
           "subject": "Welcome to My App!",
           "variation": "A"
         },

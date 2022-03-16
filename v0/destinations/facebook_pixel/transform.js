@@ -527,6 +527,16 @@ const responseBuilderSimple = (message, category, destination) => {
     }
   }
 
+  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+
+  if (
+    customData &&
+    customData.content_category &&
+    typeof customData.content_category !== "string"
+  ) {
+    delete customData.content_category;
+  }
+
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;

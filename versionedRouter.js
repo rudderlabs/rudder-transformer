@@ -3,6 +3,7 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const v8 = require("v8");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const {
@@ -15,6 +16,7 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const profilingRouter = require("./routes/profiling");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
@@ -35,6 +37,9 @@ const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   : false;
 
 const router = new Router();
+
+// Router for assistance in profiling
+router.use(profilingRouter);
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();

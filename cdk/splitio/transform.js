@@ -74,7 +74,6 @@ function defaultPostMapper(event, mappedPayload, rudderContext) {
   mappedPayload.eventTypeId = formatEventTypeId(mappedPayload.eventTypeId);
   if (message.properties) {
     bufferProperty = populateOutputProperty(message.properties);
-    console.log(bufferProperty);
   }
 
   if (message.category) {

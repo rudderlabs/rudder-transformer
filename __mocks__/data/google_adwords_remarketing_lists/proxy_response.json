@@ -59,5 +59,51 @@
       },
       "status": 400
     }
+  },
+  "https://googleads.googleapis.com/v10/customers/1234567890/googleAds:searchStream": {
+    "response": {
+      "data": [
+        {
+          "error": {
+            "code": 401,
+            "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+            "status": "UNAUTHENTICATED"
+          }
+        }
+      ],
+      "status": 401
+    }
+  },
+  "https://googleads.googleapis.com/v10/customers/1234567891/googleAds:searchStream": {
+    "data": [
+      {
+        "results": [
+          {
+            "conversionAction": {
+              "resourceName": "customers/7693729833/conversionActions/848898416",
+              "id": "848898416"
+            }
+          }
+        ],
+        "fieldMask": "conversionAction.id",
+        "requestId": "pNnCTCWGP9XOyy3Hmj7yGA"
+      }
+    ],
+    "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/1234567891:uploadConversionAdjustments": {
+    "data": [
+      {
+        "adjustmentType": "ENHANCEMENT",
+        "conversionAction": "customers/7693729833/conversionActions/874224905",
+        "adjustmentDateTime": "2021-01-01 12:32:45-08:00",
+        "gclidDateTimePair": {
+          "gclid": "1234",
+          "conversionDateTime": "2021-01-01 12:32:45-08:00"
+        },
+        "orderId": "12345"
+      }
+    ],
+    "status": 200
   }
 }

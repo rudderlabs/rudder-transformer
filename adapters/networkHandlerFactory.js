@@ -14,12 +14,17 @@ const {
   networkHandler: GoogleAdwordsRemarketingListNetworkHandler
 } = require("../v0/destinations/google_adwords_remarketing_lists/util");
 
+const {
+  networkHandler: GoogleAdwordsEnhancedConversions
+} = require("../v0/destinations/google_adwords_enhanced_conversions/util");
+
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
   marketo: MarketoNetworkHandler,
   pardot: PardotNetworkHandler,
-  google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler
+  google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
+  google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions
 };
 
 const getNetworkHandler = type => {

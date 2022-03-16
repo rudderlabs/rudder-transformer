@@ -18,6 +18,7 @@
     "CANDU": true,
     "TIKTOK_ADS": true,
     "PARDOT": true,
-    "GOOGLE_ADWORDS_REMARKETING_LISTS": true
+    "GOOGLE_ADWORDS_REMARKETING_LISTS": true,
+    "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS": true
   }
 }

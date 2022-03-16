@@ -3,7 +3,6 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
-const v8 = require("v8");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const {

@@ -49,6 +49,20 @@ const uploadToAWS = async (credBucketDetails, fileName, readStream) => {
   return uploadResult;
 };
 
+/**
+ * Example usage of API
+ * 
+ * Should have PutS3Object permission for the bucket mentioned
+    curl --location --request POST 'http://localhost:9090/heapdump' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "sendTo": "aws",
+        "accessKeyId": "<AWS_ACCESS_KEY>",
+        "secretAccessKey": "<AWS_SECRET_ACCESS_KEY>",
+        "bucket": "<S3_BUCKET_NAME>",
+        "region": "<AWS_REGION>"
+    }'
+ */
 router.post("/heapdump", async ctx => {
   let snapshotReadableStream;
   try {

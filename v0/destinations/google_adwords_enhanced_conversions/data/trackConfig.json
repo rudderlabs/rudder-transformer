@@ -105,6 +105,8 @@
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.countryCode",
     "sourceKeys": [
       "context.traits.countryCode",
+      "context.traits.country",
+      "context.traits.address.countryCode",
       "context.traits.address.countryCode"
     ],
     "required": false,

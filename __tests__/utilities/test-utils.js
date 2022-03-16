@@ -11,7 +11,8 @@ const cdkEnabledDestinations = {
   "userlist": true,
   "lytics": true,
   "kochava": true,
-  "statsig": true
+  "statsig": true,
+  "splitio": true,
 }
 
 function getDestFromTestFile(filePath) {
@@ -76,6 +77,7 @@ function executeTransformationTest(dest, transformAt) {
               tcInput,
               ConfigFactory.getConfig(dest)
             )
+            console.log(JSON.stringify(actualData));
           } else {
             const version = "v0";
             const transformer = require(

@@ -1,0 +1,44 @@
+message:
+  supportedMessageTypes:
+    - page
+    - screen 
+    - identify
+    - track
+    - group
+  default: 
+    transformation:
+        mapperPath: ./mapping/default.yaml
+        postMapper:
+          name: "defaultPostMapper"
+        response:
+          endpoint: "https://events.split.io/api/events"
+          method: POST
+          format: JSON
+          headers:
+            Authorization: "Bearer {{ destConfig.apiKey }}"
+            Content-Type: "application/json"
+  identify:
+    transformation:
+      mapperPath: ./mapping/default.yaml
+      postMapper:
+        name: "identifyPostMapper"
+      response:
+        endpoint: "https://events.split.io/api/events"
+        method: POST
+        format: JSON
+        headers:
+          Authorization: "Bearer {{ destConfig.apiKey }}"
+          Content-Type: "application/json"
+        
+  group: 
+    transformation:
+      mapperPath: ./mapping/default.yaml
+      postMapper:
+        name: "groupPostMapper"
+      response:
+        endpoint: "https://events.split.io/api/events"
+        method: POST
+        format: JSON
+        headers:
+          Authorization: "Bearer {{ destConfig.apiKey }}"
+          Content-Type: "application/json"

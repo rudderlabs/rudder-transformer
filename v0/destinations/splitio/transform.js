@@ -82,7 +82,10 @@ function prepareResponse(message, destination, category) {
         }
         break;
       default:
-        throw new CustomError("Message type not supported", 400);
+        throw new CustomError(
+          `message type ${type} not supported for splitio`,
+          400
+        );
     }
   } else {
     throw new CustomError("eventTypeId does not match with ideal format", 400);
@@ -98,10 +101,7 @@ function prepareResponse(message, destination, category) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type for splitio", 400);
   }
   const category = CONFIG_CATEGORIES.EVENT;
   const response = prepareResponse(message, destination, category);

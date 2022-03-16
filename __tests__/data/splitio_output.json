@@ -180,10 +180,10 @@
     "files": {}
   },
   {
-    "error": "Message Type is not present. Aborting message."
+    "error": "invalid message type for splitio"
   },
   {
-    "error": "Message type not supported"
+    "error": "message type abc not supported for splitio"
   },
   {
     "error": "eventTypeId does not match with ideal format"
@@ -211,31 +211,6 @@
           "abc": "new-val",
           "category": "food"
         }
-      },
-      "XML": {},
-      "JSON_ARRAY": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://events.split.io/api/events",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer abcde"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "eventTypeId": "identify",
-        "key": "user123",
-        "timestamp": 1579566094208,
-        "environmentName": "staging",
-        "trafficTypeName": "user",
-        "properties": {}
       },
       "XML": {},
       "JSON_ARRAY": {},

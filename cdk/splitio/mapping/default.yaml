@@ -1,0 +1,38 @@
+- destKey: eventTypeId
+  sourceKeys:
+    - event
+    - name
+    - type
+  metadata:
+    type: toString
+  required: true
+
+- destKey: key
+  sourceKeys: userId
+  sourceFromGenericMap: true
+  required: true
+
+- destKey: timestamp
+  sourceKeys: timestamp
+  sourceFromGenericMap: true
+  metadata:
+    type: timestamp
+  required: false
+
+- destKey: value
+  sourceKeys:
+    - properties.revenue
+    - properties.value
+    - properties.total
+  metadata:
+    type: toFloat
+  required: false
+  
+- destKey: environmentName
+  sourceKeys: environment
+  context: destConfig
+  
+- destKey: trafficTypeName
+  sourceKeys: trafficType
+  context: destConfig
+

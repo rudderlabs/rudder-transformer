@@ -20,7 +20,7 @@ function identifyPostMapper(event, mappedPayload, rudderContext) {
   ];
 
   let responseBody;
-  const customPayload = message.traits || message.context.traits;
+  const customPayload = message.traits || message.context.traits || {};
   identifyFields.forEach(value => {
     delete customPayload[value];
   });

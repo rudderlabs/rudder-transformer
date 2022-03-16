@@ -40,7 +40,8 @@ function responseBuilderSimple(message, category, destination) {
     let customPayload;
     switch (message.type) {
       case EventType.IDENTIFY:
-        customPayload = message.traits || message.context.traits;
+        // fix for cases where traits and context.traits is missing
+        customPayload = message.traits || message.context.traits || {};
         identifyFields.forEach(value => {
           delete customPayload[value];
         });

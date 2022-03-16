@@ -32,7 +32,7 @@ const uploadToAWS = async (credBucketDetails, fileName, readStream) => {
     region: credBucketDetails.region
   });
   const params = {
-    Bucket: credBucketDetails.bucket || "sankeerth-test",
+    Bucket: credBucketDetails.bucket,
     Key: fileName,
     Body: readStream
   };

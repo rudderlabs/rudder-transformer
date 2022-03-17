@@ -1,5 +1,5 @@
 - destKey: identity
-  sourceKeys:
+  sourceKeys:  
     - userId
     - traits.userId
     - traits.id
@@ -16,3 +16,13 @@
   sourceKeys: properties
   metadata:
     type: flatJson
+
+- destKey: timestamp
+  sourceKeys: timestamp
+  sourceFromGenericMap: true
+  required: false
+
+- destKey: idempotency_key
+  sourceKeys: properties.idempotencyKey
+  required: false
+

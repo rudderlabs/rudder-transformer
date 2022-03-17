@@ -56,6 +56,17 @@ function routerCommonformTestParams() {
   };
 }
 
+function fetchCdkStageFromConfig (destination) {
+  let cdkEnabled = false;
+  if(destination.DestinationDefinition && 
+    destination.DestinationDefinition.Config && 
+    destination.DestinationDefinition.Config.cdkEnabled) 
+    {
+    cdkEnabled = destination.DestinationDefinition.Config.cdkEnabled;
+  }
+  return cdkEnabled;
+}
+
 function executeTransformationTest(dest, transformAt) {
   const testParams = formTestParams(dest, transformAt);
   const routerCommonTestParams = routerCommonformTestParams();
@@ -67,16 +78,16 @@ function executeTransformationTest(dest, transformAt) {
 
   describe(`${dest} ${transformAt} tests`, () => {
     input.map((tcInput, index) => {
+      const cdkEnabled = fetchCdkStageFromConfig(tcInput.destination);
       return it(`${dest} ${transformAt} tests - ${index}`, async () => {
         let actualData;
         try {
-          if (iscdkDest && transformAt === 'processor') {
+          if ((iscdkDest || cdkEnabled) && transformAt === 'processor') {
             // We currently support processor transformation only in CDK
             actualData = await Executor.execute(
               tcInput,
               ConfigFactory.getConfig(dest)
             )
-            console.log(JSON.stringify(actualData));
           } else {
             const version = "v0";
             const transformer = require(

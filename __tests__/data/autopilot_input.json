@@ -8,6 +8,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -85,6 +86,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -166,6 +168,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -247,6 +250,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -327,6 +331,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -406,6 +411,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -487,6 +493,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -562,6 +569,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }
@@ -642,6 +650,7 @@
         "Name": "AUTOPILOT",
         "DisplayName": "Autopilot",
         "Config": {
+          "cdkEnabled": true,
           "excludeKeys": [],
           "includeKeys": []
         }

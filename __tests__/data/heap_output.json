@@ -43,7 +43,8 @@
           "subject": "Welcome to My App!",
           "variation": "A"
         },
-        "app_id": "<app id>"
+        "app_id": "<app id>",
+        "timestamp": "2020-01-16T13:23:20.844Z"
       },
       "XML": {},
       "JSON_ARRAY": {},
@@ -72,40 +73,22 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": "73371e96-15e3-49da-9c08-ae3f05fa6fa8",
-        "event": "PRO-TRADE",
+        "identity": "sampath",
+        "event": "Send Transactional Email",
         "properties": {
-          "BB_USER_ID": "73371e96-15e3-49da-9c08-ae3f05fa6fa8",
-          "BCM_USER_ID": 169797,
-          "COIN_SYMBOL": "SUSHI",
-          "CREATED_ON": "2022-03-08T23:50:32.144843Z",
-          "FINAL_FEE_AMOUNT": 0.023973,
-          "FINAL_FEE_AMOUNT_CAD": 0.088702,
-          "FINAL_GROSS_AMOUNT": 23.97348,
-          "FINAL_GROSS_AMOUNT_CAD": 88.701876,
-          "FINAL_NET_AMOUNT": 23.949506,
-          "FINAL_NET_AMOUNT_CAD": 88.613174,
-          "ORDER_ID": 7493989780042858000,
-          "PLATFORM": "PRO-TRADE",
-          "PRICE": 3.7,
-          "QUOTE_SYMBOL": "CAD",
-          "RECORD_TYPE": "BUY",
-          "REF_ID": "397208500",
-          "STATUS": "COMPLETED",
-          "SUB_TYPE": null,
-          "TRANSACTION_METHOD": null,
-          "VERIFIED_BY": null,
-          "VERIFIED_BY_SECOND": null,
-          "VERIFIED_ON": null,
-          "VERIFIED_ON_SECOND": null
+          "subject": "Welcome to My App!",
+          "variation": "A"
         },
-        "app_id": "<appId>"
+        "timestamp": "2021-02-16T18:53:20.866+05:30",
+        "idempotency_key": "1234",
+        "app_id": "<app id>"
       },
       "JSON_ARRAY": {},
       "XML": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "userId": "sampath"
   },
   {
     "version": "1",
@@ -119,22 +102,79 @@
     "params": {},
     "body": {
       "JSON": {
-        "identity": "31021c55-4c07-42bc-93e6-cc388d063cd4",
-        "event": "search_job",
+        "identity": "sampath",
+        "event": "Send Transactional Email",
         "properties": {
-          "filters.contract": "All",
-          "filters.distance": 50,
-          "filters.location": "Victoria, Australia",
-          "filters.type": "All",
-          "search_value": "software developer"
+          "subject": "Welcome to My App!",
+          "variation": "A"
         },
-        "app_id": "<appId>"
+        "timestamp": "2020-01-17T13:23:20.844Z",
+        "idempotency_key": "1234",
+        "app_id": "<app id>"
       },
       "JSON_ARRAY": {},
       "XML": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "f485e27f-c84c-4932-bb80-98d32d6a5ff5"
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sampath",
+        "event": "Send Transactional Email",
+        "properties": {
+          "Location.City": "Los Angeles",
+          "Location.State": "CA",
+          "hobbies[0]": "Music",
+          "hobbies[1]": "Running"
+        },
+        "timestamp": "2020-01-17T13:23:20.844Z",
+        "app_id": "<app id>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://heapanalytics.com/api/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": "sampath",
+        "event": "Send Transactional Email",
+        "properties": {
+          "subject": "Welcome to My App!",
+          "variation": "A"
+        },
+        "timestamp": "2020-01-17T13:23:20.844Z",
+        "app_id": "<app id>"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "sampath"
   }
 ]

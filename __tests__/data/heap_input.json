@@ -5,6 +5,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -62,6 +65,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -124,6 +130,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -180,6 +189,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -237,322 +249,270 @@
     }
   },
   {
-    "message": {
-      "channel": "sources",
-      "context": {
-        "sources": {
-          "batch_id": "be6b9117-d941-4021-b2a3-bbbd45b52514",
-          "job_id": "26422c0OBiKF1M94pRjDWXHO8yl/Syncher",
-          "job_run_id": "c8kgddtcfvc5nq2cbtog",
-          "task_id": "TRANSACTIONS",
-          "task_run_id": "c8kgddtcfvc5nq2cbtp0",
-          "version": "hotfix.hosted-oom"
-        }
-      },
-      "event": "PRO-TRADE",
-      "messageId": "94a631d7-0904-4479-8f96-1225f158eda3",
-      "originalTimestamp": "2022-03-08T23:50:32.144843Z",
-      "properties": {
-        "BB_USER_ID": "73371e96-15e3-49da-9c08-ae3f05fa6fa8",
-        "BCM_USER_ID": 169797,
-        "COIN_SYMBOL": "SUSHI",
-        "CREATED_ON": "2022-03-08T23:50:32.144843Z",
-        "FINAL_FEE_AMOUNT": 0.023973,
-        "FINAL_FEE_AMOUNT_CAD": 0.088702,
-        "FINAL_GROSS_AMOUNT": 23.97348,
-        "FINAL_GROSS_AMOUNT_CAD": 88.701876,
-        "FINAL_NET_AMOUNT": 23.949506,
-        "FINAL_NET_AMOUNT_CAD": 88.613174,
-        "ORDER_ID": 7493989780042858000,
-        "PLATFORM": "PRO-TRADE",
-        "PRICE": 3.7,
-        "QUOTE_SYMBOL": "CAD",
-        "RECORD_TYPE": "BUY",
-        "REF_ID": "397208500",
-        "STATUS": "COMPLETED",
-        "SUB_TYPE": null,
-        "TRANSACTION_METHOD": null,
-        "VERIFIED_BY": null,
-        "VERIFIED_BY_SECOND": null,
-        "VERIFIED_ON": null,
-        "VERIFIED_ON_SECOND": null
-      },
-      "receivedAt": "2022-03-10T11:43:17.648Z",
-      "recievedAt": "2022-03-08T23:50:32.144843Z",
-      "recordId": "326395",
-      "request_ip": "10.1.118.221",
-      "rudderId": "25329a61-b756-4f43-87a2-dc97ad7f3ac2",
-      "sentAt": "2022-03-08T23:50:32.144843Z",
-      "timestamp": "2022-03-08T23:50:32.144843Z",
-      "type": "track",
-      "userId": "73371e96-15e3-49da-9c08-ae3f05fa6fa8"
-    },
-    "metadata": {
-      "sourceId": "26422c0OBiRF1M94pRjDWXHO8yl",
-      "workspaceId": "206FgOUPgnBtrkgZroRSwsZHbbQ",
-      "namespace": "namespace",
-      "instanceId": "instance",
-      "sourceType": "snowflake",
-      "sourceCategory": "warehouse",
-      "trackingPlanId": "",
-      "trackingPlanVersion": 0,
-      "sourceTpConfig": null,
-      "mergedTpConfig": null,
-      "destinationId": "24IXxK0LdH8HePSUTtqR8Scu7Nm",
-      "jobRunId": "",
-      "jobId": 1095349398,
-      "sourceBatchId": "be6b9117-d941-4021-b2a3-bbbd45b52514",
-      "sourceJobId": "26422c0OBiKF1M94pRjDWXHO8yl/Syncher",
-      "sourceJobRunId": "c8kgddtcfvc5nq2cbtog",
-      "sourceTaskId": "TRANSACTIONS",
-      "sourceTaskRunId": "c8kgddtcfvc5nq2cbtp0",
-      "recordId": "326395",
-      "destinationType": "HEAP",
-      "messageId": "94a631d7-0904-4479-8f96-1225f158eda3",
-      "oauthAccessToken": "",
-      "messageIds": null,
-      "rudderId": "<<>>397208500",
-      "receivedAt": "2022-03-10T11:43:17.648Z",
-      "eventName": "",
-      "eventType": "identify",
-      "sourceDefinitionId": "1lKfm47IlzXQNXD3C3pk6mZtb1S",
-      "destinationDefinitionId": ""
-    },
     "destination": {
-      "ID": "24IXxK0LdH8HePSUTtqR8Scu7Nm",
-      "Name": "Heap QA",
-      "DestinationDefinition": {
-        "ID": "1X6kW6RioSJQuXjk5N0zwfvxg3T",
-        "Name": "HEAP",
-        "DisplayName": "Heap.io",
-        "Config": {
-          "destConfig": {
-            "defaultConfig": [
-              "appId",
-              "blacklistedEvents",
-              "whitelistedEvents",
-              "eventFilteringOption"
-            ],
-            "web": [
-              "useNativeSDK",
-              "oneTrustCookieCategories"
-            ]
-          },
-          "excludeKeys": [],
-          "includeKeys": [
-            "appId",
-            "blacklistedEvents",
-            "whitelistedEvents",
-            "oneTrustCookieCategories",
-            "eventFilteringOption"
-          ],
-          "saveDestinationResponse": true,
-          "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "track"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "warehouse",
-            "reactnative",
-            "flutter",
-            "cordova"
-          ],
-          "transformAt": "processor",
-          "transformAtV1": "processor"
-        },
-        "ResponseRules": null
-      },
       "Config": {
-        "appId": "<appId>"
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
       },
       "Enabled": true,
-      "Transformations": [
-        {
-          "VersionID": "26AA6qb5H90j061p37Edl0kBQaD",
-          "ID": "25qVcc0en4QfKPwPve1vn1oU0Od",
-          "Config": {}
-        }
-      ],
-      "IsProcessorEnabled": true
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
     },
-    "libraries": null,
-    "request": {
-      "query": {}
-    }
-  },
-  {
     "message": {
-      "anonymousId": "f485e27f-c84c-4932-bb80-98d32d6a5ff5",
+      "anonymousId": "sampath",
       "channel": "web",
       "context": {
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
           "namespace": "com.rudderlabs.javascript",
-          "version": "1.4.6"
+          "version": "1.0.0"
         },
-        "campaign": {},
+        "ip": "0.0.0.0",
         "library": {
           "name": "RudderLabs JavaScript SDK",
-          "version": "1.4.6"
+          "version": "1.0.0"
         },
         "locale": "en-US",
         "os": {
           "name": "",
           "version": ""
         },
-        "page": {
-          "initial_referrer": "$direct",
-          "initial_referring_domain": "",
-          "path": "/jobfeed",
-          "referrer": "$direct",
-          "referring_domain": "",
-          "search": "",
-          "tab_url": "https://www.ct.hudson.com/jobfeed",
-          "title": "Hudson Career Transition Portal",
-          "url": "https://www.ct.hudson.com/jobfeed"
-        },
         "screen": {
-          "density": 1,
-          "height": 768,
-          "innerHeight": 625,
-          "innerWidth": 1366,
-          "width": 1366
+          "density": 2
         },
         "traits": {
-          "client_id": "4dd51b17-fec8-4fd2-a532-a148b2176232",
-          "user_email": "samajayarathna@yahoo.com",
-          "user_id": "31021c55-4c07-42bc-93e6-cc388d063cd4",
-          "user_role": "CT-Candidate",
-          "visit_id": "d4d12620-1069-468a-9122-d845b51edb89"
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
         },
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
-      "event": "search_job",
+      "event": "Send Transactional Email",
       "integrations": {
         "All": true
       },
-      "messageId": "513517d2-3fd0-45d4-9888-9adb3c83f493",
-      "originalTimestamp": "2022-03-11T06:18:00.616Z",
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
       "properties": {
-        "filters": {
-          "contract": "All",
-          "distance": 50,
-          "location": "Victoria, Australia",
-          "type": "All"
-        },
-        "search_value": "software developer"
+        "subject": "Welcome to My App!",
+        "variation": "A",
+        "idempotencyKey": "1234"
       },
-      "receivedAt": "2022-03-11T06:18:04.941Z",
-      "request_ip": "203.220.149.37",
-      "rudderId": "92f1b77e-f5f4-49f2-9b91-17e996c887bc",
-      "sentAt": "2022-03-11T06:18:00.616Z",
-      "timestamp": "2022-03-11T06:18:04.941Z",
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2021-02-16T18:53:20.866+05:30",
       "type": "track",
-      "userId": "31021c55-4c07-42bc-93e6-cc388d063cd4"
-    },
-    "metadata": {
-      "sourceId": "21flQSoR0qi62DY9WRhv3azDmbH",
-      "workspaceId": "21cCSzV9KNW333HfDYA9lF289ct",
-      "namespace": "namespace",
-      "instanceId": "instance",
-      "sourceType": "Javascript",
-      "sourceCategory": "",
-      "trackingPlanId": "",
-      "trackingPlanVersion": 0,
-      "sourceTpConfig": null,
-      "mergedTpConfig": null,
-      "destinationId": "25LwsAZ6aEWo0kBafchoy5Xa1HS",
-      "jobRunId": "",
-      "jobId": 1102127551,
-      "sourceBatchId": "",
-      "sourceJobId": "",
-      "sourceJobRunId": "",
-      "sourceTaskId": "",
-      "sourceTaskRunId": "",
-      "recordId": null,
-      "destinationType": "HEAP",
-      "messageId": "513517d2-3fd0-45d4-9888-9adb3c83f493",
-      "oauthAccessToken": "",
-      "messageIds": null,
-      "rudderId": "f485e27f-c84c-4932-bb80-98d32d6a5ff5<<>>31021c55-4c07-42bc-93e6-cc388d063cd4",
-      "receivedAt": "2022-03-11T06:18:04.941Z",
-      "eventName": "search_job",
-      "eventType": "track",
-      "sourceDefinitionId": "1TW48i2bIzEl1HPf825cEznfIM8",
-      "destinationDefinitionId": ""
-    },
+      "userId": "sampath"
+    }
+  },
+  {
     "destination": {
-      "ID": "25LwsAZ6aEWo0kBafchoy5Xa1HS",
-      "Name": "Heap Grainne",
-      "DestinationDefinition": {
-        "ID": "1X6kW6RioSJQuXjkTN0zwfvxg3T",
-        "Name": "HEAP",
-        "DisplayName": "Heap.io",
-        "Config": {
-          "destConfig": {
-            "defaultConfig": [
-              "appId",
-              "blacklistedEvents",
-              "whitelistedEvents",
-              "eventFilteringOption"
-            ],
-            "web": [
-              "useNativeSDK",
-              "oneTrustCookieCategories"
-            ]
-          },
-          "excludeKeys": [],
-          "includeKeys": [
-            "appId",
-            "blacklistedEvents",
-            "whitelistedEvents",
-            "oneTrustCookieCategories",
-            "eventFilteringOption"
-          ],
-          "saveDestinationResponse": true,
-          "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "track"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "warehouse",
-            "reactnative",
-            "flutter",
-            "cordova"
-          ],
-          "transformAt": "processor",
-          "transformAtV1": "processor"
-        },
-        "ResponseRules": null
-      },
       "Config": {
-        "appId": "<appId>",
-        "eventDelivery": false,
-        "eventDeliveryTS": 1639630685935,
-        "useNativeSDK": false
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
       },
       "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
     },
-    "libraries": null,
-    "request": {
-      "query": {}
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A",
+        "idempotencyKey": "1234"
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "Location": {
+          "City": "Los Angeles",
+          "State": "CA"
+        },
+        "hobbies": [
+          "Music",
+          "Running"
+        ]
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A"
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
     }
   }
 ]

@@ -35,48 +35,5 @@
       },
       "Enabled": true
     }
-  },
-  {
-    "message": {
-      "type": "identify",
-      "sentAt": "2020-08-28T16:26:06.466Z",
-      "traits": {
-        "city": "Bangalore",
-        "name": "manashi",
-        "email": "manashi@website.com",
-        "country": "India"
-      },
-      "context": {
-        "traits": {
-          "city": "Bangalore",
-          "name": "manashi",
-          "email": "manashi@website.com",
-          "country": "India"
-        },
-        "library": {
-          "name": "analytics-node",
-          "version": "0.0.3"
-        }
-      },
-      "_metadata": {
-        "nodeVersion": "10.22.0"
-      },
-      "messageId": "node-cc3ef811f686139ee527b806ee0129ef-163a3a88-266f-447e-8cce-34a8f42f8dcd",
-      "anonymousId": "abcdeeeeeeeexxxx102",
-      "originalTimestamp": "2020-08-28T16:26:06.462Z"
-    },
-    "metadata": {
-      "jobId": 2
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-        "mapToSingleEvent": false,
-        "trackAllPages": true,
-        "trackCategorisedPages": false,
-        "trackNamedPages": false
-      },
-      "Enabled": true
-    }
   }
 ]

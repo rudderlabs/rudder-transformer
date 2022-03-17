@@ -1,19 +1,25 @@
 [
   {
+    "batched": true,
     "batchedRequest": {
       "body": {
         "XML": {},
         "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
-          "userId": "abcdeeeeeeeexxxx102",
-          "createdAt": 1598631966468,
-          "eventName": "Email Opened",
-          "dataFields": {
-            "subject": "resume validate",
-            "sendtime": "2020-01-01",
-            "sendlocation": "akashdeep@gmail.com"
-          }
+          "batch": [
+            {
+              "userId": "abcdeeeeeeeexxxx102",
+              "createdAt": 1598631966468,
+              "eventName": "Email Opened",
+              "type": "track",
+              "dataFields": {
+                "subject": "resume validate",
+                "sendtime": "2020-01-01",
+                "sendlocation": "akashdeep@gmail.com"
+              }
+            }
+          ]
         }
       },
       "type": "REST",
@@ -21,66 +27,17 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.iterable.com/api/events/track"
+      "endpoint": "https://api.iterable.com/api/events/trackBulk"
     },
     "metadata": [
       {
         "jobId": 2
       }
     ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-        "mapToSingleEvent": false,
-        "trackAllPages": true,
-        "trackCategorisedPages": false,
-        "trackNamedPages": false
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "batchedRequest": {
-      "body": {
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {},
-        "JSON": {
-          "email": "manashi@website.com",
-          "userId": "abcdeeeeeeeexxxx102",
-          "dataFields": {
-            "city": "Bangalore",
-            "name": "manashi",
-            "email": "manashi@website.com",
-            "country": "India"
-          },
-          "preferUserId": true,
-          "mergeNestedObjects": true
-        }
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
-        "Content-Type": "application/json"
-      },
-      "version": "1",
-      "endpoint": "https://api.iterable.com/api/users/update"
-    },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
+
     "statusCode": 200,
     "destination": {
       "Config": {

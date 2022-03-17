@@ -140,7 +140,11 @@ async function getSaleforceIdForRecord(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(message, authorizationData) {
+async function getSalesforceIdFromPayload(
+  message,
+  authorizationData,
+  destination
+) {
   // define default map
   const salesforceMaps = [];
 
@@ -208,7 +212,7 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
       throw new CustomError("Invalid Email address for Lead Objet", 400);
     }
 
-    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id`;
+    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
     // request configuration will be conditional
     let leadQueryResponse;
@@ -223,60 +227,47 @@ async function getSalesforceIdFromPayload(message, authorizationData) {
       ); // default 500
     }
 
-    let leadObjectId;
     if (
       leadQueryResponse &&
-      leadQueryResponse.data &&
-      leadQueryResponse.data.searchRecords
+      leadQueryResponse.data?.searchRecords?.length > 0
     ) {
       // if count is greater than zero, it means that lead exists, then only update it
       // else the original endpoint, which is the one for creation - can be used
-      if (leadQueryResponse.data.searchRecords.length > 0) {
-        leadObjectId = leadQueryResponse.data.searchRecords[0].Id;
-      }
-    }
-    // if leadObjectId is undefined => push it into the SalesforceMap. SF will create a leadObjectId
-    // for it, which can be referenced later to upfate, or check for converted status.
-    // -----------------------
-    // Checking lead for converted status, whether it is lead or contact.
-    try {
-      if (leadObjectId) {
-        const convertedDetails = await axios.get(
-          `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/sobjects/Lead/${leadObjectId}?fields=IsConverted,ConvertedContactId,IsDeleted`,
-          {
-            headers: { Authorization: authorizationData.token }
-          }
-        );
-        if (convertedDetails.data.IsDeleted === true) {
-          throw new CustomError("The lead/contact has been deleted.", 400);
-        }
-        if (convertedDetails.data.IsConverted) {
-          leadObjectId = convertedDetails.data.ConvertedContactId;
-          salesforceMaps.push({
-            salesforceType: "Contact",
-            salesforceId: leadObjectId
-          });
+      const record = leadQueryResponse.data.searchRecords[0];
+      if (record.IsDeleted === true) {
+        if (record.IsConverted) {
+          throw new CustomError("The contact has been deleted.", 400);
         } else {
-          salesforceMaps.push({
-            salesforceType: "Lead",
-            salesforceId: leadObjectId
-          });
+          throw new CustomError("The lead has been deleted.", 400);
         }
+      }
+      if (record.IsConverted && destination.Config.useContactId) {
+        salesforceMaps.push({
+          salesforceType: "Contact",
+          salesforceId: record.ConvertedContactId
+        });
       } else {
         salesforceMaps.push({
           salesforceType: "Lead",
-          salesforceId: leadObjectId
+          salesforceId: record.Id
         });
       }
-    } catch (error) {
-      throw new CustomError("Failed to create lead", 500);
+    } else {
+      salesforceMaps.push({
+        salesforceType: "Lead",
+        salesforceId: undefined
+      });
     }
   }
   return salesforceMaps;
 }
 
 // Function for handling identify events
-async function processIdentify(message, authorizationData, mapProperty) {
+async function processIdentify(message, authorizationData, destination) {
+  const mapProperty =
+    destination.Config.mapProperty === undefined
+      ? true
+      : destination.Config.mapProperty;
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -301,7 +292,8 @@ async function processIdentify(message, authorizationData, mapProperty) {
   // get salesforce object map
   const salesforceMaps = await getSalesforceIdFromPayload(
     message,
-    authorizationData
+    authorizationData,
+    destination
   );
 
   // iterate over the object types found
@@ -323,10 +315,10 @@ async function processIdentify(message, authorizationData, mapProperty) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, authorizationData, mapProperty) {
+async function processSingleMessage(message, authorizationData, destination) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, authorizationData, mapProperty);
+    response = await processIdentify(message, authorizationData, destination);
   } else {
     throw new CustomError(`message type ${message.type} is not supported`, 400);
   }
@@ -339,9 +331,7 @@ async function process(event) {
   const response = await processSingleMessage(
     event.message,
     authorizationData,
-    event.destination.Config.mapProperty === undefined
-      ? true
-      : event.destination.Config.mapProperty
+    event.destination
   );
   return response;
 }
@@ -390,9 +380,7 @@ const processRouterDest = async inputs => {
           await processSingleMessage(
             input.message,
             authorizationData,
-            input.destination.Config.mapProperty === undefined
-              ? true
-              : input.destination.Config.mapProperty
+            input.destination
           ),
           [input.metadata],
           input.destination

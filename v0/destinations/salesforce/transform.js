@@ -380,9 +380,7 @@ const processRouterDest = async inputs => {
           await processSingleMessage(
             input.message,
             authorizationData,
-            input.destination.Config.mapProperty === undefined
-              ? true
-              : input.destination.Config.mapProperty
+            input.destination
           ),
           [input.metadata],
           input.destination

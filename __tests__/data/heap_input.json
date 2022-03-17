@@ -169,5 +169,257 @@
       "type": "page",
       "userId": "sampath"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A",
+        "idempotencyKey": "1234"
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2021-02-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A",
+        "idempotencyKey": "1234"
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "Location": {
+          "City": "Los Angeles",
+          "State": "CA"
+        },
+        "hobbies": ["Music", "Running"]
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP"
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "sampath",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Send Transactional Email",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
+      "originalTimestamp": "2020-01-17T13:23:20.844Z",
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A"
+      },
+      "receivedAt": "2020-01-16T18:53:23.804+05:30",
+      "request_ip": "[::1]:62312",
+      "sentAt": "2020-01-16T13:23:23.782Z",
+      "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "type": "track",
+      "userId": "sampath"
+    }
   }
 ]

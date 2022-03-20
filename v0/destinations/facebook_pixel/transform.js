@@ -534,7 +534,14 @@ const responseBuilderSimple = (message, category, destination) => {
     customData.content_category &&
     typeof customData.content_category !== "string"
   ) {
-    delete customData.content_category;
+    if(Array.isArray(customData.content_category)) {
+      customData.content_category = customData.content_category.map(String).join('-')
+    } else if (typeof customData.content_category === 'object') {
+      throw new CustomError ("Category must be must be a string");
+    } else {
+      customData.content_category = String(customData.content_category);
+    }
+   // delete customData.content_category;
   }
 
   if (userData && commonData) {

@@ -4,7 +4,7 @@ const gcStats = require("prometheus-gc-stats");
 const prometheusRegistry = new prometheusClient.Registry();
 prometheusClient.collectDefaultMetrics({ register: prometheusRegistry });
 
-const startGcStats = gcStats(prometheusClient.register); // gcStats() would have the same effect in this case
+const startGcStats = gcStats(prometheusRegistry); // gcStats() would have the same effect in this case
 startGcStats();
 
 function durationMiddleware() {

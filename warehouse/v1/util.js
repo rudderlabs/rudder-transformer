@@ -20,8 +20,8 @@ function safeTableName(options, name = "") {
     tableName = tableName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()] &&
-    !skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping &&
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
     tableName = `_${tableName}`;
   }
@@ -50,8 +50,8 @@ function safeColumnName(options, name = "") {
     columnName = columnName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
-    !skipReservedKeywordsEscaping
+    !skipReservedKeywordsEscaping &&
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
     columnName = `_${columnName}`;
   }
@@ -147,7 +147,8 @@ function toBlendoCase(name = "") {
   return name.trim().toLowerCase();
 }
 
-function transformTableName(name = "", useBlendoCasing = false) {
+function transformTableName(options, name = "") {
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
   return useBlendoCasing ? toBlendoCase(name) : transformName("", name);
 }
 

@@ -28,7 +28,8 @@ const maxColumnsInEvent = parseInt(
   10
 );
 
-const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT = process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
+const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
+  process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
 
 const getDataType = (key, val, options) => {
   const type = typeof val;
@@ -478,8 +479,8 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 */
 
 /*
-* Adds source and destination specific information into context
-* */
+ * Adds source and destination specific information into context
+ * */
 function enhanceContextWithSourceDestInfo(message, metadata) {
   if (!WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT) {
     return;
@@ -520,7 +521,6 @@ function processWarehouseMessage(message, options) {
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
-  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -573,8 +573,8 @@ function processWarehouseMessage(message, options) {
       // set event column based on event_text in the tracks table
       const eventColName = utils.safeColumnName(options, "event");
       commonProps[eventColName] = utils.transformTableName(
-        commonProps[utils.safeColumnName(options, "event_text")],
-        useBlendoCasing
+        options,
+        commonProps[utils.safeColumnName(options, "event_text")]
       );
       commonColumnTypes[eventColName] = "string";
 
@@ -592,7 +592,13 @@ function processWarehouseMessage(message, options) {
           tracksColumnTypes,
           options
         );
-        storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
+        storeRudderEvent(
+          utils,
+          message,
+          tracksEvent,
+          tracksColumnTypes,
+          options
+        );
         const tracksMetadata = {
           table: utils.safeTableName(options, "tracks"),
           columns: getColumns(options, tracksEvent, {

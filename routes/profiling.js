@@ -8,10 +8,10 @@ const v8 = require("v8");
 const pprof = require("pprof");
 
 // The average number of bytes between samples.
-const intervalBytes = 512 * 1024;
+const intervalBytes = process.env.PROF_INTERVAL_BYTES || 512 * 1024;
 
 // The maximum stack depth for samples collected.
-const stackDepth = 64;
+const stackDepth = process.env.PROF_STACK_DEPTH || 64;
 
 pprof.heap.start(intervalBytes, stackDepth);
 

@@ -16,6 +16,10 @@ function responseBuilderSimple(message, category, destination) {
   if (payload) {
     if (payload.properties) {
       payload.properties = flattenJson(payload.properties);
+      // remove duplicate key as it is being passed at root.
+      if (payload.properties.idempotencyKey) {
+        delete payload.properties.idempotencyKey;
+      }
     }
     const responseBody = {
       ...payload,
@@ -38,7 +42,10 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("Message Type is not present. Aborting message.", 400);
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
 
   const messageType = message.type.toLowerCase();

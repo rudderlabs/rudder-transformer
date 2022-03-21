@@ -1,22 +1,14 @@
 [
   {
     "destKey": "identity",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
     "destKey": "properties",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
     "required": true
   }
 ]

@@ -2,7 +2,13 @@ const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
-const destinations = ["marketo", "braze", "pardot", "google_adwords_remarketing_lists"];
+const destinations = [
+  "marketo",
+  "braze",
+  "pardot",
+  "google_adwords_remarketing_lists",
+  "google_adwords_enhanced_conversions"
+];
 const deleteUserDestinations = ["am", "braze", "intercom"];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;

@@ -109,7 +109,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(event)) {
+        if (isCdkDestination(event) || destination === "posthog") {
           respEvents = await Executor.execute(
             event,
             ConfigFactory.getConfig(destination)

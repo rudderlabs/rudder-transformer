@@ -1,4 +1,3 @@
----
 - destKey: "$os"
   sourceKeys: context.os.name
 - destKey: "$current_url"

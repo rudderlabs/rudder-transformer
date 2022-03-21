@@ -1,0 +1,94 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/1234567890:uploadConversionAdjustments",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl91011",
+        "login-customer-id": "11"
+      },
+      "params": { "event": "Page View", "customerId": "1234567890" },
+      "body": {
+        "JSON": {
+          "partialFailure": true,
+          "conversionAdjustments": [
+            {
+              "gclidDateTimePair": {
+                "gclid": "gclid1234",
+                "conversionDateTime": "2022-01-01 12:32:45-08:00"
+              },
+              "restatementValue": {
+                "adjustedValue": 10,
+                "currencyCode": "INR"
+              },
+              "orderId": "10000",
+              "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+              "userIdentifiers": [
+                {
+                  "hashedPhoneNumber": "04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe"
+                },
+                {
+                  "addressInfo": {
+                    "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
+                    "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
+                    "state": "UK",
+                    "city": "London",
+                    "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                  }
+                }
+              ],
+              "adjustmentType": "ENHANCEMENT"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
+        "customerId": "1234567890",
+        "subAccount": true,
+        "loginCustomerId": "11",
+        "listOfConversions": [
+          { "conversions": "Page View" },
+          { "conversions": "Product Added" }
+        ],
+        "authStatus": "active"
+      }
+    }
+  },
+  {
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not present. Aborting message."
+  }
+]

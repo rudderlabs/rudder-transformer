@@ -14,6 +14,9 @@ const intervalBytes = parseInt(process.env.PROF_INTERVAL_BYTES || "524288", 10);
 // The maximum stack depth for samples collected.
 const stackDepth = parseInt(process.env.PROF_STACK_DEPTH || "64", 10);
 
+console.log(`Stack Depth set: ${stackDepth}`);
+console.log(`Interval Bytes set: ${intervalBytes}`);
+
 pprof.heap.start(intervalBytes, stackDepth);
 
 const router = new KoaRouter();

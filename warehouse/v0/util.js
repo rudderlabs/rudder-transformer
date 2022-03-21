@@ -29,23 +29,7 @@ function toSafeDBString(provider, name = "") {
   }
 }
 
-function transformNameToBlendoCase(provider, name = "") {
-  let key = name.replace(/[^a-zA-Z0-9\\$]/g, "_");
-
-  const re = /^[a-zA-Z_].*/;
-  if (!re.test(key)) {
-    key = `_${key}`;
-  }
-  if (provider === "postgres") {
-    key = key.substr(0, 63);
-  }
-  return key.toLowerCase();
-}
-
-function safeTableName(options, name = "") {
-  const { provider } = options;
-  const skipReservedKeywordsEscaping =
-    options.integrationOptions.skipReservedKeywordsEscaping || false;
+function safeTableName(provider, name = "") {
   let tableName = name;
   if (tableName === "") {
     tableName = "STRINGEMPTY";
@@ -61,18 +45,14 @@ function safeTableName(options, name = "") {
     tableName = tableName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()] &&
-    !skipReservedKeywordsEscaping
+    reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
     tableName = `_${tableName}`;
   }
   return tableName;
 }
 
-function safeColumnName(options, name = "") {
-  const { provider } = options;
-  const skipReservedKeywordsEscaping =
-    options.integrationOptions.skipReservedKeywordsEscaping || false;
+function safeColumnName(provider, name = "") {
   let columnName = name;
   if (columnName === "") {
     columnName = "STRINGEMPTY";
@@ -88,28 +68,19 @@ function safeColumnName(options, name = "") {
     columnName = columnName.toLowerCase();
   }
   if (
-    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()] &&
-    !skipReservedKeywordsEscaping
+    reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
     columnName = `_${columnName}`;
   }
   return columnName;
 }
 
-function toBlendoCase(name = "") {
-  return name.trim().toLowerCase();
+function transformTableName(name = "") {
+  return toSnakeCase(name);
 }
 
-function transformTableName(name = "", useBlendoCasing = false) {
-  return useBlendoCasing ? toBlendoCase(name) : toSnakeCase(name);
-}
-
-function transformColumnName(options, name = "") {
-  const { provider } = options;
-  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
-  return useBlendoCasing
-    ? transformNameToBlendoCase(provider, name)
-    : toSafeDBString(provider, name);
+function transformColumnName(provider, name = "") {
+  return toSafeDBString(provider, name);
 }
 
 module.exports = {

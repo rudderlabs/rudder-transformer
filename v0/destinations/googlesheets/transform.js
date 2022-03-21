@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const {
   getValueFromMessage,
@@ -87,6 +88,10 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   return responseMessage;
 };
 
+const batch = events => {
+  return { batch: events };
+};
+
 // Main process Function to handle transformation
 const process = event => {
   const { message, destination } = event;
@@ -105,43 +110,51 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
+  const successRespList = [];
+  const errorRespList = [];
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          successRespList.push(input.message);
         }
         // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
+        successRespList.push(await process(input));
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+        errorRespList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+  const batchedResponse = batch(successRespList);
+  batchedResponse.spreadSheetId = inputs[0].destination.Config.sheetId;
+  batchedResponse.spreadSheet = inputs[0].destination.Config.sheetName;
+  return [
+    getSuccessRespEvents(
+      batchedResponse,
+      inputs.map(input => {
+        return input.metadata;
+      }),
+      inputs[0].destination,
+      true
+    ),
+    ...errorRespList
+  ];
 };
 
 module.exports = { process, processRouterDest };
-

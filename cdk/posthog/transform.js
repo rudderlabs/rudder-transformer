@@ -84,6 +84,7 @@ function identifyPostMapper(event, mappedPayload, rudderContext) {
     let doc = yaml.load(fileContents);
     for (let i = 0; i < doc.length; i += 1) {
       console.log(doc[i].destKey);
+      data;
     }
   } catch (e) {
     console.log("myerror", e);

@@ -97,12 +97,7 @@ const process = event => {
   const { message, destination } = event;
   if (destination.Config.sheetName) {
     const payload = {
-      message: processWithCustomMapping(
-        message,
-        destination.Config.eventKeyMap
-      ),
-      spreadSheetId: destination.Config.sheetId,
-      spreadSheet: destination.Config.sheetName
+      message: processWithCustomMapping(message, destination.Config.eventKeyMap)
     };
     return payload;
   }

@@ -1,0 +1,29 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "channel_id",
+    "sourceKeys": "channelId",
+    "required": false
+  },
+  {
+    "destKey": "named_user_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "device_type",
+    "sourceKeys": "deviceType",
+    "required": false
+  }
+]

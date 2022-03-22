@@ -16,6 +16,10 @@ function responseBuilderSimple(message, category, destination) {
   if (payload) {
     if (payload.properties) {
       payload.properties = flattenJson(payload.properties);
+      // remove duplicate key as it is being passed at root.
+      if (payload.properties.idempotencyKey) {
+        delete payload.properties.idempotencyKey;
+      }
     }
     const responseBody = {
       ...payload,

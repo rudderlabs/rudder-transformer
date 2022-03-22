@@ -527,6 +527,25 @@ const responseBuilderSimple = (message, category, destination) => {
     }
   }
 
+  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+
+  if (
+    customData &&
+    customData.content_category &&
+    typeof customData.content_category !== "string"
+  ) {
+    if (Array.isArray(customData.content_category)) {
+      customData.content_category = customData.content_category
+        .map(String)
+        .join(",");
+    } else if (typeof customData.content_category === 'object') {
+      throw new CustomError("Category must be must be a string");
+    } else {
+      customData.content_category = String(customData.content_category);
+    }
+   // delete customData.content_category;
+  }
+
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;

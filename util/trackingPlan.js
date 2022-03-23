@@ -4,7 +4,7 @@ const logger = require("../logger");
 const stats = require("./stats");
 
 const tpCache = new NodeCache();
-const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+const CONFIG_BACKEND_URL = "http://localhost:5005";
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
 
 /**

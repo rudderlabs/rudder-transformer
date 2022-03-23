@@ -34,14 +34,15 @@ const fieldSchema = async config => {
   fieldArr.forEach(field => {
     fieldArrNames.push(field.name);
   });
+  // const fieldNames = fieldArrNames;
   return fieldArrNames;
 };
 const getHeaderFields = (config, fieldArrNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach(colField => {
-    if (!fieldArrNames.includes(colField)) {
-      delete columnFieldsMapping.colField;
+    if (!fieldArrNames.includes(colField.from)) {
+      columnFieldsMapping.splice(columnFieldsMapping.indexOf(colField), 1);
     }
   });
   const columnField = getHashFromArray(
@@ -60,105 +61,110 @@ const getFileData = (inputEvents, config) => {
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const fieldArrNames = fieldSchema(config);
-  const headerArr = getHeaderFields(config, fieldArrNames);
+  return fieldSchema(config).then(fieldArrNames => {
+    // console.log(fieldArrNames);
+    const headerArr = getHeaderFields(config, fieldArrNames);
 
-  if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
-    // dedup starts
-    // Time Complexity = O(n2)
-    const dedupMap = new Map();
-    // iterating input and storing the occurences of messages
-    // with same dedup property received from config
-    // Example: dedup-property = email
-    // k (key)            v (index of occurence in input)
-    // user@email         [4,7,9]
-    // user2@email        [2,3]
-    // user3@email        [1]
-    input.map((element, index) => {
-      const indexAr =
-        dedupMap.get(element.message[config.deDuplicationField]) || [];
-      indexAr.push(index);
-      dedupMap.set(element.message[config.deDuplicationField], indexAr);
-      return dedupMap;
-    });
-    // 1. iterating dedupMap
-    // 2. storing the duplicate occurences in dupValues arr
-    // 3. iterating dupValues arr, and mapping each property on firstBorn
-    // 4. as dupValues arr is sorted hence the firstBorn will inherit properties of last occurence (most updated one)
-    // 5. store firstBorn to first occurence in input as it should get the highest priority
-    dedupMap.forEach(indexes => {
-      let firstBorn = {};
-      indexes.forEach(idx => {
-        headerArr.forEach(headerStr => {
-          // if duplicate item has defined property to offer we take it else old one remains
-          firstBorn[headerStr] =
-            input[idx].message[headerStr] || firstBorn[headerStr];
-        });
+    // const fieldArrNames = fieldSchema(config);
+    // const headerArr = getHeaderFields(config, fieldArrNames);
+
+    if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
+      // dedup starts
+      // Time Complexity = O(n2)
+      const dedupMap = new Map();
+      // iterating input and storing the occurences of messages
+      // with same dedup property received from config
+      // Example: dedup-property = email
+      // k (key)            v (index of occurence in input)
+      // user@email         [4,7,9]
+      // user2@email        [2,3]
+      // user3@email        [1]
+      input.map((element, index) => {
+        const indexAr =
+          dedupMap.get(element.message[config.deDuplicationField]) || [];
+        indexAr.push(index);
+        dedupMap.set(element.message[config.deDuplicationField], indexAr);
+        return dedupMap;
       });
-      firstBorn = removeUndefinedAndNullValues(firstBorn);
-      input[indexes[0]].message = firstBorn;
-    });
-    // dedup ends
-  }
-
-  input.forEach(i => {
-    const inputData = i;
-    const jobId = inputData.metadata.job_id;
-    const data = {};
-    data[jobId] = inputData.message;
-    messageArr.push(data);
-  });
-
-  if (!Object.keys(headerArr).length) {
-    throw new CustomError("Header fields not present", 400);
-  }
-  const csv = [];
-  csv.push(headerArr.toString());
-  endTime = Date.now();
-  requestTime = endTime - startTime;
-  stats.gauge("marketo_bulk_upload_create_header_time", requestTime, {
-    integration: "Marketo_bulk_upload"
-  });
-  const unsuccessfulJobs = [];
-  const successfulJobs = [];
-  const MARKETO_FILE_PATH = getMarketoFilePath();
-  startTime = Date.now();
-  messageArr.map(row => {
-    const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
-    const response = headerArr
-      .map(fieldName => JSON.stringify(Object.values(row)[0][fieldName], ""))
-      .join(",");
-    if (csvSize.length <= MARKETO_FILE_SIZE) {
-      csv.push(response);
-      successfulJobs.push(Object.keys(row)[0]);
-    } else {
-      unsuccessfulJobs.push(Object.keys(row)[0]);
+      // 1. iterating dedupMap
+      // 2. storing the duplicate occurences in dupValues arr
+      // 3. iterating dupValues arr, and mapping each property on firstBorn
+      // 4. as dupValues arr is sorted hence the firstBorn will inherit properties of last occurence (most updated one)
+      // 5. store firstBorn to first occurence in input as it should get the highest priority
+      dedupMap.forEach(indexes => {
+        let firstBorn = {};
+        indexes.forEach(idx => {
+          headerArr.forEach(headerStr => {
+            // if duplicate item has defined property to offer we take it else old one remains
+            firstBorn[headerStr] =
+              input[idx].message[headerStr] || firstBorn[headerStr];
+          });
+        });
+        firstBorn = removeUndefinedAndNullValues(firstBorn);
+        input[indexes[0]].message = firstBorn;
+      });
+      // dedup ends
     }
-    return response;
-  });
-  endTime = Date.now();
-  requestTime = endTime - startTime;
-  stats.gauge("marketo_bulk_upload_create_csvloop_time", requestTime, {
-    integration: "Marketo_bulk_upload"
-  });
-  const fileSize = Buffer.from(csv.join("\n")).length;
-  if (csv.length > 1) {
-    startTime = Date.now();
-    fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
-    const readStream = fs.createReadStream(MARKETO_FILE_PATH);
-    fs.unlinkSync(MARKETO_FILE_PATH);
+
+    input.forEach(i => {
+      const inputData = i;
+      const jobId = inputData.metadata.job_id;
+      const data = {};
+      data[jobId] = inputData.message;
+      messageArr.push(data);
+    });
+
+    if (!Object.keys(headerArr).length) {
+      throw new CustomError("Header fields not present", 400);
+    }
+    const csv = [];
+    csv.push(headerArr.toString());
     endTime = Date.now();
     requestTime = endTime - startTime;
-    stats.gauge("marketo_bulk_upload_create_file_time", requestTime, {
+    stats.gauge("marketo_bulk_upload_create_header_time", requestTime, {
       integration: "Marketo_bulk_upload"
     });
-    stats.gauge("marketo_bulk_upload_upload_file_size", fileSize, {
+    const unsuccessfulJobs = [];
+    const successfulJobs = [];
+    const MARKETO_FILE_PATH = getMarketoFilePath();
+    startTime = Date.now();
+    messageArr.map(row => {
+      const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
+      const response = headerArr
+        .map(fieldName => JSON.stringify(Object.values(row)[0][fieldName], ""))
+        .join(",");
+      if (csvSize.length <= MARKETO_FILE_SIZE) {
+        csv.push(response);
+        successfulJobs.push(Object.keys(row)[0]);
+      } else {
+        unsuccessfulJobs.push(Object.keys(row)[0]);
+      }
+      return response;
+    });
+    endTime = Date.now();
+    requestTime = endTime - startTime;
+    stats.gauge("marketo_bulk_upload_create_csvloop_time", requestTime, {
       integration: "Marketo_bulk_upload"
     });
+    const fileSize = Buffer.from(csv.join("\n")).length;
+    if (csv.length > 1) {
+      startTime = Date.now();
+      fs.writeFileSync(MARKETO_FILE_PATH, csv.join("\n"));
+      const readStream = fs.createReadStream(MARKETO_FILE_PATH);
+      fs.unlinkSync(MARKETO_FILE_PATH);
+      endTime = Date.now();
+      requestTime = endTime - startTime;
+      stats.gauge("marketo_bulk_upload_create_file_time", requestTime, {
+        integration: "Marketo_bulk_upload"
+      });
+      stats.gauge("marketo_bulk_upload_upload_file_size", fileSize, {
+        integration: "Marketo_bulk_upload"
+      });
 
-    return { readStream, successfulJobs, unsuccessfulJobs };
-  }
-  return { successfulJobs, unsuccessfulJobs };
+      return { readStream, successfulJobs, unsuccessfulJobs };
+    }
+    return { successfulJobs, unsuccessfulJobs };
+  });
 };
 
 const getImportID = async (input, config) => {

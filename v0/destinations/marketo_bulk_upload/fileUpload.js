@@ -15,7 +15,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const { httpSend, httpGET } = require("../../../adapters/network");
+const { httpPOST, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const fieldSchema = async config => {
@@ -182,9 +182,6 @@ const getImportID = async (input, config) => {
       // Upload data received from server as files to marketo
       // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
       const requestOptions = {
-        url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-        method: "post",
-        data: formReq,
         headers: {
           ...formReq.getHeaders()
         }
@@ -195,7 +192,11 @@ const getImportID = async (input, config) => {
         };
       }
       const startTime = Date.now();
-      const resp = await httpSend(requestOptions);
+      const resp = await httpPOST(
+        `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+        formReq,
+        requestOptions
+      );
       const endTime = Date.now();
       const requestTime = endTime - startTime;
       stats.gauge(

@@ -26,7 +26,8 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
       },
       "version": "1",
       "endpoint": "https://api.iterable.com/api/events/trackBulk"

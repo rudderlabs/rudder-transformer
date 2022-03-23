@@ -5,7 +5,8 @@ const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   getEndpoint,
   destinationConfigKeys,
-  subscriptionStatus
+  subscriptionStatus,
+  validStatuses
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -100,6 +101,12 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   const basicAuth = Buffer.from(`apiKey:${mailChimpConfig.apiKey}`).toString(
     "base64"
   );
+  if (payload.status && !validStatuses.includes(payload.status)) {
+    throw new CustomError(
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
+      400
+    );
+  }
   return {
     ...response,
     headers: {
@@ -159,9 +166,8 @@ async function getPayload(
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
-  
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
     return getFieldValueFromMessage(message, "traits");
   }

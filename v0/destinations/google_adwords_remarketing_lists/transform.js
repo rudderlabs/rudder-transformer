@@ -22,7 +22,7 @@ const {
 
 const hashEncrypt = object => {
   Object.keys(object).forEach(key => {
-    if (hashAttributes.includes(key)) {
+    if (hashAttributes.includes(key) && object[key]) {
       // eslint-disable-next-line no-param-reassign
       object[key] = sha256(object[key]);
     }
@@ -115,11 +115,6 @@ const populateIdentifiers = (attributeArray, { Config }) => {
       }
     });
   }
-  if (userIdentifier.length === 0)
-    throw new CustomError(
-      `[Google_adwords_remarketing_list]:: ${attribute} is not present.`,
-      400
-    );
   return userIdentifier;
 };
 /**
@@ -145,6 +140,13 @@ const createPayload = (message, destination) => {
         listData[key],
         destination
       );
+      if (userIdentifiersList.length === 0) {
+        logger.info(
+          `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`
+        );
+        return;
+      }
+
       const outputPayload = constructPayload(message, offlineDataJobsMapping);
       outputPayload.operations = [];
       // breaking the userIdentiFier array in chunks of 20
@@ -213,7 +215,7 @@ const processEvent = async (metadata, message, destination) => {
 
     if (!Object.keys(createdPayload).length) {
       throw new CustomError(
-        "[Google_adwords_remarketing_list]:: add or remove property is not present inside listData. Aborting message.",
+        "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
         400
       );
     }

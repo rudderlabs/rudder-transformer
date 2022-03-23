@@ -15,11 +15,40 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const { httpSend } = require("../../../adapters/network");
+const { httpSend, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
-const getHeaderFields = config => {
+const fieldSchema = async config => {
+  let fieldArr = [];
+  const fieldArrNames = [];
+  const fieldSchemaMapping = await httpGET(
+    `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+    {
+      params: {
+        access_token: await getAccessToken(config)
+      }
+    }
+  );
+  fieldArr = fieldSchemaMapping.response.data.result[0].fields;
+  fieldArr.forEach(field => {
+    fieldArrNames.push(field.name); // todo: throw error
+  });
+  // const fieldNames = fieldArrNames;
+  return fieldArrNames;
+};
+
+const getHeaderFields = (config, fieldArrNames) => {
   const { columnFieldsMapping } = config;
+
+  columnFieldsMapping.forEach(colField => {
+    if (!fieldArrNames.includes(colField.from)) {
+      throw new CustomError(
+        `The field ${colField.from} is not present in Marketo Field Schema. Aborting. `,
+        400
+      );
+    }
+  });
+
   const columnField = getHashFromArray(
     columnFieldsMapping,
     "to",
@@ -29,14 +58,15 @@ const getHeaderFields = config => {
   return Object.keys(columnField);
 };
 
-const getFileData = (inputEvents, config) => {
+const getFileData = async (inputEvents, config) => {
   const input = inputEvents;
   const messageArr = [];
   let startTime;
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const headerArr = getHeaderFields(config);
+  const fieldArrNames = await fieldSchema(config);
+  const headerArr = getHeaderFields(config, fieldArrNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -137,7 +167,7 @@ const getFileData = (inputEvents, config) => {
 };
 
 const getImportID = async (input, config) => {
-  const { readStream, successfulJobs, unsuccessfulJobs } = getFileData(
+  const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config
   );

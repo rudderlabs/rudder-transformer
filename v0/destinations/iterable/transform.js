@@ -379,12 +379,6 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, trackResponseList, eventsChunk) {
-  // Do not apply batching if the payload contains test_event_code
-  // which corresponds to track endpoint
-  eventsChunk.push(event);
-}
-
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
@@ -400,7 +394,7 @@ const processRouterDest = async inputs => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, trackResponseList, eventsChunk);
+          eventsChunk.push(event);
           // slice according to batch size
           if (
             eventsChunk.length &&
@@ -412,15 +406,11 @@ const processRouterDest = async inputs => {
           }
         } else {
           // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination
-            },
-            trackResponseList,
-            eventsChunk
-          );
+          eventsChunk.push({
+            message: await process(event),
+            metadata: event.metadata,
+            destination: event.destination
+          });
           // slice according to batch size
           if (
             eventsChunk.length &&

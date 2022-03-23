@@ -1,5 +1,57 @@
 [
   {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "users": [
+            {
+              "email": "manashi@website.com",
+              "userId": "abcdeeeeeeeexxxx102",
+              "dataFields": {
+                "city": "Bangalore",
+                "name": "manashi",
+                "email": "manashi@website.com",
+                "country": "India"
+              },
+              "preferUserId": true,
+              "mergeNestedObjects": true
+            }
+          ]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.iterable.com/api/users/bulkUpdate"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": true,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
     "batched": true,
     "batchedRequest": {
       "body": {

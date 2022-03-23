@@ -18,6 +18,21 @@
               },
               "preferUserId": true,
               "mergeNestedObjects": true
+            },
+            {
+              "email": "lynnanderson@smith.net",
+              "dataFields": {
+                "administrative_unit": "Minnesota",
+                "am_pm": "AM",
+                "boolean": true,
+                "firstname": "Jacqueline",
+                "pPower": "AM",
+                "userId": "Jacqueline",
+                "email": "lynnanderson@smith.net"
+              },
+              "userId": "lynnanderson@smith.net",
+              "preferUserId": true,
+              "mergeNestedObjects": true
             }
           ]
         }
@@ -35,7 +50,10 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 3
+      },
+      {
+        "jobId": 5
       }
     ],
     "batched": true,
@@ -69,6 +87,20 @@
                 "sendtime": "2020-01-01",
                 "sendlocation": "akashdeep@gmail.com"
               }
+            },
+            {
+              "email": "sayan@gmail.com",
+              "dataFields": {
+                "path": "/abc",
+                "referrer": "",
+                "search": "",
+                "title": "",
+                "url": "",
+                "category": "test-category"
+              },
+              "userId": "12345",
+              "eventName": "ApplicationLoaded page",
+              "createdAt": 1571051718299
             }
           ]
         }
@@ -87,6 +119,9 @@
     "metadata": [
       {
         "jobId": 2
+      },
+      {
+        "jobId": 4
       }
     ],
 

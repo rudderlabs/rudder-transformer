@@ -67,7 +67,7 @@
       "originalTimestamp": "2020-08-28T16:26:06.462Z"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 3
     },
     "destination": {
       "Config": {
@@ -78,6 +78,166 @@
         "trackNamedPages": false
       },
       "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/abc",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "",
+        "category": "test-category"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "metadata": {
+      "jobId": 4
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": false,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "email",
+            "type": "ITERABLE-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "batch_id": "f5f240d0-0acb-46e0-b043-57fb0aabbadd",
+          "job_id": "1zAj94bEy8komdqnYtSoDp0VmGs/Syncher",
+          "job_run_id": "c5tar6cqgmgmcjvupdhg",
+          "task_id": "tt_10_rows_check",
+          "task_run_id": "c5tar6cqgmgmcjvupdi0",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "2f052f7c-f694-4849-a7ed-a432f7ffa0a4",
+      "originalTimestamp": "2021-10-28T14:03:50.503Z",
+      "receivedAt": "2021-10-28T14:03:46.567Z",
+      "recordId": "8",
+      "request_ip": "10.1.94.92",
+      "rudderId": "c0f6843e-e3d6-4946-9752-fa339fbadef2",
+      "sentAt": "2021-10-28T14:03:50.503Z",
+      "timestamp": "2021-10-28T14:03:46.566Z",
+      "traits": {
+        "administrative_unit": "Minnesota",
+        "am_pm": "AM",
+        "boolean": true,
+        "firstname": "Jacqueline",
+        "pPower": "AM",
+        "userId": "Jacqueline"
+      },
+      "type": "identify",
+      "userId": "lynnanderson@smith.net"
+    },
+    "metadata": {
+      "jobId": 5
+    },
+    "destination": {
+      "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
+      "Name": "test_iterable",
+      "DestinationDefinition": {
+        "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+        "Name": "ITERABLE",
+        "DisplayName": "Iterable",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "mapToSingleEvent",
+              "trackAllPages",
+              "trackCategorisedPages",
+              "trackNamedPages"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": true,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": true
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
     }
   }
 ]

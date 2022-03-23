@@ -1,6 +1,7 @@
 /* eslint-disable no-plusplus */
 const FormData = require("form-data");
 const fs = require("fs");
+
 const {
   getAccessToken,
   ABORTABLE_CODES,
@@ -15,11 +16,34 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const { httpSend } = require("../../../adapters/network");
+const { httpSend, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
-const getHeaderFields = config => {
+const fieldSchema = async config => {
+  let fieldArr = [];
+  const fieldArrNames = [];
+  const fieldSchemaMapping = await httpGET(
+    `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+    {
+      params: {
+        access_token: await getAccessToken(config)
+      }
+    }
+  );
+  fieldArr = fieldSchemaMapping.response.data.result[0].fields;
+  fieldArr.forEach(field => {
+    fieldArrNames.push(field.name);
+  });
+  return fieldArrNames;
+};
+const getHeaderFields = (config, fieldArrNames) => {
   const { columnFieldsMapping } = config;
+
+  columnFieldsMapping.forEach(colField => {
+    if (!fieldArrNames.includes(colField)) {
+      delete columnFieldsMapping.colField;
+    }
+  });
   const columnField = getHashFromArray(
     columnFieldsMapping,
     "to",
@@ -36,7 +60,8 @@ const getFileData = (inputEvents, config) => {
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const headerArr = getHeaderFields(config);
+  const fieldArrNames = fieldSchema(config);
+  const headerArr = getHeaderFields(config, fieldArrNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts

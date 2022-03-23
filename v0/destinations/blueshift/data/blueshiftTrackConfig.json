@@ -1,0 +1,94 @@
+[
+  {
+    "destKey": "customer_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": true
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": false
+  },
+  {
+    "destKey": "device_type",
+    "sourceKeys": "context.device.type",
+    "required": false
+  },
+  {
+    "destKey": "device_token",
+    "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
+    "destKey": "device_id",
+    "sourceKeys": "context.device.id",
+    "required": false
+  },
+  {
+    "destKey": "device_idfa",
+    "sourceKeys": ["context.idfa", "context.device.advertisingId"],
+    "required": false
+  },
+  {
+    "destKey": "device_idfv",
+    "sourceKeys": ["context.idfv", "context.device.id"],
+    "required": false
+  },
+  {
+    "destKey": "device_manufacturer",
+    "sourceKeys": "context.device.manufacturer",
+    "required": false
+  },
+  {
+    "destKey": "os_name",
+    "sourceKeys": "context.os.name",
+    "required": false
+  },
+  {
+    "destKey": "network_carrier",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "latitude",
+    "sourceKeys": ["address.latitude", "latitude"],
+    "required": false
+  },
+  {
+    "destKey": "longitude",
+    "sourceKeys": ["address.longitude", "longitude"],
+    "required": false
+  },
+  {
+    "destKey": "event_uuid",
+    "sourceKeys": "message.messageId",
+    "required": false
+  },
+  {
+    "destKey": "cookie",
+    "sourceKeys": "traits.cookie",
+    "required": false
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": false
+  }
+]

@@ -6,18 +6,15 @@ const BASE_URL_EU = "https://api.eu.getblueshift.com";
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "blueshiftIdentifyConfig",
-    type: "identify",
-    endpoint: "/customers"
+    type: "identify"
   },
   TRACK: {
     name: "blueshiftTrackConfig",
-    type: "track",
-    endpoint: "/event"
+    type: "track"
   },
   GROUP: {
     name: "blueshiftGroupConfig",
-    type: "group",
-    endpoint: "/custom_user_lists/add_user_to_list/:list_id"
+    type: "group"
   }
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

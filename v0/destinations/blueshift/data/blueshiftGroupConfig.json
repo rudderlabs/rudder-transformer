@@ -1,7 +1,7 @@
 [
   {
     "destKey": "list_id",
-    "sourceKey": "groupId",
+    "sourceKeys": "groupId",
     "sourceFromGenericMap": true,
     "required": true
   }

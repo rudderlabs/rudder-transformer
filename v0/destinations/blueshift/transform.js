@@ -28,46 +28,95 @@ function checkValidEventName(str) {
   return false;
 }
 
-const responseBuilderSimple = (message, category, destination) => {
+const trackResponseBuilder = async (message, category, destination) => {
+  let event = getValueFromMessage(message, "event");
+  if (!event) {
+    throw new CustomError(
+      "[Blueshift] property:: event is required for track call",
+      400
+    );
+  }
+  event = event.trim().toLowerCase();
+  if (checkValidEventName(event)) {
+    throw new CustomError(
+      "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+      400
+    );
+  }
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-
-  if (EventType.GROUP === message.type.toLowerCase()) {
-    const customer = removeUndefinedAndNullValues({
-      id: getFieldValueFromMessage(message, "userId"),
-      email: getFieldValueFromMessage(message, "email")
-    });
-    if (!customer.id && !customer.email) {
-      throw new CustomError(
-        "customer_id or email is required to identify customer.",
-        400
-      );
-    }
-    if (customer.id) {
-      payload.identifier_key = "customer_id";
-      payload.identifier_value = customer.id;
-    } else {
-      payload.identifier_key = "email";
-      payload.identifier_value = customer.email;
-    }
-  }
-
   const response = defaultRequestConfig();
-  let endpoint;
+
   if (destination.Config.datacenterEU) {
-    endpoint = `${BASE_URL}${category.endpoint}`;
+    response.endpoint = `${BASE_URL_EU}/api/v1/event`;
   } else {
-    endpoint = `${BASE_URL_EU}${category.endpoint}`;
+    response.endpoint = `${BASE_URL}/api/v1/event`;
+  }
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = payload;
+  return response;
+};
+
+const identifyResponseBuilder = async (message, category, destination) => {
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+  if (!payload) {
+    // fail-safety for developer error
+    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  }
+  const response = defaultRequestConfig();
+
+  if (destination.Config.datacenterEU) {
+    response.endpoint = `${BASE_URL_EU}/api/v1/customers`;
+  } else {
+    response.endpoint = `${BASE_URL}/api/v1/customers`;
+  }
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = payload;
+  return response;
+};
+
+const groupResponseBuilder = async (message, category, destination) => {
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+
+  if (!payload) {
+    // fail-safety for developer error
+    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  }
+  const response = defaultRequestConfig();
+
+  const customer = removeUndefinedAndNullValues({
+    id: getFieldValueFromMessage(message, "userId"),
+    email: getFieldValueFromMessage(message, "email")
+  });
+  if (!customer.id && !customer.email) {
+    throw new CustomError(
+      "[Blueshift] customer_id or email is required to identify customer.",
+      400
+    );
+  }
+  if (customer.id) {
+    payload.identifier_key = "customer_id";
+    payload.identifier_value = customer.id;
+  } else {
+    payload.identifier_key = "email";
+    payload.identifier_value = customer.email;
   }
 
-  if (EventType.GROUP === message.type.toLowerCase()) {
-    response.endpoint = endpoint.replace(":list_id", payload.list_id);
+  if (destination.Config.datacenterEU) {
+    response.endpoint = `${BASE_URL_EU}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
   } else {
-    response.endpoint = endpoint;
+    response.endpoint = `${BASE_URL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
   }
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -78,37 +127,33 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
-const processEvent = (message, destination) => {
+const process = async event => {
+  const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(ErrorMessage.TypeNotSupported, 400);
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
 
+  const messageType = message.type.toLowerCase();
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
-  if (!category) {
-    throw new CustomError(ErrorMessage.TypeNotSupported, 400);
-  }
-  if (EventType.TRACK === message.type.toLowerCase()) {
-    let event = getValueFromMessage(message, "event");
-    if (!event) {
-      throw new CustomError(
-        "[Blueshift] property:: event is required for track call",
-        400
-      );
-    }
-    event = event.trim().toLowerCase();
-    if (checkValidEventName(event)) {
-      throw new CustomError(
-        "[Blueshift] Event name doesn't contain period(.), whitespace and numeric value.",
-        400
-      );
-    }
-  }
 
-  return responseBuilderSimple(message, category, destination);
-};
-
-const process = event => {
-  return processEvent(event.message, event.destination);
+  let response;
+  switch (messageType) {
+    case EventType.TRACK:
+      response = await trackResponseBuilder(message, category, destination);
+      break;
+    case EventType.IDENTIFY:
+      response = await identifyResponseBuilder(message, category, destination);
+      break;
+    case EventType.GROUP:
+      response = await groupResponseBuilder(message, category, destination);
+      break;
+    default:
+      throw new CustomError(`Message type ${messageType} not supported`, 400);
+  }
+  return response;
 };
 
 module.exports = { process };

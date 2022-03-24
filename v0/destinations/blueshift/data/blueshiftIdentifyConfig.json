@@ -14,7 +14,7 @@
   {
     "destKey": "event",
     "sourceKeys": "event",
-    "required": true
+    "required": false
   },
   {
     "destKey": "phone_number",

@@ -1,0 +1,189 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35765",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "35765",
+        "identifier_key": "customer_id",
+        "identifier_value": "sampleusrRudder7"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": ""
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/customers",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "jamesDoe@gmail.com",
+        "customer_id": "rudder123",
+        "event": "product",
+        "phone_number": "92374162212",
+        "gender": "M",
+        "custom_attributes": {
+          "userId": "rudder123",
+          "anonymousId": "anon_id",
+          "email": "jamesDoe@gmail.com",
+          "name": "James Doe",
+          "phone": "92374162212",
+          "gender": "M",
+          "employed": true,
+          "birthday": "1614775793",
+          "education": "Science",
+          "graduate": true,
+          "married": true,
+          "customerType": "Prime",
+          "msg_push": true,
+          "msgSms": true,
+          "msgemail": true,
+          "msgwhatsapp": false,
+          "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+          "custom_mappings": {
+            "Office": "Trastkiv",
+            "Country": "Russia"
+          },
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 789223,
+            "state": "WB",
+            "street": ""
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": ""
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"email\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"userIdOnly\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/event",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "user123",
+        "event": "ProductPurchased_",
+        "ip": "14.5.67.21",
+        "custom_attributes": {
+          "name": "Rubik's Cube",
+          "revenue": 4.99
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": ""
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"groupId\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/Sample_groupId27",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "Sample_groupId27",
+        "identifier_key": "customer_id",
+        "identifier_value": "sampleusrRudder7"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": ""
+  },
+  {
+    "statusCode": 400,
+    "error": "customer_id or email is required to identify customer.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
+]

@@ -2,9 +2,10 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35765",
+    "method": "PUT",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35765",
     "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -18,32 +19,137 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": ""
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"groupId\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
   },
   {
     "version": "1",
     "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.getblueshift.com/customers",
+    "method": "PUT",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/13764",
     "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "email": "jamesDoe@gmail.com",
+        "list_id": "13764",
+        "identifier_key": "email",
+        "identifier_value": "chandra+r@rudderlabs.com"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/78564",
+    "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "78564",
+        "identifier_key": "customer_id",
+        "identifier_value": "my-anonymous-id-new"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/78564",
+    "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "78564",
+        "identifier_key": "customer_id",
+        "identifier_value": "my-anonymous-id-new"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] customer_id or email is required to identify customer.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"email\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"userIdOnly\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/customers",
+    "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "chandan@companyname.com",
         "customer_id": "rudder123",
-        "event": "product",
         "phone_number": "92374162212",
+        "firstname": "James",
+        "lastname": "Doe",
         "gender": "M",
         "custom_attributes": {
+          "email": "chandan@companyname.com",
           "userId": "rudder123",
           "anonymousId": "anon_id",
-          "email": "jamesDoe@gmail.com",
           "name": "James Doe",
           "phone": "92374162212",
           "gender": "M",
+          "firstname": "James",
+          "lastname": "Doe",
           "employed": true,
           "birthday": "1614775793",
           "education": "Science",
@@ -72,26 +178,64 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": ""
+    "files": {}
   },
   {
-    "statusCode": 400,
-    "error": "Missing required value from \"email\"",
-    "statTags": {
-      "destination": "blueshift",
-      "stage": "transform",
-      "scope": "exception"
-    }
-  },
-  {
-    "statusCode": 400,
-    "error": "Missing required value from \"userIdOnly\"",
-    "statTags": {
-      "destination": "blueshift",
-      "stage": "transform",
-      "scope": "exception"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/customers",
+    "headers": {
+      "Authorization": "Basic ZmQ5OWNnaDI5YWJhNWU3YzhhMThhY2Q2MjBlYzFlZmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "chandan@companyname.com",
+        "customer_id": "rudder123",
+        "phone_number": "92374162212",
+        "firstname": "James",
+        "lastname": "Doe",
+        "gender": "M",
+        "custom_attributes": {
+          "email": "chandan@companyname.com",
+          "userId": "rudder123",
+          "anonymousId": "anon_id",
+          "name": "James Doe",
+          "phone": "92374162212",
+          "gender": "M",
+          "firstname": "James",
+          "lastname": "Doe",
+          "employed": true,
+          "birthday": "1614775793",
+          "education": "Science",
+          "graduate": true,
+          "married": true,
+          "customerType": "Prime",
+          "msg_push": true,
+          "msgSms": true,
+          "msgemail": true,
+          "msgwhatsapp": false,
+          "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+          "custom_mappings": {
+            "Office": "Trastkiv",
+            "Country": "Russia"
+          },
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 789223,
+            "state": "WB",
+            "street": ""
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -114,6 +258,24 @@
   {
     "statusCode": 400,
     "error": "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] property:: event is required for track call",
     "statTags": {
       "destination": "blueshift",
       "stage": "transform",
@@ -124,16 +286,25 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.getblueshift.com/api/v1/event",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/event",
     "headers": {
+      "Authorization": "Basic a2xvMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzFlZmU=",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "user123",
-        "event": "ProductPurchased_",
+        "event": "Product_purchased",
+        "device_type": "Android",
+        "device_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
         "ip": "14.5.67.21",
+        "latitude": "37.7672319",
+        "longitude": "-122.4021353",
         "custom_attributes": {
           "name": "Rubik's Cube",
           "revenue": 4.99
@@ -143,12 +314,45 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": ""
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic a2xvMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzFlZmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "Product_purchased",
+        "device_type": "Android",
+        "device_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "ip": "14.5.67.21",
+        "latitude": "37.7672319",
+        "longitude": "-122.4021353",
+        "custom_attributes": {
+          "name": "Rubik's Cube",
+          "revenue": 4.99
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "statusCode": 400,
-    "error": "Missing required value from \"groupId\"",
+    "error": "Message type view not supported",
     "statTags": {
       "destination": "blueshift",
       "stage": "transform",
@@ -156,30 +360,8 @@
     }
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/Sample_groupId27",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "list_id": "Sample_groupId27",
-        "identifier_key": "customer_id",
-        "identifier_value": "sampleusrRudder7"
-      },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": ""
-  },
-  {
     "statusCode": 400,
-    "error": "customer_id or email is required to identify customer.",
+    "error": "Message Type is not present. Aborting message.",
     "statTags": {
       "destination": "blueshift",
       "stage": "transform",

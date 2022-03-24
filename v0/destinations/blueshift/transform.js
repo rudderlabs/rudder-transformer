@@ -7,7 +7,8 @@ const {
   defaultPostRequestConfig,
   getValueFromMessage,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  defaultPutRequestConfig
 } = require("../../util");
 
 const {
@@ -28,7 +29,7 @@ function checkValidEventName(str) {
   return false;
 }
 
-const trackResponseBuilder = async (message, category, destination) => {
+const trackResponseBuilder = async (message, category, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
     throw new CustomError(
@@ -51,20 +52,22 @@ const trackResponseBuilder = async (message, category, destination) => {
   }
   const response = defaultRequestConfig();
 
-  if (destination.Config.datacenterEU) {
+  if (Config.datacenterEU) {
     response.endpoint = `${BASE_URL_EU}/api/v1/event`;
   } else {
     response.endpoint = `${BASE_URL}/api/v1/event`;
   }
   response.method = defaultPostRequestConfig.requestMethod;
+  const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
   response.headers = {
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.body.JSON = payload;
   return response;
 };
 
-const identifyResponseBuilder = async (message, category, destination) => {
+const identifyResponseBuilder = async (message, category, { Config }) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
@@ -73,20 +76,22 @@ const identifyResponseBuilder = async (message, category, destination) => {
   }
   const response = defaultRequestConfig();
 
-  if (destination.Config.datacenterEU) {
+  if (Config.datacenterEU) {
     response.endpoint = `${BASE_URL_EU}/api/v1/customers`;
   } else {
     response.endpoint = `${BASE_URL}/api/v1/customers`;
   }
   response.method = defaultPostRequestConfig.requestMethod;
+  const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
   response.headers = {
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.body.JSON = payload;
   return response;
 };
 
-const groupResponseBuilder = async (message, category, destination) => {
+const groupResponseBuilder = async (message, category, { Config }) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
@@ -113,14 +118,16 @@ const groupResponseBuilder = async (message, category, destination) => {
     payload.identifier_value = customer.email;
   }
 
-  if (destination.Config.datacenterEU) {
+  if (Config.datacenterEU) {
     response.endpoint = `${BASE_URL_EU}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
   } else {
     response.endpoint = `${BASE_URL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
   }
 
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultPutRequestConfig.requestMethod;
+  const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
   response.headers = {
+    Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
   };
   response.body.JSON = payload;

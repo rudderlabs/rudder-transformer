@@ -18,12 +18,8 @@
   },
   {
     "destKey": "phone_number",
-    "sourceKeys": [
-      "traits.phoneNumber",
-      "traits.phone",
-      "context.traits.phoneNumber",
-      "context.traits.phone"
-    ],
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

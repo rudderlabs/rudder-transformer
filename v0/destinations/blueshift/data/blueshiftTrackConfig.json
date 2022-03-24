@@ -63,12 +63,20 @@
   },
   {
     "destKey": "latitude",
-    "sourceKeys": ["address.latitude", "latitude"],
+    "sourceKeys": [
+      "latitude",
+      "context.address.latitude",
+      "context.location.latitude"
+    ],
     "required": false
   },
   {
     "destKey": "longitude",
-    "sourceKeys": ["address.longitude", "longitude"],
+    "sourceKeys": [
+      "longitude",
+      "context.address.longitude",
+      "context.location.longitude"
+    ],
     "required": false
   },
   {

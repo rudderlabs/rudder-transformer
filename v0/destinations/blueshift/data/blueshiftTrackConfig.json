@@ -1,25 +1,20 @@
 [
   {
     "destKey": "customer_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
-    "required": true
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
   },
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
-    "required": true
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
   },
   {
     "destKey": "event",
     "sourceKeys": "event",
-    "required": false
+    "required": true
   },
   {
     "destKey": "device_type",
@@ -83,12 +78,12 @@
   },
   {
     "destKey": "cookie",
-    "sourceKeys": "traits.cookie",
+    "sourceKeys": "anonymousId",
     "required": false
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": "properties",
     "required": false
   }
 ]

@@ -1,19 +1,19 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
     "destKey": "customer_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
     "required": true
   },
   {
@@ -28,22 +28,14 @@
   },
   {
     "destKey": "firstname",
-    "sourceKeys": [
-      "traits.firstName",
-      "context.traits.firstName",
-      "traits.firstname",
-      "context.traits.firstname"
-    ],
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "lastname",
-    "sourceKeys": [
-      "traits.lastName",
-      "context.traits.lastName",
-      "traits.lastname",
-      "context.traits.lastname"
-    ],
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
@@ -53,7 +45,7 @@
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": ["context.traits", "traits"],
     "required": false
   }
 ]

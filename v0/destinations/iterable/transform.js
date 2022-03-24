@@ -353,13 +353,14 @@ function batchEvents(arrayChunks) {
       batchResponseList.push(ev.message.body.JSON);
       metadata.push(ev.metadata);
     });
-
+    // batching into bulkUpdate batch structure
     if (chunk[0].message.endpoint.includes("/api/users")) {
       batchEventResponse.batchedRequest.body.JSON = {
         users: batchResponseList
       };
       batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
     } else {
+      // batching into bulkUpdate batch structure
       batchEventResponse.batchedRequest.body.JSON = {
         events: batchResponseList
       };
@@ -395,13 +396,15 @@ function getEventChunks(
   trackEventChunks,
   eventResponseList
 ) {
-  // Do not apply batching if the payload contains test_event_code
-  // which corresponds to track endpoint
+  // Categorizing identify and track type of events
+  // Checking if it is identify type event
   if (event.message.endpoint.includes("api/users/update")) {
     identifyEventChunks.push(event);
   } else if (event.message.endpoint.includes("api/events/track")) {
+    // Checking if it is track type of event
     trackEventChunks.push(event);
   } else {
+    // any other type of event
     const { message, metadata, destination } = event;
     const endpoint = get(message, "endpoint");
 
@@ -431,10 +434,10 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  let identifyEventChunks = [];
-  let trackEventChunks = []; // list containing single track event in batched format
-  const eventResponseList = []; // temporary variable to divide payload into chunks
-  const identifyArrayChunks = []; // transformed payload of (n) batch size
+  let identifyEventChunks = []; // list containing identify events in batched format
+  let trackEventChunks = []; // list containing track events in batched format
+  const eventResponseList = []; // list containing other events in batched format
+  const identifyArrayChunks = [];
   const trackArrayChunks = [];
   const errorRespList = [];
   await Promise.all(
@@ -508,16 +511,18 @@ const processRouterDest = async inputs => {
     })
   );
 
+  // batching identifyArrayChunks
   let identifyBatchedResponseList = [];
   if (identifyArrayChunks.length) {
     identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
   }
+  // batching TrackArrayChunks
   let trackBatchedResponseList = [];
   if (trackArrayChunks.length) {
     trackBatchedResponseList = await batchEvents(trackArrayChunks);
   }
   let batchedResponseList = [];
-
+  // appending all kinds of batches
   batchedResponseList = batchedResponseList
     .concat(identifyBatchedResponseList)
     .concat(trackBatchedResponseList)

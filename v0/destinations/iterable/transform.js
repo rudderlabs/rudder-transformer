@@ -1,4 +1,4 @@
-const { get } = require("lodash");
+const get = require("get-value");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   ConfigCategory,

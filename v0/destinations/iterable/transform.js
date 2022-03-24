@@ -339,7 +339,7 @@ function batchEvents(arrayChunks) {
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
     const batchResponseList = [];
-    const metadata = [];
+    const metadatas = [];
 
     // extracting destination
     // from the first event in a batch
@@ -350,8 +350,8 @@ function batchEvents(arrayChunks) {
 
     // Batch event into dest batch structure
     chunk.forEach(ev => {
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
+      batchResponseList.push(get(ev, "message.body.JSON"));
+      metadatas.push(ev.metadata);
     });
     // batching into bulkUpdate batch structure
     if (chunk[0].message.endpoint.includes("/api/users")) {
@@ -374,7 +374,7 @@ function batchEvents(arrayChunks) {
 
     batchEventResponse = {
       ...batchEventResponse,
-      metadata,
+      metadata: metadatas,
       destination
     };
     batchedResponseList.push(

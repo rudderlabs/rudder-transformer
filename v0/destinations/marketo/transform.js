@@ -218,8 +218,17 @@ const getLeadId = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
+  // check if marketo lead id is set in the externalId through rETL
+  // "externalId": [
+  //   {
+  //     "id": "lynnanderson@smith.net",
+  //     "identifierType": "email",
+  //     "type": "MARKETO-{object}"
+  //   }
   let leadId = getDestinationExternalIDForRetl(message, "MARKETO");
-  leadId = getDestinationExternalID(message, "marketoLeadId");
+  if (!leadId) {
+    leadId = getDestinationExternalID(message, "marketoLeadId");
+  }
 
   // leadId is not supplied through the externalId parameter
   if (!leadId) {

@@ -760,6 +760,10 @@ function getDestinationExternalID(message, type) {
   }
   return destinationExternalId;
 }
+
+
+// Get id from externalId for rETL
+// type will be of the form: <DESTINATION-NAME>-<object>
 const getDestinationExternalIDForRetl = (message, destination) => {
   let externalIdArray = [];
   let destinationExternalId;

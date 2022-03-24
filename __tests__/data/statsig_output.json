@@ -590,6 +590,6 @@
     "method": "POST"
   },
   {
-    "message": "Message type not supported"
+    "error": "message type NOT_A_TYPE not supported for statsig"
   }
 ]

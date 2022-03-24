@@ -81,6 +81,13 @@
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -161,6 +168,13 @@
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -241,6 +255,13 @@
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -321,6 +342,13 @@
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -401,6 +429,13 @@
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-4n07h3rsecr3t"
       }
@@ -468,6 +503,13 @@
       "sentAt": "2020-10-20T08:14:28.778Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -511,6 +553,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -554,6 +603,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }

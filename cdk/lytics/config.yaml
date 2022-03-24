@@ -1,0 +1,54 @@
+message:
+  supportedMessageTypes:
+    - identify
+    - page
+    - screen
+    - track
+  identify:
+    transformation:
+      mapperPath: ./mappings/identify.yaml
+      postMapper:
+        name: cleanResponse
+      response:
+        endpoint: 'https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}'
+        method: POST
+        format: JSON
+        headers:
+          Content-Type: application/json
+      
+  page:
+    transformation:
+      mapperPath: ./mappings/page-screen.yaml
+      postMapper:
+        name: cleanResponse
+      response:
+        endpoint: 'https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}'
+        method: POST
+        format: JSON
+        headers:
+          Content-Type: application/json
+      
+  screen:
+    transformation:
+      mapperPath: ./mappings/page-screen.yaml
+      postMapper:
+        name: cleanResponse
+      response:
+        endpoint: "https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}"
+        method: POST
+        format: JSON
+        headers:
+          Content-Type: application/json
+
+  track:
+    transformation:
+      mapperPath: ./mappings/track.yaml
+      postMapper:
+        name: cleanResponse
+      response:
+        endpoint: "https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}"
+        method: POST
+        format: JSON
+        headers:
+          Content-Type: application/json
+

@@ -1,0 +1,28 @@
+- destKey: identity
+  sourceKeys:  
+    - userId
+    - traits.userId
+    - traits.id
+    - context.traits.userId
+    - context.traits.id
+    - anonymousId
+  required: true
+
+- destKey: event
+  sourceKeys: event
+  required: true
+  
+- destKey: properties
+  sourceKeys: properties
+  metadata:
+    type: flatJson
+
+- destKey: timestamp
+  sourceKeys: timestamp
+  sourceFromGenericMap: true
+  required: false
+
+- destKey: idempotency_key
+  sourceKeys: properties.idempotencyKey
+  required: false
+

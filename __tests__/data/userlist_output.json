@@ -217,22 +217,22 @@
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "Missing required value from \"userIdOnly\""
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "Missing required value from \"userIdOnly\""
   },
   {
     "statusCode": 400,
-    "error": "Missing required user id"
+    "error": "Missing required value from \"userIdOnly\""
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "message type page not supported for userlist"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "message type screen not supported for userlist"
   }
 ]

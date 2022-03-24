@@ -19,8 +19,8 @@ const { httpPOST, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const fieldSchema = async config => {
-  let fieldArr = [];
   const fieldArrNames = [];
+  let fieldArr = [];
   const fieldSchemaMapping = await httpGET(
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
@@ -29,11 +29,15 @@ const fieldSchema = async config => {
       }
     }
   );
-  fieldArr = fieldSchemaMapping.response.data.result[0].fields;
-  fieldArr.forEach(field => {
-    fieldArrNames.push(field.name);
-  });
-  // const fieldNames = fieldArrNames;
+  if (fieldSchemaMapping && fieldSchemaMapping.success) {
+    fieldArr = fieldSchemaMapping.response.data.result[0].fields;
+    fieldArr.forEach(field => {
+      fieldArrNames.push(field.name);
+    });
+    // const fieldNames = fieldArrNames;
+  } else {
+    throw new CustomError("Failed to fetch Marketo Field Schema", 400);
+  }
   return fieldArrNames;
 };
 

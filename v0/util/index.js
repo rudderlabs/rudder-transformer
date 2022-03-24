@@ -760,7 +760,21 @@ function getDestinationExternalID(message, type) {
   }
   return destinationExternalId;
 }
-
+const getDestinationExternalIDForRetl = (message, destination) => {
+  let externalIdArray = [];
+  let destinationExternalId;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if(externalIdArray){
+    externalIdArray.forEach(extIdObj => {
+      const type = extIdObj.type
+      if (type.includes(`${destination}-`)) {
+        destinationExternalId = extIdObj.id;
+      }
+    });
+    return destinationExternalId;
+};
 const isObject = value => {
   const type = typeof value;
   return (
@@ -1217,5 +1231,6 @@ module.exports = {
   isOAuthSupported,
   isOAuthDestination,
   isAppleFamily,
-  isCdkDestination
+  isCdkDestination,
+  getDestinationExternalIDForRetl
 };

@@ -520,7 +520,8 @@ const processRouterDest = async inputs => {
 
   batchedResponseList = batchedResponseList
     .concat(identifyBatchedResponseList)
-    .concat(trackBatchedResponseList);
+    .concat(trackBatchedResponseList)
+    .concat(eventResponseList);
 
   return [...batchedResponseList, ...errorRespList];
 };

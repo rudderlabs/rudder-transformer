@@ -353,14 +353,14 @@ function batchEvents(arrayChunks) {
       batchResponseList.push(get(ev, "message.body.JSON"));
       metadatas.push(ev.metadata);
     });
-    // batching into bulkUpdate batch structure
+    // batching into identify batch structure
     if (chunk[0].message.endpoint.includes("/api/users")) {
       batchEventResponse.batchedRequest.body.JSON = {
         users: batchResponseList
       };
       batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
     } else {
-      // batching into bulkUpdate batch structure
+      // batching into track batch structure
       batchEventResponse.batchedRequest.body.JSON = {
         events: batchResponseList
       };

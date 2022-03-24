@@ -119,8 +119,8 @@ async function validate(event) {
             event.message.type,
             event.message.event
         );
-        const eventTypeAjvOptions = sourceTpConfig[event.message.type].ajvOptions;
-        const globalAjvOptions = sourceTpConfig.global.ajvOptions;
+        const eventTypeAjvOptions = sourceTpConfig[event.message.type].ajvOptions || {};
+        const globalAjvOptions = (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
         const merged = {
             ...defaultOptions,
             ...globalAjvOptions,

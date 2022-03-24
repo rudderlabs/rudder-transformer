@@ -61,9 +61,7 @@
         "attributeKey": "IP",
         "attributeValue": "0.0.0.0"
       }
-    },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    }
   },
   {
     "message": {
@@ -127,9 +125,7 @@
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
-    },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    }
   },
   {
     "message": {
@@ -193,9 +189,7 @@
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
-    },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    }
   },
   {
     "message": {
@@ -259,9 +253,7 @@
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
-    },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    }
   },
   {
     "message": {
@@ -325,9 +317,7 @@
         "attributeKey": "IP",
         "attributeValue": "14.5.67.21"
       }
-    },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    }
   },
   {
     "error": "No Spread Sheet set for this event"

@@ -31,7 +31,7 @@ const fieldSchema = async config => {
   );
   fieldArr = fieldSchemaMapping.response.data.result[0].fields;
   fieldArr.forEach(field => {
-    fieldArrNames.push(field.name); // todo: throw error
+    fieldArrNames.push(field.name);
   });
   // const fieldNames = fieldArrNames;
   return fieldArrNames;
@@ -41,9 +41,9 @@ const getHeaderFields = (config, fieldArrNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach(colField => {
-    if (!fieldArrNames.includes(colField.from)) {
+    if (fieldArrNames && !fieldArrNames.includes(colField.to)) {
       throw new CustomError(
-        `The field ${colField.from} is not present in Marketo Field Schema. Aborting. `,
+        `The field ${colField.to} is not present in Marketo Field Schema. Aborting. `,
         400
       );
     }

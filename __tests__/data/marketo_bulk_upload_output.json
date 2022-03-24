@@ -1,0 +1,89 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "/fileUpload",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "name__c": "Carlo Lombard",
+        "email__c": "carlo@enuffsaid.media",
+        "plan__c": "Quarterly Team+ Plan for Enuffsaid Media"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "marketo_bulk_upload",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type not supported",
+    "statTags": {
+      "destination": "marketo_bulk_upload",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "/fileUpload",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "/fileUpload",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "name__c": "Carlo Lombard"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "/fileUpload",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {
+        "name__c": "Carlo Lombard",
+        "plan__c": 1
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

@@ -22,5 +22,13 @@
   {
     "sourceKeys": "context.app.version",
     "destKey": "$android_app_version_code"
+  },
+  {
+    "sourceKeys": "properties.androidLibVersion",
+    "destKey": "$android_lib_version"
+  },
+  {
+    "sourceKeys": "properties.androidBrand",
+    "destKey": "$android_brand"
   }
 ]

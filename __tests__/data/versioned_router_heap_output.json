@@ -68,7 +68,8 @@
               "subject": "Welcome to My App!",
               "variation": "A"
             },
-            "app_id": "<app id>"
+            "app_id": "<app id>",
+            "timestamp": "2020-01-16T13:23:20.844Z"
           },
           "XML": {},
           "JSON_ARRAY": {},

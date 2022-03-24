@@ -147,7 +147,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -160,7 +160,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);
@@ -197,7 +197,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -210,7 +210,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);
@@ -220,6 +220,9 @@ function constructPayloadItem(message, category, destination) {
       }
 
       rawPayload.items = rawPayloadItemArr;
+      break;
+    case "alias":
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
       break;
     default:
       logger.debug("not supported type");
@@ -294,6 +297,9 @@ function processSingleMessage(message, destination) {
         default:
           category = ConfigCategory.TRACK;
       }
+      break;
+    case EventType.ALIAS:
+      category = ConfigCategory.ALIAS;
       break;
     default:
       throw new CustomError("Message type not supported", 400);

@@ -33,6 +33,10 @@
               "userId": "lynnanderson@smith.net",
               "preferUserId": true,
               "mergeNestedObjects": true
+            },
+            {
+              "currentEmail": "old@email.com",
+              "newEmail": "new@email.com"
             }
           ]
         }
@@ -54,6 +58,9 @@
       },
       {
         "jobId": 5
+      },
+      {
+        "jobId": 8
       }
     ],
     "batched": true,
@@ -101,6 +108,16 @@
               "userId": "12345",
               "eventName": "ApplicationLoaded page",
               "createdAt": 1571051718299
+            },
+            {
+              "createdAt": 1598631966468,
+              "dataFields": {
+                "referrer": "https://google.com",
+                "title": "Pizza",
+                "url": "https://dominos.com"
+              },
+              "eventName": "undefined page",
+              "userId": "abcdeeeeeeeexxxx102"
             }
           ]
         }
@@ -122,6 +139,9 @@
       },
       {
         "jobId": 4
+      },
+      {
+        "jobId": 7
       }
     ],
     "statusCode": 200,

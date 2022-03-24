@@ -1,0 +1,72 @@
+{
+    "message": {
+      "anonymousId": "5094f5704b9cf2b3",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "LeanPlumIntegrationAndroid",
+          "namespace": "com.android.SampleLeanPlum",
+          "version": "1.0"
+        },
+        "device": {
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "adTrackingEnabled": true
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.1-beta.1"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5094f5704b9cf2b3"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "MainActivity",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "id1",
+      "properties": {
+        "name": "MainActivity",
+        "automatic": true
+      },
+      "originalTimestamp": "2020-03-12T09:05:03.421Z",
+      "type": "screen",
+      "sentAt": "2020-03-12T09:05:13.042Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "<kochava guid goes here>"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kochava",
+        "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
+        "Name": "KOCHAVA"
+      },
+      "Enabled": true,
+      "ID": "1WTpIHpH7NTBgjeiUPW1kCUgZGI",
+      "Name": "kochava test",
+      "Transformations": []
+    }
+  }

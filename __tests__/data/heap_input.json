@@ -1,8 +1,13 @@
 [
   {
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -23,14 +28,27 @@
           "version": "1.0.0"
         },
         "ip": "0.0.0.0",
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
-      "integrations": { "All": true },
-      "traits": { "anonymousId": "sampath", "email": "sampath@gmail.com" },
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "sampath",
+        "email": "sampath@gmail.com"
+      },
       "messageId": "fca2e71a-5d30-48e1-ba45-761c16e3820f",
       "originalTimestamp": "2020-01-16T13:21:59.076Z",
       "receivedAt": "2020-01-16T18:52:03.871+05:30",
@@ -43,8 +61,13 @@
   },
   {
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -65,18 +88,34 @@
           "version": "1.0.0"
         },
         "ip": "0.0.0.0",
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
-        "traits": { "anonymousId": "sampath", "email": "sampath@gmail.com" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
       "event": "Send Transactional Email",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
       "originalTimestamp": "2020-01-16T13:23:20.844Z",
-      "properties": { "subject": "Welcome to My App!", "variation": "A" },
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A"
+      },
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",
       "sentAt": "2020-01-16T13:23:23.782Z",
@@ -87,8 +126,13 @@
   },
   {
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -109,14 +153,27 @@
           "version": "1.0.0"
         },
         "ip": "0.0.0.0",
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
-      "integrations": { "All": true },
-      "traits": { "anonymousId": "sampath", "email": "sampath@gmail.com" },
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "sampath",
+        "email": "sampath@gmail.com"
+      },
       "messageId": "fca2e71a-5d30-48e1-ba45-761c16e3820f",
       "originalTimestamp": "2020-01-16T13:21:59.076Z",
       "receivedAt": "2020-01-16T18:52:03.871+05:30",
@@ -128,8 +185,13 @@
   },
   {
     "destination": {
-      "Config": { "appId": "<app id>" },
+      "Config": {
+        "appId": "<app id>"
+      },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -150,18 +212,34 @@
           "version": "1.0.0"
         },
         "ip": "0.0.0.0",
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
-        "traits": { "anonymousId": "sampath", "email": "sampath@gmail.com" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
       "event": "Send Transactional Email",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "c0c5b892-0d54-449f-b85f-ebb39ff04e67",
       "originalTimestamp": "2020-01-16T13:23:20.844Z",
-      "properties": { "subject": "Welcome to My App!", "variation": "A" },
+      "properties": {
+        "subject": "Welcome to My App!",
+        "variation": "A"
+      },
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",
       "sentAt": "2020-01-16T13:23:23.782Z",
@@ -176,6 +254,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -238,6 +319,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -301,6 +385,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"
@@ -350,7 +437,10 @@
           "City": "Los Angeles",
           "State": "CA"
         },
-        "hobbies": ["Music", "Running"]
+        "hobbies": [
+          "Music",
+          "Running"
+        ]
       },
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",
@@ -366,6 +456,9 @@
         "appId": "<app id>"
       },
       "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Heap.io",
         "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
         "Name": "HEAP"

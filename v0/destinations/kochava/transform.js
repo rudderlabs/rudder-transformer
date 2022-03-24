@@ -140,11 +140,11 @@ function processTrackEvents(message) {
 
 // process only `track` and `screen` events
 function processMessage(message, destination) {
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type;
   let customParams = {};
   let eventName = message.event;
 
-  switch (messageType) {
+  switch (messageType.toLowerCase()) {
     case EventType.SCREEN:
       eventName = "screen view";
       if (message.properties && message.properties.name) {
@@ -163,7 +163,10 @@ function processMessage(message, destination) {
       customParams = processTrackEvents(message);
       break;
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new CustomError(
+        `message type ${messageType} not supported for kochava`,
+        400
+      );
   }
 
   return responseBuilder(eventName, customParams, message, destination);

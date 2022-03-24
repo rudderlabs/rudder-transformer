@@ -5614,5 +5614,164 @@
       },
       "files": {}
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
+          "enablePartialFailure": true,
+          "operations": [
+            {
+              "remove": {
+                "userIdentifiers": [
+                  {
+                    "hashedEmail": "a3d3807256168f51fc644aef9bda6c7f15c850702be01cf4c77af26a37aec026"
+                  },
+                  {
+                    "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  },
+                  {
+                    "addressInfo": {
+                      "hashedLastName": "268f277c6d766d31334fda0f7a5533a185598d269e61c76a805870244828a5f1",
+                      "countryCode": "US"
+                    }
+                  },
+                  {
+                    "hashedEmail": "a3d3807256168f51fc644aef9bda6c7f15c850702be01cf4c77af26a37aec026"
+                  },
+                  {
+                    "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  },
+                  {
+                    "addressInfo": {
+                      "hashedFirstName": "50ae61e841fac4e8f9e40baf2ad36ec868922ea48368c18f9535e47db56dd7fb",
+                      "hashedLastName": "268f277c6d766d31334fda0f7a5533a185598d269e61c76a805870244828a5f1",
+                      "countryCode": "US",
+                      "postalCode": "1245"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
+          "enablePartialFailure": true,
+          "operations": [
+            {
+              "create": {
+                "userIdentifiers": [
+                  {
+                    "hashedEmail": "a3d3807256168f51fc644aef9bda6c7f15c850702be01cf4c77af26a37aec026"
+                  },
+                  {
+                    "addressInfo": {
+                      "hashedFirstName": "50ae61e841fac4e8f9e40baf2ad36ec868922ea48368c18f9535e47db56dd7fb",
+                      "hashedLastName": "268f277c6d766d31334fda0f7a5533a185598d269e61c76a805870244828a5f1"
+                    }
+                  },
+                  {
+                    "hashedEmail": "a3d3807256168f51fc644aef9bda6c7f15c850702be01cf4c77af26a37aec026"
+                  },
+                  {
+                    "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  },
+                  {
+                    "addressInfo": {
+                      "hashedFirstName": "50ae61e841fac4e8f9e40baf2ad36ec868922ea48368c18f9535e47db56dd7fb",
+                      "hashedLastName": "268f277c6d766d31334fda0f7a5533a185598d269e61c76a805870244828a5f1",
+                      "countryCode": "US",
+                      "postalCode": "1245"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer abcd1234",
+        "Content-Type": "application/json",
+        "developer-token": "ijkl9101"
+      },
+      "params": {
+        "listId": "7090784486",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
+          "enablePartialFailure": true,
+          "operations": [
+            {
+              "create": {
+                "userIdentifiers": [
+                  {
+                    "hashedEmail": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  },
+                  {
+                    "addressInfo": {
+                      "hashedFirstName": "a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844",
+                      "countryCode": "US",
+                      "postalCode": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]

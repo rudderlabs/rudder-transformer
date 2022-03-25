@@ -258,7 +258,7 @@ function responseBuilderSimple(
   const params = removeUndefinedAndNullValues(parameters);
 
   if (message.context) {
-    const { campaign, userAgent, locale, app } = message.context;
+    const { campaign, userAgent, locale, app, screen } = message.context;
     rawPayload.ua = params.ua || userAgent;
     rawPayload.ul = params.ul || locale;
     if (app) {
@@ -267,14 +267,30 @@ function responseBuilderSimple(
       rawPayload.aiid = params.aiid || app.namespace;
     }
     if (campaign) {
-      const { name, source, medium, content, term } = campaign;
+      const { name, source, medium, content, term, campaignId } = campaign;
       rawPayload.cn = params.cn || name;
       rawPayload.cs = params.cs || source;
       rawPayload.cm = params.cm || medium;
       rawPayload.cc = params.cc || content;
       rawPayload.ck = params.ck || term;
+      rawPayload.ci = campaignId;
+    }
+
+    if (screen) {
+      const { width, height } = screen;
+      if (width && height) {
+        rawPayload.sr = `${width}x${height}`;
+      }
+
+      const { innerWidth, innerHeight } = screen;
+      if (innerWidth && innerHeight) {
+        rawPayload.vp = `${innerWidth}x${innerHeight}`;
+      }
     }
   }
+
+  rawPayload.gclid = getDestinationExternalID(message, "googleAdsId");
+  rawPayload.dclid = getDestinationExternalID(message, "googleDisplayAdsId");
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -386,7 +402,7 @@ function processIdentify(message, destination) {
   let ec;
   const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
   // Check if present in traits and assign otherwise find the values
-  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = identifyTraits;
+  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid, gclid } = identifyTraits;
 
   if (
     serverSideIdentifyEventAction &&
@@ -410,7 +426,8 @@ function processIdentify(message, destination) {
     ck,
     an,
     av,
-    aiid
+    aiid,
+    gclid
   };
 }
 

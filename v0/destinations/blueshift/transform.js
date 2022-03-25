@@ -44,6 +44,12 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
+  if (!Config.eventApiKey) {
+    throw new CustomError(
+      "[BLUESHIFT] event Api Keys required for Authentication.",
+      400
+    );
+  }
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
@@ -68,6 +74,12 @@ const trackResponseBuilder = async (message, category, { Config }) => {
 };
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
+  if (!Config.usersApiKey) {
+    throw new CustomError(
+      "[BLUESHIFT] User API Key required for Authentication.",
+      400
+    );
+  }
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
@@ -92,6 +104,12 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 };
 
 const groupResponseBuilder = async (message, category, { Config }) => {
+  if (!Config.usersApiKey) {
+    throw new CustomError(
+      "[BLUESHIFT] User API Key required for Authentication.",
+      400
+    );
+  }
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {

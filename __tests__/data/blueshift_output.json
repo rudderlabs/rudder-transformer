@@ -367,5 +367,32 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] event Api Keys required for Authentication",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

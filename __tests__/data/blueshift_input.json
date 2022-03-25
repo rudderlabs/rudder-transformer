@@ -985,5 +985,200 @@
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "datacenterEU": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "groupId": "13764",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        }
+      },
+      "type": "track",
+      "event": "productview",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "groupType": "company",
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
+        "datacenterEU": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "groupId": "35765",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder7",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "groupType": "company",
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
+        "datacenterEU": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "type": "identify",
+      "traits": {
+        "email": "chandan@companyname.com",
+        "userId": "rudder123",
+        "anonymousId": "anon_id",
+        "name": "James Doe",
+        "phone": "92374162212",
+        "gender": "M",
+        "firstname": "James",
+        "lastname": "Doe",
+        "employed": true,
+        "birthday": "1614775793",
+        "education": "Science",
+        "graduate": true,
+        "married": true,
+        "customerType": "Prime",
+        "msg_push": true,
+        "msgSms": true,
+        "msgemail": true,
+        "msgwhatsapp": false,
+        "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+        "custom_mappings": {
+          "Office": "Trastkiv",
+          "Country": "Russia"
+        },
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
   }
 ]

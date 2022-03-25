@@ -63,6 +63,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -114,6 +121,13 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -174,6 +188,13 @@
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -242,6 +263,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -292,6 +320,13 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -351,6 +386,13 @@
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -404,6 +446,13 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }
@@ -457,6 +506,13 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "pushKey": "userlist-push-key"
       }

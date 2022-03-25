@@ -3,8 +3,11 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const path = require("path");
+const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
+
 const {
   isNonFuncObject,
   getMetadata,
@@ -15,11 +18,15 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
+
+const basePath = path.resolve(__dirname, "./cdk");
+ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -94,14 +101,22 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
+  const executeStartTime = new Date();
   await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-
+        let respEvents;
+        if (isCdkDestination(event)) {
+          respEvents = await Executor.execute(
+            event,
+            ConfigFactory.getConfig(destination)
+          );
+        } else {
+          respEvents = await destHandler.process(parsedEvent);
+        }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -145,6 +160,10 @@ async function handleDest(ctx, version, destination) {
       }
     })
   );
+  stats.timing("cdk_events_latency", executeStartTime, {
+    destination,
+    ...metaTags
+  });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
@@ -860,4 +879,3 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
-

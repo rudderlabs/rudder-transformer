@@ -402,7 +402,7 @@ function processIdentify(message, destination) {
   let ec;
   const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
   // Check if present in traits and assign otherwise find the values
-  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid, gclid } = identifyTraits;
+  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = identifyTraits;
 
   if (
     serverSideIdentifyEventAction &&
@@ -426,8 +426,7 @@ function processIdentify(message, destination) {
     ck,
     an,
     av,
-    aiid,
-    gclid
+    aiid
   };
 }
 

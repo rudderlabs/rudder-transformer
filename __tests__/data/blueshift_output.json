@@ -370,7 +370,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[BLUESHIFT] event Api Keys required for Authentication",
+    "error": "[BLUESHIFT] event Api Keys required for Authentication.",
     "statTags": {
       "destination": "blueshift",
       "stage": "transform",

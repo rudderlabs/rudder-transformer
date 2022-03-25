@@ -1,3 +1,5 @@
+const { isUndefined } = require("lodash");
+const { httpPOST } = require("../../../adapters/network");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -8,23 +10,22 @@ const {
   getValueFromMessage,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
+const { errorHandler } = require("../active_campaign/util");
 
 const {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   BASE_URL_EU,
-  BASE_URL
+  BASE_URL,
+  EVENT_NAME_MAPPING
 } = require("./config");
 
 function checkValidEventName(str) {
-  if (
-    str.indexOf(".") !== -1 ||
-    str.indexOf(" ") !== -1 ||
-    /[0-9]/.test(str) ||
-    str.length > 64
-  )
+  if (str.indexOf(".") !== -1 || /[0-9]/.test(str) || str.length > 64)
     return true;
   return false;
 }
@@ -37,13 +38,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  event = event.trim().toLowerCase();
-  if (checkValidEventName(event)) {
-    throw new CustomError(
-      "[Blueshift] Event name doesn't contain period(.), whitespace, numeric value and contains not more than 64 characters",
-      400
-    );
-  }
+
   if (!Config.eventApiKey) {
     throw new CustomError(
       "[BLUESHIFT] event Api Keys required for Authentication.",
@@ -55,6 +50,18 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  }
+
+  event = event.trim();
+  if (isDefinedAndNotNull(EVENT_NAME_MAPPING[event])) {
+    payload.event = EVENT_NAME_MAPPING[event];
+  }
+  payload.event = payload.event.replace(/\s+/g, "_");
+  if (checkValidEventName(payload.event)) {
+    throw new CustomError(
+      "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
+      400
+    );
   }
   const response = defaultRequestConfig();
 
@@ -110,30 +117,55 @@ const groupResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
+
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  const response = defaultRequestConfig();
+  if (payload.name && payload.description) {
+    let endpoint;
+    if (Config.datacenterEU) {
+      endpoint = `${BASE_URL_EU}/api/v1/custom_user_lists/create`;
+    } else {
+      endpoint = `${BASE_URL}/api/v1/custom_user_lists/create`;
+    }
 
-  const customer = removeUndefinedAndNullValues({
-    id: getFieldValueFromMessage(message, "userId"),
-    email: getFieldValueFromMessage(message, "email")
-  });
-  if (!customer.id && !customer.email) {
+    const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${basicAuth}`
+      }
+    };
+    const res = await httpPOST(endpoint, payload, requestOptions);
+    if (res.success === true) {
+      payload.list_id = res.response.data.id;
+    }
+  }
+
+  if (!payload.list_id) {
     throw new CustomError(
-      "[Blueshift] customer_id or email is required to identify customer.",
+      "[Blueshift]:: List Id is required to add a user.",
       400
     );
   }
-  if (customer.id) {
+  const response = defaultRequestConfig();
+
+  const email = getFieldValueFromMessage(message, "email");
+  const id = getFieldValueFromMessage(message, "userIdOnly");
+  if (id) {
     payload.identifier_key = "customer_id";
-    payload.identifier_value = customer.id;
-  } else {
+    payload.identifier_value = id;
+  } else if (email) {
     payload.identifier_key = "email";
-    payload.identifier_value = customer.email;
+    payload.identifier_value = email;
+  } else {
+    throw new CustomError(
+      "[Blueshift] For group call customer_id or email is required to identify customer.",
+      400
+    );
   }
 
   if (Config.datacenterEU) {

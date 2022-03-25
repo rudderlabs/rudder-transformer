@@ -3,6 +3,27 @@
     "destKey": "list_id",
     "sourceKeys": "groupId",
     "sourceFromGenericMap": true,
-    "required": true
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "description",
+    "sourceKeys": "description",
+    "required": false
+  },
+  {
+    "destKey": "is_seed_list",
+    "sourceKeys": "is_seed_list",
+    "required": false
+  },
+  {
+    "destKey": "source",
+    "sourceKeys": ["traits.source", "context.traits.source"],
+    "required": false
   }
 ]

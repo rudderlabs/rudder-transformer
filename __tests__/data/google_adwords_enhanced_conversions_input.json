@@ -10,7 +10,7 @@
     "destination": {
       "Config": {
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
-        "customerId": "1234567890",
+        "customerId": "123-456-7890",
         "subAccount": true,
         "loginCustomerId": "11",
         "listOfConversions": [

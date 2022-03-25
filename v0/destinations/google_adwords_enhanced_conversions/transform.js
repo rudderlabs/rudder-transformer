@@ -51,8 +51,8 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       .setStatus(400)
       .build();
   }
-
-  response.endpoint = `${BASE_ENDPOINT}/${Config.customerId}:uploadConversionAdjustments`;
+  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata);
   response.headers = {
@@ -60,7 +60,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     "Content-Type": "application/json",
     "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
-  response.params = { event, customerId: Config.customerId };
+  response.params = { event, customerId: filteredCustomerId };
   if (Config.subAccount)
     if (Config.loginCustomerId)
       response.headers["login-customer-id"] = Config.loginCustomerId;
@@ -139,7 +139,7 @@ const processRouterDest = async inputs => {
             ? error.response.status
             : error.code
             ? error.code
-            : 400,
+            : error.status || 400,
           error.message || "Error occurred while processing payload."
         );
       }

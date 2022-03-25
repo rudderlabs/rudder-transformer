@@ -326,7 +326,7 @@
       }
     ],
     "batched": false,
-    "statusCode": 400,
+    "statusCode": 500,
     "error": "Empty/Invalid access token"
   }
 ]

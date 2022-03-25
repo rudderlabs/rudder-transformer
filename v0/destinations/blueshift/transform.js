@@ -1,4 +1,3 @@
-const { isUndefined } = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const { EventType } = require("../../../constants");
 const {
@@ -9,12 +8,9 @@ const {
   defaultPostRequestConfig,
   getValueFromMessage,
   getFieldValueFromMessage,
-  removeUndefinedAndNullValues,
   defaultPutRequestConfig,
-  isDefinedAndNotNull,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNull
 } = require("../../util");
-const { errorHandler } = require("../active_campaign/util");
 
 const {
   MAPPING_CONFIG,

@@ -1,0 +1,29 @@
+message:
+  identify:
+    transformation:
+      mapperPath: ./mapping/identify.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        method: POST
+        format: JSON
+        endpoint: "https://heapanalytics.com/api/add_user_properties"
+        userId: "{{ message.anonymousId }}"
+        headers:
+          Accept: "application/json"
+          Content-Type: "application/json"
+
+  track:
+    transformation:
+      mapperPath: ./mapping/track.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        method: POST
+        format: JSON
+        endpoint: "https://heapanalytics.com/api/track"
+        userId: "{{ message.anonymousId }}"
+        headers:
+          Accept: "application/json"
+          Content-Type: "application/json"
+        

@@ -19,12 +19,21 @@ const {
   flattenJson
 } = require("../../util");
 
-//-----------------------------------------------------------------------------------------
-
 const identifyResponseBuilder = (message, { Config }) => {
   const payload = constructPayload(message, identifyMapping);
   const { appKey, dataCenter, appSecret } = Config;
-
+  if (!appKey || !appSecret) {
+    if (!appKey)
+      throw new CustomError(
+        "[Airship] App Key is required for Authentication",
+        400
+      );
+    else
+      throw new CustomError(
+        "[Airship] App Secet is required for authentication",
+        400
+      );
+  }
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   if (dataCenter) {
@@ -85,6 +94,18 @@ const trackResponseBuilder = async (message, { Config }) => {
     payload.value = message.value.replace(" ", "_");
   }
   const { appKey, dataCenter, apiKey } = Config;
+  if (!apiKey || !appKey) {
+    if (!appKey)
+      throw new CustomError(
+        "[Airship] App Key is required for Authentication",
+        400
+      );
+    else
+      throw new CustomError(
+        "[Airship] Api Key (Bearer Token) is required for authentication",
+        400
+      );
+  }
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
@@ -110,6 +131,18 @@ const trackResponseBuilder = async (message, { Config }) => {
 const groupResponseBuilder = (message, { Config }) => {
   const payload = constructPayload(message, groupMapping);
   const { appKey, dataCenter, appSecret } = Config;
+  if (!appKey || !appSecret) {
+    if (!appKey)
+      throw new CustomError(
+        "[Airship] App Key is required for Authentication",
+        400
+      );
+    else
+      throw new CustomError(
+        "[Airship] App Secet is required for authentication",
+        400
+      );
+  }
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used

@@ -1,0 +1,241 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/named_users/undefined/attributes",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "Authorization": "Basic anNoZGhkaGQ6amZoZGRkZGQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "audience": {
+          "named_user_id": "testuserId1"
+        },
+        "attributes": [
+          {
+            "action": "set",
+            "key": "name",
+            "value": "Virat",
+            "timestamp": "2019-10-14T09:03:17.562Z"
+          },
+          {
+            "action": "set",
+            "key": "channelId",
+            "value": "438fae17-3657-4b1f-b5ae-9705cae3e0d2",
+            "timestamp": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/named_users/tags",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "Authorization": "Basic anNoZGhkaGQ6amZoZGRkZGQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "audience": {
+          "named_user_id": "testuserId1"
+        },
+        "add": {
+          "rudderstack_integration": ["name"]
+        },
+        "remove": {
+          "rudderstack_integration": ["age"]
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/named_users/tags",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "Authorization": "Basic anNoZGhkaGQ6amZoZGRkZGQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "audience": {
+          "named_user_id": "testuserId1"
+        },
+        "add": {
+          "rudderstack_integration": ["name", "height"]
+        },
+        "remove": {
+          "rudderstack_integration": ["age", "weight"]
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/named_users/testuserId1/attributes",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "Authorization": "Basic anNoZGhkaGQ6amZoZGRkZGQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "named_user_id": "testuserId1",
+        "attributes": [
+          {
+            "action": "set",
+            "key": "name",
+            "value": "Virat",
+            "timestamp": "2019-10-14T09:03:17.562Z"
+          },
+          {
+            "action": "set",
+            "key": "channelId",
+            "value": "438fae17-3657-4b1f-b5ae-9705cae3e0d2",
+            "timestamp": "2019-10-14T09:03:17.562Z"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/named_users/tags",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "Authorization": "Basic anNoZGhkaGQ6amZoZGRkZGQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "named_user_id": "testuserId1",
+        "add": {
+          "rudderstack_integration_group": ["name"]
+        },
+        "remove": {
+          "rudderstack_integration_group": ["age"]
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] App Key is required for Authentication"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] App Secet is required for authentication"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] App Secet is required for authentication"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] App Key is required for Authentication"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/custom-events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "X-UA-Appkey": "jshdhdhd",
+      "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "product_clicked",
+        "properties": {
+          "index": "products",
+          "filters": ["field1:hello", "val1:val2"]
+        },
+        "user": {
+          "named_user_id": "testuserId1"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] App Key is required for Authentication"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] Api Key (Bearer Token) is required for authentication"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/custom-events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "X-UA-Appkey": "jshdhdhd",
+      "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "product_clicked",
+        "properties": {
+          "index": "products",
+          "filters": ["field1:hello", "val1:val2"]
+        },
+        "user": {
+          "named_user_id": "testuserId1"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

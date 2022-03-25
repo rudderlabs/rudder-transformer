@@ -1,5 +1,4 @@
 const btoa = require("btoa");
-const set = require("set-value");
 const { EventType } = require("../../../constants");
 
 const {
@@ -23,10 +22,6 @@ const {
 //-----------------------------------------------------------------------------------------
 
 const identifyResponseBuilder = (message, { Config }) => {
-  //   let channel =
-  //     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
-  //   channel = channel.toLowerCase();
-  //   const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
   const payload = constructPayload(message, identifyMapping);
   const { appKey, dataCenter, appSecret } = Config;
 
@@ -36,7 +31,6 @@ const identifyResponseBuilder = (message, { Config }) => {
     BASE_URL = BASE_URL_EU;
   }
   const response = defaultRequestConfig();
-  // changegetFieldValueMessage
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
   if (typeof Object.values(traits)[0] === "boolean") {
     payload.add = { rudderstack_integration: [] };
@@ -44,7 +38,6 @@ const identifyResponseBuilder = (message, { Config }) => {
     Object.keys(traits).forEach(key => {
       if (typeof traits[key] === "boolean") {
         response.endpoint = `${BASE_URL}/api/named_users/tags`;
-        //   set(payload, "audience.named_user_id", "payload.named_user_id");
         if (traits[key] === true) {
           payload.add.rudderstack_integration.push(key);
         }
@@ -60,7 +53,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       if (typeof traits[key] !== "boolean") {
         response.endpoint = `${BASE_URL}/api/named_users/${payload.named_user_id}/attributes`;
         const attribute = {};
-        attribute.set = "set";
+        attribute.action = "set";
         attribute.key = key.replace(/\./g, "_");
         attribute.value = traits[key];
         attribute.timestamp = timestamp;
@@ -115,10 +108,6 @@ const trackResponseBuilder = async (message, { Config }) => {
 };
 
 const groupResponseBuilder = (message, { Config }) => {
-  //   let channel =
-  //     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
-  //   channel = channel.toLowerCase();
-  //   const { userIdType, userIdValue } = isValidUserIdOrError(channel, userId);
   const payload = constructPayload(message, groupMapping);
   const { appKey, dataCenter, appSecret } = Config;
 
@@ -127,7 +116,7 @@ const groupResponseBuilder = (message, { Config }) => {
   if (dataCenter) {
     BASE_URL = BASE_URL_EU;
   }
-  // changegetFieldValueMessage
+
   const response = defaultRequestConfig();
 
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
@@ -137,17 +126,11 @@ const groupResponseBuilder = (message, { Config }) => {
     Object.keys(traits).forEach(key => {
       if (typeof traits[key] === "boolean") {
         response.endpoint = `${BASE_URL}/api/named_users/tags`;
-        //   set(payload, "audience.named_user_id", "payload.named_user_id");
         if (traits[key] === true) {
           payload.add.rudderstack_integration_group.push(key);
-          // set(payload, "add.rudderstack_integration_group", key);
-          // payload.adds.push(add);
         }
         if (traits[key] === false) {
           payload.remove.rudderstack_integration_group.push(key);
-          // remove.rudderstack_integration_group = key;
-          // set(payload, "remove.rudderstack_integration_group", key);
-          // payload.removes.push(remove);
         }
       }
     });
@@ -158,7 +141,7 @@ const groupResponseBuilder = (message, { Config }) => {
       if (typeof traits[key] !== "boolean") {
         response.endpoint = `${BASE_URL}/api/named_users/${payload.named_user_id}/attributes`;
         const attribute = {};
-        attribute.set = "set";
+        attribute.action = "set";
         attribute.key = key.replace(/\./g, "_");
         attribute.value = traits[key];
         attribute.timestamp = timestamp;
@@ -186,10 +169,6 @@ const process = async event => {
     );
   }
 
-  //   if (!destination.Config.apiKey) {
-  //     throw new CustomError("Inavalid API Key. Aborting message.", 400);
-  //   }
-
   const messageType = message.type.toLowerCase();
 
   let response;
@@ -210,5 +189,3 @@ const process = async event => {
 };
 
 module.exports = { process };
-
-//-----------------------------------------------------------------------------------------

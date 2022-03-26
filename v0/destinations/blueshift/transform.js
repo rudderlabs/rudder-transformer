@@ -121,12 +121,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
   if (payload.name && payload.description) {
-    let endpoint;
-    if (Config.datacenterEU) {
-      endpoint = `${BASE_URL_EU}/api/v1/custom_user_lists/create`;
-    } else {
-      endpoint = `${BASE_URL}/api/v1/custom_user_lists/create`;
-    }
+    let baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+    let endpoint = `${baseURL}/api/v1/custom_user_lists/create`;
 
     const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
     const requestOptions = {

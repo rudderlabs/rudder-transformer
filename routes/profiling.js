@@ -6,6 +6,7 @@ const moment = require("moment");
 const v8 = require("v8");
 
 const pprof = require("pprof");
+const { Readable } = require("stream");
 
 // The average number of bytes between samples.
 // 512*1024 = 524288
@@ -24,10 +25,12 @@ const router = new KoaRouter();
 const promisifedWrite = (readStream, writeFileName) => {
   return new Promise((resolve, reject) => {
     const writeStream = fs.createWriteStream(writeFileName);
-    readStream.pipe(writeStream);
-    readStream.on("error", err => {
-      reject(err);
-    });
+    fs.writeFileSync(writeFileName, readStream);
+    // writeStream.write(readStream);
+    // readStream.pipe(writeStream);
+    // readStream.on("error", err => {
+    //   reject(err);
+    // });
     writeStream.on("finish", () => {
       resolve();
     });
@@ -84,19 +87,23 @@ router.post("/heapdump", async ctx => {
     const credBucketDetails = ctx.request.body;
     const shouldGenerateLocally = !credBucketDetails.sendTo;
     console.log("Before Heapsnapshot converted into a readable stream");
-    // snapshotReadableStream = v8.getHeapSnapshot();
+    let fileName = "";
+    let profile;
+    if (ctx.request.query.format && ctx.request.query.format === "v8") {
+      profile = await pprof.heap.v8Profile();
+    } else {
+      profile = await pprof.heap.profile();
+    }
 
-    const profile = await pprof.heap.profile();
     snapshotReadableStream = await pprof.encode(profile);
 
-    console.log("Heapsnapshot into a readable stream");
-    const fileName = `heap_${moment.utc().format("DDMMYYYY:ss.sss")}.pb.gz`;
+    console.log("Heapsnapshot into a buffer");
+    fileName = `heap_${moment.utc().format("DDMMYYYY_ss.sss")}.pb.gz`;
     let data;
     if (shouldGenerateLocally) {
       console.log("Before pipeline");
-      let afterPipeline;
       try {
-        afterPipeline = await promisifedWrite(snapshotReadableStream, fileName);
+        fs.writeFileSync(fileName, snapshotReadableStream);
       } catch (error) {
         console.error("Error occurred");
         throw new Error(error);
@@ -121,8 +128,11 @@ router.post("/heapdump", async ctx => {
     }
     // snapshotReadableStream.destroy();
     console.log("Success", data);
-    ctx.body = `Generated locally with filename: ${fileName}`;
+    ctx.body = `Generated ${
+      credBucketDetails.sendTo ? credBucketDetails.sendTo : "locally"
+    } with filename: ${fileName}`;
   } catch (error) {
+    console.error(error);
     ctx.status = 400;
     ctx.body = error.message;
   } finally {

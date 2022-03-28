@@ -169,5 +169,17 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "metadata": {
+      "secret": null
+    },
+    "statusCode": 400,
+    "error": "Empty/Invalid access token",
+    "statTags": {
+      "destination": "google_adwords_enhanced_conversions",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

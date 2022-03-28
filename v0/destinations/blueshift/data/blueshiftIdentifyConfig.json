@@ -38,26 +38,5 @@
     "destKey": "gender",
     "sourceKeys": ["traits.gender", "context.traits.gender"],
     "required": false
-  },
-  {
-{
-    "destKey": "custom_attributes",
-    "sourceKeys": ["context.traits", "traits"],
-    "required": false,
-    "metadata": {
-      "excludes": [
-       "email",
-       "userId",
-       "phone",
-       "firstName",
-       "firstname",
-       "first_name",
-       "lastName",
-       "lastname",
-       "last_name",
-        "gender"
-      ]
-    }
-   }
   }
 ]

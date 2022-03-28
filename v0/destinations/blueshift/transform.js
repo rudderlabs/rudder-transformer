@@ -9,7 +9,8 @@ const {
   getValueFromMessage,
   getFieldValueFromMessage,
   defaultPutRequestConfig,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  extractCustomFields
 } = require("../../util");
 
 const {
@@ -17,7 +18,9 @@ const {
   CONFIG_CATEGORIES,
   BASE_URL_EU,
   BASE_URL,
-  EVENT_NAME_MAPPING
+  EVENT_NAME_MAPPING,
+  BLUESHIFT_TRACK_EXCLUSION,
+  BLUESHIFT_IDENTIFY_EXCLUSION
 } = require("./config");
 
 function checkValidEventName(str) {
@@ -41,7 +44,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
@@ -59,13 +62,26 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
+  payload = extractCustomFields(
+    message,
+    payload,
+    [
+      "context",
+      "context.traits",
+      "context.network",
+      "context.address",
+      "context.os",
+      "context.device",
+      "properties"
+    ],
+    BLUESHIFT_TRACK_EXCLUSION
+  );
+
   const response = defaultRequestConfig();
 
-  if (Config.datacenterEU) {
-    response.endpoint = `${BASE_URL_EU}/api/v1/event`;
-  } else {
-    response.endpoint = `${BASE_URL}/api/v1/event`;
-  }
+  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  response.endpoint = `${baseURL}/api/v1/event`;
+
   response.method = defaultPostRequestConfig.requestMethod;
   const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
   response.headers = {
@@ -83,19 +99,31 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
+
+  payload = extractCustomFields(
+    message,
+    payload,
+    [
+      "context",
+      "context.traits",
+      "context.network",
+      "context.address",
+      "context.os",
+      "context.device"
+    ],
+    BLUESHIFT_IDENTIFY_EXCLUSION
+  );
   const response = defaultRequestConfig();
 
-  if (Config.datacenterEU) {
-    response.endpoint = `${BASE_URL_EU}/api/v1/customers`;
-  } else {
-    response.endpoint = `${BASE_URL}/api/v1/customers`;
-  }
+  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  response.endpoint = `${baseURL}/api/v1/customers`;
+
   response.method = defaultPostRequestConfig.requestMethod;
   const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
   response.headers = {
@@ -120,29 +148,30 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  if (payload.name && payload.description) {
-    let baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-    let endpoint = `${baseURL}/api/v1/custom_user_lists/create`;
+  if (!payload.list_id) {
+    if (payload.name && payload.description) {
+      const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+      const endpoint = `${baseURL}/api/v1/custom_user_lists/create`;
 
-    const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
-    const requestOptions = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${basicAuth}`
+      const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
+      const requestOptions = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${basicAuth}`
+        }
+      };
+      const res = await httpPOST(endpoint, payload, requestOptions);
+      if (res.success === true) {
+        payload.list_id = res.response.data.id;
       }
-    };
-    const res = await httpPOST(endpoint, payload, requestOptions);
-    if (res.success === true) {
-      payload.list_id = res.response.data.id;
+    } else {
+      throw new CustomError(
+        "[Blueshift]:: name and description are required to create an empty list.",
+        400
+      );
     }
   }
 
-  if (!payload.list_id) {
-    throw new CustomError(
-      "[Blueshift]:: List Id is required to add a user.",
-      400
-    );
-  }
   const response = defaultRequestConfig();
 
   const email = getFieldValueFromMessage(message, "email");
@@ -159,12 +188,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-
-  if (Config.datacenterEU) {
-    response.endpoint = `${BASE_URL_EU}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
-  } else {
-    response.endpoint = `${BASE_URL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
-  }
+  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  response.endpoint = `${baseURL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
 
   response.method = defaultPutRequestConfig.requestMethod;
   const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");

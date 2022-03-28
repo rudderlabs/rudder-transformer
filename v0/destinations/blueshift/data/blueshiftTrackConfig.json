@@ -86,12 +86,7 @@
   },
   {
     "destKey": "cookie",
-    "sourceKeys": "anonymousId",
-    "required": false
-  },
-  {
-    "destKey": "custom_attributes",
-    "sourceKeys": "properties",
+    "sourceKeys": ["cookie", "context.cookie"],
     "required": false
   }
 ]

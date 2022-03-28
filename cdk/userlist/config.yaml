@@ -1,0 +1,19 @@
+message:
+  supportedMessageTypes:
+    - identify
+    - track
+    - group
+  default:
+    transformation:
+      # If the mapping mentioned in this yaml doesn't work
+      # we can make use of postMapper tag and apply the required transformation
+      mapperPath: ./mapping/userlist_default.yaml
+      spreadMessage: true
+      response:
+        endpoint: "https://incoming.userlist.com/rudderstack/events"
+        method: POST
+        format: JSON
+        statusCode: 200 # probably this can be removed also.
+        headers:
+          Authorization: "Push {{destConfig.pushKey}}"
+          Content-Type: "application/json"        

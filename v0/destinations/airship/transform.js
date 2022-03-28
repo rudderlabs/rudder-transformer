@@ -6,7 +6,8 @@ const {
   trackMapping,
   groupMapping,
   BASE_URL_EU,
-  BASE_URL_US
+  BASE_URL_US,
+  RESERVED_TRAITS_MAPPING
 } = require("./config");
 
 const {
@@ -16,69 +17,104 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   CustomError,
-  flattenJson
+  flattenJson,
+  isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const identifyResponseBuilder = (message, { Config }) => {
-  const payload = constructPayload(message, identifyMapping);
+  const tagPayload = constructPayload(message, identifyMapping);
+  const attributePayload = constructPayload(message, identifyMapping);
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
       throw new CustomError(
-        "[Airship] App Key is required for Authentication",
+        "[Airship]:: App Key is required for Authentication",
         400
       );
     else
       throw new CustomError(
-        "[Airship] App Secet is required for authentication",
+        "[Airship]:: App Secet is required for authentication",
         400
       );
   }
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
-  if (dataCenter) {
-    BASE_URL = BASE_URL_EU;
-  }
-  const response = defaultRequestConfig();
+  BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
+
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
-  if (typeof Object.values(traits)[0] === "boolean") {
-    payload.add = { rudderstack_integration: [] };
-    payload.remove = { rudderstack_integration: [] };
-    Object.keys(traits).forEach(key => {
-      if (typeof traits[key] === "boolean") {
-        response.endpoint = `${BASE_URL}/api/named_users/tags`;
-        if (traits[key] === true) {
-          payload.add.rudderstack_integration.push(key);
-        }
-        if (traits[key] === false) {
-          payload.remove.rudderstack_integration.push(key);
-        }
-      }
-    });
-  } else {
-    const timestamp = getFieldValueFromMessage(message, "timestamp");
-    payload.attributes = [];
-    Object.keys(traits).forEach(key => {
-      if (typeof traits[key] !== "boolean") {
-        response.endpoint = `${BASE_URL}/api/named_users/${payload.named_user_id}/attributes`;
-        const attribute = {};
-        attribute.action = "set";
-        attribute.key = key.replace(/\./g, "_");
-        attribute.value = traits[key];
-        attribute.timestamp = timestamp;
-        payload.attributes.push(attribute);
-      }
-    });
+  if (!isDefinedAndNotNullAndNotEmpty(traits)) {
+    throw new CustomError(
+      "[Airship]:: for identify, tags or attributes properties are required under traits",
+      400
+    );
   }
 
-  response.headers = {
-    "Content-Type": "application/json",
-    Accept: "application/vnd.urbanairship+json; version=3",
-    Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  tagPayload.add = { rudderstack_integration: [] };
+  tagPayload.remove = { rudderstack_integration: [] };
+  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  attributePayload.attributes = [];
+  Object.keys(traits).forEach(key => {
+    if (typeof traits[key] === "boolean") {
+      const tag = key.toLowerCase().replace(/\./g, "_");
+      if (traits[key] === true) {
+        tagPayload.add.rudderstack_integration.push(tag);
+      }
+      if (traits[key] === false) {
+        tagPayload.remove.rudderstack_integration.push(tag);
+      }
+    }
+    if (typeof traits[key] !== "boolean") {
+      const attribute = {};
+      attribute.action = "set";
+      const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
+      if (keyMapped) {
+        attribute.key = keyMapped;
+      } else {
+        attribute.key = key.replace(/\./g, "_");
+      }
+      attribute.value = traits[key];
+      attribute.timestamp = timestamp;
+      attributePayload.attributes.push(attribute);
+    }
+  });
+
+  let tagResponse;
+  let attributeResponse;
+  if (
+    tagPayload.add.rudderstack_integration.length ||
+    tagPayload.remove.rudderstack_integration.length
+  ) {
+    if (!tagPayload.add.rudderstack_integration.length) delete tagPayload.add;
+    if (!tagPayload.remove.rudderstack_integration.length)
+      delete tagPayload.remove;
+    tagResponse = defaultRequestConfig();
+    tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
+    tagResponse.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/vnd.urbanairship+json; version=3",
+      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+    };
+    tagResponse.method = defaultPostRequestConfig.requestMethod;
+    tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
+  }
+  if (attributePayload.attributes.length) {
+    attributeResponse = defaultRequestConfig();
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${attributePayload.named_user_id}/attributes`;
+    attributeResponse.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/vnd.urbanairship+json; version=3",
+      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+    };
+    attributeResponse.method = defaultPostRequestConfig.requestMethod;
+    attributeResponse.body.JSON = removeUndefinedAndNullValues(
+      attributePayload
+    );
+  }
+
+  if (tagResponse && attributeResponse) return [tagResponse, attributeResponse];
+  if (tagResponse) return [tagResponse];
+  return [attributeResponse];
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -109,11 +145,13 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
-  if (dataCenter) {
-    BASE_URL = BASE_URL_EU;
-  }
+  BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
   const response = defaultRequestConfig();
+  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  if (timestamp) response.body.JSON.occured = timestamp;
+  response.body.JSON.user = {};
+  response.body.JSON.user.named_user_id = message.userId;
   response.headers = {
     "Content-Type": "application/json",
     Accept: "application/vnd.urbanairship+json; version=3",
@@ -124,12 +162,14 @@ const trackResponseBuilder = async (message, { Config }) => {
     response.endpoint = `${BASE_URL}/api/custom-events`;
   }
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.body.JSON.body = {};
+  response.body.JSON.body = payload;
   return response;
 };
 
 const groupResponseBuilder = (message, { Config }) => {
-  const payload = constructPayload(message, groupMapping);
+  const tagPayload = constructPayload(message, groupMapping);
+  const attributePayload = constructPayload(message, groupMapping);
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
@@ -146,51 +186,82 @@ const groupResponseBuilder = (message, { Config }) => {
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
-  if (dataCenter) {
-    BASE_URL = BASE_URL_EU;
-  }
-
-  const response = defaultRequestConfig();
+  BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
-  if (typeof Object.values(traits)[0] === "boolean") {
-    payload.add = { rudderstack_integration_group: [] };
-    payload.remove = { rudderstack_integration_group: [] };
-    Object.keys(traits).forEach(key => {
-      if (typeof traits[key] === "boolean") {
-        response.endpoint = `${BASE_URL}/api/named_users/tags`;
-        if (traits[key] === true) {
-          payload.add.rudderstack_integration_group.push(key);
-        }
-        if (traits[key] === false) {
-          payload.remove.rudderstack_integration_group.push(key);
-        }
-      }
-    });
-  } else {
-    const timestamp = getFieldValueFromMessage(message, "timestamp");
-    payload.attributes = [];
-    Object.keys(traits).forEach(key => {
-      if (typeof traits[key] !== "boolean") {
-        response.endpoint = `${BASE_URL}/api/named_users/${payload.named_user_id}/attributes`;
-        const attribute = {};
-        attribute.action = "set";
-        attribute.key = key.replace(/\./g, "_");
-        attribute.value = traits[key];
-        attribute.timestamp = timestamp;
-        payload.attributes.push(attribute);
-      }
-    });
+  if (!isDefinedAndNotNull(traits)) {
+    throw new CustomError(
+      "[Airship]:: for identify, tags or attributes properties are required under traits",
+      400
+    );
   }
 
-  response.headers = {
-    "Content-Type": "application/json",
-    Accept: "application/vnd.urbanairship+json; version=3",
-    Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  tagPayload.add = { rudderstack_integration: [] };
+  tagPayload.remove = { rudderstack_integration: [] };
+  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  attributePayload.attributes = [];
+  Object.keys(traits).forEach(key => {
+    if (typeof traits[key] === "boolean") {
+      const tag = key.toLowerCase().replace(/\./g, "_");
+      if (traits[key] === true) {
+        tagPayload.add.rudderstack_integration_group.push(tag);
+      }
+      if (traits[key] === false) {
+        tagPayload.remove.rudderstack_integration_group.push(tag);
+      }
+    }
+    if (typeof traits[key] !== "boolean") {
+      const attribute = {};
+      attribute.action = "set";
+      const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
+      if (keyMapped) {
+        attribute.key = keyMapped;
+      } else {
+        attribute.key = key.replace(/\./g, "_");
+      }
+      attribute.value = traits[key];
+      attribute.timestamp = timestamp;
+      attributePayload.attributes.push(attribute);
+    }
+  });
+
+  let tagResponse;
+  let attributeResponse;
+  if (
+    tagPayload.add.rudderstack_integration_group.length ||
+    tagPayload.remove.rudderstack_integration_group.length
+  ) {
+    if (!tagPayload.add.rudderstack_integration_group.length)
+      delete tagPayload.add;
+    if (!tagPayload.remove.rudderstack_integration_group.length)
+      delete tagPayload.remove;
+
+    tagResponse = defaultRequestConfig();
+    tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
+    tagResponse.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/vnd.urbanairship+json; version=3",
+      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+    };
+    tagResponse.method = defaultPostRequestConfig.requestMethod;
+    tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
+  }
+  if (attributePayload.attributes.length) {
+    attributeResponse = defaultRequestConfig();
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${attributePayload.named_user_id}/attributes`;
+    attributeResponse.headers = {
+      "Content-Type": "application/json",
+      Accept: "application/vnd.urbanairship+json; version=3",
+      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+    };
+    attributeResponse.method = defaultPostRequestConfig.requestMethod;
+    attributeResponse.body.JSON = removeUndefinedAndNullValues(
+      attributePayload
+    );
+  }
+  if (tagResponse && attributeResponse) return [tagResponse, attributeResponse];
+  if (tagResponse) return [tagResponse];
+  return [attributeResponse];
 };
 
 const process = async event => {

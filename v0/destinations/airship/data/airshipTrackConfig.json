@@ -15,12 +15,6 @@
     "required": false
   },
   {
-    "destKey": "user.named_user_id",
-    "sourceKeys": "userId",
-    "sourceFromGenericMap": true,
-    "required": true
-  },
-  {
     "destKey": "interaction_id",
     "sourceKeys": "properties.interactionId",
     "required": false
@@ -38,16 +32,6 @@
   {
     "destKey": "transaction",
     "sourceKeys": "properties.transaction",
-    "required": false
-  },
-  {
-    "destKey": "transaction",
-    "sourceKeys": "properties.transaction",
-    "required": false
-  },
-  {
-    "destKey": "occured",
-    "sourceKeys": "timestamp",
     "required": false
   }
 ]

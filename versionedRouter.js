@@ -124,7 +124,7 @@ async function handleDest(ctx, version, destination) {
           respList.push(
             ...respEvents.map(ev => {
               let { userId } = ev;
-              // Set the user ID to an empty string for 
+              // Set the user ID to an empty string for
               // all the falsy values (including 0 and false)
               // Otherwise, server panics while un-marshalling the response
               // while expecting only strings.
@@ -153,8 +153,8 @@ async function handleDest(ctx, version, destination) {
         );
         respList.push({
           metadata: event.metadata,
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload.",
+          statusCode: errObj.status,
+          error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
         });
       }

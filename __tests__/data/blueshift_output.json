@@ -1,0 +1,11 @@
+[
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
+]

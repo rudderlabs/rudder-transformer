@@ -7,7 +7,7 @@
   },
   {
     "destKey": "customer_id",
-    "sourceKeys": "userIdOnly",
+    "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": true
   },

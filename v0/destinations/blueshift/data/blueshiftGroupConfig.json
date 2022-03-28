@@ -13,13 +13,25 @@
   },
   {
     "destKey": "description",
-    "sourceKeys": "description",
+    "sourceKeys": ["traits.description", "context.traits.description"],
     "required": false
   },
   {
     "destKey": "is_seed_list",
-    "sourceKeys": "is_seed_list",
-    "required": false
+    "sourceKeys": ["traits.isSeedList", "context.traits.isSeedList"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["0", "false", "F", "f", false],
+          "destVal": "0"
+        },
+        {
+          "sourceVal": ["1", "true", "T", "t", true],
+          "destVal": "1"
+        }
+      ]
+    }
   },
   {
     "destKey": "source",

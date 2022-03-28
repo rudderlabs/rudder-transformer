@@ -29,32 +29,6 @@ const EVENT_NAME_MAPPING = {
   Identify: "identify"
 };
 
-const BLUESHIFT_TRACK_EXCLUSION = [
-  "userId",
-  "id",
-  "email",
-  "event",
-  "type",
-  "token",
-  "idfa",
-  "advertisingId",
-  "idfv",
-  "id",
-  "manufacturer",
-  "carrier",
-  "ip",
-  "request_ip",
-  "latitude",
-  "longitude",
-  "messageId",
-  "cookie",
-  "device",
-  "os",
-  "network",
-  "address",
-  "traits"
-];
-
 const BLUESHIFT_IDENTIFY_EXCLUSION = [
   "email",
   "event",
@@ -65,12 +39,7 @@ const BLUESHIFT_IDENTIFY_EXCLUSION = [
   "lastName",
   "lastname",
   "last_name",
-  "gender",
-  "traits",
-  "network",
-  "address",
-  "device",
-  "os"
+  "gender"
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -78,7 +47,6 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   EVENT_NAME_MAPPING,
-  BLUESHIFT_TRACK_EXCLUSION,
   BLUESHIFT_IDENTIFY_EXCLUSION,
   BASE_URL_EU,
   BASE_URL

@@ -19,7 +19,6 @@ const {
   BASE_URL_EU,
   BASE_URL,
   EVENT_NAME_MAPPING,
-  BLUESHIFT_TRACK_EXCLUSION,
   BLUESHIFT_IDENTIFY_EXCLUSION
 } = require("./config");
 
@@ -62,20 +61,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  payload = extractCustomFields(
-    message,
-    payload,
-    [
-      "context",
-      "context.traits",
-      "context.network",
-      "context.address",
-      "context.os",
-      "context.device",
-      "properties"
-    ],
-    BLUESHIFT_TRACK_EXCLUSION
-  );
+  payload = extractCustomFields(message, payload, ["properties"], ["cookie"]);
 
   const response = defaultRequestConfig();
 
@@ -109,14 +95,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   payload = extractCustomFields(
     message,
     payload,
-    [
-      "context",
-      "context.traits",
-      "context.network",
-      "context.address",
-      "context.os",
-      "context.device"
-    ],
+    ["traits", "context.traits"],
     BLUESHIFT_IDENTIFY_EXCLUSION
   );
   const response = defaultRequestConfig();
@@ -160,13 +139,18 @@ const groupResponseBuilder = async (message, category, { Config }) => {
           Authorization: `Basic ${basicAuth}`
         }
       };
-      const res = await httpPOST(endpoint, payload, requestOptions);
-      if (res.success === true) {
-        payload.list_id = res.response.data.id;
+      const blueshiftlist = await httpPOST(endpoint, payload, requestOptions);
+      if (blueshiftlist.success === true && blueshiftlist.response.data.id) {
+        payload.list_id = blueshiftlist.response.data.id;
+      } else {
+        throw new CustomError(
+          `[Blueshift]:: ${blueshiftlist.response.message}`,
+          400
+        );
       }
     } else {
       throw new CustomError(
-        "[Blueshift]:: name and description are required to create an empty list.",
+        "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
         400
       );
     }

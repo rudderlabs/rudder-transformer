@@ -1,7 +1,7 @@
 [
   {
     "destKey": "customer_id",
-    "sourceKeys": "userIdOnly",
+    "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": false
   },
@@ -63,30 +63,22 @@
   },
   {
     "destKey": "latitude",
-    "sourceKeys": [
-      "latitude",
-      "context.address.latitude",
-      "context.location.latitude"
-    ],
+    "sourceKeys": ["context.address.latitude", "context.location.latitude"],
     "required": false
   },
   {
     "destKey": "longitude",
-    "sourceKeys": [
-      "longitude",
-      "context.address.longitude",
-      "context.location.longitude"
-    ],
+    "sourceKeys": ["context.address.longitude", "context.location.longitude"],
     "required": false
   },
   {
     "destKey": "event_uuid",
-    "sourceKeys": "message.messageId",
+    "sourceKeys": "messageId",
     "required": false
   },
   {
     "destKey": "cookie",
-    "sourceKeys": ["cookie", "context.cookie"],
+    "sourceKeys": "properties.cookie",
     "required": false
   }
 ]

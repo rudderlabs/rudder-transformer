@@ -10,14 +10,11 @@ function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type for statsig", 400);
   }
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type;
 
-  switch (messageType) {
+  switch (messageType.toLowerCase()) {
     case EventType.IDENTIFY:
     case EventType.PAGE:
     case EventType.SCREEN:
@@ -26,7 +23,10 @@ function process(event) {
     case EventType.GROUP:
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(
+        `message type ${messageType} not supported for statsig`,
+        400
+      );
   }
 
   const response = defaultRequestConfig();

@@ -42,15 +42,12 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type for heap", 400);
   }
 
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type;
   let category;
-  switch (messageType) {
+  switch (messageType.toLowerCase()) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
@@ -58,7 +55,10 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(
+        `message type ${messageType} not supported for heap`,
+        400
+      );
   }
 
   // build the response

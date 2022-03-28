@@ -3,7 +3,6 @@ const logger = require("../../../logger");
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
-  CustomError,
   constructPayload,
   defaultRequestConfig,
   getSuccessRespEvents,
@@ -11,6 +10,7 @@ const {
   getValueFromMessage,
   removeUndefinedAndNullValues
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
@@ -30,6 +30,29 @@ const hashEncrypt = object => {
 };
 
 /**
+ * Get access token to be bound to the event req headers
+ *
+ * Note:
+ * This method needs to be implemented particular to the destination
+ * As the schema that we'd get in `metadata.secret` can be different
+ * for different destinations
+ *
+ * @param {Object} metadata
+ * @returns
+ */
+const getAccessToken = metadata => {
+  // OAuth for this destination
+  const { secret } = metadata;
+  if (!secret) {
+    throw new ErrorBuilder()
+      .setStatus(500)
+      .setMessage("Empty/Invalid access token")
+      .build();
+  }
+  return secret.access_token;
+};
+
+/**
  * This function is used for building the response. It create a default rudder response
  * and populate headers, params and body.JSON
  * @param {*} metadata
@@ -43,7 +66,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   const filteredCustomerId = Config.customerId.replace(/-/g, "");
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = metadata.secret.access_token;
+  const accessToken = getAccessToken(metadata);
   response.params = { listId: Config.listId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
@@ -54,10 +77,12 @@ const responseBuilder = (metadata, body, { Config }) => {
     if (Config.loginCustomerId)
       response.headers["login-customer-id"] = Config.loginCustomerId;
     else
-      throw new CustomError(
-        `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`,
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`
+        )
+        .setStatus(400)
+        .build();
   return response;
 };
 /**
@@ -193,31 +218,39 @@ const createPayload = (message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const response = [];
   if (!message.type) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (!message.properties) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (!message.properties.listData) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (message.type.toLowerCase() === "audiencelist") {
     const createdPayload = createPayload(message, destination);
 
     if (!Object.keys(createdPayload).length) {
-      throw new CustomError(
-        "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message."
+        )
+        .setStatus(400)
+        .build();
     }
 
     Object.values(createdPayload).forEach(data => {
@@ -226,10 +259,12 @@ const processEvent = async (metadata, message, destination) => {
     return response;
   }
 
-  throw new CustomError(
-    `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`,
-    400
-  );
+  throw new ErrorBuilder()
+    .setMessage(
+      `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`
+    )
+    .setStatus(400)
+    .build();
 };
 
 const process = async event => {
@@ -257,7 +292,7 @@ const processRouterDest = async inputs => {
             ? error.response.status
             : error.code
             ? error.code
-            : 400,
+            : error.status || 400,
           error.message || "Error occurred while processing payload."
         );
       }

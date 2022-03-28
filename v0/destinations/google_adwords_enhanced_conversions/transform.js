@@ -1,13 +1,36 @@
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   constructPayload,
   defaultRequestConfig,
   getValueFromMessage
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 
 const { trackMapping, BASE_ENDPOINT } = require("./config");
+
+/**
+ * Get access token to be bound to the event req headers
+ *
+ * Note:
+ * This method needs to be implemented particular to the destination
+ * As the schema that we'd get in `metadata.secret` can be different
+ * for different destinations
+ *
+ * @param {Object} metadata
+ * @returns
+ */
+const getAccessToken = metadata => {
+  // OAuth for this destination
+  const { secret } = metadata;
+  if (!secret) {
+    throw new ErrorBuilder()
+      .setMessage("Empty/Invalid access token")
+      .setStatus(500)
+      .build();
+  }
+  return secret.access_token;
+};
 
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
@@ -21,29 +44,33 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     }
   }
   if (event === undefined || event === "" || flag === 0) {
-    throw new CustomError(
-      `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`,
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
+      )
+      .setStatus(400)
+      .build();
   }
-
-  response.endpoint = `${BASE_ENDPOINT}/${Config.customerId}:uploadConversionAdjustments`;
+  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
-  const accessToken = metadata.secret.access_token;
+  const accessToken = getAccessToken(metadata);
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
     "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
-  response.params = { event, customerId: Config.customerId };
+  response.params = { event, customerId: filteredCustomerId };
   if (Config.subAccount)
     if (Config.loginCustomerId)
       response.headers["login-customer-id"] = Config.loginCustomerId;
     else
-      throw new CustomError(
-        `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`,
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`
+        )
+        .setStatus(400)
+        .build();
   return response;
 };
 
@@ -51,10 +78,12 @@ const processTrackEvent = async (metadata, message, destination) => {
   const payload = constructPayload(message, trackMapping);
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
-    throw new CustomError(
-      `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
+      )
+      .setStatus(400)
+      .build();
   }
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
@@ -68,13 +97,18 @@ const processTrackEvent = async (metadata, message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
-    throw new CustomError("Invalid payload. Property Type is not present", 400);
+    throw new ErrorBuilder()
+      .setMessage("Invalid payload. Property Type is not present")
+      .setStatus(400)
+      .build();
   }
   if (type.toLowerCase() !== "track") {
-    throw new CustomError(
-      `[Google_adwords_enhanced_conversions]::Message Type ${type} is not present. Aborting message.`,
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not present. Aborting message.`
+      )
+      .setStatus(400)
+      .build();
   } else {
     return processTrackEvent(metadata, message, destination);
   }
@@ -105,7 +139,7 @@ const processRouterDest = async inputs => {
             ? error.response.status
             : error.code
             ? error.code
-            : 400,
+            : error.status || 400,
           error.message || "Error occurred while processing payload."
         );
       }

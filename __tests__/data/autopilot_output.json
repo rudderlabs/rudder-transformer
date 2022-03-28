@@ -54,7 +54,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message  not supported"
+    "error": "message type page not supported for autopilot"
   },
   {
     "statusCode": 400,
@@ -62,6 +62,43 @@
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message."
-  }
+    "error": "invalid message type for autopilot"
+  },
+  {
+    "statusCode": 400,
+    "error": "message type group not supported for autopilot"
+  },
+  {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api2.autopilothq.com/v1/contact",
+        "headers": {
+            "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z",
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        "params": {},
+        "body": {
+            "JSON": {
+                "contact": {
+                    "Email": "abc@rudderstack.com",
+                    "FirstName": "Anuraj"
+                }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd"
+},
+{
+  "statusCode": 400,
+  "error":  "invalid message type for autopilot"
+},
+{
+  "statusCode": 400,
+  "error":  "message type group not supported for autopilot"
+}
 ]

@@ -3,8 +3,11 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const path = require("path");
+const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
+
 const {
   isNonFuncObject,
   getMetadata,
@@ -15,11 +18,16 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const profilingRouter = require("./routes/profiling");
+const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
+
+const basePath = path.resolve(__dirname, "./cdk");
+ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -35,6 +43,9 @@ const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   : false;
 
 const router = new Router();
+
+// Router for assistance in profiling
+router.use(profilingRouter);
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();
@@ -94,14 +105,22 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
+  const executeStartTime = new Date();
   await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-
+        let respEvents;
+        if (isCdkDestination(event)) {
+          respEvents = await Executor.execute(
+            event,
+            ConfigFactory.getConfig(destination)
+          );
+        } else {
+          respEvents = await destHandler.process(parsedEvent);
+        }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -109,7 +128,7 @@ async function handleDest(ctx, version, destination) {
           respList.push(
             ...respEvents.map(ev => {
               let { userId } = ev;
-              // Set the user ID to an empty string for 
+              // Set the user ID to an empty string for
               // all the falsy values (including 0 and false)
               // Otherwise, server panics while un-marshalling the response
               // while expecting only strings.
@@ -138,13 +157,17 @@ async function handleDest(ctx, version, destination) {
         );
         respList.push({
           metadata: event.metadata,
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload.",
+          statusCode: errObj.status,
+          error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
         });
       }
     })
   );
+  stats.timing("cdk_events_latency", executeStartTime, {
+    destination,
+    ...metaTags
+  });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
@@ -860,4 +883,3 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
-

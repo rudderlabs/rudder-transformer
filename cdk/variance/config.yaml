@@ -1,0 +1,13 @@
+message:
+  default:
+    transformation:
+      spreadMessage: true
+      mapperPath: ./mappings/default.yaml
+      response:
+        format: JSON
+        method: POST
+        endpoint: "{{ destConfig.webhookUrl }}"
+        headers:
+          authorization: "{{ destConfig.authHeader }}"
+          content-type: "application/json"
+        userId: "{{ message.anonymousId }}"

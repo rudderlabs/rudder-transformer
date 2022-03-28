@@ -66,7 +66,10 @@ const getAccessToken = metadata => {
   // OAuth for this destination
   const { secret } = metadata;
   if (!secret) {
-    throw new CustomError("Empty/Invalid access token", 500);
+    throw new ErrorBuilder()
+      .setMessage("Empty/Invalid access token")
+      .setStatus(500)
+      .build();
   }
   return secret.access_token;
 };
@@ -161,17 +164,23 @@ const processIdentify = ({ message, metadata }, destination, category) => {
 const processEvent = (metadata, message, destination) => {
   let response;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("Message Type is not present. Aborting message.")
+      .setStatus(400)
+      .build();
   }
   if (!destination.Config.campaignId) {
-    throw new CustomError("Campaign Id is mandatory", 400);
+    throw new ErrorBuilder()
+      .setMessage("Campaign Id is mandatory")
+      .setStatus(400)
+      .build();
   }
 
   if (!destination.Config.businessUnitId) {
-    throw new CustomError("Business Unit Id is mandatory", 400);
+    throw new ErrorBuilder()
+      .setMessage("Business Unit Id is mandatory")
+      .setStatus(400)
+      .build();
   }
 
   if (message.type === "identify") {
@@ -179,7 +188,10 @@ const processEvent = (metadata, message, destination) => {
 
     response = processIdentify({ message, metadata }, destination, category);
   } else {
-    throw new CustomError(`${message.type} is not supported in Pardot`, 400);
+    throw new ErrorBuilder()
+      .setMessage(`${message.type} is not supported in Pardot`)
+      .setStatus(400)
+      .build();
   }
   return response;
 };
@@ -210,7 +222,7 @@ const processRouterDest = async events => {
             ? error.response.status
             : error.code
             ? error.code
-            : 400,
+            : error.status || 400,
           error.message || "Error occurred while processing payload."
         );
       }

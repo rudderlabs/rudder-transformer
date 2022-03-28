@@ -6,7 +6,9 @@ const moment = require("moment");
 const v8 = require("v8");
 
 const pprof = require("pprof");
-const { Readable } = require("stream");
+const { promisify } = require("util");
+
+const writeFileProm = promisify(fs.writeFile);
 
 // The average number of bytes between samples.
 // 512*1024 = 524288
@@ -21,24 +23,6 @@ console.log(`Interval Bytes set: ${intervalBytes}`);
 pprof.heap.start(intervalBytes, stackDepth);
 
 const router = new KoaRouter();
-
-const promisifedWrite = (readStream, writeFileName) => {
-  return new Promise((resolve, reject) => {
-    const writeStream = fs.createWriteStream(writeFileName);
-    fs.writeFileSync(writeFileName, readStream);
-    // writeStream.write(readStream);
-    // readStream.pipe(writeStream);
-    // readStream.on("error", err => {
-    //   reject(err);
-    // });
-    writeStream.on("finish", () => {
-      resolve();
-    });
-    writeStream.on("error", err => {
-      reject(err);
-    });
-  });
-};
 
 const uploadToAWS = async (credBucketDetails, fileName, readStream) => {
   const storageClient = new S3Client({
@@ -66,11 +50,47 @@ const uploadToAWS = async (credBucketDetails, fileName, readStream) => {
   return uploadResult;
 };
 
+function promisifiedRead(readable) {
+  return new Promise((resolve, reject) => {
+    // Instructions for reading data
+    const chunks = [];
+    readable.on("readable", () => {
+      let chunk;
+      // Using while loop and calling
+      // read method with parameter
+      while (true) {
+        // Displaying the chunk
+        chunk = readable.read();
+        if (chunk === null) {
+          break;
+        }
+        chunks.push(chunk);
+      }
+      resolve(Buffer.concat(chunks).toString());
+    });
+    readable.on("error", err => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
 /**
  * Example usage of API
  * 
  * Should have PutS3Object permission for the bucket mentioned
     curl --location --request POST 'http://localhost:9090/heapdump' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "sendTo": "aws",
+        "accessKeyId": "<AWS_ACCESS_KEY>",
+        "secretAccessKey": "<AWS_SECRET_ACCESS_KEY>",
+        "bucket": "<S3_BUCKET_NAME>",
+        "region": "<AWS_REGION>"
+    }'
+
+  * Another way -- To get the heapdump in v8 format
+    curl --location --request POST 'http://localhost:9090/heapdump?format=v8' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "sendTo": "aws",
@@ -88,24 +108,28 @@ router.post("/heapdump", async ctx => {
     const shouldGenerateLocally = !credBucketDetails.sendTo;
     console.log("Before Heapsnapshot converted into a readable stream");
     let fileName = "";
+    let format = "pb.gz";
     let profile;
     if (ctx.request.query.format && ctx.request.query.format === "v8") {
-      profile = await pprof.heap.v8Profile();
+      const readable = v8.getHeapSnapshot();
+      snapshotReadableStream = await promisifiedRead(readable);
+      format = "heapsnapshot";
     } else {
       profile = await pprof.heap.profile();
+      snapshotReadableStream = await pprof.encode(profile);
     }
 
-    snapshotReadableStream = await pprof.encode(profile);
-
     console.log("Heapsnapshot into a buffer");
-    fileName = `heap_${moment.utc().format("DDMMYYYY_ss.sss")}.pb.gz`;
+    fileName = `heap_${moment
+      .utc()
+      .format("YYYY-MM-DD_HH:mm:ss.sss")}.${format}`;
     let data;
     if (shouldGenerateLocally) {
       console.log("Before pipeline");
       try {
-        fs.writeFileSync(fileName, snapshotReadableStream);
+        await writeFileProm(fileName, snapshotReadableStream);
       } catch (error) {
-        console.error("Error occurred");
+        console.error("Error occurred:", error);
         throw new Error(error);
       }
       console.log("After pipeline");

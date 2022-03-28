@@ -18,6 +18,7 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const profilingRouter = require("./routes/profiling");
 const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
@@ -42,6 +43,9 @@ const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   : false;
 
 const router = new Router();
+
+// Router for assistance in profiling
+router.use(profilingRouter);
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();

@@ -43,7 +43,7 @@
     "files": {},
     "userId": "sampath"
   },
-  { "statusCode": 400, "message": "message type not supported" },
+  { "statusCode": 400, "error": "message type identify not supported for kochava" },
   {
     "version": "1",
     "type": "REST",
@@ -258,5 +258,275 @@
     },
     "files": {},
     "userId": "5094f5704b9cf2b3"
-  }
+  },
+  {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://control.kochava.com/track/json",
+        "headers": {},
+        "params": {},
+        "body": {
+            "JSON": {
+                "action": "event",
+                "kochava_app_id": "<kochava guid goes here>",
+                "kochava_device_id": "5094f5704b9cf2b3",
+                "data": {
+                    "app_tracking_transparency": {
+                        "att": false
+                    },
+                    "usertime": 1584003903421,
+                    "app_version": "1",
+                    "device_ver": "Android SDK built for x86-Android-8.1.0",
+                    "device_ids": {
+                        "idfa": "",
+                        "idfv": "",
+                        "adid": "",
+                        "android_id": "5094f5704b9cf2b3"
+                    },
+                    "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+                    "event_name": "screen view MainActivity",
+                    "currency": "USD",
+                    "event_data": {
+                        "name": "MainActivity",
+                        "automatic": true
+                    },
+                    "app_name": "LeanPlumIntegrationAndroid",
+                    "app_short_string": "1.0",
+                    "locale": "en-US",
+                    "os_version": "8.1.0",
+                    "screen_dpi": 420
+                }
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+        },
+        "files": {},
+        "userId": "5094f5704b9cf2b3"
+},
+{
+  
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://control.kochava.com/track/json",
+      "headers": {},
+      "params": {},
+      "body": {
+          "JSON": {
+              "action": "event",
+              "kochava_app_id": "<kochava guid goes here>",
+              "kochava_device_id": "5094f5704b9cf2b3",
+              "data": {
+                  "app_tracking_transparency": {
+                      "att": false
+                  },
+                  "usertime": 1584003903421,
+                  "app_version": "1",
+                  "device_ver": "",
+                  "device_ids": {
+                      "idfa": "",
+                      "idfv": "",
+                      "adid": "",
+                      "android_id": ""
+                  },
+                  "device_ua": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)",
+                  "event_name": "screen view MainActivity",
+                  "currency": "USD",
+                  "event_data": {
+                      "name": "MainActivity",
+                      "automatic": true
+                  },
+                  "app_name": "LeanPlumIntegrationAndroid",
+                  "app_short_string": "1.0",
+                  "locale": "en-US",
+                  "screen_dpi": 420
+              }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+  
+},
+{
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://control.kochava.com/track/json",
+      "headers": {},
+      "params": {},
+      "body": {
+          "JSON": {
+              "action": "event",
+              "kochava_app_id": "<kochava guid goes here>",
+              "kochava_device_id": "00000000000000000000000000",
+              "data": {
+                  "app_tracking_transparency": {
+                      "att": false
+                  },
+                  "usertime": 1571043797562,
+                  "app_version": "1.0.0",
+                  "device_ver": "",
+                  "device_ids": {
+                      "idfa": "",
+                      "idfv": "",
+                      "adid": "",
+                      "android_id": ""
+                  },
+                  "device_ua": "",
+                  "event_name": "screen view",
+                  "origination_ip": "1.1.1.1",
+                  "currency": "USD",
+                  "event_data": {},
+                  "app_name": "RudderLabs JavaScript SDK",
+                  "app_short_string": "1.0.0",
+                  "locale": "en-US",
+                  "os_version": "",
+                  "screen_dpi": 2
+              }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+      },
+      "files": {},
+      "userId": "00000000000000000000000000"
+},
+{
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://control.kochava.com/track/json",
+      "headers": {},
+      "params": {},
+      "body": {
+          "JSON": {
+              "action": "event",
+              "kochava_app_id": "<kochava guid goes here>",
+              "kochava_device_id": "00000000000000000000000000",
+              "data": {
+                  "app_tracking_transparency": {
+                      "att": true
+                  },
+                  "usertime": 1571043797562,
+                  "app_version": "1.0.0",
+                  "device_ver": "",
+                  "device_ids": {
+                      "idfa": "",
+                      "idfv": "00000000000000000000000000",
+                      "adid": "",
+                      "android_id": ""
+                  },
+                  "device_ua": "",
+                  "event_name": "screen view",
+                  "origination_ip": "1.1.1.1",
+                  "currency": "USD",
+                  "event_data": {},
+                  "app_name": "RudderLabs JavaScript SDK",
+                  "app_short_string": "1.0.0",
+                  "locale": "en-US",
+                  "os_version": "",
+                  "screen_dpi": 2
+              }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+      },
+      "files": {},
+      "userId": "00000000000000000000000000"
+
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "POST",
+  "endpoint": "https://control.kochava.com/track/json",
+  "headers": {},
+  "params": {},
+  "body": {
+      "JSON": {
+          "action": "event",
+          "kochava_app_id": "<kochava guid goes here>",
+          "kochava_device_id": "00000000000000000000000000",
+          "data": {
+              "app_tracking_transparency": {
+                  "att": false
+              },
+              "usertime": 1571043797562,
+              "app_version": "1.0.0",
+              "device_ver": "",
+              "device_ids": {
+                  "idfa": "",
+                  "idfv": "00000000000000000000000000",
+                  "adid": "",
+                  "android_id": ""
+              },
+              "device_ua": "",
+              "event_name": "screen view",
+              "origination_ip": "1.1.1.1",
+              "currency": "USD",
+              "event_data": {},
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_short_string": "1.0.0",
+              "locale": "en-US",
+              "os_version": "",
+              "screen_dpi": 2
+          }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {},
+  "userId": "00000000000000000000000000"
+},
+{
+  "version": "1",
+  "type": "REST",
+  "method": "POST",
+  "endpoint": "https://control.kochava.com/track/json",
+  "headers": {},
+  "params": {},
+  "body": {
+      "JSON": {
+          "action": "event",
+          "kochava_app_id": "<kochava guid goes here>",
+          "kochava_device_id": "00000000000000000000000000",
+          "data": {
+              "app_tracking_transparency": {
+                  "att": false
+              },
+              "usertime": 1571043797562,
+              "app_version": "1.0.0",
+              "device_ver": "",
+              "device_ids": {
+                  "idfa": "",
+                  "idfv": "",
+                  "adid": "",
+                  "android_id": "00000000000000000000000000"
+              },
+              "device_ua": "",
+              "event_name": "screen view",
+              "origination_ip": "1.1.1.1",
+              "currency": "USD",
+              "event_data": {},
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_short_string": "1.0.0",
+              "locale": "en-US",
+              "os_version": "",
+              "screen_dpi": 2
+          }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+  },
+  "files": {},
+  "userId": "00000000000000000000000000"
+}
 ]

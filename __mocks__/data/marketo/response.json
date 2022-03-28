@@ -43,5 +43,8 @@
         "message": "Access Token Expired"
       }
     ]
+  },
+  "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_acess"
   }
 }

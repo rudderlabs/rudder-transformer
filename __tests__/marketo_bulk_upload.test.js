@@ -6,7 +6,7 @@ const version = "v0";
 const integration = "marketo_bulk_upload";
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 
-jest.mock("axios", () => jest.fn(mockedAxiosClient));
+jest.mock("axios");
 
 try {
   reqTransformBody = JSON.parse(

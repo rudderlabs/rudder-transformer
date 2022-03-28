@@ -1,0 +1,38 @@
+- destKey: Email
+  sourceKeys:
+  - traits.email
+  - context.traits.email
+
+- destKey: FirstName
+  sourceKeys:
+  - traits.firstName
+  - context.traits.firstName
+  - traits.firstname
+  - context.traits.firstname
+
+- destKey: LastName
+  sourceKeys:
+  - traits.lastName
+  - context.traits.lastName
+  - traits.lastname
+  - context.traits.lastname
+
+- destKey: Phone
+  sourceKeys:
+  - traits.phone
+  - context.traits.phone
+
+- destKey: Company
+  sourceKeys:
+  - traits.company.name
+  - context.traits.company.name
+
+- destKey: Status
+  sourceKeys:
+  - traits.status
+  - context.traits.status
+  
+- destKey: LeadSource
+  sourceKeys:
+  - traits.LeadSource
+  - context.traits.LeadSource

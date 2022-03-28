@@ -45,7 +45,7 @@ function buildResponse(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (isBlank(message.userId)) {
-    throw new CustomError("Missing required user id", 400);
+    throw new CustomError('Missing required value from "userIdOnly"', 400);
   }
 
   switch (message.type) {
@@ -54,7 +54,10 @@ function processSingleMessage(message, destination) {
     case EventType.GROUP:
       return buildResponse(message, destination);
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(
+        `message type ${message.type} not supported for userlist`,
+        400
+      );
   }
 }
 

@@ -3,8 +3,11 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
+const path = require("path");
+const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
+
 const {
   isNonFuncObject,
   getMetadata,
@@ -15,10 +18,15 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
+const { compileUserLibrary } = require("./util/ivmFactory");
+
+const basePath = path.resolve(__dirname, "./cdk");
+ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const versions = ["v0"];
 const API_VERSION = "2";
@@ -29,6 +37,9 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
+const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
+  ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
+  : false;
 
 const router = new Router();
 
@@ -90,14 +101,22 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const respList = [];
+  const executeStartTime = new Date();
   await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-
+        let respEvents;
+        if (isCdkDestination(event)) {
+          respEvents = await Executor.execute(
+            event,
+            ConfigFactory.getConfig(destination)
+          );
+        } else {
+          respEvents = await destHandler.process(parsedEvent);
+        }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -105,6 +124,14 @@ async function handleDest(ctx, version, destination) {
           respList.push(
             ...respEvents.map(ev => {
               let { userId } = ev;
+              // Set the user ID to an empty string for 
+              // all the falsy values (including 0 and false)
+              // Otherwise, server panics while un-marshalling the response
+              // while expecting only strings.
+              if (!userId) {
+                userId = "";
+              }
+
               if (ev.statusCode !== 400 && userId) {
                 userId = `${userId}`;
               }
@@ -133,6 +160,10 @@ async function handleDest(ctx, version, destination) {
       }
     })
   );
+  stats.timing("cdk_events_latency", executeStartTime, {
+    destination,
+    ...metaTags
+  });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
@@ -452,6 +483,54 @@ if (startDestTransformer) {
       });
     });
   }
+}
+
+if (transformerTestModeEnabled) {
+  router.post("/transformation/test", async ctx => {
+    try {
+      const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+      if (!events || events.length === 0) {
+        throw new Error("Invalid request. Missing events");
+      }
+
+      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      trRevCode.versionId = "testVersionId";
+      const res = await userTransformHandler()(
+        events,
+        trRevCode.versionId,
+        libraryVersionIDs,
+        trRevCode,
+        true
+      );
+      logger.debug(
+        `[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`
+      );
+      ctx.body = res;
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = { error: error.message };
+    }
+  });
+
+  router.post("/transformationLibrary/test", async ctx => {
+    try {
+      const { code } = ctx.request.body;
+      if (!code) {
+        throw new Error("Invalid request. Missing code");
+      }
+
+      const res = await compileUserLibrary(code);
+      ctx.body = res;
+    } catch (error) {
+      ctx.body = { error: error.message };
+      ctx.status = 400;
+    }
+  });
 }
 
 async function handleSource(ctx, version, source) {
@@ -800,4 +879,3 @@ module.exports = {
   pollStatus,
   getJobStatus
 };
-

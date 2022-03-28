@@ -20,6 +20,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { cdkEnabled } = require("../../features.json");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -712,7 +713,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
       if (value || value === 0 || value === false) {
         if (destKey) {
           // set the value only if correct
-          set(payload, destKey, value);
+          _.set(payload, destKey, value);
         } else {
           // to set to root and flatten later
           payload[""] = value;
@@ -1055,6 +1056,10 @@ class CustomError extends Error {
  */
 function generateErrorObject(error, destination, transformStage) {
   // check err is object
+  // filter to check if it is coming from cdk
+  if (error.fromCdk) {
+    return error;
+  }
   const { status, message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {
@@ -1132,6 +1137,16 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+function isCdkDestination(event) {
+  // TODO: maybe dont need all these checks in place
+  return (
+    event.destination &&
+    event.destination.DestinationDefinition &&
+    event.destination.DestinationDefinition.Config &&
+    event.destination.DestinationDefinition.Config.cdkEnabled
+  );
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1201,5 +1216,6 @@ module.exports = {
   updatePayload,
   isOAuthSupported,
   isOAuthDestination,
-  isAppleFamily
+  isAppleFamily,
+  isCdkDestination
 };

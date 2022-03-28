@@ -29,9 +29,12 @@ const {
  */
 
 const formatRevenue = revenue => {
-  return Number((revenue || 0).toFixed(2));
+  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
+  if (!isNaN(formattedRevenue)) {
+    return formattedRevenue;
+  }
+  throw new CustomError("Revenue could not be converted to number", 400);
 };
-
 /**
  *
  * @param {*} message Rudder Payload
@@ -522,6 +525,25 @@ const responseBuilderSimple = (message, category, destination) => {
         commonData.data_processing_options_state
       ] = dataProcessingOptions;
     }
+  }
+
+  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+
+  if (
+    customData &&
+    customData.content_category &&
+    typeof customData.content_category !== "string"
+  ) {
+    if (Array.isArray(customData.content_category)) {
+      customData.content_category = customData.content_category
+        .map(String)
+        .join(",");
+    } else if (typeof customData.content_category === 'object') {
+      throw new CustomError("Category must be must be a string");
+    } else {
+      customData.content_category = String(customData.content_category);
+    }
+   // delete customData.content_category;
   }
 
   if (userData && commonData) {

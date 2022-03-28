@@ -878,5 +878,105 @@
   },
   {
     "message": "Missing required value from \"userId\""
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "email": "john@gmail.com",
+          "dataFields": {
+            "email": "john@gmail.com"
+          },
+          "userId": "12345",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "items": [
+          {
+            "id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "categories": ["bikes", "cars", "motors"],
+            "price": 19,
+            "quantity": 2,
+            "imageUrl": "https://www.example.com/product/path.jpg",
+            "url": "https://www.example.com/product/path"
+          },
+          {
+            "id": "507f1f77bcf86cd7994390112",
+            "sku": "45790-322",
+            "name": "Monopoly: 3rd Edition2",
+            "categories": ["Bikes2", "cars2", "motors2"],
+            "price": 192,
+            "quantity": 22,
+            "imageUrl": "https://www.example.com/product/path.jpg2",
+            "url": "https://www.example.com/product/path2"
+          }
+        ]
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+    "headers": {
+      "Content-Type": "application/json",
+      "api_key": "12345"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "email": "sayan@gmail.com",
+          "dataFields": {
+            "email": "sayan@gmail.com"
+          },
+          "userId": "12345",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "items": [
+          {
+            "id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "categories": ["shirts", "pants", "trousers"],
+            "price": 19,
+            "quantity": 2,
+            "imageUrl": "https://www.example.com/product/path.jpg",
+            "url": "https://www.example.com/product/path"
+          },
+          {
+            "id": "507f1f77bcf86cd7994390112",
+            "sku": "45790-322",
+            "name": "Monopoly: 3rd Edition2",
+            "categories": ["Cars2"],
+            "price": 192,
+            "quantity": 22,
+            "imageUrl": "https://www.example.com/product/path.jpg2",
+            "url": "https://www.example.com/product/path2"
+          }
+        ]
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

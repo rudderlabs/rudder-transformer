@@ -71,10 +71,10 @@ function getMergeRuleEvent(message = {}, eventType, options) {
     }
 
     if (
-      _.isEmpty(message.mergeProperties[0].type) ||
-      _.isEmpty(message.mergeProperties[0].value) ||
-      _.isEmpty(message.mergeProperties[1].type) ||
-      _.isEmpty(message.mergeProperties[1].value)
+      _.isEmpty(_.toString(message.mergeProperties[0].type)) ||
+      _.isEmpty(_.toString(message.mergeProperties[0].value)) ||
+      _.isEmpty(_.toString(message.mergeProperties[1].type)) ||
+      _.isEmpty(_.toString(message.mergeProperties[1].value))
     ) {
       throw new Error(
         "mergeProperties contains null values for expected inputs"

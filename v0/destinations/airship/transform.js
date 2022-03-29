@@ -7,7 +7,8 @@ const {
   groupMapping,
   BASE_URL_EU,
   BASE_URL_US,
-  RESERVED_TRAITS_MAPPING
+  RESERVED_TRAITS_MAPPING,
+  AIRSHIP_TRACK_EXCLUSION
 } = require("./config");
 
 const {
@@ -18,13 +19,15 @@ const {
   defaultRequestConfig,
   CustomError,
   flattenJson,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  extractCustomFields,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  isEmptyObject
 } = require("../../util");
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
-  const attributePayload = constructPayload(message, identifyMapping);
-  delete attributePayload.audience;
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
@@ -34,7 +37,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       );
     else
       throw new CustomError(
-        "[Airship]:: App Secet is required for authentication",
+        "[Airship]:: App Secret is required for authentication",
         400
       );
   }
@@ -50,13 +53,17 @@ const identifyResponseBuilder = (message, { Config }) => {
     );
   }
 
+  // Creating tags and attribute payload
   tagPayload.add = { rudderstack_integration: [] };
   tagPayload.remove = { rudderstack_integration: [] };
   let timestamp = getFieldValueFromMessage(message, "timestamp");
   timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
 
+  // Creating attribute payload
+  const attributePayload = {};
   attributePayload.attributes = [];
   Object.keys(traits).forEach(key => {
+    // tags
     if (typeof traits[key] === "boolean") {
       const tag = key.toLowerCase().replace(/\./g, "_");
       if (traits[key] === true) {
@@ -66,6 +73,7 @@ const identifyResponseBuilder = (message, { Config }) => {
         tagPayload.remove.rudderstack_integration.push(tag);
       }
     }
+    // attribute
     if (typeof traits[key] !== "boolean") {
       const attribute = {};
       attribute.action = "set";
@@ -84,6 +92,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   let tagResponse;
   let attributeResponse;
   const arrayPayload = [];
+  // Creating tag response
   if (
     tagPayload.add.rudderstack_integration.length ||
     tagPayload.remove.rudderstack_integration.length
@@ -102,9 +111,13 @@ const identifyResponseBuilder = (message, { Config }) => {
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
     arrayPayload.push(tagResponse);
   }
+  // Creating attribute response
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
+      message,
+      "userId"
+    )}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
@@ -128,9 +141,20 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   name = name.toLowerCase();
   const payload = constructPayload(message, trackMapping);
-  payload.name = name.replace(" ", "_");
+  let properties = {};
+  properties = extractCustomFields(
+    message,
+    properties,
+    ["properties"],
+    AIRSHIP_TRACK_EXCLUSION
+  );
+  if (!isEmptyObject(properties)) {
+    payload.properties = properties;
+  }
+
+  payload.name = name.replace(/\s+/g, "_");
   if (payload.value) {
-    payload.value = message.value.replace(" ", "_");
+    payload.value.replace(/\s+/g, "_");
   }
   const { appKey, dataCenter, apiKey } = Config;
   if (!apiKey || !appKey) {
@@ -161,9 +185,8 @@ const trackResponseBuilder = async (message, { Config }) => {
     "X-UA-Appkey": `${appKey}`,
     Authorization: `Bearer ${apiKey}`
   };
-  if (message.type === "track") {
-    response.endpoint = `${BASE_URL}/api/custom-events`;
-  }
+
+  response.endpoint = `${BASE_URL}/api/custom-events`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.body = {};
   response.body.JSON.body = payload;
@@ -172,8 +195,6 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const groupResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, groupMapping);
-  const attributePayload = constructPayload(message, groupMapping);
-  delete attributePayload.audience;
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
@@ -183,7 +204,7 @@ const groupResponseBuilder = (message, { Config }) => {
       );
     else
       throw new CustomError(
-        "[Airship] App Secet is required for authentication",
+        "[Airship] App Secret is required for authentication",
         400
       );
   }
@@ -204,8 +225,11 @@ const groupResponseBuilder = (message, { Config }) => {
   tagPayload.remove = { rudderstack_integration_group: [] };
   let timestamp = getFieldValueFromMessage(message, "timestamp");
   timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
+
+  const attributePayload = {};
   attributePayload.attributes = [];
   Object.keys(traits).forEach(key => {
+    // tags
     if (typeof traits[key] === "boolean") {
       const tag = key.toLowerCase().replace(/\./g, "_");
       if (traits[key] === true) {
@@ -215,6 +239,7 @@ const groupResponseBuilder = (message, { Config }) => {
         tagPayload.remove.rudderstack_integration_group.push(tag);
       }
     }
+    // attribute
     if (typeof traits[key] !== "boolean") {
       const attribute = {};
       attribute.action = "set";
@@ -233,6 +258,7 @@ const groupResponseBuilder = (message, { Config }) => {
   let tagResponse;
   let attributeResponse;
   const arrayPayload = [];
+  // Creating tag response
   if (
     tagPayload.add.rudderstack_integration_group.length ||
     tagPayload.remove.rudderstack_integration_group.length
@@ -253,9 +279,13 @@ const groupResponseBuilder = (message, { Config }) => {
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
     arrayPayload.push(tagResponse);
   }
+  // Creating attribute response
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
+      message,
+      "userId"
+    )}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
@@ -297,5 +327,44 @@ const process = async event => {
   }
   return response;
 };
+
+// const processRouterDest = async inputs => {
+//   if (!Array.isArray(inputs) || inputs.length <= 0) {
+//     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+//     return [respEvents];
+//   }
+
+//   const respList = await Promise.all(
+//     inputs.map(async input => {
+//       try {
+//         if (input.message.statusCode) {
+//           // already transformed event
+//           return getSuccessRespEvents(
+//             input.message,
+//             [input.metadata],
+//             input.destination
+//           );
+//         }
+//         // if not transformed
+//         return getSuccessRespEvents(
+//           await process(input),
+//           [input.metadata],
+//           input.destination
+//         );
+//       } catch (error) {
+//         return getErrorRespEvents(
+//           [input.metadata],
+//           error.response
+//             ? error.response.status
+//             : error.code
+//             ? error.code
+//             : 400,
+//           error.message || "Error occurred while processing payload."
+//         );
+//       }
+//     })
+//   );
+//   return respList;
+// };
 
 module.exports = { process };

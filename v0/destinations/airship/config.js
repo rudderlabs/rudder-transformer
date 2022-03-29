@@ -18,6 +18,17 @@ const CONFIG_CATEGORIES = {
   }
 };
 
+const AIRSHIP_TRACK_EXCLUSION = [
+  "interaction_id",
+  "interactionId",
+  "interaction_type",
+  "interactionType",
+  "value",
+  "session_id",
+  "sessionId",
+  "transaction"
+];
+
 const RESERVED_TRAITS_MAPPING = {
   "address.city": "city",
   "address.country": "country",
@@ -40,5 +51,6 @@ module.exports = {
   MAPPING_CONFIG,
   BASE_URL_EU,
   BASE_URL_US,
-  RESERVED_TRAITS_MAPPING
+  RESERVED_TRAITS_MAPPING,
+  AIRSHIP_TRACK_EXCLUSION
 };

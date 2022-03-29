@@ -18,6 +18,7 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
+const profilingRouter = require("./routes/profiling");
 const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
@@ -42,6 +43,9 @@ const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   : false;
 
 const router = new Router();
+
+// Router for assistance in profiling
+router.use(profilingRouter);
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();
@@ -124,7 +128,7 @@ async function handleDest(ctx, version, destination) {
           respList.push(
             ...respEvents.map(ev => {
               let { userId } = ev;
-              // Set the user ID to an empty string for 
+              // Set the user ID to an empty string for
               // all the falsy values (including 0 and false)
               // Otherwise, server panics while un-marshalling the response
               // while expecting only strings.
@@ -153,8 +157,8 @@ async function handleDest(ctx, version, destination) {
         );
         respList.push({
           metadata: event.metadata,
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload.",
+          statusCode: errObj.status,
+          error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
         });
       }

@@ -14,7 +14,7 @@ const {
 } = require("./config");
 const {
   addExternalIdToTraits,
-  getDestinationExternalIDForRetl,
+  getDestinationExternalIDInfoForRetl,
   isDefined,
   removeUndefinedValues,
   constructPayload,
@@ -225,7 +225,8 @@ const getLeadId = async (message, formattedDestination, token) => {
   //     "identifierType": "email",
   //     "type": "MARKETO-{object}"
   //   }
-  let leadId = getDestinationExternalIDForRetl(message, "MARKETO");
+  let leadId = getDestinationExternalIDInfoForRetl(message, "MARKETO")
+    .destinationExternalId;
   if (!leadId) {
     leadId = getDestinationExternalID(message, "marketoLeadId");
   }
@@ -349,16 +350,42 @@ const processIdentify = async (message, formattedDestination, token) => {
   if (isDefinedAndNotNull(userId)) {
     inputObj.userId = userId;
   }
+  let endPoint = `https://${accountId}.mktorest.com/rest/v1/leads.json`;
+  let payload = {
+    action: "createOrUpdate",
+    input: [inputObj],
+    lookupField: "id"
+  };
+  // handled if vdm enabled
+  if (get(message, MappedToDestinationKey)) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      "MARKETO"
+    );
+    // if leads object then will fallback to the already existing endpoint and payload
+    if (objectType !== "leads") {
+      endPoint = `https://${accountId}.mktorest.com/rest/v1/customobjects/${objectType}.json`;
+      // we will be using the dedupeBy dedupeFields for this endpoint
+      // DOC: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
+      // if marketoGUID is mapped it should be removed before sending to marketo as for this type the following error can arise
+      // Field 'marketoGUID' not updateable or Field 'marketoGUID' is not allowed when dedupeBy is 'dedupeFields'
+      if (traits.marketoGUID) {
+        delete traits.marketoGUID;
+      }
+      const input = removeUndefinedValues(traits);
+      payload = {
+        action: "createOrUpdate",
+        dedupeBy: "dedupeFields",
+        input
+      };
+    }
+  }
   return {
-    endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    endPoint,
     headers: {
       Authorization: `Bearer ${token}`
     },
-    payload: {
-      action: "createOrUpdate",
-      input: [inputObj],
-      lookupField: "id"
-    }
+    payload
   };
 };
 

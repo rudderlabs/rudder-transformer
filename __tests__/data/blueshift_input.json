@@ -1093,5 +1093,35 @@
       "userId": "rudderstack8",
       "groupId": "35838"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
+        "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
+        "datacenterEU": false
+      }
+    },
+    "message": {
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "blueshift",
+          "description": "advertisements company",
+          "isSeedList": 1,
+          "email": "piyush@rudderstack.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        }
+      },
+      "type": "group",
+      "userId": "rudderstack8"
+    }
   }
 ]

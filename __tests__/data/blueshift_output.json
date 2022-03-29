@@ -477,5 +477,29 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35869",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identifier_value": "rudderstack8",
+        "name": "blueshift",
+        "description": "advertisements company",
+        "list_id": 35869,
+        "identifier_key": "customer_id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

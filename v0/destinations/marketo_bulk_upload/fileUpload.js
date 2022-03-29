@@ -19,8 +19,8 @@ const { httpPOST, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const fetchFieldSchema = async config => {
-  const fieldArrNames = [];
   let fieldArr = [];
+  const fieldArrNames = [];
   const fieldSchemaMapping = await httpGET(
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
@@ -32,6 +32,7 @@ const fetchFieldSchema = async config => {
   if (
     fieldSchemaMapping &&
     fieldSchemaMapping.success &&
+    fieldSchemaMapping.response.data &&
     fieldSchemaMapping.response.data.result.length > 0 &&
     fieldSchemaMapping.response.data.result[0]
   ) {
@@ -40,8 +41,8 @@ const fetchFieldSchema = async config => {
       fieldArrNames.push(field.name);
     });
     // const fieldNames = fieldArrNames;
-  } else if (fieldSchemaMapping.response.message) {
-    throw new CustomError(`${fieldSchemaMapping.response.message}`, 400);
+  } else if (fieldSchemaMapping.response.error) {
+    throw new CustomError(`${fieldSchemaMapping.response.error}`, 400);
   } else {
     throw new CustomError("Failed to fetch Marketo Field Schema", 400);
   }
@@ -51,18 +52,18 @@ const fetchFieldSchema = async config => {
 const getHeaderFields = (config, fieldArrNames) => {
   const { columnFieldsMapping } = config;
 
-  if (fieldArrNames) {
-    const validate = colField => fieldArrNames.includes(colField.to);
-    if (!columnFieldsMapping.every(validate)) {
-      throw new CustomError(
-        `The field ${colField.to} is not present in Marketo Field Schema. Aborting. `,
-        400
-      );
+  columnFieldsMapping.forEach(colField => {
+    if (fieldArrNames) {
+      if (fieldArrNames && !fieldArrNames.includes(colField.to)) {
+        throw new CustomError(
+          `The field ${colField.to} is not present in Marketo Field Schema. Aborting. `,
+          400
+        );
+      }
+    } else {
+      throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400);
     }
-  } else {
-    throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400);
-  }
-
+  });
   const columnField = getHashFromArray(
     columnFieldsMapping,
     "to",
@@ -79,8 +80,8 @@ const getFileData = async (inputEvents, config) => {
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const fieldArrNames = await fetchFieldSchema(config);
-  const headerArr = getHeaderFields(config, fieldArrNames);
+  const fieldArrayNames = await fetchFieldSchema(config);
+  const headerArr = getHeaderFields(config, fieldArrayNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts

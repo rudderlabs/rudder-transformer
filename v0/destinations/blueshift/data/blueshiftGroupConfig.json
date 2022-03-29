@@ -6,6 +6,12 @@
     "required": false
   },
   {
+    "destKey": "identifier_value",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
     "destKey": "name",
     "sourceKeys": "name",
     "sourceFromGenericMap": true,

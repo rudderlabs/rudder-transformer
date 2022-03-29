@@ -33,6 +33,8 @@ const BLUESHIFT_IDENTIFY_EXCLUSION = [
   "email",
   "event",
   "phone",
+  "phoneNumber",
+  "phone_number",
   "firstName",
   "firstname",
   "first_name",

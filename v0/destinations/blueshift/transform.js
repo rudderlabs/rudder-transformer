@@ -158,20 +158,9 @@ const groupResponseBuilder = async (message, category, { Config }) => {
 
   const response = defaultRequestConfig();
 
-  const email = getFieldValueFromMessage(message, "email");
-  const id = getFieldValueFromMessage(message, "userIdOnly");
-  if (id) {
-    payload.identifier_key = "customer_id";
-    payload.identifier_value = id;
-  } else if (email) {
-    payload.identifier_key = "email";
-    payload.identifier_value = email;
-  } else {
-    throw new CustomError(
-      "[Blueshift] For group call customer_id or email is required to identify customer.",
-      400
-    );
-  }
+  // identifier_value mapped with userId, so identifier_key takes customer_id.
+  payload.identifier_key = "customer_id";
+
   const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
   response.endpoint = `${baseURL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
 

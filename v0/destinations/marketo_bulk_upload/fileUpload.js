@@ -49,12 +49,12 @@ const fetchFieldSchema = async config => {
   return fieldArrNames;
 };
 
-const getHeaderFields = (config, fieldArrNames) => {
+const getHeaderFields = (config, fieldSchemaNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach(colField => {
-    if (fieldArrNames) {
-      if (fieldArrNames && !fieldArrNames.includes(colField.to)) {
+    if (fieldSchemaNames) {
+      if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
         throw new CustomError(
           `The field ${colField.to} is not present in Marketo Field Schema. Aborting. `,
           400
@@ -73,15 +73,14 @@ const getHeaderFields = (config, fieldArrNames) => {
   return Object.keys(columnField);
 };
 
-const getFileData = async (inputEvents, config) => {
+const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   const input = inputEvents;
   const messageArr = [];
   let startTime;
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const fieldArrayNames = await fetchFieldSchema(config);
-  const headerArr = getHeaderFields(config, fieldArrayNames);
+  const headerArr = getHeaderFields(config, fieldSchemaNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -181,10 +180,11 @@ const getFileData = async (inputEvents, config) => {
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config) => {
+const getImportID = async (input, config, fieldSchemaNames) => {
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
-    config
+    config,
+    fieldSchemaNames
   );
   try {
     const formReq = new FormData();
@@ -350,21 +350,23 @@ const getImportID = async (input, config) => {
 
 const responseHandler = async (input, config) => {
   /**
-  * {
-  "importId" : <some-id>,
-  "pollURL" : <some-url-to-poll-status>,
-}
+  {
+    "importId" : <some-id>,
+    "pollURL" : <some-url-to-poll-status>,
+  }
   */
+  const fieldSchemaNames = await fetchFieldSchema(config);
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
-    config
+    config,
+    fieldSchemaNames
   );
   if (importId) {
     const response = {};
     response.statusCode = 200;
     response.importId = importId;
     response.pollURL = "/pollStatus";
-    const csvHeader = getHeaderFields(config).toString();
+    const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }

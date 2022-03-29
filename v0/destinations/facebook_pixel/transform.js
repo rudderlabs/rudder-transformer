@@ -379,7 +379,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, "fb_pixel");
 
-  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v13.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
@@ -538,12 +538,12 @@ const responseBuilderSimple = (message, category, destination) => {
       customData.content_category = customData.content_category
         .map(String)
         .join(",");
-    } else if (typeof customData.content_category === 'object') {
+    } else if (typeof customData.content_category === "object") {
       throw new CustomError("Category must be must be a string");
     } else {
       customData.content_category = String(customData.content_category);
     }
-   // delete customData.content_category;
+    // delete customData.content_category;
   }
 
   if (userData && commonData) {

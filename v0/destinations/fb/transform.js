@@ -220,16 +220,11 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
 }
 
 function responseBuilderSimple(message, payload, destination) {
-  const requestConfig = {
-    requestFormat: "FORM",
-    requestMethod: "POST"
-  };
-
   const { appID } = destination.Config;
 
   // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
 
-  const endpoint = `https://graph.facebook.com/v3.3/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/v13.0/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
@@ -253,8 +248,11 @@ function buildBaseEvent(message) {
   } else if (isAppleFamily(sourceSDK)) {
     sourceSDK = "i2";
   } else {
-    // if the sourceSDK is not android or ios, send an empty string
-    sourceSDK = "";
+    // if the sourceSDK is not android or ios
+    throw new CustomError(
+      "Extended Device Information i.e device.type is required",
+      400
+    );
   }
 
   baseEvent.extinfo[0] = sourceSDK;

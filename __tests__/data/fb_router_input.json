@@ -12,8 +12,7 @@
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
           "model": "Redmi 6",
-          "name": "xiaomi",
-          "type": "Android"
+          "name": "xiaomi"
         },
         "network": {
           "carrier": "Banglalink"
@@ -133,8 +132,7 @@
           "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "manufacturer": "Xiaomi",
           "model": "Redmi 6",
-          "name": "xiaomi",
-          "type": "Android"
+          "name": "xiaomi"
         },
         "network": {
           "carrier": "Banglalink"

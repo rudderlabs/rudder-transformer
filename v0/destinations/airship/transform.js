@@ -104,7 +104,10 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
+      message,
+      "userId"
+    )}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
@@ -255,7 +258,10 @@ const groupResponseBuilder = (message, { Config }) => {
   }
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
+      message,
+      "userId"
+    )}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",

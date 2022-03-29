@@ -887,5 +887,43 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "error": "message type page not supported",
+    "statTags": {
+      "destination": "airship",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/custom-events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "X-UA-Appkey": "ffdf",
+      "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "occured": "2019-10-14T09:03:17.562Z",
+        "user": {
+          "named_user_id": "testuserId1"
+        },
+        "body": {
+          "name": "product_clicked",
+          "properties": {}
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
 ]

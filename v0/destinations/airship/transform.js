@@ -18,13 +18,13 @@ const {
   defaultRequestConfig,
   CustomError,
   flattenJson,
-  isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
   const attributePayload = constructPayload(message, identifyMapping);
+  delete attributePayload.audience;
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
@@ -52,7 +52,9 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   tagPayload.add = { rudderstack_integration: [] };
   tagPayload.remove = { rudderstack_integration: [] };
-  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  let timestamp = getFieldValueFromMessage(message, "timestamp");
+  timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
+
   attributePayload.attributes = [];
   Object.keys(traits).forEach(key => {
     if (typeof traits[key] === "boolean") {
@@ -81,6 +83,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   let tagResponse;
   let attributeResponse;
+  const arrayPayload = [];
   if (
     tagPayload.add.rudderstack_integration.length ||
     tagPayload.remove.rudderstack_integration.length
@@ -97,10 +100,11 @@ const identifyResponseBuilder = (message, { Config }) => {
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
+    arrayPayload.push(tagResponse);
   }
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${attributePayload.named_user_id}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
@@ -110,11 +114,10 @@ const identifyResponseBuilder = (message, { Config }) => {
     attributeResponse.body.JSON = removeUndefinedAndNullValues(
       attributePayload
     );
+    arrayPayload.push(attributeResponse);
   }
 
-  if (tagResponse && attributeResponse) return [tagResponse, attributeResponse];
-  if (tagResponse) return [tagResponse];
-  return [attributeResponse];
+  return arrayPayload;
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -170,6 +173,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 const groupResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, groupMapping);
   const attributePayload = constructPayload(message, groupMapping);
+  delete attributePayload.audience;
   const { appKey, dataCenter, appSecret } = Config;
   if (!appKey || !appSecret) {
     if (!appKey)
@@ -189,16 +193,17 @@ const groupResponseBuilder = (message, { Config }) => {
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
-  if (!isDefinedAndNotNull(traits)) {
+  if (!isDefinedAndNotNullAndNotEmpty(traits)) {
     throw new CustomError(
-      "[Airship]:: for identify, tags or attributes properties are required under traits",
+      "[Airship]:: for group, tags or attributes properties are required under traits",
       400
     );
   }
 
-  tagPayload.add = { rudderstack_integration: [] };
-  tagPayload.remove = { rudderstack_integration: [] };
-  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  tagPayload.add = { rudderstack_integration_group: [] };
+  tagPayload.remove = { rudderstack_integration_group: [] };
+  let timestamp = getFieldValueFromMessage(message, "timestamp");
+  timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
   attributePayload.attributes = [];
   Object.keys(traits).forEach(key => {
     if (typeof traits[key] === "boolean") {
@@ -227,6 +232,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   let tagResponse;
   let attributeResponse;
+  const arrayPayload = [];
   if (
     tagPayload.add.rudderstack_integration_group.length ||
     tagPayload.remove.rudderstack_integration_group.length
@@ -245,10 +251,11 @@ const groupResponseBuilder = (message, { Config }) => {
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
+    arrayPayload.push(tagResponse);
   }
   if (attributePayload.attributes.length) {
     attributeResponse = defaultRequestConfig();
-    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${attributePayload.named_user_id}/attributes`;
+    attributeResponse.endpoint = `${BASE_URL}/api/named_users/${message.userId}/attributes`;
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
@@ -258,10 +265,9 @@ const groupResponseBuilder = (message, { Config }) => {
     attributeResponse.body.JSON = removeUndefinedAndNullValues(
       attributePayload
     );
+    arrayPayload.push(attributeResponse);
   }
-  if (tagResponse && attributeResponse) return [tagResponse, attributeResponse];
-  if (tagResponse) return [tagResponse];
-  return [attributeResponse];
+  return arrayPayload;
 };
 
 const process = async event => {

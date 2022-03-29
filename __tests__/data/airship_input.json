@@ -10,8 +10,9 @@
           "version": "1.0.0"
         },
         "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
+          "email": "testone@gmail.com",
+          "firstName": "test",
+          "lastName": "one"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -26,581 +27,6 @@
         },
         "screen": {
           "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "identify",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": true,
-          "age": false
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "identify",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": true,
-          "age": false,
-          "height": true,
-          "weight": false
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "identify",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "group",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": true,
-          "age": false
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "group",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "group",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appSecret": "jfhddddd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "group",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "identify",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
-        }
-      },
-      "type": "identify",
-      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-      "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "123456",
-      "event": "product clicked",
-      "userId": "testuserId1",
-      "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appSecret": "jgjjhfjhfhgdh"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -608,11 +34,31 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
-      "event": "product clicked",
+      "event": "Product Clicked",
       "userId": "testuserId1",
       "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
       },
       "integrations": {
         "All": true
@@ -622,8 +68,9 @@
     "destination": {
       "Config": {
         "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "dhfdjhfjdhffjhfd"
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
       }
     }
   },
@@ -638,8 +85,9 @@
           "version": "1.0.0"
         },
         "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
+          "email": "testone@gmail.com",
+          "firstName": "test",
+          "lastName": "one"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -654,16 +102,6 @@
         },
         "screen": {
           "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -671,11 +109,30 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
-      "event": "product clicked",
       "userId": "testuserId1",
       "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
       },
       "integrations": {
         "All": true
@@ -685,7 +142,9 @@
     "destination": {
       "Config": {
         "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appSecret": "dhfdjhfjdhffjhfd"
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
       }
     }
   },
@@ -700,8 +159,9 @@
           "version": "1.0.0"
         },
         "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
+          "email": "testone@gmail.com",
+          "firstName": "test",
+          "lastName": "one"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -716,16 +176,6 @@
         },
         "screen": {
           "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -733,11 +183,31 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
-      "event": "product clicked",
+      "event": "Product Clicked",
       "userId": "testuserId1",
       "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
       },
       "integrations": {
         "All": true
@@ -746,8 +216,9 @@
     },
     "destination": {
       "Config": {
-        "appKey": "jshdhdhd",
-        "appSecret": "dhfdjhfjdhffjhfd"
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appSecret": "fhf",
+        "dataCenter": false
       }
     }
   },
@@ -762,8 +233,9 @@
           "version": "1.0.0"
         },
         "traits": {
-          "name": "Virat",
-          "channelId": "438fae17-3657-4b1f-b5ae-9705cae3e0d2"
+          "email": "testone@gmail.com",
+          "firstName": "test",
+          "lastName": "one"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -778,16 +250,6 @@
         },
         "screen": {
           "density": 2
-        },
-        "page": {
-          "path": "/destinations/airship",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "https://docs.rudderstack.com/destinations/airship",
-          "category": "destination",
-          "initial_referrer": "https://docs.rudderstack.com",
-          "initial_referring_domain": "docs.rudderstack.com"
         }
       },
       "type": "track",
@@ -795,11 +257,105 @@
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
-      "event": "Product clicked",
+      "event": "Product Clicked",
       "userId": "testuserId1",
       "properties": {
-        "index": "products",
-        "filters": ["field1:hello", "val1:val2"]
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "testone@gmail.com",
+          "firstName": "test",
+          "lastName": "one"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "event": "Product Clicked",
+      "userId": "testuserId1",
+      "properties": {
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
       },
       "integrations": {
         "All": true
@@ -809,8 +365,592 @@
     "destination": {
       "Config": {
         "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "jshdhdhd",
-        "appSecret": "dhfdjhfjdhffjhfd"
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        }
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": true,
+        "email": true,
+        "favColor": false
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {},
+      "type": "identify",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        }
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": true,
+        "email": true,
+        "favColor": false
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "dataCenter": false
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {},
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "507f191e810c19729de860ea",
+      "channel": "browser",
+      "context": {
+        "ip": "8.8.8.8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+      },
+      "integrations": {
+        "All": false,
+        "Mixpanel": true,
+        "Salesforce": true
+      },
+      "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+      "receivedAt": "2015-02-23T22:28:55.387Z",
+      "sentAt": "2015-02-23T22:28:55.111Z",
+      "timestamp": "2015-02-23T22:28:55.111Z",
+      "traits": {
+        "name": "Peter Gibbons",
+        "email": "peter@example.com",
+        "plan": "premium",
+        "logins": 5,
+        "address": {
+          "street": "6th St",
+          "city": "San Francisco",
+          "state": "CA",
+          "postalCode": "94103",
+          "country": "USA"
+        },
+        "firstName": true,
+        "lastName": false,
+        "favColor": true
+      },
+      "type": "group",
+      "userId": "97980cfea0067",
+      "version": "1"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "appSecret": "fhf",
+        "dataCenter": false
       }
     }
   }

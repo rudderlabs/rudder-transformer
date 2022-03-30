@@ -5,7 +5,7 @@ const {
   THROTTLED_CODES,
   POLL_ACTIVITY
 } = require("./util");
-const { httpSend } = require("../../../adapters/network");
+const { httpPOST } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 const stats = require("../../../util/stats");
 
@@ -16,19 +16,18 @@ const getPollStatus = async event => {
   // To see the status of the import job polling is done
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
   const requestOptions = {
-    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`,
-    method: "get",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`
     }
   };
+  const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
-  const resp = await httpSend(requestOptions);
+  const resp = await httpPOST(pollUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   if (resp.success) {
-    if (resp.response && resp.response.data.success) {
+    if (resp.response && resp.response.data.data.success) {
       stats.increment(POLL_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
         requestTime,
@@ -38,7 +37,7 @@ const getPollStatus = async event => {
       return resp.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
-    if (resp.response && resp.response.data) {
+    if (resp.response && resp.response.data.data) {
       // Abortable jobs
       // Errors from polling come as
       /**
@@ -54,10 +53,10 @@ const getPollStatus = async event => {
 }
        */
       if (
-        resp.response.data.errors[0] &&
-        ((resp.response.data.errors[0].code >= 1000 &&
-          resp.response.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code) > -1)
+        resp.response.data.data.errors[0] &&
+        ((resp.response.data.data.errors[0].code >= 1000 &&
+          resp.response.data.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(resp.response.data.data.errors[0].code) > -1)
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -66,10 +65,12 @@ const getPollStatus = async event => {
           state: "Abortable"
         });
         throw new CustomError(
-          resp.response.data.errors[0].message || "Could not poll status",
+          resp.response.data.data.errors[0].message || "Could not poll status",
           400
         );
-      } else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
+      } else if (
+        THROTTLED_CODES.indexOf(resp.response.data.data.errors[0].code) > -1
+      ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
           requestTime,
@@ -77,7 +78,7 @@ const getPollStatus = async event => {
           state: "Retryable"
         });
         throw new CustomError(
-          resp.response.response.statusText || "Could not poll status",
+          resp.response.data.response.statusText || "Could not poll status",
           500
         );
       }
@@ -133,14 +134,14 @@ const responseHandler = async event => {
 } // Importing or Queue
 
   */
-  if (pollResp && pollResp.data) {
-    pollSuccess = pollResp.data.success;
+  if (pollResp && pollResp.data.data) {
+    pollSuccess = pollResp.data.data.success;
     if (pollSuccess) {
       const {
         status,
         numOfRowsFailed,
         numOfRowsWithWarning
-      } = pollResp.data.result[0];
+      } = pollResp.data.data.result[0];
       if (status === "Complete") {
         success = true;
         statusCode = 200;
@@ -154,8 +155,8 @@ const responseHandler = async event => {
     } else {
       success = false;
       statusCode = 400;
-      errorResponse = pollResp.data.errors
-        ? pollResp.data.errors[0].message
+      errorResponse = pollResp.data.data.errors
+        ? pollResp.data.data.errors[0].message
         : "Error in importing jobs";
     }
   }

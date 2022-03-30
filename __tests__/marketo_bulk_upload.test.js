@@ -1,4 +1,3 @@
-const { mockedAxiosClient } = require("../__mocks__/network");
 const vRouter = require("../versionedRouter");
 const fs = require("fs");
 const path = require("path");

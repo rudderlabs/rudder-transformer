@@ -50,9 +50,6 @@
   "https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=clientSecret&grant_type=client_credentials": {
     "access_token": "test_access_token"
   },
-  "https://munchkinId.mktorest.com/identity/oauth/token?client_id=b&client_secret=clientSecretlientSecret&grant_type=client_credentials": {
-    "access_token": "test_access_token"
-  },
   "https://munchkinId.mktorest.com/rest/v1/leads/describe2.json": {
     "requestId": "7fa1#17fd1da66fe",
     "result": [
@@ -1678,7 +1675,1677 @@
     "access_token": "test_access_token"
   },
   "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=forThrottle&grant_type=client_credentials": {
-    "access_token": "test_access_token",
-    "statusCode": 500
+    "access_token": "test_access_token"
+  },
+  "https://a.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [
+          ["admin_status"],
+          ["analytics_cid"],
+          ["analytics_event_id"],
+          ["anonymousId"],
+          ["archetype__c"],
+          ["canonical_employees__c"],
+          ["canonical_industry__c"],
+          ["canonical_revenue__c"],
+          ["canonical__biz_model__is_e_commerce"],
+          ["canonical__is_tech"],
+          ["company_segment_system_generated__c"],
+          ["consentnotes"],
+          ["cookies"],
+          ["customLeadScore"],
+          ["decision_country"],
+          ["department"],
+          ["email"],
+          ["emailSuspendedCause"],
+          ["externalCompanyId"],
+          ["externalSalesPersonId"],
+          ["final_status"],
+          ["id"],
+          ["lastinteractiondetail"],
+          ["leadPartitionId"],
+          ["merchant_country_code__c"],
+          ["mktoName"],
+          ["persona"],
+          ["profile__c"],
+          ["recordtypeid"],
+          ["revenue_stage"],
+          ["sales_status"],
+          ["sales_tags"],
+          ["score"],
+          ["seniority"],
+          ["source_file_name"],
+          ["source_record_id"],
+          ["source_timestamp"],
+          ["st_co_has_saas_platform"],
+          ["st_co_marketing_region_list"],
+          ["st_co_primary_company_id_for_user"],
+          ["st_firm_canonical__biz_model__is_b2b"],
+          ["st_firm_canonical__biz_model__is_b2c"],
+          ["st_firm_canonical__geo__state_code"],
+          ["st_firm_industry_subtype"],
+          ["st_firm_industry_type"],
+          ["st_user_id"],
+          ["st_user_language_preference"],
+          ["subprefcommatlascommunity"],
+          ["sub_pref_comm_atlas_community"],
+          ["sub_pref_comm_developer_digest"],
+          ["sub_pref_comm_increment"],
+          ["sub_pref_comm_partner_prog"],
+          ["sub_pref_comm_sales_comm__c"],
+          ["sub_pref_comm_stripe_press"],
+          ["sub_pref_country_code__c"],
+          ["sub_pref_events_webinars"],
+          ["sub_pref_ind_news_regulatory"],
+          ["sub_pref_prod_news"],
+          ["sub_pref_user_research"],
+          ["suffix"],
+          ["testCustomField"],
+          ["testCustomFieldInteger"],
+          ["testCustomFieldScore"],
+          ["total_volume"],
+          ["userId"],
+          ["utm_campaign"],
+          ["utm_content"],
+          ["utm_medium"],
+          ["utm_orig_medium"],
+          ["utm_orig_source"],
+          ["utm_source"],
+          ["utm_term"]
+        ],
+        "fields": [
+          {
+            "name": "acquisitionProgramId",
+            "displayName": "Acquisition Program",
+            "dataType": "reference",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "activation_probability__c",
+            "displayName": "activation_probability__c",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "address",
+            "displayName": "Address",
+            "dataType": "text",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "admin_status",
+            "displayName": "admin_status",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "analytics_cid",
+            "displayName": "analytics_cid",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "analytics_event_id",
+            "displayName": "analytics_event_id",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "annualRevenue",
+            "displayName": "Annual Revenue",
+            "dataType": "currency",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "anonymousId",
+            "displayName": "Anonymous ID",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "anonymousIP",
+            "displayName": "Anonymous IP",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "archetype__c",
+            "displayName": "archetype__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "billingCity",
+            "displayName": "Billing City",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "billingCountry",
+            "displayName": "Billing Country",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "billingPostalCode",
+            "displayName": "Billing Postal Code",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "billingState",
+            "displayName": "Billing State",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "billingStreet",
+            "displayName": "Billing Address",
+            "dataType": "text",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "blackListed",
+            "displayName": "Black Listed",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "blackListedCause",
+            "displayName": "Black Listed Cause",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "canonical_employees__c",
+            "displayName": "canonical_employees__c",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "canonical_industry__c",
+            "displayName": "canonical_industry__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "canonical_revenue__c",
+            "displayName": "canonical_revenue__c",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "canonical__biz_model__is_e_commerce",
+            "displayName": "canonical__biz_model__is_e_commerce",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "canonical__is_tech",
+            "displayName": "canonical__is_tech",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "city",
+            "displayName": "City",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "company",
+            "displayName": "Company Name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "company_segment_system_generated__c",
+            "displayName": "company_segment_system_generated__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "connect_probability__c",
+            "displayName": "connect_probability__c",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "consentlastupdated",
+            "displayName": "consentlastupdated",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "consentnotes",
+            "displayName": "consentnotes",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "consenttoprocessing",
+            "displayName": "consenttoprocessing",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "contactCompany",
+            "displayName": "Contact Company",
+            "dataType": "reference",
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "cookies",
+            "displayName": "Cookies",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "country",
+            "displayName": "Country",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "createdAt",
+            "displayName": "Created At",
+            "dataType": "datetime",
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "customLeadScore",
+            "displayName": "Custom Lead Score",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "dateOfBirth",
+            "displayName": "Date of Birth",
+            "dataType": "date",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "decision_country",
+            "displayName": "decision_country",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "department",
+            "displayName": "Department",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "doNotCall",
+            "displayName": "Do Not Call",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "doNotCallReason",
+            "displayName": "Do Not Call Reason",
+            "dataType": "string",
+            "length": 2000,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "ecids",
+            "displayName": "ECIDs",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "emailInvalid",
+            "displayName": "Email Invalid",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "emailInvalidCause",
+            "displayName": "Email Invalid Cause",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "emailSuspended",
+            "displayName": "Email Suspended",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "emailSuspendedAt",
+            "displayName": "Email Suspended At",
+            "dataType": "datetime",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "emailSuspendedCause",
+            "displayName": "Email Suspended Cause",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "externalCompanyId",
+            "displayName": "External Company Id",
+            "dataType": "string",
+            "length": 50,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "externalSalesPersonId",
+            "displayName": "External Sales Person Id",
+            "dataType": "string",
+            "length": 50,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "fax",
+            "displayName": "Fax Number",
+            "dataType": "phone",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "final_status",
+            "displayName": "final_status",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "firstName",
+            "displayName": "First Name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "id",
+            "displayName": "Id",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "industry",
+            "displayName": "Industry",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredCity",
+            "displayName": "Inferred City",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredCompany",
+            "displayName": "Inferred Company",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredCountry",
+            "displayName": "Inferred Country",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredMetropolitanArea",
+            "displayName": "Inferred Metropolitan Area",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredPhoneAreaCode",
+            "displayName": "Inferred Phone Area Code",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredPostalCode",
+            "displayName": "Inferred Postal Code",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "inferredStateRegion",
+            "displayName": "Inferred State Region",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "integrationupdateddate",
+            "displayName": "integrationupdateddate",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "isAnonymous",
+            "displayName": "Is Anonymous",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "isLead",
+            "displayName": "Is Lead",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "lastinteractiondetail",
+            "displayName": "lastinteractiondetail",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "lastName",
+            "displayName": "Last Name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "last_opportunity_close_date",
+            "displayName": "last_opportunity_close_date",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadPartitionId",
+            "displayName": "Lead Partition Id",
+            "dataType": "reference",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadPerson",
+            "displayName": "Lead Person",
+            "dataType": "reference",
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "leadRevenueCycleModelId",
+            "displayName": "Lead Revenue Cycle Model ID",
+            "dataType": "reference",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadRevenueStageId",
+            "displayName": "Lead Revenue Stage ID",
+            "dataType": "reference",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadRole",
+            "displayName": "Role",
+            "dataType": "string",
+            "length": 50,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadScore",
+            "displayName": "Lead Score",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadSource",
+            "displayName": "Lead Source",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "leadStatus",
+            "displayName": "Lead Status",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mainPhone",
+            "displayName": "Main Phone",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "marketingoptin",
+            "displayName": "marketingoptin",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "marketingSuspended",
+            "displayName": "Marketing Suspended",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "marketingSuspendedCause",
+            "displayName": "Marketing Suspended Cause",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "merchant_country_code__c",
+            "displayName": "merchant_country_code__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "merchant_first_created",
+            "displayName": "merchant_first_created",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "middleName",
+            "displayName": "Middle Name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoAcquisitionDate",
+            "displayName": "Acquisition Date",
+            "dataType": "datetime",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoCompanyNotes",
+            "displayName": "Company Notes",
+            "dataType": "text",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoDoNotCallCause",
+            "displayName": "Do Not Call Cause",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoIsCustomer",
+            "displayName": "Is Customer",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoIsPartner",
+            "displayName": "Is Partner",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoName",
+            "displayName": "Full Name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "mktoPersonNotes",
+            "displayName": "Person Notes",
+            "dataType": "text",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "mobilePhone",
+            "displayName": "Mobile Phone Number",
+            "dataType": "phone",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "most_recent_funding_date__c",
+            "displayName": "most_recent_funding_date__c",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "numberOfEmployees",
+            "displayName": "Num Employees",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "originalReferrer",
+            "displayName": "Original Referrer",
+            "dataType": "url",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "originalSearchEngine",
+            "displayName": "Original Search Engine",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "originalSearchPhrase",
+            "displayName": "Original Search Phrase",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "originalSourceInfo",
+            "displayName": "Original Source Info",
+            "dataType": "string",
+            "length": 2000,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "originalSourceType",
+            "displayName": "Original Source Type",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "persona",
+            "displayName": "persona",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "personal_email__c",
+            "displayName": "personal_email__c",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "personPrimaryLeadInterest",
+            "displayName": "Primary Lead Interest",
+            "dataType": "reference",
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "personTimeZone",
+            "displayName": "Person Time Zone",
+            "dataType": "string",
+            "length": 255,
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "personType",
+            "displayName": "Person Type",
+            "dataType": "string",
+            "length": 50,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "phone",
+            "displayName": "Phone Number",
+            "dataType": "phone",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "postalCode",
+            "displayName": "Postal Code",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "priority",
+            "displayName": "Priority",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "processinglead",
+            "displayName": "processinglead",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "processingperson",
+            "displayName": "processingperson",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "profile__c",
+            "displayName": "profile__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "rating",
+            "displayName": "Lead Rating",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "recordtypeid",
+            "displayName": "recordtypeid",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "registrationSourceInfo",
+            "displayName": "Registration Source Info",
+            "dataType": "string",
+            "length": 2000,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "registrationSourceType",
+            "displayName": "Registration Source Type",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "relativeScore",
+            "displayName": "Relative Score",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "relativeUrgency",
+            "displayName": "Relative Urgency",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "revenue_stage",
+            "displayName": "revenue_stage",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sales_status",
+            "displayName": "sales_status",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sales_tags",
+            "displayName": "sales_tags",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "salutation",
+            "displayName": "Salutation",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "score",
+            "displayName": "Score",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "seniority",
+            "displayName": "seniority",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sicCode",
+            "displayName": "SIC Code",
+            "dataType": "string",
+            "length": 40,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "site",
+            "displayName": "Site",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "source_file_name",
+            "displayName": "source_file_name",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "source_record_id",
+            "displayName": "source_record_id",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "source_timestamp",
+            "displayName": "source_timestamp",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "state",
+            "displayName": "State",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_has_saas_platform",
+            "displayName": "st_co_has_saas_platform",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_marketing_region_list",
+            "displayName": "st_co_marketing_region_list",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_primary_company_id_for_user",
+            "displayName": "st_co_primary_company_id_for_user",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_t28_has_connected_account_volume",
+            "displayName": "st_co_t28_has_connected_account_volume",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_t28_has_direct_gpv",
+            "displayName": "st_co_t28_has_direct_gpv",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_t28_has_platform_volume",
+            "displayName": "st_co_t28_has_platform_volume",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_co_t28_has_total_volume",
+            "displayName": "st_co_t28_has_total_volume",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_firm_canonical__biz_model__is_b2b",
+            "displayName": "st_firm_canonical__biz_model__is_b2b",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_firm_canonical__biz_model__is_b2c",
+            "displayName": "st_firm_canonical__biz_model__is_b2c",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_firm_canonical__geo__state_code",
+            "displayName": "st_firm_canonical__geo__state_code",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_firm_industry_subtype",
+            "displayName": "st_firm_industry_subtype",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_firm_industry_type",
+            "displayName": "st_firm_industry_type",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_user_id",
+            "displayName": "st_user_id",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "st_user_language_preference",
+            "displayName": "st_user_language_preference",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "subprefcommatlascommunity",
+            "displayName": "sub_pref_comm_atlas_community_old",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_cac_atlas_drip",
+            "displayName": "sub_list_cac_atlas_drip",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_cac_atlas_guide",
+            "displayName": "sub_list_cac_atlas_guide",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_cac_developer_newsletter",
+            "displayName": "sub_list_cac_developer_newsletter",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_cin_stripe_increment",
+            "displayName": "sub_list_cin_stripe_increment",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_cpp_partner_program",
+            "displayName": "sub_list_cpp_partner_program",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_csc_atlas_community_opt_in",
+            "displayName": "sub_list_csc_atlas_community_opt_in",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_csc_startup_program",
+            "displayName": "sub_list_csc_startup_program",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_csp_stripe_press_content",
+            "displayName": "sub_list_csp_stripe_press_content",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_about_content",
+            "displayName": "sub_list_inr_about_content",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide",
+            "displayName": "sub_list_inr_guide",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_3d_secure_2",
+            "displayName": "sub_list_inr_guide_3d_secure_2",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_fraud_trends",
+            "displayName": "sub_list_inr_guide_fraud_trends",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_gdpr",
+            "displayName": "sub_list_inr_guide_gdpr",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_payment_methods",
+            "displayName": "sub_list_inr_guide_payment_methods",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_pci",
+            "displayName": "sub_list_inr_guide_pci",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_sca",
+            "displayName": "sub_list_inr_guide_sca",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_guide_sca_toolkit",
+            "displayName": "sub_list_inr_guide_sca_toolkit",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_inr_newsroom_content",
+            "displayName": "sub_list_inr_newsroom_content",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_billing_hosted_invoices",
+            "displayName": "sub_list_pne_billing_hosted_invoices",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_connect_express",
+            "displayName": "sub_list_pne_connect_express",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_issuing",
+            "displayName": "sub_list_pne_issuing",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_premium_support",
+            "displayName": "sub_list_pne_premium_support",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_sepa_debit",
+            "displayName": "sub_list_pne_sepa_debit",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_terminal",
+            "displayName": "sub_list_pne_terminal",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_update_checkout",
+            "displayName": "sub_list_pne_update_checkout",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_pne_wechat",
+            "displayName": "sub_list_pne_wechat",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_list_uxr_ux_research",
+            "displayName": "sub_list_uxr_ux_research",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_atlas_community",
+            "displayName": "sub_pref_comm_atlas_community",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_developer_digest",
+            "displayName": "sub_pref_comm_developer_digest",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_increment",
+            "displayName": "sub_pref_comm_increment",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_partner_prog",
+            "displayName": "sub_pref_comm_partner_prog",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_sales_comm__c",
+            "displayName": "sub_pref_comm_sales_comm__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_comm_stripe_press",
+            "displayName": "sub_pref_comm_stripe_press",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_country_code__c",
+            "displayName": "sub_pref_country_code__c",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_events_webinars",
+            "displayName": "sub_pref_events_webinars",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_ind_news_regulatory",
+            "displayName": "sub_pref_ind_news_regulatory",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_prod_news",
+            "displayName": "sub_pref_prod_news",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "sub_pref_user_research",
+            "displayName": "sub_pref_user_research",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "suffix",
+            "displayName": "suffix",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "testCustomField",
+            "displayName": "Test Custom Field",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "testCustomFieldDate",
+            "displayName": "Test Custom Field Date",
+            "dataType": "date",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "testCustomFieldInteger",
+            "displayName": "Test Custom Field Integer",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "testCustomFieldPercent",
+            "displayName": "Test Custom Field Percent",
+            "dataType": "percent",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "testCustomFieldScore",
+            "displayName": "Test Custom Field Score",
+            "dataType": "integer",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "title",
+            "displayName": "Job Title",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "total_funding__c",
+            "displayName": "total_funding__c",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "total_volume",
+            "displayName": "total_volume",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "unicorn_date__c",
+            "displayName": "unicorn_date__c",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "unsubscribed",
+            "displayName": "Unsubscribed",
+            "dataType": "boolean",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "unsubscribedate",
+            "displayName": "unsubscribedate",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "unsubscribedReason",
+            "displayName": "Unsubscribed Reason",
+            "dataType": "string",
+            "length": 2000,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "updatedAt",
+            "displayName": "Updated At",
+            "dataType": "datetime",
+            "updateable": false,
+            "crmManaged": false
+          },
+          {
+            "name": "urgency",
+            "displayName": "Urgency",
+            "dataType": "float",
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "userId",
+            "displayName": "UserID",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_campaign",
+            "displayName": "utm_campaign",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_content",
+            "displayName": "utm_content",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_medium",
+            "displayName": "utm_medium",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_orig_medium",
+            "displayName": "utm_orig_medium",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_orig_source",
+            "displayName": "utm_orig_source",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_source",
+            "displayName": "utm_source",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "utm_term",
+            "displayName": "utm_term",
+            "dataType": "string",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          },
+          {
+            "name": "website",
+            "displayName": "Website",
+            "dataType": "url",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+    "data": {
+      "requestId": "13402#17e7238a1b9",
+      "result": [
+        {
+          "batchId": 1234,
+          "importId": "1234",
+          "status": "Complete",
+          "numOfLeadsProcessed": 1,
+          "numOfRowsFailed": 0,
+          "numOfRowsWithWarning": 0,
+          "message": "Import succeeded, 1 records imported (1 members)"
+        }
+      ],
+      "success": true
+    }
+  },
+  "https://testMunchkin4.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin4.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+    "data": {
+      "errors": [
+        {
+          "message": "Any 400 error",
+          "code": 1000
+        }
+      ]
+    }
+  },
+  "https://testMunchkin3.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin500.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin500.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "status": 200,
+    "data": {
+      "errors": [
+        {
+          "message": "Any 400 error",
+          "code": 502
+        }
+      ]
+    },
+    "response": {
+      "statusText": "Any 500 error",
+      "status": 502
+    }
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/warnings.json": {
+    "status": 200,
+    "data": "data"
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/failures.json": {
+    "status": 200,
+    "data": "data"
   }
 }

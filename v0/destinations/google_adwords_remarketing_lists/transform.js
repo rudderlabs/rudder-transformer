@@ -113,7 +113,7 @@ const responseBuilder = (metadata, body, { Config }) => {
  * @returns
  */
 
-const populateIdentifiers = (attributeArray, { Config }) => {
+const populateIdentifiers = (attributeArray, { Config }, message) => {
   const userIdentifier = [];
   const { typeOfList } = Config;
   const { isHashRequired } = Config;
@@ -124,9 +124,9 @@ const populateIdentifiers = (attributeArray, { Config }) => {
     attribute = Config.userSchema;
   }
 
-  const mappedToDestination = get(attributeArray, MappedToDestinationKey);
+  const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
-    attribute = getSchemaForEventMappedToDest(attributeArray);
+    attribute = getSchemaForEventMappedToDest(message);
   }
   
 
@@ -189,7 +189,8 @@ const createPayload = (message, destination) => {
     if (properties.includes(key)) {
       const userIdentifiersList = populateIdentifiers(
         listData[key],
-        destination
+        destination,
+        message
       );
       if (userIdentifiersList.length === 0) {
         logger.info(

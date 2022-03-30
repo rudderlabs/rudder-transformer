@@ -5773,5 +5773,17 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "metadata": {
+      "secret": null
+    },
+    "statusCode": 500,
+    "error": "Empty/Invalid access token",
+    "statTags": {
+      "destination": "google_adwords_remarketing_lists",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
 ]

@@ -190,7 +190,7 @@ const createPayload = (message, destination) => {
       const userIdentifiersList = populateIdentifiers(
         listData[key],
         destination,
-        message
+        message 
       );
       if (userIdentifiersList.length === 0) {
         logger.info(

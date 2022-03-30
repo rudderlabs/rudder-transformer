@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
+    "@aws-sdk/client-s3": "^3.54.0",
+    "@aws-sdk/lib-storage": "^3.54.1",
     "@ndhoule/extend": "^2.0.0",
     "ajv": "^8.6.1",
     "axios": "^0.21.2",
@@ -60,7 +62,9 @@
     "node-fetch": "^2.6.1",
     "object-hash": "^2.2.0",
     "parse-static-imports": "^1.1.0",
+    "pprof": "^3.2.0",
     "prom-client": "^14.0.1",
+    "prometheus-gc-stats": "^0.6.3",
     "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",

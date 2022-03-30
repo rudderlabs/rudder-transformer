@@ -26,10 +26,8 @@ const { MappedToDestinationKey } = require("../../../constants");
 const getSchemaForEventMappedToDest = message => {
   const mappedSchema = get(message, "context.destinationFields");
   if (!mappedSchema) {
-    throw new CustomError(
-      "context.destinationFields is required property for events mapped to destination ",
-      400
-    );
+    throw new ErrorBuilder().setMessage(
+      "context.destinationFields is required property for events mapped to destination ").setStatus(400).build();
   }
   // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
   let userSchema = Array.isArray(mappedSchema)

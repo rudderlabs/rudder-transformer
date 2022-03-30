@@ -27,7 +27,7 @@ const getPollStatus = async event => {
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   if (resp.success) {
-    if (resp.response && resp.response.data.data.success) {
+    if (resp.response && resp.response.data.success) {
       stats.increment(POLL_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
         requestTime,
@@ -37,7 +37,7 @@ const getPollStatus = async event => {
       return resp.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
-    if (resp.response && resp.response.data.data) {
+    if (resp.response && resp.response.data) {
       // Abortable jobs
       // Errors from polling come as
       /**
@@ -53,10 +53,10 @@ const getPollStatus = async event => {
 }
        */
       if (
-        resp.response.data.data.errors[0] &&
-        ((resp.response.data.data.errors[0].code >= 1000 &&
-          resp.response.data.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.indexOf(resp.response.data.data.errors[0].code) > -1)
+        resp.response.data.errors[0] &&
+        ((resp.response.data.errors[0].code >= 1000 &&
+          resp.response.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code) > -1)
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -69,7 +69,7 @@ const getPollStatus = async event => {
           400
         );
       } else if (
-        THROTTLED_CODES.indexOf(resp.response.data.data.errors[0].code) > -1
+        THROTTLED_CODES.indexOf(resp.response.data.errors[0].code) > -1
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -134,14 +134,14 @@ const responseHandler = async event => {
 } // Importing or Queue
 
   */
-  if (pollResp && pollResp.data.data) {
-    pollSuccess = pollResp.data.data.success;
+  if (pollResp && pollResp.data) {
+    pollSuccess = pollResp.data.success;
     if (pollSuccess) {
       const {
         status,
         numOfRowsFailed,
         numOfRowsWithWarning
-      } = pollResp.data.data.result[0];
+      } = pollResp.data.result[0];
       if (status === "Complete") {
         success = true;
         statusCode = 200;
@@ -155,8 +155,8 @@ const responseHandler = async event => {
     } else {
       success = false;
       statusCode = 400;
-      errorResponse = pollResp.data.data.errors
-        ? pollResp.data.data.errors[0].message
+      errorResponse = pollResp.data.errors
+        ? pollResp.data.errors[0].message
         : "Error in importing jobs";
     }
   }

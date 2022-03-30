@@ -246,7 +246,7 @@ const responseHandler = async (event, type) => {
     type === "fail"
       ? await getFailedJobStatus(event)
       : await getWarningJobStatus(event);
-  const responseArr = responseStatus.data.data.split("\n");
+  const responseArr = responseStatus.data.split("\n");
   const { input, metadata } = event;
   let headerArr;
   if (metadata && metadata.csvHeader) {

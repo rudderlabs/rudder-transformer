@@ -126,7 +126,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 
   const mappedToDestination = get(attributeArray, MappedToDestinationKey);
   if (mappedToDestination) {
-    attribute = getSchemaForEventMappedToDest(message);
+    attribute = getSchemaForEventMappedToDest(attributeArray);
   }
   
 

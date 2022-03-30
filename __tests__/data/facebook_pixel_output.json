@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -26,7 +26,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -45,7 +45,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -64,7 +64,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -83,7 +83,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -102,7 +102,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -121,7 +121,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -140,7 +140,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -159,7 +159,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -178,7 +178,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -197,7 +197,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -216,7 +216,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -235,7 +235,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -254,7 +254,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -273,7 +273,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -292,7 +292,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -311,7 +311,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -330,7 +330,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -349,7 +349,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -368,7 +368,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -387,7 +387,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -407,7 +407,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -426,7 +426,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -445,7 +445,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -473,7 +473,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -492,7 +492,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
     "headers": {},
     "params": {},
     "body": {
@@ -517,48 +517,45 @@
     }
   },
   {
-    
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
-        "headers": {},
-        "params": {},
-        "body": {
-            "JSON": {},
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {
-                "data": [
-                    "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1571051718,\"custom_data\":{\"content_category\":\"clothing,fishing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2}}"
-                ]
-            }
-        },
-        "files": {}
-    
-},
-{
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://graph.facebook.com/v11.0/dfgdfgdgd/events?access_token=09876",
-      "headers": {},
-      "params": {},
-      "body": {
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {
-              "data": [
-                  "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1571051718,\"custom_data\":{\"content_category\":\"100\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2}}"
-              ]
-          }
-      },
-      "files": {}
-  
-},
-{
-  "statusCode": 400,
-  "error": "Category must be must be a string"
-}
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1571051718,\"custom_data\":{\"content_category\":\"clothing,fishing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1571051718,\"custom_data\":{\"content_category\":\"100\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Category must be must be a string"
+  }
 ]

@@ -1,5 +1,5 @@
 const integration = "airship";
-const name = "airship";
+const name = "Airship";
 
 const fs = require("fs");
 const path = require("path");
@@ -15,6 +15,16 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+// Router Test Data
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
+
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {
@@ -26,6 +36,13 @@ describe(`${name} Tests`, () => {
           expect(error.message).toEqual(expectedData[index].error);
         }
       });
+    });
+  });
+
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
   });
 });

@@ -17,7 +17,29 @@ const ConfigCategory = {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+const MP_IDENTIFY_EXCLUSION_LIST = [
+  "createdAt",
+  "email",
+  "firstName",
+  "firstname",
+  "first_name",
+  "lastName",
+  "lastname",
+  "last_name",
+  "name",
+  "username",
+  "userName",
+  "phone",
+  "avatar",
+  "address",
+  "country",
+  "city",
+  "state",
+  "unsubscribed"
+];
+
 module.exports = {
   ConfigCategory,
-  mappingConfig
+  mappingConfig,
+  MP_IDENTIFY_EXCLUSION_LIST
 };

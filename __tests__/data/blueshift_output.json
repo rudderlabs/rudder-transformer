@@ -1,0 +1,505 @@
+[
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "blueshift",
+        "list_id": "35838",
+        "description": "advertisements company",
+        "identifier_key": "customer_id",
+        "identifier_value": "rudderstack8"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU="
+    },
+    "version": "1",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "ip": "14.5.67.21",
+        "event": "identify",
+        "cookie": "1234abcd-efghijkj-1234kfjadslk-34iu123",
+        "os_name": "Android",
+        "latitude": "37.7672319",
+        "device_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "longitude": "-122.4021353",
+        "event_uuid": "34abcd-efghijkj-1234kf",
+        "customer_id": "sampleusrRudder7",
+        "device_idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_type": "Android",
+        "network_carrier": "Android",
+        "device_manufacturer": "Google"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE="
+    },
+    "version": "1",
+    "endpoint": "https://api.getblueshift.com/api/v1/event"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "list_id": "35838",
+        "identifier_key": "customer_id",
+        "identifier_value": "rudderstack9"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q5MjBlYzFlMmU="
+    },
+    "version": "1",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "view",
+        "device_type": "android",
+        "device_id": "7e32188a4dab669f",
+        "device_idfv": "7e32188a4dab669f",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "cookie": "1234abcd-efghijkj-1234kfjadslk-34iu123",
+        "checkout_id": "C324532",
+        "order_id": "T1230",
+        "value": 15.98,
+        "revenue": 16.98,
+        "shipping": 3,
+        "coupon": "FY21",
+        "currency": "INR",
+        "products": [
+          {
+            "product_id": "product-mixedfruit-jam",
+            "sku": "sku-1",
+            "category": "Food",
+            "name": "Food/Drink",
+            "brand": "Sample",
+            "variant": "None",
+            "price": 10,
+            "quantity": 2,
+            "currency": "INR",
+            "position": 1,
+            "value": 6,
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "search",
+        "device_type": "android",
+        "device_id": "7e32188a4dab669f",
+        "device_idfv": "7e32188a4dab669f",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "description": "Sneaker purchase",
+        "brand": "Victory Sneakers",
+        "colors": ["red", "blue"],
+        "items": [
+          {
+            "text": "New Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Old Line Sneakers",
+            "price": "$ 79.95"
+          },
+          {
+            "text": "Blue Line Sneakers",
+            "price": "$ 79.95"
+          }
+        ],
+        "name": "Hugh Manbeing",
+        "userLocation": {
+          "state": "CO",
+          "zip": "80202"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] event Api Keys required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"email\"",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/customers",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "chandan@companyname.com",
+        "customer_id": "rudder123",
+        "phone_number": "92374162212",
+        "firstname": "James",
+        "lastname": "Doe",
+        "gender": "M",
+        "userId": "rudder123",
+        "anonymousId": "anon_id",
+        "name": "James Doe",
+        "employed": true,
+        "birthday": "1614775793",
+        "education": "Science",
+        "graduate": true,
+        "married": true,
+        "customerType": "Prime",
+        "msg_push": true,
+        "msgSms": true,
+        "msgemail": true,
+        "msgwhatsapp": false,
+        "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+        "custom_mappings": {
+          "Office": "Trastkiv",
+          "Country": "Russia"
+        },
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/customers",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "chandan@companyname.com",
+        "customer_id": "rudder123",
+        "phone_number": "92374162212",
+        "firstname": "James",
+        "lastname": "Doe",
+        "gender": "M",
+        "userId": "rudder123",
+        "anonymousId": "anon_id",
+        "name": "James Doe"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type page not supported",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "35838",
+        "identifier_value": "rudderstack8",
+        "name": "blueshift",
+        "description": "advertisements company",
+        "identifier_key": "customer_id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sampleRudderstack11",
+        "event": "purchase",
+        "device_type": "android",
+        "device_id": "7e32188a4dab669f",
+        "device_idfv": "7e32188a4dab669f",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "total": 1000,
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "price": "19",
+            "position": "1",
+            "category": "Games,Gifts,Entertainment,Toys",
+            "url": "https://www.example.com/product/path",
+            "image_url": "https://www.example.com/product/path.jpg"
+          },
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "price": "19",
+            "quantity": "2",
+            "position": "1",
+            "category": "Games,Gifts,Entertainment,Toys",
+            "url": "https://www.example.com/product/path",
+            "image_url": "https://www.example.com/product/path.jpg"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "sampleusrRudder7",
+        "event": "Custom_Events",
+        "device_type": "Android",
+        "device_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfa": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_idfv": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "ip": "14.5.67.21",
+        "latitude": "37.7672319",
+        "longitude": "-122.4021353",
+        "event_uuid": "34abcd-efghijkj-1234kf",
+        "cookie": "1234abcd-efghijkj-1234kfjadslk-34iu123"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "list_id": "35838",
+        "identifier_value": "rudderstack8",
+        "name": "blueshift",
+        "description": "advertisements company",
+        "identifier_key": "customer_id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35869",
+    "headers": {
+      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identifier_value": "rudderstack8",
+        "name": "blueshift",
+        "description": "advertisements company",
+        "list_id": 35869,
+        "identifier_key": "customer_id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

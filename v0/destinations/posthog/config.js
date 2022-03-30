@@ -15,6 +15,11 @@ const CONFIG_CATEGORIES = {
     event: "$identify"
   },
   GROUP: {
+    name: "PHGroupConfigOld",
+    type: "group",
+    event: "$group"
+  },
+  GROUPV2: {
     name: "PHGroupConfig",
     type: "group",
     event: "$group"

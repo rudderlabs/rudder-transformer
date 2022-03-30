@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 const FormData = require("form-data");
 const fs = require("fs");
 const {
@@ -8,7 +9,12 @@ const {
   getMarketoFilePath,
   UPLOAD_FILE
 } = require("./util");
-const { CustomError, getHashFromArray } = require("../../util");
+const {
+  CustomError,
+  getHashFromArray,
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNullAndNotEmpty
+} = require("../../util");
 const { httpSend } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
@@ -16,19 +22,60 @@ const getHeaderFields = config => {
   const { columnFieldsMapping } = config;
   const columnField = getHashFromArray(
     columnFieldsMapping,
-    "from",
     "to",
+    "from",
     false
   );
   return Object.keys(columnField);
 };
 
-const getFileData = (input, config) => {
+const getFileData = (inputEvents, config) => {
+  const input = inputEvents;
   const messageArr = [];
   let startTime;
   let endTime;
   let requestTime;
   startTime = Date.now();
+  const headerArr = getHeaderFields(config);
+
+  if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
+    // dedup starts
+    // Time Complexity = O(n2)
+    const dedupMap = new Map();
+    // iterating input and storing the occurences of messages
+    // with same dedup property received from config
+    // Example: dedup-property = email
+    // k (key)            v (index of occurence in input)
+    // user@email         [4,7,9]
+    // user2@email        [2,3]
+    // user3@email        [1]
+    input.map((element, index) => {
+      const indexAr =
+        dedupMap.get(element.message[config.deDuplicationField]) || [];
+      indexAr.push(index);
+      dedupMap.set(element.message[config.deDuplicationField], indexAr);
+      return dedupMap;
+    });
+    // 1. iterating dedupMap
+    // 2. storing the duplicate occurences in dupValues arr
+    // 3. iterating dupValues arr, and mapping each property on firstBorn
+    // 4. as dupValues arr is sorted hence the firstBorn will inherit properties of last occurence (most updated one)
+    // 5. store firstBorn to first occurence in input as it should get the highest priority
+    dedupMap.forEach(indexes => {
+      let firstBorn = {};
+      indexes.forEach(idx => {
+        headerArr.forEach(headerStr => {
+          // if duplicate item has defined property to offer we take it else old one remains
+          firstBorn[headerStr] =
+            input[idx].message[headerStr] || firstBorn[headerStr];
+        });
+      });
+      firstBorn = removeUndefinedAndNullValues(firstBorn);
+      input[indexes[0]].message = firstBorn;
+    });
+    // dedup ends
+  }
+
   input.forEach(i => {
     const inputData = i;
     const jobId = inputData.metadata.job_id;
@@ -36,7 +83,7 @@ const getFileData = (input, config) => {
     data[jobId] = inputData.message;
     messageArr.push(data);
   });
-  const headerArr = getHeaderFields(config);
+
   if (!Object.keys(headerArr).length) {
     throw new CustomError("Header fields not present", 400);
   }
@@ -112,6 +159,11 @@ const getImportID = async (input, config) => {
           ...formReq.getHeaders()
         }
       };
+      if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
+        requestOptions.params = {
+          lookupField: config.deDuplicationField
+        };
+      }
       const startTime = Date.now();
       const resp = await httpSend(requestOptions);
       const endTime = Date.now();
@@ -275,7 +327,10 @@ const responseHandler = async (input, config) => {
     status: 500,
     state: "Retryable"
   });
-  throw new CustomError("No import id received", 500);
+  throw new CustomError("No import id received", 500, {
+    successfulJobs,
+    unsuccessfulJobs
+  });
 };
 const processFileData = async event => {
   const { input, config } = event;

@@ -7,7 +7,8 @@ const versionedMergeRuleTableNames = {};
 
 // Computes provider-safe column name
 // Caches for future use
-function getMergePropColumns(version, provider) {
+function getMergePropColumns(version, options) {
+  const { provider } = options;
   if (
     versionedMergePropColumns[version] !== undefined &&
     versionedMergePropColumns[version][provider] !== undefined
@@ -21,17 +22,18 @@ function getMergePropColumns(version, provider) {
 
   const utils = getVersionedUtils(version);
   versionedMergePropColumns[version][provider] = {
-    prop1Type: utils.safeColumnName(provider, "merge_property_1_type"),
-    prop1Value: utils.safeColumnName(provider, "merge_property_1_value"),
-    prop2Type: utils.safeColumnName(provider, "merge_property_2_type"),
-    prop2Value: utils.safeColumnName(provider, "merge_property_2_value")
+    prop1Type: utils.safeColumnName(options, "merge_property_1_type"),
+    prop1Value: utils.safeColumnName(options, "merge_property_1_value"),
+    prop2Type: utils.safeColumnName(options, "merge_property_2_type"),
+    prop2Value: utils.safeColumnName(options, "merge_property_2_value")
   };
   return versionedMergePropColumns[version][provider];
 }
 
 // Computes provider-safe Table name
 // Caches for future use
-function getMergeRulesTableName(version, provider) {
+function getMergeRulesTableName(version, options) {
+  const { provider } = options;
   if (
     versionedMergeRuleTableNames[version] !== undefined &&
     versionedMergeRuleTableNames[version][provider] !== undefined
@@ -44,7 +46,7 @@ function getMergeRulesTableName(version, provider) {
   }
   const utils = getVersionedUtils(version);
   versionedMergeRuleTableNames[version][provider] = utils.safeTableName(
-    provider,
+    options,
     "rudder_identity_merge_rules"
   );
   return versionedMergeRuleTableNames[version][provider];
@@ -104,7 +106,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
     return null;
   }
 
-  const mergePropColumns = getMergePropColumns(whSchemaVersion, provider);
+  const mergePropColumns = getMergePropColumns(whSchemaVersion, options);
 
   // add prop1 to merge rule
   const mergeRule = {
@@ -125,7 +127,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
   }
 
   const mergeRulesMetadata = {
-    table: getMergeRulesTableName(whSchemaVersion, provider),
+    table: getMergeRulesTableName(whSchemaVersion, options),
     columns: mergeColumnTypes,
     isMergeRule: true,
     receivedAt: message.receivedAt,

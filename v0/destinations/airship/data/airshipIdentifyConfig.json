@@ -1,0 +1,8 @@
+[
+  {
+    "destKey": "audience.named_user_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

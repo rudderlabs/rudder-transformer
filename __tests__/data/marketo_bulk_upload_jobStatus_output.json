@@ -1,0 +1,28 @@
+[
+  {
+    "type": "warn",
+    "data": [
+      {
+        "statusCode": 400,
+        "error": "No csvHeader in metadata"
+      },
+      {
+        "statusCode": 400,
+        "error": "Could not fetch warning job status"
+      }
+    ]
+  },
+  {
+    "type": "fail",
+    "data": [
+      {
+        "statusCode": 400,
+        "error": "No csvHeader in metadata"
+      },
+      {
+        "statusCode": 400,
+        "error": "Could not fetch failure job status"
+      }
+    ]
+  }
+]

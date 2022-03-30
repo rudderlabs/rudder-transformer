@@ -1,0 +1,18 @@
+[
+  {
+    "success": true,
+    "statusCode": 200,
+    "hasFailed": false,
+    "failedJobsURL": "/getFailedJobs",
+    "hasWarnings": false,
+    "warningJobsURL": "/getWarningJobs"
+  },
+  {
+    "statusCode": 400,
+    "error": "Any 400 error"
+  },
+  {
+    "statusCode": 500,
+    "error": "Any 500 error"
+  }
+]

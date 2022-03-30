@@ -1,0 +1,18 @@
+- destKey: _e
+  sourceKeys: event
+
+- destKey: "..."
+  sourceKeys: properties
+  metadata:
+    type: flatJson
+  
+
+- destKey: first_name
+  sourceKeys:
+    - properties.firstName
+    - properties.firstname
+
+- destKey: last_name
+  sourceKeys:
+    - properties.lastName
+    - properties.lastname

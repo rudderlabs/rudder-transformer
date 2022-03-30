@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "interaction_id",
+    "sourceKeys": "properties.interactionId",
+    "required": false
+  },
+  {
+    "destKey": "interaction_type",
+    "sourceKeys": "properties.interactionType",
+    "required": false
+  },
+  {
+    "destKey": "session_id",
+    "sourceKeys": "properties.sessionId",
+    "required": false
+  },
+  {
+    "destKey": "transaction",
+    "sourceKeys": "properties.transaction",
+    "required": false
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "https://api.getblueshift.com/api/v1/custom_user_lists/create": {
+    "id": 35869,
+    "account_id": 1037,
+    "filename": "Youtube2",
+    "description": "online video company",
+    "filesize": null,
+    "user_count": 0,
+    "status": "ready",
+    "created_at": "2022-03-29T17:13:46.333Z",
+    "updated_at": "2022-03-29T17:13:46.333Z",
+    "is_exporting": false,
+    "user_id": null,
+    "source": "email",
+    "uuid": "fe8e12e3-8008-47dc-9931-9fa350569360",
+    "is_seed_list": false,
+    "deleted_at": null,
+    "import_method": "api",
+    "version": "v2",
+    "author": ""
+  }
+}

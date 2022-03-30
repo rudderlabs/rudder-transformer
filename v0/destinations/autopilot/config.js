@@ -11,8 +11,10 @@ const CONFIG_CATEGORIES = {
   TRACK: { endPoint: endpoints.triggerJourneyUrl, name: "APTrackConfig" }
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const DESTINATION = "autopilot";
 
 module.exports = {
   MAPPING_CONFIG,
-  CONFIG_CATEGORIES
+  CONFIG_CATEGORIES,
+  DESTINATION
 };

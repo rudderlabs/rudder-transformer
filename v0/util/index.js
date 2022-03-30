@@ -20,6 +20,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { cdkEnabled } = require("../../features.json");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -712,7 +713,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
       if (value || value === 0 || value === false) {
         if (destKey) {
           // set the value only if correct
-          set(payload, destKey, value);
+          _.set(payload, destKey, value);
         } else {
           // to set to root and flatten later
           payload[""] = value;
@@ -863,6 +864,21 @@ function getFirstAndLastName(traits, defaultLastName = "n/a") {
         : defaultLastName)
   };
 }
+
+// Checks if the traits object has a firstName key and a lastName key as defined in GenericFieldMapping.json
+// If it does have those two keys AND does NOT already have a name key
+// Then this function will return fullName: "<firstName> <lastName>"
+function getFullName(message) {
+  let fullName;
+  const firstName = getFieldValueFromMessage(message, "firstName");
+  const lastName = getFieldValueFromMessage(message, "lastName");
+  const name = getFieldValueFromMessage(message, "name");
+  if (!name && firstName && lastName) {
+    fullName = `${firstName} ${lastName}`;
+  }
+  return fullName;
+}
+
 /**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
@@ -1040,6 +1056,10 @@ class CustomError extends Error {
  */
 function generateErrorObject(error, destination, transformStage) {
   // check err is object
+  // filter to check if it is coming from cdk
+  if (error.fromCdk) {
+    return error;
+  }
   const { status, message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {
@@ -1117,6 +1137,16 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+function isCdkDestination(event) {
+  // TODO: maybe dont need all these checks in place
+  return (
+    event.destination &&
+    event.destination.DestinationDefinition &&
+    event.destination.DestinationDefinition.Config &&
+    event.destination.DestinationDefinition.Config.cdkEnabled
+  );
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1151,6 +1181,7 @@ module.exports = {
   getErrorRespEvents,
   getFieldValueFromMessage,
   getFirstAndLastName,
+  getFullName,
   getHashFromArray,
   getIntegrationsObj,
   getMappingConfig,
@@ -1185,5 +1216,6 @@ module.exports = {
   updatePayload,
   isOAuthSupported,
   isOAuthDestination,
-  isAppleFamily
+  isAppleFamily,
+  isCdkDestination
 };

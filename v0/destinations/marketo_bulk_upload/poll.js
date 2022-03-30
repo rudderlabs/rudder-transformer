@@ -65,7 +65,7 @@ const getPollStatus = async event => {
           state: "Abortable"
         });
         throw new CustomError(
-          resp.response.data.data.errors[0].message || "Could not poll status",
+          resp.response.data.errors[0].message || "Could not poll status",
           400
         );
       } else if (

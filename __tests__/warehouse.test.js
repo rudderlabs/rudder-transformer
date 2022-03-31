@@ -1,7 +1,9 @@
 const _ = require("lodash");
 
 const util = require("util");
+
 const { input, output } = require(`./data/warehouse/events.js`);
+const { opInput, opOutput } = require(`./data/warehouse/integration_options_events.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const {
   largeNoOfColumnsevent
@@ -978,6 +980,18 @@ describe("Add receivedAt for events missing it", () => {
         expect(received[0].data).toHaveProperty(
           integrationCasedString(integrations[index], "received_at")
         );
+      });
+    });
+  });
+});
+
+describe("Integration options", () => {
+  describe("track", () => {
+    it("should generate two events for every track call", () => {
+      const i = opInput("track");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toMatchObject(opOutput("track", integrations[index]));
       });
     });
   });

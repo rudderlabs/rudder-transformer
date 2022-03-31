@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "list_id",
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "identifier_value",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "description",
+    "sourceKeys": ["traits.description", "context.traits.description"],
+    "required": false
+  },
+  {
+    "destKey": "is_seed_list",
+    "sourceKeys": ["traits.isSeedList", "context.traits.isSeedList"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["0", "false", "F", "f", false],
+          "destVal": "0"
+        },
+        {
+          "sourceVal": ["1", "true", "T", "t", true],
+          "destVal": "1"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "source",
+    "sourceKeys": ["traits.source", "context.traits.source"],
+    "required": false
+  }
+]

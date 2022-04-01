@@ -36,6 +36,10 @@ const {
   BATCH_EVENT_ENDPOINT,
   ALIAS_ENDPOINT,
   GROUP_ENDPOINT,
+  EU_ENDPOINT,
+  EU_BATCH_EVENT_ENDPOINT,
+  EU_ALIAS_ENDPOINT,
+  EU_GROUP_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive
@@ -47,11 +51,6 @@ const logger = require("../../../logger");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
-
-const EU_ENDPOINT = "https://api.eu.amplitude.com/2/httpapi";
-const EU_BATCH_EVENT_ENDPOINT = "https://api.eu.amplitude.com/batch";
-const EU_ALIAS_ENDPOINT = "https://api.eu.amplitude.com/usermap";
-const EU_GROUP_ENDPOINT = "https://api.eu.amplitude.com/groupidentify";
 
 function getSessionId(payload) {
   const sessionId = payload.session_id;

@@ -51,13 +51,13 @@
           "Content-Type": "application/json"
         },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api.eu.amplitude.com/2/httpapi"
       },
       "metadata": [{ "job_id": 1 }],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "euResidencyServer": true }
       }
     },
     {

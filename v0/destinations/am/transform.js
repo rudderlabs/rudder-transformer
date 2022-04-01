@@ -48,6 +48,11 @@ const logger = require("../../../logger");
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
+const EU_ENDPOINT = "https://api.eu.amplitude.com/2/httpapi";
+const EU_BATCH_EVENT_ENDPOINT = "https://api.eu.amplitude.com/batch";
+const EU_ALIAS_ENDPOINT = "https://api.eu.amplitude.com/usermap";
+const EU_GROUP_ENDPOINT = "https://api.eu.amplitude.com/groupidentify";
+
 function getSessionId(payload) {
   const sessionId = payload.session_id;
   if (sessionId) {
@@ -222,7 +227,7 @@ function responseBuilderSimple(
 
   let groups;
 
-  let endpoint = ENDPOINT;
+  let endpoint = destination.Config.datacenterEU ? EU_ENDPOINT : ENDPOINT;
   let traits;
 
   if (EventType.IDENTIFY) {
@@ -282,7 +287,7 @@ function responseBuilderSimple(
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
-      endpoint = ENDPOINT;
+      endpoint = destination.Config.datacenterEU ? EU_ENDPOINT : ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
@@ -335,7 +340,9 @@ function responseBuilderSimple(
       }
       break;
     case EventType.ALIAS:
-      endpoint = ALIAS_ENDPOINT;
+      endpoint = destination.Config.datacenterEU
+        ? EU_ALIAS_ENDPOINT
+        : ALIAS_ENDPOINT;
       break;
     default:
       traits = getFieldValueFromMessage(message, "traits");
@@ -382,7 +389,9 @@ function responseBuilderSimple(
         payload.unmap = true;
       }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = ALIAS_ENDPOINT;
+      aliasResponse.endpoint = destination.Config.datacenterEU
+        ? EU_ALIAS_ENDPOINT
+        : ALIAS_ENDPOINT;
       aliasResponse.userId = message.anonymousId;
       payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
@@ -471,7 +480,9 @@ function responseBuilderSimple(
       // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = GROUP_ENDPOINT;
+        groupResponse.endpoint = destination.Config.datacenterEU
+          ? EU_GROUP_ENDPOINT
+          : GROUP_ENDPOINT;
         let groupPayload = Object.assign(groupInfo);
         groupResponse.userId = message.anonymousId;
         groupPayload = removeUndefinedValues(groupPayload);
@@ -743,7 +754,7 @@ function process(event) {
   return respList;
 }
 
-function getBatchEvents(message, metadata, batchEventResponse) {
+function getBatchEvents(message, destination, metadata, batchEventResponse) {
   let batchComplete = false;
   const batchEventArray =
     get(batchEventResponse, "batchedRequest.body.JSON.events") || [];
@@ -777,14 +788,17 @@ function getBatchEvents(message, metadata, batchEventResponse) {
 
   set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-
+  const BATCH_ENDPOINT = destination.Config.datacenterEU
+    ? EU_BATCH_EVENT_ENDPOINT
+    : BATCH_EVENT_ENDPOINT;
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
       batchEventResponse = Object.assign(batchEventResponse, {
         batchedRequest: message
       });
-      set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
+
+      set(batchEventResponse, "batchedRequest.endpoint", BATCH_ENDPOINT);
       batchEventResponse.metadata = [metadata];
     }
   } else {
@@ -864,7 +878,12 @@ function batch(destEvents) {
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch
-      isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+      isBatchComplete = getBatchEvents(
+        message,
+        destination,
+        metadata,
+        batchEventResponse
+      );
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
@@ -872,7 +891,12 @@ function batch(destEvents) {
         respList.push({ ...batchEventResponse });
         batchEventResponse = defaultBatchRequestConfig();
         batchEventResponse.destination = destinationObject;
-        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        isBatchComplete = getBatchEvents(
+          message,
+          destination,
+          metadata,
+          batchEventResponse
+        );
       }
     }
   });

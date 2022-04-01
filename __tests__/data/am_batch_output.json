@@ -54,7 +54,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": [{ "job_id": 1 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -79,7 +83,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": [{ "job_id": 6 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -104,7 +112,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": [{ "job_id": 7 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -209,7 +221,11 @@
         { "job_id": 4 },
         { "job_id": 5 }
       ],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     }
   ],
   [
@@ -265,7 +281,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": [{ "job_id": 1 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -290,7 +310,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": [{ "job_id": 6 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -315,7 +339,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": [{ "job_id": 7 }],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     },
     {
       "batchedRequest": {
@@ -420,7 +448,11 @@
         { "job_id": 4 },
         { "job_id": 5 }
       ],
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "euResidencyServer": false }
+      }
     }
   ],
   [
@@ -628,7 +660,8 @@
         },
         "Enabled": true,
         "Transformations": [],
-        "IsProcessorEnabled": false
+        "IsProcessorEnabled": false,
+        "euResidencyServer": false
       }
     }
   ],
@@ -662,7 +695,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     },
     {
@@ -694,7 +728,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     },
     {
@@ -839,7 +874,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     }
   ],
@@ -903,7 +939,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     },
     {
@@ -935,7 +972,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     },
     {
@@ -967,7 +1005,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     },
     {
@@ -1083,7 +1122,8 @@
       ],
       "destination": {
         "ID": "a",
-        "url": "a"
+        "url": "a",
+        "Config": { "euResidencyServer": false }
       }
     }
   ]

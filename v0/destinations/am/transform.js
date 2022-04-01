@@ -227,7 +227,7 @@ function responseBuilderSimple(
 
   let groups;
 
-  let endpoint = destination.Config.datacenterEU ? EU_ENDPOINT : ENDPOINT;
+  let endpoint = destination.Config.euResidencyServer ? EU_ENDPOINT : ENDPOINT;
   let traits;
 
   if (EventType.IDENTIFY) {
@@ -287,7 +287,7 @@ function responseBuilderSimple(
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
-      endpoint = destination.Config.datacenterEU ? EU_ENDPOINT : ENDPOINT;
+      endpoint = destination.Config.euResidencyServer ? EU_ENDPOINT : ENDPOINT;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
@@ -340,7 +340,7 @@ function responseBuilderSimple(
       }
       break;
     case EventType.ALIAS:
-      endpoint = destination.Config.datacenterEU
+      endpoint = destination.Config.euResidencyServer
         ? EU_ALIAS_ENDPOINT
         : ALIAS_ENDPOINT;
       break;
@@ -389,7 +389,7 @@ function responseBuilderSimple(
         payload.unmap = true;
       }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = destination.Config.datacenterEU
+      aliasResponse.endpoint = destination.Config.euResidencyServer
         ? EU_ALIAS_ENDPOINT
         : ALIAS_ENDPOINT;
       aliasResponse.userId = message.anonymousId;
@@ -480,7 +480,7 @@ function responseBuilderSimple(
       // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = destination.Config.datacenterEU
+        groupResponse.endpoint = destination.Config.euResidencyServer
           ? EU_GROUP_ENDPOINT
           : GROUP_ENDPOINT;
         let groupPayload = Object.assign(groupInfo);
@@ -788,7 +788,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
 
   set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-  const BATCH_ENDPOINT = destination.Config.datacenterEU
+  const BATCH_ENDPOINT = destination.Config.euResidencyServer
     ? EU_BATCH_EVENT_ENDPOINT
     : BATCH_EVENT_ENDPOINT;
   if (batchEventArray.length === 0) {

@@ -46,6 +46,44 @@ const logger = require("../../../logger");
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
+const baseEndPoint = destConfig => {
+  let retVal;
+  switch (destConfig.residencyServer) {
+    case "EU":
+      retVal = BASE_URL_EU;
+      break;
+    default:
+      // "US" or when it is not specified
+      retVal = BASE_URL;
+  }
+  return retVal;
+};
+
+const defaultEndPoint = destConfig => {
+  const retVal = `${baseEndPoint(destConfig)}/2/httpapi`;
+  return retVal;
+};
+
+const identifyEndPoint = destConfig => {
+  const retVal = `${baseEndPoint(destConfig)}/identify`;
+  return retVal;
+};
+
+const batchEndPoint = destConfig => {
+  const retVal = `${baseEndPoint(destConfig)}/batch`;
+  return retVal;
+};
+
+const groupEndPoint = destConfig => {
+  const retVal = `${baseEndPoint(destConfig)}/groupidentify`;
+  return retVal;
+};
+
+const aliasEndPoint = destConfig => {
+  const retVal = `${baseEndPoint(destConfig)}/usermap`;
+  return retVal;
+};
+
 function getSessionId(payload) {
   const sessionId = payload.session_id;
   if (sessionId) {
@@ -220,8 +258,7 @@ function responseBuilderSimple(
 
   let groups;
 
-  const baseURL = destination.Config.euResidencyServer ? BASE_URL_EU : BASE_URL;
-  let endpoint = `${baseURL}/2/httpapi`;
+  let endpoint = defaultEndPoint(destination.Config);
   let traits;
 
   if (EventType.IDENTIFY) {
@@ -281,7 +318,7 @@ function responseBuilderSimple(
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
-      endpoint = `${baseURL}/2/httpapi`;
+      endpoint = defaultEndPoint(destination.Config);
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
@@ -334,7 +371,7 @@ function responseBuilderSimple(
       }
       break;
     case EventType.ALIAS:
-      endpoint = `${baseURL}/usermap`;
+      endpoint = aliasEndPoint(destination.Config);
       break;
     default:
       traits = getFieldValueFromMessage(message, "traits");
@@ -381,7 +418,7 @@ function responseBuilderSimple(
         payload.unmap = true;
       }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = `${baseURL}/usermap`;
+      aliasResponse.endpoint = aliasEndPoint(destination.Config);
       aliasResponse.userId = message.anonymousId;
       payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
@@ -470,7 +507,7 @@ function responseBuilderSimple(
       // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = `${baseURL}/groupidentify`;
+        groupResponse.endpoint = groupEndPoint(destination.Config);
         let groupPayload = Object.assign(groupInfo);
         groupResponse.userId = message.anonymousId;
         groupPayload = removeUndefinedValues(groupPayload);
@@ -776,8 +813,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
 
   set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-  const baseURL = destination.Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-  const BATCH_ENDPOINT = `${baseURL}/batch`;
+  const BATCH_ENDPOINT = batchEndPoint(destination.Config);
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;

@@ -3003,7 +3003,7 @@
         "apiKey": "abcde",
         "groupTypeTrait": "email",
         "groupValueTrait": "age",
-        "euResidencyServer": true
+        "residencyServer": "EU"
       }
     }
   },
@@ -3085,7 +3085,7 @@
         "apiKey": "abcde",
         "groupTypeTrait": "name_trait",
         "groupValueTrait": "value_trait",
-        "euResidencyServer": true
+        "residencyServer": "EU"
       }
     }
   },
@@ -3153,7 +3153,7 @@
     "destination": {
       "Config": {
         "apiKey": "abcde",
-        "euResidencyServer": true
+        "residencyServer": "EU"
       }
     }
   }

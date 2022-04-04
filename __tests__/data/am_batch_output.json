@@ -57,7 +57,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": true }
+        "Config": { "residencyServer": "EU" }
       }
     },
     {
@@ -86,7 +86,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -115,7 +115,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -224,7 +224,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     }
   ],
@@ -284,7 +284,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -313,7 +313,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -342,7 +342,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -451,7 +451,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     }
   ],
@@ -656,12 +656,12 @@
         },
         "Config": {
           "appKey": "asdf",
-          "dataCenter": "asdfasdf"
+          "dataCenter": "asdfasdf",
+          "residencyServer": "General"
         },
         "Enabled": true,
         "Transformations": [],
-        "IsProcessorEnabled": false,
-        "euResidencyServer": false
+        "IsProcessorEnabled": false
       }
     }
   ],
@@ -696,7 +696,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -729,7 +729,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -875,7 +875,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     }
   ],
@@ -940,7 +940,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -973,7 +973,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -1006,7 +1006,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     },
     {
@@ -1123,7 +1123,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "euResidencyServer": false }
+        "Config": { "residencyServer": "General" }
       }
     }
   ]

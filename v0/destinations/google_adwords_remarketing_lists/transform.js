@@ -74,9 +74,10 @@ const responseBuilder = (metadata, body, { Config }) => {
     "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
   if (Config.subAccount)
-    if (Config.loginCustomerId)
-      response.headers["login-customer-id"] = Config.loginCustomerId;
-    else
+    if (Config.loginCustomerId) {
+      const filteredLoginCustomerId = Config.loginCustomerId.replace(/-/g, "");
+      response.headers["login-customer-id"] = filteredLoginCustomerId;
+    } else
       throw new ErrorBuilder()
         .setMessage(
           `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`

@@ -8,7 +8,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   getValueFromMessage,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  removeHyphens
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -63,7 +64,7 @@ const getAccessToken = metadata => {
 const responseBuilder = (metadata, body, { Config }) => {
   const payload = body;
   const response = defaultRequestConfig();
-  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = getAccessToken(metadata);
@@ -75,7 +76,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   };
   if (Config.subAccount)
     if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = Config.loginCustomerId.replace(/-/g, "");
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
       throw new ErrorBuilder()

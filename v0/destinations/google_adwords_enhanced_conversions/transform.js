@@ -3,7 +3,8 @@ const {
   getErrorRespEvents,
   constructPayload,
   defaultRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
+  removeHyphens
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 
@@ -51,7 +52,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       .setStatus(400)
       .build();
   }
-  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
   const accessToken = getAccessToken(metadata);
@@ -63,7 +64,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   response.params = { event, customerId: filteredCustomerId };
   if (Config.subAccount)
     if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = Config.loginCustomerId.replace(/-/g, "");
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
       throw new ErrorBuilder()

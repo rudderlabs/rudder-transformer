@@ -32,14 +32,8 @@ const {
 const ErrorBuilder = require("../../util/error");
 const {
   DESTINATION,
-  ENDPOINT,
-  BATCH_EVENT_ENDPOINT,
-  ALIAS_ENDPOINT,
-  GROUP_ENDPOINT,
-  EU_ENDPOINT,
-  EU_BATCH_EVENT_ENDPOINT,
-  EU_ALIAS_ENDPOINT,
-  EU_GROUP_ENDPOINT,
+  BASE_URL,
+  BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive
@@ -226,7 +220,8 @@ function responseBuilderSimple(
 
   let groups;
 
-  let endpoint = destination.Config.euResidencyServer ? EU_ENDPOINT : ENDPOINT;
+  const baseURL = destination.Config.euResidencyServer ? BASE_URL_EU : BASE_URL;
+  let endpoint = `${baseURL}/2/httpapi`;
   let traits;
 
   if (EventType.IDENTIFY) {
@@ -286,7 +281,7 @@ function responseBuilderSimple(
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
-      endpoint = destination.Config.euResidencyServer ? EU_ENDPOINT : ENDPOINT;
+      endpoint = `${baseURL}/2/httpapi`;
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
@@ -339,9 +334,7 @@ function responseBuilderSimple(
       }
       break;
     case EventType.ALIAS:
-      endpoint = destination.Config.euResidencyServer
-        ? EU_ALIAS_ENDPOINT
-        : ALIAS_ENDPOINT;
+      endpoint = `${baseURL}/usermap`;
       break;
     default:
       traits = getFieldValueFromMessage(message, "traits");
@@ -388,9 +381,7 @@ function responseBuilderSimple(
         payload.unmap = true;
       }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = destination.Config.euResidencyServer
-        ? EU_ALIAS_ENDPOINT
-        : ALIAS_ENDPOINT;
+      aliasResponse.endpoint = `${baseURL}/usermap`;
       aliasResponse.userId = message.anonymousId;
       payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
@@ -479,9 +470,7 @@ function responseBuilderSimple(
       // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = destination.Config.euResidencyServer
-          ? EU_GROUP_ENDPOINT
-          : GROUP_ENDPOINT;
+        groupResponse.endpoint = `${baseURL}/groupidentify`;
         let groupPayload = Object.assign(groupInfo);
         groupResponse.userId = message.anonymousId;
         groupPayload = removeUndefinedValues(groupPayload);
@@ -787,9 +776,8 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
 
   set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-  const BATCH_ENDPOINT = destination.Config.euResidencyServer
-    ? EU_BATCH_EVENT_ENDPOINT
-    : BATCH_EVENT_ENDPOINT;
+  const baseURL = destination.Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  const BATCH_ENDPOINT = `${baseURL}/batch`;
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;

@@ -344,7 +344,6 @@ async function processIdentify(message, destinationConfig, headers) {
     destinationConfig,
     "identify"
   );
-
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 

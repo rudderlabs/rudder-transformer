@@ -344,12 +344,7 @@ async function processIdentify(message, destinationConfig, headers) {
     destinationConfig,
     "identify"
   );
-  if (!payload.user.name) {
-    throw new CustomError(
-      "[Zendesk] Missing required value from [traits.name]",
-      400
-    );
-  }
+
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 

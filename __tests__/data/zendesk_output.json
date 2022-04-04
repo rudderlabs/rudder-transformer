@@ -1,7 +1,7 @@
 [
   {
     "statusCode": 400,
-    "error": "Missing required value from \"name\"",
+    "error": "[Zendesk] Missing required value from [traits.name]",
     "statTags": {
       "destination": "zendesk",
       "stage": "transform",

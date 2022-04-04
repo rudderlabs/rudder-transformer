@@ -1,6 +1,6 @@
 [
   { "destKey": "user.email", "sourceKeys": "email", "required": false },
-  { "destKey": "user.name", "sourceKeys": "name", "required": true },
+  { "destKey": "user.name", "sourceKeys": "name", "required": false },
   {
     "destKey": "user.organization_id",
     "sourceKeys": "organizationId",

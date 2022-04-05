@@ -154,6 +154,7 @@ async function getPayload(
         rawPayload.merge_fields[tag] = traits[trait];
       }
     });
+    // given email does not exist in the list
     if (!emailExists) {
       const isDoubleOptin = await checkIfDoubleOptIn(mailChimpConfig);
       rawPayload.status = isDoubleOptin
@@ -179,6 +180,10 @@ async function getTransformedJSON(message, mailChimpConfig) {
     : undefined;
 
   const email = getFieldValueFromMessage(message, "email");
+  if (!email) {
+    throw new CustomError("email is required for identify", 400);
+  }
+
   const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
   const rawPayload = await getPayload(

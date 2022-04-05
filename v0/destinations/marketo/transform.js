@@ -372,7 +372,7 @@ const processIdentify = async (message, formattedDestination, token) => {
       if (traits.marketoGUID) {
         delete traits.marketoGUID;
       }
-      const input = removeUndefinedValues(traits);
+      const input = [removeUndefinedValues(traits)];
       payload = {
         action: "createOrUpdate",
         dedupeBy: "dedupeFields",

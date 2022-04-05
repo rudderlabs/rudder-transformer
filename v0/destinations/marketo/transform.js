@@ -3,7 +3,6 @@
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
 const stats = require("../../../util/stats");
-const logger = require("../../../logger");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   identifyConfig,
@@ -228,9 +227,6 @@ const getLeadId = async (message, formattedDestination, token) => {
   //   }
   let leadId = getDestinationExternalIDInfoForRetl(message, "MARKETO")
     .destinationExternalId;
-    logger.debug("Ruchira here");
-    logger.debug("=================");
-    logger.debug(leadId)
   if (!leadId) {
     leadId = getDestinationExternalID(message, "marketoLeadId");
   }

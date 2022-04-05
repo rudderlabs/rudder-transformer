@@ -3,6 +3,36 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/customobjects/new_user.json",
+    "headers": {
+        "Authorization": "Bearer access_token_success",
+        "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "action": "createOrUpdate",
+            "dedupeBy": "dedupeFields",
+            "input": {
+                "administrative_unit": "Minnesota",
+                "am_pm": "AM",
+                "boolean": true,
+                "firstname": "Jacqueline",
+                "pPower": "AM",
+                "userId": "Jacqueline",
+                "email": "lynnanderson@smith.net"
+            }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {}
+},
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
     "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
     "headers": {
       "Content-Type": "application/json",

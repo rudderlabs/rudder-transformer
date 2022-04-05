@@ -25,13 +25,15 @@ const getData = url => {
 const mailchimpGetRequestHandler = url => {
   const mockData = getData(url);
   if (mockData) {
-      if (url === 'https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab') {
-        return { data: mockData, status: mockData.status };
-      } else {
-        return new Promise((resolve, reject) => {
-            reject({ error: "Request failed", status: mockData.status });
-          });
-      }    
+    if (url === "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab") {
+      return { data: mockData, status: mockData.status };
+    } else if (url === "https://us20.api.mailchimp.com/3.0/lists/ff21810eec") {
+      return { data: mockData, status: mockData.status };
+    } else {
+      return new Promise((resolve, reject) => {
+        reject({ error: "Request failed", status: mockData.status });
+      });
+    }
   } else {
     return new Promise((resolve, reject) => {
       reject({ error: "Request failed", status: 404 });
@@ -40,4 +42,3 @@ const mailchimpGetRequestHandler = url => {
 };
 
 module.exports = mailchimpGetRequestHandler;
-

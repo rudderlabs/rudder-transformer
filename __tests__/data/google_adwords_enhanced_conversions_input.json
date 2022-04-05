@@ -12,7 +12,7 @@
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
         "customerId": "123-456-7890",
         "subAccount": true,
-        "loginCustomerId": "11",
+        "loginCustomerId": "123-456-7890",
         "listOfConversions": [
           {
             "conversions": "Page View"

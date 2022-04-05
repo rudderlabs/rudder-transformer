@@ -34,16 +34,18 @@
     "error": "The field Email is not present in Marketo Field Schema. Aborting. "
   },
   {
-    "statusCode": 400,
-    "error": "Header field 'a' not found",
+    "statusCode": 200,
+    "importId": "2977",
+    "pollURL": "/pollStatus",
     "metadata": {
       "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
+      "unsuccessfulJobs": [],
+      "csvHeader": "email"
     }
   },
   {
-    "statusCode": 500,
-    "error": "No import id received",
+    "statusCode": 400,
+    "error": "Could not upload file",
     "metadata": {
       "successfulJobs": ["17"],
       "unsuccessfulJobs": []

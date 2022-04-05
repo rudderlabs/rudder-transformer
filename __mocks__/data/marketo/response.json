@@ -3347,5 +3347,77 @@
   "https://a.mktorest.com/bulk/v1/leads/batch/12345/failures.json": {
     "status": 200,
     "data": "data"
+  },
+  "https://testMunchkin1.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://testMunchkin1.mktorest.com/rest/v1/leads/describe2.json":{
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [
+          ["email"]
+        ],
+        "fields": [
+          {
+            "name": "email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin1.mktorest.com/bulk/v1/leads.json": {
+    "success":false,
+    "errors": [
+      {
+        "code":603
+      }
+    ]
+  },
+  "https://testMunchkin2.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://testMunchkin2.mktorest.com/rest/v1/leads/describe2.json":{
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [
+          ["email"]
+        ],
+        "fields": [
+          {
+            "name": "Email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin2.mktorest.com/bulk/v1/leads.json": {
+    "success":false,
+    "errors": [
+      {
+        "message":"There are 10 imports currently being processed. Please try again later"
+      }
+    ]
   }
 }

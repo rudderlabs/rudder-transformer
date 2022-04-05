@@ -78,7 +78,7 @@ const getPollStatus = async event => {
           state: "Retryable"
         });
         throw new CustomError(
-          resp.response.data.response.statusText || "Could not poll status",
+          resp.response.data.errors[0].message || "Could not poll status",
           500
         );
       }

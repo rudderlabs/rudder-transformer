@@ -1137,6 +1137,10 @@ function isAppleFamily(platform) {
   return appleOsNames.includes(platform.toLowerCase());
 }
 
+function removeHyphens(str) {
+  return str.replace(/-/g, "");
+}
+
 function isCdkDestination(event) {
   // TODO: maybe dont need all these checks in place
   return (
@@ -1217,5 +1221,6 @@ module.exports = {
   isOAuthSupported,
   isOAuthDestination,
   isAppleFamily,
-  isCdkDestination
+  isCdkDestination,
+  removeHyphens
 };

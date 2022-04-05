@@ -250,7 +250,7 @@ function buildBaseEvent(message) {
   } else {
     // if the sourceSDK is not android or ios
     throw new CustomError(
-      "Extended Device Information i.e context.device.type is required",
+      'Extended Device Information i.e, "context.device.type" is required',
       400
     );
   }

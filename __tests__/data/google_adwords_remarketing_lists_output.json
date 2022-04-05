@@ -57,7 +57,7 @@
         "Authorization": "Bearer abcd1234",
         "Content-Type": "application/json",
         "developer-token": "ijkl9101",
-        "login-customer-id": "abcd1234"
+        "login-customer-id": "8704830944"
       },
       "params": {
         "listId": "7090784486",

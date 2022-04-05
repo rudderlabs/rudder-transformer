@@ -311,7 +311,7 @@ function processPageOrScreenEvents(message, type, destination) {
     properties.$browser_version = browser.version;
   }
 
-  const eventName = type === "page" ? "Loaded a page" : "Loaded a screen";
+  const eventName = type === "page" ? "Loaded a Page" : "Loaded a Screen";
   const parameters = {
     event: eventName,
     properties

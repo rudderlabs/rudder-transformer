@@ -220,16 +220,11 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
 }
 
 function responseBuilderSimple(message, payload, destination) {
-  const requestConfig = {
-    requestFormat: "FORM",
-    requestMethod: "POST"
-  };
-
   const { appID } = destination.Config;
 
-  // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
+  // "https://graph.facebook.com/v13.0/644748472345539/activities"
 
-  const endpoint = `https://graph.facebook.com/v3.3/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/v13.0/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
@@ -253,8 +248,11 @@ function buildBaseEvent(message) {
   } else if (isAppleFamily(sourceSDK)) {
     sourceSDK = "i2";
   } else {
-    // if the sourceSDK is not android or ios, send an empty string
-    sourceSDK = "";
+    // if the sourceSDK is not android or ios
+    throw new CustomError(
+      'Extended device information i.e, "context.device.type" is required',
+      400
+    );
   }
 
   baseEvent.extinfo[0] = sourceSDK;
@@ -293,39 +291,6 @@ function buildBaseEvent(message) {
       }
     }
   });
-
-  // //////////////////////////////
-  // Object.keys(baseMapping).forEach(k => {
-  //   const inputVal = get(message, k);
-  //   const splits = baseMapping[k].split(".");
-  //   if (splits.length > 1 && splits[0] === "extinfo") {
-  //     extInfoIdx = splits[1];
-  //     let outputVal;
-  //     switch (typeof extInfoArray[extInfoIdx]) {
-  //       case "number":
-  //         if (extInfoIdx === 11) {
-  //           // density
-  //           outputVal = parseFloat(inputVal);
-  //           outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
-  //         } else {
-  //           outputVal = parseInt(inputVal, 10);
-  //           outputVal = isNaN(outputVal) ? undefined : outputVal;
-  //         }
-  //         break;
-
-  //       default:
-  //         outputVal = inputVal;
-  //         break;
-  //     }
-  //     baseEvent.extinfo[extInfoIdx] =
-  //       outputVal || baseEvent.extinfo[extInfoIdx];
-  //   } else if (splits.length === 3) {
-  //     // custom event key
-  //     set(baseEvent.custom_events[0], splits[2], inputVal || "");
-  //   } else {
-  //     set(baseEvent, baseMapping[k], inputVal || "");
-  //   }
-  // });
   return baseEvent;
 }
 

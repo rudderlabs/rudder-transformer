@@ -86,7 +86,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -115,7 +115,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -224,7 +224,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     }
   ],
@@ -284,7 +284,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -313,7 +313,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -342,7 +342,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -451,7 +451,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     }
   ],
@@ -657,7 +657,7 @@
         "Config": {
           "appKey": "asdf",
           "dataCenter": "asdfasdf",
-          "residencyServer": "General"
+          "residencyServer": "standard"
         },
         "Enabled": true,
         "Transformations": [],
@@ -696,7 +696,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -729,7 +729,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -875,7 +875,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     }
   ],
@@ -940,7 +940,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -973,7 +973,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -1006,7 +1006,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     },
     {
@@ -1123,7 +1123,7 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "General" }
+        "Config": { "residencyServer": "standard" }
       }
     }
   ]

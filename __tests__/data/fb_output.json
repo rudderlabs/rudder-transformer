@@ -246,6 +246,6 @@
     "statusCode": 200
   },
   {
-    "message": "Extended Device Information i.e device.type is required"
+    "message": "Extended Device Information i.e context.device.type is required"
   }
 ]

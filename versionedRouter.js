@@ -26,7 +26,8 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 
-const basePath = path.resolve(__dirname, "./cdk");
+const CDK_DEST_PATH = "cdk";
+const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
 ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const versions = ["v0"];
@@ -90,8 +91,12 @@ const functionsEnabled = () => {
 };
 
 async function handleDest(ctx, version, destination) {
-  const destHandler = getDestHandler(version, destination);
+  // const destHandler = getDestHandler(version, destination);
+  let destHandler;
   const events = ctx.request.body;
+  if (!events || !Array.isArray(events)) {
+    throw new Error("Event is missing or in inappropriate format", 400);
+  }
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
 
@@ -106,6 +111,10 @@ async function handleDest(ctx, version, destination) {
   });
   const respList = [];
   const executeStartTime = new Date();
+  // destination definition is going to be same for any kind of event
+  if (!isCdkDestination(events[0])) {
+    destHandler = getDestHandler(version, destination);
+  }
   await Promise.all(
     events.map(async event => {
       try {
@@ -177,7 +186,6 @@ async function handleDest(ctx, version, destination) {
   ctx.body = respList;
   return ctx.body;
 }
-
 async function handleValidation(ctx) {
   const requestStartTime = new Date();
   const events = ctx.request.body;
@@ -273,6 +281,7 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
+    destinations.push (...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {

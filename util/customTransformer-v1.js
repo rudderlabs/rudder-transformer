@@ -20,6 +20,7 @@ async function transform(isolatevm, events) {
       await isolatevm.bootstrapScriptResult.apply(
         undefined,
         [
+          // Function
           isolatevm.fnRef,
           new ivm.Reference(resolve),
           new ivm.Reference(reject),
@@ -29,6 +30,8 @@ async function transform(isolatevm, events) {
       );
     } catch (error) {
       reject(error.message);
+    } finally {
+      isolatevm.fnRef?.release();
     }
   });
   return executionPromise.catch(e => {
@@ -51,11 +54,7 @@ async function userTransformHandlerV1(
  on demand if env variable ON_DEMAND_ISOLATE_VM = true | True | TRUE,
  Pooled otherwise
 */
-  const isAcquireTransformerIsolatedVMMode =
-    testMode ||
-    (process.env.ON_DEMAND_ISOLATE_VM
-      ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
-      : false);
+  const isAcquireTransformerIsolatedVMMode = true;
   if (userTransformation.versionId) {
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {

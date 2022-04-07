@@ -194,9 +194,9 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
 
   await jail.set(
-    "_log",
+    "log",
     testMode
-      ? new ivm.Reference((...args) => {
+      ? function(...args) {
           let logString = "Log:";
           args.forEach(arg => {
             logString = logString.concat(
@@ -204,7 +204,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
             );
           });
           logs.push(logString);
-        })
+        }
       : new ivm.Reference(() => {})
   );
 
@@ -246,21 +246,6 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
           ]);
         });
       };
-
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let log = _log;
-      delete _log;
-      global.log = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        log.applyIgnored(
-          undefined,
-          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-         );
-       };
 
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
@@ -304,7 +289,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
-      const funcRef = await customScriptModule.namespace.get(sName);
+      const funcRef = await customScriptModule.namespace.get(sName, { promise: true, reference: true });
       if (funcRef && funcRef.typeof === "function") {
         supportedFuncs[sName] = funcRef;
       }
@@ -320,7 +305,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     );
   }
 
-  const fnRef = await customScriptModule.namespace.get("transformWrapper");
+  const fnRef = await customScriptModule.namespace.get("transformWrapper", { promise: true, reference: true });
   const fName = availableFuncNames[0];
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
@@ -335,7 +320,8 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     isolateStartWallTime,
     isolateStartCPUTime,
     fName,
-    logs
+    logs,
+    bootstrap
   };
 }
 
@@ -351,7 +337,9 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
       return createIvm(code, libraryVersionIds, versionId, testMode);
     },
     destroy: async client => {
-      await client.isolate.dispose();
+      client.bootstrap?.release();
+      client.context?.release();
+      client.isolate.dispose();
     }
   };
 

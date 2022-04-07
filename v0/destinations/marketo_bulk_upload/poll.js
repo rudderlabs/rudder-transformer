@@ -5,7 +5,7 @@ const {
   THROTTLED_CODES,
   POLL_ACTIVITY
 } = require("./util");
-const { httpPOST } = require("../../../adapters/network");
+const { httpGET } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 const stats = require("../../../util/stats");
 
@@ -23,7 +23,7 @@ const getPollStatus = async event => {
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
-  const resp = await httpPOST(pollUrl, requestOptions);
+  const resp = await httpGET(pollUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   if (resp.success) {

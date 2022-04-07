@@ -38,7 +38,10 @@
     "body": {
       "JSON": {
         "status": "subscribed",
-        "email_address": "bob.dole@initech.com"
+        "email_address": "bob.dole@initech.com",
+        "merge_fields": {
+          "anonymousI": "userId12345"
+        }
       },
       "XML": {},
       "JSON_ARRAY": {},

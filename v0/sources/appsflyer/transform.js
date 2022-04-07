@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const Message = require("../message");
 const { generateUUID } = require("../../util");
+
 const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );

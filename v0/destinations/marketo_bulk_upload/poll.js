@@ -23,21 +23,21 @@ const getPollStatus = async event => {
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
-  const resp = await httpGET(pollUrl, requestOptions);
+  const pollStatus = await httpGET(pollUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  if (resp.success) {
-    if (resp.response && resp.response.data.success) {
+  if (pollStatus.success) {
+    if (pollStatus.response && pollStatus.response.data.success) {
       stats.increment(POLL_ACTIVITY, 1, {
         integration: "Marketo_bulk_upload",
         requestTime,
         status: 200,
         state: "Success"
       });
-      return resp.response;
+      return pollStatus.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
-    if (resp.response && resp.response.data) {
+    if (pollStatus.response && pollStatus.response.data) {
       // Abortable jobs
       // Errors from polling come as
       /**
@@ -53,10 +53,10 @@ const getPollStatus = async event => {
 }
        */
       if (
-        resp.response.data.errors[0] &&
-        ((resp.response.data.errors[0].code >= 1000 &&
-          resp.response.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code) > -1)
+        pollStatus.response.data.errors[0] &&
+        ((pollStatus.response.data.errors[0].code >= 1000 &&
+          pollStatus.response.data.errors[0].code <= 1077) ||
+          ABORTABLE_CODES.indexOf(pollStatus.response.data.errors[0].code) > -1)
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -65,11 +65,11 @@ const getPollStatus = async event => {
           state: "Abortable"
         });
         throw new CustomError(
-          resp.response.data.errors[0].message || "Could not poll status",
+          pollStatus.response.data.errors[0].message || "Could not poll status",
           400
         );
       } else if (
-        THROTTLED_CODES.indexOf(resp.response.data.errors[0].code) > -1
+        THROTTLED_CODES.indexOf(pollStatus.response.data.errors[0].code) > -1
       ) {
         stats.increment(POLL_ACTIVITY, 1, {
           integration: "Marketo_bulk_upload",
@@ -78,7 +78,7 @@ const getPollStatus = async event => {
           state: "Retryable"
         });
         throw new CustomError(
-          resp.response.data.errors[0].message || "Could not poll status",
+          pollStatus.response.data.errors[0].message || "Could not poll status",
           500
         );
       }
@@ -89,7 +89,8 @@ const getPollStatus = async event => {
         state: "Retryable"
       });
       throw new CustomError(
-        resp.response.response.statusText || "Error during polling status",
+        pollStatus.response.response.statusText ||
+          "Error during polling status",
         500
       );
     }

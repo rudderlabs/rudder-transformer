@@ -8,7 +8,7 @@ const {
   RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY
 } = require("./util");
-const { httpSend, httpPOST } = require("../../../adapters/network");
+const { httpPOST } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const getFailedJobStatus = async event => {

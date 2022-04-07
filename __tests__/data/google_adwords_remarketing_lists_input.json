@@ -60,8 +60,8 @@
       "Config": {
         "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
         "listId": "7090784486",
-        "customerId": "7693729833",
-        "loginCustomerId": "abcd1234",
+        "customerId": "769-372-9833",
+        "loginCustomerId": "870-483-0944",
         "subAccount": true,
         "userSchema": ["email", "phone", "addressInfo"],
         "isHashRequired": true,

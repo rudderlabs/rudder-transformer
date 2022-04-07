@@ -8,7 +8,7 @@
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
       "developer-token": "ijkl91011",
-      "login-customer-id": "11"
+      "login-customer-id": "1234567890"
     },
     "params": {
       "event": "Page View",

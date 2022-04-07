@@ -8,7 +8,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   getValueFromMessage,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  removeHyphens
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -63,7 +64,7 @@ const getAccessToken = metadata => {
 const responseBuilder = (metadata, body, { Config }) => {
   const payload = body;
   const response = defaultRequestConfig();
-  const filteredCustomerId = Config.customerId.replace(/-/g, "");
+  const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = getAccessToken(metadata);
@@ -74,9 +75,10 @@ const responseBuilder = (metadata, body, { Config }) => {
     "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
   if (Config.subAccount)
-    if (Config.loginCustomerId)
-      response.headers["login-customer-id"] = Config.loginCustomerId;
-    else
+    if (Config.loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+      response.headers["login-customer-id"] = filteredLoginCustomerId;
+    } else
       throw new ErrorBuilder()
         .setMessage(
           `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`

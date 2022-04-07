@@ -682,9 +682,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": [
-          "Comapny-ABC"
-        ]
+        "value_trait": ["Comapny-ABC"]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -2913,6 +2911,249 @@
       "Config": {
         "apiKey": "abcde",
         "mapDeviceBrand": true
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "rohith@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "rohith@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "residencyServer": "EU"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": {
+        "All": true
+      },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait",
+        "residencyServer": "EU"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "newUserIdAlias",
+      "integrations": {
+        "All": true
+      },
+      "previousId": "sampleusrRudder3",
+      "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "residencyServer": "EU"
       }
     }
   }

@@ -93,7 +93,7 @@ const functionsEnabled = () => {
 
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
-  if (!Array.isArray(events) && events.length === 0) {
+  if (!Array.isArray(events) || events.length === 0) {
     throw new CustomError("Event is missing or in inappropriate format", 400);
   }
   const reqParams = ctx.request.query;

@@ -11,7 +11,8 @@ const stats = require("./util/stats");
 const {
   isNonFuncObject,
   getMetadata,
-  generateErrorObject
+  generateErrorObject,
+  CustomError
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -91,11 +92,9 @@ const functionsEnabled = () => {
 };
 
 async function handleDest(ctx, version, destination) {
-  // const destHandler = getDestHandler(version, destination);
-  let destHandler;
   const events = ctx.request.body;
-  if (!events || !Array.isArray(events)) {
-    throw new Error("Event is missing or in inappropriate format", 400);
+  if (!Array.isArray(events) && events.length === 0) {
+    throw new CustomError("Event is missing or in inappropriate format", 400);
   }
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
@@ -111,6 +110,7 @@ async function handleDest(ctx, version, destination) {
   });
   const respList = [];
   const executeStartTime = new Date();
+  let destHandler;
   // destination definition is going to be same for any kind of event
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
@@ -122,9 +122,9 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(event)) {
+        if (isCdkDestination(parsedEvent)) {
           respEvents = await Executor.execute(
-            event,
+            parsedEvent,
             ConfigFactory.getConfig(destination)
           );
         } else {
@@ -186,6 +186,7 @@ async function handleDest(ctx, version, destination) {
   ctx.body = respList;
   return ctx.body;
 }
+
 async function handleValidation(ctx) {
   const requestStartTime = new Date();
   const events = ctx.request.body;

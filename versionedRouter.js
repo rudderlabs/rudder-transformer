@@ -111,7 +111,7 @@ async function handleDest(ctx, version, destination) {
   const respList = [];
   const executeStartTime = new Date();
   let destHandler;
-  // destination definition is going to be same for any kind of event
+  // Getting destination handler for non-cdk destination(s)
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
   }

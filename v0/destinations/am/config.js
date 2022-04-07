@@ -107,11 +107,8 @@ const Event = {
   }
 };
 
-const ENDPOINT = "https://api.amplitude.com/2/httpapi";
-const IDENTIFY_ENDPOINT = "https://api.amplitude.com/identify";
-const BATCH_EVENT_ENDPOINT = "https://api.amplitude.com/batch";
-const GROUP_ENDPOINT = "https://api.amplitude.com/groupidentify";
-const ALIAS_ENDPOINT = "https://api.amplitude.com/usermap";
+const BASE_URL = "https://api.amplitude.com";
+const BASE_URL_EU = "https://api.eu.amplitude.com";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const batchEventsWithUserIdLengthLowerThanFive =
@@ -126,11 +123,8 @@ const DESTINATION = "amplitude";
 module.exports = {
   DESTINATION,
   Event,
-  ENDPOINT,
-  IDENTIFY_ENDPOINT,
-  BATCH_EVENT_ENDPOINT,
-  GROUP_ENDPOINT,
-  ALIAS_ENDPOINT,
+  BASE_URL,
+  BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
   nameToEventMap,

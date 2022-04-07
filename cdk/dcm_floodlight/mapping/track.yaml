@@ -1,0 +1,15 @@
+- destKey: dc_rdid
+  sourceKeys: context.device.advertisingId
+  required: true
+
+- destKey: ord
+  sourceKeys: properties.orderId
+  required: false
+
+- destKey: qty
+  sourceKeys: properties.quantity
+  required: false
+
+- destKey: cost
+  sourceKeys: properties.revenue
+  required: false

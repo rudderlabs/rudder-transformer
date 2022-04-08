@@ -1151,6 +1151,25 @@ function isCdkDestination(event) {
   );
 }
 
+function verifyDynamicFormAttribute(eventArray) {
+  let flag = 0;
+  for (let i = 0; i < eventArray.length; i += 1) {
+    if (
+      eventArray[i].from === undefined ||
+      eventArray[i].to === undefined ||
+      eventArray[i].from === null ||
+      eventArray[i].to === null ||
+      typeof eventArray[i].to !== "string" ||
+      typeof eventArray[i].from !== "string"
+    ) {
+      flag = 1;
+      break;
+    }
+  }
+  if (flag === 0) return true;
+  return false;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1222,5 +1241,6 @@ module.exports = {
   isOAuthDestination,
   isAppleFamily,
   isCdkDestination,
-  removeHyphens
+  removeHyphens,
+  verifyDynamicFormAttribute
 };

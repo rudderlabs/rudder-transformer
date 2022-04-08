@@ -20,7 +20,8 @@ const {
   getErrorRespEvents,
   getIntegrationsObj,
   getSuccessRespEvents,
-  isObject
+  isObject,
+  verifyDynamicFormAttribute
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -578,6 +579,30 @@ const processEvent = (message, destination) => {
       400
     );
   }
+
+  if (destination.Config.eventsToEvents)
+    if (!verifyDynamicFormAttribute(destination.Config.eventsToEvents)) {
+      throw new CustomError(
+        `eventsToEvents has some undefined or nonString values.`,
+        400
+      );
+    }
+  if (destination.Config.categoryToContent)
+    if (!verifyDynamicFormAttribute(destination.Config.categoryToContent)) {
+      throw new CustomError(
+        `categoryToContent has some undefined or nonString values.`,
+        400
+      );
+    }
+  if (destination.Config.legacyConversionPixelId)
+    if (
+      !verifyDynamicFormAttribute(destination.Config.legacyConversionPixelId)
+    ) {
+      throw new CustomError(
+        `legacyConversionPixelId has some undefined or nonString values.`,
+        400
+      );
+    }
   const { advancedMapping, eventsToEvents } = destination.Config;
   let standard;
   let standardTo = "";

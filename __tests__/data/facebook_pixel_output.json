@@ -557,5 +557,23 @@
   {
     "statusCode": 400,
     "error": "Category must be must be a string"
+  },
+  {
+    "statusCode": 400,
+    "error": "eventsToEvents has some undefined or nonString values.",
+    "statTags": {
+      "destination": "facebook_pixel",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "categoryToContent has some undefined or nonString values.",
+    "statTags": {
+      "destination": "facebook_pixel",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

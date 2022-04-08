@@ -1151,23 +1151,41 @@ function isCdkDestination(event) {
   );
 }
 
-function verifyDynamicFormAttribute(eventArray) {
-  let flag = 0;
-  for (let i = 0; i < eventArray.length; i += 1) {
-    if (
-      eventArray[i].from === undefined ||
-      eventArray[i].to === undefined ||
-      eventArray[i].from === null ||
-      eventArray[i].to === null ||
-      typeof eventArray[i].to !== "string" ||
-      typeof eventArray[i].from !== "string"
-    ) {
-      flag = 1;
-      break;
-    }
-  }
-  if (flag === 0) return true;
-  return false;
+/**
+ * This function helps to remove any undefined value from dynamicForm, dynamicCustomForm
+ * and dynamicSelectForm array.
+ *
+ * example:
+ * input: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    },
+                    {
+                        "to": "Schedule"
+                    }
+                ]
+ * output: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    }
+                ]
+
+ * @param {*} eventArray -> This is the dynamicForm/dynamicCustomForm/dynamicSelectForm element.
+ * @param {*} keyLeft -> This is the name of the leftKey, in general it is 'from'.
+ * @param {*} keyRight -> This is the name of the rightKey, in general it is 'to'.
+ * @returns
+ */
+function validateDynamicFormAttribute(attributeArray, keyLeft, keyRight) {
+  let res = [];
+  res = attributeArray.filter(element => {
+    return (
+      (element[`${keyLeft}`] || element[`${keyLeft}`] === "") &&
+      (element[`${keyRight}`] || element[`${keyRight}`] === "")
+    );
+  });
+  return res;
 }
 
 // ========================================================================
@@ -1242,5 +1260,5 @@ module.exports = {
   isAppleFamily,
   isCdkDestination,
   removeHyphens,
-  verifyDynamicFormAttribute
+  validateDynamicFormAttribute
 };

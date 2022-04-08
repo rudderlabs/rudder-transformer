@@ -21,7 +21,7 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  verifyDynamicFormAttribute
+  validateDynamicFormAttribute
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -581,28 +581,24 @@ const processEvent = (message, destination) => {
   }
 
   if (destination.Config.eventsToEvents)
-    if (!verifyDynamicFormAttribute(destination.Config.eventsToEvents)) {
-      throw new CustomError(
-        `eventsToEvents has some undefined or nonString values.`,
-        400
-      );
-    }
+    destination.Config.eventsToEvents = validateDynamicFormAttribute(
+      destination.Config.eventsToEvents,
+      "from",
+      "to"
+    );
   if (destination.Config.categoryToContent)
-    if (!verifyDynamicFormAttribute(destination.Config.categoryToContent)) {
-      throw new CustomError(
-        `categoryToContent has some undefined or nonString values.`,
-        400
-      );
-    }
+    destination.Config.categoryToContent = validateDynamicFormAttribute(
+      destination.Config.categoryToContent,
+      "from",
+      "to"
+    );
   if (destination.Config.legacyConversionPixelId)
-    if (
-      !verifyDynamicFormAttribute(destination.Config.legacyConversionPixelId)
-    ) {
-      throw new CustomError(
-        `legacyConversionPixelId has some undefined or nonString values.`,
-        400
-      );
-    }
+    destination.Config.legacyConversionPixelId = validateDynamicFormAttribute(
+      destination.Config.legacyConversionPixelId,
+      "from",
+      "to"
+    );
+
   const { advancedMapping, eventsToEvents } = destination.Config;
   let standard;
   let standardTo = "";

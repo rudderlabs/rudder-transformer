@@ -21,6 +21,7 @@ inputData.forEach((input, index) => {
   it(`${name} Tests: payload: ${index}`, async () => {
     try {
       const output = await transformer.process(input);
+      delete output.anonymousId;
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].message);

@@ -1,124 +1,71 @@
-// const { Utils } = require("rudder-transformer-cdk");
-// const ErrorBuilder = require("../../v0/util/error");
-// const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const {
-  defaultRequestConfig,
   getBrowserInfo,
   getDeviceModel,
   isValidUrl,
-  isDefinedAndNotNull,
-  stripTrailingSlash,
-  removeUndefinedAndNullValues
+  isDefinedAndNotNull
 } = require("../../v0/util");
-const fs = require("fs");
-const path = require("path");
-const YAML = require("yamljs");
-const yaml = require("js-yaml");
-// const DEFAULT_BASE_ENDPOINT = "https://app.posthog.com";
-// // const { constructPayload } = require("rudder-transformer-cdk/build/utils");
 
-// construct payload from an event and mappingJson
-
-const CONFIG_CATEGORIES = {
-  ALIAS: {
-    name: "PHAliasConfig",
-    type: "alias",
-    event: "$create_alias"
-  },
-  TRACK: { name: "PHTrackConfig", type: "capture" },
-  IDENTIFY: {
-    name: "PHIdentifyConfig",
-    type: "identify",
-    event: "$identify"
-  },
-  GROUP: {
-    name: "PHGroupConfig",
-    type: "group",
-    event: "$group"
-  },
-  PAGE: {
-    name: "PHPageConfig",
-    type: "page",
-    event: "$pageview"
-  },
-  SCREEN: {
-    name: "PHScreenConfig",
-    type: "screen",
-    event: "$screen"
-  },
-  PROPERTY: {
-    name: "PHPropertiesConfig"
-  }
-};
-// const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-
-// const getMappingConfig = (config, dir) => {
-//   const mappingConfig = {};
-//   const categoryKeys = Object.keys(config);
-//   categoryKeys.forEach(categoryKey => {
-//     const category = config[categoryKey];
-//     mappingConfig[category.name] = YAML.parse(
-//       fs.readFileSync(path.resolve(dir, "./mapping/properties.yaml"))
-//     );
-//   });
-//   return mappingConfig;
-// };
-
-function identifyPostMapper(event, mappedPayload, rudderContext) {
+function commonPostMapper(event, mappedPayload) {
   const { message, destination } = event;
 
-  const payload = mappedPayload;
-  // rudderContext.endpoint = `${stripTrailingSlash(
-  //   destination.Config.yourInstance
-  // ) || DEFAULT_BASE_ENDPOINT}/batch`;
-  // const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-  // const propertyJson = MAPPING_CONFIG[IDENTIFY];
-  // console.log(propertyJson);
-  // data = constructPayload(message, propertyJson);
+  let payload = mappedPayload;
 
-  // const mappingConfig = {};
-
-  const data = {};
-  try {
-    let fileContents = fs.readFileSync("cdk/posthog/properties.yaml", "utf8");
-    let doc = yaml.load(fileContents);
-    for (let i = 0; i < doc.length; i += 1) {
-      console.log(doc[i].destKey);
-      data;
-    }
-  } catch (e) {
-    console.log("myerror", e);
+  if (
+    message.channel === "web" &&
+    message.context &&
+    message.context.userAgent
+  ) {
+    const browser = getBrowserInfo(message.context.userAgent);
+    const osInfo = getDeviceModel(message);
+    payload.properties.$os = osInfo;
+    payload.properties.$browser = browser.name;
+    payload.properties.$browser_version = browser.version;
   }
 
-  // if (
-  //   message.channel === "web" &&
-  //   message.context &&
-  //   message.context.userAgent
-  // ) {
-  //   const browser = getBrowserInfo(message.context.userAgent);
-  //   const osInfo = getDeviceModel(message);
-  //   data.$os = osInfo;
-  //   data.$browser = browser.name;
-  //   data.$browser_version = browser.version;
-  // }
-  // const url = isValidUrl(data.$current_url);
-  // if (url) {
-  //   data.$host = url.host;
-  // }
-  // removeUndefinedAndNullValues(data);
-  // payload.properties = data;
-  // if (isDefinedAndNotNull(payload.distinct_id)) {
-  //   payload.distinct_id = payload.distinct_id.toString();
-  // }
-  // if (
-  //   payload.properties &&
-  //   isDefinedAndNotNull(payload.properties.distinct_id)
-  // ) {
-  //   payload.properties.distinct_id = payload.properties.distinct_id.toString();
-  // }
-  // console.log(message);
-  // console.log(mappedPayload);
+  // For EventType Screen Posthog maps screen name to our event property.
+  if (message.type.toLowerCase() === "screen") {
+    payload.properties.$screen_name = message.event;
+  }
+
+  // Validate current url from payload and generate host form that url.
+  const url = isValidUrl(payload.properties.$current_url);
+  if (url) {
+    payload.properties.$host = url.host;
+  }
+
+  if (isDefinedAndNotNull(payload.distinct_id)) {
+    payload.distinct_id = payload.distinct_id.toString();
+  }
+  if (
+    payload.properties &&
+    isDefinedAndNotNull(payload.properties.distinct_id)
+  ) {
+    payload.properties.distinct_id = payload.properties.distinct_id.toString();
+  }
+  payload = {
+    ...payload,
+    api_key: destination.Config.teamApiKey
+  };
+  if (message.type.toLowerCase() !== "track") {
+    payload.event = `$${message.type}`;
+  }
+  switch (message.type.toLowerCase()) {
+    case "track":
+      payload.type = "capture";
+      break;
+    case "alias":
+      payload.type = "alias";
+      payload.event = "$create_alias";
+      break;
+    case "page":
+      payload.type = "page";
+      payload.event = "$pageview";
+      break;
+    default:
+      payload.type = message.type.toLowerCase();
+      payload.event = `$${message.type}`;
+  }
   return payload;
 }
 
-module.exports = { identifyPostMapper };
+module.exports = { commonPostMapper };

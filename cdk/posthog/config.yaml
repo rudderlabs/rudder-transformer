@@ -1,88 +1,80 @@
 message:
   supportedMessageTypes:
     - identify
-    # - alias
-    # - track
-    # - screen
-    # - group
-    # - page
+    - alias
+    - track
+    - screen
+    - group
+    - page
   identify:
     transformation:
       mapperPath: ./mapping/identify.yaml
       postMapper:
-        name: "identifyPostMapper"
+        name: "commonPostMapper"
       response:
         endpoint: https://app.posthog.com/batch
-        # endpoint: "{{ rudderContext.endpoint }}"
         method: POST
         format: JSON
         headers:
-          Accept: "application/json"
           key:
           Content-Type: "application/json"
-  # alias:
-  #   transformation:
-  #     mapperPath: ./mapping/alias.yaml
-  #     postMapper:
-  #       name: "aliasPostMapper"
-  #     response:
-  #       endpoint:
-  #       method: POST
-  #       format: JSON
-  #       headers:
-  #         Accept:
-  #         key:
-  #         Content-Type: "application/json"
-  # track:
-  #   transformation:
-  #     mapperPath: ./mapping/track.yaml
-  #     postMapper:
-  #       name: "trackPostMapper"
-  #     response:
-  #       endpoint:
-  #       method: POST
-  #       format: JSON
-  #       headers:
-  #         Accept:
-  #         key:
-  #         Content-Type: "application/json"
-  # group:
-  #   transformation:
-  #     mapperPath: ./mapping/group.yaml
-  #     postMapper:
-  #       name: "groupPostMapper"
-  #     response:
-  #       endpoint:
-  #       method: POST
-  #       format: JSON
-  #       headers:
-  #         Accept:
-  #         key:
-  #         Content-Type: "application/json"
-  #       userId: "{{ message.anonymousId }}"
-  # page:
-  #   transformation:
-  #     mapperPath: ./mapping/page.yaml
-  #     postMapper:
-  #       name: "pagePostMapper"
-  #     response:
-  #       endpoint:
-  #       method: POST
-  #       format: JSON
-  #       headers:
-  #         Accept:
-  #         key:
-  #         Content-Type: "application/json"
-  # screen:
-  #   transformation:
-  #     mapperPath: ./mapping/screen.yaml
-  #     postMapper:
-  #       name: "screenPostMapper"
-  #     response:
-  #       endpoint:
-  #       method: POST
-  #       format: JSON
-  #       headers:
-  #         Accept:
-  #         key:
-  #         Content-Type: "application/json"
+  alias:
+    transformation:
+      mapperPath: ./mapping/alias.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: https://app.posthog.com/batch
+        method: POST
+        format: JSON
+        headers:
+          key:
+          Content-Type: "application/json"
+  track:
+    transformation:
+      mapperPath: ./mapping/track.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: https://app.posthog.com/batch
+        method: POST
+        format: JSON
+        headers:
+          key:
+          Content-Type: "application/json"
+  group:
+    transformation:
+      mapperPath: ./mapping/group.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: https://app.posthog.com/batch
+        method: POST
+        format: JSON
+        headers:
+          key:
+          Content-Type: "application/json"
+  page:
+    transformation:
+      mapperPath: ./mapping/page.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: https://app.posthog.com/batch
+        method: POST
+        format: JSON
+        headers:
+          key:
+          Content-Type: "application/json"
+  screen:
+    transformation:
+      mapperPath: ./mapping/screen.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: https://app.posthog.com/batch
+        method: POST
+        format: JSON
+        headers:
+          key:
+          Content-Type: "application/json"

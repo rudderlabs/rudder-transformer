@@ -21,3 +21,87 @@
     - timestamp
     - originalTimestamp
   required: false
+- destKey: "properties.$os"
+  sourceKeys: context.os.name
+- destKey: "properties.$current_url"
+  sourceKeys: context.page.url
+- destKey: "properties.$pathname"
+  sourceKeys: context.page.path
+- destKey: "properties.$screen_height"
+  sourceKeys: context.screen.height
+  # isMobile: true
+- destKey: "properties.$screen_width"
+  sourceKeys: context.screen.width
+  # isMobile: true
+- destKey: "properties.$lib"
+  sourceKeys: context.library.name
+  # all: true
+- destKey: "properties.$lib_version"
+  sourceKeys: context.library.version
+  # all: true
+# - destKey: "$insert_id"
+#   sourceKeys: ""
+- destKey: "properties.$time"
+  sourceKeys:
+    - originalTimestamp
+    - timestamp
+- destKey: "properties.$device_id"
+  sourceKeys: context.device.id
+- destKey: "properties.$ip"
+  sourceKeys:
+    - context.ip
+    - request_ip
+  # all: true
+- destKey: "properties.$timestamp"
+  sourceKeys:
+    - originalTimestamp
+    - timestamp
+  # all: true
+- destKey: "properties.$anon_distinct_id"
+  sourceKeys: anonymousId
+  # all: true
+- destKey: properties.distinct_id
+  sourceKeys:
+    - userId
+    - anonymousId
+  # all: true
+- destKey: "properties.$screen_density"
+  sourceKeys: context.screen.density
+  # isMobile: true
+- destKey: "properties.$device_manufacturer"
+  sourceKeys: context.device.manufacturer
+  # isMobile: true
+- destKey: "properties.$os_version"
+  sourceKeys: context.os.version
+  # isMobile: true
+- destKey: "properties.$timezone"
+  sourceKeys: context.timezone
+  # isMobile: true
+- destKey: "properties.$locale"
+  sourceKeys: context.locale
+  # isMobile: true
+- destKey: "properties.$user_agent"
+  sourceKeys: context.userAgent
+  # isMobile: true
+- destKey: "properties.$app_version"
+  sourceKeys: context.app.version
+  # isMobile: true
+- destKey: "properties.$device_name"
+  sourceKeys: context.device.name
+  # isMobile: true
+- destKey: "properties.$network_carrier"
+  sourceKeys: context.network.carrier
+  # isMobile: true
+- destKey: "properties.$app_name"
+  sourceKeys: context.app.name
+  # isMobile: true
+- destKey: "properties.$device_model"
+  sourceKeys: context.device.model
+  # isMobile: true
+- destKey: "properties.$app_namespace"
+  sourceKeys: context.app.namespace
+  # isMobile: true
+- destKey: "properties.$app_build"
+  sourceKeys: context.app.build
+  # isMobile: true
+

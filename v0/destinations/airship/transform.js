@@ -28,6 +28,13 @@ const {
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
   const { apiKey, dataCenter } = Config;
+
+  if (!apiKey)
+    throw new CustomError(
+      "[Airship] API Key (Bearer Token) is required for authorization",
+      400
+    );
+
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
@@ -145,11 +152,17 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const { appKey, dataCenter, apiKey } = Config;
 
-  if (!appKey) {
-    throw new CustomError(
-      "[Airship] App Key is required for Authentication",
-      400
-    );
+  if (!appKey || !apiKey) {
+    if (!appKey)
+      throw new CustomError(
+        "[Airship] App Key is required for authorization",
+        400
+      );
+    else
+      throw new CustomError(
+        "[Airship] API Key (Bearer Token) is required for authorization",
+        400
+      );
   }
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
@@ -177,6 +190,12 @@ const trackResponseBuilder = async (message, { Config }) => {
 const groupResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, groupMapping);
   const { apiKey, dataCenter } = Config;
+
+  if (!apiKey)
+    throw new CustomError(
+      "[Airship] API Key (Bearer Token) is required for authorization",
+      400
+    );
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used

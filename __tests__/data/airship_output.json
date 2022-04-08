@@ -57,7 +57,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] App Key is required for Authentication"
+    "error": "[Airship] App Key is required for authorization"
   },
   {
     "version": "1",
@@ -1007,5 +1007,17 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] API Key (Bearer Token) is required for authorization"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] API Key (Bearer Token) is required for authorization"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Airship] API Key (Bearer Token) is required for authorization"
   }
 ]

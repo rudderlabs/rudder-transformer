@@ -31,7 +31,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (!apiKey)
     throw new CustomError(
-      "[Airship] API Key (Bearer Token) is required for authorization",
+      "[Airship] :: API Key is required for authorization",
       400
     );
 
@@ -160,7 +160,7 @@ const trackResponseBuilder = async (message, { Config }) => {
       );
     else
       throw new CustomError(
-        "[Airship] API Key (Bearer Token) is required for authorization",
+        "[Airship] :: API Key is required for authorization",
         400
       );
   }
@@ -193,7 +193,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   if (!apiKey)
     throw new CustomError(
-      "[Airship] API Key (Bearer Token) is required for authorization",
+      "[Airship] :: API Key is required for authorization",
       400
     );
 

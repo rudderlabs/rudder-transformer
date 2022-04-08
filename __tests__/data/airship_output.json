@@ -1010,14 +1010,14 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] API Key (Bearer Token) is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] API Key (Bearer Token) is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] API Key (Bearer Token) is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization"
   }
 ]

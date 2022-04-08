@@ -1,4 +1,3 @@
-const btoa = require("btoa");
 const { EventType } = require("../../../constants");
 
 const {
@@ -28,19 +27,7 @@ const {
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
-  const { appKey, dataCenter, appSecret } = Config;
-  if (!appKey || !appSecret) {
-    if (!appKey)
-      throw new CustomError(
-        "[Airship]:: App Key is required for Authentication",
-        400
-      );
-    else
-      throw new CustomError(
-        "[Airship]:: App Secret is required for authentication",
-        400
-      );
-  }
+  const { apiKey, dataCenter } = Config;
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
@@ -105,7 +92,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     tagResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+      Authorization: `Bearer ${apiKey}`
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
@@ -121,7 +108,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+      Authorization: `Bearer ${apiKey}`
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;
     attributeResponse.body.JSON = removeUndefinedAndNullValues(
@@ -157,19 +144,13 @@ const trackResponseBuilder = async (message, { Config }) => {
     payload.value.replace(/\s+/g, "_");
   }
   const { appKey, dataCenter, apiKey } = Config;
-  if (!apiKey || !appKey) {
-    if (!appKey)
-      throw new CustomError(
-        "[Airship] App Key is required for Authentication",
-        400
-      );
-    else
-      throw new CustomError(
-        "[Airship] Api Key (Bearer Token) is required for authentication",
-        400
-      );
-  }
 
+  if (!appKey) {
+    throw new CustomError(
+      "[Airship] App Key is required for Authentication",
+      400
+    );
+  }
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
@@ -195,19 +176,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const groupResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, groupMapping);
-  const { appKey, dataCenter, appSecret } = Config;
-  if (!appKey || !appSecret) {
-    if (!appKey)
-      throw new CustomError(
-        "[Airship] App Key is required for Authentication",
-        400
-      );
-    else
-      throw new CustomError(
-        "[Airship] App Secret is required for authentication",
-        400
-      );
-  }
+  const { apiKey, dataCenter } = Config;
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
@@ -273,7 +242,7 @@ const groupResponseBuilder = (message, { Config }) => {
     tagResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+      Authorization: `Bearer ${apiKey}`
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
@@ -289,7 +258,7 @@ const groupResponseBuilder = (message, { Config }) => {
     attributeResponse.headers = {
       "Content-Type": "application/json",
       Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Basic ${btoa(`${appKey}:${appSecret}`)}`
+      Authorization: `Bearer ${apiKey}`
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;
     attributeResponse.body.JSON = removeUndefinedAndNullValues(

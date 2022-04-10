@@ -10,6 +10,7 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
+  removeUndefinedAndNullValues,
   CustomError
 } = require("../../util");
 const { errorHandler } = require("./util");
@@ -63,13 +64,11 @@ const customTagProcessor = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference#create-or-update-contact-new
   // Utilizing the response we further bind more data [tag , field] to it
   let res;
-  const contactPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
+  let contactPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   contactPayload.firstName = getFieldValueFromMessage(message, "firstName");
   contactPayload.lastName = getFieldValueFromMessage(message, "lastName");
   let endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
+  contactPayload = removeUndefinedAndNullValues(contactPayload);
   let requestData = {
     contact: contactPayload
   };
@@ -428,6 +427,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   payload.contact.firstName = getFieldValueFromMessage(message, "firstName");
   payload.contact.lastName = getFieldValueFromMessage(message, "lastName");
+  payload.contact = removeUndefinedAndNullValues(payload.contact);
   return responseBuilderSimple(payload, category, destination);
 };
 // This method handles any page request

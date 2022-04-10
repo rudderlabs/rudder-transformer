@@ -2952,5 +2952,159 @@
     },
     "files": {},
     "userId": "anon-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "test os",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "lynnanderson@smith.net",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "ip": "0.0.0.0",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "anonymousId": "123456",
+              "email": "rohith@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "device_id": "lynnanderson@smith.net"
+            },
+            "event_type": "$identify",
+            "time": 1571043797562,
+            "user_id": "123456",
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.eu.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Chrome",
+              "os_version": "85.0.4183.121",
+              "platform": "Web",
+              "library": "rudderstack",
+              "device_model": "Mac",
+              "device_id": "my-anonymous-id-new",
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_version": "1.1.5",
+              "language": "en-US",
+              "event_type": "$identify",
+              "user_properties": {
+                "Company": "Comapny-ABC",
+                "utm_content": "some content",
+                "utm_medium": "medium",
+                "utm_name": "some campaign",
+                "utm_source": "google",
+                "utm_term": "keyword",
+                "utm_test": "other value",
+                "initial_referring_domain": "docs.rudderstack.com",
+                "initial_referrer": "https://docs.rudderstack.com"
+              },
+              "groups": {
+                "Company": "Comapny-ABC"
+              },
+              "time": 1603180498983,
+              "user_id": "sampleusrRudder3",
+              "session_id": -1
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.eu.amplitude.com/groupidentify",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {
+          "api_key": "abcde",
+          "identification": [
+            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+          ]
+        }
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.eu.amplitude.com/usermap",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "api_key": "abcde",
+        "mapping": [
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"user_properties\":{\"initial_referrer\":\"https://docs.rudderstack.com\",\"initial_referring_domain\":\"docs.rudderstack.com\",\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
+        ]
+      }
+    },
+    "files": {},
+    "userId": "my-anonymous-id-new"
   }
 ]

@@ -57,7 +57,7 @@
         "Authorization": "Bearer abcd1234",
         "Content-Type": "application/json",
         "developer-token": "ijkl9101",
-        "login-customer-id": "abcd1234"
+        "login-customer-id": "8704830944"
       },
       "params": {
         "listId": "7090784486",
@@ -5773,5 +5773,17 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "metadata": {
+      "secret": null
+    },
+    "statusCode": 500,
+    "error": "Empty/Invalid access token",
+    "statTags": {
+      "destination": "google_adwords_remarketing_lists",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
 ]

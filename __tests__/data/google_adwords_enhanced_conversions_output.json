@@ -8,7 +8,7 @@
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
       "developer-token": "ijkl91011",
-      "login-customer-id": "11"
+      "login-customer-id": "1234567890"
     },
     "params": {
       "event": "Page View",
@@ -164,6 +164,18 @@
     },
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not present. Aborting message.",
+    "statTags": {
+      "destination": "google_adwords_enhanced_conversions",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "metadata": {
+      "secret": null
+    },
+    "statusCode": 400,
+    "error": "Empty/Invalid access token",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",

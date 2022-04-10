@@ -4,6 +4,7 @@
     "GAINSIGHT": true,
     "GAINSIGHT_PX": true,
     "HS": true,
+    "ITERABLE": true,
     "MARKETO": true,
     "SALESFORCE": true,
     "SFMC": true,

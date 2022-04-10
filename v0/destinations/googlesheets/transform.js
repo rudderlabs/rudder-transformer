@@ -92,8 +92,8 @@ const batch = events => {
   return { batch: events };
 };
 
-// Main process Function to handle transformation
-const process = event => {
+// Function for transforming single payload
+const processSingleMessage = event => {
   const { message, destination } = event;
   if (destination.Config.sheetName) {
     const payload = {
@@ -104,6 +104,16 @@ const process = event => {
   throw new CustomError("No Spread Sheet set for this event", 400);
 };
 
+// Main process Function to handle transformation
+const process = event => {
+  const payload = processSingleMessage(event);
+  const batchedResponse = batch(payload);
+  batchedResponse.spreadSheetId = event.destination.Config.sheetId;
+  batchedResponse.spreadSheet = event.destination.Config.sheetName;
+  return batchedResponse;
+};
+
+// Router transform with batching by default
 const processRouterDest = async inputs => {
   const successRespList = [];
   const errorRespList = [];
@@ -111,7 +121,6 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
   await Promise.all(
     inputs.map(async input => {
       try {
@@ -120,7 +129,7 @@ const processRouterDest = async inputs => {
           successRespList.push(input.message);
         }
         // if not transformed
-        successRespList.push(await process(input));
+        successRespList.push(processSingleMessage(input));
       } catch (error) {
         errorRespList.push(
           getErrorRespEvents(

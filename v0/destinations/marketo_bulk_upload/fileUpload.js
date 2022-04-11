@@ -20,12 +20,13 @@ const stats = require("../../../util/stats");
 
 const fetchFieldSchema = async config => {
   let fieldArr = [];
-  const fieldArrNames = [];
+  const fieldSchemaNames = [];
+  const accessToken = await getAccessToken(config);
   const fieldSchemaMapping = await httpGET(
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
       params: {
-        access_token: await getAccessToken(config)
+        accessToken
       }
     }
   );
@@ -38,15 +39,14 @@ const fetchFieldSchema = async config => {
   ) {
     fieldArr = fieldSchemaMapping.response.data.result[0].fields;
     fieldArr.forEach(field => {
-      fieldArrNames.push(field.name);
+      fieldSchemaNames.push(field.name);
     });
-    // const fieldNames = fieldArrNames;
   } else if (fieldSchemaMapping.response.error) {
     throw new CustomError(`${fieldSchemaMapping.response.error}`, 400);
   } else {
     throw new CustomError("Failed to fetch Marketo Field Schema", 400);
   }
-  return fieldArrNames;
+  return { fieldSchemaNames, accessToken };
 };
 
 const getHeaderFields = (config, fieldSchemaNames) => {
@@ -180,7 +180,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config, fieldSchemaNames) => {
+const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
@@ -193,7 +193,7 @@ const getImportID = async (input, config, fieldSchemaNames) => {
     if (readStream) {
       formReq.append("format", "csv");
       formReq.append("file", readStream, "marketo_bulk_upload.csv");
-      formReq.append("access_token", await getAccessToken(config));
+      formReq.append("access_token", accessToken);
       // Upload data received from server as files to marketo
       // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
       const requestOptions = {
@@ -355,11 +355,12 @@ const responseHandler = async (input, config) => {
     "pollURL" : <some-url-to-poll-status>,
   }
   */
-  const fieldSchemaNames = await fetchFieldSchema(config);
+  const { fieldSchemaNames, accessToken } = await fetchFieldSchema(config);
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
     config,
-    fieldSchemaNames
+    fieldSchemaNames,
+    accessToken
   );
   if (importId) {
     const response = {};

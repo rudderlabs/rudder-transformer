@@ -590,7 +590,7 @@ const processEvent = (message, destination) => {
       destination.Config.eventsToEvents,
       "from",
       "to",
-      destination.Name,
+      "FB_PIXEL",
       destination.ID
     );
   let categoryToContent;
@@ -599,7 +599,7 @@ const processEvent = (message, destination) => {
       destination.Config.categoryToContent,
       "from",
       "to",
-      destination.Name,
+      "FB_PIXEL",
       destination.ID
     );
   const { advancedMapping } = destination.Config;

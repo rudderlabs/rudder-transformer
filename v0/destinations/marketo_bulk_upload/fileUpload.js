@@ -26,7 +26,7 @@ const fetchFieldSchema = async config => {
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
       params: {
-        accessToken
+        access_token: accessToken
       }
     }
   );
@@ -37,7 +37,11 @@ const fetchFieldSchema = async config => {
     fieldSchemaMapping.response.data.result.length > 0 &&
     fieldSchemaMapping.response.data.result[0]
   ) {
-    fieldArr = fieldSchemaMapping.response.data.result && Array.isArray(fieldSchemaMapping.response.data.result ) ? fieldSchemaMapping.response.data.result[0].fields : [];
+    fieldArr =
+      fieldSchemaMapping.response.data.result &&
+      Array.isArray(fieldSchemaMapping.response.data.result)
+        ? fieldSchemaMapping.response.data.result[0].fields
+        : [];
     fieldArr.forEach(field => {
       fieldSchemaNames.push(field.name);
     });

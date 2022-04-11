@@ -1,7 +1,7 @@
 [
   {
     "statusCode": 400,
-    "error": "[BLUESHIFT] User API Key required for Authentication.",
+    "error": "Missing required value from \"groupId\"",
     "statTags": {
       "destination": "blueshift",
       "stage": "transform",
@@ -9,28 +9,27 @@
     }
   },
   {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "name": "blueshift",
-        "list_id": "35838",
-        "description": "advertisements company",
-        "identifier_key": "customer_id",
-        "identifier_value": "rudderstack8"
-      },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "PUT",
-    "params": {},
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU="
-    },
     "version": "1",
-    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838"
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getblueshift.com/api/v1/event",
+    "headers": {
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "group_id": "35838",
+        "customer_id": "rudderstack8",
+        "email": "hardik@rudderstack.com",
+        "event": "identify"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "body": {
@@ -64,46 +63,6 @@
     },
     "version": "1",
     "endpoint": "https://api.getblueshift.com/api/v1/event"
-  },
-  {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "list_id": "35838",
-        "identifier_key": "customer_id",
-        "identifier_value": "rudderstack9"
-      },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "PUT",
-    "params": {},
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q5MjBlYzFlMmU="
-    },
-    "version": "1",
-    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838"
-  },
-  {
-    "statusCode": 400,
-    "error": "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
-    "statTags": {
-      "destination": "blueshift",
-      "stage": "transform",
-      "scope": "exception"
-    }
-  },
-  {
-    "statusCode": 400,
-    "error": "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
-    "statTags": {
-      "destination": "blueshift",
-      "stage": "transform",
-      "scope": "exception"
-    }
   },
   {
     "version": "1",
@@ -331,30 +290,6 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "PUT",
-    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838",
-    "headers": {
-      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "list_id": "35838",
-        "identifier_value": "rudderstack8",
-        "name": "blueshift",
-        "description": "advertisements company",
-        "identifier_key": "customer_id"
-      },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
     "method": "POST",
     "endpoint": "https://api.eu.getblueshift.com/api/v1/event",
     "headers": {
@@ -455,51 +390,40 @@
     }
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "PUT",
-    "endpoint": "https://api.eu.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35838",
-    "headers": {
-      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
-      "Content-Type": "application/json"
-    },
-    "params": {},
     "body": {
-      "JSON": {
-        "list_id": "35838",
-        "identifier_value": "rudderstack8",
-        "name": "blueshift",
-        "description": "advertisements company",
-        "identifier_key": "customer_id"
-      },
-      "JSON_ARRAY": {},
       "XML": {},
-      "FORM": {}
+      "FORM": {},
+      "JSON": {
+        "group_id": "group22222",
+        "customer_id": "sampleusrRudder1",
+        "email": "hardik@rudderstack.com",
+        "device_type": "android",
+        "device_id": "7e32188a4dab669f",
+        "device_idfv": "7e32188a4dab669f",
+        "device_manufacturer": "Google",
+        "os_name": "Android",
+        "network_carrier": "Android",
+        "event_uuid": "e5034jh0-a404-47b4-a463-76df99934kl2",
+        "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+        "event": "identify",
+        "name": "hardik",
+        "industry": "Education",
+        "employees": 399,
+        "plan": "enterprise",
+        "total billed": 830,
+        "gender": "male"
+      },
+      "JSON_ARRAY": {}
     },
-    "files": {}
-  },
-  {
-    "version": "1",
     "type": "REST",
-    "method": "PUT",
-    "endpoint": "https://api.getblueshift.com/api/v1/custom_user_lists/add_user_to_list/35869",
-    "headers": {
-      "Authorization": "Basic YjRhMjlhYmE1ZTc1ZHVpYzhhMThhY2Q5MjBlYzFlMmU=",
-      "Content-Type": "application/json"
-    },
+    "files": {},
+    "method": "POST",
     "params": {},
-    "body": {
-      "JSON": {
-        "identifier_value": "rudderstack8",
-        "name": "blueshift",
-        "description": "advertisements company",
-        "list_id": 35869,
-        "identifier_key": "customer_id"
-      },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic ZWZlYjRhMjlhYmE1ZTc1ZDk5YzhhMThhY2Q2MjBlYzE="
     },
-    "files": {}
+    "version": "1",
+    "endpoint": "https://api.getblueshift.com/api/v1/event"
   }
 ]

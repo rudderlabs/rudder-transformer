@@ -1,4 +1,3 @@
-const { httpPOST } = require("../../../adapters/network");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -7,8 +6,6 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getValueFromMessage,
-  getFieldValueFromMessage,
-  defaultPutRequestConfig,
   isDefinedAndNotNull,
   extractCustomFields,
   getErrorRespEvents,
@@ -116,58 +113,29 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 };
 
 const groupResponseBuilder = async (message, category, { Config }) => {
-  if (!Config.usersApiKey) {
+  if (!Config.eventApiKey) {
     throw new CustomError(
-      "[BLUESHIFT] User API Key required for Authentication.",
+      "[BLUESHIFT] event API Key required for Authentication.",
       400
     );
   }
 
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  if (!payload.list_id) {
-    if (payload.name && payload.description) {
-      const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-      const endpoint = `${baseURL}/api/v1/custom_user_lists/create`;
-
-      const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
-      const requestOptions = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${basicAuth}`
-        }
-      };
-      const blueshiftlist = await httpPOST(endpoint, payload, requestOptions);
-      if (blueshiftlist.success === true && blueshiftlist.response.data.id) {
-        payload.list_id = blueshiftlist.response.data.id;
-      } else {
-        throw new CustomError(
-          `[Blueshift]:: ${blueshiftlist.response.message}`,
-          400
-        );
-      }
-    } else {
-      throw new CustomError(
-        "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
-        400
-      );
-    }
-  }
+  payload.event = "identify";
+  payload = extractCustomFields(message, payload, ["traits"], ["cookie"]);
+  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
 
   const response = defaultRequestConfig();
 
-  // identifier_value mapped with userId, so identifier_key takes customer_id.
-  payload.identifier_key = "customer_id";
+  response.endpoint = `${baseURL}/api/v1/event`;
 
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-  response.endpoint = `${baseURL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
-
-  response.method = defaultPutRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
+  response.method = defaultPostRequestConfig.requestMethod;
+  const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"

@@ -16,13 +16,13 @@
           "version": "1.1.5"
         },
         "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
+          "name": "hardik",
+          "email": "hardik@rudderstack.com",
+          "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+          "industry": "Education",
+          "employees": 399,
+          "plan": "enterprise",
+          "total billed": 830
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -63,13 +63,13 @@
           "version": "1.1.5"
         },
         "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
+          "name": "hardik",
+          "email": "hardik@rudderstack.com",
+          "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+          "industry": "Education",
+          "employees": 399,
+          "plan": "enterprise",
+          "total billed": 830
         }
       },
       "type": "group",
@@ -125,66 +125,6 @@
       "type": "track",
       "event": "identify",
       "userId": "sampleusrRudder7"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
-      }
-    },
-    "message": {
-      "type": "group",
-      "userId": "rudderstack9",
-      "groupId": "35838"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
-      }
-    },
-    "message": {
-      "context": {
-        "traits": {
-          "name": "blueshift",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
-        }
-      },
-      "userId": "sampleRudderstack9",
-      "type": "group"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
-      }
-    },
-    "message": {
-      "context": {
-        "traits": {
-          "description": "San francisco distributors",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
-        }
-      },
-      "userId": "sampleRudderstack9",
-      "type": "group"
     }
   },
   {
@@ -730,37 +670,6 @@
       }
     },
     "message": {
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.5"
-        },
-        "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
-        }
-      },
-      "type": "group",
-      "userId": "rudderstack8",
-      "groupId": "35838"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
-      }
-    },
-    "message": {
       "type": "track",
       "event": "Order Completed",
       "properties": {
@@ -1068,60 +977,72 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
-      }
-    },
-    "message": {
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.5"
-        },
-        "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
-        }
-      },
-      "type": "group",
-      "userId": "rudderstack8",
-      "groupId": "35838"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
         "datacenterEU": false
       }
     },
     "message": {
+      "channel": "web",
       "context": {
         "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.5"
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.rudderstack.demo.android",
+          "version": "1.0"
         },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Mumbai",
         "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
-        }
+          "anonymousId": "7e32188a4dab669f"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "type": "group",
-      "userId": "rudderstack8"
+      "messageId": "e5034jh0-a404-47b4-a463-76df99934kl2",
+      "userId": "sampleusrRudder1",
+      "groupId": "group22222",
+      "traits": {
+        "name": "hardik",
+        "email": "hardik@rudderstack.com",
+        "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+        "industry": "Education",
+        "employees": 399,
+        "plan": "enterprise",
+        "total billed": 830,
+        "gender": "male"
+      }
     }
   }
 ]

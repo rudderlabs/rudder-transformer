@@ -11,7 +11,8 @@ const stats = require("./util/stats");
 const {
   isNonFuncObject,
   getMetadata,
-  generateErrorObject
+  generateErrorObject,
+  CustomError
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -26,7 +27,8 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 
-const basePath = path.resolve(__dirname, "./cdk");
+const CDK_DEST_PATH = "cdk";
+const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
 ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const versions = ["v0"];
@@ -90,8 +92,10 @@ const functionsEnabled = () => {
 };
 
 async function handleDest(ctx, version, destination) {
-  const destHandler = getDestHandler(version, destination);
   const events = ctx.request.body;
+  if (!Array.isArray(events) || events.length === 0) {
+    throw new CustomError("Event is missing or in inappropriate format", 400);
+  }
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
 
@@ -106,6 +110,11 @@ async function handleDest(ctx, version, destination) {
   });
   const respList = [];
   const executeStartTime = new Date();
+  let destHandler;
+  // Getting destination handler for non-cdk destination(s)
+  if (!isCdkDestination(events[0])) {
+    destHandler = getDestHandler(version, destination);
+  }
   await Promise.all(
     events.map(async event => {
       try {
@@ -113,9 +122,9 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(event)) {
+        if (isCdkDestination(parsedEvent)) {
           respEvents = await Executor.execute(
-            event,
+            parsedEvent,
             ConfigFactory.getConfig(destination)
           );
         } else {
@@ -273,6 +282,7 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
+    destinations.push (...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {

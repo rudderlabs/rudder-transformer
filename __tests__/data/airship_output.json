@@ -57,7 +57,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] App Key is required for authorization"
+    "error": "[Airship] :: App Key is required for authorization for track events"
   },
   {
     "version": "1",
@@ -1010,14 +1010,14 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization for Identify events"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization for group events"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization"
+    "error": "[Airship] :: API Key is required for authorization for track events"
   }
 ]

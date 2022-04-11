@@ -4,7 +4,7 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
-const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const { ConfigFactory, Executor, Utils } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
 
@@ -119,6 +119,7 @@ async function handleDest(ctx, version, destination) {
     events.map(async event => {
       try {
         let parsedEvent = event;
+        Utils.eventsdefaultValidationOrError(event);
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;

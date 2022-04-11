@@ -761,6 +761,27 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
+// Get id and object type from externalId for rETL
+// type will be of the form: <DESTINATION-NAME>-<object>
+const getDestinationExternalIDInfoForRetl = (message, destination) => {
+  let externalIdArray = [];
+  let destinationExternalId = null;
+  let objectType = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(`${destination}-`)) {
+        destinationExternalId = extIdObj.id;
+        objectType = type.replace(`${destination}-`, "");
+      }
+    });
+  }
+  return { destinationExternalId, objectType };
+};
+
 const isObject = value => {
   const type = typeof value;
   return (
@@ -1222,5 +1243,6 @@ module.exports = {
   isOAuthDestination,
   isAppleFamily,
   isCdkDestination,
+  getDestinationExternalIDInfoForRetl,
   removeHyphens
 };

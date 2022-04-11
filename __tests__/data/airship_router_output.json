@@ -1,5 +1,73 @@
 [
   {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://go.urbanairship.com/api/custom-events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.urbanairship+json; version=3",
+        "X-UA-Appkey": "O2YARRI15I",
+        "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "occured": "2019-10-14T09:03:17.562Z",
+          "user": {
+            "named_user_id": "testuserId1"
+          },
+          "body": {
+            "name": "product_clicked",
+            "properties": {
+              "description": "Sneaker purchase",
+              "brand": "Victory Sneakers",
+              "colors": ["red", "blue"],
+              "items": [
+                {
+                  "text": "New Line Sneakers",
+                  "price": "$ 79.95"
+                },
+                {
+                  "text": "Old Line Sneakers",
+                  "price": "$ 79.95"
+                },
+                {
+                  "text": "Blue Line Sneakers",
+                  "price": "$ 79.95"
+                }
+              ],
+              "name": "Hugh Manbeing",
+              "userLocation": {
+                "state": "CO",
+                "zip": "80202"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+        "appKey": "O2YARRI15I",
+        "dataCenter": false
+      }
+    }
+  },
+  {
     "batchedRequest": [
       {
         "version": "1",
@@ -9,7 +77,7 @@
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/vnd.urbanairship+json; version=3",
-          "Authorization": "Basic TzJZQVJSSTE1STpmaGY="
+          "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
         },
         "params": {},
         "body": {
@@ -38,7 +106,7 @@
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/vnd.urbanairship+json; version=3",
-          "Authorization": "Basic TzJZQVJSSTE1STpmaGY="
+          "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
         },
         "params": {},
         "body": {
@@ -48,6 +116,12 @@
                 "action": "set",
                 "key": "full_name",
                 "value": "Peter Gibbons",
+                "timestamp": "2015-02-23T22:28:55Z"
+              },
+              {
+                "action": "set",
+                "key": "age",
+                "value": 34,
                 "timestamp": "2015-02-23T22:28:55Z"
               },
               {
@@ -109,75 +183,6 @@
     ],
     "metadata": [
       {
-        "jobId": 1
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "O2YARRI15I",
-        "appSecret": "fhf",
-        "dataCenter": false
-      }
-    }
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://go.airship.eu/api/custom-events",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.urbanairship+json; version=3",
-        "X-UA-Appkey": "O2YARRI15I",
-        "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "occured": "2019-10-14T09:03:17.562Z",
-          "user": {
-            "named_user_id": "testuserId1"
-          },
-          "body": {
-            "name": "product_clicked",
-            "properties": {
-              "description": "Sneaker purchase",
-              "brand": "Victory Sneakers",
-              "colors": ["red", "blue"],
-              "items": [
-                {
-                  "text": "New Line Sneakers",
-                  "price": "$ 79.95"
-                },
-                {
-                  "text": "Old Line Sneakers",
-                  "price": "$ 79.95"
-                },
-                {
-                  "text": "Blue Line Sneakers",
-                  "price": "$ 79.95"
-                }
-              ],
-              "name": "Hugh Manbeing",
-              "userLocation": {
-                "state": "CO",
-                "zip": "80202"
-              }
-            }
-          }
-        },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
-    "metadata": [
-      {
         "jobId": 2
       }
     ],
@@ -187,8 +192,7 @@
       "Config": {
         "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
         "appKey": "O2YARRI15I",
-        "appSecret": "fhf",
-        "dataCenter": true
+        "dataCenter": false
       }
     }
   },
@@ -198,11 +202,11 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://go.airship.eu/api/named_users/tags",
+        "endpoint": "https://go.urbanairship.com/api/named_users/tags",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/vnd.urbanairship+json; version=3",
-          "Authorization": "Basic TzJZQVJSSTE1STpmaGY="
+          "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
         },
         "params": {},
         "body": {
@@ -227,11 +231,11 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://go.airship.eu/api/named_users/97980cfea0067/attributes",
+        "endpoint": "https://go.urbanairship.com/api/named_users/97980cfea0067/attributes",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/vnd.urbanairship+json; version=3",
-          "Authorization": "Basic TzJZQVJSSTE1STpmaGY="
+          "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
         },
         "params": {},
         "body": {
@@ -241,6 +245,12 @@
                 "action": "set",
                 "key": "full_name",
                 "value": "Peter Gibbons",
+                "timestamp": "2015-02-23T22:28:55Z"
+              },
+              {
+                "action": "set",
+                "key": "age",
+                "value": 34,
                 "timestamp": "2015-02-23T22:28:55Z"
               },
               {
@@ -310,9 +320,7 @@
     "destination": {
       "Config": {
         "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
-        "appKey": "O2YARRI15I",
-        "appSecret": "fhf",
-        "dataCenter": true
+        "dataCenter": false
       }
     }
   }

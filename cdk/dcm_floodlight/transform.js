@@ -5,7 +5,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
-const { CustomError, getIntegrationsObj } = require("../../v0/util");
+const { CustomError, getIntegrationsObj, isEmpty } = require("../../v0/util");
 
 // append properties to endpoint
 // eg: ${endpoint}key1=value1;key2=value2;....
@@ -22,8 +22,10 @@ function appendProperties(endpoint, payload) {
 function transformCustomVariable(customFloodlightVariable) {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
-    // remove u if already there
-    customVariable[`u${item.from.trim().replace(/u/g, "")}`] = item.to.trim();
+    if (!isEmpty(item.from) && !isEmpty(item.from)) {
+      // remove u if already there
+      customVariable[`u${item.from.trim().replace(/u/g, "")}`] = item.to.trim();
+    }
   });
 
   return customVariable;

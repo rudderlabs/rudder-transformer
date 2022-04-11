@@ -1,5 +1,5 @@
 const { CustomError } = require("../../util");
-const { httpSend, httpGET } = require("../../../adapters/network");
+const {  httpGET } = require("../../../adapters/network");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [

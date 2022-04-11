@@ -21,7 +21,7 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  validateDynamicFormAttribute
+  validateDynamicFormConfig
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -581,19 +581,19 @@ const processEvent = (message, destination) => {
   }
 
   if (destination.Config.eventsToEvents)
-    destination.Config.eventsToEvents = validateDynamicFormAttribute(
+    destination.Config.eventsToEvents = validateDynamicFormConfig(
       destination.Config.eventsToEvents,
       "from",
       "to"
     );
   if (destination.Config.categoryToContent)
-    destination.Config.categoryToContent = validateDynamicFormAttribute(
+    destination.Config.categoryToContent = validateDynamicFormConfig(
       destination.Config.categoryToContent,
       "from",
       "to"
     );
   if (destination.Config.legacyConversionPixelId)
-    destination.Config.legacyConversionPixelId = validateDynamicFormAttribute(
+    destination.Config.legacyConversionPixelId = validateDynamicFormConfig(
       destination.Config.legacyConversionPixelId,
       "from",
       "to"

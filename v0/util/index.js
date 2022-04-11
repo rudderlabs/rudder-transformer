@@ -1172,12 +1172,12 @@ function isCdkDestination(event) {
                     }
                 ]
 
- * @param {*} eventArray -> This is the dynamicForm/dynamicCustomForm/dynamicSelectForm element.
+ * @param {*} attributeArray -> This is the config output (array) from dynamicForm/dynamicCustomForm/dynamicSelectForm element.
  * @param {*} keyLeft -> This is the name of the leftKey, in general it is 'from'.
  * @param {*} keyRight -> This is the name of the rightKey, in general it is 'to'.
  * @returns
  */
-function validateDynamicFormAttribute(attributeArray, keyLeft, keyRight) {
+function validateDynamicFormConfig(attributeArray, keyLeft, keyRight) {
   let res = [];
   res = attributeArray.filter(element => {
     return (
@@ -1260,5 +1260,5 @@ module.exports = {
   isAppleFamily,
   isCdkDestination,
   removeHyphens,
-  validateDynamicFormAttribute
+  validateDynamicFormConfig
 };

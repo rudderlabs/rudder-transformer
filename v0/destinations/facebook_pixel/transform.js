@@ -21,7 +21,7 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  validateDynamicFormConfig
+  getValidDynamicFormConfig
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -364,12 +364,16 @@ const transformedPayloadData = (
   return customData;
 };
 
-const responseBuilderSimple = (message, category, destination) => {
+const responseBuilderSimple = (
+  message,
+  category,
+  destination,
+  categoryToContent
+) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
   const {
     blacklistPiiProperties,
-    categoryToContent,
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
@@ -580,26 +584,21 @@ const processEvent = (message, destination) => {
     );
   }
 
+  let eventsToEvents;
   if (destination.Config.eventsToEvents)
-    destination.Config.eventsToEvents = validateDynamicFormConfig(
+    eventsToEvents = getValidDynamicFormConfig(
       destination.Config.eventsToEvents,
       "from",
       "to"
     );
+  let categoryToContent;
   if (destination.Config.categoryToContent)
-    destination.Config.categoryToContent = validateDynamicFormConfig(
+    categoryToContent = getValidDynamicFormConfig(
       destination.Config.categoryToContent,
       "from",
       "to"
     );
-  if (destination.Config.legacyConversionPixelId)
-    destination.Config.legacyConversionPixelId = validateDynamicFormConfig(
-      destination.Config.legacyConversionPixelId,
-      "from",
-      "to"
-    );
-
-  const { advancedMapping, eventsToEvents } = destination.Config;
+  const { advancedMapping } = destination.Config;
   let standard;
   let standardTo = "";
   let checkEvent;
@@ -686,7 +685,12 @@ const processEvent = (message, destination) => {
       throw new CustomError("Message type not supported", 400);
   }
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(
+    message,
+    category,
+    destination,
+    categoryToContent
+  );
 };
 
 const process = event => {

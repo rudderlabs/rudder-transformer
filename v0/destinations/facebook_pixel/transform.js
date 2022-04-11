@@ -589,14 +589,18 @@ const processEvent = (message, destination) => {
     eventsToEvents = getValidDynamicFormConfig(
       destination.Config.eventsToEvents,
       "from",
-      "to"
+      "to",
+      destination.Name,
+      destination.ID
     );
   let categoryToContent;
   if (destination.Config.categoryToContent)
     categoryToContent = getValidDynamicFormConfig(
       destination.Config.categoryToContent,
       "from",
-      "to"
+      "to",
+      destination.Name,
+      destination.ID
     );
   const { advancedMapping } = destination.Config;
   let standard;

@@ -16,6 +16,7 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
+const stats = require("../../util/stats");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
@@ -1196,9 +1197,17 @@ function isCdkDestination(event) {
  * @param {*} attributeArray -> This is the config output (array) from dynamicForm/dynamicCustomForm/dynamicSelectForm element.
  * @param {*} keyLeft -> This is the name of the leftKey, in general it is 'from'.
  * @param {*} keyRight -> This is the name of the rightKey, in general it is 'to'.
+ * @param {*} destinationName -> This is the name of the destination.
+ * @param {*} destinationId -> This is the id of the destination.
  * @returns
  */
-function getValidDynamicFormConfig(attributeArray, keyLeft, keyRight) {
+function getValidDynamicFormConfig(
+  attributeArray,
+  keyLeft,
+  keyRight,
+  destinationName,
+  destinationId
+) {
   let res = [];
   res = attributeArray.filter(element => {
     return (
@@ -1206,6 +1215,12 @@ function getValidDynamicFormConfig(attributeArray, keyLeft, keyRight) {
       (element[keyRight] || element[keyRight] === "")
     );
   });
+  if (res.length < attributeArray.length) {
+    stats.increment("dest_transform_invalid_dynamicConfig_count", 1, {
+      destinationName,
+      destinationId
+    });
+  }
   return res;
 }
 

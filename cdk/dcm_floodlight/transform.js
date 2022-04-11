@@ -22,9 +22,11 @@ function appendProperties(endpoint, payload) {
 function transformCustomVariable(customFloodlightVariable) {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
-    if (!isEmpty(item.from) && !isEmpty(item.from)) {
+    if (!isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
-      customVariable[`u${item.from.trim().replace(/u/g, "")}`] = item.to.trim();
+      customVariable[
+        `u${item.from.trim().replace(/u/g, "")}`
+      ] = `[${item.to.trim()}]`;
     }
   });
 

@@ -105,6 +105,8 @@ const processSingleMessage = event => {
 };
 
 // Main process Function to handle transformation
+// As server expects the message to be wrapped in batch attribute,
+// wthe payload is wrapped and returned using this function
 const process = event => {
   const payload = processSingleMessage(event);
   const batchedResponse = batch(payload);

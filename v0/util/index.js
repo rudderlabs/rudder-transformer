@@ -1208,8 +1208,7 @@ function getValidDynamicFormConfig(
   destinationType,
   destinationId
 ) {
-  let res = [];
-  res = attributeArray.filter(element => {
+  const res = attributeArray.filter(element => {
     return (
       (element[keyLeft] || element[keyLeft] === "") &&
       (element[keyRight] || element[keyRight] === "")

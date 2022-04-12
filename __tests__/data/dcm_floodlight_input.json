@@ -2171,5 +2171,660 @@
       "sentAt": "2020-01-17T04:53:52.667Z",
       "timestamp": "2020-01-17T10:23:51.206+05:30"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder1"
+              },
+              {
+                "from": "2",
+                "to": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder2"
+              },
+              {
+                "from": "2",
+                "to": "akash2"
+              },
+              {
+                "from": "3",
+                "to": "friendlyName2"
+              },
+              {
+                "from": "4",
+                "to": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": 1,
+          "GDPR": 1,
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder1"
+              },
+              {
+                "from": "2",
+                "to": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder2"
+              },
+              {
+                "from": "2",
+                "to": "akash2"
+              },
+              {
+                "from": "3",
+                "to": "friendlyName2"
+              },
+              {
+                "from": "4",
+                "to": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "Yes",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder1"
+              },
+              {
+                "from": "2",
+                "to": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder2"
+              },
+              {
+                "from": "2",
+                "to": "akash2"
+              },
+              {
+                "from": "3",
+                "to": "friendlyName2"
+              },
+              {
+                "from": "4",
+                "to": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "Yes",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder1"
+              },
+              {
+                "from": "2",
+                "to": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder2"
+              },
+              {
+                "from": "2",
+                "to": "akash2"
+              },
+              {
+                "from": "3",
+                "to": "friendlyName2"
+              },
+              {
+                "from": "4",
+                "to": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "No"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder1"
+              },
+              {
+                "from": "2",
+                "to": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "1",
+                "to": "rudder2"
+              },
+              {
+                "from": "2",
+                "to": "akash2"
+              },
+              {
+                "from": "3",
+                "to": "friendlyName2"
+              },
+              {
+                "from": "4",
+                "to": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "Yes",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "true"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
   }
 ]

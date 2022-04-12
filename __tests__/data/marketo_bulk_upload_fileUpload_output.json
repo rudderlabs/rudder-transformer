@@ -31,7 +31,11 @@
   },
   {
     "statusCode": 400,
-    "error": "The field Email is not present in Marketo Field Schema. Aborting. "
+    "error": "The field Email is not present in Marketo Field Schema. Aborting",
+    "metadata": {
+      "successfulJobs": ["17"],
+      "unsuccessfulJobs": []
+    }
   },
   {
     "statusCode": 200,

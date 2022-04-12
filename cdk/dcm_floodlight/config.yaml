@@ -11,4 +11,4 @@ message:
         method: GET
         format: JSON
         headers:
-          User-Agent: "{{ message.context.userAgent }}"
+          User-Agent: "{{ rudderContext.userAgent }}"

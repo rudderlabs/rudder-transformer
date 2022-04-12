@@ -65,13 +65,27 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     );
   }
 
-  event = event.trim().toLowerCase();
+  const userAgent = get(message, "context.userAgent");
+  if (!userAgent) {
+    throw new CustomError(
+      "[DCM Floodlight]:: userAgent is required for track call",
+      400
+    );
+  }
+  rudderContext.userAgent = userAgent;
+
   // find conversion event
   // some() stops execution if at least one condition is passed and returns bool
+  event = event.trim().toLowerCase();
   const conversionEventFound = conversionEvents.some(conversionEvent => {
     if (conversionEvent.eventName.trim().toLowerCase() === event) {
-      activityTag = conversionEvent.floodlightActivityTag.trim();
-      groupTag = conversionEvent.floodlightGroupTag.trim();
+      if (
+        !isEmpty(conversionEvent.floodlightActivityTag) &&
+        !isEmpty(conversionEvent.floodlightGroupTag)
+      ) {
+        activityTag = conversionEvent.floodlightActivityTag.trim();
+        groupTag = conversionEvent.floodlightGroupTag.trim();
+      }
       salesTag = conversionEvent.salesTag;
       customFloodlightVariable = conversionEvent.customVariables || [];
       return true;
@@ -117,19 +131,21 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   // COPPA, GDPR, npa must be provided inside integration object ("DCM FLoodlight")
   // Ref - https://support.google.com/displayvideo/answer/6040012?hl=en
   const integrationsObj = getIntegrationsObj(message, "dcm_floodlight");
-  if (isDefinedAndNotNull(integrationsObj.COPPA)) {
-    mappedPayload.tag_for_child_directed_treatment = isValidFlag(
-      "COPPA",
-      integrationsObj.COPPA
-    );
-  }
+  if (integrationsObj) {
+    if (isDefinedAndNotNull(integrationsObj.COPPA)) {
+      mappedPayload.tag_for_child_directed_treatment = isValidFlag(
+        "COPPA",
+        integrationsObj.COPPA
+      );
+    }
 
-  if (isDefinedAndNotNull(integrationsObj.GDPR)) {
-    mappedPayload.tfua = isValidFlag("GDPR", integrationsObj.GDPR);
-  }
+    if (isDefinedAndNotNull(integrationsObj.GDPR)) {
+      mappedPayload.tfua = isValidFlag("GDPR", integrationsObj.GDPR);
+    }
 
-  if (isDefinedAndNotNull(integrationsObj.npa)) {
-    mappedPayload.npa = isValidFlag("npa", integrationsObj.npa);
+    if (isDefinedAndNotNull(integrationsObj.npa)) {
+      mappedPayload.npa = isValidFlag("npa", integrationsObj.npa);
+    }
   }
 
   if (isDefinedAndNotNull(mappedPayload.dc_lat)) {

@@ -93,13 +93,19 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
 
   if (salesTag) {
     // sums quantity from products array or fallback to properties.quantity
-    if (mappedPayload.qty) {
-      const products = mappedPayload.qty;
-      mappedPayload.qty = products.reduce((accumulator, product) => {
-        return accumulator + product.quantity;
-      }, 0);
-    } else {
-      mappedPayload.qty = get(message, "properties.quantity");
+    const products = get(message, "properties.products");
+    if (mappedPayload.qty || products) {
+      if (!isEmpty(products)) {
+        const quantities = products.reduce((accumulator, product) => {
+          if (product.quantity) {
+            return accumulator + product.quantity;
+          }
+          return accumulator;
+        }, 0);
+        if (quantities) {
+          mappedPayload.qty = quantities;
+        }
+      }
     }
   } else {
     // for counter tag

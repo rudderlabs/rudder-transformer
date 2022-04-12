@@ -124,15 +124,15 @@ const responseHandler = async event => {
     "failedJobsURL": "<some-url>", // transformer URL
     "hasWarnings": false,
     "warningJobsURL": "<some-url>", // transformer URL
-} // Succesful Upload     
-{
-    "success": false,
-    "statusCode": 400,
-    "errorResponse": <some-error-response>
-} // Failed Upload
-{
-    "success": false,
-} // Importing or Queue
+    } // Succesful Upload     
+    {
+        "success": false,
+        "statusCode": 400,
+        "errorResponse": <some-error-response>
+    } // Failed Upload
+    {
+        "success": false,
+    } // Importing or Queue
 
   */
   if (pollResp && pollResp.data) {

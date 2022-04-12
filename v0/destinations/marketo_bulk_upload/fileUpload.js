@@ -53,19 +53,23 @@ const fetchFieldSchema = async config => {
   return { fieldSchemaNames, accessToken };
 };
 
-const getHeaderFields = (config, fieldSchemaNames) => {
+const getHeaderFields = (config, fieldSchemaNames, jobIds) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach(colField => {
     if (fieldSchemaNames) {
       if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
         throw new CustomError(
-          `The field ${colField.to} is not present in Marketo Field Schema. Aborting. `,
-          400
+          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
+          400,
+          { successfulJobs: jobIds, unsuccessfulJobs: [] }
         );
       }
     } else {
-      throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400);
+      throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400, {
+        successfulJobs: jobIds,
+        unsuccessfulJobs: []
+      });
     }
   });
   const columnField = getHashFromArray(
@@ -79,12 +83,23 @@ const getHeaderFields = (config, fieldSchemaNames) => {
 
 const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   const input = inputEvents;
+  const jobIds = [];
   const messageArr = [];
   let startTime;
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const headerArr = getHeaderFields(config, fieldSchemaNames);
+
+  input.forEach(i => {
+    const inputData = i;
+    const jobId = inputData.metadata.job_id;
+    jobIds.push(`${jobId}`);
+    const data = {};
+    data[jobId] = inputData.message;
+    messageArr.push(data);
+  });
+
+  const headerArr = getHeaderFields(config, fieldSchemaNames, jobIds);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -123,14 +138,6 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     });
     // dedup ends
   }
-
-  input.forEach(i => {
-    const inputData = i;
-    const jobId = inputData.metadata.job_id;
-    const data = {};
-    data[jobId] = inputData.message;
-    messageArr.push(data);
-  });
 
   if (!Object.keys(headerArr).length) {
     throw new CustomError("Header fields not present", 400);
@@ -234,19 +241,19 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       );
       if (resp.success) {
         /**
-       * 
-{
-    "requestId": "d01f#15d672f8560",
-    "result": [
-        {
-            "batchId": 3404,
-            "importId": "3404",
-            "status": "Queued"
-        }
-    ],
-    "success": true
-}
-       */
+         * 
+          {
+              "requestId": "d01f#15d672f8560",
+              "result": [
+                  {
+                      "batchId": 3404,
+                      "importId": "3404",
+                      "status": "Queued"
+                  }
+              ],
+              "success": true
+          }
+        */
         if (
           resp.response &&
           resp.response.data.success &&

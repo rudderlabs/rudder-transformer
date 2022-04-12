@@ -9,7 +9,7 @@
   required: false
 
 - destKey: qty
-  sourceKeys: properties.quantity
+  sourceKeys: properties.products
   required: false
 
 - destKey: cost

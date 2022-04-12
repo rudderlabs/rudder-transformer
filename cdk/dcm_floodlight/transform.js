@@ -109,7 +109,7 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     // sums quantity from products array or fallback to properties.quantity
     const products = get(message, "properties.products");
     if (mappedPayload.qty || products) {
-      if (!isEmpty(products)) {
+      if (!isEmpty(products) && Array.isArray(products)) {
         const quantities = products.reduce((accumulator, product) => {
           if (product.quantity) {
             return accumulator + product.quantity;

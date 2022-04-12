@@ -52,6 +52,8 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   const { message, destination } = input;
   const { advertiserId, conversionEvents } = destination.Config;
   let { activityTag, groupTag } = destination.Config;
+  let customFloodlightVariable;
+  let salesTag;
 
   const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
 
@@ -63,8 +65,6 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     );
   }
 
-  let customFloodlightVariable;
-  let salesTag;
   event = event.trim().toLowerCase();
   // find conversion event
   // some() stops execution if at least one condition is passed and returns bool
@@ -98,6 +98,8 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     delete mappedPayload.cost;
   }
 
+  // COPPA, GDPR, npa must be provided inside integration object ("DCM FLoodlight")
+  // Ref - https://support.google.com/displayvideo/answer/6040012?hl=en
   const integrationsObj = getIntegrationsObj(message, "dcm_floodlight");
   if (isDefinedAndNotNull(integrationsObj.COPPA)) {
     mappedPayload.tag_for_child_directed_treatment = isValidFlag(
@@ -114,7 +116,6 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     mappedPayload.npa = isValidFlag("npa", integrationsObj.npa);
   }
 
-  mappedPayload.dc_lat = get(message, "context.device.adTrackingEnabled");
   if (isDefinedAndNotNull(mappedPayload.dc_lat)) {
     mappedPayload.dc_lat = isValidFlag("dc_lat", mappedPayload.dc_lat);
   }
@@ -124,11 +125,13 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     customFloodlightVariable
   );
 
-  rudderContext.endpoint = appendProperties(baseEndpoint, mappedPayload);
-  rudderContext.endpoint = appendProperties(
-    rudderContext.endpoint,
-    customFloodlightVariable
-  ).slice(0, -1);
+  let dcmEndpoint = appendProperties(baseEndpoint, mappedPayload);
+  dcmEndpoint = appendProperties(dcmEndpoint, customFloodlightVariable).slice(
+    0,
+    -1
+  );
+
+  rudderContext.endpoint = dcmEndpoint;
 
   return {};
 }

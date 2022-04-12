@@ -9,7 +9,7 @@
     "destKey": "customer_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": true
   },
   {
     "destKey": "email",
@@ -75,11 +75,6 @@
   {
     "destKey": "event_uuid",
     "sourceKeys": "messageId",
-    "required": false
-  },
-  {
-    "destKey": "cookie",
-    "sourceKeys": "traits.cookie",
     "required": false
   }
 ]

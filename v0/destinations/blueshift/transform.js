@@ -127,7 +127,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
   payload.event = "identify";
-  payload = extractCustomFields(message, payload, ["traits"], ["cookie"]);
+  payload = extractCustomFields(message, payload, ["traits"], []);
   const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
 
   const response = defaultRequestConfig();

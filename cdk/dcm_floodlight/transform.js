@@ -22,7 +22,7 @@ function appendProperties(endpoint, payload) {
 function transformCustomVariable(customFloodlightVariable) {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
-    if (!isEmpty(item.from) && !isEmpty(item.to)) {
+    if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
       customVariable[
         `u${item.from.trim().replace(/u/g, "")}`
@@ -78,7 +78,10 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   // some() stops execution if at least one condition is passed and returns bool
   event = event.trim().toLowerCase();
   const conversionEventFound = conversionEvents.some(conversionEvent => {
-    if (conversionEvent.eventName.trim().toLowerCase() === event) {
+    if (
+      conversionEvent &&
+      conversionEvent.eventName.trim().toLowerCase() === event
+    ) {
       if (
         !isEmpty(conversionEvent.floodlightActivityTag) &&
         !isEmpty(conversionEvent.floodlightGroupTag)
@@ -108,17 +111,15 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   if (salesTag) {
     // sums quantity from products array or fallback to properties.quantity
     const products = get(message, "properties.products");
-    if (mappedPayload.qty || products) {
-      if (!isEmpty(products) && Array.isArray(products)) {
-        const quantities = products.reduce((accumulator, product) => {
-          if (product.quantity) {
-            return accumulator + product.quantity;
-          }
-          return accumulator;
-        }, 0);
-        if (quantities) {
-          mappedPayload.qty = quantities;
+    if (!isEmpty(products) && Array.isArray(products)) {
+      const quantities = products.reduce((accumulator, product) => {
+        if (product.quantity) {
+          return accumulator + product.quantity;
         }
+        return accumulator;
+      }, 0);
+      if (quantities) {
+        mappedPayload.qty = quantities;
       }
     }
   } else {

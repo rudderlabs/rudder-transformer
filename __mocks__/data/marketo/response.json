@@ -43,5 +43,236 @@
         "message": "Access Token Expired"
       }
     ]
+  },
+  "https://munchkinId.mktorest.com/identity/oauth/token?client_id=b&client_secret=clientSecret&grant_type=client_credentials": {
+    "access_token": "test_acess"
+  },
+  "https://munchkinId.mktorest.com/identity/oauth/token?client_id=wrongClientId&client_secret=clientSecret&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://munchkinId.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://munchkinId.mktorest.com/bulk/v1/leads.json": {
+    "requestId": "5bdd#17fd1ff88cd",
+    "result": [
+      {
+        "batchId": 2977,
+        "importId": "2977",
+        "status": "Queued"
+      }
+    ],
+    "success": true
+  },
+  "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://a.mktorest.com/identity/oauth/token?client_id=b&client_secret=forThrottle&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://a.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "requestId": "13402#17e7238a1b9",
+    "result": [
+      {
+        "batchId": 1234,
+        "importId": "1234",
+        "status": "Complete",
+        "numOfLeadsProcessed": 1,
+        "numOfRowsFailed": 0,
+        "numOfRowsWithWarning": 0,
+        "message": "Import succeeded, 1 records imported (1 members)"
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin4.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin4.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "errors": [
+      {
+        "message": "Any 400 error",
+        "code": 1000
+      }
+    ]
+  },
+  "https://testMunchkin3.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin500.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "test_access_token"
+  },
+  "https://testMunchkin500.mktorest.com/bulk/v1/leads/batch/1234.json": {
+    "errors": [
+      {
+        "message": "Any 500 error",
+        "code": 502
+      }
+    ]
+  },
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/warnings.json": "data \n data",
+
+  "https://a.mktorest.com/bulk/v1/leads/batch/12345/failures.json": "data \n data",
+
+  "https://testMunchkin1.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://testMunchkin1.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin1.mktorest.com/bulk/v1/leads.json": {
+    "success": false,
+    "errors": [
+      {
+        "code": 603
+      }
+    ]
+  },
+  "https://testMunchkin2.mktorest.com/identity/oauth/token?client_id=b&client_secret=c&grant_type=client_credentials": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://testMunchkin2.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "Email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin2.mktorest.com/bulk/v1/leads.json": {
+    "success": false,
+    "errors": [
+      {
+        "message": "There are 10 imports currently being processed. Please try again later"
+      }
+    ]
+  },
+  "https://testMunchkin3.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "Email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin3.mktorest.com/bulk/v1/leads.json": {
+    "success": false,
+    "errors": [
+      {
+        "message": "Empty file"
+      }
+    ]
+  },
+  "https://testMunchkin4.mktorest.com/rest/v1/leads/describe2.json": {
+    "requestId": "7fa1#17fd1da66fe",
+    "result": [
+      {
+        "name": "API Lead",
+        "searchableFields": [["email"]],
+        "fields": [
+          {
+            "name": "Email",
+            "displayName": "Email Address",
+            "dataType": "email",
+            "length": 255,
+            "updateable": true,
+            "crmManaged": false
+          }
+        ]
+      }
+    ],
+    "success": true
+  },
+  "https://testMunchkin4.mktorest.com/bulk/v1/leads.json": {
+    "success": false,
+    "errors": [
+      {
+        "message": "Any other error"
+      }
+    ]
   }
 }

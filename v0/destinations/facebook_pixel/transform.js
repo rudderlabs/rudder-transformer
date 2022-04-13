@@ -20,7 +20,8 @@ const {
   getErrorRespEvents,
   getIntegrationsObj,
   getSuccessRespEvents,
-  isObject
+  isObject,
+  getValidDynamicFormConfig
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -363,12 +364,16 @@ const transformedPayloadData = (
   return customData;
 };
 
-const responseBuilderSimple = (message, category, destination) => {
+const responseBuilderSimple = (
+  message,
+  category,
+  destination,
+  categoryToContent
+) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
   const {
     blacklistPiiProperties,
-    categoryToContent,
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
@@ -578,7 +583,26 @@ const processEvent = (message, destination) => {
       400
     );
   }
-  const { advancedMapping, eventsToEvents } = destination.Config;
+
+  let eventsToEvents;
+  if (destination.Config.eventsToEvents)
+    eventsToEvents = getValidDynamicFormConfig(
+      destination.Config.eventsToEvents,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  let categoryToContent;
+  if (destination.Config.categoryToContent)
+    categoryToContent = getValidDynamicFormConfig(
+      destination.Config.categoryToContent,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  const { advancedMapping } = destination.Config;
   let standard;
   let standardTo = "";
   let checkEvent;
@@ -665,7 +689,12 @@ const processEvent = (message, destination) => {
       throw new CustomError("Message type not supported", 400);
   }
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(
+    message,
+    category,
+    destination,
+    categoryToContent
+  );
 };
 
 const process = event => {

@@ -30,7 +30,7 @@ function checkValidEventName(str) {
 const getBaseURL = config => {
   let urlValue;
   switch (config.dataCenter) {
-    case "EU":
+    case "eu":
       urlValue = BASE_URL_EU;
       break;
     default:

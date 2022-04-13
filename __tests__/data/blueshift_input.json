@@ -222,7 +222,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -481,7 +481,7 @@
     "destination": {
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -556,7 +556,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -593,7 +593,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -629,7 +629,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -666,7 +666,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -753,7 +753,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -803,7 +803,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -890,7 +890,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {
@@ -1049,7 +1049,7 @@
     "destination": {
       "Config": {
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "dataCenter": "EU"
+        "dataCenter": "eu"
       }
     },
     "message": {

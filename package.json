@@ -39,7 +39,6 @@
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
     "flat": "^5.0.2",
-    "generic-pool": "^3.7.1",
     "get-value": "^3.0.1",
     "handlebars": "^4.7.7",
     "heapdump": "^0.3.15",

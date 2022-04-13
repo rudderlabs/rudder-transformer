@@ -243,21 +243,6 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
         });
       };
 
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      // let log = _log;
-      // delete _log;
-      // global.log = function(...args) {
-      //   // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-      //   // doesn't make a difference who requests the copy, the result is the same.
-      //   // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-      //   // return value or thrown exception from 'log'.
-      //   log.applyIgnored(
-      //     undefined,
-      //     args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-      //    );
-      //  };
-
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
@@ -358,7 +343,6 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
       client.customScriptModule.release();
       client.context.release();
       await client.isolate.dispose();
-      logger.info("isolate disposed");
     }
   };
 

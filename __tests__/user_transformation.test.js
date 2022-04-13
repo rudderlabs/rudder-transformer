@@ -52,9 +52,6 @@ possibleEnvs.forEach(envValue => {
     beforeEach(() => {
       jest.resetAllMocks();
       process.env = { ...OLD_ENV };
-      if (envValue !== "no_value") {
-        process.env.ON_DEMAND_ISOLATE_VM = envValue;
-      }
     });
     afterAll(() => {
       process.env = OLD_ENV; // restore old env

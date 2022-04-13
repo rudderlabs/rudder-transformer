@@ -1,0 +1,14 @@
+message:
+  supportedMessageTypes:
+    - track
+  track:
+    transformation:
+      mapperPath: ./mapping/track.yaml
+      postMapper:
+        name: "trackPostMapper"
+      response:
+        endpoint: "{{ rudderContext.endpoint }}"
+        method: GET
+        format: JSON
+        headers:
+          User-Agent: "{{ rudderContext.userAgent }}"

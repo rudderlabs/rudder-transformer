@@ -27,6 +27,18 @@ function checkValidEventName(str) {
   return false;
 }
 
+const getBaseURL = config => {
+  let urlValue;
+  switch (config.dataCenter) {
+    case "EU":
+      urlValue = BASE_URL_EU;
+      break;
+    default:
+      urlValue = BASE_URL;
+  }
+  return urlValue;
+};
+
 const trackResponseBuilder = async (message, category, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
@@ -63,8 +75,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   payload = extractCustomFields(message, payload, ["properties"], ["cookie"]);
 
   const response = defaultRequestConfig();
-
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/event`;
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -98,8 +109,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     BLUESHIFT_IDENTIFY_EXCLUSION
   );
   const response = defaultRequestConfig();
-
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/customers`;
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -128,10 +138,9 @@ const groupResponseBuilder = async (message, category, { Config }) => {
   }
   payload.event = "identify";
   payload = extractCustomFields(message, payload, ["traits"], []);
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
 
+  const baseURL = getBaseURL(Config);
   const response = defaultRequestConfig();
-
   response.endpoint = `${baseURL}/api/v1/event`;
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -155,7 +164,6 @@ const process = async event => {
 
   const messageType = message.type.toLowerCase();
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
-
   let response;
   switch (messageType) {
     case EventType.TRACK:

@@ -105,7 +105,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   payload = extractCustomFields(
     message,
     payload,
-    ["traits"],
+    ["traits", "context.traits"],
     BLUESHIFT_IDENTIFY_EXCLUSION
   );
   const response = defaultRequestConfig();

@@ -75,10 +75,5 @@
     "destKey": "event_uuid",
     "sourceKeys": "messageId",
     "required": false
-  },
-  {
-    "destKey": "cookie",
-    "sourceKeys": "properties.cookie",
-    "required": false
   }
 ]

@@ -19,13 +19,13 @@
           "version": "1.1.5"
         },
         "traits": {
-          "name": "blueshift",
-          "description": "advertisements company",
-          "isSeedList": 1,
-          "email": "piyush@rudderstack.com",
-          "plan": "Open source",
-          "logins": 5,
-          "createdAt": 1599264000
+          "name": "hardik",
+          "email": "hardik@rudderstack.com",
+          "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+          "industry": "Education",
+          "employees": 399,
+          "plan": "enterprise",
+          "total billed": 830
         }
       },
       "type": "group",

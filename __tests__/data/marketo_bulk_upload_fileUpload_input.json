@@ -3,12 +3,12 @@
     "request": {
       "body": {
         "config": {
-          "munchkinId": "a",
+          "munchkinId": "munchkinId",
           "clientId": "b",
-          "clientSecret": "c",
+          "clientSecret": "clientSecret",
           "columnFieldsMapping": [
             {
-              "to": "Email",
+              "to": "email",
               "from": "email"
             }
           ]
@@ -33,12 +33,12 @@
     "request": {
       "body": {
         "config": {
-          "munchkinId": "wrongMunchkin",
+          "munchkinId": "munchkinId",
           "clientId": "b",
-          "clientSecret": "c",
+          "clientSecret": "clientSecret",
           "columnFieldsMapping": [
             {
-              "to": "Email",
+              "to": "email",
               "from": "email"
             }
           ]
@@ -63,12 +63,12 @@
     "request": {
       "body": {
         "config": {
-          "munchkinId": "a",
+          "munchkinId": "munchkinId",
           "clientId": "wrongClientId",
-          "clientSecret": "c",
+          "clientSecret": "clientSecret",
           "columnFieldsMapping": [
             {
-              "to": "Email",
+              "to": "email",
               "from": "email"
             }
           ]
@@ -123,12 +123,12 @@
     "request": {
       "body": {
         "config": {
-          "munchkinId": "testMunchkin",
+          "munchkinId": "munchkinId",
           "clientId": "b",
-          "clientSecret": "c",
+          "clientSecret": "clientSecret",
           "columnFieldsMapping": [
             {
-              "to": "Email",
+              "to": "email",
               "from": "email"
             }
           ]
@@ -158,7 +158,7 @@
           "clientSecret": "c",
           "columnFieldsMapping": [
             {
-              "to": "Email",
+              "to": "email",
               "from": "email"
             }
           ]

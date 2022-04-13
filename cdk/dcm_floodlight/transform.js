@@ -80,6 +80,7 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   const conversionEventFound = conversionEvents.some(conversionEvent => {
     if (
       conversionEvent &&
+      conversionEvent.eventName &&
       conversionEvent.eventName.trim().toLowerCase() === event
     ) {
       if (

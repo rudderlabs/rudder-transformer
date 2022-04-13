@@ -3,7 +3,7 @@
     "destination": {
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -51,7 +51,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -82,7 +82,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -132,7 +132,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -222,7 +222,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -307,7 +307,7 @@
     "destination": {
       "Config": {
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -357,7 +357,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -407,7 +407,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
       }
     },
     "message": {
@@ -481,7 +481,7 @@
     "destination": {
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -556,7 +556,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -593,7 +593,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -629,7 +629,7 @@
       "Config": {
         "eventApiKey": "a5e75d99c8a18acb4a29abd920ec1e2e",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -666,7 +666,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -753,7 +753,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75d99c8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -803,7 +803,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -890,7 +890,7 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": true
+        "dataCenter": "EU"
       }
     },
     "message": {
@@ -977,7 +977,79 @@
       "Config": {
         "eventApiKey": "efeb4a29aba5e75d99c8a18acd620ec1",
         "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
-        "datacenterEU": false
+        "dataCenter": "standard"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.rudderstack.demo.android",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Mumbai",
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "type": "group",
+      "messageId": "e5034jh0-a404-47b4-a463-76df99934kl2",
+      "userId": "sampleusrRudder1",
+      "groupId": "group22222",
+      "traits": {
+        "name": "hardik",
+        "email": "hardik@rudderstack.com",
+        "cookie": "1234abcd-efghklkj-1234kfjadslk-34iu123",
+        "industry": "Education",
+        "employees": 399,
+        "plan": "enterprise",
+        "total billed": 830,
+        "gender": "male"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "usersApiKey": "b4a29aba5e75duic8a18acd920ec1e2e",
+        "dataCenter": "EU"
       }
     },
     "message": {

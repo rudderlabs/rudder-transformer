@@ -72,7 +72,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  payload = extractCustomFields(message, payload, ["properties"], ["cookie"]);
+  payload = extractCustomFields(message, payload, ["properties"], []);
 
   const response = defaultRequestConfig();
   const baseURL = getBaseURL(Config);
@@ -105,7 +105,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   payload = extractCustomFields(
     message,
     payload,
-    ["traits", "context.traits"],
+    ["traits"],
     BLUESHIFT_IDENTIFY_EXCLUSION
   );
   const response = defaultRequestConfig();

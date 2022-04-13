@@ -425,5 +425,14 @@
     },
     "version": "1",
     "endpoint": "https://api.getblueshift.com/api/v1/event"
+  },
+  {
+    "statusCode": 400,
+    "error": "[BLUESHIFT] event API Key required for Authentication.",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

@@ -73,7 +73,7 @@
     "unset-value": "^2.0.0",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
-    "rudder-transformer-cdk": "^1.1.0"
+    "rudder-transformer-cdk": "^1.1.1"
   },
   "devDependencies": {
     "acorn": "^7.4.0",

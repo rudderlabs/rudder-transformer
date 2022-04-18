@@ -11,7 +11,15 @@ const DestCanonicalNames = {
     "FB Pixel"
   ],
   ometria: ["Ometria", "ometria", "OMETRIA"],
-  sendgrid: ["sendgrid", "Sendgrid", "SENDGRID"]
+  sendgrid: ["sendgrid", "Sendgrid", "SENDGRID"],
+  dcm_floodlight: [
+    "dcm floodlight",
+    "dcm_floodlight",
+    "DCM Floodlight",
+    "DCM_Floodlight",
+    "DCMFloodlight",
+    "dcmfloodlight"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

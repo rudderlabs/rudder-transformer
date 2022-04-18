@@ -15,11 +15,63 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const { httpSend } = require("../../../adapters/network");
+const { httpPOST, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
-const getHeaderFields = config => {
+const fetchFieldSchema = async config => {
+  let fieldArr = [];
+  const fieldSchemaNames = [];
+  const accessToken = await getAccessToken(config);
+  const fieldSchemaMapping = await httpGET(
+    `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+    {
+      params: {
+        access_token: accessToken
+      }
+    }
+  );
+  if (
+    fieldSchemaMapping &&
+    fieldSchemaMapping.success &&
+    fieldSchemaMapping.response.data &&
+    fieldSchemaMapping.response.data.result.length > 0 &&
+    fieldSchemaMapping.response.data.result[0]
+  ) {
+    fieldArr =
+      fieldSchemaMapping.response.data.result &&
+      Array.isArray(fieldSchemaMapping.response.data.result)
+        ? fieldSchemaMapping.response.data.result[0].fields
+        : [];
+    fieldArr.forEach(field => {
+      fieldSchemaNames.push(field.name);
+    });
+  } else if (fieldSchemaMapping.response.error) {
+    throw new CustomError(`${fieldSchemaMapping.response.error}`, 400);
+  } else {
+    throw new CustomError("Failed to fetch Marketo Field Schema", 400);
+  }
+  return { fieldSchemaNames, accessToken };
+};
+
+const getHeaderFields = (config, fieldSchemaNames, jobIds) => {
   const { columnFieldsMapping } = config;
+
+  columnFieldsMapping.forEach(colField => {
+    if (fieldSchemaNames) {
+      if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
+        throw new CustomError(
+          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
+          400,
+          { successfulJobs: jobIds, unsuccessfulJobs: [] }
+        );
+      }
+    } else {
+      throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400, {
+        successfulJobs: jobIds,
+        unsuccessfulJobs: []
+      });
+    }
+  });
   const columnField = getHashFromArray(
     columnFieldsMapping,
     "to",
@@ -29,14 +81,25 @@ const getHeaderFields = config => {
   return Object.keys(columnField);
 };
 
-const getFileData = (inputEvents, config) => {
+const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   const input = inputEvents;
+  const jobIds = [];
   const messageArr = [];
   let startTime;
   let endTime;
   let requestTime;
   startTime = Date.now();
-  const headerArr = getHeaderFields(config);
+
+  input.forEach(i => {
+    const inputData = i;
+    const jobId = inputData.metadata.job_id;
+    jobIds.push(`${jobId}`);
+    const data = {};
+    data[jobId] = inputData.message;
+    messageArr.push(data);
+  });
+
+  const headerArr = getHeaderFields(config, fieldSchemaNames, jobIds);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -75,14 +138,6 @@ const getFileData = (inputEvents, config) => {
     });
     // dedup ends
   }
-
-  input.forEach(i => {
-    const inputData = i;
-    const jobId = inputData.metadata.job_id;
-    const data = {};
-    data[jobId] = inputData.message;
-    messageArr.push(data);
-  });
 
   if (!Object.keys(headerArr).length) {
     throw new CustomError("Header fields not present", 400);
@@ -136,10 +191,11 @@ const getFileData = (inputEvents, config) => {
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config) => {
-  const { readStream, successfulJobs, unsuccessfulJobs } = getFileData(
+const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
+  const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
-    config
+    config,
+    fieldSchemaNames
   );
   try {
     const formReq = new FormData();
@@ -148,13 +204,10 @@ const getImportID = async (input, config) => {
     if (readStream) {
       formReq.append("format", "csv");
       formReq.append("file", readStream, "marketo_bulk_upload.csv");
-      formReq.append("access_token", await getAccessToken(config));
+      formReq.append("access_token", accessToken);
       // Upload data received from server as files to marketo
       // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
       const requestOptions = {
-        url: `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-        method: "post",
-        data: formReq,
         headers: {
           ...formReq.getHeaders()
         }
@@ -165,7 +218,11 @@ const getImportID = async (input, config) => {
         };
       }
       const startTime = Date.now();
-      const resp = await httpSend(requestOptions);
+      const resp = await httpPOST(
+        `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+        formReq,
+        requestOptions
+      );
       const endTime = Date.now();
       const requestTime = endTime - startTime;
       stats.gauge(
@@ -184,19 +241,19 @@ const getImportID = async (input, config) => {
       );
       if (resp.success) {
         /**
-       * 
-{
-    "requestId": "d01f#15d672f8560",
-    "result": [
-        {
-            "batchId": 3404,
-            "importId": "3404",
-            "status": "Queued"
-        }
-    ],
-    "success": true
-}
-       */
+         * 
+          {
+              "requestId": "d01f#15d672f8560",
+              "result": [
+                  {
+                      "batchId": 3404,
+                      "importId": "3404",
+                      "status": "Queued"
+                  }
+              ],
+              "success": true
+          }
+        */
         if (
           resp.response &&
           resp.response.data.success &&
@@ -304,21 +361,24 @@ const getImportID = async (input, config) => {
 
 const responseHandler = async (input, config) => {
   /**
-  * {
-  "importId" : <some-id>,
-  "pollURL" : <some-url-to-poll-status>,
-}
+  {
+    "importId" : <some-id>,
+    "pollURL" : <some-url-to-poll-status>,
+  }
   */
+  const { fieldSchemaNames, accessToken } = await fetchFieldSchema(config);
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
-    config
+    config,
+    fieldSchemaNames,
+    accessToken
   );
   if (importId) {
     const response = {};
     response.statusCode = 200;
     response.importId = importId;
     response.pollURL = "/pollStatus";
-    const csvHeader = getHeaderFields(config).toString();
+    const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }

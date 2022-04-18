@@ -21,8 +21,7 @@ const urlDirectoryMap = {
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
-  "api.profitwell.com": "profitwell",
-  "api.getblueshift.com": "blueshift"
+  "api.profitwell.com": "profitwell"
 };
 
 const fs = require("fs");

@@ -5,12 +5,13 @@ const _ = require("lodash");
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 const { parserForImport } = require("./parser");
+const logger = require("../logger");
 
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
-  await module.evaluate();
+  await module.evaluate({ release: true });
   return true;
 }
 
@@ -186,27 +187,22 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
         const err = JSON.parse(
           JSON.stringify(error, Object.getOwnPropertyNames(error))
         );
-        reject.applyIgnored(undefined, [
-          new ivm.ExternalCopy(err).copyInto(),
-        ]);
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
     })
   );
 
-  await jail.set(
-    "_log",
-    testMode
-      ? new ivm.Reference((...args) => {
-          let logString = "Log:";
-          args.forEach(arg => {
-            logString = logString.concat(
-              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-            );
-          });
-          logs.push(logString);
-        })
-      : new ivm.Reference(() => {})
-  );
+  await jail.set("log", function(...args) {
+    if (testMode) {
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
+    }
+  });
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -246,21 +242,6 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
           ]);
         });
       };
-
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let log = _log;
-      delete _log;
-      global.log = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        log.applyIgnored(
-          undefined,
-          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-         );
-       };
 
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
@@ -304,7 +285,9 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
-      const funcRef = await customScriptModule.namespace.get(sName);
+      const funcRef = await customScriptModule.namespace.get(sName, {
+        reference: true
+      });
       if (funcRef && funcRef.typeof === "function") {
         supportedFuncs[sName] = funcRef;
       }
@@ -320,7 +303,9 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     );
   }
 
-  const fnRef = await customScriptModule.namespace.get("transformWrapper");
+  const fnRef = await customScriptModule.namespace.get("transformWrapper", {
+    reference: true
+  });
   const fName = availableFuncNames[0];
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
@@ -330,6 +315,8 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     isolate,
     jail,
     bootstrapScriptResult,
+    bootstrap,
+    customScriptModule,
     context,
     fnRef,
     isolateStartWallTime,
@@ -351,6 +338,10 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
       return createIvm(code, libraryVersionIds, versionId, testMode);
     },
     destroy: async client => {
+      client.fnRef.release();
+      client.bootstrap.release();
+      client.customScriptModule.release();
+      client.context.release();
       await client.isolate.dispose();
     }
   };

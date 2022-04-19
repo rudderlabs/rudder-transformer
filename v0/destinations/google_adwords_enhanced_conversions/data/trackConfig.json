@@ -25,7 +25,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].restatementValue.currencyCode",
-    "sourceKeys": "properties.currencyCode",
+    "sourceKeys": "properties.currency",
     "required": false
   },
   {

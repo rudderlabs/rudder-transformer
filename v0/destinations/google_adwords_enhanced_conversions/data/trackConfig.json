@@ -107,7 +107,7 @@
       "context.traits.countryCode",
       "context.traits.country",
       "context.traits.address.countryCode",
-      "context.traits.address.countryCode"
+      "context.traits.address.country"
     ],
     "required": false,
     "metadata": {

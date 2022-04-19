@@ -507,8 +507,164 @@
       "userId": "mickey@disney.com"
     }
   ],
-  {
-    "statusCode": 400,
-    "message": "Message type is not supported"
-  }
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "attributes": [
+            {
+              "_update_existing_only": false,
+              "city": "Disney",
+              "country": "USA",
+              "email": "mickey@disney.com",
+              "firstname": "Mickey",
+              "user_alias": {
+                "alias_label": "rudder_id",
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+              }
+            }
+          ],
+          "events": [
+            {
+              "_update_existing_only": false,
+              "name": "KM Order Completed",
+              "properties": {
+                "affiliation": "Google Store",
+                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+                "coupon": "hasbros",
+                "discount": 2.5,
+                "order_id": "50314b8e9bcf000000000000",
+                "products": [
+                  {
+                    "category": "Games",
+                    "image_url": "https:///www.example.com/product/path.jpg",
+                    "name": "Monopoly: 3rd Edition",
+                    "price": 0,
+                    "product_id": "507f1f77bcf86cd799439011",
+                    "quantity": 1,
+                    "sku": "45790-32",
+                    "url": "https://www.example.com/product/path"
+                  },
+                  {
+                    "category": "Games",
+                    "name": "Uno Card Game",
+                    "price": 0,
+                    "product_id": "505bd76785ebb509fc183733",
+                    "quantity": 2,
+                    "sku": "46493-32"
+                  }
+                ],
+                "revenue": 25,
+                "shipping": 3,
+                "subtotal": 22.5,
+                "tax": 2,
+                "total": 27.5
+              },
+              "time": "2020-01-24T11:59:02.402+05:30",
+              "user_alias": {
+                "alias_label": "rudder_id",
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+              }
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "version": "1"
+    }
+  ],
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "attributes": [
+            {
+              "_update_existing_only": false,
+              "city": "Disney",
+              "country": "USA",
+              "email": "mickey@disney.com",
+              "firstname": "Mickey",
+              "user_alias": {
+                "alias_label": "rudder_id",
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+              }
+            }
+          ],
+          "events": [
+            {
+              "_update_existing_only": false,
+              "name": "KM Order Completed",
+              "properties": {
+                "affiliation": "Google Store",
+                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+                "coupon": "hasbros",
+                "discount": 2.5,
+                "order_id": "50314b8e9bcf000000000000",
+                "products": [
+                  {
+                    "category": "Games",
+                    "image_url": "https:///www.example.com/product/path.jpg",
+                    "name": "Monopoly: 3rd Edition",
+                    "price": 0,
+                    "product_id": "507f1f77bcf86cd799439011",
+                    "quantity": 1,
+                    "sku": "45790-32",
+                    "url": "https://www.example.com/product/path"
+                  },
+                  {
+                    "category": "Games",
+                    "name": "Uno Card Game",
+                    "price": 10,
+                    "product_id": "505bd76785ebb509fc183733",
+                    "quantity": 2,
+                    "sku": "46493-32"
+                  }
+                ],
+                "revenue": 25,
+                "shipping": 3,
+                "subtotal": 22.5,
+                "tax": 2,
+                "total": 27.5
+              },
+              "time": "2020-01-24T11:59:02.402+05:30",
+              "user_alias": {
+                "alias_label": "rudder_id",
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+              }
+            }
+          ],
+          "partner": "RudderStack"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "version": "1"
+    }
+  ]
 ]

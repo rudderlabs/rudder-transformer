@@ -233,7 +233,7 @@ function getPurchaseObjs(message) {
     products.forEach(product => {
       const productId = product.product_id || product.sku;
       const { price, quantity, currency } = product;
-      if (productId && price && quantity) {
+      if (productId && (price || price === 0) && quantity) {
         if (Number.isNaN(price) || Number.isNaN(quantity)) {
           return;
         }

@@ -30,7 +30,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].orderId",
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": "properties.order_id",
     "required": true,
     "metadata": {
       "type": "toString"

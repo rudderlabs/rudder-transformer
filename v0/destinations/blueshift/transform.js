@@ -1,4 +1,3 @@
-const { httpPOST } = require("../../../adapters/network");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -7,8 +6,6 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getValueFromMessage,
-  getFieldValueFromMessage,
-  defaultPutRequestConfig,
   isDefinedAndNotNull,
   extractCustomFields,
   getErrorRespEvents,
@@ -29,6 +26,18 @@ function checkValidEventName(str) {
     return true;
   return false;
 }
+
+const getBaseURL = config => {
+  let urlValue;
+  switch (config.dataCenter) {
+    case "eu":
+      urlValue = BASE_URL_EU;
+      break;
+    default:
+      urlValue = BASE_URL;
+  }
+  return urlValue;
+};
 
 const trackResponseBuilder = async (message, category, { Config }) => {
   let event = getValueFromMessage(message, "event");
@@ -63,11 +72,10 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       400
     );
   }
-  payload = extractCustomFields(message, payload, ["properties"], ["cookie"]);
+  payload = extractCustomFields(message, payload, ["properties"], []);
 
   const response = defaultRequestConfig();
-
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/event`;
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -101,8 +109,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     BLUESHIFT_IDENTIFY_EXCLUSION
   );
   const response = defaultRequestConfig();
-
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
+  const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/customers`;
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -116,58 +123,28 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 };
 
 const groupResponseBuilder = async (message, category, { Config }) => {
-  if (!Config.usersApiKey) {
+  if (!Config.eventApiKey) {
     throw new CustomError(
-      "[BLUESHIFT] User API Key required for Authentication.",
+      "[BLUESHIFT] event API Key required for Authentication.",
       400
     );
   }
 
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  if (!payload.list_id) {
-    if (payload.name && payload.description) {
-      const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-      const endpoint = `${baseURL}/api/v1/custom_user_lists/create`;
+  payload.event = "identify";
+  payload = extractCustomFields(message, payload, ["traits"], []);
 
-      const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
-      const requestOptions = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${basicAuth}`
-        }
-      };
-      const blueshiftlist = await httpPOST(endpoint, payload, requestOptions);
-      if (blueshiftlist.success === true && blueshiftlist.response.data.id) {
-        payload.list_id = blueshiftlist.response.data.id;
-      } else {
-        throw new CustomError(
-          `[Blueshift]:: ${blueshiftlist.response.message}`,
-          400
-        );
-      }
-    } else {
-      throw new CustomError(
-        "[Blueshift]:: name and description are required to create an empty list, or List Id is required to add user.",
-        400
-      );
-    }
-  }
-
+  const baseURL = getBaseURL(Config);
   const response = defaultRequestConfig();
+  response.endpoint = `${baseURL}/api/v1/event`;
 
-  // identifier_value mapped with userId, so identifier_key takes customer_id.
-  payload.identifier_key = "customer_id";
-
-  const baseURL = Config.datacenterEU ? BASE_URL_EU : BASE_URL;
-  response.endpoint = `${baseURL}/api/v1/custom_user_lists/add_user_to_list/${payload.list_id}`;
-
-  response.method = defaultPutRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
+  response.method = defaultPostRequestConfig.requestMethod;
+  const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
     "Content-Type": "application/json"
@@ -187,7 +164,6 @@ const process = async event => {
 
   const messageType = message.type.toLowerCase();
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
-
   let response;
   switch (messageType) {
     case EventType.TRACK:

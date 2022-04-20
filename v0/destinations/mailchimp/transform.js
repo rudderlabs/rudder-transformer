@@ -137,7 +137,7 @@ async function getPayload(
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = traits[trait];
-      } else if (mailChimpConfig.useUpdatedMapping) {
+      } else if (mailChimpConfig.enableMergeFields) {
         const tag = filterTagValue(trait);
         rawPayload.merge_fields[tag] = traits[trait];
       }
@@ -214,9 +214,9 @@ function getMailChimpConfig(message, destination) {
       case destinationConfigKeys.dataCenterId:
         mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
         break;
-      case "useUpdatedMapping":
-        mailChimpConfig.useUpdatedMapping =
-          destination.Config.useUpdatedMapping;
+      case "enableMergeFields":
+        mailChimpConfig.enableMergeFields =
+          destination.Config.enableMergeFields;
         break;
       default:
         logger.debug("MailChimp: Unknown key type: ", key);

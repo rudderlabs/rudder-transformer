@@ -126,6 +126,7 @@ async function getPayload(
 ) {
   if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
+    rawPayload.merge_fields = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
         rawPayload.status = message.integrations.MailChimp[field];
@@ -136,6 +137,9 @@ async function getPayload(
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = traits[trait];
+      } else {
+        const tag = filterTagValue(trait);
+        rawPayload.merge_fields[tag] = traits[trait];
       }
     });
     return rawPayload;
@@ -273,8 +277,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }

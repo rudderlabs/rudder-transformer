@@ -39,6 +39,7 @@
           "lastName": "Gomes",
           "city": "London",
           "state": "UK",
+          "countryCode": "us",
           "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK"
         },
         "library": {
@@ -66,12 +67,12 @@
         "gclid": "gclid1234",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "adjustedValue": "10",
-        "currencyCode": "INR",
+        "currency": "INR",
         "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
         "partialFailure": true,
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {
@@ -172,12 +173,12 @@
         "gclid": "gclid1234",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "adjustedValue": "10",
-        "currencyCode": "INR",
+        "currency": "INR",
         "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
         "partialFailure": true,
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {
@@ -271,12 +272,12 @@
         "gclid": "gclid1234",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "adjustedValue": "10",
-        "currencyCode": "INR",
+        "currency": "INR",
         "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
         "partialFailure": true,
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {
@@ -350,7 +351,8 @@
           "address": {
             "city": "London",
             "state": "UK",
-            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK"
+            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK",
+            "country": "us"
           }
         },
         "library": {
@@ -383,7 +385,7 @@
         "partialFailure": "true",
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {
@@ -640,12 +642,12 @@
         "gclid": "gclid1234",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "adjustedValue": "10",
-        "currencyCode": "INR",
+        "currency": "INR",
         "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
         "partialFailure": true,
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {

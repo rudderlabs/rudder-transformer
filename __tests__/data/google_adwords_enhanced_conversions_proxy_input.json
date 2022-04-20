@@ -27,9 +27,9 @@
                 },
                 "restatementValue": {
                   "adjustedValue": 10,
-                  "currencyCode": "INR"
+                  "currency": "INR"
                 },
-                "orderId": "10000",
+                "order_id": "10000",
                 "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
                 "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "userIdentifiers": [
@@ -83,9 +83,9 @@
                 },
                 "restatementValue": {
                   "adjustedValue": 10,
-                  "currencyCode": "INR"
+                  "currency": "INR"
                 },
-                "orderId": "10000",
+                "order_id": "10000",
                 "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
                 "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                 "userIdentifiers": [

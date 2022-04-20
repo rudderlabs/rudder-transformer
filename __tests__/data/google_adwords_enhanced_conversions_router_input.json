@@ -66,12 +66,12 @@
         "gclid": "gclid1234",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "adjustedValue": "10",
-        "currencyCode": "INR",
+        "currency": "INR",
         "adjustmentDateTime": "2022-01-01 12:32:45-08:00",
         "partialFailure": true,
         "campaignId": "1",
         "templateId": "0",
-        "orderId": 10000,
+        "order_id": 10000,
         "total": 1000,
         "products": [
           {

@@ -40,6 +40,7 @@
                   "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
                   "state": "UK",
                   "city": "London",
+                  "countryCode": "us",
                   "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
                 }
               }
@@ -123,6 +124,7 @@
                   "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
                   "state": "UK",
                   "city": "London",
+                  "countryCode": "us",
                   "hashedStreetAddress": "b28c94b2195c8ed259f0b415aaee3f39b0b2920a4537611499fa044956917a21"
                 }
               }

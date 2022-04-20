@@ -25,12 +25,12 @@
   },
   {
     "destKey": "conversionAdjustments[0].restatementValue.currencyCode",
-    "sourceKeys": "properties.currency",
+    "sourceKeys": ["properties.currencyCode", "properties.currency"],
     "required": false
   },
   {
     "destKey": "conversionAdjustments[0].orderId",
-    "sourceKeys": "properties.order_id",
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
     "required": true,
     "metadata": {
       "type": "toString"

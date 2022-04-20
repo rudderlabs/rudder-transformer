@@ -94,7 +94,8 @@
       "Config": {
         "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
         "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "datacenterId": "us20",
+        "useUpdatedMapping": true
       },
       "Enabled": true,
       "Transformations": []

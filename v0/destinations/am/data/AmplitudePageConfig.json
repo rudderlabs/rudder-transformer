@@ -43,5 +43,6 @@
   "session_id": "session_id",
   "messageId": "insert_id",
   "request_ip": "ip",
-  "name": "event_properties.name"
+  "name": "event_properties.name",
+  "properties.event_id": "event_id"
 }

@@ -1,4 +1,5 @@
 {
   "userId": "global_user_id",
-  "previousId": "user_id"
+  "previousId": "user_id",
+  "context.traits.event_id": "event_id"
 }

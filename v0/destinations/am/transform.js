@@ -369,6 +369,9 @@ function responseBuilderSimple(
           );
         }
       }
+      if (rawPayload.user_properties && rawPayload.user_properties.event_id) {
+        delete rawPayload.user_properties.event_id;
+      }
       break;
     case EventType.ALIAS:
       endpoint = aliasEndpoint(destination.Config);
@@ -396,6 +399,9 @@ function responseBuilderSimple(
           delete rawPayload.event_properties.quantity;
           delete rawPayload.event_properties.revenue;
         }
+      }
+      if (rawPayload.event_properties && rawPayload.event_properties.event_id) {
+        delete rawPayload.event_properties.event_id;
       }
       groups = groupInfo && Object.assign(groupInfo);
   }

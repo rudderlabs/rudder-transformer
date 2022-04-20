@@ -17,5 +17,6 @@
   "properties.name": "event_properties.screen_name",
   "session_id": "session_id",
   "messageId": "insert_id",
-  "request_ip": "ip"
+  "request_ip": "ip",
+  "properties.event_id": "event_id"
 }

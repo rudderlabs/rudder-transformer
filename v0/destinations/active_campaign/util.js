@@ -7,10 +7,7 @@ const { CustomError } = require("../../util");
 const errorHandler = (err, message) => {
   if (err.response) {
     throw new CustomError(
-      `${message} (${get(err, "response.statusText")},${get(
-        err,
-        "response.data"
-      )})`,
+      `${message} (${err.response?.statusText},${err.response?.data})`,
       err.response.status || 400
     );
   } else {

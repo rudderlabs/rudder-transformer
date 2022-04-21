@@ -411,18 +411,6 @@ const responseBuilderSimple = (
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
     "fb_pixel"
   );
-  const start = moment.unix(commonData.event_time);
-  const current = moment.unix(moment().format("X"));
-  // calculates past event in days
-  const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-  // calculates future event in minutes
-  const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
-  if (deltaDay > 7 || deltaMin > 1) {
-    throw new CustomError(
-      "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
-      400
-    );
-  }
 
   if (commonData.action_source) {
     const isActionSourceValid =
@@ -596,6 +584,24 @@ const processEvent = (message, destination) => {
       "Message Type is not present. Aborting message.",
       400
     );
+  }
+
+  const timeStamp = message.originalTimestamp || message.timestamp;
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    // calculates future event in minutes
+    const deltaMin = Math.ceil(
+      moment.duration(start.diff(current)).asMinutes()
+    );
+    if (deltaDay > 7 || deltaMin > 1) {
+      throw new CustomError(
+        "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+        400
+      );
+    }
   }
 
   let eventsToEvents;

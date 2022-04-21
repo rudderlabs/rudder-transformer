@@ -30,6 +30,8 @@ describe(`${name} Tests`, () => {
     inputData.forEach((input, index) => {
       it(`${name} - payload: ${index}`, async () => {
         try {
+          delete input.event.originalTimestamp;
+          delete input.event.timestamp;
           const output = await transformer.process(input);
           expect(output).toEqual(expectedData[index]);
         } catch (error) {
@@ -38,12 +40,11 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-  
+
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  
 });

@@ -72,23 +72,14 @@ function getBrand(payload, sourceKey, Config) {
 }
 
 function getEventId(payload) {
-  if (isDefinedAndNotNull(payload?.properties?.event_id)) {
-    const payloadVal = payload?.properties?.event_id;
-    if (typeof payloadVal === "string") {
+  const event_id =
+    payload?.context?.traits?.event_id ||
+    payload?.traits?.event_id ||
+    payload?.properties?.event_id;
+  if (isDefinedAndNotNull(event_id)) {
+    if (typeof event_id === "string") {
       logger.info(`event_id should be integer only`);
-    } else return payloadVal;
-  }
-  if (isDefinedAndNotNull(payload?.context?.traits?.event_id)) {
-    const payloadVal = payload?.context?.traits?.event_id;
-    if (typeof payloadVal === "string") {
-      logger.info(`event_id should be integer only`);
-    } else return payloadVal;
-  }
-  if (isDefinedAndNotNull(payload?.traits?.event_id)) {
-    const payloadVal = payload?.traits?.event_id;
-    if (typeof payloadVal === "string") {
-      logger.info(`event_id should be integer only`);
-    } else return payloadVal;
+    } else return event_id;
   }
   return undefined;
 }

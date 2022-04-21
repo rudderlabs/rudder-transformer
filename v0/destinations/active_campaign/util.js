@@ -1,4 +1,3 @@
-const get = require("get-value");
 const {
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");

@@ -238,7 +238,7 @@ function responseBuilderSimple(message, payload, destination) {
 
 function buildBaseEvent(message) {
   const baseEvent = {};
-  baseEvent.extinfo = extInfoArray;
+  baseEvent.extinfo = Array.from(extInfoArray);
   baseEvent.custom_events = [{}];
 
   let sourceSDK = get(message, "context.device.type") || "";

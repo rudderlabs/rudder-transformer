@@ -28,7 +28,29 @@ const logger = require("../../../logger");
 //   float: parseFloat
 // };
 
-const extInfoArray = ["", "", 0, 0, "", "", "", "", "", 0, 0, 0.0, 0, 0, 0];
+// The order and type of `extinfo` parameters is defined here:
+// https://developers.facebook.com/docs/graph-api/reference/application/activities/#parameters
+const extInfoArray = [
+  "", // extinfo version ("a2" = Android, "i2" = iOS)
+  "", // app package name
+  "", // app version build
+  "", // app version name
+  "", // OS version
+  "", // device model
+  "", // locale
+  "", // abbreviated time zone
+  "", // carrier
+  0, //  screen width
+  0, //  screen height
+  "", // screen density
+  0, //  CPU cores
+  0, //  storage size in GB
+  0, //  free space in GB
+  "" //  time zone
+];
+
+// User data (`ud`) parameters are also defined there, but not properly documented; instead see here:
+// https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/
 const userProps = [
   "ud[em]",
   "ud[fn]",
@@ -263,23 +285,16 @@ function buildBaseEvent(message) {
     if (inputVal) {
       const splits = destKey.split(".");
       if (splits.length > 1 && splits[0] === "extinfo") {
-        extInfoIdx = splits[1];
-        let outputVal;
-        switch (typeof extInfoArray[extInfoIdx]) {
-          case "number":
-            if (extInfoIdx === 11) {
-              // density
-              outputVal = parseFloat(inputVal);
-              outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
-            } else {
-              outputVal = parseInt(inputVal, 10);
-              outputVal = isNaN(outputVal) ? undefined : outputVal;
-            }
-            break;
-
-          default:
-            outputVal = inputVal;
-            break;
+        extInfoIdx = Number(splits[1]);
+        let outputVal = inputVal;
+        if (typeof extInfoArray[extInfoIdx] === "number") {
+          outputVal = parseInt(inputVal, 10);
+          outputVal = isNaN(outputVal) ? undefined : outputVal;
+        }
+        if (extInfoIdx === 11) {
+          // density
+          outputVal = parseFloat(inputVal);
+          outputVal = isNaN(outputVal) ? undefined : `${outputVal.toFixed(2)}`;
         }
         baseEvent.extinfo[extInfoIdx] =
           outputVal || baseEvent.extinfo[extInfoIdx];

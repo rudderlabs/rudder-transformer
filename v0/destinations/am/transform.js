@@ -369,17 +369,11 @@ function responseBuilderSimple(
           );
         }
       }
-      if (
-        rawPayload.user_properties &&
-        isDefinedAndNotNull(rawPayload.user_properties.event_id)
-      ) {
-        delete rawPayload.user_properties.event_id;
+      if (isDefinedAndNotNull(rawPayload?.user_properties?.event_id)) {
+        delete rawPayload?.user_properties?.event_id;
       }
-      if (
-        rawPayload.event_properties &&
-        isDefinedAndNotNull(rawPayload.event_properties.event_id)
-      ) {
-        delete rawPayload.event_properties.event_id;
+      if (isDefinedAndNotNull(rawPayload?.event_properties?.event_id)) {
+        delete rawPayload?.event_properties?.event_id;
       }
       break;
     case EventType.ALIAS:
@@ -409,17 +403,11 @@ function responseBuilderSimple(
           delete rawPayload.event_properties.revenue;
         }
       }
-      if (
-        rawPayload.event_properties &&
-        isDefinedAndNotNull(rawPayload.event_properties.event_id)
-      ) {
-        delete rawPayload.event_properties.event_id;
+      if (isDefinedAndNotNull(rawPayload?.event_properties?.event_id)) {
+        delete rawPayload?.event_properties?.event_id;
       }
-      if (
-        rawPayload.user_properties &&
-        isDefinedAndNotNull(rawPayload.user_properties.event_id)
-      ) {
-        delete rawPayload.user_properties.event_id;
+      if (isDefinedAndNotNull(rawPayload?.user_properties?.event_id)) {
+        delete rawPayload?.user_properties?.event_id;
       }
       groups = groupInfo && Object.assign(groupInfo);
   }

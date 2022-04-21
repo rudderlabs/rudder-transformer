@@ -8,6 +8,11 @@
     "funcName": "getBrand",
     "outKey": "device_brand"
   },
+  "context.traits.event_id": {
+    "isFunc": true,
+    "funcName": "getEventId",
+    "outKey": "event_id"
+  },
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
@@ -17,6 +22,5 @@
   "properties.name": "event_properties.screen_name",
   "session_id": "session_id",
   "messageId": "insert_id",
-  "request_ip": "ip",
-  "properties.event_id": "event_id"
+  "request_ip": "ip"
 }

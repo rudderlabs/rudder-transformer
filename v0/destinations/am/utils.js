@@ -8,8 +8,10 @@
 // "device_model": "Mac"
 // Note: for http source still the direct mapping from payload sourceKeys is used to
 // populate these dest keys
+const logger = require("../../../logger");
 const get = require("get-value");
 const uaParser = require("@amplitude/ua-parser-js");
+const { isDefined, isDefinedAndNotNull } = require("../../util");
 
 function getInfoFromUA(path, payload, defaultVal) {
   const ua = get(payload, "context.userAgent");
@@ -69,11 +71,31 @@ function getBrand(payload, sourceKey, Config) {
   return undefined;
 }
 
+function getEventId(payload) {
+  if (isDefinedAndNotNull(payload?.properties?.event_id)) {
+    if (typeof payload?.properties?.event_id === "string") {
+      logger.info(`event_id should be integer only`);
+    } else return payload?.properties?.event_id;
+  }
+  if (isDefinedAndNotNull(payload?.context?.traits?.event_id)) {
+    if (typeof payload?.properties?.event_id === "string") {
+      logger.info(`event_id should be integer only`);
+    } else return payload?.context?.traits?.event_id;
+  }
+  if (isDefinedAndNotNull(payload?.traits?.event_id)) {
+    if (typeof payload?.properties?.event_id === "string") {
+      logger.info(`event_id should be integer only`);
+    } else return payload?.traits?.event_id;
+  }
+  return undefined;
+}
+
 module.exports = {
   getOSName,
   getOSVersion,
   getDeviceModel,
   getDeviceManufacturer,
   getPlatform,
-  getBrand
+  getBrand,
+  getEventId
 };

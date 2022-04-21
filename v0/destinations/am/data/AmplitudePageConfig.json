@@ -43,5 +43,10 @@
   "session_id": "session_id",
   "messageId": "insert_id",
   "request_ip": "ip",
-  "name": "event_properties.name"
+  "name": "event_properties.name",
+  "context.traits.event_id": {
+    "isFunc": true,
+    "funcName": "getEventId",
+    "outKey": "event_id"
+  }
 }

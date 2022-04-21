@@ -82,29 +82,22 @@ async function runUserTransform(
     })
   );
 
-  jail.setSync(
-    "_log",
-    testMode
-      ? new ivm.Reference((...args) => {
-          let logString = "Log:";
-          args.forEach(arg => {
-            logString = logString.concat(
-              ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-            );
-          });
-          logs.push(logString);
-          // console.log("Log: ", ...args);
-        })
-      : new ivm.Reference(() => {})
-  );
+  jail.setSync("log", function(...args) {
+    if (testMode) {
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
+    }
+  });
 
-  jail.setSync(
-    "_metadata",
-    new ivm.Reference((...args) => {
-      const eventMetadata = eventsMetadata[args[0].messageId] || {};
-      return new ivm.ExternalCopy(eventMetadata).copyInto();
-    })
-  );
+  jail.setSync("metadata", function(...args) {
+    const eventMetadata = eventsMetadata[args[0].messageId] || {};
+    return new ivm.ExternalCopy(eventMetadata).copyInto();
+  });
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -145,36 +138,6 @@ async function runUserTransform(
         });
       };
 
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let log = _log;
-      delete _log;
-      global.log = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        log.applyIgnored(
-          undefined,
-          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          );
-        };
-
-        // Now we create the other half of the 'metadata' function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to metadata log function above.
-        let metadata = _metadata;
-        delete _metadata;
-        global.metadata = function(...args) {
-          // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // 'applyIgnored' calls 'metadata' asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from 'metadata'.
-          return metadata.applySync(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-            );
-          };
-
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -203,7 +166,7 @@ async function runUserTransform(
 
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
-  const fnRef = await jail.get("transform");
+  const fnRef = await jail.get("transform", { reference: true });
   // stat
   stats.counter("events_into_vm", events.length, tags);
   // TODO : check if we can resolve this
@@ -235,10 +198,16 @@ async function runUserTransform(
       throw new Error("Timed out");
     }
   } catch (error) {
-    isolate.dispose();
     throw error;
+  } finally {
+    // release function, script, context and isolate
+    fnRef.release();
+    customScript.release();
+    bootstrapScriptResult.release();
+    context.release();
+    isolate.dispose();
   }
-  isolate.dispose();
+
   return {
     transformedEvents: result,
     logs

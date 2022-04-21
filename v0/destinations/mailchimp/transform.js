@@ -126,6 +126,7 @@ async function getPayload(
 ) {
   if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
+    rawPayload.merge_fields = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
         rawPayload.status = message.integrations.MailChimp[field];
@@ -136,6 +137,9 @@ async function getPayload(
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = traits[trait];
+      } else if (mailChimpConfig.enableMergeFields) {
+        const tag = filterTagValue(trait);
+        rawPayload.merge_fields[tag] = traits[trait];
       }
     });
     return rawPayload;
@@ -209,6 +213,10 @@ function getMailChimpConfig(message, destination) {
         break;
       case destinationConfigKeys.dataCenterId:
         mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
+        break;
+      case "enableMergeFields":
+        mailChimpConfig.enableMergeFields =
+          destination.Config.enableMergeFields;
         break;
       default:
         logger.debug("MailChimp: Unknown key type: ", key);

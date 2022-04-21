@@ -39,6 +39,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -108,6 +109,7 @@
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
       "integrations": {
@@ -186,6 +188,7 @@
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
       "integrations": {
@@ -262,6 +265,7 @@
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
       "integrations": {
@@ -342,6 +346,7 @@
         "additional_bet_index": 0,
         "email": "abc@gmail.com"
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -417,6 +422,7 @@
         "additional_bet_index": 0,
         "email": "abc@gmail.com"
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -493,6 +499,7 @@
         "email": "abc@gmail.com",
         "phone": 9000000000
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -569,6 +576,7 @@
         "email": "abc@gmail.com",
         "phone": 9000000000
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -630,6 +638,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -704,6 +713,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -776,6 +786,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -866,6 +877,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -956,6 +968,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -1060,6 +1073,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "my product list",
@@ -1164,6 +1178,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product viewed",
@@ -1247,6 +1262,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -1326,6 +1342,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -1423,6 +1440,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "checkout started",
@@ -1536,6 +1554,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -1616,6 +1635,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -1680,6 +1700,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "products searched",
@@ -1758,6 +1779,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "products searched",
@@ -1836,6 +1858,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -1924,6 +1947,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -1985,6 +2009,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "my product list",
@@ -2102,6 +2127,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {
@@ -2163,6 +2189,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2239,6 +2266,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2315,6 +2343,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2394,6 +2423,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -2492,6 +2522,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -2590,6 +2621,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -2701,6 +2733,7 @@
         "revenue": 400,
         "additional_bet_index": 0
       },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "track"
     },
     "destination": {

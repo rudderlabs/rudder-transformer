@@ -3106,5 +3106,491 @@
     },
     "files": {},
     "userId": "my-anonymous-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "platform": "Android",
+            "event_id": 3,
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "language": "en-US",
+            "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "address": {
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_properties": {
+              "externalID": "1637170658229-3961832492194264209"
+            },
+            "event_type": "App_Opened",
+            "user_id": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+            "device_brand": "samsung",
+            "time": 1637176431143,
+            "session_id": -1,
+            "location_lat": "37.7672319",
+            "location_lng": "-122.4021353",
+            "dma": "San Francisco-Oakland-San Jose, CA",
+            "country": "United States",
+            "city": "San Francisco",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "platform": "Android",
+            "event_id": 0,
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "language": "en-US",
+            "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "address": {
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_properties": {
+              "externalID": "1637170658229-3961832492194264209"
+            },
+            "event_type": "App_Opened",
+            "user_id": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+            "device_brand": "samsung",
+            "time": 1637176431143,
+            "session_id": -1,
+            "location_lat": "37.7672319",
+            "location_lng": "-122.4021353",
+            "dma": "San Francisco-Oakland-San Jose, CA",
+            "country": "United States",
+            "city": "San Francisco",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "11",
+            "device_model": "SM-A025M",
+            "device_manufacturer": "samsung",
+            "platform": "Android",
+            "carrier": "T-Mobile",
+            "app_version": "2.6.0 v3",
+            "language": "en-US",
+            "insert_id": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+              "address": {
+                "postalCode": 712136,
+                "state": "WB",
+                "street": ""
+              }
+            },
+            "event_properties": {
+              "externalID": "1637170658229-3961832492194264209"
+            },
+            "event_type": "App_Opened",
+            "user_id": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+            "device_brand": "samsung",
+            "time": 1637176431143,
+            "session_id": -1,
+            "location_lat": "37.7672319",
+            "location_lng": "-122.4021353",
+            "dma": "San Francisco-Oakland-San Jose, CA",
+            "country": "United States",
+            "city": "San Francisco",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "test os",
+            "device_model": "Mac",
+            "platform": "Web",
+            "event_id": 6,
+            "device_id": "lynnanderson@smith.net",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "ip": "0.0.0.0",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "device_id": "lynnanderson@smith.net"
+            },
+            "event_type": "$identify",
+            "time": 1571043797562,
+            "user_id": "123456",
+            "session_id": -1,
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "test os",
+            "device_model": "Mac",
+            "platform": "Web",
+            "event_id": 6,
+            "device_id": "lynnanderson@smith.net",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "ip": "0.0.0.0",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "device_id": "lynnanderson@smith.net"
+            },
+            "event_type": "$identify",
+            "time": 1571043797562,
+            "user_id": "123456",
+            "session_id": -1,
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Chrome",
+              "os_version": "85.0.4183.121",
+              "device_model": "Mac",
+              "platform": "Web",
+              "event_id": 3,
+              "device_id": "my-anonymous-id-new",
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_version": "1.1.5",
+              "language": "en-US",
+              "user_properties": {
+                "initial_referrer": "https://docs.rudderstack.com",
+                "initial_referring_domain": "docs.rudderstack.com",
+                "utm_source": "google",
+                "utm_medium": "medium",
+                "utm_term": "keyword",
+                "utm_content": "some content",
+                "utm_name": "some campaign",
+                "utm_test": "other value",
+                "Company": "Comapny-ABC"
+              },
+              "event_type": "$identify",
+              "groups": {
+                "Company": "Comapny-ABC"
+              },
+              "time": 1603180498983,
+              "user_id": "sampleusrRudder3",
+              "session_id": -1,
+              "library": "rudderstack"
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.amplitude.com/groupidentify",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "api_key": "abcde",
+          "identification": [
+            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+          ]
+        }
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "event_id": 7,
+            "device_id": "anon-id-new",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen View"
+            },
+            "user_properties": {},
+            "event_type": "Viewed Screen View Screen",
+            "user_id": "identified user id",
+            "time": 1580602989544,
+            "session_id": -1,
+            "ip": "14.5.67.21",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "Viewed ApplicationLoaded Page",
+            "event_properties": {
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "category": "destination",
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            "ip": "1.1.1.1",
+            "event_id": 2,
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "email": "sayan@gmail.com",
+              "anonymousId": "12345"
+            },
+            "user_id": "12345",
+            "time": 1571051718299,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/usermap",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "api_key": "abcde",
+        "mapping": [
+          "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\",\"event_id\":67,\"user_properties\":{\"initial_referrer\":\"https://docs.rudderstack.com\",\"initial_referring_domain\":\"docs.rudderstack.com\",\"utm_source\":\"google\",\"utm_medium\":\"medium\",\"utm_term\":\"keyword\",\"utm_content\":\"some content\",\"utm_name\":\"some campaign\",\"utm_test\":\"other value\"}}"
+        ]
+      }
+    },
+    "files": {},
+    "userId": "my-anonymous-id-new"
   }
 ]

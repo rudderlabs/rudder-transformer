@@ -9,7 +9,7 @@ function msUnixTimestamp(timestamp) {
 }
 
 /**
- * Reserved event names shouldn't be used
+ * Reserved event names cannot be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_names
  * @param {*} event
  * @returns
@@ -45,13 +45,13 @@ function isReservedEventName(event) {
 
 /* Event parameters */
 /**
- * Reserved parameter names shouldn't be used
+ * Reserved parameter names cannot be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  */
 const GA4_RESERVED_PARAMETER_EXCLUSION = ["firebase_conversion"];
 
 /**
- * event parameter names should not start with reserved prefixes
+ * event parameter names cannot start with reserved prefixes
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  * @param {*} parameter
  */
@@ -64,7 +64,7 @@ function removeReservedParameterPrefixNames(parameter) {
 
   Object.keys(parameter).forEach(key => {
     const valFound = reservedPrefixesNames.some(prefix => {
-      if (key.startsWith(prefix)) {
+      if (key.toLowerCase().startsWith(prefix)) {
         return true;
       }
       return false;
@@ -80,7 +80,7 @@ function removeReservedParameterPrefixNames(parameter) {
 
 /* user property */
 /**
- * Reserved user property names cannot be used
+ * Reserved user property cannot be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
  */
 const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
@@ -92,7 +92,7 @@ const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
 ];
 
 /**
- * check if user property names does not start with reserved prefixes
+ * user property names cannot start with reserved prefixes
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
  * @param {*} userProperties
  */
@@ -102,9 +102,10 @@ function removeReservedUserPropertyPrefixNames(userProperties) {
   if (!userProperties) {
     return;
   }
+
   Object.keys(userProperties).forEach(key => {
     const valFound = reservedPrefixesNames.some(prefix => {
-      if (key.startsWith(prefix)) {
+      if (key.toLowerCase().startsWith(prefix)) {
         return true;
       }
       return false;
@@ -120,12 +121,12 @@ function removeReservedUserPropertyPrefixNames(userProperties) {
 
 /* For custom events */
 /**
- * check if the custom event name is not one of the following reserved names (for Web)
+ * Reserved custom event names cannot be used (Web)
  * Ref - https://support.google.com/analytics/answer/10085872#zippy=%2Creserved-prefixes-and-event-names%2Cweb
  * @param {*} event
  * @returns
  */
-function isReservedCustomEventNameWeb(event) {
+function isReservedWebCustomEventName(event) {
   const reservedEventNames = [
     "app_remove",
     "app_store_refund",
@@ -143,17 +144,17 @@ function isReservedCustomEventNameWeb(event) {
 }
 
 /**
- * check if custom event name does not start with the reserved prefixes
+ * Reserved custom event name cannot start with reserved prefixes (Web)
  * Ref - https://support.google.com/analytics/answer/10085872#zippy=%2Creserved-prefixes-and-event-names%2Cweb
  * @param {*} event
  * @returns
  */
-function isReservedCustomPrefixNameWeb(event) {
+function isReservedWebCustomPrefixName(event) {
   const reservedPrefixesNames = ["_", "firebase_", "ga_", "google_", "gtag."];
 
   // As soon as a single true is returned, .some() will itself return true and stop
   return reservedPrefixesNames.some(prefix => {
-    if (event.startsWith(prefix)) {
+    if (event.toLowerCase().startsWith(prefix)) {
       return true;
     }
     return false;
@@ -167,6 +168,6 @@ module.exports = {
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
-  isReservedCustomEventNameWeb,
-  isReservedCustomPrefixNameWeb
+  isReservedWebCustomEventName,
+  isReservedWebCustomPrefixName
 };

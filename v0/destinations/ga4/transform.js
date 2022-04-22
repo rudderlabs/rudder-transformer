@@ -22,8 +22,8 @@ const {
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
-  isReservedCustomEventNameWeb,
-  isReservedCustomPrefixNameWeb
+  isReservedWebCustomEventName,
+  isReservedWebCustomPrefixName
 } = require("./utils");
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -66,17 +66,17 @@ const trackResponseBuilder = async (message, { Config }) => {
     }
   } else {
     // custom events category
-    // Event names are case sensitive.
-    if (isReservedCustomEventNameWeb(event)) {
+    // Event names are case sensitive
+    if (isReservedWebCustomEventName(event)) {
       throw new CustomError(
-        "[Google Analytics 4] track:: Reserved event names are not allowd",
+        "[Google Analytics 4] track:: Reserved custom event names are not allowd",
         400
       );
     }
 
-    if (isReservedCustomPrefixNameWeb(event)) {
+    if (isReservedWebCustomPrefixName(event)) {
       throw new CustomError(
-        "[Google Analytics 4] track:: Reserved prefix names are not allowd",
+        "[Google Analytics 4] track:: Reserved custom prefix names are not allowd",
         400
       );
     }

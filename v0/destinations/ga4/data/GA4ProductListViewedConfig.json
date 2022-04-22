@@ -12,6 +12,6 @@
   {
     "destKey": "items",
     "sourceKeys": "properties.products",
-    "required": false
+    "required": true
   }
 ]

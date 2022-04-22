@@ -16,11 +16,6 @@
     "required": false
   },
   {
-    "destKey": "user_properties",
-    "sourceKeys": "user_properties",
-    "required": false
-  },
-  {
     "destKey": "non_personalized_ads",
     "sourceKeys": "context.device.adTrackingEnabled",
     "required": false,

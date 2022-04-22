@@ -4,7 +4,9 @@ const {
   CustomError,
   defaultPostRequestConfig,
   constructPayload,
-  defaultRequestConfig
+  defaultRequestConfig,
+  extractCustomFields,
+  isEmptyObject
 } = require("../../util");
 const {
   ENDPOINT,
@@ -17,7 +19,11 @@ const {
   msUnixTimestamp,
   isReservedEventName,
   isReservedCustomEventNameWeb,
-  isReservedCustomPrefixNameWeb
+  isReservedCustomPrefixNameWeb,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  removeReservedParameterPrefixNames,
+  removeReservedUserPropertyPrefixNames
 } = require("./utils");
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -26,7 +32,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Event name is required", 400);
   }
 
-  // trim, and replace spaces with "_"
+  // trim and replace spaces with "_"
   event = event.trim().replace(/\s+/g, "_");
 
   // reserved event names are not allowed
@@ -58,6 +64,22 @@ const trackResponseBuilder = async (message, { Config }) => {
       default:
         break;
     }
+
+    // all extra parameters passed is incorporated inside params
+    let customParameters = {};
+    customParameters = extractCustomFields(
+      message,
+      customParameters,
+      ["properties"],
+      GA4_RESERVED_PARAMETER_EXCLUSION
+    );
+    if (!isEmptyObject(customParameters)) {
+      payload.params = {
+        ...payload.params,
+        ...customParameters
+      };
+    }
+    removeReservedParameterPrefixNames(payload.params);
   } else {
     // custom events category
     // Event names are case sensitive.
@@ -78,6 +100,20 @@ const trackResponseBuilder = async (message, { Config }) => {
     payload.name = event;
     payload.params = get(message, "properties");
   }
+
+  // take GA4 user properties
+  let userProperties = {};
+  userProperties = extractCustomFields(
+    message,
+    userProperties,
+    ["user_properties"],
+    GA4_RESERVED_USER_PROPERTY_EXCLUSION
+  );
+  if (!isEmptyObject(userProperties)) {
+    rawPayload.user_properties = userProperties;
+  }
+
+  removeReservedUserPropertyPrefixNames(rawPayload.user_properties);
 
   rawPayload = { ...rawPayload, events: [payload] };
 

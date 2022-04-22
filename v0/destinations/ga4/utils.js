@@ -9,7 +9,8 @@ function msUnixTimestamp(timestamp) {
 }
 
 /**
- * Check if event name is not one of the following reserved names
+ * Check if the event name is not one of the following reserved names
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_names
  * @param {*} event
  * @returns
  */
@@ -42,8 +43,85 @@ function isReservedEventName(event) {
   return reservedEventNames.includes(event.toLowerCase());
 }
 
+/* Event parameters */
 /**
- * check if custom event name is not one of the following reserved names (for Web)
+ * Reserved parameter names cannot be used
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
+ */
+const GA4_RESERVED_PARAMETER_EXCLUSION = ["firebase_conversion"];
+
+/**
+ * check if event parameter names does not start with reserved prefixes
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
+ * @param {*} parameter
+ */
+function removeReservedParameterPrefixNames(parameter) {
+  const reservedPrefixesNames = ["google_", "ga_", "firebase_"];
+
+  if (!parameter) {
+    return;
+  }
+
+  Object.keys(parameter).forEach(key => {
+    const valFound = reservedPrefixesNames.some(prefix => {
+      if (key.startsWith(prefix)) {
+        return true;
+      }
+      return false;
+    });
+
+    // reject if found
+    if (valFound) {
+      // eslint-disable-next-line no-param-reassign
+      delete parameter[key];
+    }
+  });
+}
+
+/* user property */
+/**
+ * Reserved user property names cannot be used
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
+ */
+const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
+  "first_open_time",
+  "first_visit_time",
+  "last_deep_link_referrer",
+  "user_id",
+  "first_open_after_install"
+];
+
+/**
+ * check if user property names does not start with reserved prefixes
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
+ * @param {*} userProperties
+ */
+function removeReservedUserPropertyPrefixNames(userProperties) {
+  const reservedPrefixesNames = ["google_", "ga_", "firebase_"];
+
+  if (!userProperties) {
+    return;
+  }
+  Object.keys(userProperties).forEach(key => {
+    const valFound = reservedPrefixesNames.some(prefix => {
+      if (key.startsWith(prefix)) {
+        return true;
+      }
+      return false;
+    });
+
+    // reject if found
+    if (valFound) {
+      // eslint-disable-next-line no-param-reassign
+      delete userProperties[key];
+    }
+  });
+}
+
+/* For custom events */
+/**
+ * check if the custom event name is not one of the following reserved names (for Web)
+ * Ref - https://support.google.com/analytics/answer/10085872#zippy=%2Creserved-prefixes-and-event-names%2Cweb
  * @param {*} event
  * @returns
  */
@@ -64,9 +142,16 @@ function isReservedCustomEventNameWeb(event) {
   return reservedEventNames.includes(event.toLowerCase());
 }
 
+/**
+ * check if custom event name does not start with the reserved prefixes
+ * Ref - https://support.google.com/analytics/answer/10085872#zippy=%2Creserved-prefixes-and-event-names%2Cweb
+ * @param {*} event
+ * @returns
+ */
 function isReservedCustomPrefixNameWeb(event) {
   const reservedPrefixesNames = ["_", "firebase_", "ga_", "google_", "gtag."];
 
+  // As soon as a single true is returned, .some() will itself return true and stop
   return reservedPrefixesNames.some(prefix => {
     if (event.startsWith(prefix)) {
       return true;
@@ -78,6 +163,10 @@ function isReservedCustomPrefixNameWeb(event) {
 module.exports = {
   msUnixTimestamp,
   isReservedEventName,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
+  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  removeReservedUserPropertyPrefixNames,
   isReservedCustomEventNameWeb,
   isReservedCustomPrefixNameWeb
 };

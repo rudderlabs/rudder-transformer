@@ -44,8 +44,8 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   const payload = {};
-  // GA4 standard events
   if (eventNameMapping[event.toLowerCase()]) {
+    // GA4 standard events
     // get event specific parameters
     switch (event.toLowerCase()) {
       case "products_searched":
@@ -58,26 +58,26 @@ const trackResponseBuilder = async (message, { Config }) => {
       default:
         break;
     }
-  }
+  } else {
+    // custom events category
+    // Event names are case sensitive.
+    if (isReservedCustomEventNameWeb(event)) {
+      throw new CustomError(
+        "[Google Analytics 4] track:: Reserved event names are not allowd",
+        400
+      );
+    }
 
-  // custom events category
-  // Event names are case sensitive.
-  if (isReservedCustomEventNameWeb(event)) {
-    throw new CustomError(
-      "[Google Analytics 4] track:: Reserved event names are not allowd",
-      400
-    );
-  }
+    if (isReservedCustomPrefixNameWeb(event)) {
+      throw new CustomError(
+        "[Google Analytics 4] track:: Reserved prefix names are not allowd",
+        400
+      );
+    }
 
-  if (isReservedCustomPrefixNameWeb(event)) {
-    throw new CustomError(
-      "[Google Analytics 4] track:: Reserved prefix names are not allowd",
-      400
-    );
+    payload.name = event;
+    payload.params = get(message, "properties");
   }
-
-  payload.name = event;
-  payload.params = get(message, "properties");
 
   rawPayload = { ...rawPayload, events: [payload] };
 

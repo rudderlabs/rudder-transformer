@@ -25,13 +25,13 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+Date.now = jest.fn(() => new Date("2019-09-01T15:46:51.000Z")); //2019-09-01T15:46:51.693229+05:30
+
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {
       it(`${name} - payload: ${index}`, async () => {
         try {
-          delete input.event.originalTimestamp;
-          delete input.event.timestamp;
           const output = await transformer.process(input);
           expect(output).toEqual(expectedData[index]);
         } catch (error) {

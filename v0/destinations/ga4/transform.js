@@ -64,22 +64,6 @@ const trackResponseBuilder = async (message, { Config }) => {
       default:
         break;
     }
-
-    // all extra parameters passed is incorporated inside params
-    let customParameters = {};
-    customParameters = extractCustomFields(
-      message,
-      customParameters,
-      ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION
-    );
-    if (!isEmptyObject(customParameters)) {
-      payload.params = {
-        ...payload.params,
-        ...customParameters
-      };
-    }
-    removeReservedParameterPrefixNames(payload.params);
   } else {
     // custom events category
     // Event names are case sensitive.
@@ -98,7 +82,22 @@ const trackResponseBuilder = async (message, { Config }) => {
     }
 
     payload.name = event;
-    payload.params = get(message, "properties");
+
+    // all extra parameters passed is incorporated inside params
+    let customParameters = {};
+    customParameters = extractCustomFields(
+      message,
+      customParameters,
+      ["properties"],
+      GA4_RESERVED_PARAMETER_EXCLUSION
+    );
+    if (!isEmptyObject(customParameters)) {
+      payload.params = {
+        ...payload.params,
+        ...customParameters
+      };
+    }
+    removeReservedParameterPrefixNames(payload.params);
   }
 
   // take GA4 user properties

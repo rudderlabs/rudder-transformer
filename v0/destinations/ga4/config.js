@@ -3,100 +3,51 @@ const { getMappingConfig } = require("../../util");
 const ENDPOINT = "https://www.google-analytics.com/mp/collect";
 
 const ConfigCategory = {
-  COMMON: {
-    name: "GA4CommonConfig"
-  },
+  COMMON: { name: "GA4CommonConfig" },
 
   /* E-Commerce Events */
-  PRODUCTS_SEARCHED: {
-    name: "GA4ProductsSearchedConfig"
-  },
-  PRODUCT_LIST_VIEWED: {
-    name: "GA4ProductListViewedConfig"
-  },
-  PROMOTION_VIEWED: {
-    name: "GA4PromotionViewedConfig"
-  },
-  PROMOTION_CLICKED: {
-    name: "GA4PromotionClickedConfig"
-  },
-  PRODUCT_CLICKED: {
-    name: "GA4ProductClickedConfig"
-  },
-  PRODUCT_VIEWED: {
-    name: "GA4ProductViewedConfig"
-  },
-  PRODUCT_ADDED: {
-    name: "GA4ProductAddedConfig"
-  },
-  PRODUCT_REMOVED: {
-    name: "GA4ProductRemovedConfig"
-  },
-  CART_VIEWED: {
-    name: "GA4CartViewedConfig"
-  },
-  CHECKOUT_STARTED: {
-    name: "GA4CheckoutStartedConfig"
-  },
-  PAYMENT_INFO_ENTERED: {
-    name: "GA4PaymentInfoEnteredConfig"
-  },
-  ORDER_COMPLETED: {
-    name: "GA4OrderCompletedConfig"
-  },
-  ORDER_REFUNDED: {
-    name: "GA4OrderRefundedConfig"
-  },
-  PRODUCT_ADDED_TO_WISHLIST: {
-    name: "GA4ProductAddedToWishlistConfig"
-  },
-  PRODUCT_SHARED: {
-    name: "GA4ProductSharedConfig"
-  },
-  CART_SHARED: {
-    name: "GA4CartSharedConfig"
-  },
-  GROUP: {
-    name: "GA4GroupConfig"
-  },
+  /* Browsing Section */
+  PRODUCTS_SEARCHED: { name: "GA4ProductsSearchedConfig" },
+  PRODUCT_LIST_VIEWED: { name: "GA4ProductListViewedConfig" },
+
+  /* Promotions Section */
+  PROMOTION_VIEWED: { name: "GA4PromotionViewedConfig" },
+  PROMOTION_CLICKED: { name: "GA4PromotionClickedConfig" },
+
+  /* Ordering Section */
+  PRODUCT_CLICKED: { name: "GA4ProductClickedConfig" },
+  PRODUCT_VIEWED: { name: "GA4ProductViewedConfig" },
+  PRODUCT_ADDED: { name: "GA4ProductAddedConfig" },
+  PRODUCT_REMOVED: { name: "GA4ProductRemovedConfig" },
+  CART_VIEWED: { name: "GA4CartViewedConfig" },
+  CHECKOUT_STARTED: { name: "GA4CheckoutStartedConfig" },
+  PAYMENT_INFO_ENTERED: { name: "GA4PaymentInfoEnteredConfig" },
+  ORDER_COMPLETED: { name: "GA4OrderCompletedConfig" },
+  ORDER_REFUNDED: { name: "GA4OrderRefundedConfig" },
+
+  /* Wishlist Section */
+  PRODUCT_ADDED_TO_WISHLIST: { name: "GA4ProductAddedToWishlistConfig" },
+
+  /* Sharing Section */
+  PRODUCT_SHARED: { name: "GA4ProductSharedConfig" },
+  CART_SHARED: { name: "GA4CartSharedConfig" },
+
+  /* Group */
+  GROUP: { name: "GA4GroupConfig" },
 
   /* GA4 Events */
-  EARN_VIRTUAL_CURRENCY: {
-    name: "GA4EarnVirtualCurrencyConfig"
-  },
-  GENERATE_LEAD: {
-    name: "GA4GenerateLeadConfig"
-  },
-  LEVEL_UP: {
-    name: "GA4LevelUpConfig"
-  },
-  LOGIN: {
-    name: "GA4LoginConfig"
-  },
-  POST_SCORE: {
-    name: "GA4PostScoreConfig"
-  },
-  SELECT_CONTENT: {
-    name: "GA4SelectContentConfig"
-  },
-  SIGN_UP: {
-    name: "GA4SignUpConfig"
-  },
-  SPEND_VIRTUAL_CURRENCY: {
-    name: "GA4SpendVirtualCurrencyConfig"
-  },
-  TUTORIAL_BEGIN: {
-    name: "GA4TutorialBeginConfig"
-  },
-  TUTORIAL_COMPLETE: {
-    name: "GA4TutorialCompleteConfig"
-  },
-  UNLOCK_ACHIEVEMENT: {
-    name: "GA4UnlockAchievementConfig"
-  },
-  VIEW_SEARCH_RESULTS: {
-    name: "GA4ViewSearchResultsConfig"
-  }
+  EARN_VIRTUAL_CURRENCY: { name: "GA4EarnVirtualCurrencyConfig" },
+  GENERATE_LEAD: { name: "GA4GenerateLeadConfig" },
+  LEVEL_UP: { name: "GA4LevelUpConfig" },
+  LOGIN: { name: "GA4LoginConfig" },
+  POST_SCORE: { name: "GA4PostScoreConfig" },
+  SELECT_CONTENT: { name: "GA4SelectContentConfig" },
+  SIGN_UP: { name: "GA4SignUpConfig" },
+  SPEND_VIRTUAL_CURRENCY: { name: "GA4SpendVirtualCurrencyConfig" },
+  TUTORIAL_BEGIN: { name: "GA4TutorialBeginConfig" },
+  TUTORIAL_COMPLETE: { name: "GA4TutorialCompleteConfig" },
+  UNLOCK_ACHIEVEMENT: { name: "GA4UnlockAchievementConfig" },
+  VIEW_SEARCH_RESULTS: { name: "GA4ViewSearchResultsConfig" }
 };
 
 /**
@@ -121,7 +72,10 @@ const eventNameMapping = {
   cart_viewed: "view_cart",
   checkout_started: "begin_checkout",
   payment_info_entered: "add_payment_info",
-  // payment_info_entered: "add_shipping_info",
+  /**
+   * payment_info_entered: "add_shipping_info",
+   * This event mapping is handled from transform.js
+   */
   order_completed: "purchase",
   order_refunded: "refund",
 

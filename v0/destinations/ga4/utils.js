@@ -9,7 +9,7 @@ function msUnixTimestamp(timestamp) {
 }
 
 /**
- * Check if the event name is not one of the following reserved names
+ * Reserved event names shouldn't be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_names
  * @param {*} event
  * @returns
@@ -45,13 +45,13 @@ function isReservedEventName(event) {
 
 /* Event parameters */
 /**
- * Reserved parameter names cannot be used
+ * Reserved parameter names shouldn't be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  */
 const GA4_RESERVED_PARAMETER_EXCLUSION = ["firebase_conversion"];
 
 /**
- * check if event parameter names does not start with reserved prefixes
+ * event parameter names should not start with reserved prefixes
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  * @param {*} parameter
  */

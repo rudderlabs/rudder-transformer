@@ -1,0 +1,5 @@
+{
+  "email": ["context.traits.email"],
+  "userId": ["userId", "context.traits.userId"],
+  "dataFields": "properties"
+}

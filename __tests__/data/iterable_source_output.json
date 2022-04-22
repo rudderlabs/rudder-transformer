@@ -1,0 +1,35 @@
+[
+  {
+    "anonymousId": "test@abcd.com",
+    "context": {
+      "integration": {
+        "name": "Iterable",
+        "version": "1.0.0"
+      },
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "traits": {
+        "email": "test@abcd.com"
+      }
+    },
+    "event": "emailSubscribe",
+    "integrations": {
+      "Iterable": false
+    },
+    "properties": {
+      "channelIds": [],
+      "createdAt": "2022-04-19 03:33:50 +00:00",
+      "email": "test@abcd.com",
+      "emailListIds": [1589748],
+      "messageTypeIds": [],
+      "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
+      "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
+      "signupSource": "WebForm"
+    },
+    "receivedAt": "2022-04-19T03:33:50.000Z",
+    "timestamp": "2022-04-19T03:33:50.000Z",
+    "type": "track"
+  }
+]

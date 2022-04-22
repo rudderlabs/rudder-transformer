@@ -1,6 +1,6 @@
 [
   {
-    "anonymousId": "test@abcd.com",
+    "userId": "49431605de12d411bd21df8d909667b9",
     "context": {
       "integration": {
         "name": "Iterable",
@@ -11,7 +11,7 @@
         "version": "unknown"
       },
       "traits": {
-        "email": "test@abcd.com"
+        "email": "rohith@abcd.com"
       }
     },
     "event": "emailSubscribe",
@@ -21,7 +21,6 @@
     "properties": {
       "channelIds": [],
       "createdAt": "2022-04-19 03:33:50 +00:00",
-      "email": "test@abcd.com",
       "emailListIds": [1589748],
       "messageTypeIds": [],
       "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
@@ -31,5 +30,8 @@
     "receivedAt": "2022-04-19T03:33:50.000Z",
     "timestamp": "2022-04-19T03:33:50.000Z",
     "type": "track"
+  },
+  {
+    "message": "Unknwon event type from Iterable"
   }
 ]

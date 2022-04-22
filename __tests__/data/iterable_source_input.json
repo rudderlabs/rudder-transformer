@@ -1,6 +1,19 @@
 [
   {
-    "email": "test@abcd.com",
+    "email": "rohith@abcd.com",
+    "eventName": "emailSubscribe",
+    "dataFields": {
+      "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
+      "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
+      "signupSource": "WebForm",
+      "email": "rohith@abcd.com",
+      "createdAt": "2022-04-19 03:33:50 +00:00",
+      "messageTypeIds": [],
+      "emailListIds": [1589748],
+      "channelIds": []
+    }
+  },
+  {
     "eventName": "emailSubscribe",
     "dataFields": {
       "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",

@@ -1,13 +1,18 @@
 const path = require("path");
 const fs = require("fs");
+const md5 = require("md5");
+const Message = require("../message");
+
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
-const Message = require("../message");
-// const { mappingJson } = require("./mapping");
 
 function process(event) {
+  // throw an error if (email, eventName and dataFields) are not present
+  if (!(event.email && event.eventName && event.dataFields)) {
+    throw new Error("Unknwon event type from Iterable");
+  }
   const message = new Message(`Iterable`);
 
   // event type is always track
@@ -17,7 +22,7 @@ function process(event) {
 
   message.setEventName(event.eventName);
 
-  message.setProperties(event, mapping);
+  message.setPropertiesV2(event, mapping);
 
   message.context.integration.version = "1.0.0";
 
@@ -27,15 +32,10 @@ function process(event) {
     message.timestamp = ts;
   }
 
-  // when iterable does not pass an associated userId, set the email address as anonymousId
+  // Treating userId as unique identifier
+  // If userId is not present, then generating it from email using md5 hash function
   if (message.userId === null || message.userId === undefined) {
-    if (
-      message.context &&
-      message.context.traits &&
-      message.context.traits.email
-    ) {
-      message.anonymousId = message.context.traits.email;
-    }
+    message.userId = md5(event.email);
   }
 
   return message;

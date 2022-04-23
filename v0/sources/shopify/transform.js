@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { getShopifyTopic, createPropertiesForEcomEvent } = require("./util");
 const { generateUUID, CustomError } = require("../../util");
 const Message = require("../message");
@@ -31,6 +32,14 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   Object.keys(properties).forEach(key =>
     message.setProperty(`properties.${key}`, properties[key])
   );
+  // Map Customer details if present
+  const customerDetails = get(event, "customer");
+  if (customerDetails) {
+    message.setPropertiesV2(
+      customerDetails,
+      MAPPING_CATEGORIES[EventType.IDENTIFY]
+    );
+  }
   if (event.updated_at) {
     // TODO: look for created_at for checkout_create?
     // converting shopify updated_at timestamp to rudder timestamp format
@@ -52,6 +61,15 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
     .forEach(key => {
       message.setProperty(`properties.${key}`, event[key]);
     });
+
+  // Map Customer details if present
+  const customerDetails = get(event, "customer");
+  if (customerDetails) {
+    message.setPropertiesV2(
+      customerDetails,
+      MAPPING_CATEGORIES[EventType.IDENTIFY]
+    );
+  }
   if (event.user_id) {
     message.setProperty("userId", event.user_id);
   }

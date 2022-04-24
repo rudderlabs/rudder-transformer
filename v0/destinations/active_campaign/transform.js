@@ -23,6 +23,7 @@ const responseBuilderSimple = (payload, category, destination) => {
     switch (category.name) {
       case "ACIdentify":
       case "ACPage":
+        response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
         response.method = defaultPostRequestConfig.requestMethod;
         response.headers = {
           "Content-Type": "application/json",
@@ -32,6 +33,7 @@ const responseBuilderSimple = (payload, category, destination) => {
         break;
       case "ACScreen":
       case "ACTrack":
+        response.endpoint = `${category.endPoint}`;
         response.method = defaultPostRequestConfig.requestMethod;
         response.headers = {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -42,7 +44,6 @@ const responseBuilderSimple = (payload, category, destination) => {
       default:
         throw new CustomError("Message format type not supported", 400);
     }
-    response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
     return response;
   }
   // fail-safety for developer error

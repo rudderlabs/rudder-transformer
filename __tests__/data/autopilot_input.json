@@ -399,7 +399,9 @@
       "request_ip": "[::1]:53512",
       "sentAt": "2020-04-17T14:42:44.725Z",
       "timestamp": "2020-04-17T20:12:44.757+05:30",
-      "userId": "user12345"
+      "type": "group",
+      "userId": "user12345",
+      "groupId": "group123"
     }
   },
   {
@@ -481,7 +483,8 @@
       "sentAt": "2020-04-17T14:42:44.725Z",
       "timestamp": "2020-04-17T20:12:44.757+05:30",
       "type": "group",
-      "userId": "user12345"
+      "userId": "user12345",
+      "groupId": "group123"
     }
   },
   {
@@ -542,9 +545,9 @@
           "density": 2
         },
         "traits": {
-        "email": "abc@rudderstack.com",
-        "firstname": "Anuraj"
-      },
+          "email": "abc@rudderstack.com",
+          "firstname": "Anuraj"
+        },
 
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
@@ -699,9 +702,9 @@
           "density": 2
         },
         "traits": {
-        "email": "abc@rudderstack.com",
-        "firstname": "Anuraj"
-      },
+          "email": "abc@rudderstack.com",
+          "firstname": "Anuraj"
+        },
 
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
       },
@@ -714,7 +717,8 @@
       "sentAt": "2020-04-17T14:42:44.722Z",
       "timestamp": "2020-04-17T20:12:44.758+05:30",
       "type": "group",
-      "userId": "user12345"
+      "userId": "user12345",
+      "groupId": "group123"
     }
   }
 ]

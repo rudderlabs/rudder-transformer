@@ -137,5 +137,28 @@
     },
     "version": "1",
     "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "status": "subscribed",
+        "email_address": "bob.dole@initech.com",
+        "merge_fields": {}
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "userId12345"
   }
 ]

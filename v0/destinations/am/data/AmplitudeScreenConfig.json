@@ -8,6 +8,11 @@
     "funcName": "getBrand",
     "outKey": "device_brand"
   },
+  "context.traits.event_id": {
+    "isFunc": true,
+    "funcName": "getEventId",
+    "outKey": "event_id"
+  },
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",

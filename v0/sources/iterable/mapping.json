@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "userId",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "dataFields",
+    "destKeys": "properties"
+  }
+]

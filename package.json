@@ -29,6 +29,8 @@
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.26",
+    "@aws-sdk/client-s3": "^3.54.0",
+    "@aws-sdk/lib-storage": "^3.54.1",
     "@ndhoule/extend": "^2.0.0",
     "ajv": "^8.10.0",
     "axios": "^0.26.0",
@@ -37,7 +39,6 @@
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.0",
     "flat": "^5.0.2",
-    "generic-pool": "^3.8.2",
     "get-value": "^3.0.1",
     "handlebars": "^4.7.7",
     "http-graceful-shutdown": "^3.1.6",
@@ -59,6 +60,7 @@
     "prom-client": "^14.0.1",
     "parse-static-imports": "^1.1.0",
     "set-value": "^4.1.0",
+    "pprof": "^3.2.0",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
     "truncate-utf8-bytes": "^1.0.2",
@@ -66,7 +68,8 @@
     "unset-value": "^2.0.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "rudder-transformer-cdk": "^1.1.1"
   },
   "devDependencies": {
     "eslint": "8.10.0",

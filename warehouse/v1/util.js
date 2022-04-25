@@ -3,7 +3,10 @@ const _ = require("lodash");
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
 const { isDataLakeProvider } = require("../config/helpers");
 
-function safeTableName(provider, name = "") {
+function safeTableName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let tableName = name;
   if (tableName === "") {
     throw new Error("Table name cannot be empty.");
@@ -17,6 +20,7 @@ function safeTableName(provider, name = "") {
     tableName = tableName.toLowerCase();
   }
   if (
+    !skipReservedKeywordsEscaping &&
     reservedANSIKeywordsMap[provider.toUpperCase()][tableName.toUpperCase()]
   ) {
     tableName = `_${tableName}`;
@@ -29,7 +33,10 @@ function safeTableName(provider, name = "") {
   return tableName.substr(0, 127);
 }
 
-function safeColumnName(provider, name = "") {
+function safeColumnName(options, name = "") {
+  const { provider } = options;
+  const skipReservedKeywordsEscaping =
+    options.integrationOptions.skipReservedKeywordsEscaping || false;
   let columnName = name;
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
@@ -43,6 +50,7 @@ function safeColumnName(provider, name = "") {
     columnName = columnName.toLowerCase();
   }
   if (
+    !skipReservedKeywordsEscaping &&
     reservedANSIKeywordsMap[provider.toUpperCase()][columnName.toUpperCase()]
   ) {
     columnName = `_${columnName}`;
@@ -58,18 +66,19 @@ function safeColumnName(provider, name = "") {
   it removes symbols and joins continuous letters and numbers with single underscore and if first char is a number will append a underscore before the first number
   few more examples
   omega     to omega
-  omega v2  to omega_v2
-  9mega     to _9mega
+  omega v2  to omega_v_2
+  9mega     to _9_mega
   mega&     to mega
   ome$ga    to ome_ga
   omega$    to omega
   ome_ ga   to ome_ga
-  9mega________-________90 to _9mega_90
+  9mega________-________90 to _9_mega_90
   it also handles char's where its ascii values are more than 127
   example:
   Cízǔ to C_z
-  CamelCase123Key to camel_case123_key
+  CamelCase123Key to camel_case_123_key
   1CComega to _1_c_comega
+  path to $1,00,000 to path_to_1_00_000
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
 function transformName(provider, name = "") {
@@ -113,12 +122,42 @@ function transformName(provider, name = "") {
   return key;
 }
 
-function transformTableName(name = "") {
-  return transformName("", name);
+/* converts special characters other than '\' or '$' to _ 
+  adds _ if word doesnot starts with alphabet or _
+  Cízǔ to C_z_
+  CamelCase123Key to camelcase123key
+  1CComega to _1ccomega
+  path to $1,00,000 to path_to_$1_00_000
+  return an empty string if it couldn't find a char
+*/
+function transformNameToBlendoCase(provider, name = "") {
+  let key = name.replace(/[^a-zA-Z0-9\\$]/g, "_");
+
+  const re = /^[a-zA-Z_].*/;
+  if (!re.test(key)) {
+    key = `_${key}`;
+  }
+  if (provider === "postgres") {
+    key = key.substr(0, 63);
+  }
+  return key.toLowerCase();
 }
 
-function transformColumnName(provider, name = "") {
-  return transformName(provider, name);
+function toBlendoCase(name = "") {
+  return name.trim().toLowerCase();
+}
+
+function transformTableName(options, name = "") {
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  return useBlendoCasing ? toBlendoCase(name) : transformName("", name);
+}
+
+function transformColumnName(options, name = "") {
+  const { provider } = options;
+  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  return useBlendoCasing
+    ? transformNameToBlendoCase(provider, name)
+    : transformName(provider, name);
 }
 
 module.exports = {

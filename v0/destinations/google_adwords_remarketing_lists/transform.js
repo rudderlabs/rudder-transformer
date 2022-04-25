@@ -1,17 +1,17 @@
-const { logger } = require("handlebars");
-const { isArray } = require("lodash");
 const sha256 = require("sha256");
+const logger = require("../../../logger");
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
-  CustomError,
   constructPayload,
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  removeUndefinedAndNullAndEmptyValues,
-  getValueFromMessage
+  getValueFromMessage,
+  removeUndefinedAndNullValues,
+  removeHyphens
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
@@ -23,11 +23,34 @@ const {
 
 const hashEncrypt = object => {
   Object.keys(object).forEach(key => {
-    if (hashAttributes.includes(key)) {
+    if (hashAttributes.includes(key) && object[key]) {
       // eslint-disable-next-line no-param-reassign
       object[key] = sha256(object[key]);
     }
   });
+};
+
+/**
+ * Get access token to be bound to the event req headers
+ *
+ * Note:
+ * This method needs to be implemented particular to the destination
+ * As the schema that we'd get in `metadata.secret` can be different
+ * for different destinations
+ *
+ * @param {Object} metadata
+ * @returns
+ */
+const getAccessToken = metadata => {
+  // OAuth for this destination
+  const { secret } = metadata;
+  if (!secret) {
+    throw new ErrorBuilder()
+      .setStatus(500)
+      .setMessage("Empty/Invalid access token")
+      .build();
+  }
+  return secret.access_token;
 };
 
 /**
@@ -41,23 +64,27 @@ const hashEncrypt = object => {
 const responseBuilder = (metadata, body, { Config }) => {
   const payload = body;
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}/${Config.customerId}/offlineUserDataJobs`;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
-  const accessToken = metadata.secret.access_token;
-  response.params = { listId: Config.listId, customerId: Config.customerId };
+  const filteredCustomerId = removeHyphens(Config.customerId);
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  const accessToken = getAccessToken(metadata);
+  response.params = { listId: Config.listId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
     "developer-token": getValueFromMessage(metadata, "secret.developer_token")
   };
   if (Config.subAccount)
-    if (Config.loginCustomerId)
-      response.headers["login-customer-id"] = Config.loginCustomerId;
-    else
-      throw new CustomError(
-        `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`,
-        400
-      );
+    if (Config.loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+      response.headers["login-customer-id"] = filteredLoginCustomerId;
+    } else
+      throw new ErrorBuilder()
+        .setMessage(
+          `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`
+        )
+        .setStatus(400)
+        .build();
   return response;
 };
 /**
@@ -90,7 +117,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
         if (element[attribute]) {
           userIdentifier.push({ [attribute]: element[attribute] });
         } else {
-          logger.log(` ${attribute} is not present in index:`, index);
+          logger.info(` ${attribute} is not present in index:`, index);
         }
       } else {
         attribute.forEach((attributeElement, index2) => {
@@ -106,17 +133,15 @@ const populateIdentifiers = (attributeArray, { Config }) => {
               ]
             });
           } else {
-            logger.log(` ${attribute[index2]} is not present in index:`, index);
+            logger.info(
+              ` ${attribute[index2]} is not present in index:`,
+              index
+            );
           }
         });
       }
     });
   }
-  if (userIdentifier.length === 0)
-    throw new CustomError(
-      `[Google_adwords_remarketing_list]:: Their is not ${attribute} to put in userIdentifier.`,
-      400
-    );
   return userIdentifier;
 };
 /**
@@ -132,93 +157,116 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 
 const createPayload = (message, destination) => {
   const { listData } = message.properties;
+  const properties = ["add", "remove"];
 
-  if (!listData.add || !isArray(listData.add)) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::add is not present inside listData. Aborting message.",
-      400
-    );
-  }
-  const userIdentidtifiersList = populateIdentifiers(listData.add, destination);
-  const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  outputPayload.operations = [];
-  // breaking the userIdentiFier array in chunks of 20
-  const userIdentifierChunks = returnArrayOfSubarrays(
-    userIdentidtifiersList,
-    20
-  );
-  // putting each chunk in different create/remove operations
-  userIdentifierChunks.forEach(element => {
-    const operations = {
-      create: {}
-    };
-    operations.create.userIdentifiers = element;
-    outputPayload.operations.push(operations);
+  let outputPayloads = {};
+  const typeOfOperation = Object.keys(listData);
+  typeOfOperation.forEach(key => {
+    if (properties.includes(key)) {
+      const userIdentifiersList = populateIdentifiers(
+        listData[key],
+        destination
+      );
+      if (userIdentifiersList.length === 0) {
+        logger.info(
+          `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`
+        );
+        return;
+      }
+
+      const outputPayload = constructPayload(message, offlineDataJobsMapping);
+      outputPayload.operations = [];
+      // breaking the userIdentiFier array in chunks of 20
+      const userIdentifierChunks = returnArrayOfSubarrays(
+        userIdentifiersList,
+        20
+      );
+      // putting each chunk in different create/remove operations
+      switch (key) {
+        case "add":
+          // for add operation
+          userIdentifierChunks.forEach(element => {
+            const operations = {
+              create: {}
+            };
+            operations.create.userIdentifiers = element;
+            outputPayload.operations.push(operations);
+          });
+          outputPayloads = { ...outputPayloads, create: outputPayload };
+          break;
+        case "remove":
+          // for remove operation
+          userIdentifierChunks.forEach(element => {
+            const operations = {
+              remove: {}
+            };
+            operations.remove.userIdentifiers = element;
+            outputPayload.operations.push(operations);
+          });
+          outputPayloads = { ...outputPayloads, remove: outputPayload };
+          break;
+        default:
+      }
+    } else {
+      logger.info(
+        `listData "${key}" is not valid. Supported types are "add" and "remove"`
+      );
+    }
   });
 
-  return outputPayload;
-  /**
-   * This portion is to support remove and create both.
-   * If we need to support for remove too then need to uncomment this section
-   * and update addUserToJob function in util to handle add and remove both.
-   * Now we are directly sending the the body.JSON but to support remove we have to make two calls
-   * by setting data = body.JSON[0] and data = body.JSON[1] synultaneously.
-   */
-  // const outputPayloads = [];
-  // const typeOfOperation = Object.keys(listData);
-  // typeOfOperation.forEach(key => {
-  //   const userIdentidtifiersList = populateIdentifiers(
-  //     listData[`${key}`],
-  //     destination
-  //   );
-  //   const outputPayload = constructPayload(message, offlineDataJobsMapping);
-  //   outputPayload.operations = [];
-  //   // breaking the userIdentiFier array in chunks of 20
-  //   const userIdentifierChunks = returnArrayOfSubarrays(
-  //     userIdentidtifiersList,
-  //     20
-  //   );
-  //   // putting each chunk in different create/remove operations
-  //   userIdentifierChunks.forEach(element => {
-  //     const operations = {
-  //       [`${key}`]: {}
-  //     };
-  //     operations[`${key}`].userIdentifiers = element;
-  //     outputPayload.operations.push(operations);
-  //   });
-  //   outputPayloads.push(outputPayload);
-  // });
-  // return outputPayloads;
+  return outputPayloads;
 };
 
 const processEvent = async (metadata, message, destination) => {
+  const response = [];
   if (!message.type) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (!message.properties) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (!message.properties.listData) {
-    throw new CustomError(
-      "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
   if (message.type.toLowerCase() === "audiencelist") {
     const createdPayload = createPayload(message, destination);
-    return responseBuilder(metadata, createdPayload, destination);
+
+    if (!Object.keys(createdPayload).length) {
+      throw new ErrorBuilder()
+        .setMessage(
+          "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message."
+        )
+        .setStatus(400)
+        .build();
+    }
+
+    Object.values(createdPayload).forEach(data => {
+      response.push(responseBuilder(metadata, data, destination));
+    });
+    return response;
   }
 
-  throw new CustomError(
-    `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`,
-    400
-  );
+  throw new ErrorBuilder()
+    .setMessage(
+      `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`
+    )
+    .setStatus(400)
+    .build();
 };
 
 const process = async event => {
@@ -246,7 +294,7 @@ const processRouterDest = async inputs => {
             ? error.response.status
             : error.code
             ? error.code
-            : 400,
+            : error.status || 400,
           error.message || "Error occurred while processing payload."
         );
       }

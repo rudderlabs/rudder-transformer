@@ -10,6 +10,7 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
+  removeUndefinedAndNullValues,
   CustomError
 } = require("../../util");
 const { errorHandler } = require("./util");
@@ -63,13 +64,11 @@ const customTagProcessor = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference#create-or-update-contact-new
   // Utilizing the response we further bind more data [tag , field] to it
   let res;
-  const contactPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
+  let contactPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   contactPayload.firstName = getFieldValueFromMessage(message, "firstName");
   contactPayload.lastName = getFieldValueFromMessage(message, "lastName");
   let endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
+  contactPayload = removeUndefinedAndNullValues(contactPayload);
   let requestData = {
     contact: contactPayload
   };
@@ -86,7 +85,6 @@ const customTagProcessor = async (message, category, destination) => {
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
     throw CustomError("Unable to Create Contact", 400);
-
   }
 
   // Here we extract the tags which are to be mapped to the created contact from the message
@@ -429,6 +427,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   payload.contact.firstName = getFieldValueFromMessage(message, "firstName");
   payload.contact.lastName = getFieldValueFromMessage(message, "lastName");
+  payload.contact = removeUndefinedAndNullValues(payload.contact);
   return responseBuilderSimple(payload, category, destination);
 };
 // This method handles any page request
@@ -501,10 +500,10 @@ const screenRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  payload.visit = encodeURIComponent(
-    `{"email":"${get(message, "context.traits.email")}"}`
-
-  );
+  if (get(message, "properties.eventData")) {
+    payload.eventdata = get(message, "properties.eventData");
+  }
+  payload.visit = `{"email":"${get(message, "context.traits.email")}"}`;
   return responseBuilderSimple(payload, category, destination);
 };
 
@@ -525,7 +524,10 @@ const trackRequestHandler = async (message, category, destination) => {
   }
 
   if (res.response.status !== 200)
-    throw new CustomError("Unable to create event", res.response.status || 400);
+    throw new CustomError(
+      "Unable to fetch events. Aborting",
+      res.response.status || 400
+    );
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -549,9 +551,12 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
-  }
-  if (res.response.status !== 201) {
-    throw new CustomError("Unable to create event", res.response.status || 400);
+    if (res.response.status !== 201) {
+      throw new CustomError(
+        "Unable to create event. Aborting",
+        res.response.status || 400
+      );
+    }
   }
 
   // Previous operations successfull then
@@ -561,9 +566,11 @@ const trackRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  payload.visit = encodeURIComponent(
-    `{"email":"${get(message, "context.traits.email")}"}`
-  );
+  if (get(message, "properties.eventData")) {
+    payload.eventdata = get(message, "properties.eventData");
+  }
+  payload.visit = `{"email":"${get(message, "context.traits.email")}"}`;
+
   return responseBuilderSimple(payload, category, destination);
 };
 

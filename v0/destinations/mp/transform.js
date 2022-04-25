@@ -163,10 +163,6 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     set(rawPayload, "$name", getFullName(message));
   }
 
-  if (message.context?.active === false) {
-    rawPayload.$ignore_time = true;
-  }
-
   rawPayload = extractCustomFields(
     message,
     rawPayload,
@@ -229,6 +225,9 @@ function processIdentifyEvents(message, type, destination) {
     $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
+  if (message.context?.active === false) {
+    parameters.$ignore_time = true;
+  }
   returnValue.push(
     responseBuilderSimple(parameters, message, type, destination.Config)
   );
@@ -312,7 +311,7 @@ function processPageOrScreenEvents(message, type, destination) {
     properties.$browser_version = browser.version;
   }
 
-  const eventName = type === "page" ? "Loaded a page" : "Loaded a screen";
+  const eventName = type === "page" ? "Loaded a Page" : "Loaded a Screen";
   const parameters = {
     event: eventName,
     properties

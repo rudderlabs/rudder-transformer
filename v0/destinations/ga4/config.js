@@ -7,6 +7,7 @@ const ConfigCategory = {
   ITEMS: { name: "GA4ItemsConfig" },
 
   /* E-Commerce Events */
+  // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
   /* Browsing Section */
   PRODUCTS_SEARCHED: { name: "GA4ProductsSearchedConfig" },
   PRODUCT_LIST_VIEWED: { name: "GA4ProductListViewedConfig" },

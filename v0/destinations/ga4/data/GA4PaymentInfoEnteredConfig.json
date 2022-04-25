@@ -15,6 +15,11 @@
     "required": false
   },
   {
+    "destKey": "shipping_tier",
+    "sourceKeys": "properties.shipping_method",
+    "required": false
+  },
+  {
     "destKey": "payment_type",
     "sourceKeys": "properties.payment_method",
     "required": false

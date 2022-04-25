@@ -8,7 +8,8 @@ const {
   defaultRequestConfig,
   extractCustomFields,
   isEmptyObject,
-  flattenJson
+  flattenJson,
+  getDestinationExternalID
 } = require("../../util");
 const {
   ENDPOINT,
@@ -50,6 +51,29 @@ const trackResponseBuilder = async (message, { Config }) => {
   let rawPayload = constructPayload(message, trackCommonConfig);
   if (rawPayload.timestamp_micros) {
     rawPayload.timestamp_micros = msUnixTimestamp(rawPayload.timestamp_micros);
+  }
+
+  if (Config.measurementId) {
+    // gtag.js
+    if (!rawPayload.client_id) {
+      throw new CustomError(
+        "context.client_id or messageId must be provided",
+        400
+      );
+    }
+  } else {
+    // firebase
+    rawPayload.app_instance_id = getDestinationExternalID(
+      message,
+      "ga4AppInstanceId"
+    );
+    if (!rawPayload.app_instance_id) {
+      throw new CustomError(
+        "ga4AppInstanceId must be provided under externalId",
+        400
+      );
+    }
+    delete rawPayload.client_id;
   }
 
   const payload = {};
@@ -140,11 +164,15 @@ const trackResponseBuilder = async (message, { Config }) => {
         payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "payment_info_entered":
-        payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
         );
+        if (payload.params.shipping_tier) {
+          payload.name = "add_shipping_info";
+        } else {
+          payload.name = "add_payment_info";
+        }
         payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "order_completed":
@@ -254,17 +282,9 @@ const trackResponseBuilder = async (message, { Config }) => {
         break;
       case "tutorial_begin":
         payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.TUTORIAL_BEGIN.name]
-        );
         break;
       case "tutorial_complete":
         payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.TUTORIAL_COMPLETE.name]
-        );
         break;
       case "unlock_achievement":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -348,9 +368,13 @@ const trackResponseBuilder = async (message, { Config }) => {
     "Content-Type": "application/json"
   };
   response.params = {
-    api_secret: Config.apiSecret,
-    measurement_id: Config.measurementId
+    api_secret: Config.apiSecret
   };
+  if (Config.measurementId) {
+    response.params.measurement_id = Config.measurementId;
+  } else {
+    response.params.firebase_app_id = Config.firebaseAppId;
+  }
   response.body.JSON = rawPayload;
   return response;
 };
@@ -361,8 +385,11 @@ const process = async event => {
   if (!destination.Config.apiSecret) {
     throw new CustomError("API Secret not found. Aborting ", 400);
   }
-  if (!destination.Config.measurementId) {
-    throw new CustomError("Measurement ID not found. Aborting", 400);
+  if (!destination.Config.measurementId && !destination.Config.firebaseAppId) {
+    throw new CustomError(
+      "measurementId or firebaseAppId must be provided. Aborting",
+      400
+    );
   }
 
   if (!message.type) {

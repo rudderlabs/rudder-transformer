@@ -1,8 +1,8 @@
 [
   {
     "destKey": "client_id",
-    "sourceKeys": "messageId",
-    "required": true
+    "sourceKeys": ["context.client_id", "messageId"],
+    "required": false
   },
   {
     "destKey": "user_id",

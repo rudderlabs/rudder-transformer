@@ -11,7 +11,7 @@
   },
   {
     "destKey": "character",
-    "sourceKeys": "properties.charcharacteracter",
+    "sourceKeys": "properties.character",
     "required": false
   }
 ]

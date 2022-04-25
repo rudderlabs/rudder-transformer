@@ -104,7 +104,6 @@
       "type": "track",
       "event": "product list viewed",
       "properties": {
-        "query": "t-shirts",
         "list_id": "related_products",
         "category": "Related_products",
         "products": [

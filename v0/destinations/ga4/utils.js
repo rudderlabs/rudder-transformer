@@ -1,5 +1,11 @@
 const get = require("get-value");
-const { constructPayload, CustomError } = require("../../util");
+const {
+  constructPayload,
+  CustomError,
+  flattenJson,
+  isEmptyObject,
+  extractCustomFields
+} = require("../../util");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
@@ -165,6 +171,36 @@ function isReservedWebCustomPrefixName(event) {
   });
 }
 
+const GA4_ITEM_EXCLUSION = [
+  "item_id",
+  "itemId",
+  "product_id",
+
+  "item_name",
+  "itemName",
+  "name",
+
+  "coupon",
+
+  "item_category",
+  "itemCategory",
+  "category",
+
+  "item_brand",
+  "itemBrand",
+  "brand",
+
+  "item_variant",
+  "itemVariant",
+  "variant",
+
+  "price",
+  "quantity",
+
+  "index",
+  "position"
+];
+
 /**
  * get items properties for a event.
  * @param {*} message
@@ -181,14 +217,27 @@ function getDestinationItemProperties(message, isItemsRequired) {
   }
   if (products && Array.isArray(products)) {
     items = [];
-    products.forEach(item => {
-      const element = constructPayload(
+    products.forEach((item, index) => {
+      let element = constructPayload(
         item,
         mappingConfig[ConfigCategory.ITEMS.name]
       );
       if (!element.item_id && !element.item_name) {
         throw new CustomError("One of product_id or name is required", 400);
       }
+
+      let itemProperties = {};
+      itemProperties = extractCustomFields(
+        message,
+        itemProperties,
+        [`properties.products.${index}`],
+        GA4_ITEM_EXCLUSION
+      );
+      if (!isEmptyObject(itemProperties)) {
+        itemProperties = flattenJson(itemProperties);
+        element = { ...element, ...itemProperties };
+      }
+
       items.push(element);
     });
   } else {

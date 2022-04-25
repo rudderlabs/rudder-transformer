@@ -8,10 +8,5 @@
     "destKey": "item_list_name",
     "sourceKeys": "properties.category",
     "required": false
-  },
-  {
-    "destKey": "items",
-    "sourceKeys": "properties.products",
-    "required": true
   }
 ]

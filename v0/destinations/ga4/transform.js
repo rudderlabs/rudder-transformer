@@ -1,4 +1,5 @@
 const get = require("get-value");
+const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -6,7 +7,8 @@ const {
   constructPayload,
   defaultRequestConfig,
   extractCustomFields,
-  isEmptyObject
+  isEmptyObject,
+  flattenJson
 } = require("../../util");
 const {
   ENDPOINT,
@@ -23,7 +25,8 @@ const {
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
-  isReservedWebCustomPrefixName
+  isReservedWebCustomPrefixName,
+  getDestinationItemProperties
 } = require("./utils");
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -61,7 +64,205 @@ const trackResponseBuilder = async (message, { Config }) => {
           mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
         );
         break;
+      case "product_list_viewed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
+        );
+        payload.params.items = getDestinationItemProperties(message, true);
+        break;
+      case "promotion_viewed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
+        );
+        break;
+      case "promotion_clicked":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
+        );
+        break;
+      case "product_clicked":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
+        );
+        break;
+      case "product_viewed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
+        );
+        break;
+      case "product_added":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
+        );
+        break;
+      case "product_removed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
+        );
+        break;
+      case "cart_viewed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.CART_VIEWED.name]
+        );
+        break;
+      case "checkout_started":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
+        );
+        break;
+      case "payment_info_entered":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
+        );
+        break;
+      case "order_completed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
+        );
+        break;
+      case "order_refunded":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
+        );
+        break;
+      case "product_added_to_wishlist":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
+        );
+        break;
+      case "product_shared":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_SHARED.name]
+        );
+        break;
+      case "cart_shared":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.CART_SHARED.name]
+        );
+        break;
+      case "group":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.GROUP.name]
+        );
+        break;
+      case "earn_virtual_currency":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
+        );
+        break;
+      case "generate_lead":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.GENERATE_LEAD.name]
+        );
+        break;
+      case "level_up":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.LEVEL_UP.name]
+        );
+        break;
+      case "login":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.LOGIN.name]
+        );
+        break;
+      case "post_score":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.POST_SCORE.name]
+        );
+        break;
+      case "select_content":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.SELECT_CONTENT.name]
+        );
+        break;
+      case "sign_up":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.SIGN_UP.name]
+        );
+        break;
+      case "spend_virtual_currency":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
+        );
+        break;
+      case "tutorial_begin":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.TUTORIAL_BEGIN.name]
+        );
+        break;
+      case "tutorial_complete":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.TUTORIAL_COMPLETE.name]
+        );
+        break;
+      case "unlock_achievement":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
+        );
+        break;
+      case "view_search_results":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
+        );
+        break;
       default:
+        logger.info(`'${event}' is a custom GA4 event`);
         break;
     }
   } else {
@@ -92,6 +293,7 @@ const trackResponseBuilder = async (message, { Config }) => {
       GA4_RESERVED_PARAMETER_EXCLUSION
     );
     if (!isEmptyObject(customParameters)) {
+      customParameters = flattenJson(customParameters);
       payload.params = {
         ...payload.params,
         ...customParameters
@@ -109,6 +311,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     GA4_RESERVED_USER_PROPERTY_EXCLUSION
   );
   if (!isEmptyObject(userProperties)) {
+    userProperties = flattenJson(userProperties);
     rawPayload.user_properties = userProperties;
   }
 

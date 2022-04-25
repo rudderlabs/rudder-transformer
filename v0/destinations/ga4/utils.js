@@ -1,3 +1,7 @@
+const get = require("get-value");
+const { constructPayload, CustomError } = require("../../util");
+const { mappingConfig, ConfigCategory } = require("./config");
+
 /**
  * converts to Unix timestamp (in microseconds)
  * @param {*} timestamp
@@ -161,6 +165,38 @@ function isReservedWebCustomPrefixName(event) {
   });
 }
 
+/**
+ * get items properties for a event.
+ * @param {*} message
+ * @returns
+ */
+function getDestinationItemProperties(message, isItemsRequired) {
+  let items;
+  const products = get(message, "properties.products");
+  if ((!products && isItemsRequired) || products.length === 0) {
+    throw new CustomError(
+      `Products is an required field for '${message.event}' event`,
+      400
+    );
+  }
+  if (products && Array.isArray(products)) {
+    items = [];
+    products.forEach(item => {
+      const element = constructPayload(
+        item,
+        mappingConfig[ConfigCategory.ITEMS.name]
+      );
+      if (!element.item_id && !element.item_name) {
+        throw new CustomError("One of product_id or name is required", 400);
+      }
+      items.push(element);
+    });
+  } else {
+    throw new CustomError("Invalid type. Expected Array of products", 400);
+  }
+  return items;
+}
+
 module.exports = {
   msUnixTimestamp,
   isReservedEventName,
@@ -169,5 +205,6 @@ module.exports = {
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
-  isReservedWebCustomPrefixName
+  isReservedWebCustomPrefixName,
+  getDestinationItemProperties
 };

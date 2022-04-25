@@ -4,6 +4,7 @@ const ENDPOINT = "https://www.google-analytics.com/mp/collect";
 
 const ConfigCategory = {
   COMMON: { name: "GA4CommonConfig" },
+  ITEMS: { name: "GA4ItemsConfig" },
 
   /* E-Commerce Events */
   /* Browsing Section */

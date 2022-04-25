@@ -32,6 +32,9 @@ function process(event) {
     message.timestamp = ts;
   }
 
+  // As email is present in message.traits, removing it from properties to reduce redundancy
+  delete message.properties.email;
+
   // Treating userId as unique identifier
   // If userId is not present, then generating it from email using md5 hash function
   if (message.userId === null || message.userId === undefined) {

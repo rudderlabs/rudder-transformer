@@ -10,8 +10,8 @@
     "required": false
   },
   {
-    "destKey": "position",
-    "sourceKeys": "properties.location_id",
+    "destKey": "location_id",
+    "sourceKeys": "properties.position",
     "required": false
   },
   {

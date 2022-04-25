@@ -57,6 +57,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     // GA4 standard events
     // get event specific parameters
     switch (event.toLowerCase()) {
+      /* Browsing Section */
       case "products_searched":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
@@ -72,12 +73,14 @@ const trackResponseBuilder = async (message, { Config }) => {
         );
         payload.params.items = getDestinationItemProperties(message, true);
         break;
+      /* Promotions Section */
       case "promotion_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "promotion_clicked":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -85,13 +88,16 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, false);
         break;
+      /* Ordering Section */
       case "product_clicked":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "product_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -99,6 +105,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "product_added":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -106,6 +113,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "product_removed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -113,6 +121,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "cart_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -120,6 +129,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.CART_VIEWED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "checkout_started":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -127,6 +137,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "payment_info_entered":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -134,6 +145,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "order_completed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -141,6 +153,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       case "order_refunded":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -148,14 +161,18 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
+      /* Wishlist Section */
       case "product_added_to_wishlist":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
+      /* Sharing Section */
       case "product_shared":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
@@ -170,6 +187,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           mappingConfig[ConfigCategory.CART_SHARED.name]
         );
         break;
+      /* Group */
       case "group":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
@@ -177,6 +195,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           mappingConfig[ConfigCategory.GROUP.name]
         );
         break;
+      /* GA4 Events */
       case "earn_virtual_currency":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
@@ -260,6 +279,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
         );
+        payload.params.items = getDestinationItemProperties(message, true);
         break;
       default:
         logger.info(`'${event}' is a custom GA4 event`);

@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "destKey": "method",
+    "sourceKeys": "properties.share_via",
+    "required": true
+  },
+  {
+    "destKey": "content_type",
+    "sourceKeys": "properties.content_type",
+    "required": true
+  },
+  {
+    "destKey": "item_id",
+    "sourceKeys": "properties.item_id",
+    "required": true
+  }
+]

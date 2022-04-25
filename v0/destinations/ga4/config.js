@@ -45,8 +45,7 @@ const ConfigCategory = {
   SELECT_CONTENT: { name: "GA4SelectContentConfig" },
   SIGN_UP: { name: "GA4SignUpConfig" },
   SPEND_VIRTUAL_CURRENCY: { name: "GA4SpendVirtualCurrencyConfig" },
-  TUTORIAL_BEGIN: { name: "GA4TutorialBeginConfig" },
-  TUTORIAL_COMPLETE: { name: "GA4TutorialCompleteConfig" },
+
   UNLOCK_ACHIEVEMENT: { name: "GA4UnlockAchievementConfig" },
   VIEW_SEARCH_RESULTS: { name: "GA4ViewSearchResultsConfig" }
 };

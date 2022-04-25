@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "destKey": "score",
+    "sourceKeys": "properties.score",
+    "required": true
+  },
+  {
+    "destKey": "level",
+    "sourceKeys": "properties.level",
+    "required": false
+  },
+  {
+    "destKey": "character",
+    "sourceKeys": "properties.charcharacteracter",
+    "required": false
+  }
+]

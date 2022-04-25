@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "destKey": "method",
+    "sourceKeys": "properties.method",
+    "required": false
+  }
+]

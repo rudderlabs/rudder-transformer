@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "destKey": "virtual_currency_name",
+    "sourceKeys": "properties.virtual_currency_name",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "required": false
+  }
+]

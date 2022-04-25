@@ -9,8 +9,8 @@ const mapping = JSON.parse(
 );
 
 function process(event) {
-  // throw an error if (email, eventName and dataFields) are not present
-  if (!(event.email && event.eventName && event.dataFields)) {
+  // throw an error if (email, eventName) are not present
+  if (!(event.email && event.eventName)) {
     throw new Error("Unknwon event type from Iterable");
   }
   const message = new Message(`Iterable`);

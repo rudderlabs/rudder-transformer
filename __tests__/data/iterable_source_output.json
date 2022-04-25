@@ -38,7 +38,7 @@
     "message": "Unknwon event type from Iterable"
   },
   {
-    "message": "Unknwon event type from Iterable"
+    "message": "Cannot read property 'createdAt' of undefined"
   },
   {
     "userId": "1b546c04424c5c9effc17739c849fb6b",

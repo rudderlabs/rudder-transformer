@@ -2,6 +2,6 @@
   {
     "destKey": "group_id",
     "sourceKeys": "properties.group_id",
-    "required": true
+    "required": false
   }
 ]

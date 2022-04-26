@@ -9,7 +9,8 @@ const {
   extractCustomFields,
   isEmptyObject,
   flattenJson,
-  getDestinationExternalID
+  getDestinationExternalID,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   ENDPOINT,
@@ -77,7 +78,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     delete rawPayload.client_id;
   }
 
-  const payload = {};
+  let payload = {};
   if (eventNameMapping[event.toLowerCase()]) {
     // GA4 standard events
     // get event specific parameters
@@ -343,6 +344,8 @@ const trackResponseBuilder = async (message, { Config }) => {
     removeReservedParameterPrefixNames(payload.params);
   }
 
+  payload.params = removeUndefinedAndNullValues(payload.params);
+
   // take GA4 user properties
   let userProperties = {};
   userProperties = extractCustomFields(
@@ -358,6 +361,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   removeReservedUserPropertyPrefixNames(rawPayload.user_properties);
 
+  payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };
 
   // firebase

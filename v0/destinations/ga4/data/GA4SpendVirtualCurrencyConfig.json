@@ -13,7 +13,7 @@
     "required": true
   },
   {
-    "destKey": "vaitem_namelue",
+    "destKey": "item_name",
     "sourceKeys": "properties.item_name",
     "required": false
   }

@@ -301,7 +301,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getDestinationItemProperties(message, false);
         break;
       default:
         logger.info(`'${event}' is a custom GA4 event`);
@@ -344,7 +344,13 @@ const trackResponseBuilder = async (message, { Config }) => {
     removeReservedParameterPrefixNames(payload.params);
   }
 
-  payload.params = removeUndefinedAndNullValues(payload.params);
+  if (payload.params) {
+    payload.params = removeUndefinedAndNullValues(payload.params);
+  }
+
+  if (isEmptyObject(payload.params)) {
+    delete payload.params;
+  }
 
   // take GA4 user properties
   let userProperties = {};

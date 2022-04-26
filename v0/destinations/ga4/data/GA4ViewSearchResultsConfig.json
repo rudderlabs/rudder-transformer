@@ -2,6 +2,6 @@
   {
     "destKey": "search_term",
     "sourceKeys": "properties.search_term",
-    "required": true
+    "required": false
   }
 ]

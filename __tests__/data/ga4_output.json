@@ -989,8 +989,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "share",
-            "params": {}
+            "name": "share"
           }
         ]
       },
@@ -1055,8 +1054,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "share",
-            "params": {}
+            "name": "share"
           }
         ]
       },
@@ -1119,8 +1117,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "join_group",
-            "params": {}
+            "name": "join_group"
           }
         ]
       },
@@ -1184,8 +1181,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "earn_virtual_currency",
-            "params": {}
+            "name": "earn_virtual_currency"
           }
         ]
       },
@@ -1283,8 +1279,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "level_up",
-            "params": {}
+            "name": "level_up"
           }
         ]
       },
@@ -1347,8 +1342,7 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "login",
-            "params": {}
+            "name": "login"
           }
         ]
       },
@@ -1480,8 +1474,343 @@
         "non_personalized_ads": false,
         "events": [
           {
-            "name": "select_content",
-            "params": {}
+            "name": "select_content"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "sign_up",
+            "params": {
+              "method": "Google"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "sign_up"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "spend_virtual_currency",
+            "params": {
+              "value": 5,
+              "virtual_currency_name": "Gems",
+              "item_name": "Starter Boost"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "spend_virtual_currency",
+            "params": {
+              "value": 5,
+              "virtual_currency_name": "Gems"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "tutorial_begin"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "tutorial_complete"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "unlock_achievement",
+            "params": {
+              "achievement_id": "A_12345"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "view_search_results",
+            "params": {
+              "search_term": "Clothing",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "view_search_results",
+            "params": {
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
           }
         ]
       },

@@ -2,6 +2,9 @@
   {
     "destKey": "level",
     "sourceKeys": "properties.level",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   },
   {

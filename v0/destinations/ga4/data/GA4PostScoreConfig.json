@@ -2,11 +2,17 @@
   {
     "destKey": "score",
     "sourceKeys": "properties.score",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": true
   },
   {
     "destKey": "level",
     "sourceKeys": "properties.level",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   },
   {

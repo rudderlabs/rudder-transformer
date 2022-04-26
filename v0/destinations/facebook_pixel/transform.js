@@ -2,6 +2,7 @@
 const sha256 = require("sha256");
 const get = require("get-value");
 const moment = require("moment");
+const stats = require("../../../util/stats");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -597,6 +598,8 @@ const processEvent = (message, destination) => {
       moment.duration(start.diff(current)).asMinutes()
     );
     if (deltaDay > 7 || deltaMin > 1) {
+      // TODO: Remove after testing in mirror transformer
+      stats.increment("fb_pixel_timestamp_error", 1);
       throw new CustomError(
         "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
         400

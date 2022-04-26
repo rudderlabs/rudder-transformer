@@ -63,9 +63,9 @@
                   "item_category": "Apparel",
                   "item_brand": "Google",
                   "item_variant": "green",
-                  "price": "19",
-                  "quantity": "2",
-                  "index": "1",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
                   "affiliation": "Google Merchandise Store",
                   "currency": "USD",
                   "discount": 2.22,
@@ -123,9 +123,9 @@
                   "item_category": "Apparel",
                   "item_brand": "Google",
                   "item_variant": "green",
-                  "price": "19",
-                  "quantity": "2",
-                  "index": "0",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 0,
                   "affiliation": "Google Merchandise Store",
                   "currency": "USD",
                   "discount": 2.22,
@@ -142,6 +142,731 @@
                   "creative_slot": "featured_app_1"
                 }
               ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "select_promotion",
+            "params": {
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "location_id": "L_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 0,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345",
+                  "promotion_id": "P_12345",
+                  "promotion_name": "Summer Sale",
+                  "creative_name": "summer_banner2",
+                  "creative_slot": "featured_app_1"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "select_promotion",
+            "params": {
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "location_id": "L_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "select_item",
+            "params": {
+              "item_list_id": "related_products",
+              "item_list_name": "Related_products",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "view_item",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "add_to_cart",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "remove_from_cart",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "view_cart",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "begin_checkout",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "coupon": "SUMMER_FUN",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "coupon": "SUMMER_FUN",
+              "payment_type": "Credit Card",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            },
+            "name": "add_payment_info"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "coupon": "SUMMER_FUN",
+              "shipping_tier": "Ground",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            },
+            "name": "add_shipping_info"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "purchase",
+            "params": {
+              "currency": "USD",
+              "transaction_id": "T_12345",
+              "value": 12.21,
+              "affiliation": "Google Store",
+              "coupon": "SUMMER_FUN",
+              "shipping": 3.33,
+              "tax": 1.11,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "refund",
+            "params": {
+              "currency": "USD",
+              "transaction_id": "T_12345",
+              "value": 12.21,
+              "affiliation": "Google Store",
+              "coupon": "SUMMER_FUN",
+              "shipping": 3.33,
+              "tax": 1.11,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "refund",
+            "params": {
+              "currency": "USD",
+              "transaction_id": "T_12345",
+              "value": 12.21,
+              "affiliation": "Google Store",
+              "coupon": "SUMMER_FUN",
+              "shipping": 3.33,
+              "tax": 1.11
             }
           }
         ]

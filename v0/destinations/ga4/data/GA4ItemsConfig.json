@@ -32,16 +32,25 @@
   {
     "destKey": "price",
     "sourceKeys": "price",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   },
   {
     "destKey": "quantity",
     "sourceKeys": "quantity",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   },
   {
     "destKey": "index",
     "sourceKeys": "position",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   }
 ]

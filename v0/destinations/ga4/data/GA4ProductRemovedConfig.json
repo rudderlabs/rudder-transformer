@@ -7,6 +7,9 @@
   {
     "destKey": "value",
     "sourceKeys": "properties.total",
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": true
   }
 ]

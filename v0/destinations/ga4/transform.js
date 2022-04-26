@@ -190,7 +190,7 @@ const trackResponseBuilder = async (message, { Config }) => {
           message,
           mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getDestinationItemProperties(message, false);
         break;
       /* Wishlist Section */
       case "product_added_to_wishlist":

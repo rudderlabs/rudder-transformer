@@ -209,7 +209,7 @@ const GA4_ITEM_EXCLUSION = [
 function getDestinationItemProperties(message, isItemsRequired) {
   let items;
   const products = get(message, "properties.products");
-  if ((!products && isItemsRequired) || products.length === 0) {
+  if ((!products && isItemsRequired) || (products && products.length === 0)) {
     throw new CustomError(
       `Products is an required field for '${message.event}' event`,
       400
@@ -240,7 +240,7 @@ function getDestinationItemProperties(message, isItemsRequired) {
 
       items.push(element);
     });
-  } else {
+  } else if (products && !Array.isArray(products)) {
     throw new CustomError("Invalid type. Expected Array of products", 400);
   }
   return items;

@@ -29,6 +29,7 @@ const {
   isReservedWebCustomPrefixName,
   getDestinationItemProperties
 } = require("./utils");
+const { httpPOST } = require("../../../adapters/network");
 
 const trackResponseBuilder = async (message, { Config }) => {
   let event = get(message, "event");
@@ -359,24 +360,39 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   rawPayload = { ...rawPayload, events: [payload] };
 
-  // build response
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINT;
-  response.headers = {
-    HOST: "www.google-analytics.com",
-    "Content-Type": "application/json"
-  };
-  response.params = {
-    api_secret: Config.apiSecret
-  };
-  if (Config.measurementId) {
-    response.params.measurement_id = Config.measurementId;
+  // firebase
+  if (Config.firebaseAppId) {
+    // Using network layer for firebase
+    const endpoint = `${ENDPOINT}?api_secret=${Config.apiSecret}&firebase_app_id=${Config.firebaseAppId}`;
+    const requestOptions = {
+      headers: {
+        HOST: "www.google-analytics.com",
+        "Content-Type": "application/json"
+      }
+    };
+    const res = await httpPOST(endpoint, rawPayload, requestOptions);
+
+    if (!res.success) {
+      const error = res.response;
+      throw new CustomError(error.response.statusText, error.response.status);
+    }
   } else {
-    response.params.firebase_app_id = Config.firebaseAppId;
+    // build response
+    // gtag.js
+    const response = defaultRequestConfig();
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.endpoint = ENDPOINT;
+    response.headers = {
+      HOST: "www.google-analytics.com",
+      "Content-Type": "application/json"
+    };
+    response.params = {
+      api_secret: Config.apiSecret,
+      measurement_id: Config.measurementId
+    };
+    response.body.JSON = rawPayload;
+    return response;
   }
-  response.body.JSON = rawPayload;
-  return response;
 };
 
 const process = async event => {

@@ -87,5 +87,69 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "client_id": "client_id",
+        "events": [
+          {
+            "name": "view_promotion",
+            "params": {
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "location_id": "L_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale",
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": "19",
+                  "quantity": "2",
+                  "index": "0",
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345",
+                  "promotion_id": "P_12345",
+                  "promotion_name": "Summer Sale",
+                  "creative_name": "summer_banner2",
+                  "creative_slot": "featured_app_1"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

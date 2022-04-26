@@ -599,7 +599,9 @@ const processEvent = (message, destination) => {
     );
     if (deltaDay > 7 || deltaMin > 1) {
       // TODO: Remove after testing in mirror transformer
-      stats.increment("fb_pixel_timestamp_error", 1);
+      stats.increment("fb_pixel_timestamp_error", 1, {
+        destinationId: destination.ID
+      });
       throw new CustomError(
         "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
         400

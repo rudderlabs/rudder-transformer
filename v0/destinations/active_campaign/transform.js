@@ -297,7 +297,8 @@ const customFieldProcessor = async (message, category, destination) => {
       filteredFieldKeys.push(fieldKey);
     } else {
       throw new CustomError(
-        `Field:${fieldKey} not present for Active Campaigm instance`
+        `Field:${fieldKey} not present for Active Campaigm instance`,
+        400
       );
     }
   });

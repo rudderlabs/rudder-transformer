@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -36,22 +37,6 @@ const getAccessToken = metadata => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  let flag = 0;
-  const { listOfConversions } = Config;
-  for (let i = 0; i < listOfConversions.length; i += 1) {
-    if (listOfConversions[i].conversions === event) {
-      flag = 1;
-      break;
-    }
-  }
-  if (event === undefined || event === "" || flag === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
-      )
-      .setStatus(400)
-      .build();
-  }
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
@@ -77,7 +62,37 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
 };
 
 const processTrackEvent = async (metadata, message, destination) => {
-  const payload = constructPayload(message, trackMapping);
+  let flag = 0;
+  const { Config } = destination;
+  const { event } = message;
+  const { listOfConversions } = Config;
+  for (let i = 0; i < listOfConversions.length; i += 1) {
+    if (listOfConversions[i].conversions === event) {
+      flag = 1;
+      break;
+    }
+  }
+  if (event === undefined || event === "" || flag === 0) {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
+      )
+      .setStatus(400)
+      .build();
+  }
+  const { requireHash } = destination.Config;
+  if (requireHash === false) {
+    message.integrations.google_adwords_enhanced_conversions = { hashed: true };
+  } else {
+    message.integrations.google_adwords_enhanced_conversions = {
+      hashed: false
+    };
+  }
+  const payload = constructPayload(
+    message,
+    trackMapping,
+    "google_adwords_enhanced_conversions"
+  );
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new ErrorBuilder()
@@ -100,14 +115,16 @@ const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
     throw new ErrorBuilder()
-      .setMessage("Invalid payload. Property Type is not present")
+      .setMessage(
+        "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present"
+      )
       .setStatus(400)
       .build();
   }
   if (type.toLowerCase() !== "track") {
     throw new ErrorBuilder()
       .setMessage(
-        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not present. Aborting message.`
+        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`
       )
       .setStatus(400)
       .build();

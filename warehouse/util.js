@@ -18,8 +18,30 @@ const isObject = value => {
   );
 };
 
+const isJson = value => {
+  return value != null && (typeof value === "object" || Array.isArray(value));
+};
+
+const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
+  return jsonKeys[key] === level;
+};
+
 const isBlank = value => {
   return _.isEmpty(_.toString(value));
+};
+/*
+ * input => ["a", "b.c"]
+ * output => { "a": 0, "b_c": 1}
+ */
+const getKeysFromJsonPaths = jsonPaths => {
+  const jsonKeys = {};
+  jsonPaths.forEach(jsonPath => {
+    if (jsonPath.trim()) {
+      const paths = jsonPath.trim().split(".");
+      jsonKeys[paths.join("_")] = paths.length - 1;
+    }
+  });
+  return jsonKeys;
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -70,6 +92,9 @@ const getCloudRecordID = (message, fallbackValue) => {
 module.exports = {
   isObject,
   isBlank,
+  isJson,
+  isValidJsonPathKey,
+  getKeysFromJsonPaths,
   timestampRegex,
   validTimestamp,
   getVersionedUtils,

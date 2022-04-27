@@ -304,7 +304,6 @@ const trackResponseBuilder = async (message, { Config }) => {
         payload.params.items = getDestinationItemProperties(message, false);
         break;
       default:
-        logger.info(`'${event}' is a custom GA4 event`);
         break;
     }
   } else {
@@ -406,7 +405,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 };
 
-const process = async event => {
+function process(event) {
   const { message, destination } = event;
 
   if (!destination.Config.apiSecret) {
@@ -430,12 +429,12 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
-};
+}
 
 module.exports = { process };

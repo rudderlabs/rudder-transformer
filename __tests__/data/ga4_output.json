@@ -2170,5 +2170,34 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "tutotial_complete"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

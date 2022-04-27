@@ -1891,7 +1891,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Google Analytics 4] track:: Reserved event names are not allowd",
+    "error": "[Google Analytics 4] track:: Reserved event names are not allowed",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",
@@ -1969,7 +1969,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Google Analytics 4] track:: Reserved event names are not allowd",
+    "error": "[Google Analytics 4] track:: Reserved event names are not allowed",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",
@@ -1978,7 +1978,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Google Analytics 4] track:: Reserved custom prefix names are not allowd",
+    "error": "[Google Analytics 4] track:: Reserved custom prefix names are not allowed",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",
@@ -2156,6 +2156,15 @@
   {
     "statusCode": 400,
     "error": "ga4AppInstanceId must be provided under externalId",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Google Analytics 4] track:: Reserved custom event names are not allowed",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",

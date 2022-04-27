@@ -1,7 +1,7 @@
 [
   {
     "destKey": "group_id",
-    "sourceKeys": "properties.group_id",
+    "sourceKeys": ["groupId", "properties.groupId", "properties.group_id"],
     "required": false
   }
 ]

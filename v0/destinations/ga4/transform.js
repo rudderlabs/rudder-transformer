@@ -44,7 +44,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   // reserved event names are not allowed
   if (isReservedEventName(event)) {
     throw new CustomError(
-      "[Google Analytics 4] track:: Reserved event names are not allowd",
+      "[Google Analytics 4] track:: Reserved event names are not allowed",
       400
     );
   }
@@ -312,14 +312,14 @@ const trackResponseBuilder = async (message, { Config }) => {
     // Event names are case sensitive
     if (isReservedWebCustomEventName(event)) {
       throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom event names are not allowd",
+        "[Google Analytics 4] track:: Reserved custom event names are not allowed",
         400
       );
     }
 
     if (isReservedWebCustomPrefixName(event)) {
       throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom prefix names are not allowd",
+        "[Google Analytics 4] track:: Reserved custom prefix names are not allowed",
         400
       );
     }

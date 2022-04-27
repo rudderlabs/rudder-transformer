@@ -228,7 +228,7 @@ const customFieldProcessor = async (message, category, destination) => {
     get(message.context.traits, "fieldInfo") ||
     get(message.traits, "fieldInfo");
 
-  // If no field info is passed return from method
+  // If no field info is passed return from method with empty array
   if (!fieldInfo) {
     return [];
   }
@@ -292,14 +292,9 @@ const customFieldProcessor = async (message, category, destination) => {
   const storedFields = Object.keys(fieldMap);
   const filteredFieldKeys = [];
   fieldKeys.map(fieldKey => {
-    // If the field is not present in fieldMap log an error else push it to storedFieldKeys
+    // If the field is present in fieldMap push it to filteredFieldKeys else ignore
     if (storedFields.includes(fieldKey)) {
       filteredFieldKeys.push(fieldKey);
-    } else {
-      throw new CustomError(
-        `Field:${fieldKey} not present for Active Campaigm instance`,
-        400
-      );
     }
   });
 

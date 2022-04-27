@@ -57,6 +57,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -153,6 +156,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -258,6 +264,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -364,6 +373,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -443,6 +455,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -542,6 +557,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -641,6 +659,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -740,6 +761,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -839,6 +863,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -938,6 +965,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1038,6 +1068,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1139,6 +1172,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1240,6 +1276,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1344,6 +1383,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1448,6 +1490,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1529,6 +1574,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1628,6 +1676,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1705,6 +1756,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1777,6 +1831,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1854,6 +1911,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1927,6 +1987,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2002,6 +2065,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2074,6 +2140,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2150,6 +2219,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2222,6 +2294,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2298,6 +2373,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2374,6 +2452,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2446,6 +2527,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2521,6 +2605,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2593,6 +2680,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2670,6 +2760,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2745,6 +2838,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2821,6 +2917,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2893,6 +2992,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -2968,6 +3070,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3040,6 +3145,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3117,6 +3225,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3193,6 +3304,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3265,6 +3379,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3337,6 +3454,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3412,6 +3532,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3510,6 +3633,9 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -3607,6 +3733,1553 @@
         "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
         "measurementId": "G-T40PE6KET4",
         "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "rudderstack event",
+      "properties": {
+        "total": "10"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "rudderstack event",
+      "properties": {
+        "total": "10"
+      },
+      "user_properties": {
+        "price": "19"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "ad_click",
+      "properties": {
+        "total": "10"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "rudderstack event",
+      "properties": {
+        "firebase_conversion": "firebase_conversion",
+        "google_id": "1234",
+        "ga_value": "ga_value",
+        "value": "10"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "rudderstack event",
+      "properties": {
+        "firebase_conversion": "firebase_conversion",
+        "google_id": "1234",
+        "ga_value": "ga_value",
+        "value": "10"
+      },
+      "user_properties": {
+        "first_open_time": "first_open_time",
+        "user_id": "user_id",
+        "firebase_value": "firebase_value",
+        "price": "100"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "app_remove",
+      "properties": {
+        "firebase_conversion": "firebase_conversion",
+        "google_id": "1234",
+        "ga_value": "ga_value",
+        "value": "10"
+      },
+      "user_properties": {
+        "first_open_time": "first_open_time",
+        "user_id": "user_id",
+        "firebase_value": "firebase_value",
+        "price": "100"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "firebase_event1",
+      "properties": {
+        "firebase_conversion": "firebase_conversion",
+        "google_id": "1234",
+        "ga_value": "ga_value",
+        "value": "10"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "product added",
+      "properties": {
+        "currency": "USD",
+        "total": "7.77",
+        "google_data": "google_data",
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "name": "Monopoly: 3rd Edition",
+            "coupon": "SUMMER_FUN",
+            "category": "Apparel",
+            "brand": "Google",
+            "variant": "green",
+            "price": "19",
+            "quantity": "2",
+            "position": "1",
+            "affiliation": "Google Merchandise Store",
+            "currency": "USD",
+            "discount": 2.22,
+            "item_category2": "Adult",
+            "item_category3": "Shirts",
+            "item_category4": "Crew",
+            "item_category5": "Short sleeve",
+            "item_list_id": "related_products",
+            "item_list_name": "Related Products",
+            "location_id": "L_12345"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "rudderstack event",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "product added",
+      "properties": {
+        "currency": "USD",
+        "total": "7.77",
+        "products": []
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "product added",
+      "properties": {
+        "currency": "USD",
+        "total": "7.77",
+        "products": {
+          "product_id": "507f1f77bcf86cd799439011",
+          "name": "Monopoly: 3rd Edition",
+          "coupon": "SUMMER_FUN",
+          "category": "Apparel",
+          "brand": "Google",
+          "variant": "green",
+          "price": "19",
+          "quantity": "2",
+          "position": "1",
+          "affiliation": "Google Merchandise Store",
+          "currency": "USD",
+          "discount": 2.22,
+          "item_category2": "Adult",
+          "item_category3": "Shirts",
+          "item_category4": "Crew",
+          "item_category5": "Short sleeve",
+          "item_list_id": "related_products",
+          "item_list_name": "Related Products",
+          "location_id": "L_12345"
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "product added",
+      "properties": {
+        "currency": "USD",
+        "total": "7.77",
+        "products": [
+          {
+            "coupon": "SUMMER_FUN",
+            "category": "Apparel",
+            "brand": "Google",
+            "variant": "green",
+            "price": "19",
+            "quantity": "2",
+            "position": "1",
+            "affiliation": "Google Merchandise Store",
+            "currency": "USD",
+            "discount": 2.22,
+            "item_category2": "Adult",
+            "item_category3": "Shirts",
+            "item_category4": "Crew",
+            "item_category5": "Short sleeve",
+            "item_list_id": "related_products",
+            "item_list_name": "Related Products",
+            "location_id": "L_12345"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "page",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "",
+        "firebaseAppId": "1:17864591371:android:7a9520d3c78962e21f9fee",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {

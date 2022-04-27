@@ -1819,5 +1819,347 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "rudderstack_event",
+            "params": {
+              "total": "10"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "user_properties": {
+          "price": "19"
+        },
+        "events": [
+          {
+            "name": "rudderstack_event",
+            "params": {
+              "total": "10"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Google Analytics 4] track:: Reserved event names are not allowd",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "rudderstack_event",
+            "params": {
+              "value": "10"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "user_properties": {
+          "price": "100"
+        },
+        "events": [
+          {
+            "name": "rudderstack_event",
+            "params": {
+              "value": "10"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Google Analytics 4] track:: Reserved event names are not allowd",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[Google Analytics 4] track:: Reserved custom prefix names are not allowd",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "add_to_cart",
+            "params": {
+              "currency": "USD",
+              "value": 7.77,
+              "items": [
+                {
+                  "item_id": "507f1f77bcf86cd799439011",
+                  "item_name": "Monopoly: 3rd Edition",
+                  "coupon": "SUMMER_FUN",
+                  "item_category": "Apparel",
+                  "item_brand": "Google",
+                  "item_variant": "green",
+                  "price": 19,
+                  "quantity": 2,
+                  "index": 1,
+                  "affiliation": "Google Merchandise Store",
+                  "currency": "USD",
+                  "discount": 2.22,
+                  "item_category2": "Adult",
+                  "item_category3": "Shirts",
+                  "item_category4": "Crew",
+                  "item_category5": "Short sleeve",
+                  "item_list_id": "related_products",
+                  "item_list_name": "Related Products",
+                  "location_id": "L_12345"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "rudderstack_event"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Products is an required field for 'product added' event",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Invalid type. Expected Array of products",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "One of product_id or name is required",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "API Secret not found. Aborting ",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "measurementId or firebaseAppId must be provided. Aborting",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message type page not supported",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Event name is required",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "context.client_id or messageId must be provided",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "ga4AppInstanceId must be provided under externalId",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

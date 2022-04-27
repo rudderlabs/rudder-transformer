@@ -341,8 +341,9 @@ const trackResponseBuilder = async (message, { Config }) => {
         ...customParameters
       };
     }
-    removeReservedParameterPrefixNames(payload.params);
   }
+
+  removeReservedParameterPrefixNames(payload.params);
 
   if (payload.params) {
     payload.params = removeUndefinedAndNullValues(payload.params);

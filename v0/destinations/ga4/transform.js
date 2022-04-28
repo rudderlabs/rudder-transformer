@@ -1,5 +1,4 @@
 const get = require("get-value");
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -30,9 +29,8 @@ const {
   isReservedWebCustomPrefixName,
   getDestinationItemProperties
 } = require("./utils");
-const { httpPOST } = require("../../../adapters/network");
 
-const trackResponseBuilder = async (message, { Config }) => {
+function trackResponseBuilder(message, { Config }) {
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("Event name is required", 400);
@@ -55,8 +53,10 @@ const trackResponseBuilder = async (message, { Config }) => {
     rawPayload.timestamp_micros = msUnixTimestamp(rawPayload.timestamp_micros);
   }
 
-  if (Config.measurementId) {
+  if (Config.typesOfClient === "gtag" && Config.measurementId) {
     // gtag.js
+    rawPayload.client_id =
+      get(message, "context.client_id") || get(message, "messageId");
     if (!rawPayload.client_id) {
       throw new CustomError(
         "context.client_id or messageId must be provided",
@@ -75,7 +75,6 @@ const trackResponseBuilder = async (message, { Config }) => {
         400
       );
     }
-    delete rawPayload.client_id;
   }
 
   let payload = {};
@@ -388,19 +387,23 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   response.body.JSON = rawPayload;
   return response;
-};
+}
 
 function process(event) {
   const { message, destination } = event;
+  const { Config } = destination;
 
-  if (!destination.Config.apiSecret) {
+  if (!Config.typesOfClient) {
+    throw new CustomError("Client type not found. Aborting ", 400);
+  }
+  if (!Config.apiSecret) {
     throw new CustomError("API Secret not found. Aborting ", 400);
   }
-  if (!destination.Config.measurementId && !destination.Config.firebaseAppId) {
-    throw new CustomError(
-      "measurementId or firebaseAppId must be provided. Aborting",
-      400
-    );
+  if (Config.typesOfClient === "gtag" && !Config.measurementId) {
+    throw new CustomError("measurementId must be provided. Aborting", 400);
+  }
+  if (Config.typesOfClient === "firebase" && !Config.firebaseAppId) {
+    throw new CustomError("firebaseAppId must be provided. Aborting", 400);
   }
 
   if (!message.type) {

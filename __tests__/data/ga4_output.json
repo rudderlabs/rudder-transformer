@@ -2110,7 +2110,7 @@
   },
   {
     "statusCode": 400,
-    "error": "measurementId or firebaseAppId must be provided. Aborting",
+    "error": "measurementId must be provided. Aborting",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",

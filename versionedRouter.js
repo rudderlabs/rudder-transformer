@@ -223,6 +223,10 @@ async function handleDest(ctx, version, destination) {
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
+        stats.counter("dest_transform_errors", 1, {
+          destination,
+          ...metaTags,
+        });
         respList.push({
           metadata: event.metadata,
           statusCode: 400,

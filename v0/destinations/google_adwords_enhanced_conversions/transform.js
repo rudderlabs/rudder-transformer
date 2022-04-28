@@ -1,3 +1,7 @@
+/* eslint-disable no-param-reassign */
+
+const get = require("get-value");
+const { cloneDeep } = require("lodash");
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -9,6 +13,25 @@ const {
 const ErrorBuilder = require("../../util/error");
 
 const { trackMapping, BASE_ENDPOINT } = require("./config");
+
+/**
+ * This function is helping to update the mappingJson.
+ * It is removing the metadata field with type "hashToSha256"
+ * @param {} mapping -> it is the configMapping.json
+ * @returns
+ */
+const updateMappingJson = mapping => {
+  const newMapping = [];
+  mapping.forEach(element => {
+    if (get(element, "metadata.type")) {
+      if (element.metadata.type === "hashToSha256") {
+        element.metadata.type = "toString";
+      }
+    }
+    newMapping.push(element);
+  });
+  return newMapping;
+};
 
 /**
  * Get access token to be bound to the event req headers
@@ -36,22 +59,6 @@ const getAccessToken = metadata => {
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
-  let flag = 0;
-  const { listOfConversions } = Config;
-  for (let i = 0; i < listOfConversions.length; i += 1) {
-    if (listOfConversions[i].conversions === event) {
-      flag = 1;
-      break;
-    }
-  }
-  if (event === undefined || event === "" || flag === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
-      )
-      .setStatus(400)
-      .build();
-  }
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
@@ -77,7 +84,40 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
 };
 
 const processTrackEvent = async (metadata, message, destination) => {
-  const payload = constructPayload(message, trackMapping);
+  let flag = 0;
+  const { Config } = destination;
+  const { event } = message;
+  const { listOfConversions } = Config;
+  if (listOfConversions.some(i => i.conversions === event)) {
+    flag = 1;
+  }
+  if (event === undefined || event === "" || flag === 0) {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
+      )
+      .setStatus(400)
+      .build();
+  }
+  const { requireHash } = destination.Config;
+  let updatedMapping = cloneDeep(trackMapping);
+
+  if (requireHash === false) {
+    updatedMapping = updateMappingJson(updatedMapping);
+  }
+
+  let payload;
+  try {
+    payload = constructPayload(message, updatedMapping);
+  } catch (e) {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`
+      )
+      .setStatus(400)
+      .build();
+  }
+
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new ErrorBuilder()
@@ -90,8 +130,9 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
-  payload.conversionAdjustments[0].userIdentifiers = arr.filter(() => {
-    return true;
+  payload.conversionAdjustments[0].userIdentifiers = arr.filter(item => {
+    if (item) return true;
+    return false;
   });
   return responseBuilder(metadata, message, destination, payload);
 };
@@ -100,14 +141,16 @@ const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
     throw new ErrorBuilder()
-      .setMessage("Invalid payload. Property Type is not present")
+      .setMessage(
+        "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present"
+      )
       .setStatus(400)
       .build();
   }
   if (type.toLowerCase() !== "track") {
     throw new ErrorBuilder()
       .setMessage(
-        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not present. Aborting message.`
+        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`
       )
       .setStatus(400)
       .build();

@@ -311,5 +311,21 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "metadata": {
+      "secret": {
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      }
+    },
+    "statusCode": 400,
+    "error": "[Google_adwords_enhanced_conversions]::Missing required value from [\"properties.orderId\",\"properties.order_id\"] for Page View event.",
+    "statTags": {
+      "destination": "google_adwords_enhanced_conversions",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

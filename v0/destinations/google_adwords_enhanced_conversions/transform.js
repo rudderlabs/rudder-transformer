@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const { get } = require("lodash");
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -10,6 +11,22 @@ const {
 const ErrorBuilder = require("../../util/error");
 
 const { trackMapping, BASE_ENDPOINT } = require("./config");
+
+/**
+ * This function is helping to update the mappingJson.
+ * It is removing the metadata field with type "hashToSha256"
+ * @param {} mapping -> it is the configMapping.json
+ * @returns
+ */
+const updateMappingJson = mapping => {
+  const newMapping = [];
+  mapping.forEach(element => {
+    if (get(element, "metadata.type"))
+      if (element.metadata.type === "hashToSha256") delete element.metadata;
+    newMapping.push(element);
+  });
+  return newMapping;
+};
 
 /**
  * Get access token to be bound to the event req headers
@@ -81,18 +98,26 @@ const processTrackEvent = async (metadata, message, destination) => {
       .build();
   }
   const { requireHash } = destination.Config;
-  if (requireHash === false) {
-    message.integrations.google_adwords_enhanced_conversions = { hashed: true };
-  } else {
-    message.integrations.google_adwords_enhanced_conversions = {
-      hashed: false
-    };
+  let updatedMapping = JSON.parse(JSON.stringify(trackMapping));
+
+  if (requireHash === false) updatedMapping = updateMappingJson(updatedMapping);
+
+  let payload;
+  try {
+    payload = constructPayload(
+      message,
+      updatedMapping,
+      "google_adwords_enhanced_conversions"
+    );
+  } catch (e) {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`
+      )
+      .setStatus(400)
+      .build();
   }
-  const payload = constructPayload(
-    message,
-    trackMapping,
-    "google_adwords_enhanced_conversions"
-  );
+
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new ErrorBuilder()
@@ -105,8 +130,9 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
-  payload.conversionAdjustments[0].userIdentifiers = arr.filter(() => {
-    return true;
+  payload.conversionAdjustments[0].userIdentifiers = arr.filter(item => {
+    if (item) return true;
+    return false;
   });
   return responseBuilder(metadata, message, destination, payload);
 };

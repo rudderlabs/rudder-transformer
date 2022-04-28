@@ -308,6 +308,7 @@
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",
       "sentAt": "2020-01-16T13:23:23.782Z",
+      "originalTimestamp": "2020-01-16T13:23:23.782Z",
       "timestamp": "2021-02-16T18:53:20.866+05:30",
       "type": "track",
       "userId": "sampath"
@@ -437,10 +438,7 @@
           "City": "Los Angeles",
           "State": "CA"
         },
-        "hobbies": [
-          "Music",
-          "Running"
-        ]
+        "hobbies": ["Music", "Running"]
       },
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",
@@ -511,6 +509,7 @@
       "request_ip": "[::1]:62312",
       "sentAt": "2020-01-16T13:23:23.782Z",
       "timestamp": "2020-01-16T18:53:20.866+05:30",
+      "originalTimestamp": "2020-01-16T13:23:23.782Z",
       "type": "track",
       "userId": "sampath"
     }

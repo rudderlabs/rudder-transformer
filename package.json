@@ -66,7 +66,6 @@
     "parse-static-imports": "^1.1.0",
     "pprof": "^3.2.0",
     "prom-client": "^14.0.1",
-    "rudder-transformer-cdk": "^1.1.1",
     "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
@@ -74,7 +73,8 @@
     "ua-parser-js": "^0.7.24",
     "unset-value": "^2.0.1",
     "uuid": "^8.3.2",
-    "valid-url": "^1.0.9"
+    "valid-url": "^1.0.9",
+    "rudder-transformer-cdk": "^1.2.0"
   },
   "devDependencies": {
     "acorn": "^7.4.0",

@@ -31,6 +31,8 @@
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+        "sentAt": "2019-09-01T15:46:51.693229+05:30",
         "context": {
           "device": {
             "model": "Redmi 6",
@@ -139,6 +141,8 @@
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+        "sentAt": "2019-09-01T15:46:51.693229+05:30",
         "context": {
           "device": {
             "model": "Redmi 6",
@@ -246,6 +250,8 @@
         "event": "spin_result",
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
         "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+        "sentAt": "2019-09-01T15:46:51.693229+05:30",
         "context": {
           "device": {
             "model": "Redmi 6",
@@ -361,6 +367,8 @@
           "All": true
         },
         "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+        "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+        "sentAt": "2019-09-01T15:46:51.693229+05:30",
         "properties": {
           "additional_bet_index": 0,
           "battle_id": "N/A",

@@ -55,11 +55,11 @@
   },
   {
     "statusCode": 400,
-    "error": "invalid message type for heap"
+    "error": "\"type\" is a required field and it must be a string"
   },
   {
     "statusCode": 400,
-    "error": "message type page not supported for heap"
+    "error": "message type \"page\" not supported for \"heap\""
   },
   {
     "version": "1",
@@ -79,7 +79,7 @@
           "subject": "Welcome to My App!",
           "variation": "A"
         },
-        "timestamp": "2021-02-16T18:53:20.866+05:30",
+        "timestamp": "2020-01-16T13:23:23.782Z",
         "idempotency_key": "1234",
         "app_id": "<app id>"
       },
@@ -167,7 +167,7 @@
           "subject": "Welcome to My App!",
           "variation": "A"
         },
-        "timestamp": "2020-01-17T13:23:20.844Z",
+        "timestamp": "2020-01-16T13:23:23.782Z",
         "app_id": "<app id>"
       },
       "JSON_ARRAY": {},

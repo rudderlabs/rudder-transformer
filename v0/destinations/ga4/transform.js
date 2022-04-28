@@ -9,7 +9,8 @@ const {
   isEmptyObject,
   flattenJson,
   getDestinationExternalID,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull
 } = require("../../util");
 const {
   ENDPOINT,
@@ -53,28 +54,34 @@ function trackResponseBuilder(message, { Config }) {
     rawPayload.timestamp_micros = msUnixTimestamp(rawPayload.timestamp_micros);
   }
 
-  if (Config.typesOfClient === "gtag" && Config.measurementId) {
-    // gtag.js
-    rawPayload.client_id =
-      get(message, "context.client_id") || get(message, "messageId");
-    if (!rawPayload.client_id) {
-      throw new CustomError(
-        "context.client_id or messageId must be provided",
-        400
-      );
+  switch (Config.typesOfClient) {
+    case "gtag": {
+      // gtag.js
+      rawPayload.client_id =
+        get(message, "context.client_id") || get(message, "messageId");
+      if (!isDefinedAndNotNull(rawPayload.client_id)) {
+        throw new CustomError(
+          "context.client_id or messageId must be provided",
+          400
+        );
+      }
+      break;
     }
-  } else {
-    // firebase
-    rawPayload.app_instance_id = getDestinationExternalID(
-      message,
-      "ga4AppInstanceId"
-    );
-    if (!rawPayload.app_instance_id) {
-      throw new CustomError(
-        "ga4AppInstanceId must be provided under externalId",
-        400
+    case "firebase": {
+      rawPayload.app_instance_id = getDestinationExternalID(
+        message,
+        "ga4AppInstanceId"
       );
+      if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
+        throw new CustomError(
+          "ga4AppInstanceId must be provided under externalId",
+          400
+        );
+      }
+      break;
     }
+    default:
+      throw CustomError("GA4: Invalid type of client", 400);
   }
 
   let payload = {};

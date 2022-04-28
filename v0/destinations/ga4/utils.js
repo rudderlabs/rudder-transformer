@@ -1,12 +1,20 @@
 const get = require("get-value");
+const { proxyRequest } = require("../../../adapters/network");
+const {
+  getDynamicMeta,
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 const {
   constructPayload,
   CustomError,
   flattenJson,
   isEmptyObject,
   extractCustomFields,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isHttpStatusSuccess
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
@@ -253,8 +261,43 @@ function getDestinationItemProperties(message, isItemsRequired) {
   }
   return items;
 }
+const responseHandler = (destinationResponse, dest) => {
+  const message = `[GA4 Response Handler] - Request Processed Successfully`;
+  let { status } = destinationResponse;
+  if (status === 204) {
+    status = 200;
+  }
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
+    throw new ErrorBuilder()
+      .setStatus(status)
+      .setMessage(
+        `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`
+      )
+      .isTransformResponseFailure(true)
+      .setDestinationResponse(destinationResponse)
+      .setStatTags({
+        destination: dest,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(status)
+      })
+      .build();
+  }
+  return {
+    status,
+    message,
+    destinationResponse
+  };
+};
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
 
 module.exports = {
+  networkHandler,
   msUnixTimestamp,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,

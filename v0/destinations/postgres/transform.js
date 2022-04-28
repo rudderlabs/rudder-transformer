@@ -1,4 +1,5 @@
 const { processWarehouseMessage } = require("../../../warehouse");
+const { isJson } = require("../../../warehouse/util");
 
 const postgres = "postgres";
 
@@ -7,7 +8,7 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
-  if (key === "violationErrors" || jsonKey) {
+  if (key === "violationErrors" || (jsonKey && isJson(val))) {
     return "json";
   }
   return "string";

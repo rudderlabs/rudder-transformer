@@ -1,4 +1,5 @@
 const { processWarehouseMessage } = require("../../../warehouse");
+const { isJson } = require("../../../warehouse/util");
 
 // redshift destination string limit, if the string length crosses 512 we will change data type to text which is varchar(max) in redshift
 const RSStringLimit = 512;
@@ -9,7 +10,7 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
-  if (jsonKey) {
+  if (jsonKey && isJson(val)) {
     return "json";
   }
 
@@ -26,7 +27,6 @@ function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const destJsonPaths = event.destination?.Config?.jsonPaths || "";
-  console.log(destJsonPaths);
   const rsAlterStringToText =
     event.request.query.rsAlterStringToText || "false";
   const provider = redshift;

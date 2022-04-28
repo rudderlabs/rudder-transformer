@@ -106,6 +106,8 @@ function appendColumnNameAndType(
   jsonKey = false
 ) {
   const datatype = getDataType(key, val, options, jsonKey);
+  val = jsonKey && isJson(val) ? JSON.stringify(val) : val;
+
   if (datatype === "datetime") {
     val = new Date(val).toISOString();
   }
@@ -213,6 +215,14 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 
 */
 
+/*
+      jsonPath      value        BQ         PG,RS,SF
+      true          int/bool    int/bool      int/bool
+      true          string      string        string
+      true          json        string        json
+      false         int/bool    int/bool      int/bool
+      false         string      string        string
+*/
 function setDataFromInputAndComputeColumnTypes(
   utils,
   eventType,
@@ -226,13 +236,11 @@ function setDataFromInputAndComputeColumnTypes(
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (isValidJsonPathKey(`${prefix + key}`, level, options.jsonKeys)) {
-      const val = isJson(input[key]) ? JSON.stringify(input[key]) : input[key];
-
       appendColumnNameAndType(
         utils,
         eventType,
         `${prefix + key}`,
-        val,
+        input[key],
         output,
         columnTypes,
         options,

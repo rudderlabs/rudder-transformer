@@ -1223,6 +1223,29 @@ function getValidDynamicFormConfig(
   return res;
 }
 
+/**
+ * Util function created for cdk response comparison
+ * @param {*} obj
+ */
+function recursiveRemoveUndefined(obj) {
+  function helper(clonedObj) {
+    // removes inplace by mutation
+    Object.keys(clonedObj).forEach(key => {
+      const val = clonedObj[key];
+      if (val === undefined) {
+        // eslint-disable-next-line no-param-reassign
+        delete clonedObj[key];
+      } else if (typeof val === "object") {
+        // eslint-disable-next-line no-param-reassign
+        helper(val);
+      }
+    });
+  }
+  const clonedObj = _.cloneDeep(obj);
+  helper(clonedObj);
+  return clonedObj;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1296,5 +1319,6 @@ module.exports = {
   isCdkDestination,
   getValidDynamicFormConfig,
   getDestinationExternalIDInfoForRetl,
-  removeHyphens
+  removeHyphens,
+  recursiveRemoveUndefined,
 };

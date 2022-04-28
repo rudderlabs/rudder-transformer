@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
-const { get } = require("lodash");
+
+const get = require("get-value");
+const { cloneDeep } = require("lodash");
 const {
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -21,8 +23,11 @@ const { trackMapping, BASE_ENDPOINT } = require("./config");
 const updateMappingJson = mapping => {
   const newMapping = [];
   mapping.forEach(element => {
-    if (get(element, "metadata.type"))
-      if (element.metadata.type === "hashToSha256") delete element.metadata;
+    if (get(element, "metadata.type")) {
+      if (element.metadata.type === "hashToSha256") {
+        element.metadata = "toString";
+      }
+    }
     newMapping.push(element);
   });
   return newMapping;
@@ -83,11 +88,8 @@ const processTrackEvent = async (metadata, message, destination) => {
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
-  for (let i = 0; i < listOfConversions.length; i += 1) {
-    if (listOfConversions[i].conversions === event) {
-      flag = 1;
-      break;
-    }
+  if (listOfConversions.some(i => i.conversions === event)) {
+    flag = 1;
   }
   if (event === undefined || event === "" || flag === 0) {
     throw new ErrorBuilder()
@@ -98,9 +100,11 @@ const processTrackEvent = async (metadata, message, destination) => {
       .build();
   }
   const { requireHash } = destination.Config;
-  let updatedMapping = JSON.parse(JSON.stringify(trackMapping));
+  let updatedMapping = cloneDeep(trackMapping);
 
-  if (requireHash === false) updatedMapping = updateMappingJson(updatedMapping);
+  if (requireHash === false) {
+    updatedMapping = updateMappingJson(updatedMapping);
+  }
 
   let payload;
   try {

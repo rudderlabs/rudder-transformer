@@ -19,12 +19,6 @@ const DestCanonicalNames = {
     "DCM_Floodlight",
     "DCMFloodlight",
     "dcmfloodlight"
-  ],
-  google_adwords_enhanced_conversions: [
-    "google_adwords_enhanced_conversions",
-    "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
-    "Google Adwords Enhanced Conversions",
-    "googleAdwordsEnhancedConversions"
   ]
 };
 

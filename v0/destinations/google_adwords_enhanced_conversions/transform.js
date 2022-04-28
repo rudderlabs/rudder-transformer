@@ -104,11 +104,7 @@ const processTrackEvent = async (metadata, message, destination) => {
 
   let payload;
   try {
-    payload = constructPayload(
-      message,
-      updatedMapping,
-      "google_adwords_enhanced_conversions"
-    );
+    payload = constructPayload(message, updatedMapping);
   } catch (e) {
     throw new ErrorBuilder()
       .setMessage(

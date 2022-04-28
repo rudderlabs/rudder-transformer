@@ -4,7 +4,8 @@ const {
   CustomError,
   flattenJson,
   isEmptyObject,
-  extractCustomFields
+  extractCustomFields,
+  isDefinedAndNotNull
 } = require("../../util");
 const { mappingConfig, ConfigCategory } = require("./config");
 
@@ -222,7 +223,10 @@ function getDestinationItemProperties(message, isItemsRequired) {
         item,
         mappingConfig[ConfigCategory.ITEMS.name]
       );
-      if (!element.item_id && !element.item_name) {
+      if (
+        !isDefinedAndNotNull(element.item_id) &&
+        !isDefinedAndNotNull(element.item_name)
+      ) {
         throw new CustomError("One of product_id or name is required", 400);
       }
 

@@ -1,12 +1,19 @@
-const Ajv = require("ajv");
+/* Ajv meta load to support draft-04/06/07/2019 */
+const Ajv2019 = require("ajv/dist/2019");
+const Ajv = require("ajv-draft-04");
+const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
+const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
 
 const NodeCache = require("node-cache");
+const hash = require("object-hash");
 const logger = require("../logger");
 const trackingPlan = require("./trackingPlan");
-const hash = require("object-hash");
+
 const eventSchemaCache = new NodeCache();
-const ajvCache = new NodeCache();
+const ajv19Cache = new NodeCache({ useClones: false });
+const ajv4Cache = new NodeCache({ useClones: false });
 const {isEmptyObject} = require("../v0/util");
+
 const defaultOptions = {
     strictRequired: true,
     allErrors: true,
@@ -32,8 +39,29 @@ const supportedEventTypes = {
     "alias": false
 };
 
-// TODO: Handle various json schema versions
-let ajv = new Ajv(defaultOptions);
+// When no ajv options are provided, ajv constructed from defaultOptions will be used
+const ajv4 = new Ajv(defaultOptions);
+
+const ajv19 = new Ajv2019(defaultOptions);
+ajv19.addMetaSchema(draft6MetaSchema);
+ajv19.addMetaSchema(draft7MetaSchema);
+
+/**
+ * @param {*} ajvOptions
+ * @param {*} isDraft4
+ * @returns {ajv}
+ *
+ * Generates new ajv contructed from ajvoptions
+ */
+function getAjv(ajvOptions, isDraft4 = false) {
+    if (isDraft4) {
+        return new Ajv(ajvOptions);
+    }
+    const ajv = new Ajv2019(ajvOptions);
+    ajv.addMetaSchema(draft6MetaSchema);
+    ajv.addMetaSchema(draft7MetaSchema);
+    return ajv;
+}
 
 /**
  * @param {*} property
@@ -71,8 +99,8 @@ function isEventTypeSupported(eventType) {
  *
  * Generates hash.
  */
-function eventSchemaHash(tpId, tpVersion, eventType, eventName) {
-    return `${tpId}::${tpVersion}::${eventType}::${eventName}`;
+function eventSchemaHash(tpId, tpVersion, eventType, eventName, isDraft4 = false) {
+    return `${tpId}::${tpVersion}::${eventType}::${eventName}::${isDraft4 ? 4 : 19}`;
 }
 
 /**
@@ -109,6 +137,11 @@ async function validate(event) {
             };
             return [rudderValidationError];
         }
+        // Assumes schema is in draft 7 by default
+        let isDraft4 = false;
+        if (Object.prototype.hasOwnProperty.call(eventSchema, "$schema") && eventSchema.$schema.includes('draft-04')) {
+            isDraft4 = true;
+        }
 
         //Current json schema is injected with version for non-track events in config-be, need to remove ot parse it succesfully
         delete eventSchema["version"];
@@ -117,7 +150,8 @@ async function validate(event) {
             event.metadata.trackingPlanId,
             event.metadata.trackingPlanVersion,
             event.message.type,
-            event.message.event
+            event.message.event,
+            isDraft4
         );
         const eventTypeAjvOptions = sourceTpConfig[event.message.type].ajvOptions || {};
         const globalAjvOptions = (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
@@ -126,11 +160,15 @@ async function validate(event) {
             ...globalAjvOptions,
             ...eventTypeAjvOptions
         };
+
+        let ajv = isDraft4 ? ajv4 : ajv19;
+        const ajvCache = isDraft4 ? ajv4Cache : ajv19Cache;
         if (merged !== {}) {
             const configHash = hash(merged);
+            
             ajv = ajvCache.get(configHash);
             if (!ajv) {
-                ajv = new Ajv(merged);
+                ajv = getAjv(merged, isDraft4);
                 ajvCache.set(configHash, ajv);
             }
         }
@@ -145,6 +183,7 @@ async function validate(event) {
         if (valid) {
             return [];
         }
+
         var validationErrors = validateEvent.errors.map(function (error) {
             var rudderValidationError;
             switch (error.keyword) {
@@ -182,9 +221,10 @@ async function validate(event) {
                 default:
                     rudderValidationError = {
                         type: violationTypes.UnknownViolation,
-                        message: "Unexpected error during event validation",
+                        message: error.message,
                         meta: {
-                            error: error
+                            instacePath: error.instancePath,
+                            schemaPath: error.schemaPath
                         }
                     };
             }

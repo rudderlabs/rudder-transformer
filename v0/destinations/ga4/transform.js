@@ -370,39 +370,24 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };
 
-  // firebase
-  if (Config.firebaseAppId) {
-    // Using network layer for firebase
-    const endpoint = `${ENDPOINT}?api_secret=${Config.apiSecret}&firebase_app_id=${Config.firebaseAppId}`;
-    const requestOptions = {
-      headers: {
-        HOST: "www.google-analytics.com",
-        "Content-Type": "application/json"
-      }
-    };
-    const res = await httpPOST(endpoint, rawPayload, requestOptions);
-
-    if (!res.success) {
-      const error = res.response;
-      throw new CustomError(error.response.statusText, error.response.status);
-    }
+  // build response
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    HOST: "www.google-analytics.com",
+    "Content-Type": "application/json"
+  };
+  response.params = {
+    api_secret: Config.apiSecret
+  };
+  if (Config.measurementId) {
+    response.params.measurement_id = Config.measurementId;
   } else {
-    // build response
-    // gtag.js
-    const response = defaultRequestConfig();
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.endpoint = ENDPOINT;
-    response.headers = {
-      HOST: "www.google-analytics.com",
-      "Content-Type": "application/json"
-    };
-    response.params = {
-      api_secret: Config.apiSecret,
-      measurement_id: Config.measurementId
-    };
-    response.body.JSON = rawPayload;
-    return response;
+    response.params.firebase_app_id = Config.firebaseAppId;
   }
+  response.body.JSON = rawPayload;
+  return response;
 };
 
 function process(event) {

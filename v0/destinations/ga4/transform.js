@@ -357,7 +357,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ["user_properties"],
+    ["properties.user_properties"],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION
   );
   if (!isEmptyObject(userProperties)) {

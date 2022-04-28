@@ -3877,10 +3877,10 @@
       "type": "track",
       "event": "rudderstack event",
       "properties": {
-        "total": "10"
-      },
-      "user_properties": {
-        "price": "19"
+        "total": "10",
+        "user_properties": {
+          "price": "19"
+        }
       },
       "integrations": {
         "All": true
@@ -4120,13 +4120,13 @@
         "firebase_conversion": "firebase_conversion",
         "google_id": "1234",
         "ga_value": "ga_value",
-        "value": "10"
-      },
-      "user_properties": {
-        "first_open_time": "first_open_time",
-        "user_id": "user_id",
-        "firebase_value": "firebase_value",
-        "price": "100"
+        "value": "10",
+        "user_properties": {
+          "first_open_time": "first_open_time",
+          "user_id": "user_id",
+          "firebase_value": "firebase_value",
+          "price": "100"
+        }
       },
       "integrations": {
         "All": true
@@ -4207,13 +4207,13 @@
         "firebase_conversion": "firebase_conversion",
         "google_id": "1234",
         "ga_value": "ga_value",
-        "value": "10"
-      },
-      "user_properties": {
-        "first_open_time": "first_open_time",
-        "user_id": "user_id",
-        "firebase_value": "firebase_value",
-        "price": "100"
+        "value": "10",
+        "user_properties": {
+          "first_open_time": "first_open_time",
+          "user_id": "user_id",
+          "firebase_value": "firebase_value",
+          "price": "100"
+        }
       },
       "integrations": {
         "All": true

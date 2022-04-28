@@ -57,9 +57,13 @@ function isReservedEventName(event) {
 /* Event parameters */
 /**
  * Reserved parameter names cannot be used
+ * Here user_properties is a duplicate key hence excluding it.
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  */
-const GA4_RESERVED_PARAMETER_EXCLUSION = ["firebase_conversion"];
+const GA4_RESERVED_PARAMETER_EXCLUSION = [
+  "firebase_conversion",
+  "user_properties"
+];
 
 /**
  * event parameter names cannot start with reserved prefixes

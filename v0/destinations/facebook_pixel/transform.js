@@ -103,9 +103,11 @@ const handleOrder = (message, categoryToContent) => {
       const pId =
         products[i].product_id || products[i].sku || products[i].id || "";
       contentIds.push(pId);
+      // required field for content
+      // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
       const content = {
         id: pId,
-        quantity: products[i].quantity,
+        quantity: products[i].quantity || 1,
         item_price: products[i].price
       };
       contents.push(content);
@@ -144,12 +146,13 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id;
+        const productId = product.product_id || product.sku || product.id || "";
         if (productId) {
           contentIds.push(productId);
           contents.push({
             id: productId,
-            quantity: message.properties.quantity
+            quantity: product.quantity || 1,
+            item_price: product.price
           });
         }
       } else {
@@ -209,7 +212,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
         message.properties.id ||
         message.properties.sku ||
         "",
-      quantity: message.properties.quantity,
+      quantity: message.properties.quantity || 1,
       item_price: message.properties.price
     }
   ];

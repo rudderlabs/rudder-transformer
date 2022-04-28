@@ -1252,7 +1252,7 @@ function generateRtDestErrorStat(input) {
     metadata = input.metadata;
   }
   stats.counter("rt_transform_errors", 1, {
-    destination: input.destination.DestinationDefinition.Name,
+    destination: input?.destination?.DestinationDefinition?.Name,
     ...metadata
   });
 }
@@ -1263,7 +1263,7 @@ function generateRtDestErrorStatFromErrList(input, errList) {
     metadata = input.metadata;
   }
   stats.counter("rt_transform_errors", errList.length, {
-    destination: input.destination.DestinationDefinition.Name,
+    destination: input?.destination?.DestinationDefinition?.Name,
     ...metadata
   });
 }

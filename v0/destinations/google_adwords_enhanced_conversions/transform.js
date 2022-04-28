@@ -25,7 +25,7 @@ const updateMappingJson = mapping => {
   mapping.forEach(element => {
     if (get(element, "metadata.type")) {
       if (element.metadata.type === "hashToSha256") {
-        element.metadata = "toString";
+        element.metadata.type = "toString";
       }
     }
     newMapping.push(element);

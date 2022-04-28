@@ -749,6 +749,10 @@ const batchHandler = ctx => {
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
+  const metaTags = input && input.length && input[0].metadata
+          ? getMetadata(input[0].metadata)
+          : {};
+
   const response = { batchedRequests: [], errors: [] };
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
@@ -760,6 +764,10 @@ const batchHandler = ctx => {
       response.errors.push(
         error.message || "Error occurred while processing payload."
       );
+      stats.counter("batch_transform_errors", response.errors.length, {
+        destination: destEvents[0].DestinationDefinition.Name,
+        ...metaTags
+      })
     }
   });
   if (response.errors.length > 0) {

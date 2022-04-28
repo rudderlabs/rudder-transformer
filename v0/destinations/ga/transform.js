@@ -24,7 +24,8 @@ const {
   getDestinationExternalID,
   getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject
+  generateErrorObject,
+  generateRtDestErrorStat,
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -1058,6 +1059,7 @@ const processRouterDest = inputs => {
         DESTINATION,
         TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
       );
+      generateRtDestErrorStat(input);
       return getErrorRespEvents(
         [input.metadata],
         error.status || 400,

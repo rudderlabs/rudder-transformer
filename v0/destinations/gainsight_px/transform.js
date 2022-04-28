@@ -13,7 +13,8 @@ const {
   getHashFromArray,
   getFieldValueFromMessage,
   getValueFromMessage,
-  CustomError
+  CustomError,
+  generateRtDestErrorStat
 } = require("../../util");
 const {
   renameCustomFields,
@@ -287,6 +288,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

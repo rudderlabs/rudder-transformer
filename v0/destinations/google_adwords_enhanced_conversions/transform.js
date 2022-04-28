@@ -4,7 +4,8 @@ const {
   constructPayload,
   defaultRequestConfig,
   getValueFromMessage,
-  removeHyphens
+  removeHyphens,
+  generateRtDestErrorStat
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 
@@ -134,6 +135,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           // eslint-disable-next-line no-nested-ternary

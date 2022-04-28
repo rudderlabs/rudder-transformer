@@ -10,7 +10,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   removeUndefinedAndNullValues,
-  CustomError
+  CustomError,
+  generateRtDestErrorStat,
 } = require("../../util");
 const { errorHandler } = require("./util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
@@ -617,6 +618,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

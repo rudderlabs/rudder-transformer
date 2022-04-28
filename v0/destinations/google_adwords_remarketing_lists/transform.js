@@ -9,7 +9,8 @@ const {
   getErrorRespEvents,
   getValueFromMessage,
   removeUndefinedAndNullValues,
-  removeHyphens
+  removeHyphens,
+  generateRtDestErrorStat
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -287,6 +288,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           // eslint-disable-next-line no-nested-ternary

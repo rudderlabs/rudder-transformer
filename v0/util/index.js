@@ -1246,6 +1246,28 @@ function recursiveRemoveUndefined(obj) {
   return clonedObj;
 }
 
+function generateRtDestErrorStat(input) {
+  let metadata = {};
+  if (input.metadata && typeof input.metadata === 'object' && !Array.isArray(input.metadata)) {
+    metadata = input.metadata;
+  }
+  stats.counter("rt_transform_errors", 1, {
+    destination: input.destination.DestinationDefinition.Name,
+    ...metadata
+  });
+}
+
+function generateRtDestErrorStatFromErrList(input, errList) {
+  let metadata = {};
+  if (input.metadata && typeof input.metadata === 'object' && !Array.isArray(input.metadata)) {
+    metadata = input.metadata;
+  }
+  stats.counter("rt_transform_errors", errList.length, {
+    destination: input.destination.DestinationDefinition.Name,
+    ...metadata
+  });
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1321,4 +1343,6 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   removeHyphens,
   recursiveRemoveUndefined,
+  generateRtDestErrorStat,
+  generateRtDestErrorStatFromErrList
 };

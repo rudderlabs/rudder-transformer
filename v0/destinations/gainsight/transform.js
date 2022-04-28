@@ -20,7 +20,8 @@ const {
   getHashFromArray,
   getDestinationExternalID,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  generateRtDestErrorStat
 } = require("../../util/index");
 const {
   searchGroup,
@@ -256,6 +257,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

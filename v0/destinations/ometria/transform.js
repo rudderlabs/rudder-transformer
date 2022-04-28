@@ -14,7 +14,8 @@ const {
   getFieldValueFromMessage,
   getIntegrationsObj,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  generateRtDestErrorStatFromErrList
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -307,6 +308,9 @@ const processRouterDest = async inputs => {
       );
     }
   });
+  if (errorList.length > 0) {
+    generateRtDestErrorStatFromErrList(inputs[0], errorList);
+  }
   return [...errorList, ...successList];
 };
 

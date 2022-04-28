@@ -15,7 +15,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  isEmpty
+  isEmpty,
+  generateRtDestErrorStat
 } = require("../../util");
 const { nodeSysErrorToStatus } = require("../../../adapters/utils/networkUtils");
 
@@ -284,6 +285,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

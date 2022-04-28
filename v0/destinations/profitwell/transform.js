@@ -15,7 +15,8 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  generateRtDestErrorStat
 } = require("../../util");
 const {
   createPayloadMapping,
@@ -277,6 +278,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

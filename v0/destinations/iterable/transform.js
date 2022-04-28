@@ -18,7 +18,8 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  isAppleFamily
+  isAppleFamily,
+  generateRtDestErrorStatFromErrList
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -510,6 +511,9 @@ const processRouterDest = async inputs => {
       }
     })
   );
+  if (errorRespList.length > 0) {
+    generateRtDestErrorStatFromErrList(inputs[0], errorRespList)
+  }
 
   // batching identifyArrayChunks
   let identifyBatchedResponseList = [];

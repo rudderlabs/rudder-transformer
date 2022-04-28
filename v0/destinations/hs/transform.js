@@ -12,7 +12,8 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  generateRtDestErrorStatFromErrList
 } = require("../../util");
 const {
   ConfigCategory,
@@ -381,6 +382,9 @@ const processRouterDest = async inputs => {
       }
     })
   );
+  if (errorRespList.length > 0) {
+    generateRtDestErrorStatFromErrList(inputs[0], errorRespList);
+  }
 
   let batchedResponseList = [];
   if (successRespList.length) {

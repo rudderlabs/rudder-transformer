@@ -3,33 +3,32 @@
 const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
-const path = require("path");
-const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const moment = require("moment");
-const jsonDiff = require("json-diff");
 const match = require("match-json");
+const moment = require("moment");
+const axios = require("axios");
+const combineURLs = require("axios/lib/helpers/combineURLs");
+const jsonDiff = require("json-diff");
+const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const path = require("path");
 const logger = require("./logger");
 const stats = require("./util/stats");
-
 const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
   CustomError,
-  recursiveRemoveUndefined,
+  isCdkDestination,
+  recursiveRemoveUndefined
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
-const profilingRouter = require("./routes/profiling");
-const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
-const { compileUserLibrary } = require("./util/ivmFactory");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -44,14 +43,220 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
-  ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
-  : false;
+// eslint-disable-next-line prefer-destructuring
+const OLD_TRANSFORMER_URL = process.env.OLD_TRANSFORMER_URL;
 
 const router = new Router();
 
-// Router for assistance in profiling
-router.use(profilingRouter);
+const isRouteIncluded = path => {
+  const includeRoutes = ["/v0/", "/customTransform"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of includeRoutes) {
+    if (path.includes(route)) return true;
+  }
+  return false;
+};
+
+const isRouteExcluded = path => {
+  const excludeRoutes = ["/v0/sources/webhook"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of excludeRoutes) {
+    if (path.includes(route)) return false;
+  }
+  return true;
+};
+
+const formatResponsePayload = (payload, path) => {
+  if (path.includes("/v0/ga") || path.includes("/v0/ga360")) {
+    payload.forEach(res => {
+      if (
+        res.output &&
+        res.output.params &&
+        res.output.params.hasOwnProperty("qt")
+      ) {
+        delete res.output.params.qt;
+      }
+    });
+  }
+
+  if (path.includes("/v0/facebook_pixel")) {
+    payload.forEach(res => {
+      if (
+        res.output &&
+        res.output.body &&
+        res.output.body.FORM &&
+        res.output.body.FORM.hasOwnProperty("data")
+      ) {
+        delete res.output.body.FORM.data;
+      }
+    });
+  }
+
+  if (path.includes("/v0/snowflake")) {
+    payload.forEach(res => {
+      if (
+        res.output &&
+        res.output.metadata &&
+        res.output.metadata.hasOwnProperty("receivedAt")
+      ) {
+        delete res.output.metadata.receivedAt;
+      }
+      if (
+        res.output &&
+        res.output.data &&
+        res.output.data.hasOwnProperty("ID")
+      ) {
+        delete res.output.data.ID;
+      }
+      if (
+        res.output &&
+        res.output.data &&
+        res.output.data.hasOwnProperty("RECEIVED_AT")
+      ) {
+        delete res.output.data.RECEIVED_AT;
+      }
+    });
+  }
+
+  if (path.includes("/v0/sfmc") || path.includes("/v0/salesforce")) {
+    payload.forEach(res => {
+      if (
+        res.output &&
+        res.output.headers &&
+        res.output.headers.hasOwnProperty("Authorization")
+      ) {
+        delete res.output.headers.Authorization;
+      }
+    });
+  }
+
+  if (path.includes("/customTransform")) {
+    payload.forEach(res => {
+      if (
+        res.output &&
+        res.output.header &&
+        res.output.header.hasOwnProperty("Authorization")
+      ) {
+        delete res.output.header.Authorization;
+      }
+      if (res.output && res.output.hasOwnProperty("userId")) {
+        delete res.output.userId;
+      }
+      if (res.output && res.output.hasOwnProperty("event_time")) {
+        delete res.output.event_time;
+      }
+    });
+  }
+
+  if (!path.includes("/v0/sources") && !path.includes("/v0/destinations")) {
+    payload.sort((a, b) =>
+      a.metadata.messageId > b.metadata.messageId
+        ? 1
+        : a.metadata.messageId < b.metadata.messageId
+        ? -1
+        : 0
+    );
+  }
+
+  if (path.includes("/customTransform")) {
+    payload.sort((a, b) =>
+      a.output.messageId > b.output.messageId
+        ? 1
+        : a.output.messageId < b.output.messageId
+        ? -1
+        : 0
+    );
+  }
+
+  return payload;
+};
+
+router.use(async (ctx, next) => {
+  if (!OLD_TRANSFORMER_URL) {
+    logger.error(
+      "OLD TRANSFORMER URL not configured.consider removing the comparison middleware"
+    );
+    await next();
+    return;
+  }
+
+  if (!isRouteIncluded(ctx.request.url) || !isRouteExcluded(ctx.request.url)) {
+    logger.debug(
+      "url does not contain path v0 or customTransform. Omitting request"
+    );
+    await next();
+    return;
+  }
+
+  const url = combineURLs(OLD_TRANSFORMER_URL, ctx.request.url);
+  let response;
+  try {
+    if (ctx.request.method.toLowerCase() === "get") {
+      response = await axios.get(url, {
+        headers: ctx.request.headers
+      });
+    } else {
+      response = await axios.post(url, ctx.request.body);
+    }
+  } catch (e) {
+    logger.error(`Failed to send request to old - ${e.message}`);
+    await next();
+    return;
+  }
+
+  let oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
+  // send req to current service
+  await next();
+  let currentTransformerResponse = JSON.parse(
+    JSON.stringify(ctx.response.body)
+  );
+
+  try {
+    oldTransformerResponse = formatResponsePayload(
+      oldTransformerResponse,
+      ctx.request.url
+    );
+  } catch (err) {
+    logger.error(
+      `Failed to sort metadata message id (old): ${ctx.request.url}`
+    );
+  }
+  try {
+    currentTransformerResponse = formatResponsePayload(
+      currentTransformerResponse,
+      ctx.request.url
+    );
+  } catch (err) {
+    logger.error(
+      `Failed to sort metadata message id (new): ${ctx.request.url}`
+    );
+  }
+
+  if (!match(oldTransformerResponse, currentTransformerResponse)) {
+    stats.counter("payload_fail_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
+    logger.error(`API comparison: payload mismatch `);
+    logger.error(`old Url : ${url}`);
+    logger.error(`new Url : ${ctx.request.url}`);
+    logger.error(`new Method : ${ctx.request.method}`);
+    logger.error(`new Body : ${JSON.stringify(ctx.request.body)}`);
+    logger.error(`new Payload: ${JSON.stringify(currentTransformerResponse)}`);
+    logger.error(`old Payload: ${JSON.stringify(oldTransformerResponse)} `);
+    logger.error(
+      `diff: ${jsonDiff.diffString(
+        oldTransformerResponse,
+        currentTransformerResponse
+      )}`
+    );
+  } else {
+    stats.counter("payload_success_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
+  }
+});
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();
@@ -110,7 +315,7 @@ async function handleDest(ctx, version, destination) {
   stats.increment("dest_transform_input_events", events.length, {
     destination,
     version,
-    ...metaTags,
+    ...metaTags
   });
   const respList = [];
   const executeStartTime = new Date();
@@ -150,7 +355,7 @@ async function handleDest(ctx, version, destination) {
               )}`
             );
             stats.counter("cdk_response_match_failure", 1, {
-              destination,
+              destination
             });
             logger.error(
               `[${moment().format(
@@ -182,7 +387,7 @@ async function handleDest(ctx, version, destination) {
             );
           } else {
             stats.counter("cdk_response_match_success", 1, {
-              destination,
+              destination
             });
           }
           // //////////////////////////////////////////
@@ -209,42 +414,36 @@ async function handleDest(ctx, version, destination) {
               return {
                 output: { ...ev, userId },
                 metadata: event.metadata,
-                statusCode: 200,
+                statusCode: 200
               };
             })
           );
         }
       } catch (error) {
-        if (isCdkDestination(destination)) {
-          logger.error(error);
-        }
+        logger.error(error);
         const errObj = generateErrorObject(
           error,
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
-        stats.counter("dest_transform_errors", 1, {
-          destination,
-          ...metaTags,
-        });
         respList.push({
           metadata: event.metadata,
           statusCode: 400,
           error: error.message || "Error occurred while processing payload.",
-          statTags: errObj.statTags,
+          statTags: errObj.statTags
         });
       }
     })
   );
   stats.timing("cdk_events_latency", executeStartTime, {
     destination,
-    ...metaTags,
+    ...metaTags
   });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.increment("dest_transform_output_events", respList.length, {
     destination,
     version,
-    ...metaTags,
+    ...metaTags
   });
   ctx.body = respList;
   return ctx.body;
@@ -271,21 +470,21 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          errors: errMessage,
+          errors: errMessage
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,
-          ...metaTags,
+          ...metaTags
         });
       } else {
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 200,
-          validationErrors: hv.validationErrors,
+          validationErrors: hv.validationErrors
         });
         stats.counter("hv_errors", 1, {
-          ...metaTags,
+          ...metaTags
         });
       }
     } catch (error) {
@@ -296,14 +495,14 @@ async function handleValidation(ctx) {
         metadata: event.metadata,
         statusCode: 200,
         validationErrors: [],
-        error: errMessage,
+        error: errMessage
       });
       stats.counter("hv_errors", 1, {
-        ...metaTags,
+        ...metaTags
       });
     } finally {
       stats.timing("hv_event_latency", eventStartTime, {
-        ...metaTags,
+        ...metaTags
       });
     }
   }
@@ -311,13 +510,13 @@ async function handleValidation(ctx) {
   ctx.set("apiVersion", API_VERSION);
 
   stats.counter("hv_events_count", events.length, {
-    ...metaTags,
+    ...metaTags
   });
   stats.counter("hv_request_size", requestSize, {
-    ...metaTags,
+    ...metaTags
   });
   stats.timing("hv_request_latency", requestStartTime, {
-    ...metaTags,
+    ...metaTags
   });
 }
 
@@ -363,12 +562,12 @@ if (startDestTransformer) {
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
           version,
-          ...metaTags,
+          ...metaTags
         });
         stats.increment("dest_transform_requests", 1, {
           destination,
           version,
-          ...metaTags,
+          ...metaTags
         });
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
@@ -386,12 +585,12 @@ if (startDestTransformer) {
             : {};
         stats.timing("dest_transform_request_latency", startTime, {
           destination,
-          ...metaTags,
+          ...metaTags
         });
         stats.increment("dest_transform_requests", 1, {
           destination,
           version,
-          ...metaTags,
+          ...metaTags
         });
       });
       router.post("/routerTransform", async ctx => {
@@ -408,7 +607,7 @@ if (startDestTransformer) {
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
       stats.counter("user_transform_input_events", events.length, {
-        processSessions,
+        processSessions
       });
       let groupedEvents;
       if (processSessions) {
@@ -454,7 +653,7 @@ if (startDestTransformer) {
               destEvents[0].metadata && destEvents[0].metadata.destinationId,
             destinationType:
               destEvents[0].metadata && destEvents[0].metadata.destinationType,
-            messageIds,
+            messageIds
           };
 
           const metaTags =
@@ -470,7 +669,7 @@ if (startDestTransformer) {
                 destEvents.length,
                 {
                   processSessions,
-                  ...metaTags,
+                  ...metaTags
                 }
               );
               destTransformedEvents = await userTransformHandler()(
@@ -481,12 +680,22 @@ if (startDestTransformer) {
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   if (ev.error) {
+                    logger.error(
+                      `user_transform_errors: ${JSON.stringify(ev)}`
+                    );
+                    logger.error(
+                      `[CT] Input events: ${JSON.stringify(events)}`
+                    );
+                    stats.counter("user_transform_errors", 1, {
+                      transformationVersionId,
+                      ...metaTags
+                    });
                     return {
                       statusCode: 400,
                       error: ev.error,
                       metadata: _.isEmpty(ev.metadata)
                         ? commonMetadata
-                        : ev.metadata,
+                        : ev.metadata
                     };
                   }
                   if (!isNonFuncObject(ev.transformedEvent)) {
@@ -497,7 +706,7 @@ if (startDestTransformer) {
                       )}`,
                       metadata: _.isEmpty(ev.metadata)
                         ? commonMetadata
-                        : ev.metadata,
+                        : ev.metadata
                     };
                   }
                   return {
@@ -505,7 +714,7 @@ if (startDestTransformer) {
                     metadata: _.isEmpty(ev.metadata)
                       ? commonMetadata
                       : ev.metadata,
-                    statusCode: 200,
+                    statusCode: 200
                   };
                 })
               );
@@ -516,14 +725,14 @@ if (startDestTransformer) {
                 return {
                   statusCode: 400,
                   metadata: e.metadata,
-                  error: errorString,
+                  error: errorString
                 };
               });
               transformedEvents.push(...destTransformedEvents);
               stats.counter("user_transform_errors", destEvents.length, {
                 transformationVersionId,
                 processSessions,
-                ...metaTags,
+                ...metaTags
               });
             } finally {
               stats.timing(
@@ -538,12 +747,12 @@ if (startDestTransformer) {
             transformedEvents.push({
               statusCode: 400,
               error: errorMessage,
-              metadata: commonMetadata,
+              metadata: commonMetadata
             });
             stats.counter("user_transform_errors", destEvents.length, {
               transformationVersionId,
               processSessions,
-              ...metaTags,
+              ...metaTags
             });
           }
         })
@@ -552,62 +761,14 @@ if (startDestTransformer) {
       ctx.body = transformedEvents;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
-        processSessions,
+        processSessions
       });
       stats.increment("user_transform_requests", 1, { processSessions });
       stats.counter("user_transform_output_events", transformedEvents.length, {
-        processSessions,
+        processSessions
       });
     });
   }
-}
-
-if (transformerTestModeEnabled) {
-  router.post("/transformation/test", async ctx => {
-    try {
-      const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
-        throw new Error(
-          "Invalid Request. Missing parameters in transformation code block"
-        );
-      }
-      if (!events || events.length === 0) {
-        throw new Error("Invalid request. Missing events");
-      }
-
-      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
-      trRevCode.versionId = "testVersionId";
-      const res = await userTransformHandler()(
-        events,
-        trRevCode.versionId,
-        libraryVersionIDs,
-        trRevCode,
-        true
-      );
-      logger.debug(
-        `[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`
-      );
-      ctx.body = res;
-    } catch (error) {
-      ctx.status = 400;
-      ctx.body = { error: error.message };
-    }
-  });
-
-  router.post("/transformationLibrary/test", async ctx => {
-    try {
-      const { code } = ctx.request.body;
-      if (!code) {
-        throw new Error("Invalid request. Missing code");
-      }
-
-      const res = await compileUserLibrary(code);
-      ctx.body = res;
-    } catch (error) {
-      ctx.body = { error: error.message };
-      ctx.status = 400;
-    }
-  });
 }
 
 async function handleSource(ctx, version, source) {
@@ -616,7 +777,7 @@ async function handleSource(ctx, version, source) {
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   stats.increment("source_transform_input_events", events.length, {
     source,
-    version,
+    version
   });
   const respList = [];
   await Promise.all(
@@ -633,11 +794,11 @@ async function handleSource(ctx, version, source) {
         logger.error(error);
         respList.push({
           statusCode: 400,
-          error: error.message || "Error occurred while processing payload.",
+          error: error.message || "Error occurred while processing payload."
         });
         stats.counter("source_transform_errors", events.length, {
           source,
-          version,
+          version
         });
       }
     })
@@ -645,7 +806,7 @@ async function handleSource(ctx, version, source) {
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
   stats.increment("source_transform_output_events", respList.length, {
     source,
-    version,
+    version
   });
   ctx.body = respList;
   ctx.set("apiVersion", API_VERSION);
@@ -661,7 +822,7 @@ if (startSourceTransformer) {
         await handleSource(ctx, version, source);
         stats.timing("source_transform_request_latency", startTime, {
           source,
-          version,
+          version
         });
         stats.increment("source_transform_requests", 1, { source, version });
       });
@@ -671,17 +832,19 @@ if (startSourceTransformer) {
 
 async function handleProxyRequest(destination, ctx) {
   const destinationRequest = ctx.request.body;
-  const destNetworkHandler =
-    networkHandlerFactory.getNetworkHandler(destination);
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
   let response;
   try {
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
     stats.timing("transformer_proxy_time", startTime, {
-      destination,
+      destination
     });
-    const processedProxyResponse =
-      destNetworkHandler.processAxiosResponse(rawProxyResponse);
+    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+      rawProxyResponse
+    );
     response = destNetworkHandler.responseHandler(
       processedProxyResponse,
       destination
@@ -714,7 +877,7 @@ if (transformerProxy) {
           await handleProxyRequest(destination, ctx);
           stats.timing("transformer_total_proxy_latency", startTime, {
             destination,
-            version,
+            version
           });
         }
       );
@@ -749,10 +912,6 @@ const batchHandler = ctx => {
   }
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
 
-  const metaTags = input && input.length && input[0].metadata
-          ? getMetadata(input[0].metadata)
-          : {};
-
   const response = { batchedRequests: [], errors: [] };
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
@@ -764,10 +923,6 @@ const batchHandler = ctx => {
       response.errors.push(
         error.message || "Error occurred while processing payload."
       );
-      stats.counter("batch_transform_errors", response.errors.length, {
-        destination: destEvents[0].DestinationDefinition.Name,
-        ...metaTags
-      })
     }
   });
   if (response.errors.length > 0) {
@@ -802,7 +957,7 @@ const fileUpload = async ctx => {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occurred while processing payload.",
-      metadata: error.response ? error.response.metadata : null,
+      metadata: error.response ? error.response.metadata : null
     };
   }
   ctx.body = response;
@@ -826,7 +981,7 @@ const pollStatus = async ctx => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload.",
+      error: error.message || "Error occurred while processing payload."
     };
   }
   ctx.body = response;
@@ -854,7 +1009,7 @@ const getJobStatus = async (ctx, type) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload.",
+      error: error.message || "Error occurred while processing payload."
     };
   }
   ctx.body = response;
@@ -891,7 +1046,7 @@ const handleDeletionOfUsers = async ctx => {
         ctx.status = error.response ? error.response.status : 400;
         respList.push({
           statusCode: error.response ? error.response.status : 400,
-          error: error.message || "Error occured while processing",
+          error: error.message || "Error occured while processing"
         });
       }
     })
@@ -960,5 +1115,5 @@ module.exports = {
   handleDeletionOfUsers,
   fileUpload,
   pollStatus,
-  getJobStatus,
+  getJobStatus
 };

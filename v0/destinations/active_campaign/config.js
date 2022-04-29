@@ -1,24 +1,24 @@
 const { getMappingConfig } = require("../../util");
 
 // For IDENTIFY
-// https://developers.activecampaign.com/reference#create-or-update-contact-new
-// https://developers.activecampaign.com/reference#retrieve-all-tags
-// https://developers.activecampaign.com/reference#create-a-new-tag
-// https://developers.activecampaign.com/reference#contact-tags
-// https://developers.activecampaign.com/reference#update-list-status-for-contact
+// https://developers.activecampaign.com/reference/create-or-update-contact-new
+// https://developers.activecampaign.com/reference/retrieve-all-tags
+// https://developers.activecampaign.com/reference/create-a-new-tag
+// https://developers.activecampaign.com/reference/contact-tags
+// https://developers.activecampaign.com/reference/update-list-status-for-contact
 
 // For PAGE
-// https://developers.activecampaign.com/reference#site-tracking
+// https://developers.activecampaign.com/reference/site-tracking
 
 // For SCREEN
-// https://developers.activecampaign.com/reference#list-all-event-types
-// https://developers.activecampaign.com/reference#create-a-new-event-name-only
-// https://developers.activecampaign.com/reference#track-event
+// https://developers.activecampaign.com/reference/list-all-event-types
+// https://developers.activecampaign.com/reference/create-a-new-event-name-only
+// https://developers.activecampaign.com/reference/track-event
 
 // For TRACK
-// https://developers.activecampaign.com/reference#list-all-event-types
-// https://developers.activecampaign.com/reference#create-a-new-event-name-only
-// https://developers.activecampaign.com/reference#track-event
+// https://developers.activecampaign.com/reference/list-all-event-types
+// https://developers.activecampaign.com/reference/create-a-new-event-name-only
+// https://developers.activecampaign.com/reference/track-event
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {

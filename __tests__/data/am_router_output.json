@@ -17,7 +17,7 @@
               {
                 "os_name": "Chrome",
                 "os_version": "77.0.3865.90",
-                "device_model": "Mac OS",
+                "device_model": "Mac",
                 "library": "rudderstack",
                 "platform": "Web",
                 "device_id": "123456",
@@ -90,7 +90,7 @@
               {
                 "os_name": "Chrome",
                 "os_version": "77.0.3865.90",
-                "device_model": "Mac OS",
+                "device_model": "Mac",
                 "library": "rudderstack",
                 "platform": "Web",
                 "device_id": "00000000000000000000000000",

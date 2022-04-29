@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "content_type",
+    "sourceKeys": "properties.content_type",
+    "required": false
+  },
+  {
+    "destKey": "item_id",
+    "sourceKeys": "properties.item_id",
+    "required": false
+  }
+]

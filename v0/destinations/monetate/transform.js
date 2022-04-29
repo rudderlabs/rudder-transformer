@@ -7,7 +7,8 @@ const {
   removeUndefinedValues,
   getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isDefinedAndNotNull
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -258,7 +259,7 @@ function track(message, destination) {
           product =>
             product.quantity &&
             Number.isInteger(product.quantity) &&
-            product.price &&
+            isDefinedAndNotNull(product.price) &&
             typeof product.price === "number" &&
             product.product_id
         );
@@ -292,7 +293,7 @@ function track(message, destination) {
           product =>
             product.quantity &&
             Number.isInteger(product.quantity) &&
-            product.price &&
+            isDefinedAndNotNull(product.price) &&
             typeof product.price === "number" &&
             product.product_id
         );

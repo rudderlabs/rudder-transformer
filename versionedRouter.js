@@ -332,12 +332,14 @@ async function handleDest(ctx, version, destination) {
         // cloning the parsedEvent here because object mutation happens inside some
         // destination transformations.
         const clonedParsedEvent = _.cloneDeep(parsedEvent);
+        logger.info("DestHandler: ", JSON.stringify(destHandler));
         let respEvents = await destHandler.process(parsedEvent);
         if (isCdkDestination(parsedEvent)) {
           const cdkResponse = await Executor.execute(
             parsedEvent,
             ConfigFactory.getConfig(destination)
           );
+          logger.info('CDK Response obtained');
 
           // recusrively removing all undefined val-type keys before comparsion
           const updatedRespEvents = recursiveRemoveUndefined(respEvents);

@@ -339,7 +339,8 @@ async function handleDest(ctx, version, destination) {
             parsedEvent,
             ConfigFactory.getConfig(destination)
           );
-          logger.info('CDK Response obtained');
+          logger.info("CDK Response obtained");
+          logger.info("CDK RESPONSE:", JSON.stringify(cdkResponse));
 
           // recusrively removing all undefined val-type keys before comparsion
           const updatedRespEvents = recursiveRemoveUndefined(respEvents);

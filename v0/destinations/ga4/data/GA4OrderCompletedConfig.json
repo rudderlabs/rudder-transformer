@@ -1,0 +1,46 @@
+[
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  },
+  {
+    "destKey": "transaction_id",
+    "sourceKeys": "properties.order_id",
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.total",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": true
+  },
+  {
+    "destKey": "affiliation",
+    "sourceKeys": "properties.affiliation",
+    "required": false
+  },
+  {
+    "destKey": "coupon",
+    "sourceKeys": "properties.coupon",
+    "required": false
+  },
+  {
+    "destKey": "shipping",
+    "sourceKeys": "properties.shipping",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "tax",
+    "sourceKeys": "properties.tax",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  }
+]

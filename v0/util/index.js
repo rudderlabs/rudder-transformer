@@ -464,7 +464,7 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
-  if (!value) {
+  if (!isDefinedAndNotNull(value)) {
     return defaultValue || value;
   }
   // we've got a correct value. start processing
@@ -591,7 +591,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     let foundVal = false;
     if (Array.isArray(multikeyMap)) {
       multikeyMap.some(map => {
-        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+        if (
+          !map.sourceVal ||
+          !isDefinedAndNotNull(map.destVal) ||
+          !Array.isArray(map.sourceVal)
+        ) {
           logger.warn(
             "multikeyMap skipped: sourceVal and destVal must be of valid type"
           );

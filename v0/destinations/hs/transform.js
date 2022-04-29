@@ -53,12 +53,9 @@ async function getProperties(destination) {
       // check if exists err.response && err.response.status else 500
 
       if (err.response) {
-        throw new CustomError(
-          JSON.stringify(err.response.data) ||
-            JSON.stringify(err.response.statusText) ||
-            "Failed to get hubspot properties",
-          err.response.status || 500
-        );
+        if (err.response.data.message) {
+          throw new CustomError(JSON.stringify(err.response.data.message));
+        }
       }
       throw new CustomError(
         "Failed to get hubspot properties : indvalid response",

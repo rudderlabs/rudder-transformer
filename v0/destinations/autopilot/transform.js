@@ -113,7 +113,7 @@ const processEvent = (message, destination) => {
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
+const process = async event => {
   return processEvent(event.message, event.destination);
 };
 const processRouterDest = async inputs => {

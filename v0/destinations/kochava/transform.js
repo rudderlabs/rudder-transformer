@@ -173,7 +173,7 @@ function processMessage(message, destination) {
 }
 
 // process message
-function process(event) {
+async function process(event) {
   return processMessage(event.message, event.destination);
 }
 

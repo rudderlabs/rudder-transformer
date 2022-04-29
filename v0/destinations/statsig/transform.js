@@ -6,7 +6,7 @@ const {
 } = require("../../util");
 const { ENDPOINT } = require("./config");
 
-function process(event) {
+async function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {

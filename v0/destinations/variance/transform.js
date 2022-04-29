@@ -6,7 +6,7 @@ const {
   isDefinedAndNotNull
 } = require("../../util");
 
-function process(event) {
+async function process(event) {
   const { message, destination } = event;
   // set context.ip from request_ip if it is missing
   if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {

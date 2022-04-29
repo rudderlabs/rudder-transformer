@@ -61,7 +61,7 @@ function processSingleMessage(message, destination) {
   }
 }
 
-function process(event) {
+async function process(event) {
   return processSingleMessage(
     normalizeMessage(event.message),
     event.destination

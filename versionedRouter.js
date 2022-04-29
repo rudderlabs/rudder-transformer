@@ -333,7 +333,6 @@ async function handleDest(ctx, version, destination) {
         // cloning the parsedEvent here because object mutation happens inside some
         // destination transformations.
         const clonedParsedEvent = _.cloneDeep(parsedEvent);
-        logger.info("DestHandler: ", JSON.stringify(destHandler));
         let respEvents = await destHandler.process(parsedEvent);
         if (isCdkDestination(parsedEvent)) {
           cdkResponse = await Executor.execute(

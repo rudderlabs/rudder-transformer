@@ -1,0 +1,20 @@
+[
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "metadata": {
+      "type": "toInt"
+    },
+    "required": true
+  },
+  {
+    "destKey": "virtual_currency_name",
+    "sourceKeys": "properties.virtual_currency_name",
+    "required": true
+  },
+  {
+    "destKey": "item_name",
+    "sourceKeys": "properties.item_name",
+    "required": false
+  }
+]

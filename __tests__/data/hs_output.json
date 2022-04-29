@@ -143,10 +143,10 @@
     "statusCode": 200
   },
   {
-    "error": "\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\""
+    "error": "The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/"
   },
   {
-    "error": "\"Request Rate Limit reached\""
+    "error": "Request Rate Limit reached"
   },
   {
     "version": "1",

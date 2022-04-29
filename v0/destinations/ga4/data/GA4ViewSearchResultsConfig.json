@@ -1,0 +1,7 @@
+[
+  {
+    "destKey": "search_term",
+    "sourceKeys": "properties.search_term",
+    "required": false
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "creative_name",
+    "sourceKeys": "properties.creative_name",
+    "required": false
+  },
+  {
+    "destKey": "creative_slot",
+    "sourceKeys": "properties.creative_slot",
+    "required": false
+  },
+  {
+    "destKey": "location_id",
+    "sourceKeys": "properties.position",
+    "required": false
+  },
+  {
+    "destKey": "promotion_id",
+    "sourceKeys": "properties.promotion_id",
+    "required": false
+  },
+  {
+    "destKey": "promotion_name",
+    "sourceKeys": "properties.promotion_name",
+    "required": false
+  }
+]

@@ -54,7 +54,10 @@ async function getProperties(destination) {
 
       if (err.response) {
         if (err.response.data.message) {
-          throw new CustomError(JSON.stringify(err.response.data.message));
+          throw new CustomError(
+            err.response.data.message,
+            err.response.status || 500
+          );
         }
       }
       throw new CustomError(

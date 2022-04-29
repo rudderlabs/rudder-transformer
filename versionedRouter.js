@@ -319,11 +319,10 @@ async function handleDest(ctx, version, destination) {
   });
   const respList = [];
   const executeStartTime = new Date();
-  let destHandler;
+  const destHandler = getDestHandler(version, destination);
   // Getting destination handler for non-cdk destination(s)
-  if (!isCdkDestination(events[0])) {
-    destHandler = getDestHandler(version, destination);
-  }
+  // if (!isCdkDestination(events[0])) {
+  // }
   await Promise.all(
     events.map(async event => {
       try {

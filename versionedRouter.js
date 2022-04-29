@@ -329,13 +329,10 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        // cloning the parsedEvent here because object mutation happens inside some
-        // destination transformations.
-        const clonedParsedEvent = _.cloneDeep(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-        if (isCdkDestination(destination)) {
-          const cdkResponse = await Executor.execute(
-            clonedParsedEvent,
+        let respEvents;
+        if (isCdkDestination(parsedEvent)) {
+          respEvents = await Executor.execute(
+            parsedEvent,
             ConfigFactory.getConfig(destination)
           );
 
@@ -427,8 +424,8 @@ async function handleDest(ctx, version, destination) {
         );
         respList.push({
           metadata: event.metadata,
-          statusCode: 400,
-          error: error.message || "Error occurred while processing payload.",
+          statusCode: errObj.status,
+          error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
         });
       }

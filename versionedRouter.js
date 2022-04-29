@@ -329,9 +329,12 @@ async function handleDest(ctx, version, destination) {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
-        let respEvents;
+        // cloning the parsedEvent here because object mutation happens inside some
+        // destination transformations.
+        const clonedParsedEvent = _.cloneDeep(parsedEvent);
+        let respEvents = await destHandler.process(parsedEvent);
         if (isCdkDestination(parsedEvent)) {
-          respEvents = await Executor.execute(
+          const cdkResponse = await Executor.execute(
             parsedEvent,
             ConfigFactory.getConfig(destination)
           );

@@ -11,7 +11,8 @@ const {
   getDestinationExternalID,
   isEmptyObject,
   defaultPostRequestConfig,
-  getValueFromMessage
+  getValueFromMessage,
+  generateRtDestErrorStat
 } = require("../../util");
 const logger = require("../../../logger");
 const {
@@ -236,6 +237,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        generateRtDestErrorStat(input);
         return getErrorRespEvents(
           [input.metadata],
           error.response

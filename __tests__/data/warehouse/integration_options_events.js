@@ -740,19 +740,18 @@ function opInput(eventType) {
 }
 
 function opOutput(eventType, provider) {
-  if (provider === "snowflake") {
-    return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+  switch (provider) {
+    case "snowflake":
+      return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+    case "s3_datalake":
+      return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
+    case "rs":
+      return _.cloneDeep(sampleEvents[eventType].output.rs);
+    case "bq":
+      return _.cloneDeep(sampleEvents[eventType].output.bq);
+    default:
+      return _.cloneDeep(sampleEvents[eventType].output.default);
   }
-  if (provider === "s3_datalake") {
-    return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
-  }
-  if (provider === "rs") {
-    return _.cloneDeep(sampleEvents[eventType].output.rs);
-  }
-  if (provider === "bq") {
-    return _.cloneDeep(sampleEvents[eventType].output.bq);
-  }
-  return _.cloneDeep(sampleEvents[eventType].output.default);
 }
 
 module.exports = { opInput, opOutput };

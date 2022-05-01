@@ -22,8 +22,8 @@ const isJson = value => {
   return value != null && (typeof value === "object" || Array.isArray(value));
 };
 
-const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
-  return jsonKeys[key] === level;
+const isValidJsonPathKey = (eventType, key, level, jsonKeys = {}) => {
+  return eventType === "track" && jsonKeys[key] === level;
 };
 
 const isBlank = value => {

@@ -215,14 +215,6 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 
 */
 
-/*
-      jsonPath      value        BQ         PG,RS,SF
-      true          int/bool    int/bool      int/bool
-      true          string      string        string
-      true          json        string        json
-      false         int/bool    int/bool      int/bool
-      false         string      string        string
-*/
 function setDataFromInputAndComputeColumnTypes(
   utils,
   eventType,
@@ -235,7 +227,13 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
-    if (isValidJsonPathKey(`${prefix + key}`, level, options.jsonKeys)) {
+    if (
+      isValidJsonPathKey(eventType, `${prefix + key}`, level, options.jsonKeys)
+    ) {
+      if (isBlank(input[key])) {
+        return;
+      }
+
       appendColumnNameAndType(
         utils,
         eventType,
@@ -1064,5 +1062,6 @@ function processWarehouseMessage(message, options) {
 module.exports = {
   processWarehouseMessage,
   fullEventColumnTypeByProvider,
-  getDataType
+  getDataType,
+  setDataFromInputAndComputeColumnTypes
 };

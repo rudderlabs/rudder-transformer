@@ -1,6 +1,10 @@
 const axios = require("axios");
 const logger = require("../../../logger");
-const { CustomError, constructPayload } = require("../../util");
+const {
+  CustomError,
+  constructPayload,
+  isDefinedAndNotNull
+} = require("../../util");
 const { ENDPOINT, productMapping } = require("./config");
 
 const isValidEmail = email => {
@@ -80,7 +84,7 @@ const createList = productList => {
   if (productList.length > 0) {
     productList.forEach((product, index) => {
       const itemPayload = constructPayload(product, productMapping);
-      if (itemPayload.name && itemPayload.price) {
+      if (itemPayload.name && isDefinedAndNotNull(itemPayload.price)) {
         itemList.push(itemPayload);
       } else {
         logger.error(

@@ -12,7 +12,8 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  isDefined
 } = require("../../util");
 const {
   ConfigCategory,
@@ -50,17 +51,22 @@ async function getProperties(destination) {
     try {
       response = await axios.get(url);
     } catch (err) {
-      // check if exists err.response && err.response.status else 500
-
+      // making all the axios fails as retryable
       if (err.response) {
         if (err.response.data.message) {
-          throw new CustomError(err.response.data.message, err.response.status);
+          throw new CustomError(
+            `Failed to get hubspot properties: ${err.response.data.message}`,
+            500
+          );
+        } else {
+          throw new CustomError(`Failed to get hubspot properties`, 500);
         }
+      } else {
+        throw new CustomError(
+          "Failed to get hubspot properties : indvalid response",
+          500
+        );
       }
-      throw new CustomError(
-        "Failed to get hubspot properties : indvalid response",
-        500
-      );
     }
 
     const propertyMap = {};
@@ -342,43 +348,59 @@ const processRouterDest = async inputs => {
   const traitsFound = inputs.some(input => {
     return getTraits(input.message) !== undefined;
   });
-
-  await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (traitsFound) {
-          propertyMap = await getProperties(destination);
+  try {
+    if (traitsFound) {
+      propertyMap = await getProperties(destination);
+    }
+  } catch (e) {
+    inputs.map(input => {
+      errorRespList.push(
+        getErrorRespEvents(
+          [input.metadata],
+          e.response ? e.response.status : 500,
+          e.message || "Error occurred while processing payload."
+        )
+      );
+    });
+  }
+  if (isDefined(propertyMap)) {
+    await Promise.all(
+      inputs.map(async input => {
+        try {
+          // if (traitsFound) {
+          //   propertyMap = await getProperties(destination);
+          // }
+          if (input.message.statusCode) {
+            // already transformed event
+            successRespList.push({
+              message: input.message,
+              metadata: input.metadata,
+              destination
+            });
+          } else {
+            // event is not transformed
+            successRespList.push({
+              message: await processSingleMessage(
+                input.message,
+                destination,
+                propertyMap
+              ),
+              metadata: input.metadata,
+              destination
+            });
+          }
+        } catch (error) {
+          errorRespList.push(
+            getErrorRespEvents(
+              [input.metadata],
+              error.response ? error.response.status : 400,
+              error.message || "Error occurred while processing payload."
+            )
+          );
         }
-        if (input.message.statusCode) {
-          // already transformed event
-          successRespList.push({
-            message: input.message,
-            metadata: input.metadata,
-            destination
-          });
-        } else {
-          // event is not transformed
-          successRespList.push({
-            message: await processSingleMessage(
-              input.message,
-              destination,
-              propertyMap
-            ),
-            metadata: input.metadata,
-            destination
-          });
-        }
-      } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
-        );
-      }
-    })
-  );
+      })
+    );
+  }
 
   let batchedResponseList = [];
   if (successRespList.length) {

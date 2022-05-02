@@ -342,66 +342,27 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         // cloning the parsedEvent here because object mutation happens inside some
         // destination transformations.
-        const clonedParsedEvent = _.cloneDeep(parsedEvent);
-        let respEvents = await destHandler.process(parsedEvent);
-        if (isCdkDestination(parsedEvent)) {
-          cdkResponse = await Executor.execute(
+        // const clonedParsedEvent = _.cloneDeep(parsedEvent);
+        let respEvents;
+        const isCdk = isCdkDestination(parsedEvent);
+        if (isCdk) {
+          respEvents = await Executor.execute(
             parsedEvent,
             ConfigFactory.getConfig(destination)
           );
-
-          // recusrively removing all undefined val-type keys before comparsion
-          const updatedRespEvents = recursiveRemoveUndefined(respEvents);
-          const updatedCdkResponse = recursiveRemoveUndefined(cdkResponse);
-
-          /// // Comparing CDK and Transformer Response and returning the original transformer response
-          if (!match(updatedRespEvents, updatedCdkResponse)) {
-            logger.info(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] [${destination}] diff of actual event and cloned event: ${jsonDiff.diffString(
-                parsedEvent,
-                clonedParsedEvent
-              )}`
-            );
-            stats.counter("cdk_response_match_failure", 1, {
-              destination
-            });
-            logger.error(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] comparison: payload mismatch for: ${destination}`
-            );
-            logger.error(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] Transformer Event : ${JSON.stringify(clonedParsedEvent)}`
-            );
-            logger.error(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] CDK Response: ${JSON.stringify(cdkResponse)}`
-            );
-            logger.error(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] Original Transformer Response: ${JSON.stringify(respEvents)} `
-            );
-            logger.error(
-              `[${moment().format(
-                "MMM DD h:mm:ss.SSS A"
-              )}] [${destination}] diff: ${jsonDiff.diffString(
-                respEvents,
-                cdkResponse
-              )}`
-            );
-          } else {
-            stats.counter("cdk_response_match_success", 1, {
-              destination
-            });
-          }
-          // //////////////////////////////////////////
+        } else {
+          respEvents = await destHandler.process(parsedEvent);
         }
+
+        // recusrively removing all undefined val-type keys before comparsion
+        // const updatedRespEvents = recursiveRemoveUndefined(respEvents);
+        // const updatedCdkResponse = recursiveRemoveUndefined(cdkResponse);
+
+        // Comparing CDK and Transformer Response and returning the original transformer response
+        // Here we are sending the cdk response as original response
+        // as for cdk enabled destinations, this is how it should be
+        // respEvents = cdkResponse;
+        // //////////////////////////////////////////
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
@@ -431,7 +392,7 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        logger.error("CDK RESPONSE:", JSON.stringify(cdkResponse));
+        // logger.error("CDK RESPONSE:", JSON.stringify(respEvents));
         const errObj = generateErrorObject(
           error,
           destination,

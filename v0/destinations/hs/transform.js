@@ -54,10 +54,7 @@ async function getProperties(destination) {
 
       if (err.response) {
         if (err.response.data.message) {
-          throw new CustomError(
-            err.response.data.message,
-            err.response.status || 500
-          );
+          throw new CustomError(err.response.data.message, err.response.status);
         }
       }
       throw new CustomError(
@@ -345,12 +342,13 @@ const processRouterDest = async inputs => {
   const traitsFound = inputs.some(input => {
     return getTraits(input.message) !== undefined;
   });
-  if (traitsFound) {
-    propertyMap = await getProperties(destination);
-  }
+
   await Promise.all(
     inputs.map(async input => {
       try {
+        if (traitsFound) {
+          propertyMap = await getProperties(destination);
+        }
         if (input.message.statusCode) {
           // already transformed event
           successRespList.push({

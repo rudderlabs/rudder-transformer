@@ -69,18 +69,21 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let userInformationTrimmed;
   switch (userProperty) {
     case "EMAIL":
-      updatedProperty = userInformation.trim().toLowerCase();
+      updatedProperty = userInformation
+        .toString()
+        .trim()
+        .toLowerCase();
       break;
     case "PHONE":
       // remove all non-numerical characters
-      updatedProperty = userInformation.replace(/[^0-9]/g, "");
+      updatedProperty = userInformation.toString().replace(/[^0-9]/g, "");
       // remove all leading zeros
       updatedProperty = updatedProperty.replace(/^0+/g, "");
       break;
     case "GEN":
       updatedProperty =
-        userInformation.toLowerCase() === "f" ||
-        userInformation.toLowerCase() === "female"
+        userInformation.toString().toLowerCase() === "f" ||
+        userInformation.toString().toLowerCase() === "female"
           ? "f"
           : "m";
       break;
@@ -91,16 +94,16 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
         .replace(/\./g, "");
       break;
     case "DOBM":
-      userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (userInformationTrimmed.toString().length < 2) {
+      userInformationTrimmed = userInformation.toString().replace(/\./g, "");
+      if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;
       }
       break;
     case "DOBD":
-      userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (userInformationTrimmed.toString().length < 2) {
+      userInformationTrimmed = userInformation.toString().replace(/\./g, "");
+      if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;
@@ -111,27 +114,30 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
     case "FI":
       if (userProperty !== "FI") {
         updatedProperty = userInformation
+          .toString()
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!]/g, "");
       } else {
         updatedProperty = userInformation
+          .toString()
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!,.?]/g, "");
       }
       break;
     case "MADID":
-      updatedProperty = userInformation.toLowerCase();
+      updatedProperty = userInformation.toString().toLowerCase();
       break;
     case "COUNTRY":
-      updatedProperty = userInformation.toLowerCase();
+      updatedProperty = userInformation.toString().toLowerCase();
       break;
     case "ZIP":
-      userInformationTrimmed = userInformation.replace(/\s/g, "");
+      userInformationTrimmed = userInformation.toString().replace(/\s/g, "");
       updatedProperty = userInformationTrimmed.toLowerCase();
       break;
     case "ST":
     case "CT":
       updatedProperty = userInformation
+        .toString()
         .replace(/[^a-zA-Z ]/g, "")
         .replace(/\s/g, "")
         .toLowerCase();

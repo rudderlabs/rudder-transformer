@@ -105,7 +105,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   if (event.shipping_address) {
     message.setProperty("traits.shippingAddress", event.shipping_address);
   }
-  if (event.shipping_address) {
+  if (event.billing_address) {
     message.setProperty("traits.billingAddress", event.billing_address);
   }
   if (!message.userId && event.user_id) {

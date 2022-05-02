@@ -33,7 +33,7 @@ const SHOPIFY_TRACK_MAP = {
   orders_cancelled: "Order Cancelled",
   orders_fulfilled: "Order Fulfilled",
   orders_paid: "Order Paid",
-  orders_partially_fullfilled: "Order Partially Fullfilled"
+  orders_partially_fullfilled: "Order Partially Fulfilled"
 };
 
 const identifyMappingJSON = JSON.parse(

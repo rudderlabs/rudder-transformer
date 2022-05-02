@@ -74,10 +74,9 @@ const createPropertiesForEcomEvent = message => {
 const extractEmailFromPayload = event => {
   const flattenedPayload = flattenJson(event);
   let email;
-  const regex_email = new RegExp("\\bemail\\b");
-  const regex_Email = new RegExp("\\bEmail\\b");
+  const regex_email = new RegExp("\\bemail\\b", "i");
   Object.entries(flattenedPayload).some(([key, value]) => {
-    if (regex_email.test(key) || regex_Email.test(key)) {
+    if (regex_email.test(key)) {
       email = value;
       return true;
     }

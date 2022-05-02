@@ -1,6 +1,15 @@
 const get = require("get-value");
-const { getShopifyTopic, createPropertiesForEcomEvent } = require("./util");
-const { generateUUID, CustomError } = require("../../util");
+const {
+  getShopifyTopic,
+  createPropertiesForEcomEvent,
+  getProductsListFromLineItems,
+  extractEmailFromPayload
+} = require("./util");
+const {
+  generateUUID,
+  CustomError,
+  removeUndefinedAndNullValues
+} = require("../../util");
 const Message = require("../message");
 const { EventType } = require("../../../constants");
 const {
@@ -28,7 +37,8 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
 
-  const properties = createPropertiesForEcomEvent(event);
+  let properties = createPropertiesForEcomEvent(event);
+  properties = removeUndefinedAndNullValues(properties);
   Object.keys(properties).forEach(key =>
     message.setProperty(`properties.${key}`, properties[key])
   );
@@ -45,7 +55,19 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
     // converting shopify updated_at timestamp to rudder timestamp format
     message.setTimestamp(new Date(event.updated_at).toISOString());
   }
-  if (event.user_id) {
+  if (event.customer) {
+    message.setPropertiesV2(
+      event.customer,
+      MAPPING_CATEGORIES[EventType.IDENTIFY]
+    );
+  }
+  if (event.shipping_address) {
+    message.setProperty("traits.shippingAddress", event.shipping_address);
+  }
+  if (event.billing_address) {
+    message.setProperty("traits.billingAddress", event.billing_address);
+  }
+  if (!message.userId && event.user_id) {
     message.setProperty("userId", event.user_id);
   }
 
@@ -57,20 +79,36 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   message.setEventType(EventType.TRACK);
   message.setEventName(shopifyTopic);
   Object.keys(event)
-    .filter(key => !key.includes(["type", "event"]))
+    .filter(
+      key =>
+        ![
+          "type",
+          "event",
+          "line_items",
+          "customer",
+          "shipping_address",
+          "billing_address"
+        ].includes(key)
+    )
     .forEach(key => {
       message.setProperty(`properties.${key}`, event[key]);
     });
-
-  // Map Customer details if present
-  const customerDetails = get(event, "customer");
-  if (customerDetails) {
+  const { line_items: lineItems } = event;
+  const productsList = getProductsListFromLineItems(lineItems);
+  message.setProperty("properties.products", productsList);
+  if (event.customer) {
     message.setPropertiesV2(
-      customerDetails,
+      event.customer,
       MAPPING_CATEGORIES[EventType.IDENTIFY]
     );
   }
-  if (event.user_id) {
+  if (event.shipping_address) {
+    message.setProperty("traits.shippingAddress", event.shipping_address);
+  }
+  if (event.shipping_address) {
+    message.setProperty("traits.billingAddress", event.billing_address);
+  }
+  if (!message.userId && event.user_id) {
     message.setProperty("userId", event.user_id);
   }
   return message;
@@ -86,8 +124,10 @@ const processEvent = event => {
     case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
       message = identifyPayloadBuilder(event);
       break;
-    case ECOM_TOPICS.ORDERS_UPDATED:
+    case ECOM_TOPICS.ORDERS_CREATE:
+    case ECOM_TOPICS.ORDERS_UPDATE:
     case ECOM_TOPICS.CHECKOUTS_CREATE:
+    case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     default:
@@ -101,8 +141,19 @@ const processEvent = event => {
   if (message.userId) {
     message.userId = String(message.userId);
   }
+  if (!get(message, "traits.email")) {
+    const email = extractEmailFromPayload(event);
+    if (email) {
+      message.setProperty("traits.email", email);
+    }
+  }
   message.setProperty("anonymousId", generateUUID());
   message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty("context.library", {
+    name: "RudderStack Shopify Cloud",
+    version: "1.0.0"
+  });
+  message = removeUndefinedAndNullValues(message);
   return message;
 };
 

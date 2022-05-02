@@ -107,8 +107,8 @@ const handleOrder = (message, categoryToContent) => {
       // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
       const content = {
         id: pId,
-        quantity: products[i].quantity || 1,
-        item_price: products[i].price
+        quantity: products[i].quantity || message.properties.quantity || 1,
+        item_price: products[i].price || message.properties.price
       };
       contents.push(content);
     }
@@ -151,7 +151,7 @@ const handleProductListViewed = (message, categoryToContent) => {
           contentIds.push(productId);
           contents.push({
             id: productId,
-            quantity: product.quantity || 1,
+            quantity: product.quantity || message.properties.quantity || 1,
             item_price: product.price
           });
         }

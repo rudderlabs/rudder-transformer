@@ -49,7 +49,17 @@ const OLD_TRANSFORMER_URL = process.env.OLD_TRANSFORMER_URL;
 const router = new Router();
 
 const isRouteIncluded = path => {
-  const includeRoutes = ["/v0/", "/customTransform"];
+  const includeRoutes = [
+    "/v0/",
+    "/customTransform",
+    "/batch",
+    "fileUpload",
+    "/getFailedJos",
+    "/pollStatus",
+    "/getWarningJobs",
+    "/deleteUsers",
+    "/features"
+  ];
   // eslint-disable-next-line no-restricted-syntax
   for (const route of includeRoutes) {
     if (path.includes(route)) return true;

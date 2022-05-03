@@ -442,7 +442,7 @@
     },
     "params": {
       "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
-      "measurement_id": "G-T40PE6KET4"
+      "firebase_app_id": "1:17864591371:android:7a9520d3c78962e21f9fee"
     },
     "body": {
       "JSON": {
@@ -2247,7 +2247,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type page not supported",
+    "error": "Message type group not supported",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",
@@ -2392,5 +2392,68 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "timestamp_micros": 1651594744000000,
+        "non_personalized_ads": false,
+        "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "events": [
+          {
+            "name": "page_view"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "timestamp_micros": 1651594744000000,
+        "non_personalized_ads": false,
+        "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "events": [
+          {
+            "name": "page_view",
+            "params": {
+              "view": "login"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

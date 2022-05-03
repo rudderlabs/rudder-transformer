@@ -261,12 +261,14 @@ function getDestinationItemProperties(message, isItemsRequired) {
   }
   return items;
 }
+
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
   if (status === 204) {
     status = 200;
   }
+
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
@@ -284,12 +286,14 @@ const responseHandler = (destinationResponse, dest) => {
       })
       .build();
   }
+
   return {
     status,
     message,
     destinationResponse
   };
 };
+
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;

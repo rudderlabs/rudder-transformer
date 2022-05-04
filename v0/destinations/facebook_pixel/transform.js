@@ -112,9 +112,12 @@ const handleOrder = (message, categoryToContent) => {
       };
       contents.push(content);
     }
-    contents.forEach(content => {
+    contents.forEach((content, index) => {
       if (content.id === "") {
-        throw new CustomError("Product id is required. Event not sent", 400);
+        throw new CustomError(
+          `Product id is required for product ${index}. Event not sent`,
+          400
+        );
       }
     });
   } else {
@@ -171,9 +174,12 @@ const handleProductListViewed = (message, categoryToContent) => {
     });
     contentType = "product_group";
   }
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {
@@ -216,9 +222,12 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
       item_price: message.properties.price
     }
   ];
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {

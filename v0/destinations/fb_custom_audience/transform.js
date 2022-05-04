@@ -67,34 +67,29 @@ const responseBuilderSimple = (payload, audienceId) => {
 const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
+  userInformation = userInformation.toString();
   switch (userProperty) {
     case "EMAIL":
-      updatedProperty = userInformation
-        .toString()
-        .trim()
-        .toLowerCase();
+      updatedProperty = userInformation.trim().toLowerCase();
       break;
     case "PHONE":
       // remove all non-numerical characters
-      updatedProperty = userInformation.toString().replace(/[^0-9]/g, "");
+      updatedProperty = userInformation.replace(/[^0-9]/g, "");
       // remove all leading zeros
       updatedProperty = updatedProperty.replace(/^0+/g, "");
       break;
     case "GEN":
       updatedProperty =
-        userInformation.toString().toLowerCase() === "f" ||
-        userInformation.toString().toLowerCase() === "female"
+        userInformation.toLowerCase() === "f" ||
+        userInformation.toLowerCase() === "female"
           ? "f"
           : "m";
       break;
     case "DOBY":
-      updatedProperty = userInformation
-        .toString()
-        .trim()
-        .replace(/\./g, "");
+      updatedProperty = userInformation.trim().replace(/\./g, "");
       break;
     case "DOBM":
-      userInformationTrimmed = userInformation.toString().replace(/\./g, "");
+      userInformationTrimmed = userInformation.replace(/\./g, "");
       if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
@@ -102,7 +97,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       }
       break;
     case "DOBD":
-      userInformationTrimmed = userInformation.toString().replace(/\./g, "");
+      userInformationTrimmed = userInformation.replace(/\./g, "");
       if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
@@ -114,30 +109,27 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
     case "FI":
       if (userProperty !== "FI") {
         updatedProperty = userInformation
-          .toString()
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!]/g, "");
       } else {
         updatedProperty = userInformation
-          .toString()
           .toLowerCase()
           .replace(/[^a-zA-Z@#$%&!,.?]/g, "");
       }
       break;
     case "MADID":
-      updatedProperty = userInformation.toString().toLowerCase();
+      updatedProperty = userInformation.toLowerCase();
       break;
     case "COUNTRY":
-      updatedProperty = userInformation.toString().toLowerCase();
+      updatedProperty = userInformation.toLowerCase();
       break;
     case "ZIP":
-      userInformationTrimmed = userInformation.toString().replace(/\s/g, "");
+      userInformationTrimmed = userInformation.replace(/\s/g, "");
       updatedProperty = userInformationTrimmed.toLowerCase();
       break;
     case "ST":
     case "CT":
       updatedProperty = userInformation
-        .toString()
         .replace(/[^a-zA-Z ]/g, "")
         .replace(/\s/g, "")
         .toLowerCase();

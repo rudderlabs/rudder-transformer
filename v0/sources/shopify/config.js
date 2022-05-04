@@ -10,12 +10,30 @@ const IDENTIFY_TOPICS = {
 // Mapping from shopify_topic name for ecom events
 const ECOM_TOPICS = {
   CHECKOUTS_CREATE: "checkouts_create",
-  ORDERS_UPDATED: "orders_updated"
+  CHECKOUTS_UPDATE: "checkouts_update",
+  ORDERS_UPDATE: "orders_updated",
+  ORDERS_CREATE: "orders_create"
 };
 
 const RUDDER_ECOM_MAP = {
   checkouts_create: "Checkout Started",
-  orders_updated: "Order Updated"
+  checkouts_update: "Checkout Updated",
+  orders_updated: "Order Updated",
+  orders_create: "Order Created"
+};
+
+const SHOPIFY_TRACK_MAP = {
+  checkout_delete: "Checkout Deleted",
+  carts_create: "Cart Create",
+  carts_update: "Cart Update",
+  fulfillments_create: "Fulfillments Create",
+  fulfillments_update: "Fulfillments Update",
+  orders_delete: "Order Deleted",
+  orders_edited: "Order Edited",
+  orders_cancelled: "Order Cancelled",
+  orders_fulfilled: "Order Fulfilled",
+  orders_paid: "Order Paid",
+  orders_partially_fullfilled: "Order Partially Fulfilled"
 };
 
 const identifyMappingJSON = JSON.parse(
@@ -54,7 +72,10 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
   "total_price",
   "total_tax",
   "currency",
-  "line_items"
+  "line_items",
+  "customer",
+  "shipping_address",
+  "billing_address"
 ];
 
 /**
@@ -73,6 +94,7 @@ const SUPPORTED_TRACK_EVENTS = [
   "fulfillments_update",
   "orders_create",
   "orders_delete",
+  "orders_edited",
   "orders_cancelled",
   "orders_fulfilled",
   "orders_paid",
@@ -89,5 +111,6 @@ module.exports = {
   productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
-  SUPPORTED_TRACK_EVENTS
+  SUPPORTED_TRACK_EVENTS,
+  SHOPIFY_TRACK_MAP
 };

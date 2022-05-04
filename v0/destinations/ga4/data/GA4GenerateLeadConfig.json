@@ -1,0 +1,15 @@
+[
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": true
+  }
+]

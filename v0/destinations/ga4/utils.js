@@ -1,4 +1,5 @@
 const get = require("get-value");
+const moment = require("moment");
 const { proxyRequest } = require("../../../adapters/network");
 const {
   getDynamicMeta,
@@ -18,37 +19,17 @@ const ErrorBuilder = require("../../util/error");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
- * get time difference in hours
- * @param {*} date1
- * @param {*} date2
- * @returns
- */
-function getDifferenceInHours(date1, date2) {
-  const diffInMs = date2 - date1;
-  return diffInMs / (1000 * 60 * 60);
-}
-
-/**
- * get time difference in minutes
- * @param {*} date1
- * @param {*} date2
- * @returns
- */
-function getDifferenceInMinutes(date1, date2) {
-  const diffInMs = date2 - date1;
-  return diffInMs / (1000 * 60);
-}
-
-/**
  * converts to Unix timestamp (in microseconds)
  * @param {*} timestamp
  * @returns
  */
 function msUnixTimestamp(timestamp) {
-  const currentTime = new Date();
-  const time = new Date(timestamp);
+  const currentTime = moment.unix(moment().format("X"));
+  const time = moment.unix(moment(timestamp).format("X"));
 
-  const timeDifferenceInHours = getDifferenceInHours(time, currentTime);
+  const timeDifferenceInHours = Math.ceil(
+    moment.duration(currentTime.diff(time)).asHours()
+  );
   if (timeDifferenceInHours > 72) {
     throw new CustomError(
       "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
@@ -57,7 +38,7 @@ function msUnixTimestamp(timestamp) {
   }
 
   if (timeDifferenceInHours <= 0) {
-    if (getDifferenceInMinutes(currentTime, time) > 15) {
+    if (Math.ceil(moment.duration(time.diff(currentTime)).asMinutes()) > 15) {
       throw new CustomError(
         "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
         400
@@ -65,7 +46,7 @@ function msUnixTimestamp(timestamp) {
     }
   }
 
-  return time.getTime() * 1000 + time.getMilliseconds();
+  return time.toDate().getTime() * 1000 + time.toDate().getMilliseconds();
 }
 
 /**

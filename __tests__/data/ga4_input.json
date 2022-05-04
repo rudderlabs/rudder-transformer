@@ -6076,5 +6076,157 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-04-20T05:17:09Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "typesOfClient": "gtag",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2022-05-05T15:47:57Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "false",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "ga4AppInstanceId",
+            "id": "f0dd99b6f979fb551ce583373900f937"
+          }
+        ],
+        "client_id": "client_id",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "type": "track",
+      "event": "tutotial complete",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2022-04-20T15:20:57Z"
+    },
+    "destination": {
+      "Config": {
+        "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurementId": "G-T40PE6KET4",
+        "firebaseAppId": "",
+        "typesOfClient": "gtag",
+        "blockPageViewEvent": false,
+        "extendPageViewParams": false,
+        "sendUserId": false,
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

@@ -2455,5 +2455,23 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

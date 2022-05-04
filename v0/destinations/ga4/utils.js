@@ -18,12 +18,53 @@ const ErrorBuilder = require("../../util/error");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
+ * get time difference in hours
+ * @param {*} date1
+ * @param {*} date2
+ * @returns
+ */
+function getDifferenceInHours(date1, date2) {
+  const diffInMs = date2 - date1;
+  return diffInMs / (1000 * 60 * 60);
+}
+
+/**
+ * get time difference in minutes
+ * @param {*} date1
+ * @param {*} date2
+ * @returns
+ */
+function getDifferenceInMinutes(date1, date2) {
+  const diffInMs = date2 - date1;
+  return diffInMs / (1000 * 60);
+}
+
+/**
  * converts to Unix timestamp (in microseconds)
  * @param {*} timestamp
  * @returns
  */
 function msUnixTimestamp(timestamp) {
+  const currentTime = new Date();
   const time = new Date(timestamp);
+
+  const timeDifferenceInHours = getDifferenceInHours(time, currentTime);
+  if (timeDifferenceInHours > 72) {
+    throw new CustomError(
+      "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
+      400
+    );
+  }
+
+  if (timeDifferenceInHours <= 0) {
+    if (getDifferenceInMinutes(currentTime, time) > 15) {
+      throw new CustomError(
+        "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
+        400
+      );
+    }
+  }
+
   return time.getTime() * 1000 + time.getMilliseconds();
 }
 

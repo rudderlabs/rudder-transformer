@@ -433,6 +433,7 @@ function process(event) {
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.PAGE:
+      // passing page_view custom event for page()
       message.event = "page_view";
       response = trackResponseBuilder(message, destination);
       break;

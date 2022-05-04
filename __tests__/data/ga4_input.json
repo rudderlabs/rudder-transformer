@@ -3,7 +3,7 @@
     "message": {
       "channel": "web",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2022-04-22T10:57:58Z",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
       "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
       "context": {
         "app": {
@@ -79,7 +79,7 @@
     "message": {
       "channel": "web",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2022-04-25T09:59:48Z",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
       "context": {
         "app": {
           "build": "1.0.0",
@@ -5935,7 +5935,7 @@
     "message": {
       "channel": "web",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2022-05-03T16:19:04Z",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
       "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
       "context": {
         "app": {
@@ -5976,7 +5976,6 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
       "type": "page",
-      "event": "page view",
       "integrations": {
         "All": true
       },
@@ -6007,7 +6006,7 @@
     "message": {
       "channel": "web",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2022-05-03T16:19:04Z",
+      "originalTimestamp": "2022-04-26T05:17:09Z",
       "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
       "context": {
         "app": {

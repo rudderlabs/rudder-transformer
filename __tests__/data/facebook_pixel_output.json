@@ -594,5 +594,9 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "statusCode": 400,
+    "error": "Product id is required for product 0. Event not sent"
   }
 ]

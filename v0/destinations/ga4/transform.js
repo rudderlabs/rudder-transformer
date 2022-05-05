@@ -55,7 +55,7 @@ function trackResponseBuilder(message, { Config }) {
   }
 
   switch (Config.typesOfClient) {
-    case "gtag": {
+    case "gtag":
       // gtag.js
       rawPayload.client_id =
         get(message, "context.client_id") || get(message, "messageId");
@@ -66,8 +66,7 @@ function trackResponseBuilder(message, { Config }) {
         );
       }
       break;
-    }
-    case "firebase": {
+    case "firebase":
       rawPayload.app_instance_id = getDestinationExternalID(
         message,
         "ga4AppInstanceId"
@@ -79,7 +78,6 @@ function trackResponseBuilder(message, { Config }) {
         );
       }
       break;
-    }
     default:
       throw CustomError("GA4: Invalid type of client", 400);
   }
@@ -387,11 +385,19 @@ function trackResponseBuilder(message, { Config }) {
   response.params = {
     api_secret: Config.apiSecret
   };
-  if (Config.measurementId) {
-    response.params.measurement_id = Config.measurementId;
-  } else {
-    response.params.firebase_app_id = Config.firebaseAppId;
+
+  // setting response params as per client type
+  switch (Config.typesOfClient) {
+    case "gtag":
+      response.params.measurement_id = Config.measurementId;
+      break;
+    case "firebase":
+      response.params.firebase_app_id = Config.firebaseAppId;
+      break;
+    default:
+      break;
   }
+
   response.body.JSON = rawPayload;
   return response;
 }
@@ -424,6 +430,11 @@ function process(event) {
   let response;
   switch (messageType) {
     case EventType.TRACK:
+      response = trackResponseBuilder(message, destination);
+      break;
+    case EventType.PAGE:
+      // passing page_view custom event for page()
+      message.event = "page_view";
       response = trackResponseBuilder(message, destination);
       break;
     default:

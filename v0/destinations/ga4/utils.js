@@ -1,4 +1,5 @@
 const get = require("get-value");
+const moment = require("moment");
 const { proxyRequest } = require("../../../adapters/network");
 const {
   getDynamicMeta,
@@ -23,8 +24,29 @@ const { mappingConfig, ConfigCategory } = require("./config");
  * @returns
  */
 function msUnixTimestamp(timestamp) {
-  const time = new Date(timestamp);
-  return time.getTime() * 1000 + time.getMilliseconds();
+  const currentTime = moment.unix(moment().format("X"));
+  const time = moment.unix(moment(timestamp).format("X"));
+
+  const timeDifferenceInHours = Math.ceil(
+    moment.duration(currentTime.diff(time)).asHours()
+  );
+  if (timeDifferenceInHours > 72) {
+    throw new CustomError(
+      "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
+      400
+    );
+  }
+
+  if (timeDifferenceInHours <= 0) {
+    if (Math.ceil(moment.duration(time.diff(currentTime)).asMinutes()) > 15) {
+      throw new CustomError(
+        "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
+        400
+      );
+    }
+  }
+
+  return time.toDate().getTime() * 1000 + time.toDate().getMilliseconds();
 }
 
 /**
@@ -261,12 +283,14 @@ function getDestinationItemProperties(message, isItemsRequired) {
   }
   return items;
 }
+
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
   if (status === 204) {
     status = 200;
   }
+
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
@@ -284,12 +308,14 @@ const responseHandler = (destinationResponse, dest) => {
       })
       .build();
   }
+
   return {
     status,
     message,
     destinationResponse
   };
 };
+
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;

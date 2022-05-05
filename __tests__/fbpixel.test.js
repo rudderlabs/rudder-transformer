@@ -25,6 +25,8 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+Date.now = jest.fn(() => new Date("2019-09-01T15:46:51.000Z")); //2019-09-01T15:46:51.693229+05:30
+
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {
@@ -38,12 +40,11 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-  
+
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  
 });

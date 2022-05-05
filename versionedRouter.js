@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const moment = require("moment");
 const logger = require("./logger");
 const stats = require("./util/stats");
 
@@ -282,7 +283,7 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
-    destinations.push (...getIntegrations(CDK_DEST_PATH));
+    destinations.push(...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
@@ -615,6 +616,14 @@ async function handleProxyRequest(destination, ctx) {
   try {
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    logger.error(
+      `[NwLayer Latency], ${moment().format(
+        "YYYY-MM-DD kk:mm:ss.SSSZ"
+      )}, transformer_proxy_time, ${destination.toUpperCase()}, ${moment().diff(
+        startTime,
+        "milliseconds"
+      )}`
+    );
     stats.timing("transformer_proxy_time", startTime, {
       destination
     });
@@ -651,6 +660,14 @@ if (transformerProxy) {
           const startTime = new Date();
           ctx.set("apiVersion", API_VERSION);
           await handleProxyRequest(destination, ctx);
+          logger.error(
+            `[NwLayer Latency], ${moment().format(
+              "YYYY-MM-DD kk:mm:ss.SSSZ"
+            )}, transformer_total_proxy_latency, ${destination.toUpperCase()}, ${moment().diff(
+              startTime,
+              "milliseconds"
+            )}`
+          );
           stats.timing("transformer_total_proxy_latency", startTime, {
             destination,
             version

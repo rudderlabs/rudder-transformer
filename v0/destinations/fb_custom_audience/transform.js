@@ -67,6 +67,7 @@ const responseBuilderSimple = (payload, audienceId) => {
 const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
+  userInformation = userInformation.toString();
   switch (userProperty) {
     case "EMAIL":
       updatedProperty = userInformation.trim().toLowerCase();
@@ -85,14 +86,11 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
           : "m";
       break;
     case "DOBY":
-      updatedProperty = userInformation
-        .toString()
-        .trim()
-        .replace(/\./g, "");
+      updatedProperty = userInformation.trim().replace(/\./g, "");
       break;
     case "DOBM":
       userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (userInformationTrimmed.toString().length < 2) {
+      if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;
@@ -100,7 +98,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       break;
     case "DOBD":
       userInformationTrimmed = userInformation.replace(/\./g, "");
-      if (userInformationTrimmed.toString().length < 2) {
+      if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;

@@ -1,0 +1,7 @@
+[
+  {
+    "destKey": "search_string",
+    "sourceKeys": "properties.query",
+    "required": true
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "transaction_id",
+    "sourceKeys": "properties.transaction_id,properties.transactionId",
+    "required": true
+  },
+  {
+    "destKey": "item_ids",
+    "sourceKeys": "properties.item_ids",
+    "required": true
+  },
+  {
+    "destKey": "item_category",
+    "sourceKeys": "properties.category",
+    "required": true
+  },
+  {
+    "destKey": "number_items",
+    "sourceKeys": "properties.number_items",
+    "required": true
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "properties.price",
+    "required": true
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  },
+  {
+    "destKey": "search_string",
+    "sourceKeys": "properties.search_string",
+    "required": true
+  },
+  {
+    "destKey": "sign_up_method",
+    "sourceKeys": "properties.sign_up_method",
+    "required": true
+  },
+  {
+    "destKey": "client_dedup_id",
+    "sourceKeys": "properties.client_dedup_id",
+    "required": true
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "item_category",
+    "sourceKeys": "properties.item_category",
+    "required": true
+  },
+  {
+    "destKey": "number_items",
+    "sourceKeys": "properties.number_items",
+    "required": true
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  }
+]

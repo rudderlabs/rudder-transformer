@@ -607,33 +607,56 @@ if (startSourceTransformer) {
   });
 }
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 async function handleProxyRequest(destination, ctx) {
   const destinationRequest = ctx.request.body;
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
   let response;
+  const { mockDestTime } = ctx.request.query;
   try {
     const startTime = new Date();
-    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
-    logger.error(
-      `[NwLayer Latency], ${moment().format(
-        "YYYY-MM-DD kk:mm:ss.SSSZ"
-      )}, transformer_proxy_time, ${destination.toUpperCase()}, ${moment().diff(
-        startTime,
-        "milliseconds"
-      )}`
-    );
-    stats.timing("transformer_proxy_time", startTime, {
-      destination
-    });
-    const processedProxyResponse = destNetworkHandler.processAxiosResponse(
-      rawProxyResponse
-    );
-    response = destNetworkHandler.responseHandler(
-      processedProxyResponse,
-      destination
-    );
+    if (!mockDestTime) {
+      const rawProxyResponse = await destNetworkHandler.proxy(
+        destinationRequest
+      );
+      logger.error(
+        `[NwLayer Latency], ${moment().format(
+          "YYYY-MM-DD kk:mm:ss.SSSZ"
+        )}, transformer_proxy_time, ${destination.toUpperCase()}, ${moment().diff(
+          startTime,
+          "milliseconds"
+        )}`
+      );
+      stats.timing("transformer_proxy_time", startTime, {
+        destination
+      });
+      const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+        rawProxyResponse
+      );
+      response = destNetworkHandler.responseHandler(
+        processedProxyResponse,
+        destination
+      );
+    } else {
+      // Mock Response
+      await sleep(mockDestTime);
+      logger.error(
+        `Mock[NwLayer Latency], ${moment().format(
+          "YYYY-MM-DD kk:mm:ss.SSSZ"
+        )}, transformer_proxy_time, ${destination.toUpperCase()}, ${moment().diff(
+          startTime,
+          "milliseconds"
+        )}`
+      );
+      response = {
+        status: 200,
+        message: "Success",
+        destinationResponse: `Successful mock Dest Response for ${destination}`
+      };
+    }
   } catch (err) {
     response = generateErrorObject(
       err,

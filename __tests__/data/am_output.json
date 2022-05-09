@@ -3490,7 +3490,8 @@
             "device_id": "anon-id-new",
             "event_properties": {
               "prop1": "5",
-              "name": "Screen View"
+              "name": "Screen View",
+              "event_id": 7
             },
             "user_properties": {},
             "event_type": "Viewed Screen View Screen",

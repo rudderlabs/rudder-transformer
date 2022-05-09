@@ -9,14 +9,16 @@ function msUnixTimestamp(timestamp) {
 }
 
 function getNormalizedPhoneNumber(message) {
-  let phoneNumber = get(message, "context?.traits?.phone");
-  const phoneNumberLength = phoneNumber.toString().length();
+  let phoneNumber = message?.context?.traits?.phone;
+  const phoneNumberLength = String(phoneNumber).length;
   for (let i = 0; i < phoneNumberLength; i += 1) {
     if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
-      phoneNumber = phoneNumber.slice(0, phoneNumber.length() - 1);
-    } else if (phoneNumber[i] === "0") {
-      phoneNumber = phoneNumber.slice(0, phoneNumber.length() - 1);
-    } else break;
+      phoneNumber = phoneNumber.slice(0, phoneNumber.length - 1);
+    }
+    if (phoneNumber[i] === "0") {
+      phoneNumber = phoneNumber.slice(0, phoneNumber.length - 1);
+    }
+    break;
   }
   return phoneNumber;
 }

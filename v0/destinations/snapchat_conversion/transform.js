@@ -54,16 +54,17 @@ const getAccessToken = metadata => {
 };
 
 function trackResponseBuilder(message, metadata, { Config }) {
-  const event = get(message, "event");
+  let event = get(message, "event");
   if (!event) {
     throw new CustomError("Event name is required", 400);
   }
+  event = event.trim().replace(/\s+/g, "_");
 
   const { pixelId, snapAppId, appId } = Config;
-  const eventConversionType = message.context.snapchat_conversion_type.toLowerCase();
+  const eventConversionType = message?.context.snapchat_conversion_type?.toUpperCase();
 
   if (
-    (eventConversionType === "web" || eventConversionType === "offline") &&
+    (eventConversionType === "WEB" || eventConversionType === "OFFLINE") &&
     !pixelId
   ) {
     throw new CustomError(
@@ -72,7 +73,7 @@ function trackResponseBuilder(message, metadata, { Config }) {
     );
   }
 
-  if (eventConversionType === "mobile_app" && (!appId || snapAppId)) {
+  if (eventConversionType === "MOBILE_APP" && (!appId || snapAppId)) {
     if (!appId) {
       throw new CustomError(
         "[Snapchat] :: App Id is required for app events",
@@ -86,44 +87,6 @@ function trackResponseBuilder(message, metadata, { Config }) {
     }
   }
 
-  let payload = {
-    hashed_email: sha256(
-      get(message, "context?.traits?.email").toLowerCase()
-    ).toString(),
-    hashed_phone_number: sha256(getNormalizedPhoneNumber(message))
-      .toString()
-      .toLowerCase(),
-    user_agent: get(message, "context?.userAgent")
-      .toString()
-      .toLowerCase(),
-    hashed_ip_address: sha256(get(message, "context?.ip"))
-      .toString()
-      .toLowerCase(),
-    hashed_mobile_ad_id: sha256(get(message, "context?.idfa"))
-      .toString()
-      .toLowerCase(),
-    hashed_idfv: sha256(get(message, "context?.idfv"))
-      .toString()
-      .toLowerCase()
-  };
-
-  payload.timestamp = getFieldValueFromMessage(message, "timestamp");
-  payload.data_use = getDataUseValue(message);
-  if (payload.timestamp) {
-    msUnixTimestamp(payload.timestamp);
-  }
-
-  if (eventConversionType === "web") {
-    payload.pixel_id = pixelId;
-    payload.page_url = get(message, "properties.page_url");
-  }
-  if (eventConversionType === "mobile_app") {
-    payload.snap_app_id = snapAppId;
-    payload.app_id = appId;
-  }
-  if (eventConversionType === "offline") {
-    payload.pixel_id = pixelId;
-  }
   if (eventNameMapping[event.toLowerCase()]) {
     // Snapchat standard events
     // get event specific parameters
@@ -131,50 +94,50 @@ function trackResponseBuilder(message, metadata, { Config }) {
     switch (event.toLowerCase()) {
       /* Browsing Section */
       case "products_searched":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "product_list_viewed":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         break;
       /* Promotions Section */
       case "promotion_viewed":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "promotion_clicked":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Ordering Section */
       case "product_viewed":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "checkout_started":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         break;
@@ -187,6 +150,7 @@ function trackResponseBuilder(message, metadata, { Config }) {
           get(message, "properties.checkout_id"),
           10
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "order_completed":
         payload.event_type = eventNameMapping[event.toLowerCase()];
@@ -194,38 +158,78 @@ function trackResponseBuilder(message, metadata, { Config }) {
           message,
           mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         break;
       case "product_added":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Wishlist Section */
       case "product_added_to_wishlist":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Snapchat Common Events */
       default:
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
     }
   } else {
     logger.debug(`Event ${event} doesn't match with Snapchat Events!`);
   }
+
+  payload.hashed_email = sha256(
+    message?.context?.traits?.email.toString().toLowerCase()
+  );
+  payload.hashed_phone_number = sha256(
+    getNormalizedPhoneNumber(message)
+      .toString()
+      .toLowerCase()
+  );
+  payload.user_agent = message?.context?.userAgent.toString().toLowerCase();
+  payload.hashed_ip_address = sha256(
+    message?.context?.ip.toString().toLowerCase()
+  );
+  (hashed_mobile_ad_id = sha256(
+    message?.context?.idfa?.toString()?.toLowerCase()
+  )),
+    (hashed_idfv = sha256(message?.context?.idfv.toString().toLowerCase()));
+
+  payload.timestamp = getFieldValueFromMessage(message, "timestamp");
+  payload.data_use = getDataUseValue(message);
+  if (payload.timestamp) {
+    payload.timestamp = msUnixTimestamp(payload.timestamp)
+      .toString()
+      .slice(0, 10);
+  }
+
+  payload.event_conversion_type = eventConversionType;
+  if (eventConversionType === "WEB") {
+    payload.pixel_id = pixelId;
+    payload.page_url = get(message, "properties.page_url");
+  }
+  if (eventConversionType === "MOBILE_APP") {
+    payload.snap_app_id = snapAppId;
+    payload.app_id = appId;
+  }
+  if (eventConversionType === "OFFLINE") {
+    payload.pixel_id = pixelId;
+  }
+
   payload = removeUndefinedAndNullValues(payload);
 
   /**
@@ -236,7 +240,7 @@ function trackResponseBuilder(message, metadata, { Config }) {
    */
 
   // build response
-  const response = defaultRequestConfig;
+  const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   const accessToken = getAccessToken(metadata);
   response.headers = {

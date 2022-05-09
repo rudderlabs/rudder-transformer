@@ -1,22 +1,22 @@
 [
   {
     "destKey": "transaction_id",
-    "sourceKeys": "properties.order_id",
-    "required": true
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
   },
   {
     "destKey": "item_category",
     "sourceKeys": "properties.item_category",
-    "required": true
+    "required": false
   },
   {
     "destKey": "number_items",
     "sourceKeys": "properties.number_items",
-    "required": true
+    "required": false
   },
   {
     "destKey": "currency",
     "sourceKeys": "properties.currency",
-    "required": true
+    "required": false
   }
 ]

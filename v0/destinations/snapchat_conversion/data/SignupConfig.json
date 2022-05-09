@@ -1,7 +1,7 @@
 [
   {
     "destKey": "sign_up_method",
-    "sourceKeys": "properties.sign_up_method",
-    "required": true
+    "sourceKeys": ["properties.signUpMethod", "properties.sign_up_method"],
+    "required": false
   }
 ]

@@ -2,16 +2,16 @@
   {
     "destKey": "item_category",
     "sourceKeys": "properties.item_category",
-    "required": true
+    "required": false
   },
   {
     "destKey": "number_items",
     "sourceKeys": "properties.number_items",
-    "required": true
+    "required": false
   },
   {
     "destKey": "currency",
     "sourceKeys": "properties.currency",
-    "required": true
+    "required": false
   }
 ]

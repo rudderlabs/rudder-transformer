@@ -4,7 +4,6 @@ const sha256 = require("sha256");
 const { EventType } = require("../../../constants");
 
 const {
-  CustomError,
   defaultPostRequestConfig,
   constructPayload,
   defaultRequestConfig,
@@ -56,34 +55,46 @@ const getAccessToken = metadata => {
 function trackResponseBuilder(message, metadata, { Config }) {
   let event = get(message, "event");
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new ErrorBuilder()
+      .setMessage("[Snapchat] :: Event name is required")
+      .setStatus(400)
+      .build();
   }
   event = event.trim().replace(/\s+/g, "_");
 
   const { pixelId, snapAppId, appId } = Config;
-  const eventConversionType = message?.context.snapchat_conversion_type?.toUpperCase();
+  const eventConversionType = message?.context?.snapchat_conversion_type?.toUpperCase();
+
+  if (!eventConversionType) {
+    throw new ErrorBuilder()
+      .setMessage("[Snapchat] :: event_conversion_type is required")
+      .setStatus(400)
+      .build();
+  }
 
   if (
     (eventConversionType === "WEB" || eventConversionType === "OFFLINE") &&
     !pixelId
   ) {
-    throw new CustomError(
-      "[Snapchat] :: Pixel Id is required for web and offline events",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Snapchat] :: Pixel Id is required for web and offline events"
+      )
+      .setStatus(400)
+      .build();
   }
 
   if (eventConversionType === "MOBILE_APP" && (!appId || snapAppId)) {
     if (!appId) {
-      throw new CustomError(
-        "[Snapchat] :: App Id is required for app events",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage("[Snapchat] :: App Id is required for app events")
+        .setStatus(400)
+        .build();
     } else {
-      throw new CustomError(
-        "[Snapchat] :: Snap App Id is required for app events",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage("[Snapchat] :: Snap App Id is required for app events")
+        .setStatus(400)
+        .build();
     }
   }
 
@@ -232,13 +243,6 @@ function trackResponseBuilder(message, metadata, { Config }) {
 
   payload = removeUndefinedAndNullValues(payload);
 
-  /**
-   * This function is used for building the response. It create a default rudder response
-   * and populate headers, params and body.JSON
-   * @param {*} metadata
-   * @returns
-   */
-
   // build response
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
@@ -256,10 +260,10 @@ function process(event) {
   const { message, metadata, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("Message Type is not present. Aborting message.")
+      .setStatus(400)
+      .build();
   }
 
   const messageType = message.type.toLowerCase();
@@ -269,7 +273,10 @@ function process(event) {
       response = trackResponseBuilder(message, metadata, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new ErrorBuilder()
+        .setMessage(`Message type ${messageType} not supported`)
+        .setStatus(400)
+        .build();
   }
   return response;
 }
@@ -322,7 +329,7 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, trackResponseList, eventsChunk) {
+function getEventChunks(event, eventsChunk) {
   // build eventsChunk of MAX_BATCH_SIZE
   eventsChunk.push(event);
 }
@@ -342,7 +349,7 @@ const processRouterDest = async inputs => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, trackResponseList, eventsChunk);
+          getEventChunks(event, eventsChunk);
           // slice according to batch size
           if (
             eventsChunk.length &&

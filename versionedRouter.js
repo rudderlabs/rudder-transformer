@@ -615,7 +615,7 @@ async function handleProxyRequest(destination, ctx) {
     destination
   );
   let response;
-  const { mockDestTime } = ctx.request.query;
+  const mockDestTime = ctx.request?.query?.mockDestTime;
   try {
     const startTime = new Date();
     if (!mockDestTime) {

@@ -17,6 +17,8 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
+Date.now = jest.fn(() => new Date("2022-04-29T05:17:09Z"));
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {

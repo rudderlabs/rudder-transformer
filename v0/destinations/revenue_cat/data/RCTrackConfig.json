@@ -1,0 +1,48 @@
+[
+  {
+    "destKey": "app_user_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "fetch_token",
+    "sourceKeys": "properties.fetchToken",
+    "required": true
+  },
+  {
+    "destKey": "product_id",
+    "sourceKeys": "properties.productId",
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "properties.price",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "payment_mode",
+    "sourceKeys": "properties.paymentMode",
+    "required": false
+  },
+  {
+    "destKey": "introductory_price",
+    "sourceKeys": "properties.introductoryPrice",
+    "required": false
+  },
+  {
+    "destKey": "is_restore",
+    "sourceKeys": "properties.isRestore",
+    "required": false
+  },
+  {
+    "destKey": "presented_offering_identifier",
+    "sourceKeys": "properties.presentedOfferingIdentifier",
+    "required": false
+  }
+]

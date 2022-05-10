@@ -1,0 +1,91 @@
+[
+  {
+    "destKey": "app_user_id.value",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "$displayName.value",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$email.value",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$phoneNumber.value",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$apnsTokens.value",
+    "sourceKeys": "traits.apnsTokens",
+    "required": false
+  },
+  {
+    "destKey": "$fcmTokens.value",
+    "sourceKeys": "traits.fcmTokens",
+    "required": false
+  },
+  {
+    "destKey": "$idfa.value",
+    "sourceKeys": ["context.idfa", "context.device.advertisingId"],
+    "required": false
+  },
+  {
+    "destKey": "$idfv.value",
+    "sourceKeys": ["context.idfv", "context.device.id"],
+    "required": false
+  },
+  {
+    "destKey": "$gpsAdId.value",
+    "sourceKeys": "traits.gpsAdId",
+    "required": false
+  },
+  {
+    "destKey": "$androidId.value",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "$campaign.value",
+    "sourceKeys": "context.campaign.name",
+    "required": false
+  },
+  {
+    "destKey": "$ip.value",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "$creative.value",
+    "sourceKeys": "traits.creative",
+    "required": false
+  },
+  {
+    "destKey": "$keyword.value",
+    "sourceKeys": "traits.keyword",
+    "required": false
+  },
+  {
+    "destKey": "$mediaSource",
+    "sourceKeys": "traits.mediaSource",
+    "required": false
+  },
+  {
+    "destKey": "$ad.value",
+    "sourceKeys": "traits.ad",
+    "required": false
+  },
+  {
+    "destKey": "$adGroup.value",
+    "sourceKeys": "traits.addGroup",
+    "required": false
+  }
+]

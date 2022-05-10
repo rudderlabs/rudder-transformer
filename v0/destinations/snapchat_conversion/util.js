@@ -1,4 +1,5 @@
 const get = require("get-value");
+const sha256 = require("sha256");
 const { logger } = require("handlebars");
 
 const { isDefinedAndNotNull } = require("../../util");
@@ -8,19 +9,28 @@ function msUnixTimestamp(timestamp) {
   return time.getTime() * 1000 + time.getMilliseconds();
 }
 
-function getNormalizedPhoneNumber(message) {
-  let phoneNumber = message?.context?.traits?.phone;
-  const phoneNumberLength = String(phoneNumber).length;
-  for (let i = 0; i < phoneNumberLength; i += 1) {
-    if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
-      phoneNumber = phoneNumber.slice(0, phoneNumber.length - 1);
-    }
-    if (phoneNumber[i] === "0") {
-      phoneNumber = phoneNumber.slice(0, phoneNumber.length - 1);
-    }
-    break;
+function getHashedValue(identifier) {
+  if (identifier) {
+    return sha256(identifier);
   }
-  return phoneNumber;
+}
+function getNormalizedPhoneNumber(message) {
+  let phoneNumber = message?.context?.traits?.phone?.toString();
+  let leadingZero = true;
+  if (phoneNumber) {
+    for (let i = 0; i < phoneNumber.length; i += 1) {
+      if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
+        phoneNumber = phoneNumber.replace(phoneNumber[i], "");
+        i--;
+      } else if (phoneNumber[i] === "0" && leadingZero) {
+        phoneNumber = phoneNumber.replace(phoneNumber[i], "");
+        i--;
+      } else {
+        leadingZero = false;
+      }
+    }
+    return phoneNumber;
+  }
 }
 
 function getDataUseValue(message) {
@@ -74,5 +84,6 @@ module.exports = {
   getItemIds,
   getPriceSum,
   getDataUseValue,
-  getNormalizedPhoneNumber
+  getNormalizedPhoneNumber,
+  getHashedValue
 };

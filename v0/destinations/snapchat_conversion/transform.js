@@ -1,6 +1,5 @@
 const get = require("get-value");
 const { logger } = require("handlebars");
-const sha256 = require("sha256");
 const { EventType } = require("../../../constants");
 
 const {
@@ -23,6 +22,7 @@ const {
 } = require("./config");
 const {
   msUnixTimestamp,
+  getHashedValue,
   getItemIds,
   getPriceSum,
   getDataUseValue,
@@ -203,29 +203,34 @@ function trackResponseBuilder(message, metadata, { Config }) {
     logger.debug(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  payload.hashed_email = sha256(
-    message?.context?.traits?.email.toString().toLowerCase()
+  payload.hashed_email = getHashedValue(
+    message?.context?.traits?.email
+      ?.trim()
+      ?.toString()
+      ?.toLowerCase()
   );
-  payload.hashed_phone_number = sha256(
+  payload.hashed_phone_number = getHashedValue(
     getNormalizedPhoneNumber(message)
-      .toString()
-      .toLowerCase()
+      ?.toString()
+      ?.toLowerCase()
   );
-  payload.user_agent = message?.context?.userAgent.toString().toLowerCase();
-  payload.hashed_ip_address = sha256(
-    message?.context?.ip.toString().toLowerCase()
+  payload.user_agent = message?.context?.userAgent?.toString()?.toLowerCase();
+  payload.hashed_ip_address = getHashedValue(
+    message?.context?.ip?.toString()?.toLowerCase()
   );
-  (hashed_mobile_ad_id = sha256(
+  (hashed_mobile_ad_id = getHashedValue(
     message?.context?.idfa?.toString()?.toLowerCase()
   )),
-    (hashed_idfv = sha256(message?.context?.idfv.toString().toLowerCase()));
+    (hashed_idfv = getHashedValue(
+      message?.context?.idfv?.toString()?.toLowerCase()
+    ));
 
   payload.timestamp = getFieldValueFromMessage(message, "timestamp");
   payload.data_use = getDataUseValue(message);
   if (payload.timestamp) {
     payload.timestamp = msUnixTimestamp(payload.timestamp)
-      .toString()
-      .slice(0, 10);
+      ?.toString()
+      ?.slice(0, 10);
   }
 
   payload.event_conversion_type = eventConversionType;

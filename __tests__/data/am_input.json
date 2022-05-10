@@ -3207,11 +3207,11 @@
       "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-        "externalID": "1637170658229-3961832492194264209",
-        "event_id": 3
+        "externalID": "1637170658229-3961832492194264209"
       },
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 3 }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3273,11 +3273,11 @@
       "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-        "externalID": "1637170658229-3961832492194264209",
-        "event_id": 0
+        "externalID": "1637170658229-3961832492194264209"
       },
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 0 }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3339,11 +3339,11 @@
       "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-        "externalID": "1637170658229-3961832492194264209",
-        "event_id": "0"
+        "externalID": "1637170658229-3961832492194264209"
       },
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": "0" }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3384,8 +3384,7 @@
             "os_version": "test os"
           },
           "ip": "0.0.0.0",
-          "age": 26,
-          "event_id": 6
+          "age": 26
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3432,7 +3431,8 @@
       "anonymousId": "123456",
       "userId": "123456",
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 6 }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3515,8 +3515,7 @@
         },
         "os_version": "test os",
         "ip": "0.0.0.0",
-        "age": 26,
-        "event_id": 6
+        "age": 26
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -3524,7 +3523,8 @@
       "anonymousId": "123456",
       "userId": "123456",
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 6 }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3555,8 +3555,7 @@
           "email": "chandra+r@rudderlabs.com",
           "plan": "Open source",
           "logins": 5,
-          "createdAt": 1599264000,
-          "event_id": 3
+          "createdAt": 1599264000
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3596,7 +3595,8 @@
       "anonymousId": "my-anonymous-id-new",
       "userId": "sampleusrRudder3",
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 3 }
       },
       "groupId": "Sample_groupId23",
       "traits": {
@@ -3637,6 +3637,7 @@
           "name": "http"
         }
       },
+      "integrations": { "All": true, "Amplitude": { "event_id": 7 } },
       "timestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
@@ -3698,11 +3699,11 @@
         "url": "https://docs.rudderstack.com/destinations/amplitude",
         "category": "destination",
         "initial_referrer": "https://docs.rudderstack.com",
-        "initial_referring_domain": "docs.rudderstack.com",
-        "event_id": 2
+        "initial_referring_domain": "docs.rudderstack.com"
       },
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 2 }
       },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
@@ -3729,8 +3730,7 @@
           "email": "chandra+r@rudderlabs.com",
           "plan": "Open source",
           "logins": 5,
-          "createdAt": 1599264000,
-          "event_id": 67
+          "createdAt": 1599264000
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3770,7 +3770,8 @@
       "anonymousId": "my-anonymous-id-new",
       "userId": "newUserIdAlias",
       "integrations": {
-        "All": true
+        "All": true,
+        "Amplitude": { "event_id": 67 }
       },
       "previousId": "sampleusrRudder3",
       "sentAt": "2020-10-20T08:14:28.778Z"

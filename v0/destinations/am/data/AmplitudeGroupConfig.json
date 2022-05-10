@@ -29,7 +29,7 @@
     "funcName": "getBrand",
     "outKey": "device_brand"
   },
-  "context.traits.event_id": {
+  "integrations.Amplitude.event_id": {
     "isFunc": true,
     "funcName": "getEventId",
     "outKey": "event_id"

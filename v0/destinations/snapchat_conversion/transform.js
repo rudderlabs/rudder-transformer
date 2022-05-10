@@ -29,30 +29,7 @@ const {
   getNormalizedPhoneNumber
 } = require("./util");
 
-/**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = metadata => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  if (!secret) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
-  }
-  return secret.access_token;
-};
-
-function trackResponseBuilder(message, metadata, { Config }) {
+function trackResponseBuilder(message, { Config }) {
   let event = get(message, "event");
   if (!event) {
     throw new ErrorBuilder()
@@ -62,7 +39,7 @@ function trackResponseBuilder(message, metadata, { Config }) {
   }
   event = event.trim().replace(/\s+/g, "_");
 
-  const { pixelId, snapAppId, appId } = Config;
+  const { apiKey,pixelId, snapAppId, appId } = Config;
   const eventConversionType = message?.context?.snapchat_conversion_type?.toUpperCase();
 
   if (!eventConversionType) {
@@ -114,9 +91,9 @@ function trackResponseBuilder(message, metadata, { Config }) {
       case "product_list_viewed":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
         );
-        payload.event_type = eventNameMapping[event.toLowerCase()];
+        payload.event_type = eventNameMapping[event.toLowerCase()];Si
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         break;
@@ -124,14 +101,14 @@ function trackResponseBuilder(message, metadata, { Config }) {
       case "promotion_viewed":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "promotion_clicked":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
@@ -139,14 +116,14 @@ function trackResponseBuilder(message, metadata, { Config }) {
       case "product_viewed":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "checkout_started":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
@@ -155,11 +132,7 @@ function trackResponseBuilder(message, metadata, { Config }) {
       case "payment_info_entered":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
-        );
-        payload.transaction_id = parseInt(
-          get(message, "properties.checkout_id"),
-          10
+          mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
@@ -184,13 +157,20 @@ function trackResponseBuilder(message, metadata, { Config }) {
       case "product_added_to_wishlist":
         payload = constructPayload(
           message,
-          mappingConfig[ConfigCategory.COMMON.name]
+          mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
         );
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
-      /* Snapchat Common Events */
+      /* Snapchat General Events */
+      case "sign_up":
+        payload = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.SIGN_UP.name]
+        );
+        payload.event_type = eventNameMapping[event.toLowerCase()];
+        break;
       default:
         payload.params = constructPayload(
           message,
@@ -251,9 +231,8 @@ function trackResponseBuilder(message, metadata, { Config }) {
   // build response
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
-  const accessToken = getAccessToken(metadata);
   response.headers = {
-    Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json"
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -275,7 +254,7 @@ function process(event) {
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = trackResponseBuilder(message, metadata, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new ErrorBuilder()
@@ -297,7 +276,7 @@ function batchEvents(arrayChunks) {
     // extracting destination
     // from the first event in a batch
     const { destination } = chunk[0];
-    const { accessToken } = destination.Config;
+    const { apiKey } = destination.Config;
 
     let batchEventResponse = defaultBatchRequestConfig();
 
@@ -314,7 +293,7 @@ function batchEvents(arrayChunks) {
     batchEventResponse.batchedRequest.endpoint = ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${apiKey}`
     };
     batchEventResponse = {
       ...batchEventResponse,

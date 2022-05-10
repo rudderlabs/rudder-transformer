@@ -5,42 +5,28 @@ const MAX_BATCH_SIZE = 2000;
 
 const ConfigCategory = {
   COMMON: { name: "SnapchatCommonConfig" },
-
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
   /* Browsing Section */
   PRODUCTS_SEARCHED: { name: "ProductsSearchedConfig" },
-  //   PRODUCT_LIST_VIEWED: { name: "SnapchatProductListViewedConfig" },
+  PRODUCT_LIST_VIEWED: { name: "ProductListViewedConfig" },
 
   /* Promotions Section */
-  //   PROMOTION_VIEWED: { name: "PromotionViewedConfig" },
-  //   PROMOTION_CLICKED: { name: "PromotionClickedConfig" },
+  PROMOTION_VIEWED: { name: "PromotionViewedConfig" },
+  PROMOTION_CLICKED: { name: "PromotionClickedConfig" },
 
   /* Ordering Section */
-  //   PRODUCT_VIEWED: { name: "ProductViewedConfig" },
+  PRODUCT_VIEWED: { name: "ProductViewedConfig" },
   PRODUCT_ADDED: { name: "ProductAddedConfig" },
-  //   CHECKOUT_STARTED: { name: "CheckoutStartedConfig" },
-  //   PAYMENT_INFO_ENTERED: { name: "PaymentInfoEnteredConfig" },
+  CHECKOUT_STARTED: { name: "CheckoutStartedConfig" },
+  PAYMENT_INFO_ENTERED: { name: "PaymentInfoEnteredConfig" },
   ORDER_COMPLETED: { name: "OrderCompletedConfig" },
 
   /* Wishlist Section */
-  //   PRODUCT_ADDED_TO_WISHLIST: { name: "ProductAddedToWishlistConfig" },
+  PRODUCT_ADDED_TO_WISHLIST: { name: "ProductAddedToWishlistConfig" },
 
-  /* Snapchat Events */
+  /* Snapchat General Events */
   SIGN_UP: { name: "SignupConfig" }
-  //   OPEN_APP: { name: "" },
-  //   SAVE: { name: "" },
-  //   SUBSCRIBE: { name: "" },
-  //   COMPLETE_TUTORIAL: { name: "" },
-  //   INVITE: { name: "" },
-  //   LOGIN: { name: "" },
-  //   SHARE: { name: "" },
-  //   RESERVE: { name: "" },
-  //   ACHIEVEMENT_UNLOCKED: { name: "" },
-  //   SPENT_CREDITS: { name: "" },
-  //   RATE: { name: "" },
-  //   START_TRIAL: { name: "" },
-  //   LIST_VIEW: { name: "" }
 };
 
 const eventNameMapping = {

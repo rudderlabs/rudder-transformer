@@ -13,5 +13,10 @@
     "destKey": "currency",
     "sourceKeys": "properties.currency",
     "required": false
+  },
+  {
+    "destKey": "client_dedup_id",
+    "sourceKeys": "properties.client_dedup_id",
+    "required": false
   }
 ]

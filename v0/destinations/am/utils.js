@@ -71,15 +71,13 @@ function getBrand(payload, sourceKey, Config) {
   return undefined;
 }
 
-function getEventId(payload) {
-  const event_id =
-    payload?.context?.traits?.event_id ||
-    payload?.traits?.event_id ||
-    payload?.properties?.event_id;
-  if (isDefinedAndNotNull(event_id)) {
-    if (typeof event_id === "string") {
+function getEventId(payload, sourceKey) {
+  const eventId = get(payload, sourceKey);
+
+  if (isDefinedAndNotNull(eventId)) {
+    if (typeof eventId === "string") {
       logger.info(`event_id should be integer only`);
-    } else return event_id;
+    } else return eventId;
   }
   return undefined;
 }

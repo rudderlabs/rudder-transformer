@@ -44,7 +44,7 @@
   "messageId": "insert_id",
   "request_ip": "ip",
   "name": "event_properties.name",
-  "context.traits.event_id": {
+  "integrations.Amplitude.event_id": {
     "isFunc": true,
     "funcName": "getEventId",
     "outKey": "event_id"

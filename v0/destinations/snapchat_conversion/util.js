@@ -43,7 +43,10 @@ function getDataUseValue(message) {
       limitAdTracking = true;
     }
   }
-  return limitAdTracking;
+  if (limitAdTracking) {
+    limitAdTracking = "['lmu']";
+    return limitAdTracking;
+  }
 }
 
 function getItemIds(message) {

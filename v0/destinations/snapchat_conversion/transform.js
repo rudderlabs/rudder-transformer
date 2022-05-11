@@ -137,7 +137,6 @@ function trackResponseBuilder(message, { Config }) {
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case "order_completed":
-        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
@@ -172,7 +171,7 @@ function trackResponseBuilder(message, { Config }) {
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       default:
-        payload.params = constructPayload(
+        payload = constructPayload(
           message,
           mappingConfig[ConfigCategory.COMMON.name]
         );

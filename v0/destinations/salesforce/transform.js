@@ -21,6 +21,7 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
+const { fetchWithProxy } = require("../../../util/fetch");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -41,18 +42,26 @@ async function getSFDCHeader(destination) {
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
   let response;
   try {
-    response = await axios.post(authUrl, {}, { proxy: false, timeout: 30000 });
+    response = await fetchWithProxy(authUrl, { method: "POST", body: {} });
+    response = await response.json();
   } catch (error) {
     logger.error(error);
     throw new CustomError(
       `SALESFORCE AUTH FAILED: ${JSON.stringify(error)}`,
-      error.status || 400
+      400
+    );
+  }
+
+  if (response.error) {
+    throw new CustomError(
+      `SALESFORCE AUTH FAILED: ${JSON.stringify(response)}`,
+      400
     );
   }
 
   return {
-    token: `Bearer ${response.data.access_token}`,
-    instanceUrl: response.data.instance_url
+    token: `Bearer ${response.access_token}`,
+    instanceUrl: response.instance_url
   };
 }
 
@@ -117,11 +126,25 @@ async function getSaleforceIdForRecord(
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
 
-  const objSearchResponse = await axios.get(objSearchUrl, {
-    headers: { Authorization: authorizationData.token }
-  });
+  try {
+    const objSearchResponse = await fetchWithProxy(objSearchUrl, {
+      headers: { Authorization: authorizationData.token },
+      method: "GET"
+    });
 
-  return get(objSearchResponse, "data.searchRecords.0.Id");
+    objSearchResponse = await objSearchResponse.json();
+  } catch (error) {
+    throw new CustomError(JSON.stringify(error), 500);
+  }
+
+  if (objSearchResponse.error) {
+    throw new CustomError(
+      `OBJ SEARCH RESPONSE: ${JSON.stringify(objSearchResponse)}`,
+      400
+    );
+  }
+
+  return get(objSearchResponse, "searchRecords.0.Id");
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -217,23 +240,27 @@ async function getSalesforceIdFromPayload(
     // request configuration will be conditional
     let leadQueryResponse;
     try {
-      leadQueryResponse = await axios.get(leadQueryUrl, {
-        headers: { Authorization: authorizationData.token }
+      leadQueryResponse = await fetchWithProxy(leadQueryUrl, {
+        headers: { Authorization: authorizationData.token },
+        method: "GET"
       });
+
+      leadQueryResponse = await leadQueryResponse.json();
     } catch (err) {
-      throw new CustomError(
-        JSON.stringify(err.response.data[0]) || err.message,
-        err.response.status || 500
-      ); // default 500
+      throw new CustomError(JSON.stringify(err), 500); // default 500
     }
 
-    if (
-      leadQueryResponse &&
-      leadQueryResponse.data?.searchRecords?.length > 0
-    ) {
+    if (leadQueryResponse.error) {
+      throw new CustomError(
+        `LEAD QUERY RESPONSE: ${JSON.stringify(leadQueryResponse)}`,
+        400
+      );
+    }
+
+    if (leadQueryResponse && leadQueryResponse.searchRecords?.length > 0) {
       // if count is greater than zero, it means that lead exists, then only update it
       // else the original endpoint, which is the one for creation - can be used
-      const record = leadQueryResponse.data.searchRecords[0];
+      const record = leadQueryResponse.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
           throw new CustomError("The contact has been deleted.", 400);

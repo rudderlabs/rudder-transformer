@@ -1,8 +1,8 @@
-const fetch = require('node-fetch');
-const HttpsProxyAgent = require('https-proxy-agent');
-const _ = require('lodash')
+const fetch = require("node-fetch");
+const HttpsProxyAgent = require("https-proxy-agent");
+const _ = require("lodash");
 
-const fetchWithProxy =(url, options = {}) => {
+const fetchWithProxy = (url, options = {}) => {
   const instanceOptions = {
     ...options
   };
@@ -11,11 +11,11 @@ const fetchWithProxy =(url, options = {}) => {
     instanceOptions.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
   }
 
-  if(_.isEmpty(instanceOptions)) {
-      return fetch(url);
-  } else {
-      return fetch(url, instanceOptions);
+  if (_.isEmpty(instanceOptions)) {
+    return fetch(url);
   }
+
+  return fetch(url, instanceOptions);
 };
 
 exports.fetchWithProxy = fetchWithProxy;

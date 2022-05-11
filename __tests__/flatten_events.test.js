@@ -11,8 +11,8 @@ Key aspects covered:
       - Above level 3 are stringified and considered as string type
   3. Introducing jsonKeys for BQ, PG, RS, SF
       - data types: int, float, string, json
-      - only array, objects are considered as json types
-      - in BQ, json type is string
+      - number, string, array, objects fit under json data type, value is json stringified
+      - in BQ, json type is just a string data type
       - have more priority than cloud source under level 3 i.e. 4th level jsonKey is already being captured as string
       - blank, null types are omitted
       - rudder reserved keywords are omitted
@@ -168,29 +168,28 @@ describe("Flatten event properties", () => {
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should not have any change in datatypes even though they are set as jsonKeys and primitive values are passed", () => {
+      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values", () => {
         options.jsonKeys = {
           nullProp: 0,
           blankProp: 0,
           floatProp: 0,
           stringProp: 0,
           objectProp_firstLevelInt: 1,
-          objectProp_firstLevelInt_secondLevelBlankProp: 2,
-          objectProp_firstLevelInt_secondLevelBlankProp_thirdLevelString: 3
+          objectProp_firstLevelMap_secondLevelBlankProp: 2,
+          objectProp_firstLevelMap_secondLevelMap_thirdLevelString: 3
         };
         const output = {};
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
           utils,
-          "identify",
+          eventType,
           output,
           i,
           columnTypes,
           options
         );
         delete options.jsonKeys;
-        // Will be same as flattening all properties
-        const expected = fOutput("sample_event", integrations[index]);
+        const expected = fOutput("primitive_json_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
@@ -205,7 +204,7 @@ describe("Flatten event properties", () => {
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
           utils,
-          "identify",
+          eventType,
           output,
           i,
           columnTypes,
@@ -228,7 +227,7 @@ describe("Flatten event properties", () => {
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
           utils,
-          "identify",
+          eventType,
           output,
           i,
           columnTypes,

@@ -106,7 +106,6 @@ function appendColumnNameAndType(
   jsonKey = false
 ) {
   const datatype = getDataType(key, val, options, jsonKey);
-  val = jsonKey && isJson(val) ? JSON.stringify(val) : val;
 
   if (datatype === "datetime") {
     val = new Date(val).toISOString();
@@ -234,11 +233,12 @@ function setDataFromInputAndComputeColumnTypes(
         return;
       }
 
+      const val = JSON.stringify(input[key]);
       appendColumnNameAndType(
         utils,
         eventType,
         `${prefix + key}`,
-        input[key],
+        val,
         output,
         columnTypes,
         options,
@@ -338,6 +338,17 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
     // eslint-disable-next-line no-param-reassign
     columnTypes[colName] = fullEventColumnTypeByProvider[options.provider];
   }
+}
+
+function addJsonKeysToOptions(options) {
+  // Add json key paths from integration options and destination config
+  const jsonPaths = Array.isArray(options.integrationOptions?.jsonPaths)
+    ? options.integrationOptions.jsonPaths
+    : [];
+  if (options.destJsonPaths) {
+    jsonPaths.push(...options.destJsonPaths.split(","));
+  }
+  options.jsonKeys = getKeysFromJsonPaths(jsonPaths);
 }
 
 /*
@@ -565,14 +576,8 @@ function processWarehouseMessage(message, options) {
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
-  // Add json key paths from integration options and destination config
-  const jsonPaths = Array.isArray(options.integrationOptions.jsonPaths)
-    ? options.integrationOptions.jsonPaths
-    : [];
-  if (options.destJsonPaths) {
-    jsonPaths.push(...options.destJsonPaths.split(","));
-  }
-  options.jsonKeys = getKeysFromJsonPaths(jsonPaths);
+
+  addJsonKeysToOptions(options);
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();

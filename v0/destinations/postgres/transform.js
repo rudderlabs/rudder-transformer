@@ -8,7 +8,7 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
-  if (key === "violationErrors" || (jsonKey && isJson(val))) {
+  if (key === "violationErrors" || jsonKey) {
     return "json";
   }
   return "string";

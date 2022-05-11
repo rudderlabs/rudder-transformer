@@ -10,7 +10,7 @@ function processSingleMessage(message, options) {
 }
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
-  if (jsonKey && isJson(val)) {
+  if (jsonKey) {
     return "json";
   }
 

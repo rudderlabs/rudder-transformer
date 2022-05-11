@@ -169,8 +169,8 @@ const sampleEvents = {
       },
       escape_event: {
         output: {
-          _as: "escaped column",
-          _between: "escaped column",
+          _as: '"escaped column"',
+          _between: '"escaped column"',
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
@@ -182,8 +182,8 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_map_fo: 4
         },
         columnTypes: {
-          _as: "string",
-          _between: "string",
+          _as: "json",
+          _between: "json",
           int_prop: "int",
           float_prop: "float",
           string_prop: "string",
@@ -192,6 +192,30 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
+          object_prop_first_level_map_second_level_map_third_level_map_fo: "int"
+        }
+      },
+      primitive_json_event: {
+        output: {
+          int_prop: 0,
+          float_prop: "2.2",
+          string_prop: '"zero"',
+          array_prop: ["zero", "level"],
+          object_prop_first_level_int: "1",
+          object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_map_third_level_string:
+            '"third level"',
+          object_prop_first_level_map_second_level_map_third_level_map_fo: 4
+        },
+        columnTypes: {
+          int_prop: "int",
+          float_prop: "json",
+          string_prop: "json",
+          array_prop: "string",
+          object_prop_first_level_int: "json",
+          object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_map_third_level_string:
+            "json",
           object_prop_first_level_map_second_level_map_third_level_map_fo: "int"
         }
       }
@@ -320,8 +344,8 @@ const sampleEvents = {
       },
       escape_event: {
         output: {
-          _as: "escaped column",
-          _between: "escaped column",
+          _as: '"escaped column"',
+          _between: '"escaped column"',
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
@@ -333,8 +357,8 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int: 4
         },
         columnTypes: {
-          _as: "string",
-          _between: "string",
+          _as: "json",
+          _between: "json",
           int_prop: "int",
           float_prop: "float",
           string_prop: "string",
@@ -343,6 +367,31 @@ const sampleEvents = {
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
+          object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int:
+            "int"
+        }
+      },
+      primitive_json_event: {
+        output: {
+          int_prop: 0,
+          float_prop: "2.2",
+          string_prop: '"zero"',
+          array_prop: ["zero", "level"],
+          object_prop_first_level_int: "1",
+          object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_map_third_level_string:
+            '"third level"',
+          object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int: 4
+        },
+        columnTypes: {
+          int_prop: "int",
+          float_prop: "json",
+          string_prop: "json",
+          array_prop: "string",
+          object_prop_first_level_int: "json",
+          object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_map_third_level_string:
+            "json",
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int:
             "int"
         }
@@ -472,8 +521,8 @@ const sampleEvents = {
       },
       escape_event: {
         output: {
-          _as: "escaped column",
-          _between: "escaped column",
+          _as: '"escaped column"',
+          _between: '"escaped column"',
           int_prop: 0,
           float_prop: 2.2,
           string_prop: "zero",
@@ -492,6 +541,31 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_map_third_level_string:
+            "string",
+          object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int:
+            "int"
+        }
+      },
+      primitive_json_event: {
+        output: {
+          int_prop: 0,
+          float_prop: "2.2",
+          string_prop: '"zero"',
+          array_prop: ["zero", "level"],
+          object_prop_first_level_int: "1",
+          object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_map_third_level_string:
+            '"third level"',
+          object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int: 4
+        },
+        columnTypes: {
+          int_prop: "int",
+          float_prop: "string",
+          string_prop: "string",
+          array_prop: "string",
+          object_prop_first_level_int: "string",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",

@@ -7,12 +7,12 @@
   },
   {
     "destKey": "fetch_token",
-    "sourceKeys": "properties.fetchToken",
+    "sourceKeys": "properties.fetch_token",
     "required": true
   },
   {
     "destKey": "product_id",
-    "sourceKeys": "properties.productId",
+    "sourceKeys": "properties.product_id",
     "required": false
   },
   {
@@ -27,22 +27,22 @@
   },
   {
     "destKey": "payment_mode",
-    "sourceKeys": "properties.paymentMode",
+    "sourceKeys": "properties.payment_mode",
     "required": false
   },
   {
     "destKey": "introductory_price",
-    "sourceKeys": "properties.introductoryPrice",
+    "sourceKeys": "properties.introductory_price",
     "required": false
   },
   {
     "destKey": "is_restore",
-    "sourceKeys": "properties.isRestore",
+    "sourceKeys": "properties.is_restore",
     "required": false
   },
   {
     "destKey": "presented_offering_identifier",
-    "sourceKeys": "properties.presentedOfferingIdentifier",
+    "sourceKeys": "properties.presented_offering_identifier",
     "required": false
   }
 ]

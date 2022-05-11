@@ -8,6 +8,9 @@ const CONFIG_CATEGORIES = {
   TRACK: {
     name: "RCTrackConfig",
     type: "track"
+  },
+  PROPERTY: {
+    name: "RCProductConfig"
   }
 };
 
@@ -26,7 +29,25 @@ const REVENUE_CAT_IDENTIFY_EXCLUSION = [
   "keyword",
   "mediaSource",
   "ad",
-  "addGroup"
+  "addGroup",
+  "campaign",
+  "adGroup",
+  "adjustId",
+  "amazonAdId",
+  "androidId",
+  "fbAnonId",
+  "idfa",
+  "idfv",
+  "iterableCampaignId",
+  "iterableTemplateId",
+  "mixpanelDistinctId",
+  "airshipChannelId",
+  "onesignalId",
+  "mparticleId",
+  "iterableUserId",
+  "appsflyerId",
+  "fcmTokens",
+  "clevertapId"
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

@@ -16,12 +16,40 @@ const {
 } = require("./config");
 
 const trackResponseBuilder = async (message, category, { Config }) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-
-  if (!payload) {
-    // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  if (!Config.xPlatform) {
+    throw new CustomError("[REVENUE CAT] X-Platform is required field.", 400);
   }
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // che
+  if (
+    message.properties.products &&
+    Array.isArray(message.properties.products)
+  ) {
+    const responseArray = [];
+    const productList = message.properties.products;
+
+    productList.forEach(product => {
+      const productDetails = constructPayload(
+        product,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.PROPERTY.name]
+      );
+      payload = { ...payload, ...productDetails };
+      const response = defaultRequestConfig();
+      response.endpoint = "https://api.revenuecat.com/v1/receipts";
+
+      response.method = defaultPostRequestConfig.requestMethod;
+      const basicAuth = Buffer.from(Config.apiKey);
+      response.headers = {
+        Authorization: `Basic ${basicAuth}`,
+        "Content-Type": "application/json",
+        "X-Platform": `${Config.xPlatform}`
+      };
+      response.body.JSON = payload;
+      responseArray.push(response);
+    });
+    return responseArray;
+  }
+
   const response = defaultRequestConfig();
   response.endpoint = "https://api.revenuecat.com/v1/receipts";
 
@@ -29,7 +57,8 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.apiKey);
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    "X-Platform": `${Config.xPlatform}`
   };
   response.body.JSON = payload;
   return response;
@@ -52,9 +81,9 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
     REVENUE_CAT_IDENTIFY_EXCLUSION
   );
 
-  for (const [key, value] of Object.entries(customPayload)) {
+  Object.entries(customPayload).forEach(([key, value]) => {
     set(payload, `${key}.value`, value.toString());
-  }
+  });
 
   const responseGet = defaultRequestConfig();
   responseGet.endpoint = `https://api.revenuecat.com/v1/subscribers/${payload.app_user_id.value}`;

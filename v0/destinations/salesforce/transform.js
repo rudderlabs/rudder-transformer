@@ -41,11 +41,11 @@ async function getSFDCHeader(destination) {
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
   let response;
   try {
-    response = await axios.post(authUrl, {});
+    response = await axios.post(authUrl, {}, { timeout: 30000 });
   } catch (error) {
     logger.error(error);
     throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${error.message}`,
+      `SALESFORCE AUTH FAILED: ${JSON.stringify(error)}`,
       error.status || 400
     );
   }

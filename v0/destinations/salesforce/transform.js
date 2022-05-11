@@ -41,7 +41,7 @@ async function getSFDCHeader(destination) {
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
   let response;
   try {
-    response = await axios.post(authUrl, {}, { timeout: 30000 });
+    response = await axios.post(authUrl, {}, { proxy: false, timeout: 30000 });
   } catch (error) {
     logger.error(error);
     throw new CustomError(

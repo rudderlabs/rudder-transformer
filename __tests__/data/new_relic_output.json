@@ -5,8 +5,8 @@
     "method": "POST",
     "endpoint": "https://insights-collector.newrelic.com/v1/accounts/12345/events",
     "headers": {
-      "Api Key": "11111122702j2a2U2K2C7H",
-      "content-type": "application/json"
+      "Api-Key": "11111122702j2a2U2K2C7H",
+      "Content-Type": "application/json"
     },
     "params": {},
     "body": {

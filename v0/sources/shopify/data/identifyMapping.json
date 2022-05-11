@@ -32,6 +32,16 @@
         "sourceKeys":"default_address",
         "destKeys":"traits.address"
     },
+
+    {
+        "sourceKeys":"shipping_address",
+        "destKeys":"traits.shippingAddress"
+    },
+
+    {
+        "sourceKeys":"billing_address",
+        "destKeys":"traits.billingAddress"
+    },
     
     {
         "sourceKeys":"accepts_marketing",

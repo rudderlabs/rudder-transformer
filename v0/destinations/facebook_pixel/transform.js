@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require("sha256");
 const get = require("get-value");
+const moment = require("moment");
+const stats = require("../../../util/stats");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -103,16 +105,21 @@ const handleOrder = (message, categoryToContent) => {
       const pId =
         products[i].product_id || products[i].sku || products[i].id || "";
       contentIds.push(pId);
+      // required field for content
+      // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
       const content = {
         id: pId,
-        quantity: products[i].quantity,
-        item_price: products[i].price
+        quantity: products[i].quantity || message.properties.quantity || 1,
+        item_price: products[i].price || message.properties.price
       };
       contents.push(content);
     }
-    contents.forEach(content => {
+    contents.forEach((content, index) => {
       if (content.id === "") {
-        throw new CustomError("Product id is required. Event not sent", 400);
+        throw new CustomError(
+          `Product id is required for product ${index}. Event not sent`,
+          400
+        );
       }
     });
   } else {
@@ -144,12 +151,13 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id;
+        const productId = product.product_id || product.sku || product.id || "";
         if (productId) {
           contentIds.push(productId);
           contents.push({
             id: productId,
-            quantity: message.properties.quantity
+            quantity: product.quantity || message.properties.quantity || 1,
+            item_price: product.price
           });
         }
       } else {
@@ -168,9 +176,12 @@ const handleProductListViewed = (message, categoryToContent) => {
     });
     contentType = "product_group";
   }
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {
@@ -209,13 +220,16 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
         message.properties.id ||
         message.properties.sku ||
         "",
-      quantity: message.properties.quantity,
+      quantity: message.properties.quantity || 1,
       item_price: message.properties.price
     }
   ];
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {
@@ -410,6 +424,7 @@ const responseBuilderSimple = (
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
     "fb_pixel"
   );
+
   if (commonData.action_source) {
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
@@ -582,6 +597,28 @@ const processEvent = (message, destination) => {
       "Message Type is not present. Aborting message.",
       400
     );
+  }
+
+  const timeStamp = message.originalTimestamp || message.timestamp;
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    // calculates future event in minutes
+    const deltaMin = Math.ceil(
+      moment.duration(start.diff(current)).asMinutes()
+    );
+    if (deltaDay > 7 || deltaMin > 1) {
+      // TODO: Remove after testing in mirror transformer
+      stats.increment("fb_pixel_timestamp_error", 1, {
+        destinationId: destination.ID
+      });
+      throw new CustomError(
+        "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+        400
+      );
+    }
   }
 
   let eventsToEvents;

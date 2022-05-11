@@ -13,7 +13,8 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   isDefinedAndNotNullAndNotEmpty,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   trackMapping,
@@ -52,6 +53,20 @@ const trackResponseBuilder = async (message, { Config }) => {
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {
     set(payload, "context.user.external_id", externalId);
   }
+
+  const traits = getFieldValueFromMessage(message, "traits");
+
+  // taking user properties like email and phone from traits
+  let email = get(payload, "context.user.email");
+  if (!isDefinedAndNotNullAndNotEmpty(email) && traits?.email) {
+    set(payload, "context.user.email", traits.email);
+  }
+
+  let phone_number = get(payload, "context.user.phone_number");
+  if (!isDefinedAndNotNullAndNotEmpty(phone_number) && traits?.phone) {
+    set(payload, "context.user.phone_number", traits.phone);
+  }
+
   payload = { pixel_code, event, ...payload };
 
   /*
@@ -64,14 +79,14 @@ const trackResponseBuilder = async (message, { Config }) => {
       payload.context.user.external_id = SHA256(external_id.trim()).toString();
     }
 
-    const email = get(payload, "context.user.email");
+    email = get(payload, "context.user.email");
     if (isDefinedAndNotNullAndNotEmpty(email)) {
       payload.context.user.email = SHA256(
         email.trim().toLowerCase()
       ).toString();
     }
 
-    const phone_number = get(payload, "context.user.phone_number");
+    phone_number = get(payload, "context.user.phone_number");
     if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
       if (checkIfValidPhoneNumber(phone_number.trim())) {
         payload.context.user.phone_number = SHA256(

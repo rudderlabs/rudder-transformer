@@ -2,7 +2,8 @@
 const {
   CustomError,
   constructPayload,
-  extractCustomFields
+  extractCustomFields,
+  flattenJson
 } = require("../../util");
 const {
   lineItemsMappingJSON,
@@ -66,13 +67,27 @@ const createPropertiesForEcomEvent = message => {
     "root",
     PRODUCT_MAPPING_EXCLUSION_FIELDS
   );
-
   mappedPayload.products = productsList;
   return mappedPayload;
+};
+
+const extractEmailFromPayload = event => {
+  const flattenedPayload = flattenJson(event);
+  let email;
+  const regex_email = new RegExp("\\bemail\\b", "i");
+  Object.entries(flattenedPayload).some(([key, value]) => {
+    if (regex_email.test(key)) {
+      email = value;
+      return true;
+    }
+    return false;
+  });
+  return email;
 };
 
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
-  createPropertiesForEcomEvent
+  createPropertiesForEcomEvent,
+  extractEmailFromPayload
 };

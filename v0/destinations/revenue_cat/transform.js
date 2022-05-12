@@ -27,7 +27,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const productList = message.properties?.products;
   if (productList && Array.isArray(productList)) {
     const responseArray = [];
-
+    const finalPayload = payload;
     for (const product of productList) {
       const productDetails = constructPayload(
         product,
@@ -46,6 +46,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       };
       response.body.JSON = payload;
       responseArray.push(response);
+      payload = finalPayload;
     }
     return responseArray;
   }

@@ -10,9 +10,9 @@ const {
   getFieldValueFromMessage,
   defaultBatchRequestConfig,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  CustomError
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const {
   ENDPOINT,
   eventNameMapping,
@@ -26,52 +26,48 @@ const {
   getItemIds,
   getPriceSum,
   getDataUseValue,
-  getNormalizedPhoneNumber
+  getNormalizedPhoneNumber,
+  channelMapping
 } = require("./util");
 
 function trackResponseBuilder(message, { Config }) {
   let event = get(message, "event");
   if (!event) {
-    throw new ErrorBuilder()
-      .setMessage("[Snapchat] :: Event name is required")
-      .setStatus(400)
-      .build();
+    throw new CustomError("[Snapchat] :: Event name is required", 400);
   }
   event = event.trim().replace(/\s+/g, "_");
 
-  const { apiKey,pixelId, snapAppId, appId } = Config;
-  const eventConversionType = message?.context?.snapchat_conversion_type?.toUpperCase();
-
-  if (!eventConversionType) {
-    throw new ErrorBuilder()
-      .setMessage("[Snapchat] :: event_conversion_type is required")
-      .setStatus(400)
-      .build();
+  const { apiKey, pixelId, snapAppId, appId } = Config;
+  let channel = get(message, "channel");
+  let eventConversionType = message?.properties?.eventConversionType;
+  if (
+    channelMapping[eventConversionType?.toLowerCase()] ||
+    channelMapping[channel?.toLowerCase()]
+  ) {
+    eventConversionType = eventConversionType
+      ? channelMapping[eventConversionType?.toLowerCase()]
+      : channelMapping[channel?.toLowerCase()];
+  } else {
+    eventConversionType = "OFFLINE";
   }
 
   if (
     (eventConversionType === "WEB" || eventConversionType === "OFFLINE") &&
     !pixelId
   ) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Snapchat] :: Pixel Id is required for web and offline events"
-      )
-      .setStatus(400)
-      .build();
+    throw new CustomError(
+      "[Snapchat] :: Pixel Id is required for web and offline events",
+      400
+    );
   }
 
-  if (eventConversionType === "MOBILE_APP" && (!appId || snapAppId)) {
+  if (eventConversionType === "MOBILE_APP" && !(appId && snapAppId)) {
     if (!appId) {
-      throw new ErrorBuilder()
-        .setMessage("[Snapchat] :: App Id is required for app events")
-        .setStatus(400)
-        .build();
+      throw new CustomError("[Snapchat] :: App Id is required for app events");
     } else {
-      throw new ErrorBuilder()
-        .setMessage("[Snapchat] :: Snap App Id is required for app events")
-        .setStatus(400)
-        .build();
+      throw new CustomError(
+        "[Snapchat] :: Snap App Id is required for app events"
+      );
     }
   }
 
@@ -93,7 +89,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
         );
-        payload.event_type = eventNameMapping[event.toLowerCase()];Si
+        payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
         payload.price = getPriceSum(message);
         break;
@@ -179,7 +175,10 @@ function trackResponseBuilder(message, { Config }) {
         break;
     }
   } else {
-    logger.debug(`Event ${event} doesn't match with Snapchat Events!`);
+    throw new CustomError(
+      `Event ${event} doesn't match with Snapchat Events!`,
+      400
+    );
   }
 
   payload.hashed_email = getHashedValue(
@@ -204,6 +203,17 @@ function trackResponseBuilder(message, { Config }) {
       message?.context?.idfv?.toString()?.toLowerCase()
     ));
 
+  if (
+    !payload.hashed_email &&
+    !payload.hashed_phone_number &&
+    !payload.hashed_mobile_ad_id &&
+    !(payload.hashed_ip_address && payload.user_agent)
+  ) {
+    throw new CustomError(
+      "At least one of email or phone or idfa or ip and userAgent is required",
+      400
+    );
+  }
   payload.timestamp = getFieldValueFromMessage(message, "timestamp");
   payload.data_use = getDataUseValue(message);
   if (payload.timestamp) {
@@ -215,7 +225,7 @@ function trackResponseBuilder(message, { Config }) {
   payload.event_conversion_type = eventConversionType;
   if (eventConversionType === "WEB") {
     payload.pixel_id = pixelId;
-    payload.page_url = get(message, "properties.page_url");
+    payload.page_url = get(message, "properties.pageUrl");
   }
   if (eventConversionType === "MOBILE_APP") {
     payload.snap_app_id = snapAppId;
@@ -240,13 +250,13 @@ function trackResponseBuilder(message, { Config }) {
 }
 
 function process(event) {
-  const { message, metadata, destination } = event;
+  const { message, destination } = event;
 
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .build();
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
 
   const messageType = message.type.toLowerCase();
@@ -256,10 +266,7 @@ function process(event) {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`Message type ${messageType} not supported`)
-        .setStatus(400)
-        .build();
+      throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
 }
@@ -285,8 +292,8 @@ function batchEvents(arrayChunks) {
       metadata.push(ev.metadata);
     });
 
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(batchResponseList)
+    batchEventResponse.batchedRequest.body.JSON = {
+      batch: batchResponseList
     };
 
     batchEventResponse.batchedRequest.endpoint = ENDPOINT;
@@ -323,7 +330,6 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const trackResponseList = []; // list containing single track event in batched format
   let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (2000) batch size
   const errorRespList = [];
@@ -350,7 +356,6 @@ const processRouterDest = async inputs => {
               metadata: event.metadata,
               destination: event.destination
             },
-            trackResponseList,
             eventsChunk
           );
           // slice according to batch size
@@ -377,9 +382,9 @@ const processRouterDest = async inputs => {
 
   let batchedResponseList = [];
   if (arrayChunks.length) {
-    batchedResponseList = await batchEvents(arrayChunks);
+    batchedResponseList = batchEvents(arrayChunks);
   }
-  return [...batchedResponseList.concat(trackResponseList), ...errorRespList];
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

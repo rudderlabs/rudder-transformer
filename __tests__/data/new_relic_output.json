@@ -196,5 +196,9 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "message type identify not supported for new_relic"
   }
 ]

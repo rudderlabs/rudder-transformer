@@ -1,98 +1,10 @@
+const { even } = require("is");
 const { commonPostMapper } = require("../../cdk/new_relic/transform");
 
 describe("Unit test cases for new_relic common post mapper", () => {
-  let payload, event, rudderContext;
+  let payload, event, rudderContext, expectedOutput;
   beforeEach(() => {
     payload = { event: "first", timestamp: 1580602989, abc: "123", key: 124 };
-    event = {
-      message: { userId: "identified user id", anonymousId: "anon-id-new" },
-      destination: {
-        Config: {
-          accountId: "12345",
-          insertKey: "11111122702j2a2U2K2C7H",
-          dataCenter: "us"
-        }
-      }
-    };
-    rudderContext = {};
-  });
-
-  it('If user did not provid a eventType name, then we will include "rudderstack" in the payload directly', () => {
-    event = {
-      message: { userId: "identified user id", anonymousId: "anon-id-new" },
-      destination: {
-        Config: {
-          customEventType: "",
-          sendDeviceContext: false,
-          sendUserIdanonymousId: true
-        }
-      }
-    };
-    const expectedOutput = {
-      event: "first",
-      timestamp: 1580602989,
-      abc: "123",
-      key: 124,
-      eventType: "rudderstack",
-      userId: "identified user id",
-      anonymousId: "anon-id-new"
-    };
-
-    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
-      expectedOutput
-    );
-  });
-
-  it("If user provides a eventType name, then we will include it in the payload directly", () => {
-    event = {
-      message: { userId: "identified user id", anonymousId: "anon-id-new" },
-      destination: {
-        Config: {
-          customEventType: "abc",
-          sendDeviceContext: false,
-          sendUserIdanonymousId: true
-        }
-      }
-    };
-    const expectedOutput = {
-      event: "first",
-      timestamp: 1580602989,
-      abc: "123",
-      key: 124,
-      eventType: "abc",
-      userId: "identified user id",
-      anonymousId: "anon-id-new"
-    };
-
-    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
-      expectedOutput
-    );
-  });
-  it('when "sendUserIdanonymousId" is false, we do not send userId or anonymousId ', () => {
-    event = {
-      message: { userId: "identified user id", anonymousId: "anon-id-new" },
-      destination: {
-        Config: {
-          customEventType: "abc",
-          sendDeviceContext: false,
-          sendUserIdanonymousId: false
-        }
-      }
-    };
-    const expectedOutput = {
-      event: "first",
-      timestamp: 1580602989,
-      abc: "123",
-      key: 124,
-      eventType: "abc"
-    };
-
-    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
-      expectedOutput
-    );
-  });
-
-  it('when "sendDeviceContext" is true, we will flatten the context and merge with the payload ', () => {
     event = {
       message: {
         userId: "identified user id",
@@ -105,24 +17,62 @@ describe("Unit test cases for new_relic common post mapper", () => {
       },
       destination: {
         Config: {
-          customEventType: "abc",
-          sendDeviceContext: true,
+          accountId: "12345",
+          insertKey: "11111122702j2a2U2K2C7H",
+          dataCenter: "us",
+          customEventType: "",
+          sendDeviceContext: false,
           sendUserIdanonymousId: true
         }
       }
     };
-    const expectedOutput = {
+    rudderContext = {};
+    expectedOutput = {
       event: "first",
       timestamp: 1580602989,
       abc: "123",
       key: 124,
-      eventType: "abc",
+      eventType: "rudderstack",
       userId: "identified user id",
-      anonymousId: "anon-id-new",
-      "traits.trait1": "new-val",
-      ip: "14.5.67.21",
-      "library.name": "http"
+      anonymousId: "anon-id-new"
     };
+  });
+
+  it('If user did not provid a eventType name, then we will include "rudderstack" in the payload directly', () => {
+    event.destination.Config.sendDeviceContext = false;
+    expectedOutput.eventType = "rudderstack";
+    expectedOutput.userId = "identified user id";
+    expectedOutput.anonymousId = "anon-id-new";
+    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
+      expectedOutput
+    );
+  });
+
+  it("If user provides a eventType name, then we will include it in the payload directly", () => {
+    event.destination.Config.customEventType = "abc";
+    expectedOutput.eventType = "abc";
+    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
+      expectedOutput
+    );
+  });
+  it('when "sendUserIdanonymousId" is false, we do not send userId or anonymousId ', () => {
+    event.destination.Config.sendUserIdanonymousId = false;
+    event.destination.Config.customEventType = "abc";
+    expectedOutput.eventType = "abc";
+    delete expectedOutput.userId;
+    delete expectedOutput.anonymousId;
+
+    expect(commonPostMapper(event, payload, rudderContext)).toEqual(
+      expectedOutput
+    );
+  });
+
+  it('when "sendDeviceContext" is true, we will flatten the context and merge with the payload ', () => {
+    event.destination.Config.sendUserIdanonymousId = true;
+    event.destination.Config.sendDeviceContext = true;
+    expectedOutput["traits.trait1"] = "new-val";
+    expectedOutput.ip = "14.5.67.21";
+    expectedOutput["library.name"] = "http";
 
     expect(commonPostMapper(event, payload, rudderContext)).toEqual(
       expectedOutput

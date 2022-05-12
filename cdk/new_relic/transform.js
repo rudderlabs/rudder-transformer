@@ -7,15 +7,15 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   const destConfig = destination.Config;
 
   // If user provided a eventType name, then we will include it in the payload directly
-  if (destination.Config.customEventType) {
-    payload.eventType = destination.Config.customEventType;
+  if (destConfig.customEventType) {
+    payload.eventType = destConfig.customEventType;
   } else {
     // If eventType is not provided by the user, by default it is 'rudderstack'
     payload.eventType = "rudderstack";
   }
 
   // If user enables 'sendUserIdanonymousId', then we include userId and anonymousId into the payload
-  if (destination.Config.sendUserIdanonymousId) {
+  if (destConfig.sendUserIdanonymousId) {
     if (message.userId || message.context.userId || message.context.id) {
       payload.userId = message.userId;
     }

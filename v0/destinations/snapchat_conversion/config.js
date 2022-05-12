@@ -47,7 +47,7 @@ const eventNameMapping = {
   order_completed: "PURCHASE",
 
   /* Wishlist Section */
-  product_added_to_wishlist: "add_to_wishlist",
+  product_added_to_wishlist: "ADD_TO_WISHLIST",
 
   sign_up: "SIGN_UP",
   open_app: "OPEN_APP",

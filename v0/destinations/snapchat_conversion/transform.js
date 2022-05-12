@@ -154,8 +154,6 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
         );
-        payload.item_ids = getItemIds(message);
-        payload.price = getPriceSum(message);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Snapchat General Events */
@@ -179,6 +177,10 @@ function trackResponseBuilder(message, { Config }) {
       `Event ${event} doesn't match with Snapchat Events!`,
       400
     );
+  }
+
+  if (get(message, "properties.event_tag")) {
+    payload.event_tag = message?.properties?.event_tag;
   }
 
   payload.hashed_email = getHashedValue(
@@ -225,7 +227,7 @@ function trackResponseBuilder(message, { Config }) {
   payload.event_conversion_type = eventConversionType;
   if (eventConversionType === "WEB") {
     payload.pixel_id = pixelId;
-    payload.page_url = get(message, "properties.pageUrl");
+    payload.page_url = getFieldValueFromMessage(message, "pageUrl");
   }
   if (eventConversionType === "MOBILE_APP") {
     payload.snap_app_id = snapAppId;

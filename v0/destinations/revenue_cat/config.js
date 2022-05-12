@@ -1,5 +1,7 @@
 const { getMappingConfig } = require("../../util");
 
+const BASE_URL = "https://api.revenuecat.com/v1";
+
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "RCIdentifyConfig",
@@ -54,5 +56,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  REVENUE_CAT_IDENTIFY_EXCLUSION
+  REVENUE_CAT_IDENTIFY_EXCLUSION,
+  BASE_URL
 };

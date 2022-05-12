@@ -4,6 +4,7 @@ const { Utils } = require("rudder-transformer-cdk");
 function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;
   const payload = mappedPayload;
+  const destConfig = destination.Config;
 
   // If user provided a eventType name, then we will include it in the payload directly
   if (destination.Config.customEventType) {
@@ -15,7 +16,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
 
   // If user enables 'sendUserIdanonymousId', then we include userId and anonymousId into the payload
   if (destination.Config.sendUserIdanonymousId) {
-    if (message.userId) {
+    if (message.userId || message.context.userId || message.context.id) {
       payload.userId = message.userId;
     }
     if (message.anonymousId) {
@@ -24,19 +25,21 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   }
 
   // Upon users choice for data center, we are updating the endpoint accordingly
-  if (destination.Config.dataCenter === "eu") {
-    rudderContext.endpoint = `https://insights-collector.eu01.nr-data.net/v1/accounts/${destination.Config.accountId}/events`;
-  } else {
-    // data center=US--standard endpoint
-    rudderContext.endpoint = `https://insights-collector.newrelic.com/v1/accounts/${destination.Config.accountId}/events`;
+  switch (destConfig.dataCenter) {
+    case "eu":
+      rudderContext.endpoint = `https://insights-collector.eu01.nr-data.net/v1/accounts/${destConfig.accountId}/events`;
+      break;
+    default:
+      rudderContext.endpoint = `https://insights-collector.newrelic.com/v1/accounts/${destConfig.accountId}/events`;
+      break;
   }
 
-  rudderContext.insertKey = destination.Config.insertKey;
+  rudderContext.insertKey = destConfig.insertKey;
 
   // If user enables 'sendDeviceContext', then we are delimiting context fields and include them in responseBody
   let flattenedContext = {};
   let responseBody;
-  if (destination.Config.sendDeviceContext) {
+  if (destConfig.sendDeviceContext) {
     flattenedContext = Utils.flattenJson(message.context);
     responseBody = {
       ...payload,

@@ -39,10 +39,8 @@ describe("Unit test cases for new_relic common post mapper", () => {
   });
 
   it('If user did not provid a eventType name, then we will include "rudderstack" in the payload directly', () => {
+    // event is manupulated to suit the test-cases
     event.destination.Config.sendDeviceContext = false;
-    expectedOutput.eventType = "rudderstack";
-    expectedOutput.userId = "identified user id";
-    expectedOutput.anonymousId = "anon-id-new";
     expect(commonPostMapper(event, payload, rudderContext)).toEqual(
       expectedOutput
     );
@@ -50,6 +48,7 @@ describe("Unit test cases for new_relic common post mapper", () => {
 
   it("If user provides a eventType name, then we will include it in the payload directly", () => {
     event.destination.Config.customEventType = "abc";
+    // expectedOutput is also manupulated to suit the expectation of the test-case
     expectedOutput.eventType = "abc";
     expect(commonPostMapper(event, payload, rudderContext)).toEqual(
       expectedOutput
@@ -61,7 +60,6 @@ describe("Unit test cases for new_relic common post mapper", () => {
     expectedOutput.eventType = "abc";
     delete expectedOutput.userId;
     delete expectedOutput.anonymousId;
-
     expect(commonPostMapper(event, payload, rudderContext)).toEqual(
       expectedOutput
     );
@@ -73,7 +71,6 @@ describe("Unit test cases for new_relic common post mapper", () => {
     expectedOutput["traits.trait1"] = "new-val";
     expectedOutput.ip = "14.5.67.21";
     expectedOutput["library.name"] = "http";
-
     expect(commonPostMapper(event, payload, rudderContext)).toEqual(
       expectedOutput
     );

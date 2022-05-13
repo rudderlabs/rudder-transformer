@@ -22,6 +22,7 @@ const {
 } = require("../../util");
 const logger = require("../../../logger");
 const { fetchWithProxy } = require("../../../util/fetch");
+const { SHA256 } = require("crypto-js");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -45,6 +46,11 @@ async function getSFDCHeader(destination) {
     response = await fetchWithProxy(authUrl, { method: "POST", body: {} });
     response = await response.json();
   } catch (error) {
+    const splitError = error.message.split("&");
+    const email = splitError[0].substring(splitError[0].indexOf("=") + 1);
+    const password = splitError[1].substring(splitError[1].indexOf("=") + 1);
+    error.message = error.message.replace(email, SHA256(email).toString());
+    error.message = error.message.replace(password, SHA256(password).toString());
     logger.error(error);
     throw new CustomError(
       `SALESFORCE AUTH FAILED: ${JSON.stringify(error)}`,

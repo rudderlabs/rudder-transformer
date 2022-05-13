@@ -107,6 +107,10 @@ function responseBuilderSimple(
         rawPayload[`${key}__c`] = traits[key];
       }
     });
+  } else {
+    // contact
+    rawPayload = { ...rawPayload, ...getFirstAndLastName(traits, "n/a") };
+    delete rawPayload.name;
   }
 
   const response = defaultRequestConfig();

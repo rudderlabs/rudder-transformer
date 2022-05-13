@@ -50,7 +50,7 @@ const eventNameMapping = {
   product_added_to_wishlist: "ADD_TO_WISHLIST",
 
   sign_up: "SIGN_UP",
-  open_app: "OPEN_APP",
+  app_open: "APP_OPEN",
   save: "SAVE",
   subscribe: "SUBSCRIBE",
   complete_tutorial: "COMPLETE_TUTORIAL",
@@ -63,6 +63,8 @@ const eventNameMapping = {
   rate: "RATE",
   start_trial: "START_TRIAL",
   list_view: "LIST_VIEW",
+  page_view: "PAGE_VIEW",
+  app_install: "APP_INSTALL",
 
   custom_event_1: "CUSTOM_EVENT_1",
   custom_event_2: "CUSTOM_EVENT_2",

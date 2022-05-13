@@ -1,6 +1,7 @@
 const get = require("get-value");
 const { logger } = require("handlebars");
 const { stringify } = require("uuid");
+const moment = require("moment");
 const { EventType } = require("../../../constants");
 
 const {
@@ -218,8 +219,21 @@ function trackResponseBuilder(message, { Config }) {
     );
   }
   payload.timestamp = getFieldValueFromMessage(message, "timestamp");
+  const timeStamp = payload.timestamp;
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    if (deltaDay > 28) {
+      throw new CustomError(
+        "[snapchat_conversion]: Events must be sent within 28 days of their occurrence.",
+        400
+      );
+    }
+  }
   payload.data_use = getDataUseValue(message);
-  if (payload.timestamp) {
+  if (timeStamp) {
     payload.timestamp = msUnixTimestamp(payload.timestamp)
       ?.toString()
       ?.slice(0, 10);

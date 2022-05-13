@@ -182,7 +182,7 @@ function trackResponseBuilder(message, { Config }) {
   }
 
   if (get(message, "properties.event_tag")) {
-    payload.event_tag = message?.properties?.event_tag;
+    payload.event_tag = message.properties.event_tag;
   }
 
   payload.hashed_email = getHashedValue(

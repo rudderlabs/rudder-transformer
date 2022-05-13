@@ -23,12 +23,13 @@ async function getTransformationCodeV1(versionId) {
   };
   try {
     const startTime = new Date();
+    logger.info(`Fetching transformation code for ${versionId} from ${getTransformationURL}?versionId=${versionId}`);
     const response = await fetchWithProxy(
       `${getTransformationURL}?versionId=${versionId}`
     );
-    if (response.status !== 200) {
+    if (response.status < 200 || response.status >= 300) {
       throw new Error(
-        `Transformation not found at ${getTransformationURL}?versionId=${versionId}`
+        `Transformation not found at ${getTransformationURL}?versionId=${versionId}. Received HTTP Error Response: ${response.status} ${response.statusText}`
       );
     }
     stats.increment("get_transformation_code.success", tags);

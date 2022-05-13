@@ -1,5 +1,6 @@
 const get = require("get-value");
 const { logger } = require("handlebars");
+const { stringify } = require("uuid");
 const { EventType } = require("../../../constants");
 
 const {
@@ -294,8 +295,8 @@ function batchEvents(arrayChunks) {
       metadata.push(ev.metadata);
     });
 
-    batchEventResponse.batchedRequest.body.JSON = {
-      batch: batchResponseList
+    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+      batch: JSON.stringify(batchResponseList)
     };
 
     batchEventResponse.batchedRequest.endpoint = ENDPOINT;

@@ -1,0 +1,402 @@
+[
+  {
+    "message": {
+      "event": "first",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": true,
+        "sendUserIdanonymousId": true,
+        "dataCenter": "us"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "second",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": "test"
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": false,
+        "sendUserIdanonymousId": false,
+        "dataCenter": "us"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "test",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "rudder-testing",
+        "sendDeviceContext": false,
+        "sendUserIdanonymousId": false,
+        "dataCenter": "us"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "first",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": true,
+        "sendUserIdanonymousId": true,
+        "dataCenter": "eu"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "second",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": "test"
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": false,
+        "sendUserIdanonymousId": false,
+
+        "dataCenter": "eu"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "test",
+      "userId": "identified user id",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "rudder-testing",
+        "sendDeviceContext": false,
+        "sendUserIdanonymousId": true,
+        "dataCenter": "eu"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "test",
+      "type": "track",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "properties": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": true,
+        "sendUserIdanonymousId": true,
+        "dataCenter": "us"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "event": "first",
+      "userId": "identified user id",
+      "type": "identify",
+      "anonymousId": "anon-id-new",
+      "context": {
+        "traits": {
+          "trait1": "new-val"
+        },
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "traits": {
+        "abc": "123",
+        "key": {
+          "abc": 123
+        },
+        "array": [
+          {
+            "abc": 123
+          },
+          {
+            "def": 123
+          }
+        ]
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "accountId": "12345",
+        "insertKey": "11111122702j2a2U2K2C7H",
+        "customEventType": "",
+        "sendDeviceContext": true,
+        "sendUserIdanonymousId": true,
+        "dataCenter": "us"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  }
+]

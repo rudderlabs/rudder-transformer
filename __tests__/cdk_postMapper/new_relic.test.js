@@ -4,7 +4,14 @@ const { commonPostMapper } = require("../../cdk/new_relic/transform");
 describe("Unit test cases for new_relic common post mapper", () => {
   let payload, event, rudderContext, expectedOutput;
   beforeEach(() => {
-    payload = { event: "first", timestamp: 1580602989, abc: "123", key: 124 };
+    payload = {
+      event: "first",
+      timestamp: 1580602989,
+      abc: "123",
+      key: 124,
+      auto: true,
+      eventType: "standard"
+    };
     event = {
       message: {
         userId: "identified user id",
@@ -34,7 +41,8 @@ describe("Unit test cases for new_relic common post mapper", () => {
       key: 124,
       eventType: "rudderstack",
       userId: "identified user id",
-      anonymousId: "anon-id-new"
+      anonymousId: "anon-id-new",
+      "'auto'": "true"
     };
   });
 

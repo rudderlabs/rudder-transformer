@@ -50,7 +50,7 @@ async function getSFDCHeader(destination) {
       error,
       "SALESFORCE AUTH FAILED:",
       error.response?.statusText,
-      error.status || 400
+      error.response?.status || 400
     );
   }
 
@@ -238,8 +238,8 @@ async function getSalesforceIdFromPayload(
       errorHandler(
         error,
         "[Salesforce] LEAD::",
-        JSON.stringify(error.response.data[0]) || error.message,
-        error.response.status || 500
+        error.response?.data[0] || error.message,
+        error.response?.status || 500
       ); // default 500
     }
 

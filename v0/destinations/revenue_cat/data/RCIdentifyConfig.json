@@ -1,0 +1,163 @@
+[
+  {
+    "destKey": "app_user_id.value",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "$displayName.value",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$email.value",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$phoneNumber.value",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "$apnsTokens.value",
+    "sourceKeys": ["traits.apnsTokens", "context.traits.apnsTokens"],
+    "required": false
+  },
+  {
+    "destKey": "$fcmTokens.value",
+    "sourceKeys": ["traits.fcmTokens", "context.traits.fcmTokens"],
+    "required": false
+  },
+  {
+    "destKey": "$idfa.value",
+    "sourceKeys": ["context.idfa", "context.device.advertisingId"],
+    "required": false
+  },
+  {
+    "destKey": "$idfv.value",
+    "sourceKeys": ["context.idfv", "context.device.id"],
+    "required": false
+  },
+  {
+    "destKey": "$gpsAdId.value",
+    "sourceKeys": ["traits.gpsAdId", "context.traits.gpsAdId"],
+    "required": false
+  },
+  {
+    "destKey": "$androidId.value",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "$campaign.value",
+    "sourceKeys": "context.campaign.name",
+    "required": false
+  },
+  {
+    "destKey": "$ip.value",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "$creative.value",
+    "sourceKeys": ["traits.creative", "context.traits.creative"],
+    "required": false
+  },
+  {
+    "destKey": "$keyword.value",
+    "sourceKeys": ["traits.keyword", "context.traits.keyword"],
+    "required": false
+  },
+  {
+    "destKey": "$mediaSource.value",
+    "sourceKeys": ["traits.mediaSource", "context.traits.mediaSource"],
+    "required": false
+  },
+  {
+    "destKey": "$ad.value",
+    "sourceKeys": ["traits.ad", "context.traits.ad"],
+    "required": false
+  },
+  {
+    "destKey": "$adGroup.value",
+    "sourceKeys": ["traits.addGroup", "context.traits.addGroup"],
+    "required": false
+  },
+  {
+    "destKey": "$adjustId.value",
+    "sourceKeys": ["traits.adjustId", "context.traits.adjustId"],
+    "required": false
+  },
+  {
+    "destKey": "$appsflyerId.value",
+    "sourceKeys": ["traits.appsflyerId", "context.traits.appsflyerId"],
+    "required": false
+  },
+  {
+    "destKey": "$fbAnonId.value",
+    "sourceKeys": ["traits.fbAnonId", "context.traits.fbAnonId"],
+    "required": false
+  },
+  {
+    "destKey": "$iterableUserId.value",
+    "sourceKeys": ["traits.iterableUserId", "context.traits.iterableUserId"],
+    "required": false
+  },
+  {
+    "destKey": "$iterableCampaignId.value",
+    "sourceKeys": [
+      "traits.iterableCampaignId",
+      "context.traits.iterableCampaignId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$iterableTemplateId.value",
+    "sourceKeys": [
+      "traits.iterableTemplateId",
+      "context.traits.iterableTemplateId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$mixpanelDistinctId.value",
+    "sourceKeys": [
+      "traits.mixpanelDistinctId",
+      "context.traits.mixpanelDistinctId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$mparticleId.value",
+    "sourceKeys": ["traits.mparticleId", "context.traits.mparticleId"],
+    "required": false
+  },
+  {
+    "destKey": "$onesignalId.value",
+    "sourceKeys": ["traits.onesignalId", "context.traits.onesignalId"],
+    "required": false
+  },
+  {
+    "destKey": "$airshipChannelId.value",
+    "sourceKeys": [
+      "traits.airshipChannelId",
+      "context.traits.airshipChannelId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$amazonAdId.value",
+    "sourceKeys": ["traits.amazonAdId", "context.traits.amazonAdId"],
+    "required": false
+  },
+  {
+    "destKey": "$clevertapId.value",
+    "sourceKeys": ["traits.clevertapId", "context.traits.clevertapId"],
+    "required": false
+  }
+]

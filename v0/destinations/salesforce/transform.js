@@ -55,8 +55,8 @@ async function getSFDCHeader(destination) {
   }
 
   return {
-    token: `Bearer ${response.response.data.access_token}`,
-    instanceUrl: response.response.data.instance_url
+    token: `Bearer ${response.response?.data?.access_token}`,
+    instanceUrl: response.response?.data?.instance_url
   };
 }
 
@@ -126,8 +126,11 @@ async function getSaleforceIdForRecord(
   });
 
   if (objSearchResponse.success === false) {
-    const error = response.response;
-    errorHandler(error, "Failed to get objSearchResponse");
+    const error = objSearchResponse.response;
+    errorHandler(
+      error,
+      "getSaleforceIdForRecord: Unable to fetch record from Salesforce"
+    );
   }
 
   return get(objSearchResponse.response, "data.searchRecords.0.Id");
@@ -231,12 +234,12 @@ async function getSalesforceIdFromPayload(
     });
 
     if (leadQueryResponse.success === false) {
-      const error = response.response;
+      const error = leadQueryResponse.response;
       errorHandler(
         error,
-        "LEAD QUERY RESPONSE:",
-        JSON.stringify(err.response.data[0]) || err.message,
-        err.response.status || 500
+        "[Salesforce] LEAD::",
+        JSON.stringify(error.response.data[0]) || error.message,
+        error.response.status || 500
       ); // default 500
     }
 

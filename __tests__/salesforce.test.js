@@ -32,20 +32,20 @@ describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {
       it(`Payload - ${index}`, async () => {
-        // try {
-        //   const output = await transformer.process(input);
-        //   expect(output).toEqual(expectedData[index]);
-        // } catch (error) {
-        //   expect(error.message).toEqual(expectedData[index].error);
-        // }
+        try {
+          const output = await transformer.process(input);
+          expect(output).toEqual(expectedData[index]);
+        } catch (error) {
+          expect(error.message).toEqual(expectedData[index].error);
+        }
       });
     });
   });
 
   describe("Router Tests", () => {
     it("Payload", async () => {
-      // const routerOutput = await transformer.processRouterDest(inputRouterData);
-      // expect(routerOutput).toEqual(expectedRouterData);
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
   });
 });

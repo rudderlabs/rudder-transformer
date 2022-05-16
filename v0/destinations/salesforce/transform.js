@@ -1,5 +1,4 @@
 const get = require("get-value");
-const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
@@ -21,7 +20,7 @@ const {
   addExternalIdToTraits
 } = require("../../util");
 const logger = require("../../../logger");
-const { fetchWithProxy } = require("../../../util/fetch");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -41,31 +40,19 @@ async function getSFDCHeader(destination) {
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
   let response;
-  try {
-    response = await fetchWithProxy(authUrl, { method: "POST", body: {} });
-    response = await response.json();
-  } catch (error) {
-    const splitError = error.message.split("&");
-    const email = splitError[0].substring(splitError[0].indexOf("=") + 1);
-    const password = splitError[1].substring(splitError[1].indexOf("=") + 1);
-    error.message = error.message.replace(email, "*****");
-    error.message = error.message.replace(password, "*****");
-    throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${JSON.stringify(error)}`,
-      400
-    );
-  }
+  response = await httpPOST(authUrl, {});
 
-  if (response.error) {
+  if (response.success === false) {
+    const error = response.response;
     throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${JSON.stringify(response)}`,
-      400
+      `SALESFORCE AUTH FAILED: ${error.response.statusText}`,
+      error.status || 400
     );
   }
 
   return {
-    token: `Bearer ${response.access_token}`,
-    instanceUrl: response.instance_url
+    token: `Bearer ${response.response.data.access_token}`,
+    instanceUrl: response.response.data.instance_url
   };
 }
 
@@ -107,10 +94,6 @@ function responseBuilderSimple(
         rawPayload[`${key}__c`] = traits[key];
       }
     });
-  } else {
-    // contact
-    rawPayload = { ...rawPayload, ...getFirstAndLastName(traits, "n/a") };
-    delete rawPayload.name;
   }
 
   const response = defaultRequestConfig();
@@ -134,25 +117,15 @@ async function getSaleforceIdForRecord(
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
 
-  try {
-    const objSearchResponse = await fetchWithProxy(objSearchUrl, {
-      headers: { Authorization: authorizationData.token },
-      method: "GET"
-    });
+  const objSearchResponse = await httpGET(objSearchUrl, {
+    headers: { Authorization: authorizationData.token }
+  });
 
-    objSearchResponse = await objSearchResponse.json();
-  } catch (error) {
-    throw new CustomError(JSON.stringify(error), 500);
+  if (objSearchResponse.success === false) {
+    throw new CustomError("Failed to get objSearchResponse");
   }
 
-  if (objSearchResponse.error) {
-    throw new CustomError(
-      `OBJ SEARCH RESPONSE: ${JSON.stringify(objSearchResponse)}`,
-      400
-    );
-  }
-
-  return get(objSearchResponse, "searchRecords.0.Id");
+  return get(objSearchResponse.response, "data.searchRecords.0.Id");
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -247,28 +220,25 @@ async function getSalesforceIdFromPayload(
 
     // request configuration will be conditional
     let leadQueryResponse;
-    try {
-      leadQueryResponse = await fetchWithProxy(leadQueryUrl, {
-        headers: { Authorization: authorizationData.token },
-        method: "GET"
-      });
 
-      leadQueryResponse = await leadQueryResponse.json();
-    } catch (err) {
-      throw new CustomError(JSON.stringify(err), 500); // default 500
-    }
+    leadQueryResponse = await httpGET(leadQueryUrl, {
+      headers: { Authorization: authorizationData.token }
+    });
 
-    if (leadQueryResponse.error) {
+    if (leadQueryResponse.success === false) {
       throw new CustomError(
-        `LEAD QUERY RESPONSE: ${JSON.stringify(leadQueryResponse)}`,
-        400
-      );
+        JSON.stringify(err.response.data[0]) || err.message,
+        err.response.status || 500
+      ); // default 500
     }
 
-    if (leadQueryResponse && leadQueryResponse.searchRecords?.length > 0) {
+    if (
+      leadQueryResponse.response &&
+      leadQueryResponse.response.data?.searchRecords?.length > 0
+    ) {
       // if count is greater than zero, it means that lead exists, then only update it
       // else the original endpoint, which is the one for creation - can be used
-      const record = leadQueryResponse.searchRecords[0];
+      const record = leadQueryResponse.response.data.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
           throw new CustomError("The contact has been deleted.", 400);

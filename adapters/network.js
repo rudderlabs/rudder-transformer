@@ -5,7 +5,9 @@ const _ = require("lodash");
 const http = require("http");
 const https = require("https");
 const axios = require("axios");
+const { HttpsProxyAgent } = require("https-proxy-agent");
 const log = require("../logger");
+const { skipProxy } = require("../util/fetch");
 
 const MAX_CONTENT_LENGTH =
   parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
@@ -38,6 +40,24 @@ const networkClientConfigs = {
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
   httpsAgent: new https.Agent({ keepAlive: true })
+};
+
+/**
+ * check if proxy is present or not and return the options accordingly
+ * @param {*} url
+ * @param {*} options
+ * @returns
+ */
+const getProxyOptions = (url, options = {}) => {
+  if (skipProxy(url)) {
+    // eslint-disable-next-line no-param-reassign
+    options = {
+      ...options,
+      proxy: false,
+      httpsAgent: new HttpsProxyAgent(`${process.env.HTTPS_PROXY}`)
+    };
+  }
+  return options;
 };
 
 /**
@@ -74,6 +94,8 @@ const httpSend = async options => {
 const httpGET = async (url, options) => {
   let clientResponse;
   try {
+    // eslint-disable-next-line no-param-reassign
+    options = getProxyOptions(url, options);
     const response = await axios.get(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
@@ -113,6 +135,8 @@ const httpDELETE = async (url, options) => {
 const httpPOST = async (url, data, options) => {
   let clientResponse;
   try {
+    // eslint-disable-next-line no-param-reassign
+    options = getProxyOptions(url, options);
     const response = await axios.post(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {

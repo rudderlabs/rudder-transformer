@@ -39,4 +39,7 @@ const fetchWithProxy = (url, options = {}) => {
   return fetch(url, instanceOptions);
 };
 
-exports.fetchWithProxy = fetchWithProxy;
+module.exports = {
+  fetchWithProxy,
+  skipProxy
+};

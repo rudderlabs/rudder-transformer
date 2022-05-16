@@ -21,6 +21,7 @@ const {
 } = require("../../util");
 const logger = require("../../../logger");
 const { httpGET, httpPOST } = require("../../../adapters/network");
+const { errorHandler } = require("./util");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -44,8 +45,11 @@ async function getSFDCHeader(destination) {
 
   if (response.success === false) {
     const error = response.response;
-    throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${error.response.statusText}`,
+
+    errorHandler(
+      error,
+      "SALESFORCE AUTH FAILED:",
+      error.response?.statusText,
       error.status || 400
     );
   }
@@ -122,7 +126,8 @@ async function getSaleforceIdForRecord(
   });
 
   if (objSearchResponse.success === false) {
-    throw new CustomError("Failed to get objSearchResponse");
+    const error = response.response;
+    errorHandler(error, "Failed to get objSearchResponse");
   }
 
   return get(objSearchResponse.response, "data.searchRecords.0.Id");
@@ -226,7 +231,10 @@ async function getSalesforceIdFromPayload(
     });
 
     if (leadQueryResponse.success === false) {
-      throw new CustomError(
+      const error = response.response;
+      errorHandler(
+        error,
+        "LEAD QUERY RESPONSE:",
         JSON.stringify(err.response.data[0]) || err.message,
         err.response.status || 500
       ); // default 500

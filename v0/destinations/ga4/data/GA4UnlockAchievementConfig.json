@@ -1,0 +1,7 @@
+[
+  {
+    "destKey": "achievement_id",
+    "sourceKeys": "properties.achievement_id",
+    "required": true
+  }
+]

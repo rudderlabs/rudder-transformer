@@ -7,6 +7,9 @@ const https = require("https");
 const axios = require("axios");
 const log = require("../logger");
 
+const MAX_CONTENT_LENGTH =
+  parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
+const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
@@ -47,7 +50,9 @@ const httpSend = async options => {
   // here the options argument K-Vs will take priority over requestOptions
   const requestOptions = {
     ...networkClientConfigs,
-    ...options
+    ...options,
+    maxContentLength: MAX_CONTENT_LENGTH,
+    maxBodyLength: MAX_BODY_LENGTH
   };
   try {
     const response = await axios(requestOptions);

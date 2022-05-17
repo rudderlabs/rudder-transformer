@@ -1,5 +1,5 @@
 const { CustomError } = require("../../util");
-const { httpSend } = require("../../../adapters/network");
+const {  httpGET } = require("../../../adapters/network");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [
@@ -28,11 +28,8 @@ const getMarketoFilePath = () => {
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async config => {
   const { clientId, clientSecret, munchkinId } = config;
-  const requestOptions = {
-    url: `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
-    method: "get"
-  };
-  const resp = await httpSend(requestOptions);
+  const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
+  const resp = await httpGET(url);
   if (resp.success) {
     if (
       resp.response &&

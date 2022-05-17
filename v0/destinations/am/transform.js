@@ -6,10 +6,13 @@ const set = require("set-value");
 const {
   EventType,
   SpecedTraits,
-  TraitsMapping
+  TraitsMapping,
+  MappedToDestinationKey
 } = require("../../../constants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -23,15 +26,14 @@ const {
   generateErrorObject,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  isAppleFamily
+  isAppleFamily,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
   DESTINATION,
-  ENDPOINT,
-  BATCH_EVENT_ENDPOINT,
-  ALIAS_ENDPOINT,
-  GROUP_ENDPOINT,
+  BASE_URL,
+  BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive
@@ -43,6 +45,44 @@ const logger = require("../../../logger");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
+
+const baseEndpoint = destConfig => {
+  let retVal;
+  switch (destConfig.residencyServer) {
+    case "EU":
+      retVal = BASE_URL_EU;
+      break;
+    default:
+      // "US" or when it is not specified
+      retVal = BASE_URL;
+  }
+  return retVal;
+};
+
+const defaultEndpoint = destConfig => {
+  const retVal = `${baseEndpoint(destConfig)}/2/httpapi`;
+  return retVal;
+};
+
+const identifyEndpoint = destConfig => {
+  const retVal = `${baseEndpoint(destConfig)}/identify`;
+  return retVal;
+};
+
+const batchEndpoint = destConfig => {
+  const retVal = `${baseEndpoint(destConfig)}/batch`;
+  return retVal;
+};
+
+const groupEndpoint = destConfig => {
+  const retVal = `${baseEndpoint(destConfig)}/groupidentify`;
+  return retVal;
+};
+
+const aliasEndpoint = destConfig => {
+  const retVal = `${baseEndpoint(destConfig)}/usermap`;
+  return retVal;
+};
 
 function getSessionId(payload) {
   const sessionId = payload.session_id;
@@ -62,12 +102,12 @@ function addMinIdlength() {
 function setPriceQuanityInPayload(message, rawPayload) {
   let price;
   let quantity;
-  if (!message.properties.price) {
-    price = message.properties.revenue;
-    quantity = 1;
-  } else {
+  if (isDefinedAndNotNull(message.properties.price)) {
     price = message.properties.price;
     quantity = message.properties.quantity || 1;
+  } else {
+    price = message.properties.revenue;
+    quantity = 1;
   }
   rawPayload.price = price;
   rawPayload.quantity = quantity;
@@ -139,7 +179,13 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
-function updateConfigProperty(message, payload, mappingJson, validatePayload) {
+function updateConfigProperty(
+  message,
+  payload,
+  mappingJson,
+  validatePayload,
+  Config
+) {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
     // check if custom processing is required on the payload sourceKey ==> destKey
@@ -149,27 +195,47 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload) {
         if (validatePayload) {
           const data = get(payload, outKey);
           if (!isDefinedAndNotNull(data)) {
-            const val = AMUtils[funcName](message, sourceKey);
+            const val = AMUtils[funcName](message, sourceKey, Config);
             if (val || val === false || val === 0) {
               set(payload, outKey, val);
             }
           }
         } else {
-          // get the destKey/outKey value from calling the util function
-          set(payload, outKey, AMUtils[funcName](message, sourceKey));
+          const data = get(message.traits, outKey); // when in identify(or any other call) it checks whether outKey is present in traits
+          // then that value is assigned else function is applied.
+          // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
+          if (isDefinedAndNotNull(data)) {
+            set(payload, outKey, data);
+            delete message.traits[outKey];
+          } else {
+            // get the destKey/outKey value from calling the util function
+            set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
+          }
         }
       }
     } else {
+      // For common config
       if (validatePayload) {
-        const data = get(payload, mappingJson[sourceKey]);
-        if (!isDefinedAndNotNull(data)) {
-          const val = get(message, sourceKey);
-          if (val || val === false || val === 0) {
-            set(payload, mappingJson[sourceKey], val);
+        // if data is present in traits assign
+        const messageData = get(message.traits, mappingJson[sourceKey]);
+        if (isDefinedAndNotNull(messageData)) {
+          set(payload, mappingJson[sourceKey], messageData);
+        } else {
+          const data = get(payload, mappingJson[sourceKey]);
+          if (!isDefinedAndNotNull(data)) {
+            const val = get(message, sourceKey);
+            if (val || val === false || val === 0) {
+              set(payload, mappingJson[sourceKey], val);
+            }
           }
         }
       } else {
-        set(payload, mappingJson[sourceKey], get(message, sourceKey));
+        const data = get(message.traits, mappingJson[sourceKey]);
+        if (isDefinedAndNotNull(data)) {
+          set(payload, mappingJson[sourceKey], data);
+        } else {
+          set(payload, mappingJson[sourceKey], get(message, sourceKey));
+        }
       }
     }
   });
@@ -192,15 +258,36 @@ function responseBuilderSimple(
 
   let groups;
 
-  let endpoint = ENDPOINT;
+  let endpoint = defaultEndpoint(destination.Config);
   let traits;
+
+  if (EventType.IDENTIFY) {
+    // If mapped to destination, Add externalId to traits
+    if (get(message, MappedToDestinationKey)) {
+      addExternalIdToTraits(message);
+      const identifierType = get(
+        message,
+        "context.externalId.0.identifierType"
+      );
+      if (identifierType === "user_id") {
+        // this can be either device_id / user_id
+        adduserIdFromExternalId(message);
+      }
+    }
+  }
 
   // 1. first populate the dest keys from the config files.
   // Group config file is similar to Identify config file
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  updateConfigProperty(message, rawPayload, mappingJson, false);
+  updateConfigProperty(
+    message,
+    rawPayload,
+    mappingJson,
+    false,
+    destination.Config
+  );
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, "context.campaign") || {};
@@ -231,7 +318,7 @@ function responseBuilderSimple(
   switch (evType) {
     case EventType.IDENTIFY:
     case EventType.GROUP:
-      endpoint = ENDPOINT;
+      endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
       rawPayload.event_type = EventType.IDENTIFY_AM;
 
@@ -251,11 +338,16 @@ function responseBuilderSimple(
             if (SpecedTraits.includes(trait)) {
               const mapping = TraitsMapping[trait];
               Object.keys(mapping).forEach(key => {
-                set(
-                  rawPayload,
-                  `user_properties.${key}`,
-                  get(traits, mapping[key])
-                );
+                const checkKey = get(rawPayload.user_properties, key);
+                // this is done only if we want to add default values under address to the user_properties
+                // these values are also sent to the destination at the top level.
+                if (!isDefinedAndNotNull(checkKey)) {
+                  set(
+                    rawPayload,
+                    `user_properties.${key}`,
+                    get(traits, mapping[key])
+                  );
+                }
               });
             } else {
               set(rawPayload, `user_properties.${trait}`, get(traits, trait));
@@ -279,7 +371,7 @@ function responseBuilderSimple(
       }
       break;
     case EventType.ALIAS:
-      endpoint = ALIAS_ENDPOINT;
+      endpoint = aliasEndpoint(destination.Config);
       break;
     default:
       traits = getFieldValueFromMessage(message, "traits");
@@ -297,6 +389,13 @@ function responseBuilderSimple(
       if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
+        // deleting the properties price, product_id, quantity and revenue from evemt_properties since it is already in root
+        if (rawPayload.event_properties) {
+          delete rawPayload.event_properties.price;
+          delete rawPayload.event_properties.product_id;
+          delete rawPayload.event_properties.quantity;
+          delete rawPayload.event_properties.revenue;
+        }
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
@@ -319,7 +418,7 @@ function responseBuilderSimple(
         payload.unmap = true;
       }
       aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = ALIAS_ENDPOINT;
+      aliasResponse.endpoint = aliasEndpoint(destination.Config);
       aliasResponse.userId = message.anonymousId;
       payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
@@ -330,11 +429,13 @@ function responseBuilderSimple(
       break;
     default:
       if (message.channel === "mobile") {
-        set(
-          payload,
-          "device_brand",
-          get(message, "context.device.manufacturer")
-        );
+        if (!destination.Config.mapDeviceBrand) {
+          set(
+            payload,
+            "device_brand",
+            get(message, "context.device.manufacturer")
+          );
+        }
 
         const deviceId = get(message, "context.device.id");
         const platform = get(message, "context.device.type");
@@ -369,7 +470,8 @@ function responseBuilderSimple(
         message,
         payload,
         mappingConfig[ConfigCategory.COMMON_CONFIG.name],
-        true
+        true,
+        destination.Config
       );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
@@ -377,6 +479,14 @@ function responseBuilderSimple(
       // ====================
       // fixVersion(payload, message);
 
+      if (payload.user_properties) {
+        delete payload.user_properties.city;
+        delete payload.user_properties.country;
+        if (payload.user_properties.address) {
+          delete payload.user_properties.address.city;
+          delete payload.user_properties.address.country;
+        }
+      }
       payload.ip = getParsedIP(message);
       payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
@@ -397,7 +507,7 @@ function responseBuilderSimple(
       // Refer (1.), Rudder group call updates group propertiees.
       if (evType === EventType.GROUP && groupInfo) {
         groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = GROUP_ENDPOINT;
+        groupResponse.endpoint = groupEndpoint(destination.Config);
         let groupPayload = Object.assign(groupInfo);
         groupResponse.userId = message.anonymousId;
         groupPayload = removeUndefinedValues(groupPayload);
@@ -512,7 +622,19 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = message.event;
-
+      if (!isDefinedAndNotNullAndNotEmpty(evType)) {
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage("message type not defined")
+          .setStatTags({
+            destination: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
       if (
         message.properties &&
         isDefinedAndNotNull(message.properties.revenue) &&
@@ -657,7 +779,7 @@ function process(event) {
   return respList;
 }
 
-function getBatchEvents(message, metadata, batchEventResponse) {
+function getBatchEvents(message, destination, metadata, batchEventResponse) {
   let batchComplete = false;
   const batchEventArray =
     get(batchEventResponse, "batchedRequest.body.JSON.events") || [];
@@ -691,14 +813,15 @@ function getBatchEvents(message, metadata, batchEventResponse) {
 
   set(message, "body.JSON.events", [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-
+  const BATCH_ENDPOINT = batchEndpoint(destination.Config);
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
       batchEventResponse = Object.assign(batchEventResponse, {
         batchedRequest: message
       });
-      set(batchEventResponse, "batchedRequest.endpoint", BATCH_EVENT_ENDPOINT);
+
+      set(batchEventResponse, "batchedRequest.endpoint", BATCH_ENDPOINT);
       batchEventResponse.metadata = [metadata];
     }
   } else {
@@ -778,7 +901,12 @@ function batch(destEvents) {
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch
-      isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+      isBatchComplete = getBatchEvents(
+        message,
+        destination,
+        metadata,
+        batchEventResponse
+      );
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
@@ -786,7 +914,12 @@ function batch(destEvents) {
         respList.push({ ...batchEventResponse });
         batchEventResponse = defaultBatchRequestConfig();
         batchEventResponse.destination = destinationObject;
-        isBatchComplete = getBatchEvents(message, metadata, batchEventResponse);
+        isBatchComplete = getBatchEvents(
+          message,
+          destination,
+          metadata,
+          batchEventResponse
+        );
       }
     }
   });

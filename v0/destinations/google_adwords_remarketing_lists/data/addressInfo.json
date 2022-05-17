@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "hashedFirstName",
+    "sourceKeys": ["firstName", "hashedFirstName"],
+    "required": false
+  },
+  {
+    "destKey": "hashedLastName",
+    "sourceKeys": ["lastName", "hashedlastName"],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": "city",
+    "required": false
+  },
+  {
+    "destKey": "countryCode",
+    "sourceKeys": ["countryCode", "country"],
+    "required": false
+  },
+  {
+    "destKey": "postalCode",
+    "sourceKeys": "postalCode",
+    "required": false
+  }
+]

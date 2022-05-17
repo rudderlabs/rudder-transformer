@@ -1,0 +1,30 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp_micros",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "non_personalized_ads",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["true", true, "1", 1],
+          "destVal": true
+        },
+        {
+          "sourceVal": ["false", false, "0", 0],
+          "destVal": false
+        }
+      ]
+    }
+  }
+]

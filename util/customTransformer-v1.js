@@ -1,7 +1,6 @@
 const ivm = require("isolated-vm");
 const stats = require("./stats");
 
-const { getPool } = require("./ivmPool");
 const { getFactory } = require("./ivmFactory");
 const { getMetadata } = require("./../v0/util");
 const logger = require("../logger");
@@ -43,16 +42,13 @@ function calculateMsFromIvmTime(value) {
 async function userTransformHandlerV1(
   events,
   userTransformation,
-  libraryVersionIds
+  libraryVersionIds,
+  testMode = false
 ) {
   /*
- Transform VM aquire mode is
- on demand if env variable ON_DEMAND_ISOLATE_VM = true | True | TRUE,
- Pooled otherwise
-*/
-  const isAcquireTransformerIsolatedVMMode = process.env.ON_DEMAND_ISOLATE_VM
-    ? process.env.ON_DEMAND_ISOLATE_VM.toLowerCase() === "true"
-    : false;
+  Removing pool usage to address memory leaks
+  Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
+  */
   if (userTransformation.versionId) {
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
@@ -61,25 +57,15 @@ async function userTransformHandlerV1(
       ...metaTags
     };
 
-    // Create isolated VMs in pooled or on demand mode based on env var ON_DEMAND_ISOLATE_VM
-    let isolatevmPool, isolatevm, isolatevmFactory;
-    if (isAcquireTransformerIsolatedVMMode) {
-      logger.debug(`Isolate VM being created... `);
-      isolatevmFactory = await getFactory(
-        userTransformation.code,
-        libraryVersionIds,
-        userTransformation.versionId
-      );
-      isolatevm = await isolatevmFactory.create();
-      logger.debug(`Isolate VM created... `);
-    } else {
-      logger.debug(`Pooled transformer VM being created... `);
-      isolatevmPool = await getPool(userTransformation, libraryVersionIds);
-      isolatevm = await isolatevmPool.acquire();
-      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
-      logger.debug(`Pooled transformer VM created... `);
-    }
+    logger.debug(`Isolate VM being created... `);
+    const isolatevmFactory = await getFactory(
+      userTransformation.code,
+      libraryVersionIds,
+      userTransformation.versionId,
+      testMode
+    );
+    const isolatevm = await isolatevmFactory.create();
+    logger.debug(`Isolate VM created... `);
 
     // Transform the event...
     stats.counter("events_into_vm", events.length, tags);
@@ -89,7 +75,19 @@ async function userTransformHandlerV1(
     const isolateStartCPUTime = calculateMsFromIvmTime(
       isolatevm.isolateStartCPUTime
     );
-    const transformedEvents = await transform(isolatevm, events);
+
+    let transformedEvents;
+    // Destroy isolatevm in case of execution errors
+    try {
+      transformedEvents = await transform(isolatevm, events);
+    } catch (err) {
+      logger.error(
+        `Error encountered while executing transformation: ${err.message}`
+      );
+      isolatevmFactory.destroy(isolatevm);
+      throw err;
+    }
+    const { logs } = isolatevm;
     const isolateEndWallTime = calculateMsFromIvmTime(
       isolatevm.isolate.wallTime
     );
@@ -106,23 +104,15 @@ async function userTransformHandlerV1(
     );
 
     // Destroy the isolated vm resources created
-    if (isAcquireTransformerIsolatedVMMode) {
-      logger.debug(`Isolate VM being destroyed... `);
-      isolatevmFactory.destroy(isolatevm);
-      logger.debug(`Isolate VM destroyed... `);
-    } else {
-      logger.debug(`Pooled Tranformer VMs being destroyed.. `);
-      isolatevmPool.release(isolatevm);
-      stats.gauge("isolate_vm_pool_size", isolatevmPool.size, tags);
-      stats.gauge("isolate_vm_pool_available", isolatevmPool.available, tags);
-      logger.debug(`Pooled Tranformer VMs destroyed.. `);
-    }
-    return transformedEvents;
+    logger.debug(`Isolate VM being destroyed... `);
+    isolatevmFactory.destroy(isolatevm);
+    logger.debug(`Isolate VM destroyed... `);
+
+    return { transformedEvents, logs };
     // Events contain message and destination. We take the message part of event and run transformation on it.
     // And put back the destination after transforrmation
-
   }
-  return events;
+  return { transformedEvents: events };
 }
 
 exports.userTransformHandlerV1 = userTransformHandlerV1;

@@ -1,6 +1,6 @@
 [
   { "destKey": "user.email", "sourceKeys": "email", "required": false },
-  { "destKey": "user.name", "sourceKeys": "name", "required": false },
+  { "destKey": "user.name", "sourceKeys": "name", "required": true },
   {
     "destKey": "user.organization_id",
     "sourceKeys": "organizationId",
@@ -9,4 +9,3 @@
   { "destKey": "user.time_zone", "sourceKeys": "timezone", "required": false },
   { "destKey": "user.phone", "sourceKeys": "phone", "required": false }
 ]
-

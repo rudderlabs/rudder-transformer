@@ -1,21 +1,26 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
     "destKey": "phone",
-    "sourceKeys": ["traits.phone", "context.traits.phone", "properties.phone"],
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "destKey": "fieldValues",
-    "sourceKeys": [
-      "traits.fieldValues",
-      "context.traits.fieldValues",
-      "properties.fieldValues"
-    ],
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
     "required": false
   }
 ]

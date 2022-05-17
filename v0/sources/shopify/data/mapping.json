@@ -6,49 +6,5 @@
     {
         "sourceKeys": "id",
         "destKeys": "properties.order_id"
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
-    },
-    
-    {
-        "sourceKeys":"",
-        "destKeys":""
     }
-    
-
-
-
 ]

@@ -26,6 +26,11 @@ async function getTransformationCodeV1(versionId) {
     const response = await fetchWithProxy(
       `${getTransformationURL}?versionId=${versionId}`
     );
+    if (response.status !== 200) {
+      throw new Error(
+        `Transformation not found at ${getTransformationURL}?versionId=${versionId}`
+      );
+    }
     stats.increment("get_transformation_code.success", tags);
     stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
@@ -50,6 +55,11 @@ async function getLibraryCodeV1(versionId) {
     const response = await fetchWithProxy(
       `${getLibrariesUrl}?versionId=${versionId}`
     );
+    if (response.status !== 200) {
+      throw new Error(
+        `Transformation library not found at ${getLibrariesUrl}?versionId=${versionId}`
+      );
+    }
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);
     const myJson = await response.json();

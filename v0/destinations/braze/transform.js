@@ -11,7 +11,8 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  generateErrorObject
+  generateErrorObject,
+  isDefinedAndNotNull
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -233,7 +234,7 @@ function getPurchaseObjs(message) {
     products.forEach(product => {
       const productId = product.product_id || product.sku;
       const { price, quantity, currency } = product;
-      if (productId && price && quantity) {
+      if (productId && isDefinedAndNotNull(price) && quantity) {
         if (Number.isNaN(price) || Number.isNaN(quantity)) {
           return;
         }

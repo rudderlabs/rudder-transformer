@@ -22,7 +22,8 @@ const TRANSFORMER_METRIC = {
       META: {
         ABORTABLE: "abortable",
         RETRYABLE: "retryable",
-        THROTTLED: "throttled"
+        THROTTLED: "throttled",
+        SUCCESS: "success"
       }
     },
     TRANSFORMATION: {
@@ -39,6 +40,9 @@ const TRANSFORMER_METRIC = {
     },
     EXCEPTION: {
       SCOPE: "exception"
+    },
+    DEFAULT: {
+      SCOPE: "default"
     }
   }
 };

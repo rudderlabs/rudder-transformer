@@ -1,0 +1,304 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=22448662;cat=signu01;type=conv01;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1;u1=[rudder1];u2=[rudder2]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=signu0;type=conv01;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=order0;type=conv000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1;u1=[rudder1];u2=[akash2]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=2;cost=800;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=Pur0;type=conv111;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1;u1=[rudder2];u2=[akash2];u3=[friendlyName2];u4=[name2]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"context.device.advertisingId\"",
+    "statTags": {
+      "stage": "cdk",
+      "scope": "transformation",
+      "meta": "instrumentation",
+      "destination": "dcm_floodlight"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: userAgent is required for track call",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=3;cost=800;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1;u1=[akash1]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=3;cost=800;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: Conversion event not found",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=1;cost=800;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;cost=800;dc_lat=1;qty=6;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv00;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=999999;cost=800;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=order0;type=conv000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=0;tfua=1;npa=1;u1=[rudder1];u2=[akash1]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=order0;type=conv000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;u1=[rudder1];u2=[akash1]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=order0;type=conv000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;u1=[rudder1];u2=[akash1]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=order0;type=conv000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=ea5cfab2-3961-4d8a-8187-3d1858c90a9f;dc_lat=1;tag_for_child_directed_treatment=1;tfua=1;npa=1;u1=[rudder1];u2=[akash1]",
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: COPPA: valid parameters are [1|true] or [0|false]",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: GDPR: valid parameters are [1|true] or [0|false]",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: npa: valid parameters are [1|true] or [0|false]",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[DCM Floodlight]:: dc_lat: valid parameters are [1|true] or [0|false]",
+    "statTags": {
+      "destination": "dcm_floodlight",
+      "stage": "cdk",
+      "scope": "exception"
+    }
+  }
+]

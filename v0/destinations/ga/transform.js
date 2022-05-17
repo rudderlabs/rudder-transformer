@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const md5 = require("md5");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   Event,
   GA_ENDPOINT,
@@ -13,6 +13,8 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const {
+  addExternalIdToTraits,
+  adduserIdFromExternalId,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -140,6 +142,8 @@ function processPageViews(message, destination) {
         if (search && includeSearch) {
           documentPath += search;
         }
+        // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#encoding
+        documentPath = encodeURIComponent(documentPath);
       } catch (error) {
         throw new ErrorBuilder()
           .setStatus(400)
@@ -223,6 +227,7 @@ function responseBuilderSimple(
     contentGroupings
   } = destination.Config;
   const { trackingID } = destination.Config;
+  const traits = getFieldValueFromMessage(message, "traits") || {};
   doubleClick = doubleClick || false;
   anonymizeIp = anonymizeIp || false;
   enhancedLinkAttribution = enhancedLinkAttribution || false;
@@ -237,7 +242,7 @@ function responseBuilderSimple(
     v: "1",
     t: hitType,
     tid: trackingID,
-    ds: message.channel
+    ds: traits.ds || message.channel
   };
 
   if (doubleClick) {
@@ -250,24 +255,42 @@ function responseBuilderSimple(
     rawPayload.linkid = message.properties.linkid;
   }
 
+  const params = removeUndefinedAndNullValues(parameters);
+
   if (message.context) {
-    const { campaign, userAgent, locale, app } = message.context;
-    rawPayload.ua = userAgent;
-    rawPayload.ul = locale;
+    const { campaign, userAgent, locale, app, screen } = message.context;
+    rawPayload.ua = params.ua || userAgent;
+    rawPayload.ul = params.ul || locale;
     if (app) {
-      rawPayload.an = app.name;
-      rawPayload.av = app.version;
-      rawPayload.aiid = app.namespace;
+      rawPayload.an = params.an || app.name;
+      rawPayload.av = params.av || app.version;
+      rawPayload.aiid = params.aiid || app.namespace;
     }
     if (campaign) {
-      const { name, source, medium, content, term } = campaign;
-      rawPayload.cn = name;
-      rawPayload.cs = source;
-      rawPayload.cm = medium;
-      rawPayload.cc = content;
-      rawPayload.ck = term;
+      const { name, source, medium, content, term, campaignId } = campaign;
+      rawPayload.cn = params.cn || name;
+      rawPayload.cs = params.cs || source;
+      rawPayload.cm = params.cm || medium;
+      rawPayload.cc = params.cc || content;
+      rawPayload.ck = params.ck || term;
+      rawPayload.ci = campaignId;
+    }
+
+    if (screen) {
+      const { width, height } = screen;
+      if (width && height) {
+        rawPayload.sr = `${width}x${height}`;
+      }
+
+      const { innerWidth, innerHeight } = screen;
+      if (innerWidth && innerHeight) {
+        rawPayload.vp = `${innerWidth}x${innerHeight}`;
+      }
     }
   }
+
+  rawPayload.gclid = getDestinationExternalID(message, "googleAdsId");
+  rawPayload.dclid = getDestinationExternalID(message, "googleDisplayAdsId");
 
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach(sourceKey => {
@@ -281,8 +304,6 @@ function responseBuilderSimple(
 
   // Remove keys with undefined values
   const payload = removeUndefinedAndNullValues(rawPayload);
-
-  const params = removeUndefinedAndNullValues(parameters);
 
   // Get dimensions  from destination config
   let dimensionsParam = getParamsFromConfig(message, dimensions, "dimensions");
@@ -329,16 +350,18 @@ function responseBuilderSimple(
     finalPayload.cid =
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
+      traits.cid || // if for rETL cid is mapped in traits
       message.anonymousId ||
       undefined;
   } else {
     finalPayload.cid =
       integrationsClientId ||
       getDestinationExternalID(message, "gaExternalId") ||
+      traits.cid ||
       message.anonymousId ||
       checkmd5(message);
   }
-  finalPayload.uip = getParsedIP(message);
+  finalPayload.uip = traits.uip || getParsedIP(message);
 
   const timestamp = message.originalTimestamp
     ? new Date(message.originalTimestamp)
@@ -355,6 +378,15 @@ function responseBuilderSimple(
 }
 
 function processIdentify(message, destination) {
+  // If mapped to destination, Add externalId to traits
+  if (get(message, MappedToDestinationKey)) {
+    addExternalIdToTraits(message);
+    const identifierType = get(message, "context.externalId.0.identifierType");
+    if (identifierType === "uid") {
+      // this can be either uid / cid
+      adduserIdFromExternalId(message);
+    }
+  }
   let {
     serverSideIdentifyEventCategory,
     serverSideIdentifyEventAction
@@ -369,6 +401,9 @@ function processIdentify(message, destination) {
   }
   let ec;
   const identifyTraits = getFieldValueFromMessage(message, "traits") || {};
+  // Check if present in traits and assign otherwise find the values
+  const { ua, ul, cn, cs, cm, cc, ck, an, av, aiid } = identifyTraits;
+
   if (
     serverSideIdentifyEventAction &&
     identifyTraits[serverSideIdentifyEventCategory]
@@ -381,7 +416,17 @@ function processIdentify(message, destination) {
   return {
     ea,
     ec,
-    ni: 1
+    ni: 1,
+    ua,
+    ul,
+    cn,
+    cs,
+    cm,
+    cc,
+    ck,
+    an,
+    av,
+    aiid
   };
 }
 

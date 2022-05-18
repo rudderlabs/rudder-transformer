@@ -300,7 +300,10 @@ function getExclusionList(mappingJson) {
       });
     }
   });
+
+  // We are mapping "products" to "items", so to remove redundancy we should not send products again
   ga4ExclusionList.push("products");
+
   return ga4ExclusionList;
 }
 

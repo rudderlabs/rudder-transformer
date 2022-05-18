@@ -20,8 +20,7 @@
           {
             "name": "search",
             "params": {
-              "search_term": "t-shirts",
-              "query": "t-shirts"
+              "search_term": "t-shirts"
             }
           }
         ]
@@ -78,9 +77,7 @@
                   "item_list_name": "Related Products",
                   "location_id": "L_12345"
                 }
-              ],
-              "list_id": "related_products",
-              "category": "Related_products"
+              ]
             }
           }
         ]
@@ -118,7 +115,6 @@
               "location_id": "L_12345",
               "promotion_id": "P_12345",
               "promotion_name": "Summer Sale",
-              "position": "L_12345",
               "items": [
                 {
                   "item_id": "507f1f77bcf86cd799439011",
@@ -183,7 +179,6 @@
               "location_id": "L_12345",
               "promotion_id": "P_12345",
               "promotion_name": "Summer Sale",
-              "position": "L_12345",
               "items": [
                 {
                   "item_id": "507f1f77bcf86cd799439011",
@@ -247,8 +242,7 @@
               "creative_slot": "featured_app_1",
               "location_id": "L_12345",
               "promotion_id": "P_12345",
-              "promotion_name": "Summer Sale",
-              "position": "L_12345"
+              "promotion_name": "Summer Sale"
             }
           }
         ]
@@ -305,9 +299,7 @@
                   "item_list_name": "Related Products",
                   "location_id": "L_12345"
                 }
-              ],
-              "category": "Related_products",
-              "list_id": "related_products"
+              ]
             }
           }
         ]
@@ -402,7 +394,6 @@
               "location_id": "L_12345",
               "promotion_id": "P_12345",
               "promotion_name": "Summer Sale",
-              "position": "L_12345",
               "items": [
                 {
                   "item_id": "507f1f77bcf86cd799439011",
@@ -467,7 +458,6 @@
               "location_id": "L_12345",
               "promotion_id": "P_12345",
               "promotion_name": "Summer Sale",
-              "position": "L_12345",
               "items": [
                 {
                   "item_id": "507f1f77bcf86cd799439011",
@@ -755,9 +745,8 @@
         "events": [
           {
             "params": {
-              "payment_method": "Credit Card",
               "currency": "USD",
-              "value": "7.77",
+              "value": 7.77,
               "coupon": "SUMMER_FUN",
               "payment_type": "Credit Card",
               "items": [
@@ -815,9 +804,8 @@
         "events": [
           {
             "params": {
-              "shipping_method": "Ground",
               "currency": "USD",
-              "value": "7.77",
+              "value": 7.77,
               "coupon": "SUMMER_FUN",
               "shipping_tier": "Ground",
               "items": [
@@ -1098,8 +1086,7 @@
             "params": {
               "method": "Twitter",
               "content_type": "image",
-              "item_id": "C_12345",
-              "share_via": "Twitter"
+              "item_id": "C_12345"
             }
           }
         ]
@@ -1164,8 +1151,7 @@
             "params": {
               "method": "Twitter",
               "content_type": "image",
-              "item_id": "C_12345",
-              "share_via": "Twitter"
+              "item_id": "C_12345"
             }
           }
         ]

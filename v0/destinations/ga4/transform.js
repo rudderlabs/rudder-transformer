@@ -99,7 +99,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name])
         );
         break;
       case "product_list_viewed":
@@ -113,7 +113,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
+          )
         );
         break;
       /* Promotions Section */
@@ -128,7 +130,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_VIEWED.name])
         );
         break;
       case "promotion_clicked":
@@ -142,7 +144,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_CLICKED.name])
         );
         break;
       /* Ordering Section */
@@ -157,7 +159,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_CLICKED.name])
         );
         break;
       case "product_viewed":
@@ -171,7 +173,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_VIEWED.name])
         );
         break;
       case "product_added":
@@ -185,7 +187,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_ADDED.name])
         );
         break;
       case "product_removed":
@@ -199,7 +201,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_REMOVED.name])
         );
         break;
       case "cart_viewed":
@@ -213,7 +215,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.CART_VIEWED.name])
         );
         break;
       case "checkout_started":
@@ -227,7 +229,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.CHECKOUT_STARTED.name])
         );
         break;
       case "payment_info_entered":
@@ -245,7 +247,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
+          )
         );
         break;
       case "order_completed":
@@ -273,7 +277,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.ORDER_REFUNDED.name])
         );
         break;
       /* Wishlist Section */
@@ -288,7 +292,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
+          )
         );
         break;
       /* Sharing Section */
@@ -302,7 +308,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_SHARED.name])
         );
         break;
       case "cart_shared":
@@ -315,7 +321,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.CART_SHARED.name])
         );
         break;
       /* Group */
@@ -329,7 +335,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
         );
         break;
       /* GA4 Events */
@@ -343,7 +349,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
+          )
         );
         break;
       case "generate_lead":
@@ -356,7 +364,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.GENERATE_LEAD.name])
         );
         break;
       case "level_up":
@@ -369,7 +377,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.LEVEL_UP.name])
         );
         break;
       case "login":
@@ -382,7 +390,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.LOGIN.name])
         );
         break;
       case "post_score":
@@ -395,7 +403,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.POST_SCORE.name])
         );
         break;
       case "select_content":
@@ -408,7 +416,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.SELECT_CONTENT.name])
         );
         break;
       case "sign_up":
@@ -421,7 +429,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(mappingConfig[ConfigCategory.SIGN_UP.name])
         );
         break;
       case "spend_virtual_currency":
@@ -434,7 +442,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
+          )
         );
         break;
       case "tutorial_begin":
@@ -453,7 +463,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
+          )
         );
         break;
       case "view_search_results":
@@ -467,7 +479,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getExclusionList(
+            mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
+          )
         );
         break;
       default:

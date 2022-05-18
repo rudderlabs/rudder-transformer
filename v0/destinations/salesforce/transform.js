@@ -129,7 +129,9 @@ async function getSaleforceIdForRecord(
     const error = objSearchResponse.response;
     errorHandler(
       error,
-      "getSaleforceIdForRecord: Unable to fetch record from Salesforce"
+      "getSaleforceIdForRecord: Unable to fetch record from Salesforce",
+      error.response?.statusText,
+      error.response?.status || 400
     );
   }
 

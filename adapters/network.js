@@ -49,7 +49,7 @@ const networkClientConfigs = {
  * @returns
  */
 const getProxyOptions = (url, options = {}) => {
-  if (skipProxy(url)) {
+  if (!skipProxy(url) && !!process.env.HTTPS_PROXY) {
     // eslint-disable-next-line no-param-reassign
     options = {
       ...options,

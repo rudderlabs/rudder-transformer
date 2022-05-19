@@ -369,12 +369,6 @@ function responseBuilderSimple(
           );
         }
       }
-      if (isDefinedAndNotNull(rawPayload?.user_properties?.event_id)) {
-        delete rawPayload?.user_properties?.event_id;
-      }
-      if (isDefinedAndNotNull(rawPayload?.event_properties?.event_id)) {
-        delete rawPayload?.event_properties?.event_id;
-      }
       break;
     case EventType.ALIAS:
       endpoint = aliasEndpoint(destination.Config);
@@ -402,12 +396,6 @@ function responseBuilderSimple(
           delete rawPayload.event_properties.quantity;
           delete rawPayload.event_properties.revenue;
         }
-      }
-      if (isDefinedAndNotNull(rawPayload?.event_properties?.event_id)) {
-        delete rawPayload?.event_properties?.event_id;
-      }
-      if (isDefinedAndNotNull(rawPayload?.user_properties?.event_id)) {
-        delete rawPayload?.user_properties?.event_id;
       }
       groups = groupInfo && Object.assign(groupInfo);
   }

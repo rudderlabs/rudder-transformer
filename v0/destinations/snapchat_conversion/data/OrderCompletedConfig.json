@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "transaction_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "item_category",
+    "sourceKeys": "properties.item_category",
+    "required": false
+  },
+  {
+    "destKey": "number_items",
+    "sourceKeys": "properties.number_items",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "client_dedup_id",
+    "sourceKeys": "properties.client_dedup_id",
+    "required": false
+  }
+]

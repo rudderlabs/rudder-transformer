@@ -291,7 +291,7 @@ function getDestinationItemProperties(message, isItemsRequired) {
  * @returns
  */
 function getExclusionList(mappingJson) {
-  const ga4ExclusionList = [];
+  let ga4ExclusionList = [];
 
   mappingJson.forEach(element => {
     const mappingSourceKeys = element.sourceKeys;
@@ -307,7 +307,7 @@ function getExclusionList(mappingJson) {
 
   // We are mapping "products" to "items", so to remove redundancy we should not send products again
   ga4ExclusionList.push("products");
-  ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
+  ga4ExclusionList = ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
 
   return ga4ExclusionList;
 }

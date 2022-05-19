@@ -284,8 +284,12 @@ function getDestinationItemProperties(message, isItemsRequired) {
   return items;
 }
 
-// This function will return exclusion list for a particular event.
-// Exclusion list= sourceKeys that are already mapped
+/**
+ * get exclusion list for a particular event
+ * ga4ExclusionList contains the sourceKeys that are already mapped
+ * @param {*} mappingJson
+ * @returns
+ */
 function getExclusionList(mappingJson) {
   const ga4ExclusionList = [];
 
@@ -303,6 +307,7 @@ function getExclusionList(mappingJson) {
 
   // We are mapping "products" to "items", so to remove redundancy we should not send products again
   ga4ExclusionList.push("products");
+  ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
 
   return ga4ExclusionList;
 }

@@ -19,7 +19,6 @@ const {
   CustomError,
   addExternalIdToTraits
 } = require("../../util");
-const logger = require("../../../logger");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const { errorHandler } = require("./util");
 

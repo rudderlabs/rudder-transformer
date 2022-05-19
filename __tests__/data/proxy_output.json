@@ -101,7 +101,7 @@
   },
   {
     "output": {
-      "status": 200,
+      "status": 204,
       "message": "[Generic Response Handler] Request for destination: any Processed Successfully",
       "destinationResponse": {
         "response": "",

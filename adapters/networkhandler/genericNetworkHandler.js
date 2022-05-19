@@ -40,8 +40,10 @@ const responseHandler = (destinationResponse, dest) => {
       })
       .build();
   }
+  // Sending `204` status(obtained from destination) is not working as expected
+  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
   return {
-    status,
+    status: 200,
     message,
     destinationResponse
   };

@@ -1,0 +1,77 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "birthDate",
+    "sourceKeys": ["traits.birthDate", "context.traits.birthDate"],
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "emailOptIn",
+    "sourceKeys": ["traits.emailOptIn", "context.traits.emailOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "smsOptIn",
+    "sourceKeys": ["traits.smsOptIn", "context.traits.smsOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "whatsappOptIn",
+    "sourceKeys": ["traits.whatsappOptIn", "context.traits.whatsappOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": ["traits.company", "context.traits.company"],
+    "required": false
+  },
+  {
+    "destKey": "hashedEmail",
+    "sourceKeys": ["traits.hashedEmail", "context.traits.hashedEmail"],
+    "required": false
+  },
+  {
+    "destKey": "hashedPhone",
+    "sourceKeys": ["traits.hashedPhone", "context.traits.hashedPhone"],
+    "required": false
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "eventName",
+    "required": true
+  },
+  {
+    "destKey": "eventData",
+    "sourceKeys": "properties",
+    "required": false
+  }
+]

@@ -1,5 +1,4 @@
 const { processWarehouseMessage } = require("../../../warehouse");
-const { isJson } = require("../../../warehouse/util");
 
 const snowflake = "snowflake";
 

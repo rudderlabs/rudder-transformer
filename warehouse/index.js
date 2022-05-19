@@ -105,7 +105,7 @@ function appendColumnNameAndType(
   options,
   jsonKey = false
 ) {
-  const datatype = getDataType(key, val, options, jsonKey);
+  let datatype = getDataType(key, val, options, jsonKey);
 
   if (datatype === "datetime") {
     val = new Date(val).toISOString();
@@ -227,7 +227,7 @@ function setDataFromInputAndComputeColumnTypes(
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (
-      isValidJsonPathKey(eventType, `${prefix + key}`, level, options.jsonKeys)
+      isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)
     ) {
       if (isBlank(input[key])) {
         return;

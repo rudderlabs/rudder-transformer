@@ -1,5 +1,4 @@
 const { processWarehouseMessage } = require("../../../warehouse");
-const { isJson } = require("../../../warehouse/util");
 
 // redshift destination string limit, if the string length crosses 512 we will change data type to text which is varchar(max) in redshift
 const RSStringLimit = 512;

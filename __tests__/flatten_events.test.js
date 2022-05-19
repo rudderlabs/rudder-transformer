@@ -15,6 +15,7 @@ Key aspects covered:
       - in BQ, json type is just a string data type
       - have more priority than cloud source under level 3 i.e. 4th level jsonKey is already being captured as string
       - blank, null types are omitted
+      - timestamp or date string is not considered as json type
       - rudder reserved keywords are omitted
       - other than track events are omitted
       - warehouse reserved columns are escaped i.e. prefixed by _
@@ -168,14 +169,20 @@ describe("Flatten event properties", () => {
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values", () => {
+      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values except datetime", () => {
+        i.dateProp = "2022-01-01T00:00:00.000Z";
+        i.objectProp.firstLevelDateProp = "2022-01-01T01:01:01.111Z";
+        i.objectProp.firstLevelMap.secondLevelDateProp =
+          "2022-01-01T02:02:02.222Z";
         options.jsonKeys = {
           nullProp: 0,
           blankProp: 0,
           floatProp: 0,
           stringProp: 0,
+          dateProp: 0,
           objectProp_firstLevelInt: 1,
           objectProp_firstLevelMap_secondLevelBlankProp: 2,
+          objectProp_firstLevelMap_secondLevelDateProp: 2,
           objectProp_firstLevelMap_secondLevelMap_thirdLevelString: 3
         };
         const output = {};
@@ -189,6 +196,9 @@ describe("Flatten event properties", () => {
           options
         );
         delete options.jsonKeys;
+        delete i.dateProp;
+        delete i.objectProp.firstLevelDateProp;
+        delete i.objectProp.firstLevelMap.secondLevelDateProp;
         const expected = fOutput("primitive_json_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);

@@ -200,9 +200,13 @@ const sampleEvents = {
           int_prop: 0,
           float_prop: "2.2",
           string_prop: '"zero"',
+          date_prop: "2022-01-01T00:00:00.000Z",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: "1",
+          object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_date_prop:
+            "2022-01-01T02:02:02.222Z",
           object_prop_first_level_map_second_level_map_third_level_string:
             '"third level"',
           object_prop_first_level_map_second_level_map_third_level_map_fo: 4
@@ -212,8 +216,11 @@ const sampleEvents = {
           float_prop: "json",
           string_prop: "json",
           array_prop: "string",
+          date_prop: "datetime",
           object_prop_first_level_int: "json",
+          object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_map_third_level_string:
             "json",
           object_prop_first_level_map_second_level_map_third_level_map_fo: "int"
@@ -377,8 +384,12 @@ const sampleEvents = {
           float_prop: "2.2",
           string_prop: '"zero"',
           array_prop: ["zero", "level"],
+          date_prop: "2022-01-01T00:00:00.000Z",
           object_prop_first_level_int: "1",
+          object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_date_prop:
+            "2022-01-01T02:02:02.222Z",
           object_prop_first_level_map_second_level_map_third_level_string:
             '"third level"',
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int: 4
@@ -388,8 +399,11 @@ const sampleEvents = {
           float_prop: "json",
           string_prop: "json",
           array_prop: "string",
+          date_prop: "datetime",
           object_prop_first_level_int: "json",
+          object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_map_third_level_string:
             "json",
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int:
@@ -554,8 +568,12 @@ const sampleEvents = {
           float_prop: "2.2",
           string_prop: '"zero"',
           array_prop: ["zero", "level"],
+          date_prop: "2022-01-01T00:00:00.000Z",
           object_prop_first_level_int: "1",
+          object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
+          object_prop_first_level_map_second_level_date_prop:
+            "2022-01-01T02:02:02.222Z",
           object_prop_first_level_map_second_level_map_third_level_string:
             '"third level"',
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int: 4
@@ -565,8 +583,11 @@ const sampleEvents = {
           float_prop: "string",
           string_prop: "string",
           array_prop: "string",
+          date_prop: "datetime",
           object_prop_first_level_int: "string",
+          object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
+          object_prop_first_level_map_second_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
           object_prop_first_level_map_second_level_map_third_level_map_fourth_level_int:

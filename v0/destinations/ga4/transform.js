@@ -28,7 +28,8 @@ const {
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getDestinationItemProperties
+  getDestinationItemProperties,
+  getExclusionList
 } = require("./utils");
 
 function trackResponseBuilder(message, { Config }) {
@@ -94,6 +95,12 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name])
+        );
         break;
       case "product_list_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -102,6 +109,14 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
+          )
+        );
         break;
       /* Promotions Section */
       case "promotion_viewed":
@@ -111,6 +126,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_VIEWED.name])
+        );
         break;
       case "promotion_clicked":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -119,6 +140,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
         );
         payload.params.items = getDestinationItemProperties(message, false);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_CLICKED.name])
+        );
         break;
       /* Ordering Section */
       case "product_clicked":
@@ -128,6 +155,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_CLICKED.name])
+        );
         break;
       case "product_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -136,6 +169,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_VIEWED.name])
+        );
         break;
       case "product_added":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -144,6 +183,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_ADDED.name])
+        );
         break;
       case "product_removed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -152,6 +197,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_REMOVED.name])
+        );
         break;
       case "cart_viewed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -160,6 +211,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.CART_VIEWED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.CART_VIEWED.name])
+        );
         break;
       case "checkout_started":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -168,6 +225,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.CHECKOUT_STARTED.name])
+        );
         break;
       case "payment_info_entered":
         payload.params = constructPayload(
@@ -180,6 +243,14 @@ function trackResponseBuilder(message, { Config }) {
           payload.name = "add_payment_info";
         }
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
+          )
+        );
         break;
       case "order_completed":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -188,6 +259,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+        );
         break;
       case "order_refunded":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -196,6 +273,12 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
         );
         payload.params.items = getDestinationItemProperties(message, false);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.ORDER_REFUNDED.name])
+        );
         break;
       /* Wishlist Section */
       case "product_added_to_wishlist":
@@ -205,6 +288,14 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
         );
         payload.params.items = getDestinationItemProperties(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
+          )
+        );
         break;
       /* Sharing Section */
       case "product_shared":
@@ -213,12 +304,24 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_SHARED.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_SHARED.name])
+        );
         break;
       case "cart_shared":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.CART_SHARED.name]
+        );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.CART_SHARED.name])
         );
         break;
       /* Group */
@@ -228,6 +331,12 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.GROUP.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+        );
         break;
       /* GA4 Events */
       case "earn_virtual_currency":
@@ -236,12 +345,26 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
+          )
+        );
         break;
       case "generate_lead":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.GENERATE_LEAD.name]
+        );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.GENERATE_LEAD.name])
         );
         break;
       case "level_up":
@@ -250,12 +373,24 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.LEVEL_UP.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.LEVEL_UP.name])
+        );
         break;
       case "login":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.LOGIN.name]
+        );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.LOGIN.name])
         );
         break;
       case "post_score":
@@ -264,12 +399,24 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.POST_SCORE.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.POST_SCORE.name])
+        );
         break;
       case "select_content":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.SELECT_CONTENT.name]
+        );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.SELECT_CONTENT.name])
         );
         break;
       case "sign_up":
@@ -278,12 +425,26 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.SIGN_UP.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(mappingConfig[ConfigCategory.SIGN_UP.name])
+        );
         break;
       case "spend_virtual_currency":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
+        );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
+          )
         );
         break;
       case "tutorial_begin":
@@ -298,6 +459,14 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
         );
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
+          )
+        );
         break;
       case "view_search_results":
         payload.name = eventNameMapping[event.toLowerCase()];
@@ -306,6 +475,14 @@ function trackResponseBuilder(message, { Config }) {
           mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
         );
         payload.params.items = getDestinationItemProperties(message, false);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
+          )
+        );
         break;
       default:
         break;

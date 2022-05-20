@@ -284,6 +284,34 @@ function getDestinationItemProperties(message, isItemsRequired) {
   return items;
 }
 
+/**
+ * get exclusion list for a particular event
+ * ga4ExclusionList contains the sourceKeys that are already mapped
+ * @param {*} mappingJson
+ * @returns
+ */
+function getExclusionList(mappingJson) {
+  let ga4ExclusionList = [];
+
+  mappingJson.forEach(element => {
+    const mappingSourceKeys = element.sourceKeys;
+
+    if (typeof mappingSourceKeys === "string") {
+      ga4ExclusionList.push(mappingSourceKeys.split(".").pop());
+    } else {
+      mappingSourceKeys.forEach(item => {
+        ga4ExclusionList.push(item.split(".").pop());
+      });
+    }
+  });
+
+  // We are mapping "products" to "items", so to remove redundancy we should not send products again
+  ga4ExclusionList.push("products");
+  ga4ExclusionList = ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
+
+  return ga4ExclusionList;
+}
+
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
@@ -332,5 +360,6 @@ module.exports = {
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getDestinationItemProperties
+  getDestinationItemProperties,
+  getExclusionList
 };

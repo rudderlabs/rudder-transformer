@@ -2033,7 +2033,7 @@
     "endpoint": "https://www.google-analytics.com/collect",
     "headers": {},
     "params": {
-      "ni": 1,
+      "ni": 0,
       "ea": "product list viewed",
       "ec": "cat 1",
       "pa": "detail",

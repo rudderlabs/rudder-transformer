@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 
@@ -67,14 +68,15 @@ const getProxyOptions = (url, options = {}) => {
  */
 const httpSend = async options => {
   let clientResponse;
-  // here the options argument K-Vs will take priority over requestOptions
-  const requestOptions = {
-    ...networkClientConfigs,
-    ...options,
-    maxContentLength: MAX_CONTENT_LENGTH,
-    maxBodyLength: MAX_BODY_LENGTH
-  };
   try {
+    // here the options argument K-Vs will take priority over requestOptions
+    options = getProxyOptions(options.url, options);
+    const requestOptions = {
+      ...networkClientConfigs,
+      ...options,
+      maxContentLength: MAX_CONTENT_LENGTH,
+      maxBodyLength: MAX_BODY_LENGTH
+    };
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
@@ -115,6 +117,7 @@ const httpGET = async (url, options) => {
 const httpDELETE = async (url, options) => {
   let clientResponse;
   try {
+    options = getProxyOptions(url, options);
     const response = await axios.delete(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
@@ -135,7 +138,6 @@ const httpDELETE = async (url, options) => {
 const httpPOST = async (url, data, options) => {
   let clientResponse;
   try {
-    // eslint-disable-next-line no-param-reassign
     options = getProxyOptions(url, options);
     const response = await axios.post(url, data, options);
     clientResponse = { success: true, response };
@@ -157,6 +159,7 @@ const httpPOST = async (url, data, options) => {
 const httpPUT = async (url, data, options) => {
   let clientResponse;
   try {
+    options = getProxyOptions(url, options);
     const response = await axios.put(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
@@ -177,6 +180,7 @@ const httpPUT = async (url, data, options) => {
 const httpPATCH = async (url, data, options) => {
   let clientResponse;
   try {
+    options = getProxyOptions(url, options);
     const response = await axios.patch(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {

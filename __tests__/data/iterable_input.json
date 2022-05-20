@@ -1458,5 +1458,270 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "type": "alias",
+      "sentAt": "2020-08-28T16:26:16.473Z",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "userId": "new@email.com",
+      "previousId": "old@email.com",
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "type": "alias",
+      "sentAt": "2020-08-28T16:26:16.473Z",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "userId": "new@email.com",
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "type": "alias",
+      "sentAt": "2020-08-28T16:26:16.473Z",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e",
+      "properties": {
+        "url": "https://dominos.com",
+        "title": "Pizza",
+        "referrer": "https://google.com"
+      },
+      "previousId": "old@email.com",
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": false,
+        "trackCategorisedPages": true,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "john@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "event": "product added",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "campaignId": "1",
+        "templateId": "0",
+        "orderId": 10000,
+        "total": 1000,
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "price": "19",
+            "position": "1",
+            "category": ["bikes", "cars", "motors"],
+            "url": "https://www.example.com/product/path",
+            "image_url": "https://www.example.com/product/path.jpg",
+            "quantity": "2"
+          },
+          {
+            "product_id": "507f1f77bcf86cd7994390112",
+            "sku": "45790-322",
+            "name": "Monopoly: 3rd Edition2",
+            "price": "192",
+            "quantity": 22,
+            "position": "12",
+            "category": ["Bikes2", "cars2", "motors2"],
+            "url": "https://www.example.com/product/path2",
+            "image_url": "https://www.example.com/product/path.jpg2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "event": "product added",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "campaignId": "1",
+        "templateId": "0",
+        "orderId": 10000,
+        "total": 1000,
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "sku": "45790-32",
+            "name": "Monopoly: 3rd Edition",
+            "price": "19",
+            "position": "1",
+            "category": "shirts,pants,trousers",
+            "url": "https://www.example.com/product/path",
+            "image_url": "https://www.example.com/product/path.jpg",
+            "quantity": "2"
+          },
+          {
+            "product_id": "507f1f77bcf86cd7994390112",
+            "sku": "45790-322",
+            "name": "Monopoly: 3rd Edition2",
+            "price": "192",
+            "quantity": 22,
+            "position": "12",
+            "category": "Cars2",
+            "url": "https://www.example.com/product/path2",
+            "image_url": "https://www.example.com/product/path.jpg2"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "12345",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
+      },
+      "Enabled": true
+    }
   }
 ]

@@ -1,0 +1,30 @@
+- destKey: user_id
+  sourceKeys:
+    - "userId"
+    - "traits.userId"
+    - "traits.id"
+    - "context.traits.userId"
+    - "context.traits.id"
+    - "anonymousId"
+
+- destKey: "..."
+  sourceKeys:
+    - "traits"
+    - "context.traits"
+  metadata:
+    type: flatJson
+
+- destKey: first_name
+  sourceKeys:
+    - traits.firstName
+    - traits.firstname
+    - context.traits.firstName
+    - context.traits.firstname
+  
+- destKey: last_name
+  sourceKeys:
+    - traits.lastName
+    - traits.lastname
+    - context.traits.lastName
+    - context.traits.lastname
+  

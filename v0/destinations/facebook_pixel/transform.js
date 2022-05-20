@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require("sha256");
 const get = require("get-value");
+const moment = require("moment");
+const stats = require("../../../util/stats");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -20,7 +22,8 @@ const {
   getErrorRespEvents,
   getIntegrationsObj,
   getSuccessRespEvents,
-  isObject
+  isObject,
+  getValidDynamicFormConfig
 } = require("../../util");
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -29,9 +32,12 @@ const {
  */
 
 const formatRevenue = revenue => {
-  return Number((revenue || 0).toFixed(2));
+  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
+  if (!isNaN(formattedRevenue)) {
+    return formattedRevenue;
+  }
+  throw new CustomError("Revenue could not be converted to number", 400);
 };
-
 /**
  *
  * @param {*} message Rudder Payload
@@ -99,16 +105,21 @@ const handleOrder = (message, categoryToContent) => {
       const pId =
         products[i].product_id || products[i].sku || products[i].id || "";
       contentIds.push(pId);
+      // required field for content
+      // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
       const content = {
         id: pId,
-        quantity: products[i].quantity,
-        item_price: products[i].price
+        quantity: products[i].quantity || message.properties.quantity || 1,
+        item_price: products[i].price || message.properties.price
       };
       contents.push(content);
     }
-    contents.forEach(content => {
+    contents.forEach((content, index) => {
       if (content.id === "") {
-        throw new CustomError("Product id is required. Event not sent", 400);
+        throw new CustomError(
+          `Product id is required for product ${index}. Event not sent`,
+          400
+        );
       }
     });
   } else {
@@ -140,12 +151,13 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id;
+        const productId = product.product_id || product.sku || product.id || "";
         if (productId) {
           contentIds.push(productId);
           contents.push({
             id: productId,
-            quantity: message.properties.quantity
+            quantity: product.quantity || message.properties.quantity || 1,
+            item_price: product.price
           });
         }
       } else {
@@ -164,9 +176,12 @@ const handleProductListViewed = (message, categoryToContent) => {
     });
     contentType = "product_group";
   }
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {
@@ -205,13 +220,16 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
         message.properties.id ||
         message.properties.sku ||
         "",
-      quantity: message.properties.quantity,
+      quantity: message.properties.quantity || 1,
       item_price: message.properties.price
     }
   ];
-  contents.forEach(content => {
+  contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+      throw new CustomError(
+        `Product id is required for product ${index}. Event not sent`,
+        400
+      );
     }
   });
   return {
@@ -360,12 +378,16 @@ const transformedPayloadData = (
   return customData;
 };
 
-const responseBuilderSimple = (message, category, destination) => {
+const responseBuilderSimple = (
+  message,
+  category,
+  destination,
+  categoryToContent
+) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
   const {
     blacklistPiiProperties,
-    categoryToContent,
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
@@ -376,7 +398,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, "fb_pixel");
 
-  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v13.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
@@ -402,6 +424,7 @@ const responseBuilderSimple = (message, category, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
     "fb_pixel"
   );
+
   if (commonData.action_source) {
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
@@ -524,6 +547,25 @@ const responseBuilderSimple = (message, category, destination) => {
     }
   }
 
+  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+
+  if (
+    customData &&
+    customData.content_category &&
+    typeof customData.content_category !== "string"
+  ) {
+    if (Array.isArray(customData.content_category)) {
+      customData.content_category = customData.content_category
+        .map(String)
+        .join(",");
+    } else if (typeof customData.content_category === "object") {
+      throw new CustomError("Category must be must be a string");
+    } else {
+      customData.content_category = String(customData.content_category);
+    }
+    // delete customData.content_category;
+  }
+
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
@@ -556,7 +598,48 @@ const processEvent = (message, destination) => {
       400
     );
   }
-  const { advancedMapping, eventsToEvents } = destination.Config;
+
+  const timeStamp = message.originalTimestamp || message.timestamp;
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    // calculates future event in minutes
+    const deltaMin = Math.ceil(
+      moment.duration(start.diff(current)).asMinutes()
+    );
+    if (deltaDay > 7 || deltaMin > 1) {
+      // TODO: Remove after testing in mirror transformer
+      stats.increment("fb_pixel_timestamp_error", 1, {
+        destinationId: destination.ID
+      });
+      throw new CustomError(
+        "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+        400
+      );
+    }
+  }
+
+  let eventsToEvents;
+  if (destination.Config.eventsToEvents)
+    eventsToEvents = getValidDynamicFormConfig(
+      destination.Config.eventsToEvents,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  let categoryToContent;
+  if (destination.Config.categoryToContent)
+    categoryToContent = getValidDynamicFormConfig(
+      destination.Config.categoryToContent,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  const { advancedMapping } = destination.Config;
   let standard;
   let standardTo = "";
   let checkEvent;
@@ -578,6 +661,9 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.TRACK:
+      if (!message.event) {
+        throw new CustomError("Event name is required", 400);
+      }
       standard = eventsToEvents;
       if (standard) {
         standardTo = standard.reduce((filtered, standards) => {
@@ -640,7 +726,12 @@ const processEvent = (message, destination) => {
       throw new CustomError("Message type not supported", 400);
   }
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(
+    message,
+    category,
+    destination,
+    categoryToContent
+  );
 };
 
 const process = event => {

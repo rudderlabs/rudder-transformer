@@ -1,5 +1,6 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, DESTINATION } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const {
   constructPayload,
@@ -11,6 +12,7 @@ const {
   getErrorRespEvents,
   CustomError
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 
 const identifyFields = [
   "email",
@@ -38,7 +40,8 @@ function responseBuilderSimple(message, category, destination) {
     let customPayload;
     switch (message.type) {
       case EventType.IDENTIFY:
-        customPayload = message.traits || message.context.traits;
+        // fix for cases where traits and context.traits is missing
+        customPayload = message.traits || message.context.traits || {};
         identifyFields.forEach(value => {
           delete customPayload[value];
         });
@@ -59,7 +62,19 @@ function responseBuilderSimple(message, category, destination) {
         if (contactIdOrEmail) {
           response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         } else {
-          throw new CustomError("Email is required for track calls", 400);
+          throw new ErrorBuilder()
+            .setStatus(400)
+            .setMessage("Email is required for track calls")
+            .setStatTags({
+              destination: DESTINATION,
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_PARAM
+            })
+            .build();
+          // throw new CustomError("Email is required for track calls", 400);
         }
         break;
       default:
@@ -76,14 +91,11 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new CustomError("invalid message type for autopilot", 400);
   }
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type;
   let category;
-  switch (messageType) {
+  switch (messageType.toLowerCase()) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
@@ -91,7 +103,10 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message  not supported", 400);
+      throw new CustomError(
+        `message type ${messageType} not supported for autopilot`,
+        400
+      );
   }
 
   // build the response

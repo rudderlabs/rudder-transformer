@@ -1,6 +1,7 @@
 // Todo add documentation for internal functions
 function ErrorBuilder() {
   this.err = new Error();
+  this.err.isExpected = true;
 
   this.setMessage = message => {
     this.err.message = message;

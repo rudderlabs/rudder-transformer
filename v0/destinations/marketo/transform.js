@@ -3,7 +3,7 @@
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
 const stats = require("../../../util/stats");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   identifyConfig,
   formatConfig,
@@ -13,6 +13,8 @@ const {
   DESTINATION
 } = require("./config");
 const {
+  addExternalIdToTraits,
+  getDestinationExternalIDInfoForRetl,
   isDefined,
   removeUndefinedValues,
   constructPayload,
@@ -216,7 +218,18 @@ const getLeadId = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
-  let leadId = getDestinationExternalID(message, "marketoLeadId");
+  // check if marketo lead id is set in the externalId through rETL
+  // "externalId": [
+  //   {
+  //     "id": "lynnanderson@smith.net",
+  //     "identifierType": "email",
+  //     "type": "MARKETO-{object}"
+  //   }
+  let leadId = getDestinationExternalIDInfoForRetl(message, "MARKETO")
+    .destinationExternalId;
+  if (!leadId) {
+    leadId = getDestinationExternalID(message, "marketoLeadId");
+  }
 
   // leadId is not supplied through the externalId parameter
   if (!leadId) {
@@ -294,6 +307,10 @@ const getLeadId = async (message, formattedDestination, token) => {
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
 const processIdentify = async (message, formattedDestination, token) => {
+  // If mapped to destination, Add externalId to traits
+  if (get(message, MappedToDestinationKey)) {
+    addExternalIdToTraits(message);
+  }
   // get the leadId and proceed
   const { accountId, leadTraitMapping } = formattedDestination;
 
@@ -314,11 +331,16 @@ const processIdentify = async (message, formattedDestination, token) => {
   const leadId = await getLeadId(message, formattedDestination, token);
 
   let attribute = constructPayload(traits, identifyConfig);
-  Object.keys(leadTraitMapping).forEach(key => {
-    const val = traits[key];
-    attribute[leadTraitMapping[key]] = val;
-  });
-  attribute = removeUndefinedValues(attribute);
+  // leadTraitMapping will not be used if mapping is done through VDM in rETL
+  if (!get(message, MappedToDestinationKey)) {
+    Object.keys(leadTraitMapping).forEach(key => {
+      const val = traits[key];
+      attribute[leadTraitMapping[key]] = val;
+    });
+    attribute = removeUndefinedValues(attribute);
+  } else {
+    attribute = removeUndefinedValues(traits);
+  }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const inputObj = {
@@ -328,16 +350,42 @@ const processIdentify = async (message, formattedDestination, token) => {
   if (isDefinedAndNotNull(userId)) {
     inputObj.userId = userId;
   }
+  let endPoint = `https://${accountId}.mktorest.com/rest/v1/leads.json`;
+  let payload = {
+    action: "createOrUpdate",
+    input: [inputObj],
+    lookupField: "id"
+  };
+  // handled if vdm enabled
+  if (get(message, MappedToDestinationKey)) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      "MARKETO"
+    );
+    // if leads object then will fallback to the already existing endpoint and payload
+    if (objectType !== "leads") {
+      endPoint = `https://${accountId}.mktorest.com/rest/v1/customobjects/${objectType}.json`;
+      // we will be using the dedupeBy dedupeFields for this endpoint
+      // DOC: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
+      // if marketoGUID is mapped it should be removed before sending to marketo as for this type the following error can arise
+      // Field 'marketoGUID' not updateable or Field 'marketoGUID' is not allowed when dedupeBy is 'dedupeFields'
+      if (traits.marketoGUID) {
+        delete traits.marketoGUID;
+      }
+      const input = [removeUndefinedValues(traits)];
+      payload = {
+        action: "createOrUpdate",
+        dedupeBy: "dedupeFields",
+        input
+      };
+    }
+  }
   return {
-    endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    endPoint,
     headers: {
       Authorization: `Bearer ${token}`
     },
-    payload: {
-      action: "createOrUpdate",
-      input: [inputObj],
-      lookupField: "id"
-    }
+    payload
   };
 };
 

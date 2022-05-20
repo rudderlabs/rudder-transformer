@@ -5,7 +5,8 @@ const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   getEndpoint,
   destinationConfigKeys,
-  subscriptionStatus
+  subscriptionStatus,
+  validStatuses
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -100,6 +101,12 @@ async function responseBuilderSimple(payload, message, mailChimpConfig) {
   const basicAuth = Buffer.from(`apiKey:${mailChimpConfig.apiKey}`).toString(
     "base64"
   );
+  if (payload.status && !validStatuses.includes(payload.status)) {
+    throw new CustomError(
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
+      400
+    );
+  }
   return {
     ...response,
     headers: {
@@ -119,6 +126,7 @@ async function getPayload(
 ) {
   if (updateSubscription !== undefined && emailExists) {
     const rawPayload = {};
+    rawPayload.merge_fields = {};
     Object.keys(message.integrations.MailChimp).forEach(field => {
       if (field === "subscriptionStatus") {
         rawPayload.status = message.integrations.MailChimp[field];
@@ -129,6 +137,9 @@ async function getPayload(
     Object.keys(traits).forEach(trait => {
       if (trait === "email") {
         rawPayload.email_address = traits[trait];
+      } else if (mailChimpConfig.enableMergeFields) {
+        const tag = filterTagValue(trait);
+        rawPayload.merge_fields[tag] = traits[trait];
       }
     });
     return rawPayload;
@@ -147,6 +158,7 @@ async function getPayload(
         rawPayload.merge_fields[tag] = traits[trait];
       }
     });
+    // given email does not exist in the list
     if (!emailExists) {
       const isDoubleOptin = await checkIfDoubleOptIn(mailChimpConfig);
       rawPayload.status = isDoubleOptin
@@ -159,9 +171,8 @@ async function getPayload(
 }
 
 async function getTransformedJSON(message, mailChimpConfig) {
-  
-  const mappedToDestination = get(message, MappedToDestinationKey)
-  if(mappedToDestination) {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
     addExternalIdToTraits(message);
     return getFieldValueFromMessage(message, "traits");
   }
@@ -173,6 +184,10 @@ async function getTransformedJSON(message, mailChimpConfig) {
     : undefined;
 
   const email = getFieldValueFromMessage(message, "email");
+  if (!email) {
+    throw new CustomError("email is required for identify", 400);
+  }
+
   const emailExists = await checkIfMailExists(mailChimpConfig, email);
 
   const rawPayload = await getPayload(
@@ -198,6 +213,10 @@ function getMailChimpConfig(message, destination) {
         break;
       case destinationConfigKeys.dataCenterId:
         mailChimpConfig.dataCenterId = `${destination.Config[key]}`;
+        break;
+      case "enableMergeFields":
+        mailChimpConfig.enableMergeFields =
+          destination.Config.enableMergeFields;
         break;
       default:
         logger.debug("MailChimp: Unknown key type: ", key);

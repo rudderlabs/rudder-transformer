@@ -15,7 +15,6 @@ Key aspects covered:
       - in BQ, json type is just a string data type
       - have more priority than cloud source under level 3 i.e. 4th level jsonKey is already being captured as string
       - blank, null types are omitted
-      - timestamp or date string is not considered as json type
       - rudder reserved keywords are omitted
       - other than track events are omitted
       - warehouse reserved columns are escaped i.e. prefixed by _
@@ -169,7 +168,7 @@ describe("Flatten event properties", () => {
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values except datetime", () => {
+      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values", () => {
         i.dateProp = "2022-01-01T00:00:00.000Z";
         i.objectProp.firstLevelDateProp = "2022-01-01T01:01:01.111Z";
         i.objectProp.firstLevelMap.secondLevelDateProp =

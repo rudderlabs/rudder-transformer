@@ -18,16 +18,8 @@ const isObject = value => {
   );
 };
 
-const isJson = value => {
-  return value != null && (typeof value === "object" || Array.isArray(value));
-};
-
 const isValidJsonPathKey = (eventType, key, val, level, jsonKeys = {}) => {
-  return (
-    eventType === "track" &&
-    jsonKeys[key] === level &&
-    !(typeof val === "string" && validTimestamp(val))
-  );
+  return eventType === "track" && jsonKeys[key] === level;
 };
 
 const isBlank = value => {
@@ -96,7 +88,6 @@ const getCloudRecordID = (message, fallbackValue) => {
 module.exports = {
   isObject,
   isBlank,
-  isJson,
   isValidJsonPathKey,
   getKeysFromJsonPaths,
   timestampRegex,

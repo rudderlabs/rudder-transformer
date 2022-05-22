@@ -1,0 +1,15 @@
+message:
+  supportedMessageTypes:
+    - track
+  track:
+    transformation:
+      mapperPath: ./mapping/track.yaml
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        endpoint: "{{ rudderContext.endpoint }}"
+        method: POST
+        format: JSON
+        headers:
+          Api-Key: "{{ rudderContext.insertKey }}"
+          Content-Type: "application/json"

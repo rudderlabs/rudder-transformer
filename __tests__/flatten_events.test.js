@@ -180,6 +180,7 @@ describe("Flatten event properties", () => {
           stringProp: 0,
           dateProp: 0,
           objectProp_firstLevelInt: 1,
+          objectProp_firstLevelBool: 1,
           objectProp_firstLevelMap_secondLevelBlankProp: 2,
           objectProp_firstLevelMap_secondLevelDateProp: 2,
           objectProp_firstLevelMap_secondLevelMap_thirdLevelString: 3

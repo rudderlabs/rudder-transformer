@@ -11,6 +11,7 @@ const sampleEvents = {
       arrayProp: ["zero", "level"],
       objectProp: {
         firstLevelInt: 1,
+        firstLevelBool: true,
         firstLevelMap: {
           secondLevelBlankProp: "",
           secondLevelArray: ["second", "level"],
@@ -54,6 +55,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -65,6 +67,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -78,6 +81,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -90,6 +94,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -103,6 +108,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: '["zero","level"]',
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
             '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
@@ -113,6 +119,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "json",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map: "json"
         }
@@ -124,6 +131,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -136,6 +144,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -176,6 +185,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -189,6 +199,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -203,6 +214,7 @@ const sampleEvents = {
           date_prop: '"2022-01-01T00:00:00.000Z"',
           array_prop: ["zero", "level"],
           object_prop_first_level_int: "1",
+          object_prop_first_level_bool: "true",
           object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_date_prop:
@@ -218,6 +230,7 @@ const sampleEvents = {
           array_prop: "string",
           date_prop: "json",
           object_prop_first_level_int: "json",
+          object_prop_first_level_bool: "json",
           object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_date_prop: "json",
@@ -235,6 +248,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -246,6 +260,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -260,6 +275,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -272,6 +288,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -285,6 +302,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: '["zero","level"]',
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
             '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
@@ -295,6 +313,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "json",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map: "json"
         }
@@ -306,6 +325,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -318,6 +338,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -358,6 +379,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -371,6 +393,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -386,6 +409,7 @@ const sampleEvents = {
           array_prop: ["zero", "level"],
           date_prop: '"2022-01-01T00:00:00.000Z"',
           object_prop_first_level_int: "1",
+          object_prop_first_level_bool: "true",
           object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_date_prop:
@@ -401,6 +425,7 @@ const sampleEvents = {
           array_prop: "string",
           date_prop: "json",
           object_prop_first_level_int: "json",
+          object_prop_first_level_bool: "json",
           object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_date_prop: "json",
@@ -419,6 +444,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -430,6 +456,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -444,6 +471,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -456,6 +484,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -469,6 +498,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: '["zero","level"]',
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map:
             '{"thirdLevelString":"third level","thirdLevelMap":{"fourthLevelInt":4}}'
@@ -479,6 +509,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map: "string"
         }
@@ -490,6 +521,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -502,6 +534,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -542,6 +575,7 @@ const sampleEvents = {
           string_prop: "zero",
           array_prop: ["zero", "level"],
           object_prop_first_level_int: 1,
+          object_prop_first_level_bool: true,
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_map_third_level_string:
             "third level",
@@ -555,6 +589,7 @@ const sampleEvents = {
           string_prop: "string",
           array_prop: "string",
           object_prop_first_level_int: "int",
+          object_prop_first_level_bool: "boolean",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_map_third_level_string:
             "string",
@@ -570,6 +605,7 @@ const sampleEvents = {
           array_prop: ["zero", "level"],
           date_prop: '"2022-01-01T00:00:00.000Z"',
           object_prop_first_level_int: "1",
+          object_prop_first_level_bool: "true",
           object_prop_first_level_date_prop: "2022-01-01T01:01:01.111Z",
           object_prop_first_level_map_second_level_array: ["second", "level"],
           object_prop_first_level_map_second_level_date_prop:
@@ -585,6 +621,7 @@ const sampleEvents = {
           array_prop: "string",
           date_prop: "string",
           object_prop_first_level_int: "string",
+          object_prop_first_level_bool: "string",
           object_prop_first_level_date_prop: "datetime",
           object_prop_first_level_map_second_level_array: "string",
           object_prop_first_level_map_second_level_date_prop: "string",

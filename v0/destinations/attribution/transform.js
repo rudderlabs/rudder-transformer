@@ -1,5 +1,5 @@
 const get = require("get-value");
-const { destinationConfigKeys, batchEndpoint } = require("./config");
+const { batchEndpoint } = require("./config");
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -21,15 +21,17 @@ function responseBuilderSimple(payload, attributionConfig) {
   response.headers = header;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.endpoint = batchEndpoint;
-  response.userId = attributionConfig.userId;
   response.statusCode = 200;
 
   return response;
 }
 
-function getTransformedJSON(message, attributionConfig) {
+function getTransformedJSON(message) {
   const { type, anonymousId } = message;
-  const { userId } = attributionConfig;
+  if (!type) {
+    throw new Error("Event type is required");
+  }
+
   const traits = getFieldValueFromMessage(message, "traits");
   if (traits && traits.anonymousId) {
     delete traits.anonymousId;
@@ -43,7 +45,6 @@ function getTransformedJSON(message, attributionConfig) {
   return removeUndefinedAndNullValues({
     anonymousId,
     type,
-    userId,
     event,
     traits,
     properties,
@@ -51,26 +52,18 @@ function getTransformedJSON(message, attributionConfig) {
   });
 }
 
-function getAttributionConfig(destination, message) {
-  const attributionConfig = {};
-  const configKeys = Object.keys(destination.Config);
-  configKeys.forEach(key => {
-    switch (key) {
-      case destinationConfigKeys.writeKey:
-        attributionConfig.writeKey = `${destination.Config[key]}`;
-        break;
-      default:
-        break;
-    }
-  });
+function getAttributionConfig(destination) {
+  const { writeKey } = destination.Config;
+  if (!writeKey) {
+    throw new Error("No writeKey in config");
+  }
 
-  attributionConfig.userId = getFieldValueFromMessage(message, "userId");
-  return attributionConfig;
+  return { writeKey };
 }
 
 function processSingleMessage(message, destination) {
-  const attributionConfig = getAttributionConfig(destination, message);
-  const properties = getTransformedJSON(message, attributionConfig);
+  const attributionConfig = getAttributionConfig(destination);
+  const properties = getTransformedJSON(message);
   const respObj = {
     batch: []
   };

@@ -1,0 +1,14 @@
+[
+  {
+    "destKey": "user.phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "user.email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

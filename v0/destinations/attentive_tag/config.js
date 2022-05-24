@@ -2,15 +2,16 @@ const { getMappingConfig } = require("../../util");
 
 const BASE_URL = "https://api.attentivemobile.com/v1";
 
-const CONFIG_CATEGORIES = {
+const ConfigCategory = {
+  ITEMS: { name: "itemsConfig" },
   SUBSCRIBE: { name: "attentiveSubscribeConfig" },
   UNSUBSCRIBE: {
     name: "attentiveUnsubscribeConfig"
   },
-  TRACK: { name: "customTrackConfig", endPoint: "/events/custom" },
+  TRACK: { name: "customTrackConfig", endpoint: "/events/custom" },
   ORDER_COMPLETED: {
     name: "orderCompletedConfig",
-    endPoint: "/events/ecommerce/purchase"
+    endpoint: "/events/ecommerce/purchase"
   },
   PRODUCT_ADDED: {
     name: "productAddedConfig",
@@ -26,10 +27,10 @@ const CONFIG_CATEGORIES = {
   }
 };
 
-const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
   BASE_URL,
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  ConfigCategory,
+  mappingConfig
 };

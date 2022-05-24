@@ -1,5 +1,5 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, BASE_URL } = require("./config");
+const { ConfigCategory, mappingConfig, BASE_URL } = require("./config");
 const get = require("get-value");
 const {
   defaultRequestConfig,
@@ -10,36 +10,53 @@ const {
   getIntegrationsObj,
   CustomError
 } = require("../../util");
+const {
+  getDestinationItemProperties,
+  getExternalIdentifiersMapping,
+  getUserExistence
+} = require("./util");
 
-const identifyResponseBuilder = (message, { Config }) => {
-  const { apiKey, signUpSourceId } = Config;
-  let endpoint; 
+const identifyResponseBuilder = async (message, { Config }) => {
+  const { apiKey } = Config;
+  let { signUpSourceId } = Config;
+  let endpoint, payload;
   const integrationsObj = getIntegrationsObj(message, "attentive_tag");
-  let payload;
+  let userPhone = getFieldValueFromMessage(message, "phone");
+  let userEmail = getFieldValueFromMessage(message, "email");
   if (integrationsObj) {
     if (integrationsObj.signUpSourceId) {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
-    if (integrationsObj?.identifyOperation.toLowerCase() === "unsubscribe") {
+    if (integrationsObj?.identifyOperation?.toLowerCase() === "unsubscribe") {
+        await getUserExistence(message, apiKey);
       endpoint = "/subscriptions/unsubscribe";
-      payload = constructPayload(message, attentiveUnsubscribeConfig);
+      payload = constructPayload(
+        message,
+        mappingConfig[ConfigCategory.UNSUBSCRIBE.name]
+      );
+      payload.subscriptions = integrationsObj?.subscriptions;
     }
-    if (integrationsObj?.identifyOperation.toLowerCase() == "subscribe") {
+    if (integrationsObj?.identifyOperation?.toLowerCase() === "subscribe") {
       endpoint = "/subscriptions";
-      payload = constructPayload(message, attentiveSubscribeConfig);
+      payload = constructPayload(
+        message,
+        mappingConfig[ConfigCategory.SUBSCRIBE.name]
+      );
+      payload.signUpSourceId = signUpSourceId;
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
     }
   }
   if (payload) {
     const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}endpoint`;
+    response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json"
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);
+    return response;
   }
-  return response;
 };
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
@@ -47,47 +64,57 @@ const trackResponseBuilder = (message, { Config }) => {
   let event = get(message, "event");
   let endpoint;
 
-  switch (event.toLowerCase()) {
+  switch (
+    event
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+  ) {
     /* Browsing Section */
     case "product_list_viewed":
       payload = constructPayload(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.name]
+        mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
       );
-      endpoint = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.endpoint;
+      endpoint = ConfigCategory.PRODUCT_LIST_VIEWED.endpoint;
+      payload.items = getDestinationItemProperties(message, true);
       break;
     /* Ordering Section */
     case "product_viewed":
       payload = constructPayload(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_VIEWED.name]
+        mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
       );
-      endpoint = CONFIG_CATEGORIES.PRODUCT_VIEWED.endpoint;
+      endpoint = ConfigCategory.PRODUCT_VIEWED.endpoint;
+      payload.items = getDestinationItemProperties(message, true);
       break;
     case "order_completed":
       payload = constructPayload(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.ORDER_COMPLETED.name]
+        mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
       );
-      endpoint = CONFIG_CATEGORIES.ORDER_COMPLETED.endpoint;
+      endpoint = ConfigCategory.ORDER_COMPLETED.endpoint;
+      payload.items = getDestinationItemProperties(message, true);
       break;
     case "product_added":
       payload = constructPayload(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_ADDED.name]
+        mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
       );
-      endpoint = CONFIG_CATEGORIES.PRODUCT_ADDED.endpoint;
+      endpoint = ConfigCategory.PRODUCT_ADDED.endpoint;
+      payload.items = getDestinationItemProperties(message, true);
       break;
     default:
       payload = constructPayload(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
+        mappingConfig[ConfigCategory.TRACK.name]
       );
-      endpoint = CONFIG_CATEGORIES.TRACK.endpoint;
+      endpoint = ConfigCategory.TRACK.endpoint;
+      payload.type = get(message, "event");
   }
   if (payload) {
     const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}${endpoint}`;
+    response.endpoint = `${BASE_URL}/${endpoint}`;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       Authorization: `Bearer ${apiKey}`,
@@ -98,7 +125,7 @@ const trackResponseBuilder = (message, { Config }) => {
   }
 };
 
-const processEvent = (message, destination) => {
+const processEvent = async (message, destination) => {
   if (!message.type) {
     throw Error("Message Type is not present. Aborting message.");
   }
@@ -106,7 +133,7 @@ const processEvent = (message, destination) => {
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
@@ -117,7 +144,7 @@ const processEvent = (message, destination) => {
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
+const process = async event => {
+  return await processEvent(event.message, event.destination);
 };
 exports.process = process;

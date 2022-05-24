@@ -1,0 +1,14 @@
+- destKey: "event"
+  sourceKeys: event
+
+- destKey: "..."
+  sourceKeys: properties
+  metadata:
+    type: flatJson
+
+- destKey: "timestamp"
+  sourceKeys:
+    - "originalTimestamp"
+    - "timestamp"
+  metadata:
+    type: "secondTimestamp"

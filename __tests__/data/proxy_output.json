@@ -98,5 +98,15 @@
         "meta": "retryable"
       }
     }
+  },
+  {
+    "output": {
+      "status": 204,
+      "message": "[Generic Response Handler] Request for destination: any Processed Successfully",
+      "destinationResponse": {
+        "response": "",
+        "status": 204
+      }
+    }
   }
 ]

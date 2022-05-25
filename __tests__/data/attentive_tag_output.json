@@ -26,7 +26,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.attentivemobile.com/v1//events/ecommerce/purchase",
+    "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/purchase",
     "headers": {
       "Authorization": "Bearer t1yurrb968zk",
       "Content-Type": "application/json"
@@ -73,7 +73,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.attentivemobile.com/v1//events/ecommerce/product-view",
+    "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
       "Authorization": "Bearer t1yurrb968zk",
       "Content-Type": "application/json"
@@ -116,7 +116,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.attentivemobile.com/v1//events/ecommerce/product-view",
+    "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
       "Authorization": "Bearer t1yurrb968zk",
       "Content-Type": "application/json"
@@ -159,7 +159,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.attentivemobile.com/v1//events/custom",
+    "endpoint": "https://api.attentivemobile.com/v1/events/custom",
     "headers": {
       "Authorization": "Bearer t1yurrb968zk",
       "Content-Type": "application/json"
@@ -218,5 +218,21 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[Attentive Tag] :: Either email or phone is required"
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"product_id\""
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"variant\""
+  },
+  {
+    "statusCode": 400,
+    "error": "[Attentive Tag]:The event name cotnains characters which is not allowed"
   }
 ]

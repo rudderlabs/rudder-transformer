@@ -28,6 +28,18 @@ async function getUserExistence(message, apiKey) {
     throw new CustomError("[Attentive_Tag] :: Failed to make request", 500);
   }
 }
+function getPropertiesKeyValidation(payload) {
+  const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
+  const keys = Object.keys(payload.properties);
+  for (let key = 0; key < keys.length; key += 1) {
+    for (let i = 0; i < keys[key].length; i += 1) {
+      if (validationArray.includes(keys[key][i])) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 function getExternalIdentifiersMapping(message) {
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
@@ -59,15 +71,12 @@ function getDestinationItemProperties(message, isItemsRequired) {
   if (!products) {
     items = [];
     const price = [];
-    const props = {};
     const pricing = {};
     const properties = get(message, "properties");
-    props.productId = properties.productId;
-    props.productVariantId = properties.variant;
-    props.name = properties.name;
-    props.productImage = properties.image_url;
-    props.productUrl = properties.url;
-    props.quantity = properties.quantity;
+    const props = constructPayload(
+      properties,
+      mappingConfig[ConfigCategory.ITEMS.name]
+    );
     pricing.value = parseInt(properties.price, 10);
     pricing.currency = properties.currency;
     price.push(pricing);
@@ -115,5 +124,6 @@ function getDestinationItemProperties(message, isItemsRequired) {
 module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getUserExistence
+  getUserExistence,
+  getPropertiesKeyValidation
 };

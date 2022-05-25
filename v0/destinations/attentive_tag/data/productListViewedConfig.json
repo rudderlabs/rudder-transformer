@@ -7,8 +7,8 @@
   },
   {
     "destKey": "user.email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "sourceFromGenericMap": false,
     "required": false
   },
   {

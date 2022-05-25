@@ -15,8 +15,23 @@ const {
 const {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getUserExistence
+  getUserExistence,
+  getPropertiesKeyValidation
 } = require("./util");
+
+function responseBuilder(payload, apiKey, endpoint) {
+  if (payload) {
+    const response = defaultRequestConfig();
+    response.endpoint = `${BASE_URL}${endpoint}`;
+    response.headers = {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    };
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    return response;
+  }
+}
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const { apiKey } = Config;
@@ -28,7 +43,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
     if (integrationsObj?.identifyOperation?.toLowerCase() === "unsubscribe") {
-        await getUserExistence(message, apiKey);
+      await getUserExistence(message, apiKey);
       endpoint = "/subscriptions/unsubscribe";
       payload = constructPayload(
         message,
@@ -43,21 +58,17 @@ const identifyResponseBuilder = async (message, { Config }) => {
         message,
         mappingConfig[ConfigCategory.SUBSCRIBE.name]
       );
+      if(!signUpSourceId){
+          throw new CustomError("[Attentive Tag]: SignUp Source Id is required for subscribe event")
+      }
       payload.signUpSourceId = signUpSourceId;
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
     }
   }
-  if (payload) {
-    const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}${endpoint}`;
-    response.headers = {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    };
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-    return response;
+  if(!payload?.user || (payload?.user && (!payload?.user?.email && payload?.user?.phone))) {
+    throw new CustomError("[Attentive Tag] :: Either email or phone is required", 400);     
   }
+  return responseBuilder(payload, apiKey, endpoint);
 };
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
@@ -119,19 +130,15 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, "event");
+      if(!getPropertiesKeyValidation(payload)){
+            throw new CustomError("[Attentive Tag]:The event name cotnains characters which is not allowed",400);
+      }
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
-  if (payload) {
-    const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}/${endpoint}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    };
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-    return response;
+  if(!payload?.user || (payload?.user && (!payload?.user?.email && payload?.user?.phone))) {
+    throw new CustomError("[Attentive Tag] :: Either email or phone is required", 400);     
   }
+  return responseBuilder(payload, apiKey, endpoint);
 };
 
 const processEvent = async (message, destination) => {
@@ -148,7 +155,7 @@ const processEvent = async (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new Error("Message type not supported");
+      throw new CustomError ("Message type not supported", 400);
   }
   return response;
 };
@@ -158,42 +165,42 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-    if (!Array.isArray(inputs) || inputs.length <= 0) {
-      const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-      return [respEvents];
-    }
-  
-    const respList = await Promise.all(
-      inputs.map(async input => {
-        try {
-          if (input.message.statusCode) {
-            // already transformed event
-            return getSuccessRespEvents(
-              input.message,
-              [input.metadata],
-              input.destination
-            );
-          }
-          // if not transformed
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
           return getSuccessRespEvents(
-            await process(input),
+            input.message,
             [input.metadata],
             input.destination
           );
-        } catch (error) {
-          return getErrorRespEvents(
-            [input.metadata],
-            error.response
-              ? error.response.status
-              : error.code
-              ? error.code
-              : 400,
-            error.message || "Error occurred while processing payload."
-          );
         }
-      })
-    );
-    return respList;
-  };
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
 
-  module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest };

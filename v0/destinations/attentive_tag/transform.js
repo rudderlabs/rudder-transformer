@@ -47,29 +47,29 @@ const identifyResponseBuilder = async (message, { Config }) => {
       endpoint = "/subscriptions/unsubscribe";
       payload = constructPayload(
         message,
-        mappingConfig[ConfigCategory.UNSUBSCRIBE.name]
+        mappingConfig[ConfigCategory.IDENTIFY.name]
       );
       payload.subscriptions = integrationsObj?.subscriptions;
       payload.notification = integrationsObj?.language;
     }
-    if (integrationsObj?.identifyOperation?.toLowerCase() === "subscribe") {
-      endpoint = "/subscriptions";
-      payload = constructPayload(
-        message,
-        mappingConfig[ConfigCategory.SUBSCRIBE.name]
-      );
-      if(!signUpSourceId){
-          throw new CustomError("[Attentive Tag]: SignUp Source Id is required for subscribe event")
-      }
-      payload.signUpSourceId = signUpSourceId;
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
+  }
+  if(!payload){
+    endpoint = "/subscriptions";
+    payload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.IDENTIFY.name]
+    );
+    if(!signUpSourceId){
+        throw new CustomError("[Attentive Tag]: SignUp Source Id is required for subscribe event")
     }
+    payload.signUpSourceId = signUpSourceId;
+    payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
   if(!payload?.user || (payload?.user && (!payload?.user?.email && payload?.user?.phone))) {
     throw new CustomError("[Attentive Tag] :: Either email or phone is required", 400);     
   }
   return responseBuilder(payload, apiKey, endpoint);
-};
+  }
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
 

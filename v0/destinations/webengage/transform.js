@@ -9,7 +9,6 @@ const {
 
 const {
   defaultRequestConfig,
-  getFieldValueFromMessage,
   constructPayload,
   defaultPostRequestConfig,
   CustomError,

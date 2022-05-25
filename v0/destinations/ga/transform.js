@@ -930,8 +930,7 @@ function processSingleMessage(message, destination) {
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
         customParams.ni =
-          message.properties !== undefined &&
-          message.properties.nonInteraction !== undefined
+          message?.properties?.nonInteraction !== undefined
             ? message.properties.nonInteraction
             : 1;
         customParams.ea = message.event;
@@ -1020,8 +1019,6 @@ function processSingleMessage(message, destination) {
         })
         .build();
   }
-
-  console.log(JSON.stringify(customParams));
 
   return responseBuilderSimple(
     customParams,

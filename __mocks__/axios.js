@@ -11,7 +11,6 @@ const mailchimpGetRequestHandler = require("./mailchimp.mock");
 const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
 const { hsGetRequestHandler } = require("./hs.mock");
 const { delightedGetRequestHandler } = require("./delighted.mock");
-const { attentiveGetRequestHandler } = require("./attentive_tag.mock")
 const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
 
@@ -78,9 +77,6 @@ function get(url, options) {
   }
   if (url.includes("https://api.delighted.com/v1/people.json")) {
     return delightedGetRequestHandler(options);
-  }
-  if (url.includes("https://api.attentivemobile.com/v1/subscriptions")) {
-    return attentiveGetRequestHandler(options);
   }
   if (url.includes("https://api.profitwell.com")) {
     return profitwellGetRequestHandler(url, mockData);

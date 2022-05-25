@@ -44,7 +44,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
     if (integrationsObj?.identifyOperation?.toLowerCase() === "unsubscribe") {
-      await getUserExistence(message, apiKey);
       endpoint = "/subscriptions/unsubscribe";
       payload = constructPayload(
         message,

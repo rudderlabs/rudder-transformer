@@ -1,34 +1,13 @@
-const { default: axios } = require("axios");
 const get = require("get-value");
 const moment = require("moment");
 const {
   CustomError,
   constructPayload,
   isDefinedAndNotNull,
-  getDestinationExternalID,
-  getFieldValueFromMessage
+  getDestinationExternalID
 } = require("../../util");
-const { BASE_URL } = require("./config");
 const { mappingConfig, ConfigCategory } = require("./config");
 
-async function getUserExistence(message, apiKey) {
-  const userPhone = getFieldValueFromMessage(message, "phone");
-  const userEmail = getFieldValueFromMessage(message, "email");
-  try {
-    await axios.get(`${BASE_URL}/subscriptions`, {
-      params: { phone: userPhone, email: userEmail },
-      headers: {
-        Authorization: `Bearer ${apiKey}`
-      }
-    });
-  } catch (err) {
-    // check if exists err.response && err.response.status else 500
-    if (err.response && err.response.status) {
-      throw new CustomError(err.response.statusText, err.response.status);
-    }
-    throw new CustomError("[Attentive_Tag] :: Failed to make request", 500);
-  }
-}
 function getPropertiesKeyValidation(payload) {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
   const keys = Object.keys(payload.properties);
@@ -137,7 +116,6 @@ function getDestinationItemProperties(message, isItemsRequired) {
 module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getUserExistence,
   getPropertiesKeyValidation,
   validateTimestamp
 };

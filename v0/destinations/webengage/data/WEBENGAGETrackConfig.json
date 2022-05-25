@@ -12,7 +12,7 @@
   },
   {
     "destKey": "eventName",
-    "sourceKeys": "eventName",
+    "sourceKeys": "event",
     "required": true
   },
   {

@@ -73,5 +73,9 @@
     "destKey": "hashedPhone",
     "sourceKeys": ["traits.hashedPhone", "context.traits.hashedPhone"],
     "required": false
+  },
+  {
+    "destKey": "postalCode",
+    "sourceKeys": ["address.postalCode", "postalCode"]
   }
 ]

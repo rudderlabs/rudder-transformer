@@ -20,44 +20,7 @@ const moment = require("moment");
 
 const ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
 
-const identifyResponseBuilder = (message, category, { Config }) => {
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (!payload) {
-    // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
-  }
-  if (!payload.userId && !payload.anonymousId) {
-    throw new CustomError(
-      "[WEBENGAGE]: Either one of userId or anonymousId is mandatory.",
-      400
-    );
-  }
-  let baseUrl;
-  if (Config.dataCenter === "ind") {
-    baseUrl = BASE_URL_IND;
-  } else {
-    baseUrl = BASE_URL;
-  }
-  const customAttributes = {};
-  extractCustomFields(
-    message,
-    customAttributes,
-    ["context.traits", "traits"],
-    WEBENGAGE_IDENTIFY_EXCLUSION
-  );
-  payload = { ...payload, attributes: customAttributes };
-  const response = defaultRequestConfig();
-  response.endpoint = `${baseUrl}/${Config.licenseCode}/users`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json",
-    "Api-Token": Config.apiKey
-  };
-  response.body.JSON = payload;
-  return response;
-};
-
-const trackResponseBuilder = (message, category, { Config }) => {
+const responseBuilder = (message, category, { Config }) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (!payload) {
     // fail-safety for developer error
@@ -69,66 +32,42 @@ const trackResponseBuilder = (message, category, { Config }) => {
       400
     );
   }
-  let baseUrl;
+  let baseUrl, endpoint;
   if (Config.dataCenter === "ind") {
     baseUrl = BASE_URL_IND;
   } else {
     baseUrl = BASE_URL;
   }
-  let eventTimeStamp = message?.properties?.eventTimestamp;
-  if (ISO_8601.test(eventTimeStamp)) {
-    eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
-  } else {
-    eventTimeStamp = message.timestamp || message.originalTimestamp;
-    eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
-  }
-  set(payload, "eventTime", eventTimeStamp);
 
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${baseUrl}/${Config.licenseCode}/events`;
-  response.headers = {
-    "Content-Type": "application/json",
-    "Api-Token": Config.apiKey
-  };
-  response.body.JSON = payload;
-  return response;
-};
-
-const ResponseBuilder = (message, category, { Config }) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if (!payload) {
-    // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
-  }
-  if (!payload.userId && !payload.anonymousId) {
-    throw new CustomError(
-      "[WEBENGAGE]: Either one of userId or anonymousId is mandatory.",
-      400
+  if (category.name === "identify") {
+    const customAttributes = {};
+    extractCustomFields(
+      message,
+      customAttributes,
+      ["context.traits", "traits"],
+      WEBENGAGE_IDENTIFY_EXCLUSION
     );
-  }
-  let baseUrl;
-  if (Config.dataCenter === "ind") {
-    baseUrl = BASE_URL_IND;
-  } else {
-    baseUrl = BASE_URL;
-  }
-  let eventTimeStamp = message?.properties?.eventTimestamp;
-  if (ISO_8601.test(eventTimeStamp)) {
-    eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
-  } else {
-    eventTimeStamp = message.timestamp || message.originalTimestamp;
-    eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
-  }
 
-  set(payload, "eventTime", eventTimeStamp);
+    payload = { ...payload, attributes: customAttributes };
+    endpoint = `${baseUrl}/${Config.licenseCode}/users`;
+  } else {
+    let eventTimeStamp = message?.properties?.eventTimestamp;
+    if (moment(eventTimeStamp).isValid()) {
+      eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
+    } else {
+      eventTimeStamp = message.timestamp || message.originalTimestamp;
+      eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
+    }
+    set(payload, "eventTime", eventTimeStamp);
+    endpoint = `${baseUrl}/${Config.licenseCode}/events`;
+  }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = `${baseUrl}/${Config.licenseCode}/events`;
   response.headers = {
     "Content-Type": "application/json",
     "Api-Token": Config.apiKey
   };
+  response.endPoint = endpoint;
   response.body.JSON = payload;
   return response;
 };
@@ -142,10 +81,10 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, category, destination);
+      response = responseBuilder(message, category, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, category, destination);
+      response = responseBuilder(message, category, destination);
       break;
     case EventType.PAGE:
     case EventType.SCREEN:
@@ -158,7 +97,7 @@ const processEvent = async (message, destination) => {
         ? message.properties.category
         : "";
       message.event = `Viewed ${name} ${categoryName} ${messageType}`;
-      response = await ResponseBuilder(message, category, destination);
+      response = responseBuilder(message, category, destination);
       break;
     default:
       throw new Error("Message type not supported");

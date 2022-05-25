@@ -1,0 +1,86 @@
+[
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+        "licenseCode": "311c4bb8",
+        "dataCenter": "ind"
+      }
+    },
+    "message": {
+      "type": "track",
+      "userId": "rudder123",
+      "originalTimestamp": "2022-05-13T12:51:01.470Z",
+      "properties": {
+        "name": "home",
+        "category": "Games",
+        "checkout_id": "12345",
+        "order_id": "1234",
+        "affiliation": "Apple Store",
+        "total": 20,
+        "revenue": 15.0,
+        "shipping": 22,
+        "tax": 1,
+        "discount": 1.5,
+        "coupon": "ImagePro",
+        "currency": "USD",
+        "fetch_token": "123asd23",
+        "product_id": "123",
+        "products": {
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14,
+          "quantity": 1,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg",
+          "introductory_price": "350",
+          "is_restore": true,
+          "presented_offering_identifier": "123erd"
+        }
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+        "licenseCode": "311c4bb8",
+        "dataCenter": "ind"
+      }
+    },
+    "message": {
+      "type": "track",
+      "userId": "rudder123",
+      "event": "Order Completed",
+      "properties": {
+        "name": "home",
+        "category": "Games",
+        "checkout_id": "12345",
+        "order_id": "1234",
+        "affiliation": "Apple Store",
+        "total": 20,
+        "revenue": 15.0,
+        "shipping": 22,
+        "tax": 1,
+        "discount": 1.5,
+        "coupon": "ImagePro",
+        "currency": "USD",
+        "fetch_token": "123asd23",
+        "product_id": "123",
+        "products": {
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14,
+          "quantity": 1,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg",
+          "introductory_price": "350",
+          "is_restore": true,
+          "presented_offering_identifier": "123erd"
+        }
+      }
+    }
+  }
+]

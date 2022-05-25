@@ -51,14 +51,18 @@ const responseBuilder = (message, category, { Config }) => {
     payload = { ...payload, attributes: customAttributes };
     endpoint = `${baseUrl}/${Config.licenseCode}/users`;
   } else {
-    let eventTimeStamp = message?.properties?.eventTimestamp;
-    if (moment(eventTimeStamp).isValid()) {
+    let eventTimeStamp = message?.properties?.eventTime;
+    if (moment(eventTimeStamp).isValid() && ISO_8601.test(eventTimeStamp)) {
       eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
     } else {
       eventTimeStamp = message.timestamp || message.originalTimestamp;
       eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
     }
     set(payload, "eventTime", eventTimeStamp);
+
+    // deleting eventTime, as it was already mapped.
+    delete payload?.eventData?.eventTime;
+
     endpoint = `${baseUrl}/${Config.licenseCode}/events`;
   }
   const response = defaultRequestConfig();

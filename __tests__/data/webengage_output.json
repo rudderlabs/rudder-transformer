@@ -59,5 +59,158 @@
     "version": "1",
     "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
     "endpoint": ""
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "userId": "rudder123",
+        "eventData": {
+          "tax": 1,
+          "name": "home",
+          "total": 20,
+          "coupon": "ImagePro",
+          "revenue": 15,
+          "category": "Games",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": {
+            "sku": "G-32",
+            "url": "https://www.website.com/product/path",
+            "name": "Monopoly",
+            "price": 14,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https://www.website.com/product/path.jpg",
+            "is_restore": true,
+            "introductory_price": "350",
+            "presented_offering_identifier": "123erd"
+          },
+          "shipping": 22,
+          "product_id": "123",
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "fetch_token": "123asd23"
+        },
+        "eventName": "Order Completed",
+        "eventTime": "2021-09-01T09:16:51+0530"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
+    "endpoint": ""
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        },
+        "eventTime": "2021-09-01T09:16:51+0530"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "",
+    "headers": {
+      "Content-Type": "application/json",
+      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        },
+        "eventTime": "2021-09-01T09:16:51+0530"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
   }
 ]

@@ -233,7 +233,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Attentive Tag]:The event name cotnains characters which is not allowed"
+    "error": "[Attentive Tag]:The event name contains characters which is not allowed"
   },
   {
     "version": "1",

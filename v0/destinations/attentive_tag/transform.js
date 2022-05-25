@@ -8,7 +8,9 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   getIntegrationsObj,
-  CustomError
+  CustomError,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 const {
   getDestinationItemProperties,
@@ -21,8 +23,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
   let { signUpSourceId } = Config;
   let endpoint, payload;
   const integrationsObj = getIntegrationsObj(message, "attentive_tag");
-  let userPhone = getFieldValueFromMessage(message, "phone");
-  let userEmail = getFieldValueFromMessage(message, "email");
   if (integrationsObj) {
     if (integrationsObj.signUpSourceId) {
       signUpSourceId = integrationsObj.signUpSourceId;
@@ -35,6 +35,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
         mappingConfig[ConfigCategory.UNSUBSCRIBE.name]
       );
       payload.subscriptions = integrationsObj?.subscriptions;
+      payload.notification = integrationsObj?.language;
     }
     if (integrationsObj?.identifyOperation?.toLowerCase() === "subscribe") {
       endpoint = "/subscriptions";
@@ -62,6 +63,9 @@ const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
 
   let event = get(message, "event");
+  if (!event) {
+    throw new CustomError("[Attentive Tag] :: Event name is not present", 400);
+  }
   let endpoint;
 
   switch (
@@ -78,6 +82,7 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.PRODUCT_LIST_VIEWED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     /* Ordering Section */
     case "product_viewed":
@@ -87,6 +92,7 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.PRODUCT_VIEWED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     case "order_completed":
       payload = constructPayload(
@@ -95,6 +101,7 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.ORDER_COMPLETED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     case "product_added":
       payload = constructPayload(
@@ -103,6 +110,7 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.PRODUCT_ADDED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     default:
       payload = constructPayload(
@@ -111,6 +119,7 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, "event");
+      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
   if (payload) {
     const response = defaultRequestConfig();
@@ -147,4 +156,44 @@ const processEvent = async (message, destination) => {
 const process = async event => {
   return await processEvent(event.message, event.destination);
 };
-exports.process = process;
+
+const processRouterDest = async inputs => {
+    if (!Array.isArray(inputs) || inputs.length <= 0) {
+      const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+      return [respEvents];
+    }
+  
+    const respList = await Promise.all(
+      inputs.map(async input => {
+        try {
+          if (input.message.statusCode) {
+            // already transformed event
+            return getSuccessRespEvents(
+              input.message,
+              [input.metadata],
+              input.destination
+            );
+          }
+          // if not transformed
+          return getSuccessRespEvents(
+            await process(input),
+            [input.metadata],
+            input.destination
+          );
+        } catch (error) {
+          return getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          );
+        }
+      })
+    );
+    return respList;
+  };
+
+  module.exports = { process, processRouterDest };

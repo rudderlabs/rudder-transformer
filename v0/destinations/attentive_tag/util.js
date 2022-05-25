@@ -31,6 +31,9 @@ async function getUserExistence(message, apiKey) {
 function getExternalIdentifiersMapping(message) {
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
+  if (!externalId) {
+    return null;
+  }
   const idObj = {};
   const customIdentifiers = [];
   if (externalId && Array.isArray(externalId)) {
@@ -60,12 +63,12 @@ function getDestinationItemProperties(message, isItemsRequired) {
     const pricing = {};
     const properties = get(message, "properties");
     props.productId = properties.productId;
-    props.variant = properties.variant;
+    props.productVariantId = properties.variant;
     props.name = properties.name;
     props.productImage = properties.image_url;
     props.productUrl = properties.url;
     props.quantity = properties.quantity;
-    pricing.value = properties.price;
+    pricing.value = parseInt(properties.price, 10);
     pricing.currency = properties.currency;
     price.push(pricing);
     props.price = price;
@@ -86,18 +89,17 @@ function getDestinationItemProperties(message, isItemsRequired) {
         mappingConfig[ConfigCategory.ITEMS.name]
       );
       const price = [];
-      const properties = get(message, "properties");
       const pricing = {};
-      pricing.value = properties.price;
-      pricing.currency = properties.currency;
+      pricing.value = parseInt(item.price, 10);
+      pricing.currency = item.currency;
       price.push(pricing);
       if (
-        isDefinedAndNotNull(element.product_id) &&
-        isDefinedAndNotNull(element.variant) &&
-        isDefinedAndNotNull(pricing.value)
+        !isDefinedAndNotNull(element.productId) ||
+        !isDefinedAndNotNull(element.productVariantId) ||
+        !isDefinedAndNotNull(pricing.value)
       ) {
         throw new CustomError(
-          "product_id and product_variant and price are required",
+          "product_id and product_variant_id and price are required",
           400
         );
       }

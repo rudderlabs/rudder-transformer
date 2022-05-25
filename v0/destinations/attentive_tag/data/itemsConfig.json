@@ -10,7 +10,7 @@
     "required": false
   },
   {
-    "destKey": "variant",
+    "destKey": "productVariantId",
     "sourceKeys": "variant",
     "required": true
   },

@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
 const get = require("get-value");
+const moment = require("moment");
 const {
   CustomError,
   constructPayload,
@@ -64,6 +65,18 @@ function getExternalIdentifiersMapping(message) {
   }
   return idObj;
 }
+function validateTimestamp(timeStamp) {
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asHours());
+    if (deltaDay > 12) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function getDestinationItemProperties(message, isItemsRequired) {
   let items;
@@ -125,5 +138,6 @@ module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
   getUserExistence,
-  getPropertiesKeyValidation
+  getPropertiesKeyValidation,
+  validateTimestamp
 };

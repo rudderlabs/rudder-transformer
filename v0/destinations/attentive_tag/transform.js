@@ -16,7 +16,8 @@ const {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
   getUserExistence,
-  getPropertiesKeyValidation
+  getPropertiesKeyValidation,
+  validateTimestamp
 } = require("./util");
 
 function responseBuilder(payload, apiKey, endpoint) {
@@ -76,6 +77,10 @@ const trackResponseBuilder = (message, { Config }) => {
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("[Attentive Tag] :: Event name is not present", 400);
+  }
+  if(!validateTimestamp(getFieldValueFromMessage(message, "timestamp"))){
+        throw new CustomError("[Attentive_Tag]: Events must be sent within 12 hours of their occurrence.",
+        400);
   }
   let endpoint;
 
@@ -143,7 +148,7 @@ const trackResponseBuilder = (message, { Config }) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError("Message Type is not present. Aborting message.", 400);
   }
   const messageType = message.type.toLowerCase();
 

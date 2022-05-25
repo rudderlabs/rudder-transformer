@@ -69,7 +69,7 @@ function validateTimestamp(timeStamp) {
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format("X"));
     const current = moment.unix(moment().format("X"));
-    // calculates past event in days
+    // calculates past event in hours
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asHours());
     if (deltaDay > 12) {
       return false;

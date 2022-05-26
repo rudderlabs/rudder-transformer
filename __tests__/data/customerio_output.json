@@ -105,8 +105,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track.customer.io/api/v1/customers/00000000000000000000000000/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -185,12 +185,12 @@
   },
   {
     "body": {
-    "FORM": {},
-    "JSON": {},
-    "JSON_ARRAY": {},
-    "XML": {}
+      "FORM": {},
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {}
     },
-    "endpoint": "https://track.customer.io/api/v1/customers/00000000000000000000000000/devices/somel",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices/somel",
     "files": {},
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
@@ -199,7 +199,7 @@
     "params": {},
     "statusCode": 200,
     "type": "REST",
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "version": "1"
   },
   {
@@ -219,8 +219,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track.customer.io/api/v1/customers/00000000000000000000000000/devices",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -466,8 +466,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track-eu.customer.io/api/v1/customers/00000000000000000000000000/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -550,18 +550,18 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {}
-      },
-      "endpoint": "https://track-eu.customer.io/api/v1/customers/00000000000000000000000000/devices/somel",
-      "files": {},
-      "headers": {
-        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
-      },
-      "method": "DELETE",
-      "params": {},
-      "statusCode": 200,
-      "type": "REST",
-      "userId": "00000000000000000000000000",
-      "version" : "1"
+    },
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices/somel",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "method": "DELETE",
+    "params": {},
+    "statusCode": 200,
+    "type": "REST",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "version": "1"
   },
   {
     "body": {
@@ -580,7 +580,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track-eu.customer.io/api/v1/customers/00000000000000000000000000/devices",    "userId": "00000000000000000000000000",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -725,7 +726,8 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://track.customer.io/api/v1/customers/00000000000000000000000000/events",    "headers": {
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
+    "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
     "params": {},
@@ -736,7 +738,8 @@
           "user_actual_id": 12345,
           "user_time_spent": 50
         },
-        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",        "type": "event",
+        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+        "type": "event",
         "timestamp": 1571051718
       },
       "XML": {},
@@ -744,14 +747,14 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://track.customer.io/api/v1/customers/00000000000000000000000000/events",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -772,7 +775,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {

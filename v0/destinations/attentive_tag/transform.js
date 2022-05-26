@@ -10,7 +10,8 @@ const {
   getIntegrationsObj,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const {
   getDestinationItemProperties,
@@ -43,14 +44,19 @@ const identifyResponseBuilder = (message, { Config }) => {
     if (integrationsObj.signUpSourceId) {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
-    if (integrationsObj?.identifyOperation?.toLowerCase() === "unsubscribe") {
+    if (integrationsObj.identifyOperation?.toLowerCase() === "unsubscribe") {
       endpoint = "/subscriptions/unsubscribe";
       payload = constructPayload(
         message,
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
-      payload.subscriptions = integrationsObj?.subscriptions;
-      payload.notification = integrationsObj?.language;
+
+      const { subscriptions, notification } = integrationsObj;
+      payload = {
+        ...payload,
+        subscriptions,
+        notification
+      };
     }
   }
   if (!payload) {
@@ -65,11 +71,13 @@ const identifyResponseBuilder = (message, { Config }) => {
       );
     }
     payload.signUpSourceId = signUpSourceId;
+    // TODO: update this
     payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
   if (
-    !payload?.user ||
-    (payload?.user && !payload?.user?.email && !payload?.user?.phone)
+    !payload.user ||
+    (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&
+      !isDefinedAndNotNullAndNotEmpty(payload.user.phone))
   ) {
     throw new CustomError(
       "[Attentive Tag] :: Either email or phone is required",
@@ -78,6 +86,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   return responseBuilder(payload, apiKey, endpoint);
 };
+
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
 
@@ -150,11 +159,13 @@ const trackResponseBuilder = (message, { Config }) => {
           400
         );
       }
+      // TODO: Update this
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
   if (
-    !payload?.user ||
-    (payload?.user && !payload?.user?.email && !payload?.user?.phone)
+    !payload.user ||
+    (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&
+      !isDefinedAndNotNullAndNotEmpty(payload.user.phone))
   ) {
     throw new CustomError(
       "[Attentive Tag] :: Either email or phone is required",

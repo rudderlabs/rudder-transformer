@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const get = require("get-value");
 const moment = require("moment");
 const {
@@ -11,15 +12,17 @@ const { mappingConfig, ConfigCategory } = require("./config");
 const getPropertiesKeyValidation = payload => {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
   const keys = Object.keys(payload.properties);
-  for (let key = 0; key < keys.length; key += 1) {
-    for (let i = 0; i < keys[key].length; i += 1) {
-      if (validationArray.includes(keys[key][i])) {
+  for (const key of keys) {
+    for (const validationChar of validationArray) {
+      if (key.includes(validationChar)) {
         return false;
       }
     }
   }
   return true;
 };
+
+// add documentation
 const getExternalIdentifiersMapping = message => {
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
@@ -44,6 +47,7 @@ const getExternalIdentifiersMapping = message => {
   }
   return idObj;
 };
+
 const validateTimestamp = timeStamp => {
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format("X"));

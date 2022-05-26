@@ -52,21 +52,19 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
-    "endpoint": ""
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -107,16 +105,15 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -157,16 +154,15 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -208,7 +204,7 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "body": {
@@ -254,12 +250,11 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
-    "endpoint": ""
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "body": {
@@ -305,12 +300,11 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
-    "endpoint": ""
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "body": {
@@ -356,21 +350,19 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events",
-    "endpoint": ""
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -412,7 +404,7 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "statusCode": 400,
@@ -454,10 +446,9 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -499,16 +490,15 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -549,7 +539,7 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.webengage.com/v1/accounts/311c4bb8/events"
+    "endpoint": "https://api.webengage.com/v1/accounts/3bjsjdbh7/events"
   },
   {
     "body": {
@@ -561,10 +551,10 @@
         "userId": "rudder1236",
         "lastName": "Doe",
         "firstName": "James",
+        "country": "INDIA",
         "attributes": {
           "age": "12",
-          "state": "WB",
-          "country": "INDIA"
+          "state": "WB"
         }
       },
       "JSON_ARRAY": {}
@@ -574,21 +564,19 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
       "Content-Type": "application/json"
     },
     "version": "1",
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/users",
-    "endpoint": ""
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e"
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "params": {},
     "body": {
@@ -598,9 +586,9 @@
         "lastName": "Doe",
         "email": "chandan@companyname.com",
         "phone": "92374162212",
+        "country": "INDIA",
         "attributes": {
           "age": "12",
-          "country": "INDIA",
           "state": "WB"
         }
       },
@@ -609,6 +597,39 @@
       "FORM": {}
     },
     "files": {},
-    "endPoint": "https://api.in.webengage.com/v1/accounts/311c4bb8/users"
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder1235",
+        "firstName": "James",
+        "lastName": "Doe",
+        "email": "chandan@companyname.com",
+        "phone": "92374162212",
+        "postalCode": "713390",
+        "country": "INDIA",
+        "city": "Amritsar",
+        "locality": "IST",
+        "region": "AB Colony",
+        "attributes": {
+          "age": "12",
+          "state": "WB"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
   }
 ]

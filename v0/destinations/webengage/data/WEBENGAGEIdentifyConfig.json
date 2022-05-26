@@ -83,5 +83,44 @@
       "context.traits.address.postalCode",
       "context.traits.postalCode"
     ]
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "traits.country",
+      "context.traits.address.country",
+      "context.traits.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.address.city",
+      "traits.city",
+      "context.traits.address.city",
+      "context.traits.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "locality",
+    "sourceKeys": [
+      "traits.locality",
+      "traits.address.locality",
+      "context.traits.locality",
+      "context.traits.address.locality"
+    ]
+  },
+  {
+    "destKey": "region",
+    "sourceKeys": [
+      "traits.region",
+      "traits.address.region",
+      "context.traits.region",
+      "context.traits.address.region"
+    ],
+    "required": false
   }
 ]

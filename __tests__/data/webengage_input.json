@@ -2,8 +2,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -44,8 +44,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -86,8 +86,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -129,8 +129,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -171,51 +171,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
-        "dataCenter": "ind"
-      }
-    },
-    "message": {
-      "type": "track",
-      "userId": "rudder123",
-      "event": "Order Completed",
-      "properties": {
-        "name": "home",
-        "category": "Games",
-        "checkout_id": "12345",
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "total": 20,
-        "revenue": 15.0,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "products": {
-          "sku": "G-32",
-          "name": "Monopoly",
-          "price": 14,
-          "quantity": 1,
-          "category": "Games",
-          "url": "https://www.website.com/product/path",
-          "image_url": "https://www.website.com/product/path.jpg",
-          "introductory_price": "350",
-          "is_restore": true,
-          "presented_offering_identifier": "123erd"
-        }
-      },
-      "timestamp": "2021-09-01T15:46:51.000Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -257,8 +214,51 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
+        "dataCenter": "ind"
+      }
+    },
+    "message": {
+      "type": "track",
+      "userId": "rudder123",
+      "event": "Order Completed",
+      "properties": {
+        "name": "home",
+        "category": "Games",
+        "checkout_id": "12345",
+        "order_id": "1234",
+        "affiliation": "Apple Store",
+        "total": 20,
+        "revenue": 15.0,
+        "shipping": 22,
+        "tax": 1,
+        "discount": 1.5,
+        "coupon": "ImagePro",
+        "currency": "USD",
+        "fetch_token": "123asd23",
+        "product_id": "123",
+        "products": {
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14,
+          "quantity": 1,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg",
+          "introductory_price": "350",
+          "is_restore": true,
+          "presented_offering_identifier": "123erd"
+        }
+      },
+      "timestamp": "2021-09-01T15:46:51.000Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -300,8 +300,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -342,8 +342,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -384,8 +384,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -425,8 +425,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -466,8 +466,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -506,8 +506,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "standard"
       }
     },
@@ -546,8 +546,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "standard"
       }
     },
@@ -588,8 +588,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "standard"
       }
     },
@@ -629,8 +629,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -697,8 +697,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
         "dataCenter": "ind"
       }
     },
@@ -760,6 +760,79 @@
         "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
       },
       "type": "identify"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "licenseCode": "3bjsjdbh7",
+        "dataCenter": "ind"
+      }
+    },
+    "message": {
+      "userId": "rudder1235",
+      "channel": "web",
+      "context": {
+        "ip": "14.5.67.21",
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.rudderstack.demo.android",
+          "version": "1.0"
+        },
+        "device": {
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "advertisingId": "1234sadf23"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Mumbai",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "type": "identify",
+      "traits": {
+        "email": "chandan@companyname.com",
+        "name": "James Doe",
+        "phone": "92374162212",
+        "firstname": "James",
+        "lastname": "Doe",
+        "age": "12",
+        "country": "INDIA",
+        "state": "WB",
+        "company": "Alphabet Inc.",
+        "city": "Amritsar",
+        "region": "AB Colony",
+        "locality": "IST",
+        "postalCode": "713390"
+      }
     }
   }
 ]

@@ -13,10 +13,8 @@ const {
   defaultPostRequestConfig,
   CustomError,
   ErrorMessage,
-  extractCustomFields,
-  getValueFromMessage
+  extractCustomFields
 } = require("../../util");
-const set = require("set-value");
 const moment = require("moment");
 const logger = require("../../../logger");
 
@@ -37,11 +35,14 @@ const responseBuilder = (message, category, { Config }) => {
       400
     );
   }
-  let baseUrl, endpoint;
-  if (Config.dataCenter === "ind") {
-    baseUrl = BASE_URL_IND;
-  } else {
-    baseUrl = BASE_URL;
+  let baseUrl, endPoint;
+  const dataCenter = Config.dataCenter;
+  switch (dataCenter) {
+    case "ind":
+      baseUrl = BASE_URL_IND;
+      break;
+    default:
+      baseUrl = BASE_URL;
   }
 
   if (category.type === "identify") {
@@ -54,7 +55,7 @@ const responseBuilder = (message, category, { Config }) => {
     );
 
     payload = { ...payload, attributes: customAttributes };
-    endpoint = `${baseUrl}/${Config.licenseCode}/users`;
+    endPoint = `${baseUrl}/${Config.licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
     if (eventTimeStamp) {
@@ -68,15 +69,15 @@ const responseBuilder = (message, category, { Config }) => {
       }
     }
 
-    endpoint = `${baseUrl}/${Config.licenseCode}/events`;
+    endPoint = `${baseUrl}/${Config.licenseCode}/events`;
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
-    "Api-Token": Config.apiKey
+    Authorization: `Bearer ${Config.apiKey}`
   };
-  response.endPoint = endpoint;
+  response.endpoint = endPoint;
   response.body.JSON = payload;
   return response;
 };

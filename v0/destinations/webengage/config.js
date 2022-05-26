@@ -1,8 +1,6 @@
 const { getMappingConfig } = require("../../util");
-
 const BASE_URL = "https://api.webengage.com/v1/accounts";
 const BASE_URL_IND = "https://api.in.webengage.com/v1/accounts";
-
 const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "email",
   "phone",
@@ -16,6 +14,11 @@ const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "userId",
   "anonymousId",
   "birthDate",
+  "dateOfBirth",
+  "dateofbirth",
+  "birthday",
+  "dob",
+  "DOB",
   "gender",
   "emailOptIn",
   "smsOptIn",
@@ -23,9 +26,12 @@ const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "company",
   "hashedEmail",
   "hashedPhone",
-  "postalCode"
+  "postalCode",
+  "country",
+  "city",
+  "locality",
+  "region"
 ];
-
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "WEBENGAGEIdentifyConfig",
@@ -36,7 +42,6 @@ const CONFIG_CATEGORIES = {
     type: "track"
   }
 };
-
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,

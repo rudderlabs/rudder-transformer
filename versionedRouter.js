@@ -12,7 +12,8 @@ const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  CustomError
+  CustomError,
+  isHttpStatusSuccess
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -637,7 +638,9 @@ async function handleProxyRequest(destination, ctx) {
     }
   }
   ctx.body = { output: response };
-  ctx.status = response.status;
+  // Sending `204` status(obtained from destination) is not working as expected
+  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
+  ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
   return ctx.body;
 }
 

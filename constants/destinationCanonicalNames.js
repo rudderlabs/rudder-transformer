@@ -19,6 +19,22 @@ const DestCanonicalNames = {
     "DCM_Floodlight",
     "DCMFloodlight",
     "dcmfloodlight"
+  ],
+  new_relic: [
+    "new relic",
+    "new_relic",
+    "New Relic",
+    "New_Relic",
+    "NewRelic",
+    "newrelic"
+  ],
+  attentive_tag: [
+    "attentive tag",
+    "attentive_tag",
+    "Attentive Tag",
+    "Attentive_Tag",
+    "AttentiveTag",
+    "attentivetag"
   ]
 };
 

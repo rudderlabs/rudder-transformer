@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "product_id",
+    "sourceKeys": "product_id",
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "introductory_price",
+    "sourceKeys": "introductory_price",
+    "required": false
+  },
+  {
+    "destKey": "is_restore",
+    "sourceKeys": "is_restore",
+    "required": false
+  },
+  {
+    "destKey": "presented_offering_identifier",
+    "sourceKeys": "presented_offering_identifier",
+    "required": false
+  }
+]

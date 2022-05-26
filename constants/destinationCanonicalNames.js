@@ -27,6 +27,14 @@ const DestCanonicalNames = {
     "New_Relic",
     "NewRelic",
     "newrelic"
+  ],
+  attentive_tag: [
+    "attentive tag",
+    "attentive_tag",
+    "Attentive Tag",
+    "Attentive_Tag",
+    "AttentiveTag",
+    "attentivetag"
   ]
 };
 

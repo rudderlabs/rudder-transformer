@@ -277,7 +277,7 @@ async function handleValidation(event) {
 
         const violationsByType = new Set(validationErrors.map(err => err.type));
         for (const [key, val] of Object.entries(mergedTpConfig)) {
-            const value = val.toString().toLowerCase();
+            const value = val?.toString()?.toLowerCase();
             switch (key) {
                 case "allowUnplannedEvents": {
                     const exists = violationsByType.has(violationTypes.UnplannedEvent);

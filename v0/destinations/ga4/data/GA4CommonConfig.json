@@ -2,6 +2,7 @@
   {
     "destKey": "user_id",
     "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

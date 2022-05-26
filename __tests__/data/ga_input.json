@@ -6355,6 +6355,7 @@
       "userId": "12345",
       "event": "product list viewed",
       "properties": {
+        "nonInteraction": 0,
         "category": "cat 1",
         "list_id": "1234",
         "filters": {

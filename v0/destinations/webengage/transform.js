@@ -13,15 +13,15 @@ const {
   defaultPostRequestConfig,
   CustomError,
   ErrorMessage,
-  extractCustomFields
+  extractCustomFields,
+  getValueFromMessage
 } = require("../../util");
 const set = require("set-value");
 const moment = require("moment");
-
-const ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
+const { isValidTimestamp } = require("../ometria/util");
 
 const responseBuilder = (message, category, { Config }) => {
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
@@ -39,7 +39,7 @@ const responseBuilder = (message, category, { Config }) => {
     baseUrl = BASE_URL;
   }
 
-  if (category.name === "identify") {
+  if (category.type === "identify") {
     const customAttributes = {};
     extractCustomFields(
       message,
@@ -52,13 +52,22 @@ const responseBuilder = (message, category, { Config }) => {
     endpoint = `${baseUrl}/${Config.licenseCode}/users`;
   } else {
     let eventTimeStamp = message?.properties?.eventTime;
-    if (moment(eventTimeStamp).isValid() && ISO_8601.test(eventTimeStamp)) {
-      eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
+    let finalTimeStamp;
+    if (isValidTimestamp(eventTimeStamp)) {
+      finalTimeStamp = eventTimeStamp;
     } else {
-      eventTimeStamp = message.timestamp || message.originalTimestamp;
-      eventTimeStamp = moment(eventTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
+      eventTimeStamp = getValueFromMessage(message, [
+        "timestamp",
+        "originalTimestamp"
+      ]);
+      if (isValidTimestamp(eventTimeStamp)) {
+        finalTimeStamp = eventTimeStamp;
+      }
     }
-    set(payload, "eventTime", eventTimeStamp);
+    if (finalTimeStamp) {
+      finalTimeStamp = moment(finalTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
+      set(payload, "eventTime", finalTimeStamp);
+    }
 
     // deleting eventTime, as it was already mapped.
     delete payload?.eventData?.eventTime;

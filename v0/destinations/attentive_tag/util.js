@@ -8,7 +8,7 @@ const {
 } = require("../../util");
 const { mappingConfig, ConfigCategory } = require("./config");
 
-function getPropertiesKeyValidation(payload) {
+const getPropertiesKeyValidation = payload => {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
   const keys = Object.keys(payload.properties);
   for (let key = 0; key < keys.length; key += 1) {
@@ -19,8 +19,8 @@ function getPropertiesKeyValidation(payload) {
     }
   }
   return true;
-}
-function getExternalIdentifiersMapping(message) {
+};
+const getExternalIdentifiersMapping = message => {
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
   if (!externalId) {
@@ -43,8 +43,8 @@ function getExternalIdentifiersMapping(message) {
     }
   }
   return idObj;
-}
-function validateTimestamp(timeStamp) {
+};
+const validateTimestamp = timeStamp => {
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format("X"));
     const current = moment.unix(moment().format("X"));
@@ -55,9 +55,9 @@ function validateTimestamp(timeStamp) {
     }
   }
   return true;
-}
+};
 
-function getDestinationItemProperties(message, isItemsRequired) {
+const getDestinationItemProperties = (message, isItemsRequired) => {
   let items;
   const products = get(message, "properties.products");
   if (!products) {
@@ -111,7 +111,7 @@ function getDestinationItemProperties(message, isItemsRequired) {
     throw new CustomError("Invalid type. Expected Array of products", 400);
   }
   return items;
-}
+};
 
 module.exports = {
   getDestinationItemProperties,

@@ -14,7 +14,6 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "test0@gmail.com",
           "phone": "+16465453911"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -48,8 +47,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
-          "phone": "+16465053911"
+          "email": "test@rudderlabs.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

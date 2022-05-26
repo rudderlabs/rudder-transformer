@@ -20,7 +20,7 @@ const {
   validateTimestamp
 } = require("./util");
 
-function responseBuilder(payload, apiKey, endpoint) {
+const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
@@ -32,9 +32,9 @@ function responseBuilder(payload, apiKey, endpoint) {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-}
+};
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let { signUpSourceId } = Config;
   let endpoint, payload;
@@ -53,23 +53,31 @@ const identifyResponseBuilder = async (message, { Config }) => {
       payload.notification = integrationsObj?.language;
     }
   }
-  if(!payload){
+  if (!payload) {
     endpoint = "/subscriptions";
     payload = constructPayload(
       message,
       mappingConfig[ConfigCategory.IDENTIFY.name]
     );
-    if(!signUpSourceId){
-        throw new CustomError("[Attentive Tag]: SignUp Source Id is required for subscribe event")
+    if (!signUpSourceId) {
+      throw new CustomError(
+        "[Attentive Tag]: SignUp Source Id is required for subscribe event"
+      );
     }
     payload.signUpSourceId = signUpSourceId;
     payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
-  if(!payload?.user || (payload?.user && (!payload?.user?.email && payload?.user?.phone))) {
-    throw new CustomError("[Attentive Tag] :: Either email or phone is required", 400);     
+  if (
+    !payload?.user ||
+    (payload?.user && !payload?.user?.email && !payload?.user?.phone)
+  ) {
+    throw new CustomError(
+      "[Attentive Tag] :: Either email or phone is required",
+      400
+    );
   }
   return responseBuilder(payload, apiKey, endpoint);
-  }
+};
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
 
@@ -77,9 +85,11 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!event) {
     throw new CustomError("[Attentive Tag] :: Event name is not present", 400);
   }
-  if(!validateTimestamp(getFieldValueFromMessage(message, "timestamp"))){
-        throw new CustomError("[Attentive_Tag]: Events must be sent within 12 hours of their occurrence.",
-        400);
+  if (!validateTimestamp(getFieldValueFromMessage(message, "timestamp"))) {
+    throw new CustomError(
+      "[Attentive_Tag]: Events must be sent within 12 hours of their occurrence.",
+      400
+    );
   }
   let endpoint;
 
@@ -134,47 +144,59 @@ const trackResponseBuilder = (message, { Config }) => {
       );
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, "event");
-      if(!getPropertiesKeyValidation(payload)){
-            throw new CustomError("[Attentive Tag]:The event name contains characters which is not allowed",400);
+      if (!getPropertiesKeyValidation(payload)) {
+        throw new CustomError(
+          "[Attentive Tag]:The event name contains characters which is not allowed",
+          400
+        );
       }
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
-  if(!payload?.user || (payload?.user && (!payload?.user?.email && payload?.user?.phone))) {
-    throw new CustomError("[Attentive Tag] :: Either email or phone is required", 400);     
+  if (
+    !payload?.user ||
+    (payload?.user && !payload?.user?.email && !payload?.user?.phone)
+  ) {
+    throw new CustomError(
+      "[Attentive Tag] :: Either email or phone is required",
+      400
+    );
   }
   return responseBuilder(payload, apiKey, endpoint);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("Message Type is not present. Aborting message.", 400);
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError ("Message type not supported", 400);
+      throw new CustomError("Message type not supported", 400);
   }
   return response;
 };
 
-const process = async event => {
-  return await processEvent(event.message, event.destination);
+const process = event => {
+  return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const respList = Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
@@ -187,7 +209,7 @@ const processRouterDest = async inputs => {
         }
         // if not transformed
         return getSuccessRespEvents(
-          await process(input),
+          process(input),
           [input.metadata],
           input.destination
         );

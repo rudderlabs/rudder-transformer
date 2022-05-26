@@ -12,8 +12,7 @@
     "body": {
       "JSON": {
         "user": {
-          "phone": "+16465453911",
-          "email": "test0@gmail.com"
+          "phone": "+16465453911"
         }
       },
       "JSON_ARRAY": {},
@@ -35,7 +34,6 @@
     "body": {
       "JSON": {
         "user": {
-          "phone": "+16465053911",
           "email": "test@rudderlabs.com"
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",

@@ -929,7 +929,10 @@ function processSingleMessage(message, destination) {
           ? nameToEventMap[eventName].category
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
-        customParams.ni = 1;
+        customParams.ni =
+          message?.properties.nonInteraction !== undefined
+            ? message.properties.nonInteraction
+            : 1;
         customParams.ea = message.event;
         let eventValue;
         let setCategory;

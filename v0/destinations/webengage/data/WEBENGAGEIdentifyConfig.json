@@ -24,7 +24,8 @@
   },
   {
     "destKey": "birthDate",
-    "sourceKeys": ["traits.birthDate", "context.traits.birthDate"],
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
@@ -61,7 +62,7 @@
   },
   {
     "destKey": "company",
-    "sourceKeys": ["traits.company", "context.traits.company"],
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"],
     "required": false
   },
   {
@@ -76,6 +77,11 @@
   },
   {
     "destKey": "postalCode",
-    "sourceKeys": ["address.postalCode", "postalCode"]
+    "sourceKeys": [
+      "traits.address.postalCode",
+      "traits.postalCode",
+      "context.traits.address.postalCode",
+      "context.traits.postalCode"
+    ]
   }
 ]

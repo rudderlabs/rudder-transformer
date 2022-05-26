@@ -95,8 +95,8 @@
       "type": "track",
       "userId": "rudder123",
       "event": "Order Completed",
+      "timestamp": "asdfsad",
       "properties": {
-        "eventTime": "12340987567",
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",
@@ -139,7 +139,6 @@
       "userId": "rudder123",
       "event": "Order Completed",
       "properties": {
-        "eventTime": "0865345",
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",
@@ -182,51 +181,6 @@
       "userId": "rudder123",
       "event": "Order Completed",
       "properties": {
-        "eventTime": "wrong format",
-        "name": "home",
-        "category": "Games",
-        "checkout_id": "12345",
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "total": 20,
-        "revenue": 15.0,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "products": {
-          "sku": "G-32",
-          "name": "Monopoly",
-          "price": 14,
-          "quantity": 1,
-          "category": "Games",
-          "url": "https://www.website.com/product/path",
-          "image_url": "https://www.website.com/product/path.jpg",
-          "introductory_price": "350",
-          "is_restore": true,
-          "presented_offering_identifier": "123erd"
-        }
-      },
-      "timestamp": "2021-09-01T15:46:51.000Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
-        "licenseCode": "311c4bb8",
-        "dataCenter": "ind"
-      }
-    },
-    "message": {
-      "type": "track",
-      "userId": "rudder123",
-      "event": "Order Completed",
-      "properties": {
-        "eventTime": "08k987h",
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",
@@ -270,7 +224,49 @@
       "userId": "rudder123",
       "event": "Order Completed",
       "properties": {
-        "eventTime": "08k987h",
+        "name": "home",
+        "category": "Games",
+        "checkout_id": "12345",
+        "order_id": "1234",
+        "affiliation": "Apple Store",
+        "total": 20,
+        "revenue": 15.0,
+        "shipping": 22,
+        "tax": 1,
+        "discount": 1.5,
+        "coupon": "ImagePro",
+        "currency": "USD",
+        "fetch_token": "123asd23",
+        "product_id": "123",
+        "products": {
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14,
+          "quantity": 1,
+          "category": "Games",
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.jpg",
+          "introductory_price": "350",
+          "is_restore": true,
+          "presented_offering_identifier": "123erd"
+        }
+      },
+      "timestamp": "2021-09-01T15:46:51.000Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "ce7eb717-c84a-4f63-a7f5-93339d7bee5e",
+        "licenseCode": "311c4bb8",
+        "dataCenter": "ind"
+      }
+    },
+    "message": {
+      "type": "track",
+      "userId": "rudder123",
+      "event": "Order Completed",
+      "properties": {
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",
@@ -313,7 +309,6 @@
       "type": "screen",
       "userId": "rudder123",
       "properties": {
-        "eventTime": "08k987h",
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",
@@ -602,7 +597,6 @@
       "type": "page",
       "userId": "rudder1232",
       "properties": {
-        "eventTime": "2021-09-01T15:46:51.000Z",
         "name": "home",
         "category": "Games",
         "checkout_id": "12345",

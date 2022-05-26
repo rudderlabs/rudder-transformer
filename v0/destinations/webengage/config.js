@@ -31,15 +31,7 @@ const CONFIG_CATEGORIES = {
     name: "WEBENGAGEIdentifyConfig",
     type: "identify"
   },
-  TRACK: {
-    name: "WEBENGAGETrackConfig",
-    type: "track"
-  },
-  PAGE: {
-    name: "WEBENGAGETrackConfig",
-    type: "track"
-  },
-  SCREEN: {
+  EVENT: {
     name: "WEBENGAGETrackConfig",
     type: "track"
   }

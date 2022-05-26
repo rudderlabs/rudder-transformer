@@ -18,7 +18,12 @@ const {
 } = require("../../util");
 const set = require("set-value");
 const moment = require("moment");
-const { isValidTimestamp } = require("../ometria/util");
+const logger = require("../../../logger");
+
+const isValidTimestamp = timestamp => {
+  const re = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z)?$/;
+  return re.test(String(timestamp));
+};
 
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -51,26 +56,17 @@ const responseBuilder = (message, category, { Config }) => {
     payload = { ...payload, attributes: customAttributes };
     endpoint = `${baseUrl}/${Config.licenseCode}/users`;
   } else {
-    let eventTimeStamp = message?.properties?.eventTime;
-    let finalTimeStamp;
-    if (isValidTimestamp(eventTimeStamp)) {
-      finalTimeStamp = eventTimeStamp;
-    } else {
-      eventTimeStamp = getValueFromMessage(message, [
-        "timestamp",
-        "originalTimestamp"
-      ]);
+    const eventTimeStamp = payload.eventTime;
+    if (eventTimeStamp) {
       if (isValidTimestamp(eventTimeStamp)) {
-        finalTimeStamp = eventTimeStamp;
+        payload.eventTime = moment(eventTimeStamp).format(
+          "YYYY-MM-DDThh:mm:sZZ"
+        );
+      } else {
+        logger.error("timestamp format must be ISO 8601.");
+        delete payload.eventTime;
       }
     }
-    if (finalTimeStamp) {
-      finalTimeStamp = moment(finalTimeStamp).format("YYYY-MM-DDThh:mm:sZZ");
-      set(payload, "eventTime", finalTimeStamp);
-    }
-
-    // deleting eventTime, as it was already mapped.
-    delete payload?.eventData?.eventTime;
 
     endpoint = `${baseUrl}/${Config.licenseCode}/events`;
   }
@@ -90,35 +86,75 @@ const processEvent = (message, destination) => {
     throw Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
-  const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   let response;
+  let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = responseBuilder(message, category, destination);
+      category = CONFIG_CATEGORIES[message.type.toUpperCase()];
       break;
     case EventType.TRACK:
-      response = responseBuilder(message, category, destination);
+      category = CONFIG_CATEGORIES["EVENT"];
       break;
     case EventType.PAGE:
     case EventType.SCREEN:
+      category = CONFIG_CATEGORIES["EVENT"];
       const name = message.name
-        ? message.name
+        ? ` ${message.name}`
         : message.properties?.name
-        ? message.properties.name
+        ? ` ${message.properties.name}`
         : "";
       const categoryName = message.properties.category
-        ? message.properties.category
+        ? ` ${message.properties.category}`
         : "";
-      message.event = `Viewed ${name} ${categoryName} ${messageType}`;
-      response = responseBuilder(message, category, destination);
+      message.event = `Viewed${name}${categoryName} ${messageType}`;
       break;
     default:
       throw new Error("Message type not supported");
   }
+  response = responseBuilder(message, category, destination);
   return response;
 };
 
 const process = event => {
   return processEvent(event.message, event.destination);
 };
-module.exports = { process };
+
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+module.exports = { process, processRouterDest };

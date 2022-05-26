@@ -286,6 +286,7 @@
     "ELSE": true,
     "END": true,
     "ESCAPE": true,
+    "EVENT_DATE": true,
     "EXCEPT": true,
     "EXISTS": true,
     "EXTERNAL": true,

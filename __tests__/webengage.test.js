@@ -22,9 +22,9 @@ Date.now = jest.fn(() => new Date("2021-09-01T15:46:51.000Z"));
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {
-      it(`${name} - payload: ${index}`, async () => {
+      it(`${name} - payload: ${index}`, () => {
         try {
-          const output = await transformer.process(input);
+          const output = transformer.process(input);
           expect(output).toEqual(expectedData[index]);
         } catch (error) {
           expect(error.message).toEqual(expectedData[index].error);

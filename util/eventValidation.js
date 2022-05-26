@@ -165,7 +165,6 @@ async function validate(event) {
         const ajvCache = isDraft4 ? ajv4Cache : ajv19Cache;
         if (merged !== {}) {
             const configHash = hash(merged);
-
             ajv = ajvCache.get(configHash);
             if (!ajv) {
                 ajv = getAjv(merged, isDraft4);

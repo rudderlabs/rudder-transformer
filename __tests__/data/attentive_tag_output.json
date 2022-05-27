@@ -3,6 +3,43 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
+    "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
+    "headers": {
+      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "phone": "+16405273911",
+          "email": "alex13@gmail.com"
+        },
+        "signUpSourceId": "241654",
+        "externalIdentifiers": {
+          "customIdentifiers": [
+            {
+              "name": "string",
+              "value": "string"
+            }
+          ]
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+
+    "statusCode": 400,
+    "error": "[Attentive Tag]:The event name contains characters which is not allowed"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions/unsubscribe",
     "headers": {
       "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
@@ -12,8 +49,7 @@
     "body": {
       "JSON": {
         "user": {
-          "phone": "+16465453911",
-          "email": "test0@gmail.com"
+          "phone": "+16465453911"
         }
       },
       "JSON_ARRAY": {},
@@ -35,7 +71,6 @@
     "body": {
       "JSON": {
         "user": {
-          "phone": "+16465053911",
           "email": "test@rudderlabs.com"
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",

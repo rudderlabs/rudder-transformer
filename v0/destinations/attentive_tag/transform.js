@@ -71,7 +71,6 @@ const identifyResponseBuilder = (message, { Config }) => {
       );
     }
     payload.signUpSourceId = signUpSourceId;
-    // TODO: update this
     payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
   if (
@@ -159,9 +158,9 @@ const trackResponseBuilder = (message, { Config }) => {
           400
         );
       }
-      // TODO: Update this
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
+
   if (
     !payload.user ||
     (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&

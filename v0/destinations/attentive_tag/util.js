@@ -5,10 +5,18 @@ const {
   CustomError,
   constructPayload,
   isDefinedAndNotNull,
-  getDestinationExternalID
+  getDestinationExternalID,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { mappingConfig, ConfigCategory } = require("./config");
 
+/**
+ * The keys should not contain any of the values inside the validationArray.
+ * STEP 1: Storing keys in the array.
+ * Checking for the non-valid characters inside the keys of properties.
+ * @param {*} payload
+ * @returns
+ */
 const getPropertiesKeyValidation = payload => {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
   const keys = Object.keys(payload.properties);
@@ -22,30 +30,34 @@ const getPropertiesKeyValidation = payload => {
   return true;
 };
 
-// add documentation
+/**
+ * Any of the ids inside the externalIdentifiers is being mapped inside the externalIdentifiers.
+ * Customidentifiers provided in traits is being mapped in externalIdentifiers.
+ * @param {*} message
+ * @returns
+ */
 const getExternalIdentifiersMapping = message => {
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
-  if (!externalId) {
-    return null;
-  }
   const idObj = {};
-  const customIdentifiers = [];
   if (externalId && Array.isArray(externalId)) {
     externalId.forEach(id => {
       const idType = id.type;
       const val = getDestinationExternalID(message, idType);
       if (val && externalIdentifiers.includes(idType)) {
         idObj[idType] = val;
-      } else if (val) {
-        customIdentifiers.push({ name: idType, value: val });
       }
     });
-    if (customIdentifiers.length) {
-      idObj.customIdentifiers = customIdentifiers;
-    }
   }
-  return idObj;
+
+  const customIdentifiers = get(message, "context.traits.customIdentifiers");
+  if (customIdentifiers) {
+    idObj.customIdentifiers = customIdentifiers;
+  }
+  if (isDefinedAndNotNullAndNotEmpty(idObj)) {
+    return idObj;
+  }
+  return null;
 };
 
 const validateTimestamp = timeStamp => {

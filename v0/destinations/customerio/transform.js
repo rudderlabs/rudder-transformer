@@ -73,7 +73,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     adduserIdFromExternalId(message);
   }
 
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userId = getFieldValueFromMessage(message, "userId");
   const response = defaultRequestConfig();
   response.userId = userId || message.anonymousId;
   response.headers = {

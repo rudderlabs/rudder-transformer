@@ -1,6 +1,10 @@
 const { getMappingConfig } = require("../../util");
-const BASE_URL = "https://api.webengage.com/v1/accounts";
-const BASE_URL_IND = "https://api.in.webengage.com/v1/accounts";
+
+const ENDPOINT = {
+  Standard: "https://api.webengage.com/v1/accounts",
+  India: "https://api.in.webengage.com/v1/accounts"
+};
+
 const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "email",
   "phone",
@@ -47,6 +51,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  BASE_URL,
-  BASE_URL_IND
+  ENDPOINT
 };

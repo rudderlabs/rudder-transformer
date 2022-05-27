@@ -42,6 +42,7 @@ const responseBuilder = (message, category, { Config }) => {
       break;
     default:
       baseUrl = ENDPOINT.Standard;
+      break;
   }
 
   if (category.type === "identify") {
@@ -67,7 +68,6 @@ const responseBuilder = (message, category, { Config }) => {
         delete payload.eventTime;
       }
     }
-
     endPoint = `${baseUrl}/${Config.licenseCode}/events`;
   }
   const response = defaultRequestConfig();

@@ -21,7 +21,7 @@
         "All": true
       },
       "messageId": "e108eb05-f6cd-4624-ba8c-568f2e2b3f92",
-      "receivedAt": "2020-10-16T13:56:14.945+05:30",
+      "receivedAt": "2019-10-14T09:03:17.562Z",
       "type": "identify"
     },
     "destination": {
@@ -87,13 +87,13 @@
         "variant": "f"
       },
       "event": "Order Shipped",
-      "originalTimestamp": "2022-05-27T09:03:17.562Z",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "123456",
       "integrations": {
         "All": true
       },
-      "sentAt": "2019-10-14T09:03:22.563Z"
+      "sentAt": "2019-10-14T09:03:17.562Z"
     },
     "destination": {
       "Config": {

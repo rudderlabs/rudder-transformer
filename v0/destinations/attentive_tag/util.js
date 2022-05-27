@@ -37,6 +37,8 @@ const getPropertiesKeyValidation = payload => {
  * @returns
  */
 const getExternalIdentifiersMapping = message => {
+  // Data Structure expected:
+  // context.externalId: [ {type: clientUserId, id: __id}, {type: shopifyId, id: __id}, {type: klaviyoId, id: __id}]
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
   const idObj = {};
@@ -49,9 +51,19 @@ const getExternalIdentifiersMapping = message => {
       }
     });
   }
-
-  const customIdentifiers = get(message, "context.traits.customIdentifiers");
-  if (customIdentifiers) {
+  // Data Structure expected:
+  // traits : {
+  //  customIdentifiers: [
+  //    {
+  //      "name": "string",
+  //      "value": "string"
+  //     }
+  //    ]
+  //  }
+  const customIdentifiers =
+    get(message, "traits.customIdentifiers") ||
+    get(message, "context.traits.customIdentifiers");
+  if (customIdentifiers && Array.isArray(customIdentifiers)) {
     idObj.customIdentifiers = customIdentifiers;
   }
   if (isDefinedAndNotNullAndNotEmpty(idObj)) {
@@ -60,6 +72,11 @@ const getExternalIdentifiersMapping = message => {
   return null;
 };
 
+/**
+ * Validates timestamp of the payload if its within 12 hours
+ * @param {*} timeStamp
+ * @returns
+ */
 const validateTimestamp = timeStamp => {
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format("X"));

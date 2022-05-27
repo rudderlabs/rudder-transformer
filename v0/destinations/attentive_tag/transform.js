@@ -41,6 +41,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   let endpoint, payload;
   const integrationsObj = getIntegrationsObj(message, "attentive_tag");
   if (integrationsObj) {
+    // Overriding signupSourceId if present in integrations object
     if (integrationsObj.signUpSourceId) {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
@@ -51,6 +52,19 @@ const identifyResponseBuilder = (message, { Config }) => {
         mappingConfig[ConfigCategory.IDENTIFY.name]
       );
 
+      /**
+       * Structure we are expecting:
+       *  "subscriptions": [
+       *    {
+       *        "type": "MARKETING" || "TRANSACTIONAL" || "CHECKOUT_ABANDONED"
+       *        "channel": "TEXT" || "EMAIL"
+       *    }
+       * ],
+       *  "notification":
+       *    {
+       *        "language": "en-US" || "fr-CA"
+       *    }
+       */
       const { subscriptions, notification } = integrationsObj;
       payload = {
         ...payload,
@@ -59,6 +73,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       };
     }
   }
+  // If the identify request is not for unsubscribe
   if (!payload) {
     endpoint = "/subscriptions";
     payload = constructPayload(
@@ -70,8 +85,11 @@ const identifyResponseBuilder = (message, { Config }) => {
         "[Attentive Tag]: SignUp Source Id is required for subscribe event"
       );
     }
-    payload.signUpSourceId = signUpSourceId;
-    payload.externalIdentifiers = getExternalIdentifiersMapping(message);
+    payload = {
+      ...payload,
+      signUpSourceId,
+      externalIdentifiers: getExternalIdentifiersMapping(message)
+    };
   }
   if (
     !payload.user ||
@@ -88,7 +106,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
-
+  let endpoint;
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("[Attentive Tag] :: Event name is not present", 400);
@@ -99,8 +117,6 @@ const trackResponseBuilder = (message, { Config }) => {
       400
     );
   }
-  let endpoint;
-
   switch (
     event
       .toLowerCase()

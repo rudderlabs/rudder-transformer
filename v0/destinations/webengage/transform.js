@@ -16,6 +16,7 @@ const {
 } = require("../../util");
 const moment = require("moment");
 const logger = require("../../../logger");
+const { isDefinedAndNotNull } = require("rudder-transformer-cdk/build/utils");
 
 const isValidTimestamp = timestamp => {
   const re = /^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z)?$/;
@@ -58,16 +59,21 @@ const responseBuilder = (message, category, { Config }) => {
     endPoint = `${baseUrl}/${Config.licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
-    if (eventTimeStamp) {
+    if (!message.properties?.ignoreExplicitTimestamp && eventTimeStamp) {
       if (isValidTimestamp(eventTimeStamp)) {
         payload.eventTime = moment(eventTimeStamp).format(
           "YYYY-MM-DDThh:mm:sZZ"
         );
       } else {
-        logger.error("timestamp must be ISO format (YYYY-MM-DDThh:mm:sZZ).");
-        delete payload.eventTime;
+        throw new CustomError(
+          "timestamp must be ISO format (YYYY-MM-DDThh:mm:sZZ).",
+          400
+        );
       }
     }
+    // delete the ignoreExplicitTimestamp
+    delete payload?.eventData?.ignoreExplicitTimestamp;
+
     endPoint = `${baseUrl}/${Config.licenseCode}/events`;
   }
   const response = defaultRequestConfig();

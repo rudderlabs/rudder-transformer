@@ -3,8 +3,7 @@ const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  BASE_URL,
-  BASE_URL_IND
+  ENDPOINT
 } = require("./config");
 
 const {
@@ -39,10 +38,10 @@ const responseBuilder = (message, category, { Config }) => {
   const dataCenter = Config.dataCenter;
   switch (dataCenter) {
     case "ind":
-      baseUrl = BASE_URL_IND;
+      baseUrl = ENDPOINT.India;
       break;
     default:
-      baseUrl = BASE_URL;
+      baseUrl = ENDPOINT.Standard;
   }
 
   if (category.type === "identify") {
@@ -64,7 +63,7 @@ const responseBuilder = (message, category, { Config }) => {
           "YYYY-MM-DDThh:mm:sZZ"
         );
       } else {
-        logger.error("timestamp format must be ISO 8601.");
+        logger.error("timestamp must be ISO format (YYYY-MM-DDThh:mm:sZZ).");
         delete payload.eventTime;
       }
     }

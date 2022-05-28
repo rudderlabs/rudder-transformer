@@ -1,21 +1,20 @@
 [
-    {
-      "destKey": "user.phone",
-      "sourceKeys": "phone",
-      "sourceFromGenericMap": true,
-      "required": false
-    },
-    {
-        "destKey": "user.email",
-        "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
-        "sourceFromGenericMap": false,
-        "required": false
-      },
-    {
-      "destKey": "occuredAt",
-      "sourceKeys": "timestamp",
-      "sourceFromGenericMap": true,
-      "required": false
-    }
-  ]
-  
+  {
+    "destKey": "user.phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "user.email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "occuredAt",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

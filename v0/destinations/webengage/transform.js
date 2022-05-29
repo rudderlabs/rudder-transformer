@@ -62,11 +62,11 @@ const responseBuilder = (message, category, { Config }) => {
     if (!message.properties?.ignoreExplicitTimestamp && eventTimeStamp) {
       if (isValidTimestamp(eventTimeStamp)) {
         payload.eventTime = moment(eventTimeStamp).format(
-          "YYYY-MM-DDThh:mm:sZZ"
+          "yyyy-MM-DDTHH:mm:ssZZ"
         );
       } else {
         throw new CustomError(
-          "timestamp must be ISO format (YYYY-MM-DDThh:mm:sZZ).",
+          "timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
           400
         );
       }

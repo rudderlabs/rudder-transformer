@@ -38,17 +38,9 @@ const ConfigCategory = {
   GROUP: { name: "GA4GroupConfig" },
 
   /* GA4 Events */
-  EARN_VIRTUAL_CURRENCY: { name: "GA4EarnVirtualCurrencyConfig" },
   GENERATE_LEAD: { name: "GA4GenerateLeadConfig" },
-  LEVEL_UP: { name: "GA4LevelUpConfig" },
   LOGIN: { name: "GA4LoginConfig" },
-  POST_SCORE: { name: "GA4PostScoreConfig" },
-  SELECT_CONTENT: { name: "GA4SelectContentConfig" },
-  SIGN_UP: { name: "GA4SignUpConfig" },
-  SPEND_VIRTUAL_CURRENCY: { name: "GA4SpendVirtualCurrencyConfig" },
-
-  UNLOCK_ACHIEVEMENT: { name: "GA4UnlockAchievementConfig" },
-  VIEW_SEARCH_RESULTS: { name: "GA4ViewSearchResultsConfig" }
+  SIGN_UP: { name: "GA4SignUpConfig" }
 };
 
 /**

@@ -7,11 +7,14 @@
   {
     "destKey": "content_type",
     "sourceKeys": "properties.content_type",
-    "required": false
+    "required": false,
+    "metadata": {
+      "defaultValue": "cart"
+    }
   },
   {
     "destKey": "item_id",
-    "sourceKeys": "properties.item_id",
+    "sourceKeys": ["properties.item_id", "properties.cart_id"],
     "required": false
   }
 ]

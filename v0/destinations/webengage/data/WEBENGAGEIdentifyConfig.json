@@ -26,11 +26,27 @@
     "destKey": "birthDate",
     "sourceKeys": "birthday",
     "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "timestamp",
+      "typeFormat": "yyyy-MM-DDTHH:mm:ssZZ"
+    },
     "required": false
   },
   {
     "destKey": "gender",
     "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "F"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "M"
+        }
+      ]
+    },
     "required": false
   },
   {

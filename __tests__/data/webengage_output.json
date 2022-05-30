@@ -551,6 +551,8 @@
         "userId": "rudder1236",
         "lastName": "Doe",
         "firstName": "James",
+        "gender": "F",
+        "birthDate": "2022-05-13T12:51:01+0000",
         "country": "INDIA",
         "attributes": {
           "age": "12",
@@ -587,6 +589,7 @@
         "email": "chandan@companyname.com",
         "phone": "92374162212",
         "country": "INDIA",
+        "gender": "M",
         "attributes": {
           "age": "12",
           "state": "WB"
@@ -635,6 +638,24 @@
   {
     "statusCode": 400,
     "error": "timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"event\"",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "birthdate must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",

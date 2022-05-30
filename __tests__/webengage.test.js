@@ -4,9 +4,8 @@ const name = "webengage";
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
-const timezone_mock = require("timezone-mock");
 const transformer = require(`../${version}/destinations/${integration}/transform`);
-timezone_mock.register("UTC");
+
 // Processor Test Data
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)

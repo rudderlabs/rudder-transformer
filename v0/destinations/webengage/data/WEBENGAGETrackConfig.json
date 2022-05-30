@@ -18,6 +18,10 @@
   {
     "destKey": "eventTime",
     "sourceKeys": "timestamp",
+    "metadata": {
+      "type": "timestamp",
+      "typeFormat": "yyyy-MM-DDTHH:mm:ssZZ"
+    },
     "sourceFromGenericMap": true,
     "required": false
   },

@@ -1,10 +1,5 @@
 const { getMappingConfig } = require("../../util");
 
-const ENDPOINT = {
-  Standard: "https://api.webengage.com/v1/accounts",
-  India: "https://api.in.webengage.com/v1/accounts"
-};
-
 const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "email",
   "phone",
@@ -36,6 +31,14 @@ const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "locality",
   "region"
 ];
+const FINAL_ENDPOINT = dataCenter => {
+  switch (dataCenter) {
+    case "ind":
+      return "https://api.in.webengage.com/v1/accounts";
+    default:
+      return "https://api.webengage.com/v1/accounts";
+  }
+};
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "WEBENGAGEIdentifyConfig",
@@ -51,5 +54,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  ENDPOINT
+  FINAL_ENDPOINT
 };

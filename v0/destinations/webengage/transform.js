@@ -3,7 +3,7 @@ const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  ENDPOINT
+  FINAL_ENDPOINT
 } = require("./config");
 
 const {
@@ -29,20 +29,12 @@ const responseBuilder = (message, category, { Config }) => {
       400
     );
   }
-  switch (dataCenter) {
-    case "ind":
-      baseUrl = ENDPOINT.India;
-      break;
-    default:
-      baseUrl = ENDPOINT.Standard;
-      break;
-  }
 
   if (category.type === "identify") {
     const eventTimeStamp = payload.birthDate;
     if (eventTimeStamp === "Invalid date") {
       throw new CustomError(
-        "birthday must be in this (YYYY-MM-DD) format.",
+        "[WEBENGAGE]: birthday must be in this (YYYY-MM-DD) format.",
         400
       );
     }
@@ -56,16 +48,16 @@ const responseBuilder = (message, category, { Config }) => {
         WEBENGAGE_IDENTIFY_EXCLUSION
       )
     };
-    endPoint = `${baseUrl}/${licenseCode}/users`;
+    endPoint = `${FINAL_ENDPOINT(dataCenter)}/${licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
     if (eventTimeStamp === "Invalid date") {
       throw new CustomError(
-        "timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+        "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
         400
       );
     }
-    endPoint = `${baseUrl}/${licenseCode}/events`;
+    endPoint = `${FINAL_ENDPOINT(dataCenter)}/${licenseCode}/events`;
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
@@ -80,7 +72,7 @@ const responseBuilder = (message, category, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw Error("[WEBENGAGE]: Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
   switch (messageType) {
@@ -102,7 +94,7 @@ const processEvent = (message, destination) => {
       message.event = `Viewed${name}${categoryName} ${messageType}`;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
-      throw new Error("Message type not supported");
+      throw new Error("[WEBENGAGE]: Message type not supported");
   }
 };
 

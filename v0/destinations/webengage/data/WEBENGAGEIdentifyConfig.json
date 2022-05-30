@@ -39,11 +39,24 @@
       "multikeyMap": [
         {
           "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
-          "destVal": "F"
+          "destVal": "female"
         },
         {
           "sourceVal": ["m", "M", "Male", "male", "MALE"],
-          "destVal": "M"
+          "destVal": "male"
+        },
+        {
+          "sourceVal": [
+            "o",
+            "O",
+            "Other",
+            "other",
+            "OTHER",
+            "Others",
+            "Others",
+            "OTHERS"
+          ],
+          "destVal": "other"
         }
       ]
     },

@@ -1,5 +1,3 @@
-const moment = require("moment");
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
@@ -20,7 +18,7 @@ const {
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   let baseUrl, endPoint;
-  const { dataCenter } = Config;
+  const { dataCenter, licenseCode, apiKey } = Config;
   if (!payload) {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
@@ -44,7 +42,7 @@ const responseBuilder = (message, category, { Config }) => {
     const eventTimeStamp = payload.birthDate;
     if (eventTimeStamp === "Invalid date") {
       throw new CustomError(
-        "birthdate must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+        "birthday must be in this (YYYY-MM-DD) format.",
         400
       );
     }
@@ -58,7 +56,7 @@ const responseBuilder = (message, category, { Config }) => {
         WEBENGAGE_IDENTIFY_EXCLUSION
       )
     };
-    endPoint = `${baseUrl}/${Config.licenseCode}/users`;
+    endPoint = `${baseUrl}/${licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
     if (eventTimeStamp === "Invalid date") {
@@ -67,14 +65,13 @@ const responseBuilder = (message, category, { Config }) => {
         400
       );
     }
-
-    endPoint = `${baseUrl}/${Config.licenseCode}/events`;
+    endPoint = `${baseUrl}/${licenseCode}/events`;
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${Config.apiKey}`
+    Authorization: `Bearer ${apiKey}`
   };
   response.endpoint = endPoint;
   response.body.JSON = payload;
@@ -86,15 +83,11 @@ const processEvent = (message, destination) => {
     throw Error("Message Type is not present. Aborting message.");
   }
   const messageType = message.type.toLowerCase();
-  let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = CONFIG_CATEGORIES.IDENTIFY;
-      return responseBuilder(message, category, destination);
+      return responseBuilder(message, CONFIG_CATEGORIES.IDENTIFY, destination);
     case EventType.TRACK:
-      category = CONFIG_CATEGORIES.EVENT;
-      return responseBuilder(message, category, destination);
-
+      return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     case EventType.PAGE:
     case EventType.SCREEN:
       category = CONFIG_CATEGORIES.EVENT;
@@ -107,7 +100,7 @@ const processEvent = (message, destination) => {
         ? ` ${message.properties.category}`
         : "";
       message.event = `Viewed${name}${categoryName} ${messageType}`;
-      return responseBuilder(message, category, destination);
+      return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
       throw new Error("Message type not supported");
   }

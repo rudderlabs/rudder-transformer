@@ -551,7 +551,7 @@
         "userId": "rudder1236",
         "lastName": "Doe",
         "firstName": "James",
-        "gender": "F",
+        "gender": "female",
         "birthDate": "2022-05-13T12:51:01+0000",
         "country": "INDIA",
         "attributes": {
@@ -589,7 +589,7 @@
         "email": "chandan@companyname.com",
         "phone": "92374162212",
         "country": "INDIA",
-        "gender": "M",
+        "gender": "male",
         "attributes": {
           "age": "12",
           "state": "WB"
@@ -655,7 +655,7 @@
   },
   {
     "statusCode": 400,
-    "error": "birthdate must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+    "error": "birthday must be in this (YYYY-MM-DD) format.",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",

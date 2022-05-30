@@ -225,7 +225,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale",
         "products": [
@@ -335,7 +335,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale",
         "products": [
@@ -445,7 +445,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale"
       },
@@ -734,7 +734,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale",
         "products": [
@@ -841,7 +841,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale",
         "products": [
@@ -5874,7 +5874,7 @@
       "properties": {
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale",
         "products": [
@@ -6383,7 +6383,7 @@
         "customProp-2": "check-2",
         "creative_name": "Summer Banner",
         "creative_slot": "featured_app_1",
-        "position": "L_12345",
+        "location_id": "L_12345",
         "promotion_id": "P_12345",
         "promotion_name": "Summer Sale"
       },

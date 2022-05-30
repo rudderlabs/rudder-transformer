@@ -237,11 +237,11 @@ const GA4_ITEM_EXCLUSION = [
 ];
 
 /**
- * get items properties for a event.
+ * get product list properties for a event.
  * @param {*} message
  * @returns
  */
-function getDestinationItemProperties(message, isItemsRequired) {
+function getItemList(message, isItemsRequired) {
   let items;
   const products = get(message, "properties.products");
   if ((!products && isItemsRequired) || (products && products.length === 0)) {
@@ -264,6 +264,7 @@ function getDestinationItemProperties(message, isItemsRequired) {
         throw new CustomError("One of product_id or name is required", 400);
       }
 
+      // take additional parameters apart from mapped one
       let itemProperties = {};
       itemProperties = extractCustomFields(
         message,
@@ -285,6 +286,52 @@ function getDestinationItemProperties(message, isItemsRequired) {
 }
 
 /**
+ * get product properties for a event.
+ * @param {*} message
+ * @returns
+ */
+function getItem(message, isItemsRequired) {
+  let items;
+  const products = get(message, "properties");
+  if (!products && isItemsRequired) {
+    throw new CustomError(
+      `Item parameters not found for '${message.event}' event`,
+      400
+    );
+  }
+
+  if (products) {
+    items = [];
+    let element = constructPayload(
+      products,
+      mappingConfig[ConfigCategory.ITEMS.name]
+    );
+    if (
+      !isDefinedAndNotNull(element.item_id) &&
+      !isDefinedAndNotNull(element.item_name)
+    ) {
+      throw new CustomError("One of product_id or name is required", 400);
+    }
+
+    // take additional parameters apart from mapped one
+    let itemProperties = {};
+    itemProperties = extractCustomFields(
+      message,
+      itemProperties,
+      ["properties"],
+      GA4_ITEM_EXCLUSION
+    );
+    if (!isEmptyObject(itemProperties)) {
+      itemProperties = flattenJson(itemProperties);
+      element = { ...element, ...itemProperties };
+    }
+
+    items.push(element);
+  }
+  return items;
+}
+
+/**
  * get exclusion list for a particular event
  * ga4ExclusionList contains the sourceKeys that are already mapped
  * @param {*} mappingJson
@@ -300,7 +347,9 @@ function getExclusionList(mappingJson) {
       ga4ExclusionList.push(mappingSourceKeys.split(".").pop());
     } else {
       mappingSourceKeys.forEach(item => {
-        ga4ExclusionList.push(item.split(".").pop());
+        if (typeof item === "string") {
+          ga4ExclusionList.push(item.split(".").pop());
+        }
       });
     }
   });
@@ -360,6 +409,7 @@ module.exports = {
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getDestinationItemProperties,
+  getItemList,
+  getItem,
   getExclusionList
 };

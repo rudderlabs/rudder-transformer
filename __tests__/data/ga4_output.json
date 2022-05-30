@@ -2501,7 +2501,6 @@
               "myCustomProp": "My arbitray value",
               "affiliation": "Apple Store",
               "value": 20,
-              "revenue": 15.0,
               "shipping": 22,
               "tax": 1,
               "discount": 1.5,

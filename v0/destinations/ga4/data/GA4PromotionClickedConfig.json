@@ -1,17 +1,17 @@
 [
   {
     "destKey": "creative_name",
-    "sourceKeys": "properties.creative_name",
+    "sourceKeys": ["properties.creative_name", "properties.creative"],
     "required": false
   },
   {
     "destKey": "creative_slot",
-    "sourceKeys": "properties.creative_slot",
+    "sourceKeys": ["properties.creative_slot", "properties.position"],
     "required": false
   },
   {
     "destKey": "location_id",
-    "sourceKeys": "properties.position",
+    "sourceKeys": "properties.location_id",
     "required": false
   },
   {
@@ -21,7 +21,7 @@
   },
   {
     "destKey": "promotion_name",
-    "sourceKeys": "properties.promotion_name",
+    "sourceKeys": ["properties.promotion_name", "properties.name"],
     "required": false
   }
 ]

@@ -340,135 +340,39 @@ function trackResponseBuilder(message, { Config }) {
         break;
       /* GA4 Events */
       case "earn_virtual_currency":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(
-            mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
-          )
-        );
-        break;
       case "generate_lead":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.GENERATE_LEAD.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.GENERATE_LEAD.name])
-        );
-        break;
       case "level_up":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.LEVEL_UP.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.LEVEL_UP.name])
-        );
-        break;
       case "login":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.LOGIN.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.LOGIN.name])
-        );
-        break;
       case "post_score":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.POST_SCORE.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.POST_SCORE.name])
-        );
-        break;
       case "select_content":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.SELECT_CONTENT.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.SELECT_CONTENT.name])
-        );
-        break;
       case "sign_up":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.SIGN_UP.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.SIGN_UP.name])
-        );
-        break;
       case "spend_virtual_currency":
+      case "unlock_achievement": {
         payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
+
+        let customParameters = {};
+        customParameters = extractCustomFields(
           message,
-          mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
+          customParameters,
           ["properties"],
-          getExclusionList(
-            mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
-          )
+          GA4_RESERVED_PARAMETER_EXCLUSION
         );
+        if (!isEmptyObject(customParameters)) {
+          customParameters = flattenJson(customParameters);
+          payload.params = {
+            ...payload.params,
+            ...customParameters
+          };
+        }
         break;
+      }
       case "tutorial_begin":
         payload.name = eventNameMapping[event.toLowerCase()];
         break;
       case "tutorial_complete":
         payload.name = eventNameMapping[event.toLowerCase()];
         break;
-      case "unlock_achievement":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(
-            mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
-          )
-        );
-        break;
-      case "view_search_results":
+      case "view_search_results": {
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
@@ -483,7 +387,23 @@ function trackResponseBuilder(message, { Config }) {
             mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
           )
         );
+
+        let customParameters = {};
+        customParameters = extractCustomFields(
+          message,
+          customParameters,
+          ["properties"],
+          GA4_RESERVED_PARAMETER_EXCLUSION
+        );
+        if (!isEmptyObject(customParameters)) {
+          customParameters = flattenJson(customParameters);
+          payload.params = {
+            ...payload.params,
+            ...customParameters
+          };
+        }
         break;
+      }
       default:
         break;
     }

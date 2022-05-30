@@ -1,4 +1,5 @@
 const get = require("get-value");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -28,8 +29,9 @@ const {
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getDestinationItemProperties,
-  getExclusionList
+  getItemList,
+  getExclusionList,
+  getItem
 } = require("./utils");
 
 function trackResponseBuilder(message, { Config }) {
@@ -108,7 +110,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -125,7 +127,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -139,7 +141,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, false);
+        payload.params.items = getItemList(message, false);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -154,7 +156,8 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
+        // payload.params.items = getItem(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -168,7 +171,8 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
+        // payload.params.items = getItem(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -182,7 +186,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -196,7 +200,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -210,7 +214,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.CART_VIEWED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -224,7 +228,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -242,7 +246,7 @@ function trackResponseBuilder(message, { Config }) {
         } else {
           payload.name = "add_payment_info";
         }
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -258,7 +262,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -272,7 +276,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
         );
-        payload.params.items = getDestinationItemProperties(message, false);
+        payload.params.items = getItemList(message, false);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -287,7 +291,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
         );
-        payload.params.items = getDestinationItemProperties(message, true);
+        payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,
           payload.params,
@@ -339,61 +343,15 @@ function trackResponseBuilder(message, { Config }) {
         );
         break;
       /* GA4 Events */
-      case "earn_virtual_currency":
-      case "generate_lead":
-      case "level_up":
-      case "login":
-      case "post_score":
-      case "select_content":
-      case "sign_up":
-      case "spend_virtual_currency":
-      case "unlock_achievement": {
-        payload.name = eventNameMapping[event.toLowerCase()];
-
-        let customParameters = {};
-        customParameters = extractCustomFields(
-          message,
-          customParameters,
-          ["properties"],
-          GA4_RESERVED_PARAMETER_EXCLUSION
-        );
-        if (!isEmptyObject(customParameters)) {
-          customParameters = flattenJson(customParameters);
-          payload.params = {
-            ...payload.params,
-            ...customParameters
-          };
-        }
-        break;
-      }
-      case "tutorial_begin":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        break;
-      case "tutorial_complete":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        break;
       case "view_search_results": {
         payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, false);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(
-            mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
-          )
-        );
 
         let customParameters = {};
         customParameters = extractCustomFields(
           message,
           customParameters,
           ["properties"],
-          GA4_RESERVED_PARAMETER_EXCLUSION
+          GA4_RESERVED_PARAMETER_EXCLUSION.concat("products")
         );
         if (!isEmptyObject(customParameters)) {
           customParameters = flattenJson(customParameters);
@@ -402,6 +360,8 @@ function trackResponseBuilder(message, { Config }) {
             ...customParameters
           };
         }
+
+        set(payload, "params.items", getItemList(message, true));
         break;
       }
       default:

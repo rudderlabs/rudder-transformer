@@ -83,17 +83,6 @@ const eventNameMapping = {
   group: "join_group",
 
   /* GA4 Events */
-  earn_virtual_currency: "earn_virtual_currency",
-  generate_lead: "generate_lead",
-  level_up: "level_up",
-  login: "login",
-  post_score: "post_score",
-  select_content: "select_content",
-  sign_up: "sign_up",
-  spend_virtual_currency: "spend_virtual_currency",
-  tutorial_begin: "tutorial_begin",
-  tutorial_complete: "tutorial_complete",
-  unlock_achievement: "unlock_achievement",
   view_search_results: "view_search_results"
 };
 

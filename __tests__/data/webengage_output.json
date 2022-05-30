@@ -197,7 +197,7 @@
             "presented_offering_identifier": "123erd"
           }
         },
-        "eventTime": "2021-09-01T21:16:51+0530"
+        "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -241,7 +241,7 @@
           "fetch_token": "123asd23"
         },
         "eventName": "Order Completed",
-        "eventTime": "2021-09-01T21:16:51+0530"
+        "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {}
     },
@@ -291,7 +291,7 @@
           "fetch_token": "123asd23"
         },
         "eventName": "Order Completed",
-        "eventTime": "2021-09-01T21:16:51+0530"
+        "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {}
     },
@@ -341,7 +341,7 @@
           "fetch_token": "123asd23"
         },
         "eventName": "Viewed home Games screen",
-        "eventTime": "2021-09-01T21:16:51+0530"
+        "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {}
     },
@@ -397,7 +397,7 @@
             "presented_offering_identifier": "123erd"
           }
         },
-        "eventTime": "2021-09-01T21:16:51+0530"
+        "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -455,7 +455,7 @@
       "JSON": {
         "userId": "rudder1232",
         "eventName": "Viewed home Games page",
-        "eventTime": "2021-09-01T21:16:51+0530",
+        "eventTime": "2021-09-01T15:46:51+0000",
         "eventData": {
           "name": "home",
           "category": "Games",

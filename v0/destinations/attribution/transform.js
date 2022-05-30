@@ -27,7 +27,7 @@ function responseBuilderSimple(payload, attributionConfig) {
 }
 
 function getTransformedJSON(message) {
-  const { type, anonymousId } = message;
+  const { type, anonymousId, userId } = message;
   if (!type) {
     throw new Error("Event type is required");
   }
@@ -45,6 +45,7 @@ function getTransformedJSON(message) {
   return removeUndefinedAndNullValues({
     anonymousId,
     type,
+    userId,
     event,
     traits,
     properties,

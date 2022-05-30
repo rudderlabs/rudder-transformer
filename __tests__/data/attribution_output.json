@@ -3,7 +3,6 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "userId": "user12345",
     "endpoint": "https://track.attributionapp.com/v1/import",
     "headers": {
       "Content-Type": "application/json",
@@ -43,7 +42,6 @@
   {
     "version": "1",
     "type": "REST",
-    "userId": "user12345",
     "method": "POST",
     "endpoint": "https://track.attributionapp.com/v1/import",
     "headers": {
@@ -77,7 +75,6 @@
   {
     "version": "1",
     "type": "REST",
-    "userId": "user12345",
     "method": "POST",
     "endpoint": "https://track.attributionapp.com/v1/import",
     "headers": {
@@ -147,7 +144,6 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "user12345",
     "statusCode": 200
   },
   {
@@ -181,7 +177,6 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "user12345",
     "statusCode": 200
   }
 ]

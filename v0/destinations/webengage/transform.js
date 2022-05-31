@@ -77,8 +77,9 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("[WEBENGAGE]: Message Type is not present. Aborting message.");
   }
+  let eventName;
+  let category;
   let name;
-  let categoryName;
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -88,18 +89,15 @@ const processEvent = (message, destination) => {
     case EventType.PAGE:
     case EventType.SCREEN:
       name = message.name || message.properties.name;
-      if (name) {
-        name = ` ${name}`;
-      } else {
-        name = "";
+      category = message.properties.category;
+      if (name && category) {
+        eventName = `Viewed ${name} ${category} ${messageType}`;
+      } else if (name) {
+        eventName = `Viewed ${name}`;
+      } else if (category) {
+        eventName = `Viewed ${category} ${messageType}`;
       }
-      categoryName = message.properties.category;
-      if (categoryName) {
-        categoryName = ` ${categoryName}`;
-      } else {
-        categoryName = "";
-      }
-      message.event = `Viewed${name}${categoryName} ${messageType}`;
+      message.event = eventName;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
       throw new Error("[WEBENGAGE]: Message type not supported");

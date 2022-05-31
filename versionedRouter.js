@@ -650,7 +650,7 @@ async function handleProxyRequest(destination, ctx) {
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
-    stats.counter("tf_proxy_err_response_count", 1, {
+    stats.counter("tf_proxy_err_count", 1, {
       destination
     });
   }
@@ -668,9 +668,6 @@ if (transformerProxy) {
       router.post(
         `/${version}/destinations/${destination}/proxy`,
         async ctx => {
-          stats.counter("tf_proxy_input_count", 1, {
-            destination
-          });
           const startTime = new Date();
           ctx.set("apiVersion", API_VERSION);
           await handleProxyRequest(destination, ctx);

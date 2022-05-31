@@ -614,18 +614,32 @@ async function handleProxyRequest(destination, ctx) {
   );
   let response;
   try {
+    stats.counter("tf_proxy_dest_req_count", 1, {
+      destination
+    });
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
     stats.timing("transformer_proxy_time", startTime, {
       destination
     });
+    stats.counter("tf_proxy_dest_resp_count", 1, {
+      destination,
+      success: rawProxyResponse.success
+    });
+
     const processedProxyResponse = destNetworkHandler.processAxiosResponse(
       rawProxyResponse
     );
+    stats.counter("tf_proxy_proc_ax_response_count", 1, {
+      destination
+    });
     response = destNetworkHandler.responseHandler(
       processedProxyResponse,
       destination
     );
+    stats.counter("tf_proxy_resp_handler_count", 1, {
+      destination
+    });
   } catch (err) {
     response = generateErrorObject(
       err,
@@ -636,6 +650,9 @@ async function handleProxyRequest(destination, ctx) {
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
+    stats.counter("tf_proxy_err_response_count", 1, {
+      destination
+    });
   }
   ctx.body = { output: response };
   // Sending `204` status(obtained from destination) is not working as expected
@@ -651,6 +668,9 @@ if (transformerProxy) {
       router.post(
         `/${version}/destinations/${destination}/proxy`,
         async ctx => {
+          stats.counter("tf_proxy_input_count", 1, {
+            destination
+          });
           const startTime = new Date();
           ctx.set("apiVersion", API_VERSION);
           await handleProxyRequest(destination, ctx);

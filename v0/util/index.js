@@ -437,7 +437,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
   // if there is any undefined values, return null
   // without going further for operations
   const isAllDefined = _.every(argValues, v => {
-    return !_.isUndefined(v);
+    return !_.isNil(v);
   });
   if (!isAllDefined) {
     return null;

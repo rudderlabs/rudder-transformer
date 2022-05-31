@@ -1,0 +1,665 @@
+[
+  {
+    "error": "Missing required value from \"event\"",
+    "stage": "dest_transformer",
+    "record_id": null,
+    "source_id": "26e2oupGYsXdD4mEXsW8yMA3XYn",
+    "status_code": 400,
+    "destination_id": "29YKwoGXM62w371QD18yPFv7Qcn",
+    "source_job_run_id": "",
+    "source_task_run_id": ""
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Order Completed",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        },
+        "eventTime": "2021-09-01T15:46:51+0000"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "userId": "rudder123",
+        "eventData": {
+          "tax": 1,
+          "name": "home",
+          "total": 20,
+          "coupon": "ImagePro",
+          "revenue": 15,
+          "category": "Games",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": {
+            "sku": "G-32",
+            "url": "https://www.website.com/product/path",
+            "name": "Monopoly",
+            "price": 14,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https://www.website.com/product/path.jpg",
+            "is_restore": true,
+            "introductory_price": "350",
+            "presented_offering_identifier": "123erd"
+          },
+          "shipping": 22,
+          "product_id": "123",
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "fetch_token": "123asd23"
+        },
+        "eventName": "Order Completed",
+        "eventTime": "2021-09-01T15:46:51+0000"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "userId": "rudder123",
+        "eventData": {
+          "tax": 1,
+          "name": "home",
+          "total": 20,
+          "coupon": "ImagePro",
+          "revenue": 15,
+          "category": "Games",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": {
+            "sku": "G-32",
+            "url": "https://www.website.com/product/path",
+            "name": "Monopoly",
+            "price": 14,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https://www.website.com/product/path.jpg",
+            "is_restore": true,
+            "introductory_price": "350",
+            "presented_offering_identifier": "123erd"
+          },
+          "shipping": 22,
+          "product_id": "123",
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "fetch_token": "123asd23"
+        },
+        "eventName": "Order Completed",
+        "eventTime": "2021-09-01T15:46:51+0000"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "userId": "rudder123",
+        "eventData": {
+          "tax": 1,
+          "name": "home",
+          "total": 20,
+          "coupon": "ImagePro",
+          "revenue": 15,
+          "category": "Games",
+          "currency": "USD",
+          "discount": 1.5,
+          "order_id": "1234",
+          "products": {
+            "sku": "G-32",
+            "url": "https://www.website.com/product/path",
+            "name": "Monopoly",
+            "price": 14,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https://www.website.com/product/path.jpg",
+            "is_restore": true,
+            "introductory_price": "350",
+            "presented_offering_identifier": "123erd"
+          },
+          "shipping": 22,
+          "product_id": "123",
+          "affiliation": "Apple Store",
+          "checkout_id": "12345",
+          "fetch_token": "123asd23"
+        },
+        "eventName": "Viewed Games home screen",
+        "eventTime": "2021-09-01T15:46:51+0000"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder123",
+        "eventName": "Viewed Games home page",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        },
+        "eventTime": "2021-09-01T15:46:51+0000"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: Either one of userId or anonymousId is mandatory.",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: Message type not supported",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: Message Type is not present. Aborting message.",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder1232",
+        "eventName": "Viewed Games home page",
+        "eventTime": "2021-09-01T15:46:51+0000",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder1232",
+        "eventName": "Viewed Games home page",
+        "eventData": {
+          "name": "home",
+          "category": "Games",
+          "checkout_id": "12345",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "products": {
+            "sku": "G-32",
+            "name": "Monopoly",
+            "price": 14,
+            "quantity": 1,
+            "category": "Games",
+            "url": "https://www.website.com/product/path",
+            "image_url": "https://www.website.com/product/path.jpg",
+            "introductory_price": "350",
+            "is_restore": true,
+            "presented_offering_identifier": "123erd"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.webengage.com/v1/accounts/3bjsjdbh7/events"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email": "chandan@companyname.com",
+        "phone": "92374162212",
+        "userId": "rudder1236",
+        "lastName": "Doe",
+        "firstName": "James",
+        "gender": "female",
+        "birthDate": "2022-05-13T12:51:01+0000",
+        "country": "INDIA",
+        "attributes": {
+          "age": "12",
+          "state": "WB"
+        }
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder1236",
+        "firstName": "James",
+        "lastName": "Doe",
+        "email": "chandan@companyname.com",
+        "phone": "92374162212",
+        "country": "INDIA",
+        "gender": "male",
+        "attributes": {
+          "age": "12",
+          "state": "WB"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "userId": "rudder1235",
+        "firstName": "James",
+        "lastName": "Doe",
+        "email": "chandan@companyname.com",
+        "phone": "92374162212",
+        "postalCode": "713390",
+        "country": "INDIA",
+        "city": "Amritsar",
+        "locality": "IST",
+        "region": "AB Colony",
+        "attributes": {
+          "age": "12",
+          "state": "WB"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://api.in.webengage.com/v1/accounts/3bjsjdbh7/users"
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DD).",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "Missing required value from \"event\"",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[WEBENGAGE]: birthday must be in this (YYYY-MM-DD) format.",
+    "statTags": {
+      "destination": "webengage",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
+]

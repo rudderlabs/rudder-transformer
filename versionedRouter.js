@@ -641,6 +641,8 @@ async function handleProxyRequest(destination, ctx) {
       destination
     });
   } catch (err) {
+    logger.error("Error occurred while completing proxy request:");
+    logger.error(err);
     response = generateErrorObject(
       err,
       destination,

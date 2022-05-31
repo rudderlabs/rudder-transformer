@@ -459,6 +459,19 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
         }
       }
       return result;
+    case "addition":
+      result = 0;
+      for (let ind = 0; ind < argValues.length; ind += 1) {
+        const v = argValues[ind];
+        if (_.isNumber(v)) {
+          result += v;
+        } else {
+          // if there is a non number argument simply return null
+          // non numbers can't be operated arithmatically
+          return null;
+        }
+      }
+      return result;
     default:
       return null;
   }

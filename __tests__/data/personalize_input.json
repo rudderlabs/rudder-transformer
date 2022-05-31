@@ -13,7 +13,7 @@
       "originalTimestamp": "2021-03-13T01:56:46.896+05:30",
       "properties": {
         "numberOfRatings": "checking with webapp change",
-        "typeOfMovie": "Art Film",
+        "movieWatched": 2,
         "eventValue": 7.06
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
@@ -75,8 +75,8 @@
         "accessKeyId": "ABC",
         "customMappings": [
           {
-            "from": "TYPE_OF_MOVIE",
-            "to": "typeOfMovie"
+            "from": "MOVIE_WATCHED",
+            "to": "movieWatched"
           },
           {
             "from": "NUMBER_OF_RATINGS",

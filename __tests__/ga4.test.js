@@ -17,8 +17,8 @@ Date.now = jest.fn(() => new Date("2022-04-29T05:17:09Z"));
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
-    testData.forEach(dataPoint => {
-      it(`${integration} - ${dataPoint.description}`, () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, () => {
         try {
           const output = transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);

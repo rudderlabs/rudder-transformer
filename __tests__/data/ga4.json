@@ -2290,7 +2290,7 @@
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
         "type": "track",
-        "event": "payment info entered",
+        "event": "checkout Step Completed",
         "properties": {
           "currency": "USD",
           "value": "7.77",
@@ -3165,7 +3165,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'product_shared' event name without it's properties",
+    "description": "(gtag) send only 'product_shared' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -3393,7 +3393,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'cart Shared' event name with empty properties: {}",
+    "description": "(gtag) send only 'cart Shared' event name with empty properties: {}",
     "input": {
       "message": {
         "channel": "web",
@@ -3618,7 +3618,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'group' event name without it's properties",
+    "description": "(gtag) send only 'group' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -3844,7 +3844,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'earn virtual currency' event name without it's properties",
+    "description": "(gtag) send only 'earn virtual currency' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -4187,7 +4187,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'level_up' event name without it's properties",
+    "description": "(gtag) send only 'level_up' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -4411,7 +4411,7 @@
     }
   },
   {
-    "description": "(gtag) sending only 'login' event name without it's properties",
+    "description": "(gtag) send only 'login' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -4639,7 +4639,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send only 'login' event name with its required `score` properties",
     "input": {
       "message": {
         "channel": "web",
@@ -4754,7 +4754,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'select_content' event",
     "input": {
       "message": {
         "channel": "web",
@@ -4871,7 +4871,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send only 'group' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -4980,7 +4980,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'sign_up' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5095,7 +5095,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send only 'sign_up' event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -5204,7 +5204,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'spend_virtual_currency' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5323,7 +5323,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send only 'spend_virtual_currency' event name with it's required 'value' and 'virtual_currency_name' properties",
     "input": {
       "message": {
         "channel": "web",
@@ -5440,7 +5440,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send 'tutorial_begin' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5549,7 +5549,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send 'tutorial_complete' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5658,7 +5658,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send all properties for 'unlock_achievement' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5773,7 +5773,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) send all properties for 'view_search_results' event",
     "input": {
       "message": {
         "channel": "web",
@@ -5934,7 +5934,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass only 'products: [...]' property for 'view_search_results' event",
     "input": {
       "message": {
         "channel": "web",
@@ -6093,7 +6093,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass custom event name 'rudderstack event' to GA4 along with custom properties",
     "input": {
       "message": {
         "channel": "web",
@@ -6208,7 +6208,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass custom event name 'rudderstack event' to GA4 along with custom properties and user_properties",
     "input": {
       "message": {
         "channel": "web",
@@ -6329,7 +6329,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error]: (gtag) pass reserved event name to GA4",
     "input": {
       "message": {
         "channel": "web",
@@ -6420,7 +6420,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Exclusion]: (gtag) pass reserved property name to GA4 for custom events",
     "input": {
       "message": {
         "channel": "web",
@@ -6538,7 +6538,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Exclusion]: (gtag) pass reserved property name and reserved properties in `user_properties` to GA4 for custom events",
     "input": {
       "message": {
         "channel": "web",
@@ -6665,7 +6665,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error]: (gtag) pass reserved event names along with reserved properties",
     "input": {
       "message": {
         "channel": "web",
@@ -6765,7 +6765,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) pass reserved custom prefix names to GA4 events",
     "input": {
       "message": {
         "channel": "web",
@@ -6859,7 +6859,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'product added' event",
     "input": {
       "message": {
         "channel": "web",
@@ -7023,7 +7023,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass custom event name with its properties",
     "input": {
       "message": {
         "channel": "web",
@@ -7132,7 +7132,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) pass event name with empty products: []",
     "input": {
       "message": {
         "channel": "web",
@@ -7225,7 +7225,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) pass event name with invalid data type for products: {...} properties",
     "input": {
       "message": {
         "channel": "web",
@@ -7338,7 +7338,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) pass event name to GA4 with missing fields i.e required in products: [..]",
     "input": {
       "message": {
         "channel": "web",
@@ -7451,7 +7451,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) missing API Secret",
     "input": {
       "message": {
         "channel": "web",
@@ -7538,7 +7538,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) missing measurementId",
     "input": {
       "message": {
         "channel": "web",
@@ -7626,7 +7626,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) firing group event",
     "input": {
       "message": {
         "channel": "web",
@@ -7714,7 +7714,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) payload has missing message.type",
     "input": {
       "message": {
         "channel": "web",
@@ -7801,7 +7801,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) payload has missing event name",
     "input": {
       "message": {
         "channel": "web",
@@ -7888,7 +7888,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (gtag) payload has missing client_id",
     "input": {
       "message": {
         "channel": "web",
@@ -7974,7 +7974,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (firebase) payload has missing ga4AppInstanceId",
     "input": {
       "message": {
         "channel": "web",
@@ -8055,7 +8055,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error] (firebase) pass reserved event name",
     "input": {
       "message": {
         "channel": "web",
@@ -8143,7 +8143,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'tutorial complete' event",
     "input": {
       "message": {
         "channel": "web",
@@ -8189,7 +8189,7 @@
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
         "type": "track",
-        "event": "tutotial complete",
+        "event": "tutorial complete",
         "integrations": {
           "All": true
         },
@@ -8238,7 +8238,7 @@
           "non_personalized_ads": false,
           "events": [
             {
-              "name": "tutotial_complete"
+              "name": "tutorial_complete"
             }
           ]
         },
@@ -8250,7 +8250,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) check all property mappings for 'cart viewed' event",
     "input": {
       "message": {
         "channel": "web",
@@ -8411,7 +8411,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error]: (firebase) missing firebaseAppId",
     "input": {
       "message": {
         "channel": "web",
@@ -8530,7 +8530,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) firing page call",
     "input": {
       "message": {
         "channel": "web",
@@ -8634,7 +8634,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) firing page call with custom properties",
     "input": {
       "message": {
         "channel": "web",
@@ -8745,7 +8745,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error]: (gtag) pass timestamp more than 72 hours into the past",
     "input": {
       "message": {
         "channel": "web",
@@ -8833,7 +8833,7 @@
     }
   },
   {
-    "description": "",
+    "description": "[Error]: (gtag) pass timestamp more than 15 min into the future",
     "input": {
       "message": {
         "channel": "web",
@@ -8921,7 +8921,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass custom properties excluding products: [..] parameters to GA4 standard events along with its stated ones",
     "input": {
       "message": {
         "channel": "web",
@@ -9081,7 +9081,7 @@
     }
   },
   {
-    "description": "",
+    "description": "(gtag) pass custom properties along with products: [..] parameter to GA4 standard events along with its stated ones",
     "input": {
       "message": {
         "channel": "web",

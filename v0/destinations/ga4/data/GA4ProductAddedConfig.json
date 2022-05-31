@@ -12,7 +12,7 @@
       "properties.revenue",
       {
         "operation": "multiplication",
-        "arguments": [
+        "args": [
           {
             "sourceKeys": "properties.price"
           },

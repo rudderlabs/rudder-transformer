@@ -264,7 +264,7 @@ function trackResponseBuilder(message, { Config }) {
           payload.params,
           ["properties"],
           getExclusionList(
-            mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
+            mappingConfig[ConfigCategory.CHECKOUT_STEP_COMPLETED.name]
           )
         );
         break;

@@ -91,5 +91,51 @@
       }
     },
     "output": null
+  },
+  {
+    "description": "addition operation",
+    "input": {
+      "message": {
+        "properties": {
+          "value": 8.9,
+          "tax": 2.5
+        }
+      },
+      "operationObject": {
+        "operation": "addition",
+        "args": [
+          {
+            "sourceKeys": "properties.value"
+          },
+          {
+            "sourceKeys": "properties.tax"
+          }
+        ]
+      }
+    },
+    "output": 11.4
+  },
+  {
+    "description": "unsupported operation type",
+    "input": {
+      "message": {
+        "properties": {
+          "price": "test"
+        }
+      },
+      "operationObject": {
+        "operation": "unsupported",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": null
   }
 ]

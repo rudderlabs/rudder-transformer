@@ -1,0 +1,33 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "eventTime",
+    "sourceKeys": "timestamp",
+    "metadata": {
+      "type": "timestamp",
+      "typeFormat": "yyyy-MM-DDTHH:mm:ssZZ"
+    },
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "eventData",
+    "sourceKeys": "properties",
+    "required": false
+  }
+]

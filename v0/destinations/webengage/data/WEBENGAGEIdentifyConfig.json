@@ -1,0 +1,155 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "birthDate",
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "timestamp",
+      "typeFormat": "yyyy-MM-DDTHH:mm:ssZZ"
+    },
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "female"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "male"
+        },
+        {
+          "sourceVal": [
+            "o",
+            "O",
+            "Other",
+            "other",
+            "OTHER",
+            "Others",
+            "Others",
+            "OTHERS"
+          ],
+          "destVal": "other"
+        }
+      ]
+    },
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "emailOptIn",
+    "sourceKeys": ["traits.emailOptIn", "context.traits.emailOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "smsOptIn",
+    "sourceKeys": ["traits.smsOptIn", "context.traits.smsOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "whatsappOptIn",
+    "sourceKeys": ["traits.whatsappOptIn", "context.traits.whatsappOptIn"],
+    "required": false
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"],
+    "required": false
+  },
+  {
+    "destKey": "hashedEmail",
+    "sourceKeys": ["traits.hashedEmail", "context.traits.hashedEmail"],
+    "required": false
+  },
+  {
+    "destKey": "hashedPhone",
+    "sourceKeys": ["traits.hashedPhone", "context.traits.hashedPhone"],
+    "required": false
+  },
+  {
+    "destKey": "postalCode",
+    "sourceKeys": [
+      "traits.address.postalCode",
+      "traits.postalCode",
+      "context.traits.address.postalCode",
+      "context.traits.postalCode"
+    ]
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "traits.country",
+      "context.traits.address.country",
+      "context.traits.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.address.city",
+      "traits.city",
+      "context.traits.address.city",
+      "context.traits.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "locality",
+    "sourceKeys": [
+      "traits.locality",
+      "traits.address.locality",
+      "context.traits.locality",
+      "context.traits.address.locality"
+    ]
+  },
+  {
+    "destKey": "region",
+    "sourceKeys": [
+      "traits.region",
+      "traits.address.region",
+      "context.traits.region",
+      "context.traits.address.region"
+    ],
+    "required": false
+  }
+]

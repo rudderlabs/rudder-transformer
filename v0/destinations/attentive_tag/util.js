@@ -1,50 +1,83 @@
+/* eslint-disable no-restricted-syntax */
 const get = require("get-value");
 const moment = require("moment");
 const {
   CustomError,
   constructPayload,
   isDefinedAndNotNull,
-  getDestinationExternalID
+  getDestinationExternalID,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { mappingConfig, ConfigCategory } = require("./config");
 
-function getPropertiesKeyValidation(payload) {
+/**
+ * The keys should not contain any of the values inside the validationArray.
+ * STEP 1: Storing keys in the array.
+ * Checking for the non-valid characters inside the keys of properties.
+ * @param {*} payload
+ * @returns
+ */
+const getPropertiesKeyValidation = payload => {
   const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
   const keys = Object.keys(payload.properties);
-  for (let key = 0; key < keys.length; key += 1) {
-    for (let i = 0; i < keys[key].length; i += 1) {
-      if (validationArray.includes(keys[key][i])) {
+  for (const key of keys) {
+    for (const validationChar of validationArray) {
+      if (key.includes(validationChar)) {
         return false;
       }
     }
   }
   return true;
-}
-function getExternalIdentifiersMapping(message) {
+};
+
+/**
+ * Any of the ids inside the externalIdentifiers is being mapped inside the externalIdentifiers.
+ * Customidentifiers provided in traits is being mapped in externalIdentifiers.
+ * @param {*} message
+ * @returns
+ */
+const getExternalIdentifiersMapping = message => {
+  // Data Structure expected:
+  // context.externalId: [ {type: clientUserId, id: __id}, {type: shopifyId, id: __id}, {type: klaviyoId, id: __id}]
   const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
   const externalId = get(message, "context.externalId");
-  if (!externalId) {
-    return null;
-  }
   const idObj = {};
-  const customIdentifiers = [];
   if (externalId && Array.isArray(externalId)) {
     externalId.forEach(id => {
       const idType = id.type;
       const val = getDestinationExternalID(message, idType);
       if (val && externalIdentifiers.includes(idType)) {
         idObj[idType] = val;
-      } else if (val) {
-        customIdentifiers.push({ name: idType, value: val });
       }
     });
-    if (customIdentifiers.length) {
-      idObj.customIdentifiers = customIdentifiers;
-    }
   }
-  return idObj;
-}
-function validateTimestamp(timeStamp) {
+  // Data Structure expected:
+  // traits : {
+  //  customIdentifiers: [
+  //    {
+  //      "name": "string",
+  //      "value": "string"
+  //     }
+  //    ]
+  //  }
+  const customIdentifiers =
+    get(message, "traits.customIdentifiers") ||
+    get(message, "context.traits.customIdentifiers");
+  if (customIdentifiers && Array.isArray(customIdentifiers)) {
+    idObj.customIdentifiers = customIdentifiers;
+  }
+  if (isDefinedAndNotNullAndNotEmpty(idObj)) {
+    return idObj;
+  }
+  return null;
+};
+
+/**
+ * Validates timestamp of the payload if its within 12 hours
+ * @param {*} timeStamp
+ * @returns
+ */
+const validateTimestamp = timeStamp => {
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format("X"));
     const current = moment.unix(moment().format("X"));
@@ -55,9 +88,9 @@ function validateTimestamp(timeStamp) {
     }
   }
   return true;
-}
+};
 
-function getDestinationItemProperties(message, isItemsRequired) {
+const getDestinationItemProperties = (message, isItemsRequired) => {
   let items;
   const products = get(message, "properties.products");
   if (!products) {
@@ -111,7 +144,7 @@ function getDestinationItemProperties(message, isItemsRequired) {
     throw new CustomError("Invalid type. Expected Array of products", 400);
   }
   return items;
-}
+};
 
 module.exports = {
   getDestinationItemProperties,

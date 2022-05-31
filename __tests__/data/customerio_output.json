@@ -93,7 +93,6 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -106,8 +105,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -185,36 +184,50 @@
     "statusCode": 200
   },
   {
-    "message": "userId or device_token not present",
-    "statusCode": 400
+    "body": {
+      "FORM": {},
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices/somel",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "method": "DELETE",
+    "params": {},
+    "statusCode": 200,
+    "type": "REST",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "version": "1"
   },
   {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
-        "type": "event",
-        "data": {
+        "device": {
+          "id": "somel",
+          "last_used": 1571051718,
+          "platform": "mobile",
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
           "user_time_spent": 50000
-        },
-        "timestamp": 1571051718,
-        "name": "Application Installed"
+        }
       },
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
     "version": "1",
     "params": {},
     "type": "REST",
-    "method": "POST",
+    "method": "PUT",
     "statusCode": 200
   },
   {
@@ -441,7 +454,6 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "type": "event",
         "data": {
           "user_actual_id": 12345,
@@ -454,8 +466,8 @@
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track-eu.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -533,36 +545,50 @@
     "statusCode": 200
   },
   {
-    "message": "userId or device_token not present",
-    "statusCode": 400
+    "body": {
+      "FORM": {},
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices/somel",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "method": "DELETE",
+    "params": {},
+    "statusCode": 200,
+    "type": "REST",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "version": "1"
   },
   {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
-        "type": "event",
-        "data": {
+        "device": {
+          "id": "somel",
+          "last_used": 1571051718,
+          "platform": "mobile",
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
           "user_time_spent": 50000
-        },
-        "timestamp": 1571051718,
-        "name": "Application Installed"
+        }
       },
       "FORM": {}
     },
     "files": {},
-    "endpoint": "https://track-eu.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
     "version": "1",
     "params": {},
     "type": "REST",
-    "method": "POST",
+    "method": "PUT",
     "statusCode": 200
   },
   {
@@ -700,20 +726,19 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://track.customer.io/api/v1/events",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
     "params": {},
     "body": {
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
           "user_time_spent": 50
         },
-        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-s",
+        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
         "type": "event",
         "timestamp": 1571051718
       },
@@ -722,27 +747,26 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://track.customer.io/api/v1/events",
+    "endpoint": "https://track.customer.io/api/v1/customers/c82cbdff-e5be-4009-ac78-cdeea09ab4b1/events",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
     "params": {},
     "body": {
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
           "user_time_spent": 50000
         },
-        "name": "Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-q Screen",
+        "name": "Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/ Screen",
         "type": "event",
         "timestamp": 1571051718
       },
@@ -751,7 +775,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {

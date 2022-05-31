@@ -22,7 +22,6 @@ const {
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { cdkEnabled } = require("../../features.json");
-const {warn} = require("console");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -421,7 +420,6 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 // Supported operations are "addition", "multiplication"
 //
 const handleSourceKeysOperation = ({ message, operationObject }) => {
-  console.log(JSON.stringify({ message, operationObject }));
   const { operation, args } = operationObject;
 
   // populate the values from the arguments

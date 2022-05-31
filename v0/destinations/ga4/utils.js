@@ -345,7 +345,7 @@ function getExclusionList(mappingJson) {
 
     if (typeof mappingSourceKeys === "string") {
       ga4ExclusionList.push(mappingSourceKeys.split(".").pop());
-    } else {
+    } else if (Array.isArray(mappingSourceKeys)) {
       mappingSourceKeys.forEach(item => {
         if (typeof item === "string") {
           ga4ExclusionList.push(item.split(".").pop());

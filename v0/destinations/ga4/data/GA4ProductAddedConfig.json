@@ -18,7 +18,7 @@
           },
           {
             "sourceKeys": "properties.quantity",
-            "default": 1
+            "defaultVal": 1
           }
         ]
       }

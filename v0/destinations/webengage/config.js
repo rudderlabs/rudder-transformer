@@ -31,7 +31,7 @@ const WEBENGAGE_IDENTIFY_EXCLUSION = [
   "locality",
   "region"
 ];
-const FINAL_ENDPOINT = dataCenter => {
+const ENDPOINT = dataCenter => {
   switch (dataCenter) {
     case "ind":
       return "https://api.in.webengage.com/v1/accounts";
@@ -54,5 +54,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  FINAL_ENDPOINT
+  ENDPOINT
 };

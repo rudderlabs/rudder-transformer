@@ -1,9 +1,10 @@
+/* eslint-disable no-param-reassign */
 const { EventType } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  FINAL_ENDPOINT
+  ENDPOINT
 } = require("./config");
 
 const {
@@ -12,12 +13,14 @@ const {
   defaultPostRequestConfig,
   CustomError,
   ErrorMessage,
+  getErrorRespEvents,
+  getSuccessRespEvents,
   extractCustomFields
 } = require("../../util");
 
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  let baseUrl, endPoint;
+  let endPoint;
   const { dataCenter, licenseCode, apiKey } = Config;
   if (!payload) {
     // fail-safety for developer error
@@ -48,16 +51,16 @@ const responseBuilder = (message, category, { Config }) => {
         WEBENGAGE_IDENTIFY_EXCLUSION
       )
     };
-    endPoint = `${FINAL_ENDPOINT(dataCenter)}/${licenseCode}/users`;
+    endPoint = `${ENDPOINT(dataCenter)}/${licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
     if (eventTimeStamp === "Invalid date") {
       throw new CustomError(
-        "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+        "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DD).",
         400
       );
     }
-    endPoint = `${FINAL_ENDPOINT(dataCenter)}/${licenseCode}/events`;
+    endPoint = `${ENDPOINT(dataCenter)}/${licenseCode}/events`;
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
@@ -74,6 +77,8 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw Error("[WEBENGAGE]: Message Type is not present. Aborting message.");
   }
+  let name;
+  let categoryName;
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -82,15 +87,18 @@ const processEvent = (message, destination) => {
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     case EventType.PAGE:
     case EventType.SCREEN:
-      category = CONFIG_CATEGORIES.EVENT;
-      const name = message.name
-        ? ` ${message.name}`
-        : message.properties?.name
-        ? ` ${message.properties.name}`
-        : "";
-      const categoryName = message.properties.category
-        ? ` ${message.properties.category}`
-        : "";
+      name = message.name || message.properties.name;
+      if (name) {
+        name = ` ${name}`;
+      } else {
+        name = "";
+      }
+      categoryName = message.properties.category;
+      if (categoryName) {
+        categoryName = ` ${categoryName}`;
+      } else {
+        categoryName = "";
+      }
       message.event = `Viewed${name}${categoryName} ${messageType}`;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:

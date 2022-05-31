@@ -637,7 +637,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DDTHH:mm:ss.sssZ).",
+    "error": "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DD).",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",

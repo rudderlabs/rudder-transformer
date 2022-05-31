@@ -9,7 +9,7 @@
         "eventType": "PRODUCT ADDED",
         "sentAt": "2020-02-02T00:23:09.544Z",
         "properties": {
-          "movieWatched": 2,
+          "movieWatched": "2",
           "numberOfRatings": "checking with webapp change"
         }
       }

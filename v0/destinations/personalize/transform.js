@@ -45,7 +45,8 @@ const putEventsHandler = (message, destination) => {
       if (!isDefined(value)) {
         throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
       }
-      outputEvent.properties[_.camelCase(key)] = value;
+      // all the values inside property has to be sent as strings
+      outputEvent.properties[_.camelCase(key)] = String(value);
     } else if (!MANDATORY_PROPERTIES.includes(key.toUpperCase())) {
       if (
         (!isDefinedAndNotNull(value) || isBlank(value)) &&

@@ -237,15 +237,27 @@ function trackResponseBuilder(message, { Config }) {
         );
         break;
       case "payment_info_entered":
+        payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
         );
-        if (payload.params.shipping_tier) {
-          payload.name = "add_shipping_info";
-        } else {
-          payload.name = "add_payment_info";
-        }
+        payload.params.items = getItemList(message, true);
+        payload.params = extractCustomFields(
+          message,
+          payload.params,
+          ["properties"],
+          getExclusionList(
+            mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
+          )
+        );
+        break;
+      case "checkout_step_completed":
+        payload.name = eventNameMapping[event.toLowerCase()];
+        payload.params = constructPayload(
+          message,
+          mappingConfig[ConfigCategory.CHECKOUT_STEP_COMPLETED.name]
+        );
         payload.params.items = getItemList(message, true);
         payload.params = extractCustomFields(
           message,

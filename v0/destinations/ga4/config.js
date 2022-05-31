@@ -23,6 +23,7 @@ const ConfigCategory = {
   PRODUCT_REMOVED: { name: "GA4ProductRemovedConfig" },
   CART_VIEWED: { name: "GA4CartViewedConfig" },
   CHECKOUT_STARTED: { name: "GA4CheckoutStartedConfig" },
+  CHECKOUT_STEP_COMPLETED: { name: "GA4CheckoutStepCompleted" },
   PAYMENT_INFO_ENTERED: { name: "GA4PaymentInfoEnteredConfig" },
   ORDER_COMPLETED: { name: "GA4OrderCompletedConfig" },
   ORDER_REFUNDED: { name: "GA4OrderRefundedConfig" },
@@ -65,10 +66,8 @@ const eventNameMapping = {
   cart_viewed: "view_cart",
   checkout_started: "begin_checkout",
   payment_info_entered: "add_payment_info",
-  /**
-   * payment_info_entered: "add_shipping_info",
-   * This event mapping is handled from transform.js
-   */
+  checkout_step_completed: "add_shipping_info",
+
   order_completed: "purchase",
   order_refunded: "refund",
 

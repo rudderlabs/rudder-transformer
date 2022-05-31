@@ -1,0 +1,201 @@
+[
+    {
+      "destKey": "p",
+      "sourceKeys": "context.device.type",
+      "required": true
+    },
+    {
+      "destKey": "app_v",
+      "sourceKeys": "context.app.version",
+      "required": true
+    },
+    {
+      "destKey": "ip",
+      "sourceKeys": ["context.ip", "properties.ip"],
+      "required": true
+    },
+    {
+      "destKey": "ve",
+      "sourceKeys": ["context.os.version", "context.os.name"],
+      "required": true
+    },
+    {
+      "destKey": "mo",
+      "sourceKeys": "context.device.model",
+      "required": true
+    },
+    {
+      "destKey": "ma",
+      "sourceKeys": "context.device.manufacturer",
+      "required": true
+    },
+    {
+      "destKey": "lc",
+      "sourceKeys": "context.device.lc",
+      "required": true
+    },
+    {
+      "destKey": "bd",
+      "sourceKeys": "context.device.bd",
+      "required": true
+    },
+    {
+      "destKey": "idfa",
+      "sourceKeys": ["context.idfa", "context.device.advertisingId"],
+      "required": true
+    },
+    {
+      "destKey": "idfv",
+      "sourceKeys": ["context.idfv", "context.device.id"],
+      "required": true
+    },
+    {
+      "destKey": "aifa",
+      "sourceKeys": "context.device.aifa",
+      "required": true
+    },
+    {
+      "destKey": "andi",
+      "sourceKeys": "context.device.andi",
+      "required": true
+    },
+    {
+      "destKey": "install_source",
+      "sourceKeys": "context.os.install_source",
+      "required": true
+    },
+    {
+      "destKey": "install_receipt",
+      "sourceKeys": "context.os.install_receipt",
+      "required": true
+    },
+    {
+      "destKey": "asid",
+      "sourceKeys": "properties.asid",
+      "required": true
+    },
+    {
+      "destKey": "openuri",
+      "sourceKeys": "properties.openuri",
+      "required": true
+    },
+    {
+      "destKey": "dnt",
+      "sourceKeys": "properties.dnt",
+      "required": true
+    },
+    {
+      "destKey": "mo",
+      "sourceKeys": "properties.install",
+      "required": true
+    },
+    {
+      "destKey": "ddl_enabled",
+      "sourceKeys": "properties.ddl_enabled",
+      "required": true
+    },
+    {
+      "destKey": "att_authorization_status",
+      "sourceKeys": "properties.att_authorization_status",
+      "required": true
+    },
+    {
+      "destKey": "referrer",
+      "sourceKeys": "properties.referrer",
+      "required": false
+    },
+    {
+      "destKey": "referrer_source",
+      "sourceKeys": "properties.referrer_source",
+      "required": false
+    },
+    {
+      "destKey": "clickTimestampSeconds",
+      "sourceKeys": "properties.clickTimestampSeconds",
+      "required": false
+    },
+    {
+      "destKey": "installBeginTimestampSeconds",
+      "sourceKeys": "properties.installBeginTimestampSeconds",
+      "required": false
+    },
+    {
+      "destKey": "current_device_time",
+      "sourceKeys": "properties.current_device_time",
+      "required": false
+    },
+    {
+      "destKey": "c",
+      "sourceKeys": "properties.c",
+      "required": false
+    },
+    {
+      "destKey": "cn",
+      "sourceKeys": "properties.cn",
+      "required": false
+    },
+    {
+      "destKey": "use_ip",
+      "sourceKeys": "properties.use_ip",
+      "required": false
+    },
+    {
+      "destKey": "fcm",
+      "sourceKeys": "properties.fcm",
+      "required": false
+    },
+    {
+      "destKey": "gcm",
+      "sourceKeys": "properties.gcm",
+      "required": false
+    },
+
+
+    {
+      "destKey": "apns_token",
+      "sourceKeys": "properties.apns_token",
+      "required": false
+    },
+    {
+      "destKey": "ua",
+      "sourceKeys": "properties.ua",
+      "required": false
+    },
+    {
+      "destKey": "gcm",
+      "sourceKeys": "properties.gcm",
+      "required": false
+    },
+    {
+      "destKey": "use_ip",
+      "sourceKeys": "properties.use_ip",
+      "required": false
+    },
+    {
+      "destKey": "attribution_token",
+      "sourceKeys": "properties.attribution_token",
+      "required": false
+    },
+    {
+      "destKey": "gcm",
+      "sourceKeys": "properties.gcm",
+      "required": false
+    },
+    {
+      "destKey": "use_ip",
+      "sourceKeys": "properties.use_ip",
+      "required": false
+    },
+    {
+      "destKey": "fcm",
+      "sourceKeys": "properties.fcm",
+      "required": false
+    },
+    {
+      "destKey": "gcm",
+      "sourceKeys": "properties.gcm",
+      "required": false
+    }
+    
+  ]
+  

@@ -488,6 +488,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     for (let index = 0; index < sourceKeys.length; index += 1) {
       const sourceKey = sourceKeys[index];
       let val = null;
+      // if the sourceKey is an object we expect it to be a operation
       if (typeof sourceKey === "object") {
         val = handleSourceKeysOperation({
           message,
@@ -507,6 +508,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // - we don't need to iterate over a loop for a single possible value
     return get(message, sourceKeys);
   } else if (typeof sourceKeys === "object") {
+    // if the sourceKey is an object we expect it to be a operation
     return handleSourceKeysOperation({ message, operationObject: sourceKeys });
   } else {
     // wrong sourceKey type. abort

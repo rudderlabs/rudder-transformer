@@ -340,7 +340,7 @@
           "checkout_id": "12345",
           "fetch_token": "123asd23"
         },
-        "eventName": "Viewed home Games screen",
+        "eventName": "Viewed Games home screen",
         "eventTime": "2021-09-01T15:46:51+0000"
       },
       "JSON_ARRAY": {}
@@ -368,7 +368,7 @@
     "body": {
       "JSON": {
         "userId": "rudder123",
-        "eventName": "Viewed home Games page",
+        "eventName": "Viewed Games home page",
         "eventData": {
           "name": "home",
           "category": "Games",
@@ -454,7 +454,7 @@
     "body": {
       "JSON": {
         "userId": "rudder1232",
-        "eventName": "Viewed home Games page",
+        "eventName": "Viewed Games home page",
         "eventTime": "2021-09-01T15:46:51+0000",
         "eventData": {
           "name": "home",
@@ -504,7 +504,7 @@
     "body": {
       "JSON": {
         "userId": "rudder1232",
-        "eventName": "Viewed home Games page",
+        "eventName": "Viewed Games home page",
         "eventData": {
           "name": "home",
           "category": "Games",

@@ -91,11 +91,13 @@ const processEvent = (message, destination) => {
       name = message.name || message.properties.name;
       category = message.properties.category;
       if (name && category) {
-        eventName = `Viewed ${name} ${category} ${messageType}`;
+        eventName = `Viewed ${category} ${name} ${messageType}`;
       } else if (name) {
         eventName = `Viewed ${name}`;
       } else if (category) {
         eventName = `Viewed ${category} ${messageType}`;
+      } else {
+        eventName = `Viewed a ${messageType}`;
       }
       message.event = eventName;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);

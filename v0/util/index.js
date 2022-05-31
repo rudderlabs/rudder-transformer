@@ -22,8 +22,6 @@ const {
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { cdkEnabled } = require("../../features.json");
-const {isNullOrUndefined} = require("util");
-const {isNumber} = require("lodash");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -452,7 +450,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       result = 1;
       for (let ind = 0; ind < argValues.length; ind += 1) {
         const v = argValues[ind];
-        if (isNumber(v)) {
+        if (_.isNumber(v)) {
           result *= v;
         } else {
           // if there is a non number argument simply return null
@@ -475,7 +473,13 @@ const getValueFromMessage = (message, sourceKeys) => {
     }
     // got the possible sourceKeys
     for (let index = 0; index < sourceKeys.length; index += 1) {
-      const val = get(message, sourceKeys[index]);
+      const sourceKey = sourceKeys[index];
+      let val = null;
+      if (typeof sourceKey === "object") {
+        val = handleSourceKeysOperation({ message, sourceKey });
+      } else {
+        val = get(message, sourceKeys[index]);
+      }
       if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
@@ -486,6 +490,8 @@ const getValueFromMessage = (message, sourceKeys) => {
     // got a single key
     // - we don't need to iterate over a loop for a single possible value
     return get(message, sourceKeys);
+  } else if (typeof sourceKeys === "object") {
+    return handleSourceKeysOperation({ message, sourceKeys });
   } else {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR

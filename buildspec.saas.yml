@@ -26,11 +26,17 @@ phases:
       - docker run rudderlabs/rudder-transformer:$VERSION npm run testDestinations
       - docker run rudderlabs/rudder-transformer:$VERSION npm run testVersionedRouter
       - echo $?
-      - docker tag rudderlabs/rudder-transformer:$VERSION rudderlabs/rudder-transformer:latest
   post_build:
     commands:
-      - docker push rudderlabs/rudder-transformer:$VERSION
-      - docker push rudderlabs/rudder-transformer:latest
+      - VERSION="$(date '+%d%m%Y.%H%M%S')"
+
+      # creates a docker builder instance to build multi-platform docker images
+      - docker buildx create --use
+
+      # builds and pushes multi-platform docker images to docker registry
+      - docker buildx build --build-arg version=${VERSION} --platform=linux/amd64,linux/arm64 -t rudderlabs/rudder-transformer:latest -t rudderlabs/rudderstack-transformer:$VERSION -f Dockerfile --push .
+
+      # raise a pull request to update default transformer version
       - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
       - git config --global user.email \"$MAIL\"
       - git config --global user.name \"$USER_NAME\"

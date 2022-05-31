@@ -30,8 +30,7 @@ const {
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
   getItemList,
-  getExclusionList,
-  getItem
+  getExclusionList
 } = require("./utils");
 
 function trackResponseBuilder(message, { Config }) {
@@ -61,7 +60,9 @@ function trackResponseBuilder(message, { Config }) {
     case "gtag":
       // gtag.js
       rawPayload.client_id =
-        get(message, "context.client_id") || get(message, "messageId");
+        getDestinationExternalID(message, "ga4ClientId") ||
+        get(message, "anonymousId") ||
+        get(message, "messageId");
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
           "context.client_id or messageId must be provided",

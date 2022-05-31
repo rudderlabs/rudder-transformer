@@ -22,6 +22,7 @@ const {
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { cdkEnabled } = require("../../features.json");
+const {warn} = require("console");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -420,6 +421,7 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
 // Supported operations are "addition", "multiplication"
 //
 const handleSourceKeysOperation = ({ message, operationObject }) => {
+  console.log(JSON.stringify({ message, operationObject }));
   const { operation, args } = operationObject;
 
   // populate the values from the arguments
@@ -489,7 +491,10 @@ const getValueFromMessage = (message, sourceKeys) => {
       const sourceKey = sourceKeys[index];
       let val = null;
       if (typeof sourceKey === "object") {
-        val = handleSourceKeysOperation({ message, sourceKey });
+        val = handleSourceKeysOperation({
+          message,
+          operationObject: sourceKey
+        });
       } else {
         val = get(message, sourceKeys[index]);
       }
@@ -504,7 +509,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // - we don't need to iterate over a loop for a single possible value
     return get(message, sourceKeys);
   } else if (typeof sourceKeys === "object") {
-    return handleSourceKeysOperation({ message, sourceKeys });
+    return handleSourceKeysOperation({ message, operationObject: sourceKeys });
   } else {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR

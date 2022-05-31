@@ -12,13 +12,13 @@
       "properties.revenue",
       {
         "operation": "multiplication",
-        "arguments": [
+        "args": [
           {
             "sourceKeys": "properties.price"
           },
           {
             "sourceKeys": "properties.quantity",
-            "default": 1
+            "defaultVal": 1
           }
         ]
       }

@@ -229,7 +229,7 @@
         "JSON": {
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_item_list",
@@ -401,7 +401,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "client_id": "client_id",
           "events": [
             {
@@ -582,7 +582,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_promotion",
@@ -735,7 +735,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_promotion",
@@ -881,7 +881,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_item",
@@ -1047,7 +1047,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_item",
@@ -1216,7 +1216,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "client_id": "client_id",
           "events": [
             {
@@ -1393,7 +1393,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "app_instance_id": "f0dd99b6f979fb551ce583373900f937",
           "events": [
             {
@@ -1567,7 +1567,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "add_to_cart",
@@ -1733,7 +1733,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "remove_from_cart",
@@ -1899,7 +1899,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_cart",
@@ -2066,7 +2066,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "begin_checkout",
@@ -2235,7 +2235,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "params": {
@@ -2405,7 +2405,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "params": {
@@ -2578,7 +2578,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "purchase",
@@ -2754,7 +2754,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "refund",
@@ -2907,7 +2907,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "refund",
@@ -3055,7 +3055,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "add_to_wishlist",
@@ -3199,7 +3199,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "share",
@@ -3316,7 +3316,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "share"
@@ -3433,7 +3433,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "share",
@@ -3551,7 +3551,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "share"
@@ -3666,7 +3666,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "join_group",
@@ -3781,7 +3781,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "join_group"
@@ -3897,7 +3897,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "earn_virtual_currency",
@@ -4013,7 +4013,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "earn_virtual_currency"
@@ -4129,7 +4129,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "generate_lead",
@@ -4249,7 +4249,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "level_up",
@@ -4365,7 +4365,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "level_up"
@@ -4480,7 +4480,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "login",
@@ -4595,7 +4595,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "login"
@@ -4712,7 +4712,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "post_score",
@@ -4832,7 +4832,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "post_score",
@@ -4951,7 +4951,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_content",
@@ -5067,7 +5067,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_content"
@@ -5182,7 +5182,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "sign_up",
@@ -5297,7 +5297,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "sign_up"
@@ -5414,7 +5414,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "spend_virtual_currency",
@@ -5535,7 +5535,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "spend_virtual_currency",
@@ -5651,7 +5651,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "tutorial_begin"
@@ -5763,7 +5763,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "tutorial_complete"
@@ -5878,7 +5878,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "unlock_achievement",
@@ -6019,7 +6019,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_search_results",
@@ -6182,7 +6182,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_search_results",
@@ -6322,7 +6322,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "rudderstack_event",
@@ -6443,7 +6443,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "user_properties": {
             "price": "19"
           },
@@ -6661,7 +6661,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "rudderstack_event",
@@ -6788,7 +6788,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "user_properties": {
             "price": "100"
           },
@@ -7134,7 +7134,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "add_to_cart",
@@ -7273,7 +7273,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "rudderstack_event"
@@ -8159,7 +8159,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "client_id": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
           "events": [
             {
@@ -8442,7 +8442,7 @@
       "body": {
         "JSON": {
           "client_id": "client_id",
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "tutorial_complete"
@@ -8580,7 +8580,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "view_cart",
@@ -8830,7 +8830,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
@@ -8937,7 +8937,7 @@
       "body": {
         "JSON": {
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
@@ -9261,7 +9261,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "purchase",
@@ -9407,7 +9407,7 @@
         "JSON": {
           "client_id": "client_id",
           "timestamp_micros": 1650950229000000,
-          "non_personalized_ads": false,
+          "non_personalized_ads": true,
           "events": [
             {
               "name": "select_promotion",

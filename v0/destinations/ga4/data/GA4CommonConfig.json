@@ -19,11 +19,11 @@
       "multikeyMap": [
         {
           "sourceVal": ["true", true, "1", 1],
-          "destVal": true
+          "destVal": false
         },
         {
           "sourceVal": ["false", false, "0", 0],
-          "destVal": false
+          "destVal": true
         }
       ]
     }

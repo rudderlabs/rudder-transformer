@@ -14,7 +14,7 @@ const {
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event } = message;
-  const { customMappings, trackingId, stringifyProperty } = destination.Config;
+  const { customMappings, trackingId, disableStringify } = destination.Config;
 
   if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
     throw new CustomError(" Cannot process if no event name specified", 400);
@@ -45,7 +45,7 @@ const putEventsHandler = (message, destination) => {
       if (!isDefined(value)) {
         throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
       }
-      if (isDefined(stringifyProperty) && !stringifyProperty) {
+      if (isDefined(disableStringify) && disableStringify) {
         outputEvent.properties[_.camelCase(key)] = value;
       } else {
         // users using old config will have stringified property by default

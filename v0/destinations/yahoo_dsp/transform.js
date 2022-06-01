@@ -84,7 +84,7 @@ const processEvent = (message, destination) => {
   const response = [];
   if (!message.type) {
     throw new CustomError(
-      "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
+      "[Yahoo_DSP]::Message Type is not present. Aborting message.",
       400
     );
   }

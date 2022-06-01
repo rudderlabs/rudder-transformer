@@ -98,8 +98,11 @@
   },
   {
     "destKey": "dnt",
-    "sourceKeys": "context.device.adTrackingEnabled",
-    "required": true
+    "sourceKeys": "properties.dnt",
+    "required": true,
+    "metadata": {
+      "default": true
+    }
   },
   {
     "destKey": "mo",
@@ -128,73 +131,64 @@
     "required": false
   },
   {
-    "sourceKeys": "utime",
     "destKey": "timestamp",
+    "sourceKeys": "utime",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "sourceKeys": "umilisec",
-    "destKey": "",
-    "required": false
-  },
-  {
-    "sourceKeys": "dntoff",
-    "destKey": "properties.dntoff",
-    "required": false
-  },
-  {
-    "sourceKeys": "properties.c",
     "destKey": "c",
+    "sourceKeys": "properties.c",
     "required": false
   },
   {
-    "sourceKeys": "properties.cn",
     "destKey": "cn",
+    "sourceKeys": "properties.cn",
     "required": false
   },
   {
-    "sourceKeys": "context.device.token",
     "destKey": "fcm",
+    "sourceKeys": "context.device.token",
     "required": false
   },
   {
-    "sourceKeys": "context.device.token",
     "destKey": "gcm",
-    "required": false
-  },
-  {
     "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
     "destKey": "apns_token",
+    "sourceKeys": "context.device.token",
     "required": false
   },
   {
-    "sourceKeys": "properties.ua",
     "destKey": "ua",
+    "sourceKeys": "properties.ua",
     "required": false
   },
   {
-    "sourceKeys": "properties.attribution_token",
     "destKey": "attribution_token",
+    "sourceKeys": "properties.attribution_token",
     "required": false
   },
   {
-    "sourceKeys": "skan_conversion_value",
     "destKey": "properties.skan_conversion_value",
+    "sourceKeys": "skan_conversion_value",
     "required": false
   },
   {
-    "sourceKeys": "skan_first_call_timestamp",
     "destKey": "properties.skan_first_call_timestamp",
+    "sourceKeys": "skan_first_call_timestamp",
     "required": false
   },
   {
-    "sourceKeys": "skan_last_call_timestamp",
     "destKey": "properties.skan_last_call_timestamp",
+    "sourceKeys": "skan_last_call_timestamp",
     "required": false
   },
   {
-    "sourceKeys": "e",
     "destKey": "eventAttributes",
+    "sourceKeys": "e",
     "required": false
   }
 ]

@@ -27,6 +27,11 @@ const responseBuilderSimple = (message, category, { Config }) => {
       // fail-safety for developer error
       throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
     }
+    /*
+        if att_authorization_status is true then dnt will be false,
+        else by default dnt value is true
+    */
+    sessionPayload.dnt = !sessionPayload.att_authorization_status;
     response.endpoint = `${BASE_URL}/launch&a=${Config.ApiKey}`;
     response.params = removeUndefinedAndNullAndEmptyValues(sessionPayload);
   } else {

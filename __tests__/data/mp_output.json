@@ -283,7 +283,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "config is not supported"
+    "message": "[MP] Group:: Group Key Settings is not configured"
   },
   [
     {

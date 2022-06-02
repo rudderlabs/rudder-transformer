@@ -105,11 +105,6 @@
     }
   },
   {
-    "destKey": "mo",
-    "sourceKeys": "properties.install",
-    "required": true
-  },
-  {
     "destKey": "att_authorization_status",
     "sourceKeys": "context.device.adTrackingEnabled",
     "required": true

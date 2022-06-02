@@ -14,14 +14,14 @@ const {
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 
-const responseBuilderSimple = (message, category, { Config }) => {
+const responseBuilderSimple = (message, { Config }) => {
   let eventType = message.event;
   eventType = eventType.trim().replace(/\s+/g, " ");
   const response = defaultRequestConfig();
   if (sessionEvents.includes(eventType)) {
     const sessionPayload = constructPayload(
       message,
-      MAPPING_CONFIG[category.sessionName]
+      MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name]
     );
     if (!sessionPayload) {
       // fail-safety for developer error
@@ -32,21 +32,21 @@ const responseBuilderSimple = (message, category, { Config }) => {
         else by default dnt value is true
     */
     sessionPayload.dnt = !sessionPayload.att_authorization_status;
-    response.endpoint = `${BASE_URL}/launch&a=${Config.ApiKey}`;
+    response.endpoint = `${BASE_URL}/launch&a=${Config.apiKey}`;
     response.params = removeUndefinedAndNullAndEmptyValues(sessionPayload);
   } else {
     const eventPayload = constructPayload(
       message,
-      MAPPING_CONFIG[category.eventName]
+      MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name]
     );
     if (!eventPayload) {
       // fail-safety for developer error
       throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
     }
-    response.endpoint = `${BASE_URL}/evt&a=${Config.ApiKey}`;
+    response.endpoint = `${BASE_URL}/evt&a=${Config.apiKey}`;
     response.params = removeUndefinedAndNullAndEmptyValues(eventPayload);
   }
-  response.method = defaultGetRequestConfig.requestMethod();
+  response.method = defaultGetRequestConfig.requestMethod;
   return response;
 };
 
@@ -56,15 +56,10 @@ const processEvent = (message, destination) => {
   }
   const messageType = message.type.toLowerCase();
 
-  let category;
-  switch (messageType) {
-    case EventType.TRACK:
-      category = CONFIG_CATEGORIES.TRACK;
-      break;
-    default:
-      throw new Error("Message type not supported");
-  }
-  return responseBuilderSimple(message, category, destination);
+  if (messageType === "track")
+    return responseBuilderSimple(message, destination);
+
+  throw new Error("[Singular]: Message type not supported");
 };
 
 const process = event => {

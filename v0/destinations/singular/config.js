@@ -3,13 +3,13 @@ const { getMappingConfig } = require("../../util");
 const BASE_URL = "https://s2s.singular.net/api/v1";
 
 const CONFIG_CATEGORIES = {
-  TRACK: {
-    eventName: "SINGULAREventNotificationConfig",
-    sessionName: "SINGULARSessionNotificationConfig",
+  SESSION: {
+    name: "SINGULARSessionNotificationConfig",
     type: "track"
   },
-  PROPERTY: {
-    name: "RCProductConfig"
+  EVENT: {
+    name: "SINGULAREventNotificationConfig",
+    type: "track"
   }
 };
 

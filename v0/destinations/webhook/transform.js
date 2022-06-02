@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const set = require("set-value");
 const {
@@ -11,7 +12,8 @@ const {
   isDefinedAndNotNull,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  defaultDeleteRequestConfig
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -38,22 +40,42 @@ function process(event) {
     const { headers } = destination.Config;
 
     if (url) {
-      if (method === defaultGetRequestConfig.requestMethod) {
-        response.method = defaultGetRequestConfig.requestMethod;
-        // send properties as query params for GET
-        response.params = getPropertyParams(message);
-      } else {
-        if (method === defaultPutRequestConfig.requestMethod) {
-          response.method = defaultPutRequestConfig.requestMethod;
-        } else {
-          response.method = defaultPostRequestConfig.requestMethod;
+      switch (method) {
+        case defaultGetRequestConfig.requestMethod: {
+          response.method = defaultGetRequestConfig.requestMethod;
+          response.params = getPropertyParams(message);
+          break;
         }
-        response.body.JSON = message;
-        response.headers = {
-          "content-type": "application/json"
-        };
+        case defaultPostRequestConfig.requestMethod: {
+          response.method = defaultPostRequestConfig.requestMethod;
+          response.body.JSON = message;
+          response.headers = {
+            "content-type": "application/json"
+          };
+          break;
+        }
+        case defaultPutRequestConfig.requestMethod: {
+          response.method = defaultPutRequestConfig.requestMethod;
+          response.body.JSON = message;
+          response.headers = {
+            "content-type": "application/json"
+          };
+          break;
+        }
+        case defaultDeleteRequestConfig.requestMethod: {
+          response.method = defaultDeleteRequestConfig.requestMethod;
+          response.params = getPropertyParams(message);
+          break;
+        }
+        default: {
+          response.method = defaultPostRequestConfig.requestMethod;
+          response.body.JSON = message;
+          response.headers = {
+            "content-type": "application/json"
+          };
+          break;
+        }
       }
-
       Object.assign(response.headers, getHashFromArray(headers));
       // ------------------------------------------------
       // This is temporary and just to support dynamic header through user transformation
@@ -98,9 +120,9 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.fullPath && typeof message.fullPath === "string" ) {
+      if (message.fullPath && typeof message.fullPath === "string") {
         response.endpoint = message.fullPath;
-        delete message.fullPath
+        delete message.fullPath;
       }
 
       // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
@@ -111,9 +133,9 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.appendPath && typeof message.appendPath === "string" ) {
+      if (message.appendPath && typeof message.appendPath === "string") {
         response.endpoint += message.appendPath;
-        delete message.appendPath
+        delete message.appendPath;
       }
 
       return response;

@@ -832,5 +832,28 @@
     "params": {},
     "type": "REST",
     "method": "PUT"
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://www.google.com/?searchTerms=cats",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "test2": "value2"
+    },
+    "version": "1",
+    "params": {
+      "additional_bet_index": 0,
+      "battle_id": "N/A",
+      "featureGameType": "N/A",
+      "win_amount": 0
+    },
+    "type": "REST",
+    "method": "DELETE"
   }
 ]

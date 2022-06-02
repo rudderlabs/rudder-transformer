@@ -388,7 +388,10 @@ function processGroupEvents(message, type, destination) {
       }
     });
   } else {
-    throw new CustomError("config is not supported", 400);
+    throw new CustomError(
+      "[MP] Group:: Group Key Settings is not configured",
+      400
+    );
   }
   return returnValue;
 }

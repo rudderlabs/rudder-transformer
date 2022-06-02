@@ -372,6 +372,7 @@
           "advertisingId": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "type": "Android"
         },
+        "ip": "1.2.3.4",
         "network": {
           "carrier": "Banglalink"
         },

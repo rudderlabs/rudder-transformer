@@ -30,7 +30,9 @@
     },
     "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
     "files": {},
-    "headers": {},
+    "headers": {
+      "x-forwarded-for": "1.2.3.4"
+    },
     "method": "POST",
     "params": {},
     "statusCode": 200,

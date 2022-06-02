@@ -167,23 +167,23 @@
     "required": false
   },
   {
-    "destKey": "properties.skan_conversion_value",
-    "sourceKeys": "skan_conversion_value",
+    "destKey": "skan_conversion_value",
+    "sourceKeys": "properties.skan_conversion_value",
     "required": false
   },
   {
-    "destKey": "properties.skan_first_call_timestamp",
-    "sourceKeys": "skan_first_call_timestamp",
+    "destKey": "skan_first_call_timestamp",
+    "sourceKeys": "properties.skan_first_call_timestamp",
     "required": false
   },
   {
-    "destKey": "properties.skan_last_call_timestamp",
-    "sourceKeys": "skan_last_call_timestamp",
+    "destKey": "skan_last_call_timestamp",
+    "sourceKeys": "properties.skan_last_call_timestamp",
     "required": false
   },
   {
-    "destKey": "eventAttributes",
-    "sourceKeys": "e",
+    "destKey": "e",
+    "sourceKeys": "eventAttributes",
     "required": false
   }
 ]

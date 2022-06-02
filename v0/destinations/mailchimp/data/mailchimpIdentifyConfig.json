@@ -3,12 +3,36 @@
     "destKey": "userId",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
-    "required": true
+    "required": false
   },
   {
     "destKey": "email_address",
     "sourceKeys": "email",
     "sourceFromGenericMap": true,
     "required": true
+  },
+  {
+    "destKey": "merge_fields.FNAME",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "merge_fields.LNAME",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "merge_fields.ADDRESS",
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "merge_fields.PHONE",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
   }
 ]

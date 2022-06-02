@@ -3,6 +3,8 @@ const { SHA256 } = require("crypto-js");
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
+const axios = require("axios");
+const md5 = require("md5");
 const {
   CustomError,
   constructPayload,
@@ -14,56 +16,162 @@ const {
   isEmptyObject,
   flattenJson
 } = require("../../util");
+const { getMailChimpEndpoint } = require("./utils");
+const logger = require("../../../logger");
 const {
   identifyMapping,
   MAX_BATCH_SIZE,
-  MAILCHIMP_IDENTIFY_EXCLUSION
+  MAILCHIMP_IDENTIFY_EXCLUSION,
+  SUBSCRIPTION_STATUS,
+  VALID_STATUSES
 } = require("./config");
 
-const identifyResponseBuilder = (message, { Config }) => {
+async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
+  if (!email) {
+    return false;
+  }
+  const hash = md5(email);
+  const url = `${getMailChimpEndpoint(
+    datacenterId,
+    audienceId
+  )}/members/${hash}`;
+
+  let status = false;
+  try {
+    await axios.get(url, {
+      auth: {
+        username: "apiKey",
+        password: `${apiKey}`
+      }
+    });
+    status = true;
+  } catch (error) {
+    logger.error("axios error");
+  }
+  return status;
+}
+
+async function checkIfDoubleOptIn(apiKey, datacenterId, audienceId) {
+  let response;
+  const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
+  try {
+    response = await axios.get(url, {
+      auth: {
+        username: "apiKey",
+        password: `${apiKey}`
+      }
+    });
+  } catch (error) {
+    throw new CustomError(
+      "User does not have access to the requested operation",
+      error.status || 400
+    );
+  }
+  return !!response.data.double_optin;
+}
+
+const identifyResponseBuilder = async (message, { Config }) => {
   // get common top level rawPayload
   const payload = constructPayload(message, identifyMapping);
-  const { apiKey, audienceId, datacenterId } = Config;
+  const { apiKey, datacenterId } = Config;
+  let { audienceId } = Config;
 
-  if (!message.context.traits.email) {
+  const { email } = message.context.traits;
+
+  if (!email) {
     throw new CustomError("Email is required for identify calls ", 400);
   }
 
-  const BASE_URL = `https://${datacenterId}.api.mailchimp.com/3.0/lists/${audienceId}`;
-  const IDENTIFY_ENDPOINT = `${BASE_URL}/members`;
+  const mailChimpExists = get(message, "context.MailChimp");
+  if (mailChimpExists) {
+    const listIdExists = get(message, "context.MailChimp.listId");
+    if (listIdExists) {
+      audienceId = message.context.MailChimp.listId;
+    }
+  }
+
   // const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=<${skip_merge_validation}&skip_duplicate_check=${skip_duplicate_check}`;
 
-  let mergeFields = {};
-  mergeFields = extractCustomFields(
+  let customMergeFields = {};
+  customMergeFields = extractCustomFields(
     message,
-    mergeFields,
+    customMergeFields,
     ["context.traits"],
     MAILCHIMP_IDENTIFY_EXCLUSION
   );
 
-  if (!isEmptyObject(mergeFields)) {
-    mergeFields = flattenJson(mergeFields);
-    payload.merge_fields = mergeFields;
+  if (!isEmptyObject(customMergeFields)) {
+    customMergeFields = flattenJson(customMergeFields);
+    payload.merge_fields = { ...payload.merge_fields, ...customMergeFields };
   }
 
-  if (payload.params) {
-    payload.params = removeUndefinedAndNullValues(payload.params);
-  }
+  // if (payload.params) {
+  //   payload.params = removeUndefinedAndNullValues(payload.params);
+  // }
 
-  if (isEmptyObject(payload.params)) {
-    delete payload.params;
-  }
+  // if (isEmptyObject(payload.params)) {
+  //   delete payload.params;
+  // }
 
-  // build response
+  const emailExists = await checkIfMailExists(
+    apiKey,
+    datacenterId,
+    audienceId,
+    email
+  );
+
   const response = defaultRequestConfig();
-  response.method = defaultPutRequestConfig.requestMethod;
-  response.endpoint = IDENTIFY_ENDPOINT;
+
+  if (emailExists) {
+    const hash = md5(email);
+    response.endpoint = `${getMailChimpEndpoint(
+      datacenterId,
+      audienceId
+    )}/members/${hash}`;
+
+    response.method = defaultPutRequestConfig.requestMethod;
+
+    if (mailChimpExists) {
+      const subscriptionStatusExists = get(
+        message,
+        "context.MailChimp.subscriptionStatus"
+      );
+      if (subscriptionStatusExists) {
+        payload.status = message.context.MailChimp.subscriptionStatus;
+      }
+    }
+  } else {
+    response.endpoint = `${getMailChimpEndpoint(
+      datacenterId,
+      audienceId
+    )}/members`;
+    response.method = defaultPostRequestConfig.requestMethod;
+    const isDoubleOptin = await checkIfDoubleOptIn(
+      apiKey,
+      datacenterId,
+      audienceId
+    );
+    payload.status = isDoubleOptin
+      ? SUBSCRIPTION_STATUS.pending
+      : SUBSCRIPTION_STATUS.subscribed;
+  }
+
+  if (payload.status && !VALID_STATUSES.includes(payload.status)) {
+    throw new CustomError(
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
+      400
+    );
+  }
+
+  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
+  // build response
   response.headers = {
     "Content-Type": "application/json",
-    Authorization: `Basic ${apiKey}`
+    Authorization: `Basic ${basicAuth}`
   };
 
   response.body.JSON = payload;
+  response.userId = message.userId || message.anonymousId;
   return response;
 };
 

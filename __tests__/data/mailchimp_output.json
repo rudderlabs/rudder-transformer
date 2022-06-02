@@ -3,17 +3,17 @@
     "version": "1",
     "type": "REST",
     "method": "PUT",
-    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic 94f71917d8522770c97449b0c90caa4c-us20"
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
     },
     "params": {},
     "body": {
       "JSON": {
         "merge_fields": {
-          "firstName": "Bob",
-          "lastName": "Dole",
+          "FNAME": "Bob",
+          "LNAME": "Dole",
           "anonymousId": "userId12345"
         },
         "userId": "userId12345",
@@ -23,6 +23,7 @@
       "JSON_ARRAY": {},
       "FORM": {}
     },
-    "files": {}
+    "files": {},
+    "userId": "userId12345"
   }
 ]

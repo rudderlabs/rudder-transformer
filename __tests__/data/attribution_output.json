@@ -14,6 +14,18 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "context": {
+              "ip": "12.12.12.12",
+              "library": {
+                "name": "SomeLib",
+                "version": "1.0"
+              },
+              "traits": {
+                "age": 23,
+                "email": "testmp@rudderstack.com",
+                "firstname": "Test Kafka"
+              }
+            },
             "type": "page",
             "userId": "user12345",
             "traits": {
@@ -56,6 +68,13 @@
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
             "type": "identify",
             "userId": "user12345",
+            "context": {
+              "ip": "12.12.12.12",
+              "library": {
+                "name": "SomeLib",
+                "version": "1.0"
+              }
+            },
             "traits": {
               "age": 23,
               "email": "testmp@email.com",
@@ -90,10 +109,12 @@
             "type": "track",
             "userId": "user12345",
             "event": "test track with property",
-            "traits": {
-              "age": 23,
-              "email": "testmp@email.com",
-              "firstname": "Test Transformer"
+            "context": {
+              "ip": "12.12.12.12",
+              "library": {
+                "name": "SomeLib",
+                "version": "1.0"
+              }
             },
             "properties": { "test_prop_1": "test prop", "test_prop_2": 1232 },
             "timeStamp": "2020-04-17T14:55:31.372Z"
@@ -123,10 +144,12 @@
           {
             "type": "page",
             "userId": "user12345",
-            "traits": {
-              "age": 23,
-              "email": "testmp@rudderstack.com",
-              "firstname": "Test Kafka"
+            "context": {
+              "ip": "12.12.12.12",
+              "library": {
+                "name": "SomeLib",
+                "version": "1.0"
+              }
             },
             "properties": {
               "path": "/tests/html/index4.html",
@@ -161,6 +184,13 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "context": {
+              "ip": "12.12.12.12",
+              "library": {
+                "name": "SomeLib",
+                "version": "1.0"
+              }
+            },
             "type": "track",
             "userId": "user12345",
             "event": "test track with property",

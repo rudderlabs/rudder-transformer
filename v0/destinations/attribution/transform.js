@@ -40,6 +40,7 @@ function getTransformedJSON(message) {
     ? message.properties
     : undefined;
   const event = get(message, "event") ? message.event : undefined;
+  const context = get(message, "context") ? message.context : undefined;
   const timeStamp = getFieldValueFromMessage(message, "timestamp");
 
   return removeUndefinedAndNullValues({
@@ -49,7 +50,8 @@ function getTransformedJSON(message) {
     event,
     traits,
     properties,
-    timeStamp
+    timeStamp,
+    context,
   });
 }
 

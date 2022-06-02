@@ -445,7 +445,6 @@ const eventValidationTestCases = [
             violationType: violationTypes.UnplannedEvent
         }
     },
-
     {
         "testCase": "Track is part of Tracking Plan",
         "event": {
@@ -838,7 +837,187 @@ const eventValidationTestCases = [
             dropEvent: false,
             violationType: "None"
         }
-    }
+    },
+    {
+        "testCase": "Compatibility for Spread sheet plugin + Track is not part of Tracking Plan and allowUnplannedEvents is set to boolean true",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: true,
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: true,
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: false,
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Compatibility for Spread sheet plugin + Track is not part of Tracking Plan and allowUnplannedEvents is set to boolean false",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: false,
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: false,
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: true,
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.UnplannedEvent
+        }
+    },
+    {
+        "testCase": "Compatibility for Spread sheet plugin + Track is not part of Tracking Plan and allowUnplannedEvents is set to text TRUE",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: 'TRUE',
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: 'TRUE',
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: 'FALSE',
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: false,
+            violationType: "None"
+        }
+    },
+    {
+        "testCase": "Compatibility for Spread sheet plugin + Track is not part of Tracking Plan and allowUnplannedEvents is set to text FALSE",
+        "event": {
+            metadata: {
+                trackingPlanId: "dummy_tracking_plan_id",
+                trackingPlanVersion: "dummy_version",
+                workspaceId: "dummy_workspace_id",
+                mergedTpConfig: {
+                    allowUnplannedEvents: 'FALSE',
+                    ajvOptions: {}
+                },
+                sourceTpConfig: {
+                    track: {
+                        allowUnplannedEvents: 'FALSE',
+                        ajvOptions: {}
+                    },
+                    global: {
+                        allowUnplannedEvents: 'TRUE',
+                        ajvOptions: {}
+                    }
+                },
+            },
+            message: {
+                type: "track",
+                userId: "user-demo",
+                event: "New Product clicked",
+                properties: {
+                    name: "Rubik's Cube",
+                    revenue: 4.99,
+                    prop_integer: 2,
+                    prop_float: 2.3,
+                    email: "demo@rudderstack.com"
+                },
+                context: {
+                    ip: "14.5.67.21"
+                },
+                timestamp: "2020-02-02T00:23:09.544Z"
+            }
+        },
+        "trackingPlan": trackingPlan,
+        "output": {
+            dropEvent: true,
+            violationType: violationTypes.UnplannedEvent
+        }
+    },
 ];
 
 

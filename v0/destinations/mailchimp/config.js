@@ -17,7 +17,13 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "FirstName",
   "LastName",
   "firstname",
-  "lastname"
+  "lastname",
+  "phone",
+  "Phone",
+  "PHONE",
+  "address",
+  "Address",
+  "ADDRESS"
 ];
 const SUBSCRIPTION_STATUS = {
   subscribed: "subscribed",

@@ -2,9 +2,8 @@
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
 const set = require("set-value");
-const { EventType } = require("../../../constants");
-const axios = require("axios");
 const md5 = require("md5");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   CustomError,
   constructPayload,
@@ -14,10 +13,15 @@ const {
   removeUndefinedAndNullValues,
   extractCustomFields,
   isEmptyObject,
-  flattenJson
+  flattenJson,
+  addExternalIdToTraits,
+  getFieldValueFromMessage
 } = require("../../util");
-const { getMailChimpEndpoint } = require("./utils");
-const logger = require("../../../logger");
+const {
+  getMailChimpEndpoint,
+  checkIfMailExists,
+  checkIfDoubleOptIn
+} = require("./utils");
 const {
   identifyMapping,
   MAX_BATCH_SIZE,
@@ -25,50 +29,6 @@ const {
   SUBSCRIPTION_STATUS,
   VALID_STATUSES
 } = require("./config");
-
-async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
-  if (!email) {
-    return false;
-  }
-  const hash = md5(email);
-  const url = `${getMailChimpEndpoint(
-    datacenterId,
-    audienceId
-  )}/members/${hash}`;
-
-  let status = false;
-  try {
-    await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
-    });
-    status = true;
-  } catch (error) {
-    logger.error("axios error");
-  }
-  return status;
-}
-
-async function checkIfDoubleOptIn(apiKey, datacenterId, audienceId) {
-  let response;
-  const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
-  try {
-    response = await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
-    });
-  } catch (error) {
-    throw new CustomError(
-      "User does not have access to the requested operation",
-      error.status || 400
-    );
-  }
-  return !!response.data.double_optin;
-}
 
 const identifyResponseBuilder = async (message, { Config }) => {
   // get common top level rawPayload
@@ -82,7 +42,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Email is required for identify calls ", 400);
   }
 
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    return getFieldValueFromMessage(message, "traits");
+  }
+
   const mailChimpExists = get(message, "context.MailChimp");
+
   if (mailChimpExists) {
     const listIdExists = get(message, "context.MailChimp.listId");
     if (listIdExists) {
@@ -102,6 +69,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   if (!isEmptyObject(customMergeFields)) {
     customMergeFields = flattenJson(customMergeFields);
+
     payload.merge_fields = { ...payload.merge_fields, ...customMergeFields };
   }
 
@@ -130,6 +98,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     )}/members/${hash}`;
 
     response.method = defaultPutRequestConfig.requestMethod;
+    payload.status = SUBSCRIPTION_STATUS.subscribed;
 
     if (mailChimpExists) {
       const subscriptionStatusExists = get(
@@ -206,7 +175,10 @@ const process = async event => {
       response = await identifyResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new CustomError(
+        `Message type ${messageType} is not supported`,
+        400
+      );
   }
   return response;
 };

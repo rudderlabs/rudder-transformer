@@ -15,6 +15,7 @@
       "att_status": 3,
       "tracking_enabled": true,
       "currency": "EUR",
+      "ip_address": "[::1]",
       "s2s": 1,
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
@@ -51,6 +52,7 @@
       "tracking_enabled": true,
       "currency": "EUR",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -90,6 +92,7 @@
       "tracking_enabled": true,
       "currency": "EUR",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -120,6 +123,7 @@
       "tracking_enabled": true,
       "currency": "USD",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -150,6 +154,7 @@
       "tracking_enabled": true,
       "currency": "USD",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -184,6 +189,7 @@
       "tracking_enabled": true,
       "currency": "USD",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "sandbox"
@@ -211,6 +217,7 @@
       "att_status": 3,
       "tracking_enabled": true,
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "sandbox"
@@ -241,6 +248,7 @@
       "tracking_enabled": true,
       "currency": "EUR",
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -268,6 +276,7 @@
       "att_status": 3,
       "tracking_enabled": true,
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"
@@ -295,6 +304,7 @@
       "att_status": 3,
       "tracking_enabled": true,
       "s2s": 1,
+      "ip_address": "[::1]",
       "app_token": "t1yurrb968zk",
       "event_token": "tf4gm5",
       "environment": "production"

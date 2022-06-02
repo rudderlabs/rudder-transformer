@@ -278,7 +278,7 @@ async function handleValidation(event) {
         const violationsByType = new Set(validationErrors.map(err => err.type));
         for (const [key, val] of Object.entries(mergedTpConfig)) {
             // To have compatibility for config-backend, spread-sheet plugin and postman collection
-            // We are making everything to string and doing string comparision.
+            // We are making everything to lower string and doing string comparision.
             const value = val?.toString()?.toLowerCase();
             switch (key) {
                 case "allowUnplannedEvents": {

@@ -36,11 +36,9 @@ function getTransformedJSON(message) {
   if (traits && traits.anonymousId) {
     delete traits.anonymousId;
   }
-  const properties = get(message, "properties")
-    ? message.properties
-    : undefined;
-  const event = get(message, "event") ? message.event : undefined;
-  const context = get(message, "context") ? message.context : undefined;
+  const properties = get(message, "properties");
+  const event = get(message, "event");
+  const context = get(message, "context");
   const timeStamp = getFieldValueFromMessage(message, "timestamp");
 
   return removeUndefinedAndNullValues({

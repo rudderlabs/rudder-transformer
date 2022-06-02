@@ -16,7 +16,7 @@
   },
   {
     "destKey": "ip",
-    "sourceKeys": ["context.ip", "requestIP"],
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": true
   },
   {
@@ -45,8 +45,8 @@
     "required": true
   },
   {
-    "destKey": "att_authorization_ status",
-    "sourceKeys": "properties.att_authorization_ status",
+    "destKey": "att_authorization_status",
+    "sourceKeys": "context.device.adTrackingEnabled",
     "required": true
   },
   {
@@ -56,33 +56,29 @@
     "required": false
   },
   {
-    "destKey": "timestamp",
-    "sourceKeys": "utime",
+    "destKey": "utimȩ",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "destKey": "umilisec",
-    "sourceKeys": "",
+    "destKey": "skan_conversion_value",
+    "sourceKeys": "properties.skan_conversion_value",
     "required": false
   },
   {
-    "destKey": "properties.skan_conversion_value",
-    "sourceKeys": "skan_conversion_value",
+    "destKey": "skan_first_call_timestamp",
+    "sourceKeys": "properties.skan_first_call_timestamp",
     "required": false
   },
   {
-    "destKey": "properties.skan_first_call_timestamp",
-    "sourceKeys": "skan_first_call_timestamp",
+    "destKey": "skan_last_call_timestamp",
+    "sourceKeys": "properties.skan_last_call_timestamp",
     "required": false
   },
   {
-    "destKey": "properties.skan_last_call_timestamp",
-    "sourceKeys": "skan_last_call_timestamp",
-    "required": false
-  },
-  {
-    "destKey": "eventAttributes",
-    "sourceKeys": "e",
+    "destKey": "e",
+    "sourceKeys": "properties.eventAttributes",
     "required": false
   },
   {
@@ -103,11 +99,6 @@
   {
     "destKey": "purchase_receipt",
     "sourceKeys": "properties.purchase_receipt",
-    "required": false
-  },
-  {
-    "destKey": "receipt_signature",
-    "sourceKeys": "",
     "required": false
   },
   {

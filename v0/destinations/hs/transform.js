@@ -3,6 +3,7 @@ const set = require("set-value");
 const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
+  getDestinationExternalIDInfoForRetl,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -130,13 +131,20 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     const { email } = traits;
     const { apiKey } = destination.Config;
     params = { hapikey: apiKey };
-    if (email) {
-      endpoint = `https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/${email}`;
+    if (get(message, MappedToDestinationKey)) {
+      const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+      endpoint = `https://api.hubspot.com/crm/v3/objects/${objectType}`;
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.body.JSON = removeUndefinedValues({ properties: traits });
     } else {
-      endpoint = "https://api.hubapi.com/contacts/v1/contact";
+      if (email) {
+        endpoint = `https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/${email}`;
+      } else {
+        endpoint = "https://api.hubapi.com/contacts/v1/contact";
+      }
+      response.method = defaultPostRequestConfig.requestMethod;
+      response.body.JSON = removeUndefinedValues(payload);
     }
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedValues(payload);
   } else {
     params = removeUndefinedValues(payload);
   }
@@ -189,11 +197,10 @@ async function processIdentify(message, destination, propertyMap) {
   // If mapped to destination, Add externalId to traits
   if (mappedToDestination) {
     addExternalIdToTraits(message);
-  }
-
-  if (!traits || !traits.email) {
+  } else if (!traits || !traits.email) {
     throw new CustomError("Identify without email is not supported.", 400);
   }
+
   const userProperties = await getTransformedJSON(
     message,
     hSIdentifyConfigJson,

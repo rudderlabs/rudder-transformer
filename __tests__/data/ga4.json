@@ -3566,7 +3566,7 @@
     }
   },
   {
-    "description": "(gtag) check all property mappings for 'group' event",
+    "description": "(gtag) check all property mappings for group call",
     "input": {
       "message": {
         "channel": "web",
@@ -3669,7 +3669,7 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "join_group",
+              "name": "group",
               "params": {
                 "group_id": "G_12345"
               }
@@ -3684,7 +3684,7 @@
     }
   },
   {
-    "description": "(gtag) send only 'group' event name without it's properties",
+    "description": "(gtag) group: send only group event name without it's properties",
     "input": {
       "message": {
         "channel": "web",
@@ -3784,7 +3784,7 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "join_group"
+              "name": "group"
             }
           ]
         },
@@ -7797,7 +7797,7 @@
     }
   },
   {
-    "description": "[Error] (gtag) firing group event",
+    "description": "(gtag) firing group event with event name. should take event name by default",
     "input": {
       "message": {
         "channel": "web",
@@ -7847,7 +7847,7 @@
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
         "type": "group",
-        "event": "tutotial complete",
+        "event": "tutorial complete",
         "integrations": {
           "All": true
         },
@@ -7878,13 +7878,34 @@
       }
     },
     "output": {
-      "statusCode": 400,
-      "error": "Message type group not supported",
-      "statTags": {
-        "destination": "ga4",
-        "stage": "transform",
-        "scope": "exception"
-      }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://www.google-analytics.com/mp/collect",
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "body": {
+        "JSON": {
+          "timestamp_micros": 1650950229000000,
+          "non_personalized_ads": true,
+          "client_id": "client_id",
+          "events": [
+            {
+              "name": "join_group"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
     }
   },
   {

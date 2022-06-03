@@ -11,7 +11,9 @@ const {
   flattenJson,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  getFieldValueFromMessage,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const {
   ENDPOINT,
@@ -343,17 +345,19 @@ function trackResponseBuilder(message, { Config }) {
         break;
       /* Group */
       case "group":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.GROUP.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
-        );
+        if (message.type === "group") {
+          payload.name = eventNameMapping[event.toLowerCase()];
+          payload.params = constructPayload(
+            message,
+            mappingConfig[ConfigCategory.GROUP.name]
+          );
+          payload.params = extractCustomFields(
+            message,
+            payload.params,
+            ["properties"],
+            getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+          );
+        }
         break;
       /* GA4 Events */
       case "view_search_results": {
@@ -380,7 +384,73 @@ function trackResponseBuilder(message, { Config }) {
       default:
         break;
     }
+  } else if (message.type === "identify") {
+    payload.name = event;
+    const traits = getFieldValueFromMessage(message, "traits");
+
+    // exclusion list for login/signup and generate_lead
+    const GA4_IDENTIFY_EXCLUSION = [];
+    GA4_IDENTIFY_EXCLUSION.push(`${Config.loginSignupMethod}`);
+    GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadValueTrait}`);
+    GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadCurrencyTrait}`);
+
+    switch (event) {
+      case "login":
+      case "sign_up":
+        const method = traits[`${Config.loginSignupMethod}`];
+
+        if (method) {
+          payload.params = method; // method: "Google"
+        }
+
+        break;
+      case "generate_lead": {
+        const parameter = {};
+        parameter.value = parseFloat(
+          traits[`${Config.generateLeadValueTrait}`]
+        );
+        parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
+        parameter = removeUndefinedAndNullValues(parameter);
+
+        if (!isDefinedAndNotNullAndNotEmpty(parameter.value)) {
+          throw new CustomError(
+            `[GA4] Identify:: ${Config.generateLeadValueTrait} (key provided from config) is a required field`,
+            400
+          );
+        }
+
+        if (!isDefinedAndNotNullAndNotEmpty(parameter.currency)) {
+          parameter.currency = "USD";
+        }
+
+        payload.params = parameter;
+        break;
+      }
+      default:
+        break;
+    }
+
+    payload.params = extractCustomFields(
+      message,
+      payload.params,
+      ["traits", "context.traits"],
+      GA4_IDENTIFY_EXCLUSION
+    );
+  } else if (message.type === "group") {
+    // group event
+    payload.name = event;
+    payload.params = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.GROUP.name]
+    );
+    payload.params = extractCustomFields(
+      message,
+      payload.params,
+      ["traits", "context.traits"],
+      getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+    );
   } else {
+    // track
     // custom events category
     // Event names are case sensitive
     if (isReservedWebCustomEventName(event)) {
@@ -499,12 +569,45 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
+    case EventType.IDENTIFY:
+      response = [];
+      // 1. send login/signup event based on config
+      if (Config.sendLoginSignup) {
+        const traits = getFieldValueFromMessage(message, "traits");
+        const firstLogin = traits[`${Config.signupTrait}`];
+        if (!isDefinedAndNotNull(firstLogin)) {
+          throw new CustomError(
+            `[GA4] Idenitfy:: ${Config.signupTrait} (key provided from config) is a required field`,
+            400
+          );
+        }
+        if (!!firstLogin) {
+          message.event = "sign_up";
+        } else {
+          message.event = "login";
+        }
+
+        response.push(trackResponseBuilder(message, destination));
+      }
+
+      // 2. send generate_lead based on config
+      if (Config.generateLead) {
+        message.event = "generate_lead";
+        response.push(trackResponseBuilder(message, destination));
+      }
+
+      break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.PAGE:
-      // passing page_view custom event for page()
+      // GA4 custom event (page_view) is fired for page
       message.event = "page_view";
+      response = trackResponseBuilder(message, destination);
+      break;
+    case EventType.GROUP:
+      // GA4 standard event (join_group) is fired for group
+      message.event = "join_group";
       response = trackResponseBuilder(message, destination);
       break;
     default:

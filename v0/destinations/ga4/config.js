@@ -39,9 +39,7 @@ const ConfigCategory = {
   GROUP: { name: "GA4GroupConfig" },
 
   /* GA4 Events */
-  GENERATE_LEAD: { name: "GA4GenerateLeadConfig" },
-  LOGIN: { name: "GA4LoginConfig" },
-  SIGN_UP: { name: "GA4SignUpConfig" }
+  GENERATE_LEAD: { name: "GA4GenerateLeadConfig" }
 };
 
 /**
@@ -77,9 +75,6 @@ const eventNameMapping = {
   /* Sharing Section */
   product_shared: "share",
   cart_shared: "share",
-
-  /* Group */
-  group: "join_group",
 
   /* GA4 Events */
   view_search_results: "view_search_results"

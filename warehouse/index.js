@@ -6,7 +6,6 @@ const { v4: uuidv4 } = require("uuid");
 const {
   isObject,
   isBlank,
-  isJson,
   isValidJsonPathKey,
   getKeysFromJsonPaths,
   validTimestamp,

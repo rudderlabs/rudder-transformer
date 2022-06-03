@@ -6,7 +6,7 @@ const { isDataLakeProvider } = require("../config/helpers");
 function safeTableName(options, name = "") {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
-    options.integrationOptions.skipReservedKeywordsEscaping || false;
+    options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let tableName = name;
   if (tableName === "") {
     throw new Error("Table name cannot be empty.");
@@ -36,7 +36,7 @@ function safeTableName(options, name = "") {
 function safeColumnName(options, name = "") {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
-    options.integrationOptions.skipReservedKeywordsEscaping || false;
+    options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let columnName = name;
   if (columnName === "") {
     throw new Error("Column name cannot be empty.");
@@ -148,13 +148,13 @@ function toBlendoCase(name = "") {
 }
 
 function transformTableName(options, name = "") {
-  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing ? toBlendoCase(name) : transformName("", name);
 }
 
 function transformColumnName(options, name = "") {
   const { provider } = options;
-  const useBlendoCasing = options.integrationOptions.useBlendoCasing || false;
+  const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing
     ? transformNameToBlendoCase(provider, name)
     : transformName(provider, name);

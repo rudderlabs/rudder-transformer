@@ -22,7 +22,8 @@ const sampleEvents = {
         Config: {
           restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           prefixProperties: true,
-          useNativeSDK: false
+          useNativeSDK: false,
+          jsonPaths: " testMap.nestedMap, testArray"
         },
         DestinationDefinition: {
           DisplayName: "Braze",
@@ -79,12 +80,18 @@ const sampleEvents = {
           SNOWFLAKE: {
             options: {
               skipTracksTable: true,
-              useBlendoCasing: true
+              useBlendoCasing: true,
+              jsonPaths: ["tMap"]
             }
           },
           S3_DATALAKE: {
             options: {
               skipReservedKeywordsEscaping: true
+            }
+          },
+          BQ: {
+            options: {
+              jsonPaths: ["tMap"]
             }
           }
         },
@@ -95,7 +102,17 @@ const sampleEvents = {
           revenue: 50,
           "path to $1,000,000": "None",
           "9omega": true,
-          camelCase123Key: "camel case"
+          camelCase123Key: "camel case",
+          testMap: {
+            nestedMap: {
+              n1: "nested prop 1"
+            }
+          },
+          tMap: {
+            t1: 10,
+            t2: 20
+          },
+          testArray: ["This is", "an", "array"]
         },
         receivedAt: "2020-01-24T11:59:02.403+05:30",
         request_ip: "[::1]:53708",
@@ -185,6 +202,10 @@ const sampleEvents = {
               path_to_1_000_000: "string",
               _9_omega: "boolean",
               camel_case_123_key: "string",
+              test_map_nested_map_n_1: "string",
+              t_map_t_1: "int",
+              t_map_t_2: "int",
+              test_array: "string",
               context_app_build: "string",
               context_app_name: "string",
               context_app_namespace: "string",
@@ -220,6 +241,10 @@ const sampleEvents = {
             path_to_1_000_000: "None",
             _9_omega: true,
             camel_case_123_key: "camel case",
+            test_map_nested_map_n_1: "nested prop 1",
+            t_map_t_1: 10,
+            t_map_t_2: 20,
+            test_array: ["This is", "an", "array"],
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
@@ -260,6 +285,10 @@ const sampleEvents = {
               path_to_$1_000_000: "string",
               _9omega: "boolean",
               camelcase123key: "string",
+              testmap_nestedmap: "json",
+              tmap_t1: "int",
+              tmap_t2: "int",
+              testarray: "json",
               context_app_build: "string",
               context_app_name: "string",
               context_app_namespace: "string",
@@ -295,6 +324,10 @@ const sampleEvents = {
             path_to_$1_000_000: "None",
             _9omega: true,
             camelcase123key: "camel case",
+            testmap_nestedmap: "{\"n1\":\"nested prop 1\"}",
+            tmap_t1: 10,
+            tmap_t2: 20,
+            testarray: "[\"This is\",\"an\",\"array\"]",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
@@ -336,6 +369,9 @@ const sampleEvents = {
               PATH_TO_$1_000_000: "string",
               _9OMEGA: "boolean",
               CAMELCASE123KEY: "string",
+              TESTMAP_NESTEDMAP: "json",
+              TMAP: "json",
+              TESTARRAY: "json",
               CONTEXT_APP_BUILD: "string",
               CONTEXT_APP_NAME: "string",
               CONTEXT_APP_NAMESPACE: "string",
@@ -371,6 +407,9 @@ const sampleEvents = {
             PATH_TO_$1_000_000: "None",
             _9OMEGA: true,
             CAMELCASE123KEY: "camel case",
+            TESTMAP_NESTEDMAP: "{\"n1\":\"nested prop 1\"}",
+            TMAP: "{\"t1\":10,\"t2\":20}",
+            TESTARRAY: "[\"This is\",\"an\",\"array\"]",
             CONTEXT_APP_BUILD: "1.0.0",
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
@@ -474,6 +513,10 @@ const sampleEvents = {
               path_to_1_000_000: "string",
               _9_omega: "boolean",
               camel_case_123_key: "string",
+              test_map_nested_map_n_1: "string",
+              t_map_t_1: "int",
+              t_map_t_2: "int",
+              test_array: "string",
               context_app_build: "string",
               context_app_name: "string",
               context_app_namespace: "string",
@@ -509,6 +552,156 @@ const sampleEvents = {
             path_to_1_000_000: "None",
             _9_omega: true,
             camel_case_123_key: "camel case",
+            test_map_nested_map_n_1: "nested prop 1",
+            t_map_t_1: 10,
+            t_map_t_2: 20,
+            test_array: ["This is", "an", "array"],
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            event_text: "groups",
+            id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.364Z",
+            timestamp: "2020-01-24T06:29:02.403Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.364Z",
+            channel: "web",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            event: "groups"
+          }
+        }
+      ],
+      bq: [
+        {
+          metadata: {
+            table: "tracks",
+            columns: {
+              uuid_ts: "datetime",
+              loaded_at: "datetime",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              event_text: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              event: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            context_app_build: "1.0.0",
+            context_app_name: "RudderLabs JavaScript SDK",
+            context_app_namespace: "com.rudderlabs.javascript",
+            context_app_version: "1.0.5",
+            context_library_name: "RudderLabs JavaScript SDK",
+            context_library_version: "1.0.5",
+            context_locale: "en-GB",
+            context_screen_density: 2,
+            context_traits_city: "Disney",
+            context_traits_country: "USA",
+            context_traits_email: "mickey@disney.com",
+            context_traits_firstname: "Mickey",
+            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            event_text: "groups",
+            id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            user_id: "9bb5d4c2-a7aa-4a36-9efb-dd2b1aec5d33",
+            sent_at: "2020-01-24T06:29:02.364Z",
+            timestamp: "2020-01-24T06:29:02.403Z",
+            received_at: "2020-01-24T06:29:02.403Z",
+            original_timestamp: "2020-01-24T06:29:02.364Z",
+            channel: "web",
+            context_ip: "0.0.0.0",
+            context_request_ip: "[::1]:53708",
+            context_passed_ip: "0.0.0.0",
+            event: "groups"
+          }
+        },
+        {
+          metadata: {
+            table: "_groups",
+            columns: {
+              uuid_ts: "datetime",
+              loaded_at: "datetime",
+              currency: "string",
+              revenue: "int",
+              path_to_1_000_000: "string",
+              _9_omega: "boolean",
+              camel_case_123_key: "string",
+              test_map_nested_map: "string",
+              t_map: "string",
+              test_array: "string",
+              context_app_build: "string",
+              context_app_name: "string",
+              context_app_namespace: "string",
+              context_app_version: "string",
+              context_library_name: "string",
+              context_library_version: "string",
+              context_locale: "string",
+              context_screen_density: "int",
+              context_traits_city: "string",
+              context_traits_country: "string",
+              context_traits_email: "string",
+              context_traits_firstname: "string",
+              context_user_agent: "string",
+              event_text: "string",
+              id: "string",
+              anonymous_id: "string",
+              user_id: "string",
+              sent_at: "datetime",
+              timestamp: "datetime",
+              received_at: "datetime",
+              original_timestamp: "datetime",
+              channel: "string",
+              context_ip: "string",
+              context_request_ip: "string",
+              context_passed_ip: "string",
+              event: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            currency: "USD",
+            revenue: 50,
+            path_to_1_000_000: "None",
+            _9_omega: true,
+            camel_case_123_key: "camel case",
+            test_map_nested_map: "{\"n1\":\"nested prop 1\"}",
+            t_map: "{\"t1\":10,\"t2\":20}",
+            test_array: "[\"This is\",\"an\",\"array\"]",
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
@@ -547,16 +740,18 @@ function opInput(eventType) {
 }
 
 function opOutput(eventType, provider) {
-  if (provider === "snowflake") {
-    return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+  switch (provider) {
+    case "snowflake":
+      return _.cloneDeep(sampleEvents[eventType].output.snowflake);
+    case "s3_datalake":
+      return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
+    case "rs":
+      return _.cloneDeep(sampleEvents[eventType].output.rs);
+    case "bq":
+      return _.cloneDeep(sampleEvents[eventType].output.bq);
+    default:
+      return _.cloneDeep(sampleEvents[eventType].output.default);
   }
-  if (provider === "s3_datalake") {
-    return _.cloneDeep(sampleEvents[eventType].output.s3_datalake);
-  }
-  if (provider === "rs") {
-    return _.cloneDeep(sampleEvents[eventType].output.rs);
-  }
-  return _.cloneDeep(sampleEvents[eventType].output.default);
 }
 
 module.exports = { opInput, opOutput };

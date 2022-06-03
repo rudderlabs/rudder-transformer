@@ -1,87 +1,99 @@
-const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const get = require("get-value");
+const sha256 = require("sha256");
+const { BASE_ENDPOINT, ENDPOINTS } = require("./config");
 const {
   defaultRequestConfig,
-  getFieldValueFromMessage,
-  constructPayload,
-  defaultPostRequestConfig,
-  CustomError
+  CustomError,
+  isDefinedAndNotNullAndNotEmpty,
+  defaultPutRequestConfig,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
-const responseBuilderSimple = (message, { Config }) => {
-  const {
-    clientId,
-    clientSecret,
-    audienceId,
-    accountId,
-    audienceType,
-    hashRequired
-  } = Config;
-  return response;
-};
-
 const populateIdentifiers = (attributeArray, { Config }) => {
-  const userIdentifier = [];
-  const { typeOfList } = Config;
-  const { isHashRequired } = Config;
-  let attribute;
-  return userIdentifier;
-};
-
-const createPayload = (message, destination) => {
-  const { listData } = message.properties;
-  const properties = ["add"];
-
-  let outputPayloads = {};
-  const typeOfOperation = Object.keys(listData);
-  typeOfOperation.forEach(key => {
-    if (properties.includes(key)) {
-      const userIdentifiersList = populateIdentifiers(
-        listData[key],
-        destination
-      );
-      if (userIdentifiersList.length === 0) {
-        logger.info(
-          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`
-        );
-        return;
+  const seedList = [];
+  const { audienceType } = Config;
+  const { hashRequired } = Config;
+  let listType;
+  const AUDIENCE_LIST = ["email", "deviceId", "ipAddress"];
+  if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
+    // traversing through every element in the add array
+    attributeArray.forEach(element => {
+      if (AUDIENCE_LIST.includes(audienceType)) {
+        listType = audienceType;
       }
-
-      const outputPayload = constructPayload(message, offlineDataJobsMapping);
-      outputPayload.operations = [];
-      // breaking the userIdentiFier array in chunks of 20
-      const userIdentifierChunks = returnArrayOfSubarrays(
-        userIdentifiersList,
-        20
-      );
-      // putting each chunk in different create/remove operations
-      switch (key) {
-        case "add":
-          // for add operation
-          userIdentifierChunks.forEach(element => {
-            const operations = {
-              create: {}
-            };
-            operations.create.userIdentifiers = element;
-            outputPayload.operations.push(operations);
-          });
-          outputPayloads = { ...outputPayloads, create: outputPayload };
+      if (!listType) {
+        throw new CustomError(`${audienceType} not provided`, 400);
+      }
+      switch (audienceType) {
+        case "email":
+          if (hashRequired) {
+            seedList.push(sha256(element.email));
+          } else {
+            seedList.push(element.eamil);
+          }
+          break;
+        case "deviceId":
+          if (hashRequired) {
+            seedList.push(sha256(element.deviceId));
+          } else {
+            seedList.push(element.deviceId);
+          }
+          break;
+        case "ipAddress":
+          if (hashRequired) {
+            seedList.push(sha256(element.ipAddress));
+          } else {
+            seedList.push(element.ipAddress);
+          }
           break;
         default:
+          throw new CustomError(
+            `Audience Type "${audienceType}" is not supported`,
+            400
+          );
       }
+    });
+  }
+  return seedList;
+};
+
+const responseBuilder = (message, destination) => {
+  const { listData } = message.properties;
+  const { accountId, audienceId, audienceType } = destination.Config;
+
+  let outputPayload = {};
+  const typeOfOperation = Object.keys(listData);
+  typeOfOperation.forEach(key => {
+    if (key === "add") {
+      const seedList = populateIdentifiers(listData[key], destination);
+      if (seedList.length === 0) {
+        throw new CustomError(
+          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+          400
+        );
+      }
+      if (audienceType === "ipAddress") {
+        outputPayload = { ...outputPayload, seedListType: "SHA256IP" };
+      }
+      outputPayload = { ...outputPayload, accountId, seedList };
     } else {
-      logger.info(
-        `listData "${key}" is not valid. Supported types are "add" and "remove"`
+      throw new CustomError(
+        `listData "${key}" is not valid. Supported types are "add" only`
       );
     }
   });
-
-  return outputPayloads;
+  const response = defaultRequestConfig();
+  response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
+  response.body.JSON = removeUndefinedAndNullValues(outputPayload);
+  response.method = defaultPutRequestConfig;
+  //   const accessToken = getAccessToken(metadata);
+  response.headers = {
+    // Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json"
+  };
+  return response;
 };
 
 const processEvent = (message, destination) => {
-  const response = [];
   if (!message.type) {
     throw new CustomError(
       "[Yahoo_DSP]::Message Type is not present. Aborting message.",
@@ -100,23 +112,11 @@ const processEvent = (message, destination) => {
       400
     );
   }
+  let response;
   if (message.type.toLowerCase() === "audiencelist") {
-    const createdPayload = createPayload(message, destination);
-
-    if (!Object.keys(createdPayload).length) {
-      throw new CustomError(
-        "[Yahoo_DSP]:: 'add' property is not present inside 'listData' or there are no attributes inside 'add' properties matching with the schema fields. Aborting message.",
-        400
-      );
-    }
-
-    Object.values(createdPayload).forEach(data => {
-      response.push(responseBuilder(metadata, data, destination));
-    });
-    return response;
+    response = responseBuilder(message, destination);
   }
-
-  return responseBuilderSimple(message, destination);
+  return response;
 };
 
 const process = event => {

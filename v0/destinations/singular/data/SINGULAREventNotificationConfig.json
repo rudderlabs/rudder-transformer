@@ -20,26 +20,6 @@
     "required": true
   },
   {
-    "destKey": "idfa",
-    "sourceKeys": "context.device.advertisingId",
-    "required": true
-  },
-  {
-    "destKey": "idfv",
-    "sourceKeys": "context.device.id",
-    "required": true
-  },
-  {
-    "destKey": "aifa",
-    "sourceKeys": "context.device.advertisingId",
-    "required": true
-  },
-  {
-    "destKey": "andi",
-    "sourceKeys": "context.device.id",
-    "required": true
-  },
-  {
     "destKey": "ve",
     "sourceKeys": "context.os.version",
     "required": true

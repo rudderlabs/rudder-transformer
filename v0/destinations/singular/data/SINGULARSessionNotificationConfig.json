@@ -2,18 +2,6 @@
   {
     "destKey": "p",
     "sourceKeys": "context.os.name",
-    "metadata": {
-      "multikeyMap": [
-        {
-          "sourceVal": ["android", "Android", "ANDROID"],
-          "destVal": "Android"
-        },
-        {
-          "sourceVal": ["ios", "Ios", "IOS", "iOS"],
-          "destVal": "iOS"
-        }
-      ]
-    },
     "required": true
   },
   {
@@ -49,26 +37,6 @@
   {
     "destKey": "lc",
     "sourceKeys": "context.locale",
-    "required": true
-  },
-  {
-    "destKey": "idfa",
-    "sourceKeys": "context.device.advertisingId",
-    "required": true
-  },
-  {
-    "destKey": "idfv",
-    "sourceKeys": "context.device.id",
-    "required": true
-  },
-  {
-    "destKey": "aifa",
-    "sourceKeys": "context.device.advertisingId",
-    "required": true
-  },
-  {
-    "destKey": "andi",
-    "sourceKeys": "context.device.id",
     "required": true
   },
   {

@@ -1,4 +1,3 @@
-const { EventType } = require("../../../constants");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -11,8 +10,10 @@ const {
   CustomError,
   ErrorMessage,
   defaultGetRequestConfig,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullAndEmptyValues,
+  isAppleFamily
 } = require("../../util");
+const get = require("get-value");
 
 const responseBuilderSimple = (message, { Config }) => {
   let eventType = message.event;
@@ -27,12 +28,19 @@ const responseBuilderSimple = (message, { Config }) => {
       // fail-safety for developer error
       throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
     }
+    if (isAppleFamily(sessionPayload.p)) {
+      sessionPayload.idfa = get(message, "context.device.advertisingId");
+      sessionPayload.idfv = get(message, "context.device.id");
+    } else if (sessionPayload.p.toLowerCase() === "android") {
+      sessionPayload.aifa = get(message, "context.device.advertisingId");
+      sessionPayload.andi = get(message, "context.device.id");
+    }
     /*
         if att_authorization_status is true then dnt will be false,
         else by default dnt value is true
     */
     sessionPayload.dnt = !sessionPayload.att_authorization_status;
-    response.endpoint = `${BASE_URL}/launch&a=${Config.apiKey}`;
+    response.endpoint = `${BASE_URL}/launch?a=${Config.apiKey}&`;
     response.params = removeUndefinedAndNullAndEmptyValues(sessionPayload);
   } else {
     const eventPayload = constructPayload(
@@ -43,7 +51,14 @@ const responseBuilderSimple = (message, { Config }) => {
       // fail-safety for developer error
       throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
     }
-    response.endpoint = `${BASE_URL}/evt&a=${Config.apiKey}`;
+    if (isAppleFamily(eventPayload.p)) {
+      eventPayload.idfa = get(message, "context.device.advertisingId");
+      eventPayload.idfv = get(message, "context.device.id");
+    } else if (eventPayload.p.toLowerCase() === "android") {
+      eventPayload.aifa = get(message, "context.device.advertisingId");
+      eventPayload.andi = get(message, "context.device.id");
+    }
+    response.endpoint = `${BASE_URL}/evt?a=${Config.apiKey}&`;
     response.params = removeUndefinedAndNullAndEmptyValues(eventPayload);
   }
   response.method = defaultGetRequestConfig.requestMethod;

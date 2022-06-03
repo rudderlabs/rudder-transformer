@@ -316,34 +316,8 @@ function batchEvents(arrayChunks) {
 }
 
 function getEventChunks(event, identifyResponseList, eventsChunk) {
-  // Do not apply batching if the payload contains test_event_code
-  // which corresponds to track endpoint
-  if (event.message.body.JSON.test_event_code) {
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
-    delete message.body.JSON.type;
-
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
-
-    identifyResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination
-      )
-    );
-  } else {
-    // build eventsChunk of MAX_BATCH_SIZE
-    eventsChunk.push(event);
-  }
+  // build eventsChunk of MAX_BATCH_SIZE
+  eventsChunk.push(event);
 }
 
 const processRouterDest = async inputs => {

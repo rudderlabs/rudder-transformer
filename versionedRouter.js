@@ -68,7 +68,7 @@ const isRouteIncluded = path => {
 };
 
 const isRouteExcluded = path => {
-  const excludeRoutes = ["/v0/sources/webhook"];
+  const excludeRoutes = ["/v0/sources/webhook", "/proxy"];
   // eslint-disable-next-line no-restricted-syntax
   for (const route of excludeRoutes) {
     if (path.includes(route)) return false;

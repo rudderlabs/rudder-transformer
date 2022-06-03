@@ -390,36 +390,38 @@ function trackResponseBuilder(message, { Config }) {
 
     // exclusion list for login/signup and generate_lead
     const GA4_IDENTIFY_EXCLUSION = [];
+    GA4_IDENTIFY_EXCLUSION.push(`${Config.signupTrait}`);
     GA4_IDENTIFY_EXCLUSION.push(`${Config.loginSignupMethod}`);
     GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadValueTrait}`);
     GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadCurrencyTrait}`);
 
     switch (event) {
       case "login":
-      case "sign_up":
+      case "sign_up": {
         const method = traits[`${Config.loginSignupMethod}`];
 
         if (method) {
-          payload.params = method; // method: "Google"
+          payload.params = { method }; // method: "Google"
         }
 
         break;
+      }
       case "generate_lead": {
-        const parameter = {};
+        let parameter = {};
         parameter.value = parseFloat(
           traits[`${Config.generateLeadValueTrait}`]
         );
         parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
         parameter = removeUndefinedAndNullValues(parameter);
 
-        if (!isDefinedAndNotNullAndNotEmpty(parameter.value)) {
+        if (!isDefinedAndNotNull(parameter.value)) {
           throw new CustomError(
-            `[GA4] Identify:: ${Config.generateLeadValueTrait} (key provided from config) is a required field`,
+            `[GA4] Identify:: ${Config.generateLeadValueTrait} is a required field in traits`,
             400
           );
         }
 
-        if (!isDefinedAndNotNullAndNotEmpty(parameter.currency)) {
+        if (!isDefinedAndNotNull(parameter.currency)) {
           parameter.currency = "USD";
         }
 
@@ -430,12 +432,17 @@ function trackResponseBuilder(message, { Config }) {
         break;
     }
 
-    payload.params = extractCustomFields(
+    let customParameters = {};
+    customParameters = extractCustomFields(
       message,
-      payload.params,
+      customParameters,
       ["traits", "context.traits"],
       GA4_IDENTIFY_EXCLUSION
     );
+
+    if (customParameters) {
+      payload.params = { ...payload.params, ...customParameters };
+    }
   } else if (message.type === "group") {
     // group event
     payload.name = event;
@@ -577,11 +584,11 @@ function process(event) {
         const firstLogin = traits[`${Config.signupTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
-            `[GA4] Idenitfy:: ${Config.signupTrait} (key provided from config) is a required field`,
+            `[GA4] Idenitfy:: ${Config.signupTrait} is a required field in traits`,
             400
           );
         }
-        if (!!firstLogin) {
+        if (firstLogin) {
           message.event = "sign_up";
         } else {
           message.event = "login";
@@ -594,6 +601,13 @@ function process(event) {
       if (Config.generateLead) {
         message.event = "generate_lead";
         response.push(trackResponseBuilder(message, destination));
+      }
+
+      if (response.length === 0) {
+        throw new CustomError(
+          "[GA4] Idenitfy:: Server side identify is not enabled",
+          400
+        );
       }
 
       break;

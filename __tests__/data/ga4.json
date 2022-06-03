@@ -9450,5 +9450,736 @@
       },
       "files": {}
     }
+  },
+  {
+    "description": "(gtag) message type group -> 'join_group' with custom event",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "group",
+        "traits": {
+          "custom1": 1234,
+          "custom2": "custom2"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": false,
+          "generateLead": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://www.google-analytics.com/mp/collect",
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "body": {
+        "JSON": {
+          "timestamp_micros": 1650950229000000,
+          "non_personalized_ads": true,
+          "client_id": "client_id",
+          "events": [
+            {
+              "name": "join_group",
+              "params": {
+                "custom1": 1234,
+                "custom2": "custom2"
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "[Error] GA4: Sending Identify event without enabling the settings from webapp",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "identify",
+        "traits": {
+          "custom1": 1234,
+          "custom2": "custom2"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": false,
+          "generateLead": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[GA4] Idenitfy:: Server side identify is not enabled",
+      "statTags": {
+        "destination": "ga4",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "[Error] GA4: Idenitfy event without providing traits properties",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "identify",
+        "traits": {
+          "custom1": 1234,
+          "custom2": "custom2"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": true,
+          "signupTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[GA4] Idenitfy:: firstLogin is a required field in traits",
+      "statTags": {
+        "destination": "ga4",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "GA4: Identify sign_up event",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "identify",
+        "traits": {
+          "firstLogin": true,
+          "Cust1": 1234,
+          "method": "Google"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": true,
+          "signupTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://www.google-analytics.com/mp/collect",
+        "headers": {
+          "HOST": "www.google-analytics.com",
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurement_id": "G-T40PE6KET4"
+        },
+        "body": {
+          "JSON": {
+            "timestamp_micros": 1650950229000000,
+            "non_personalized_ads": true,
+            "client_id": "client_id",
+            "events": [
+              {
+                "name": "sign_up",
+                "params": {
+                  "method": "Google",
+                  "Cust1": 1234
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "(GA4): sending generate_lead event for identify",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "identify",
+        "traits": {
+          "value": 10,
+          "cust1": 1234
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": false,
+          "generateLead": true,
+          "generateLeadValueTrait": "value",
+          "generateLeadCurrencyTrait": "currency"
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://www.google-analytics.com/mp/collect",
+        "headers": {
+          "HOST": "www.google-analytics.com",
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurement_id": "G-T40PE6KET4"
+        },
+        "body": {
+          "JSON": {
+            "timestamp_micros": 1650950229000000,
+            "non_personalized_ads": true,
+            "client_id": "client_id",
+            "events": [
+              {
+                "name": "generate_lead",
+                "params": {
+                  "value": 10,
+                  "currency": "USD",
+                  "cust1": 1234
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "(gtag): sending login/signup event and generate_login event for identify",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "identify",
+        "traits": {
+          "firstLogin": true,
+          "method": "Google",
+          "value": 10,
+          "cust1": 1234
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "sendLoginSignup": true,
+          "signupTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": true,
+          "generateLeadValueTrait": "value",
+          "generateLeadCurrencyTrait": "currency"
+        },
+        "Enabled": true
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://www.google-analytics.com/mp/collect",
+        "headers": {
+          "HOST": "www.google-analytics.com",
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurement_id": "G-T40PE6KET4"
+        },
+        "body": {
+          "JSON": {
+            "timestamp_micros": 1650950229000000,
+            "non_personalized_ads": true,
+            "client_id": "client_id",
+            "events": [
+              {
+                "name": "sign_up",
+                "params": {
+                  "method": "Google",
+                  "cust1": 1234
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://www.google-analytics.com/mp/collect",
+        "headers": {
+          "HOST": "www.google-analytics.com",
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurement_id": "G-T40PE6KET4"
+        },
+        "body": {
+          "JSON": {
+            "timestamp_micros": 1650950229000000,
+            "non_personalized_ads": true,
+            "client_id": "client_id",
+            "events": [
+              {
+                "name": "generate_lead",
+                "params": {
+                  "value": 10,
+                  "currency": "USD",
+                  "cust1": 1234
+                }
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   }
 ]

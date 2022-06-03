@@ -13,7 +13,8 @@ const {
   CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
-  defaultDeleteRequestConfig
+  defaultDeleteRequestConfig,
+  getIntegrationsObj
 } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -27,11 +28,9 @@ const getPropertyParams = message => {
 function process(event) {
   try {
     const { message, destination } = event;
+    const integrationsObj = getIntegrationsObj(message, "webhook");
     // set context.ip from request_ip if it is missing
-    if (
-      !get(message, "context.ip") &&
-      isDefinedAndNotNull(message.request_ip)
-    ) {
+    if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
       set(message, "context.ip", message.request_ip);
     }
     const response = defaultRequestConfig();
@@ -120,8 +119,11 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.fullPath && typeof message.fullPath === "string") {
-        response.endpoint = message.fullPath;
+      if (
+        (message.fullPath && typeof message.fullPath === "string") ||
+        (integrationsObj && integrationsObj.fullPath && typeof integrationsObj.fullPath === "string")
+      ) {
+        response.endpoint = message.fullPath || integrationsObj.fullPath;
         delete message.fullPath;
       }
 
@@ -133,8 +135,11 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.appendPath && typeof message.appendPath === "string") {
-        response.endpoint += message.appendPath;
+      if (
+        (message.appendPath && typeof message.appendPath === "string") ||
+        (integrationsObj && integrationsObj.appendPath && typeof integrationsObj.appendPath === "string")
+      ) {
+        response.endpoint += message.appendPath || integrationsObj.appendPath;
         delete message.appendPath;
       }
 
@@ -142,10 +147,7 @@ function process(event) {
     }
     throw new CustomError("Invalid URL in destination config", 400);
   } catch (err) {
-    throw new CustomError(
-      err.message || "[webhook] Failed to process request",
-      err.status || 400
-    );
+    throw new CustomError(err.message || "[webhook] Failed to process request", err.status || 400);
   }
 }
 
@@ -160,26 +162,14 @@ const processRouterDest = async inputs => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          return getSuccessRespEvents(input.message, [input.metadata], input.destination);
         }
         // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
+        return getSuccessRespEvents(await process(input), [input.metadata], input.destination);
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code ? error.code : 400,
           error.message || "Error occurred while processing payload."
         );
       }

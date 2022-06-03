@@ -75,6 +75,7 @@
           "FIRSTNAME": "Bob"
         },
         "status": "subscribed",
+        "userId": "userId12345",
         "email_address": "bob.dole@initech.com"
       },
       "XML": {},
@@ -89,7 +90,7 @@
   },
   {
     "statusCode": 400,
-    "error": "email is required for identify",
+    "error": "Missing required value from \"email\"",
     "statTags": {
       "destination": "mailchimp",
       "stage": "transform",
@@ -103,7 +104,6 @@
       "JSON": {
         "status": "subscribed",
         "userId": "userId12345",
-        "merge_fields": {},
         "email_address": "jhon@gmail.com"
       },
       "JSON_ARRAY": {}
@@ -125,7 +125,6 @@
       "XML": {},
       "FORM": {},
       "JSON": {
-        "merge_fields": {},
         "userId": "userId12345",
         "email_address": "bob.dole@initech.com",
         "status": "subscribed"

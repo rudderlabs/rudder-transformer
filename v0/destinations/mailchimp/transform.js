@@ -36,16 +36,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const { apiKey, datacenterId } = Config;
   let { audienceId } = Config;
 
-  const { email } = message.context.traits;
+  const email = getFieldValueFromMessage(message, "email");
 
   if (!email) {
     throw new CustomError("Email is required for identify calls ", 400);
-  }
-
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
-    addExternalIdToTraits(message);
-    return getFieldValueFromMessage(message, "traits");
   }
 
   const mailChimpExists = get(message, "context.MailChimp");

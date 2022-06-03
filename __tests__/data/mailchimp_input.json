@@ -360,9 +360,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "a778c0e40f1bb131670bd1fff6d0b51f-us13",
+        "audienceId": "522145a1f6",
+        "datacenterId": "us13"
       },
       "Enabled": true,
       "Transformations": []

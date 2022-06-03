@@ -3,8 +3,8 @@
     "batchedRequest": {
       "version": "1",
       "type": "REST",
-      "method": "PUT",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+      "method": "POST",
+      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07?skip_merge_validation=<false&skip_duplicate_check=true",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
@@ -12,12 +12,23 @@
       "params": {},
       "body": {
         "JSON": {
-          "merge_fields": {
-            "FIRSTNAME": "Bob",
-            "LASTNAME": "Dole",
-            "anonymousI": "userId12345"
-          },
-          "email_address": "bob.dole@initech.com"
+          "members": [
+            {
+              "merge_fields": {
+                "FIRSTNAME": "Bob",
+                "LASTNAME": "Dole",
+                "anonymousI": "userId12345"
+              },
+              "email_address": "bob.dole@initech.com"
+            },
+            {
+              "status": "subscribed",
+              "email_address": "bob.dole@initech.com",
+              "merge_fields": {
+                "anonymousI": "userId12345"
+              }
+            }
+          ]
         },
         "XML": {},
         "JSON_ARRAY": {},
@@ -29,9 +40,12 @@
     "metadata": [
       {
         "jobId": 2
+      },
+      {
+        "jobId": 3
       }
     ],
-    "batched": false,
+    "batched": true,
     "statusCode": 200,
     "destination": {
       "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
@@ -45,57 +59,6 @@
         "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
         "audienceId": "df42a82d07",
         "datacenterId": "us20"
-      },
-      "Enabled": true,
-      "Transformations": []
-    }
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "PUT",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "status": "subscribed",
-          "email_address": "bob.dole@initech.com",
-          "merge_fields": {
-            "anonymousI": "userId12345"
-          }
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "userId12345"
-    },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
-      "Name": "test-mc",
-      "DestinationDefinition": {
-        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
-        "Name": "MC",
-        "DisplayName": "MailChimp"
-      },
-      "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
-        "enableMergeFields": true
       },
       "Enabled": true,
       "Transformations": []

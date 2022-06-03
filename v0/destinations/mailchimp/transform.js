@@ -16,9 +16,12 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  defaultBatchRequestConfig
 } = require("../../util");
 const logger = require("../../../logger");
+
+const MAX_BATCH_SIZE = 10;
 
 // Converts to upper case and removes spaces
 function filterTagValue(tag) {
@@ -252,43 +255,163 @@ async function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+function batchEvents(arrayChunks) {
+  const batchedResponseList = [];
+
+  // list of chunks [ [..], [..] ]
+  arrayChunks.forEach(chunk => {
+    const batchResponseList = [];
+    const metadata = [];
+
+    // extracting destination
+    // from the first event in a batch
+    const { destination, message } = chunk[0];
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    // Batch event into dest batch structure
+    chunk.forEach(ev => {
+      batchResponseList.push(ev.message.body.JSON);
+      metadata.push(ev.metadata);
+    });
+
+    batchEventResponse.batchedRequest.body.JSON = {
+      members: batchResponseList
+    };
+
+    const BASE_URL = `https://${destination.Config.datacenterId}.api.mailchimp.com/3.0/lists/${destination.Config.audienceId}`;
+
+    const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=<false&skip_duplicate_check=true`;
+
+    batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
+
+    const basicAuth = Buffer.from(
+      `apiKey:${destination.Config.apiKey}`
+    ).toString("base64");
+
+    batchEventResponse.batchedRequest.userId = message.userId
+      ? message.userId
+      : message.anonymousId;
+
+    batchEventResponse.batchedRequest.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${basicAuth}`
+    };
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList;
+}
+
+function getEventChunks(event, identifyResponseList, eventsChunk) {
+  // Do not apply batching if the payload contains test_event_code
+  // which corresponds to track endpoint
+  if (event.message.body.JSON.test_event_code) {
+    const { message, metadata, destination } = event;
+    const endpoint = get(message, "endpoint");
+    delete message.body.JSON.type;
+
+    const batchedResponse = defaultBatchRequestConfig();
+    batchedResponse.batchedRequest.headers = message.headers;
+    batchedResponse.batchedRequest.endpoint = endpoint;
+    batchedResponse.batchedRequest.body = message.body;
+    batchedResponse.batchedRequest.params = message.params;
+    batchedResponse.batchedRequest.method =
+      defaultPostRequestConfig.requestMethod;
+    batchedResponse.metadata = [metadata];
+    batchedResponse.destination = destination;
+
+    identifyResponseList.push(
+      getSuccessRespEvents(
+        batchedResponse.batchedRequest,
+        batchedResponse.metadata,
+        batchedResponse.destination
+      )
+    );
+  } else {
+    // build eventsChunk of MAX_BATCH_SIZE
+    eventsChunk.push(event);
+  }
+}
+
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
-    inputs.map(async input => {
+  const identifyResponseList = []; // list containing single track event in batched format
+  let eventsChunk = []; // temporary variable to divide payload into chunks
+  const arrayChunks = []; // transformed payload of (n) batch size
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async (event, index) => {
       try {
-        if (input.message.statusCode) {
+        if (event.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
+          getEventChunks(event, identifyResponseList, eventsChunk);
+          // slice according to batch size
+          if (
+            eventsChunk.length &&
+            (eventsChunk.length >= MAX_BATCH_SIZE ||
+              index === inputs.length - 1)
+          ) {
+            arrayChunks.push(eventsChunk);
+            eventsChunk = [];
+          }
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination
+            },
+            identifyResponseList,
+            eventsChunk
           );
+          // slice according to batch size
+          if (
+            eventsChunk.length &&
+            (eventsChunk.length >= MAX_BATCH_SIZE ||
+              index === inputs.length - 1)
+          ) {
+            arrayChunks.push(eventsChunk);
+            eventsChunk = [];
+          }
         }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+        errorRespList.push(
+          getErrorRespEvents(
+            [event.metadata],
+            error.response ? error.response.status : 400,
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+
+  let batchedResponseList = [];
+  if (arrayChunks.length) {
+    batchedResponseList = await batchEvents(arrayChunks);
+  }
+  return [
+    ...batchedResponseList.concat(identifyResponseList),
+    ...errorRespList
+  ];
 };
 
 module.exports = { process, processRouterDest };

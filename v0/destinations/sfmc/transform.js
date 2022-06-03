@@ -17,7 +17,9 @@ const {
   CustomError,
   isEmpty
 } = require("../../util");
-const { nodeSysErrorToStatus } = require("../../../adapters/utils/networkUtils");
+const {
+  nodeSysErrorToStatus
+} = require("../../../adapters/utils/networkUtils");
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
@@ -289,8 +291,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }

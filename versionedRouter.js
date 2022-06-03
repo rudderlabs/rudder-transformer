@@ -283,7 +283,7 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   versions.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
-    destinations.push (...getIntegrations(CDK_DEST_PATH));
+    destinations.push(...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
@@ -467,7 +467,11 @@ if (startDestTransformer) {
               stats.timing(
                 "user_transform_function_latency",
                 userFuncStartTime,
-                { transformationVersionId, processSessions, ...metaTags }
+                {
+                  transformationVersionId,
+                  processSessions,
+                  ...metaTags
+                }
               );
             }
           } else {
@@ -492,7 +496,9 @@ if (startDestTransformer) {
       stats.timing("user_transform_request_latency", startTime, {
         processSessions
       });
-      stats.increment("user_transform_requests", 1, { processSessions });
+      stats.increment("user_transform_requests", 1, {
+        processSessions
+      });
       stats.counter("user_transform_output_events", transformedEvents.length, {
         processSessions
       });
@@ -565,7 +571,9 @@ async function handleSource(ctx, version, source) {
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
-          respList.push({ output: { batch: [respEvents] } });
+          respList.push({
+            output: { batch: [respEvents] }
+          });
         }
       } catch (error) {
         logger.error(error);
@@ -601,7 +609,10 @@ if (startSourceTransformer) {
           source,
           version
         });
-        stats.increment("source_transform_requests", 1, { source, version });
+        stats.increment("source_transform_requests", 1, {
+          source,
+          version
+        });
       });
     });
   });

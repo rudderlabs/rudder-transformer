@@ -1,6 +1,6 @@
 const { Utils } = require("rudder-transformer-cdk");
 
- const eventNameMapping = {
+const eventNameMapping = {
   "product added": "Add to Cart",
   "product added to wishlist": "Add to Wishlist",
   "checkout started": "Checkout Start",
@@ -13,14 +13,14 @@ function processExtraPayloadParams(event, mappedPayload) {
   const { message } = event;
   let eventName = message.event;
   const eventData = message.properties || {};
-  switch(message.type.toLowerCase()) {
-    case 'screen':
+  switch (message.type.toLowerCase()) {
+    case "screen":
       eventName = "screen view";
       if (message.properties && message.properties.name) {
         eventName += ` ${message.properties.name}`;
       }
       break;
-    case 'track':
+    case "track":
       if (eventName) {
         const evName = eventName.toLowerCase();
         if (eventNameMapping[evName] !== undefined) {
@@ -28,7 +28,7 @@ function processExtraPayloadParams(event, mappedPayload) {
         }
       }
       break;
-  };
+  }
 
   const extraParams = {
     // This kind of formatting multiple fields into a single one
@@ -36,40 +36,44 @@ function processExtraPayloadParams(event, mappedPayload) {
     app_tracking_transparency: {
       att: message.context?.device?.attTrackingStatus === 3 || false
     },
-    device_ver: message.context?.device?.model &&
-      message.context?.os?.version
+    device_ver:
+      message.context?.device?.model && message.context?.os?.version
         ? `${message.context?.device?.model}-${message.context?.os?.name}-${message.context?.os?.version}`
         : "",
     device_ids: {
-      idfa: message.context?.os?.name &&
+      idfa:
+        message.context?.os?.name &&
         Utils.isAppleFamily(message.context?.os?.name)
           ? message.context?.device?.advertisingId || ""
           : "",
-      idfv: message.context?.os?.name &&
+      idfv:
+        message.context?.os?.name &&
         Utils.isAppleFamily(message.context?.os?.name)
           ? message.context?.device?.id || message.anonymousId || ""
           : "",
-      adid: message.context?.os?.name &&
+      adid:
+        message.context?.os?.name &&
         message.context.os.name.toLowerCase() === "android"
           ? message.context?.device?.advertisingId || ""
           : "",
-      android_id: message.context?.os?.name &&
+      android_id:
+        message.context?.os?.name &&
         message.context.os.name.toLowerCase() === "android"
           ? message.context?.device?.id || message.anonymousId || ""
-          : "",
+          : ""
     },
     event_name: eventName,
     device_ua: message.context?.userAgent || "",
-    currency: eventData?.currency || "USD",
+    currency: eventData?.currency || "USD"
   };
-  mappedPayload.data = { ...mappedPayload.data, ...extraParams }
+  mappedPayload.data = { ...mappedPayload.data, ...extraParams };
   // Note: "defaultValue" cannot be empty string hence had to manually set it here since kochava requires it
-  if (Utils.getValueFromMessage(message, 'context.os.version') === '') {
-    mappedPayload.data.os_version = ''
+  if (Utils.getValueFromMessage(message, "context.os.version") === "") {
+    mappedPayload.data.os_version = "";
   }
-  return mappedPayload
+  return mappedPayload;
 }
 
 module.exports = {
   processExtraPayloadParams
-}; 
+};

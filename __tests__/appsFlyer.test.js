@@ -34,7 +34,7 @@
 //       expect(error.message).toEqual(expectedData[index].error);
 //     }
 //   });
-  
+
 // });
 
 // describe(`${name} Tests`, () => {
@@ -48,8 +48,10 @@
 
 // });
 
-const { getDestFromTestFile, executeTransformationTest } = require("./utilities/test-utils");
+const {
+  getDestFromTestFile,
+  executeTransformationTest
+} = require("./utilities/test-utils");
 
-executeTransformationTest('af','processor')
-executeTransformationTest('af','router')
-
+executeTransformationTest("af", "processor");
+executeTransformationTest("af", "router");

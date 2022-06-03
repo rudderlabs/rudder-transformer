@@ -159,7 +159,8 @@ const sampleEvents = {
             context_traits_country: "USA",
             context_traits_email: "mickey@disney.com",
             context_traits_firstname: "Mickey",
-            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
             event_text: "groups",
             id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
             anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -232,7 +233,8 @@ const sampleEvents = {
             context_traits_country: "USA",
             context_traits_email: "mickey@disney.com",
             context_traits_firstname: "Mickey",
-            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
             event_text: "groups",
             id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
             anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -383,7 +385,8 @@ const sampleEvents = {
             CONTEXT_TRAITS_COUNTRY: "USA",
             CONTEXT_TRAITS_EMAIL: "mickey@disney.com",
             CONTEXT_TRAITS_FIRSTNAME: "Mickey",
-            CONTEXT_USERAGENT: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            CONTEXT_USERAGENT:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
             EVENT_TEXT: "groups",
             ID: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
             ANONYMOUS_ID: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -448,7 +451,8 @@ const sampleEvents = {
             context_traits_country: "USA",
             context_traits_email: "mickey@disney.com",
             context_traits_firstname: "Mickey",
-            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
             event_text: "groups",
             id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
             anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -521,7 +525,8 @@ const sampleEvents = {
             context_traits_country: "USA",
             context_traits_email: "mickey@disney.com",
             context_traits_firstname: "Mickey",
-            context_user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+            context_user_agent:
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
             event_text: "groups",
             id: "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
             anonymous_id: "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",

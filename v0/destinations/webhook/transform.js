@@ -98,9 +98,9 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.fullPath && typeof message.fullPath === "string" ) {
+      if (message.fullPath && typeof message.fullPath === "string") {
         response.endpoint = message.fullPath;
-        delete message.fullPath
+        delete message.fullPath;
       }
 
       // Similar hack as above to adding dynamic path to base url, probably needs a regex eventually
@@ -111,9 +111,9 @@ function process(event) {
       //
       //   return event;
       // }
-      if (message.appendPath && typeof message.appendPath === "string" ) {
+      if (message.appendPath && typeof message.appendPath === "string") {
         response.endpoint += message.appendPath;
-        delete message.appendPath
+        delete message.appendPath;
       }
 
       return response;

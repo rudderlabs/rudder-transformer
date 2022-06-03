@@ -1,4 +1,7 @@
-const { getDestFromTestFile, executeTransformationTest } = require("./utilities/test-utils");
+const {
+  getDestFromTestFile,
+  executeTransformationTest
+} = require("./utilities/test-utils");
 
-executeTransformationTest(getDestFromTestFile(__filename), 'processor')
+executeTransformationTest(getDestFromTestFile(__filename), "processor");
 // executeTransformationTest(getDestFromTestFile(__filename), 'router')

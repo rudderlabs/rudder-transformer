@@ -12,9 +12,8 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const outputData = JSON.parse(outputDataFile);
 
-
-describe('Test Router Tests', () => {
-  it('should fail with error on not receiving events array', async () => {
+describe("Test Router Tests", () => {
+  it("should fail with error on not receiving events array", async () => {
     try {
       const dest = "dummy";
       const ctxMock = {
@@ -24,20 +23,19 @@ describe('Test Router Tests', () => {
         set: (a, b) => {}
       };
       await handleTestEvent(ctxMock, dest.toLowerCase());
-    }
-    catch (error) {
+    } catch (error) {
       expect(error.message).toEqual("events array is required in payload");
     }
   });
 
-  describe('API Response tests', () => {
+  describe("API Response tests", () => {
     inputData.forEach((input, index) => {
       const dest = input.destination.destinationDefinition.name;
       const ctxMock = {
         request: {
           body: {
             events: [input]
-          },
+          }
         },
         set: (a, b) => {}
       };

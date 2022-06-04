@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require("uuid");
 const {
   isObject,
   isBlank,
+  isValidJsonPathKey,
+  getKeysFromJsonPaths,
   validTimestamp,
   getVersionedUtils,
   isRudderSourcesEvent
@@ -31,7 +33,7 @@ const maxColumnsInEvent = parseInt(
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
   process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
 
-const getDataType = (key, val, options) => {
+const getDataType = (key, val, options, jsonKey = false) => {
   const type = typeof val;
   switch (type) {
     case "number":
@@ -48,7 +50,7 @@ const getDataType = (key, val, options) => {
     options.getDataTypeOverride &&
     typeof options.getDataTypeOverride === "function"
   ) {
-    return options.getDataTypeOverride(key, val, options) || "string";
+    return options.getDataTypeOverride(key, val, options, jsonKey) || "string";
   }
   return "string";
 };
@@ -90,6 +92,39 @@ function excludeRudderCreatedTableNames(
     return `_${name}`;
   }
   return name;
+}
+
+function appendColumnNameAndType(
+  utils,
+  eventType,
+  key,
+  val,
+  output,
+  columnTypes,
+  options,
+  jsonKey = false
+) {
+  let datatype = getDataType(key, val, options, jsonKey);
+
+  if (datatype === "datetime") {
+    val = new Date(val).toISOString();
+  }
+
+  let safeKey = utils.transformColumnName(options, key);
+  if (safeKey !== "") {
+    safeKey = utils.safeColumnName(options, safeKey);
+    // remove rudder reserved columns name if set by user
+    if (
+      rudderReservedColums[eventType] &&
+      rudderReservedColums[eventType][safeKey.toLowerCase()]
+    ) {
+      return;
+    }
+    // eslint-disable-next-line no-param-reassign
+    output[safeKey] = val;
+    // eslint-disable-next-line no-param-reassign
+    columnTypes[safeKey] = datatype;
+  }
 }
 
 /*
@@ -191,6 +226,24 @@ function setDataFromInputAndComputeColumnTypes(
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (
+      isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)
+    ) {
+      if (isBlank(input[key])) {
+        return;
+      }
+
+      const val = JSON.stringify(input[key]);
+      appendColumnNameAndType(
+        utils,
+        eventType,
+        `${prefix + key}`,
+        val,
+        output,
+        columnTypes,
+        options,
+        true
+      );
+    } else if (
       isObject(input[key]) &&
       (options.sourceCategory !== "cloud" || level < 3)
     ) {
@@ -217,26 +270,15 @@ function setDataFromInputAndComputeColumnTypes(
       ) {
         val = JSON.stringify(val);
       }
-
-      const datatype = getDataType(key, val, options);
-      if (datatype === "datetime") {
-        val = new Date(val).toISOString();
-      }
-      let safeKey = utils.transformColumnName(options, prefix + key);
-      if (safeKey !== "") {
-        safeKey = utils.safeColumnName(options, safeKey);
-        // remove rudder reserved columns name if set by user
-        if (
-          rudderReservedColums[eventType] &&
-          rudderReservedColums[eventType][safeKey.toLowerCase()]
-        ) {
-          return;
-        }
-        // eslint-disable-next-line no-param-reassign
-        output[safeKey] = val;
-        // eslint-disable-next-line no-param-reassign
-        columnTypes[safeKey] = datatype;
-      }
+      appendColumnNameAndType(
+        utils,
+        eventType,
+        `${prefix + key}`,
+        val,
+        output,
+        columnTypes,
+        options
+      );
     }
   });
 }
@@ -295,6 +337,17 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
     // eslint-disable-next-line no-param-reassign
     columnTypes[colName] = fullEventColumnTypeByProvider[options.provider];
   }
+}
+
+function addJsonKeysToOptions(options) {
+  // Add json key paths from integration options and destination config
+  const jsonPaths = Array.isArray(options.integrationOptions?.jsonPaths)
+    ? options.integrationOptions.jsonPaths
+    : [];
+  if (options.destJsonPaths) {
+    jsonPaths.push(...options.destJsonPaths.split(","));
+  }
+  options.jsonKeys = getKeysFromJsonPaths(jsonPaths);
 }
 
 /*
@@ -507,7 +560,8 @@ function processWarehouseMessage(message, options) {
         "options": {
           "skipReservedKeywordsEscaping": true,
           "skipTracksTable": true,
-          "useBlendoCasing": true
+          "useBlendoCasing": true,
+          "jsonPaths": [ "array_col", "json_col" ]
         }
       }
     }
@@ -521,6 +575,8 @@ function processWarehouseMessage(message, options) {
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
+
+  addJsonKeysToOptions(options);
 
   if (isBlank(message.messageId)) {
     const randomID = uuidv4();
@@ -1010,5 +1066,6 @@ function processWarehouseMessage(message, options) {
 module.exports = {
   processWarehouseMessage,
   fullEventColumnTypeByProvider,
-  getDataType
+  getDataType,
+  setDataFromInputAndComputeColumnTypes
 };

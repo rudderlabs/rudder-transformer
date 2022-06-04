@@ -8,7 +8,11 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(key, val, options) {
+function getDataTypeOverride(key, val, options, jsonKey = false) {
+  if (jsonKey) {
+    return "json";
+  }
+
   if (options.rsAlterStringToText === "true" && val) {
     const stringifiedVal = Array.isArray(val) ? JSON.stringify(val) : val;
     if (stringifiedVal.length > RSStringLimit) {
@@ -21,6 +25,7 @@ function getDataTypeOverride(key, val, options) {
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
+  const destJsonPaths = event.destination?.Config?.jsonPaths || "";
   const rsAlterStringToText =
     event.request.query.rsAlterStringToText || "false";
   const provider = redshift;
@@ -31,7 +36,8 @@ function process(event) {
     getDataTypeOverride,
     provider,
     rsAlterStringToText,
-    sourceCategory: event.metadata ? event.metadata.sourceCategory : null
+    sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
+    destJsonPaths
   });
 }
 

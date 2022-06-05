@@ -3,20 +3,20 @@ const { getMappingConfig } = require("../../util");
 const BASE_ENDPOINT = "https://dspapi.admanagerplus.yahoo.com";
 
 // const CONFIG_CATEGORIES = {
-//   AUDIENCE_LIST: { type: "audienceList", name: "Yahoo_DSP_AudienceListConfig" }
+//   MAIL_DOMAIN: { name: "YahooDspMailDomainConfig" },
+//   POI: { name: "YahooDspPOIConfig" }
 // };
 
-// const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+// const mappingConfig = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 const ENDPOINTS = {
   email: "email_address",
   deviceId: "device_id",
-  ipAddress: "customsegments"
+  ipAddress: "customsegments",
+  mailDomain: "mrt"
 };
 
 module.exports = {
   BASE_ENDPOINT,
-  //   CONFIG_CATEGORIES,
-  //   MAPPING_CONFIG,
   ENDPOINTS
 };

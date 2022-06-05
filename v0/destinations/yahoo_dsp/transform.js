@@ -8,92 +8,107 @@ const {
   removeUndefinedAndNullValues
 } = require("../../util");
 
+const { getAccessToken } = require("./util");
+
 const populateIdentifiers = (attributeArray, { Config }) => {
   const seedList = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
   let listType;
-  const AUDIENCE_LIST = ["email", "deviceId", "ipAddress"];
   if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
     // traversing through every element in the add array
     attributeArray.forEach(element => {
-      if (AUDIENCE_LIST.includes(audienceType)) {
-        listType = audienceType;
-      }
+      const keys = Object.keys(element);
+      keys.forEach(key => {
+        if (key === audienceType) {
+          listType = audienceType;
+        }
+      });
       if (!listType) {
-        throw new CustomError(`${audienceType} not provided`, 400);
+        throw new CustomError(
+          `Audience type ${audienceType} not provided`,
+          400
+        );
       }
-      switch (audienceType) {
-        case "email":
-          if (hashRequired) {
-            seedList.push(sha256(element.email));
-          } else {
-            seedList.push(element.eamil);
-          }
-          break;
-        case "deviceId":
-          if (hashRequired) {
-            seedList.push(sha256(element.deviceId));
-          } else {
-            seedList.push(element.deviceId);
-          }
-          break;
-        case "ipAddress":
-          if (hashRequired) {
-            seedList.push(sha256(element.ipAddress));
-          } else {
-            seedList.push(element.ipAddress);
-          }
-          break;
-        default:
-          throw new CustomError(
-            `Audience Type "${audienceType}" is not supported`,
-            400
-          );
+      if (hashRequired) {
+        seedList.push(sha256(element[audienceType]));
+      } else {
+        seedList.push(element[audienceType]);
       }
     });
   }
   return seedList;
 };
 
-const responseBuilder = (message, destination) => {
+const responseBuilder = async (message, destination) => {
   const { listData } = message.properties;
   const { accountId, audienceId, audienceType } = destination.Config;
 
   let outputPayload = {};
-  const typeOfOperation = Object.keys(listData);
-  typeOfOperation.forEach(key => {
-    if (key === "add") {
-      const seedList = populateIdentifiers(listData[key], destination);
-      if (seedList.length === 0) {
+  const key = "add";
+
+  const seedListRequired = ["email", "deviceId", "ipAddress"];
+
+  if (seedListRequired.includes(audienceType)) {
+    const seedList = populateIdentifiers(listData[key], destination);
+    if (seedList.length === 0) {
+      throw new CustomError(
+        `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+        400
+      );
+    }
+    outputPayload = { ...outputPayload, accountId, seedList };
+    if (audienceType === "ipAddress") {
+      outputPayload = { seedListType: "SHA256IP" };
+    }
+  }
+  let listType;
+  const domains = [];
+  const categoryIds = [];
+  switch (audienceType) {
+    case "mailDomain":
+      listData[key].forEach(element => {
+        const keys = Object.keys(element);
+        keys.forEach(elementKey => {
+          if (elementKey === audienceType) {
+            listType = audienceType;
+          }
+        });
+        if (!listType) {
+          throw new CustomError(
+            `Audience type ${audienceType} not provided`,
+            400
+          );
+        }
+        domains.push(element.mailDomain);
+        categoryIds.push(element.categoryIds);
+        outputPayload = { domains, categoryIds };
+      });
+      break;
+    case "pointOfInterest":
+      break;
+    default:
+      if (!seedListRequired.includes(audienceType)) {
         throw new CustomError(
-          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+          `Audience Type "${audienceType}" is not supported`,
           400
         );
       }
-      if (audienceType === "ipAddress") {
-        outputPayload = { ...outputPayload, seedListType: "SHA256IP" };
-      }
-      outputPayload = { ...outputPayload, accountId, seedList };
-    } else {
-      throw new CustomError(
-        `listData "${key}" is not valid. Supported types are "add" only`
-      );
-    }
-  });
+  }
+
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
   response.body.JSON = removeUndefinedAndNullValues(outputPayload);
   response.method = defaultPutRequestConfig;
-  //   const accessToken = getAccessToken(metadata);
+  const accessToken = await getAccessToken(destination.Config);
   response.headers = {
-    // Authorization: `Bearer ${accessToken}`,
+    Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json"
   };
   return response;
 };
 
-const processEvent = (message, destination) => {
+const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "[Yahoo_DSP]::Message Type is not present. Aborting message.",
@@ -114,12 +129,12 @@ const processEvent = (message, destination) => {
   }
   let response;
   if (message.type.toLowerCase() === "audiencelist") {
-    response = responseBuilder(message, destination);
+    response = await responseBuilder(message, destination);
   }
   return response;
 };
 
-const process = event => {
+const process = async event => {
   return processEvent(event.message, event.destination);
 };
 exports.process = process;

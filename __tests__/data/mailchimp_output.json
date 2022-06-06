@@ -159,5 +159,17 @@
     },
     "files": {},
     "userId": "userId12345"
+  },
+  {
+    "error": "API Key not found. Aborting"
+  },
+  {
+    "error": "Audience Id not found. Aborting"
+  },
+  {
+    "error": "DataCenter Id not found. Aborting"
+  },
+  {
+    "error": "message type track is not supported"
   }
 ]

@@ -73,7 +73,7 @@ const processPayloadBuild = async (
       allMergedFields = null;
     }
   } else {
-    // if user sends a non-existing email, the trait fields are sent within 
+    // if user sends a non-existing email, the trait fields are sent within
     // the merge_field object only
 
     // eslint-disable-next-line no-lonely-if
@@ -226,7 +226,7 @@ const process = async event => {
 
   const destConfig = destination.Config;
   if (!destConfig.apiKey) {
-    throw new CustomError("API Key not found. Aborting ", 400);
+    throw new CustomError("API Key not found. Aborting", 400);
   }
 
   if (!destConfig.audienceId) {
@@ -261,6 +261,7 @@ const process = async event => {
 };
 
 function batchEvents(arrayChunks) {
+  // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
   const batchedResponseList = [];
 
   // list of chunks [ [..], [..] ]

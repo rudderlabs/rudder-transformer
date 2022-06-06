@@ -114,11 +114,12 @@ const responseBuilder = async (message, destination) => {
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
   response.body.JSON = removeUndefinedAndNullValues(outputPayload);
-  response.method = defaultPutRequestConfig;
+  response.method = defaultPutRequestConfig.requestMethod;
   // const accessToken = await getAccessToken(destination.Config);
   response.params = {
     clientId: clientId,
-    clientSecret: clientSecret
+    clientSecret: clientSecret,
+    destinationId: destination.ID
   };
   response.headers = {
     // Authorization: `Bearer ${accessToken}`,
@@ -194,4 +195,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = {process, processRouterDest} ;
+module.exports = { process, processRouterDest };

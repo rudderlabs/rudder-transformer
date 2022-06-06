@@ -31,7 +31,7 @@ const handler = {
   google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
   google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions,
   ga4: GA4NetworkHandler,
-  yahoo_DSP: YahooDSP
+  yahoo_dsp: YahooDSP
 };
 
 const getNetworkHandler = type => {

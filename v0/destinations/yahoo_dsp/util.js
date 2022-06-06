@@ -7,7 +7,9 @@ const { ACCESS_TOKEN_CACHE_TTL } = require("./config.js");
 const Cache = require("../../util/cache");
 
 const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
-
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 const getUnixTimestamp = () => {
   return Math.floor(Date.now() / 1000);
 };
@@ -114,12 +116,12 @@ const getAccessToken = async params => {
 
     const data = {
       aud: "https://id.b2b.yahooinc.com/identity/oauth2/access_token?realm=dsp",
-      sub: Config.clientId,
-      iss: Config.clientId,
+      sub: params.clientId,
+      iss: params.clientId,
       exp: getUnixTimestamp(),
       iat: getUnixTimestamp() + 3600
     };
-    const secret = Config.clientSecret;
+    const secret = params.clientSecret;
 
     const request = {
       header: {
@@ -147,11 +149,32 @@ const ProxyRequest = async request => {
   const { body, method, endpoint, headers, params } = request;
 
   const accessToken = await getAccessToken(params);
-
-  set(body.JSON);
+  headers["X-Auth-Token"] = accessToken;
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const response = await httpSend(requestBody);
   return response;
+};
+const responseHandler = destinationResponse => {
+  const message = `[YAHOO_DSP] - Request Processed Successfully`;
+  const { status } = destinationResponse;
+  if (isHttpStatusSuccess(status)) {
+    // Mostly any error will not have a status of 2xx
+    return {
+      status,
+      message,
+      destinationResponse
+    };
+  }
+  // else successfully return status, message and original destination response
+  const { response } = destinationResponse;
+  throw new ErrorBuilder()
+    .setStatus(status)
+    .setDestinationResponse(response)
+    .setMessage(
+      `Yahoo_DSP: ${response.error.message} during Yahoo_DSP response transformation`
+    )
+    .setAuthErrorCategory()
+    .build();
 };
 
 class networkHandler {

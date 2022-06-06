@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
-const axios = require("axios");
 const md5 = require("md5");
 const { isDefinedAndNotNull } = require("rudder-transformer-cdk/build/utils");
 const { EventType } = require("../../../constants");
@@ -20,8 +19,13 @@ const {
   getErrorRespEvents,
   defaultBatchRequestConfig
 } = require("../../util");
-const { getMailChimpEndpoint } = require("./utils");
-const logger = require("../../../logger");
+const {
+  getMailChimpEndpoint,
+  filterTagValue,
+  checkIfMailExists,
+  checkIfDoubleOptIn
+} = require("./utils");
+
 const { MappedToDestinationKey } = require("../../../constants");
 const {
   MAX_BATCH_SIZE,
@@ -30,61 +34,6 @@ const {
   VALID_STATUSES,
   mergeConfig
 } = require("./config");
-// const config = require("./config");
-
-// Converts to upper case and removes spaces
-function filterTagValue(tag) {
-  const maxLength = 10;
-  const newTag = tag.replace(/[^\w\s]/gi, "");
-  if (newTag.length > maxLength) {
-    return newTag.slice(0, 10);
-  }
-  return newTag.toUpperCase();
-}
-
-async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
-  if (!email) {
-    return false;
-  }
-  const hash = md5(email);
-  const url = `${getMailChimpEndpoint(
-    datacenterId,
-    audienceId
-  )}/members/${hash}`;
-
-  let status = false;
-  try {
-    await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
-    });
-    status = true;
-  } catch (error) {
-    logger.error("axios error");
-  }
-  return status;
-}
-
-async function checkIfDoubleOptIn(apiKey, datacenterId, audienceId) {
-  let response;
-  const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
-  try {
-    response = await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
-    });
-  } catch (error) {
-    throw new CustomError(
-      "User does not have access to the requested operation",
-      error.status || 400
-    );
-  }
-  return !!response.data.double_optin;
-}
 
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   if (isDefined(traits)) {
@@ -210,9 +159,13 @@ const responseBuilderSimple = async (
 const identifyResponseBuilder = async (message, { Config }) => {
   const mappedToDestination = get(message, MappedToDestinationKey);
   const { apiKey, datacenterId, enableMergeFields } = Config;
+  const email = getFieldValueFromMessage(message, "email");
 
+  if (!email) {
+    throw new CustomError("email is required for identify", 400);
+  }
   const primaryPayload = {
-    email_address: getFieldValueFromMessage(message, "email")
+    email_address: email
   };
 
   const audienceId = get(message, "context.MailChimp")
@@ -221,10 +174,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
       : Config.audienceId
     : Config.audienceId;
 
-  const email = getFieldValueFromMessage(message, "email");
-  if (!email) {
-    throw new CustomError("email is required for identify", 400);
-  }
   const emailExists = await checkIfMailExists(
     apiKey,
     datacenterId,

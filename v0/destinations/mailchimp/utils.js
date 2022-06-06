@@ -12,9 +12,9 @@ const getMailChimpEndpoint = (datacenterId, audienceId) => {
 // Converts to upper case and removes spaces
 const filterTagValue = tag => {
   const maxLength = 10;
-  const newTag = tag.replace(/[^\w\s]/gi, "");
+  let newTag = tag.replace(/[^\w\s]/gi, "");
   if (newTag.length > maxLength) {
-    return newTag.slice(0, 10);
+    newTag = newTag.slice(0, 10);
   }
   return newTag.toUpperCase();
 };

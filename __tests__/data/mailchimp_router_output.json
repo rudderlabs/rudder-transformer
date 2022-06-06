@@ -17,7 +17,7 @@
               "merge_fields": {
                 "FNAME": "Bob",
                 "LNAME": "Dole",
-                "anonymousI": "userId12345"
+                "ANONYMOUSI": "userId12345"
               },
               "email_address": "bob.dole@initech.com"
             },
@@ -25,7 +25,7 @@
               "status": "subscribed",
               "email_address": "bob.dole@initech.com",
               "merge_fields": {
-                "anonymousI": "userId12345"
+                "ANONYMOUSI": "userId12345"
               }
             }
           ],

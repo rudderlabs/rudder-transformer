@@ -58,36 +58,35 @@ const processPayloadBuild = async (
   enableMergeFields
 ) => {
   const traits = getFieldValueFromMessage(message, "traits");
-  const email = getFieldValueFromMessage(message, "email");
   // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
   const mergedFieldPayload = constructPayload(message, MERGE_CONFIG);
   const { apiKey, datacenterId } = Config;
-  let allMergedFields;
+  let mergeFields;
 
   // for sending any fields other than email_address, while the email is already existing
   // enableMergeFields needs to be set to true.
   if (isDefinedAndNotNull(updateSubscription) && emailExists) {
     if (isDefined(enableMergeFields) && enableMergeFields === true) {
-      allMergedFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
+      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
     } else {
-      allMergedFields = null;
+      mergeFields = null;
     }
   } else {
     // if user sends a non-existing email, the trait fields are sent within
     // the merge_field object only
 
-    // eslint-disable-next-line no-lonely-if
-    if (email) {
-      allMergedFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
-    }
+    mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
   }
+  primaryPayload = { ...primaryPayload, merge_fields: mergeFields };
 
-  primaryPayload.merge_fields = allMergedFields;
   if (isDefinedAndNotNull(updateSubscription) && emailExists) {
     Object.keys(updateSubscription).forEach(field => {
       if (field === "subscriptionStatus") {
+        // for existing emails, the status of the user can be changed manually
+        // from the integrations object values
         primaryPayload.status = updateSubscription[field];
       } else {
+        // other integration object fields will be sent as it is with the payload
         primaryPayload[field] = updateSubscription[field];
       }
     });
@@ -97,9 +96,11 @@ const processPayloadBuild = async (
       datacenterId,
       audienceId
     );
-    primaryPayload.status = isDoubleOptin
-      ? SUBSCRIPTION_STATUS.pending
-      : SUBSCRIPTION_STATUS.subscribed;
+    if (isDoubleOptin) {
+      primaryPayload.status = SUBSCRIPTION_STATUS.pending;
+    } else {
+      primaryPayload.status = SUBSCRIPTION_STATUS.subscribed;
+    }
   }
   if (
     primaryPayload.status &&

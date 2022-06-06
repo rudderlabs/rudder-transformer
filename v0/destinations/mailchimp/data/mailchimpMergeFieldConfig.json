@@ -1,0 +1,41 @@
+[
+    {
+      "destKey": "FNAME",
+      "sourceKeys": "firstName",
+      "sourceFromGenericMap": true,
+      "required": false
+    },
+    {
+      "destKey": "LNAME",
+      "sourceKeys": "lastName",
+      "sourceFromGenericMap": true,
+      "required": false
+    },
+    {
+      "destKey": "ADDRESS.addr1",
+      "sourceKeys": ["traits.addr1", "context.traits.addr1"],
+      "required": false
+    },
+    {
+      "destKey": "ADDRESS.city",
+      "sourceKeys": ["traits.city", "context.traits.city"],
+      "required": false
+    },
+    {
+      "destKey": "ADDRESS.state",
+      "sourceKeys": ["traits.state", "context.traits.state"],
+      "required": false
+    },
+    {
+      "destKey": "ADDRESS.zip",
+      "sourceKeys": ["traits.zip", "context.traits.zip"],
+      "required": false
+    },
+    {
+      "destKey": "PHONE",
+      "sourceKeys": "phone",
+      "sourceFromGenericMap": true,
+      "required": false
+    }
+  ]
+  

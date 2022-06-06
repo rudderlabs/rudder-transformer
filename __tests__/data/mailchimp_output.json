@@ -12,8 +12,8 @@
     "body": {
       "JSON": {
         "merge_fields": {
-          "FIRSTNAME": "Bob",
-          "LASTNAME": "Dole",
+          "FNAME": "Bob",
+          "LNAME": "Dole",
           "anonymousI": "userId12345"
         },
         "email_address": "bob.dole@initech.com"
@@ -151,8 +151,7 @@
     "body": {
       "JSON": {
         "status": "subscribed",
-        "email_address": "bob.dole@initech.com",
-        "merge_fields": {}
+        "email_address": "bob.dole@initech.com"
       },
       "XML": {},
       "JSON_ARRAY": {},

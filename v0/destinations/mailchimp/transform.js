@@ -319,7 +319,10 @@ function batchEvents(arrayChunks) {
     });
 
     batchEventResponse.batchedRequest.body.JSON = {
-      members: batchResponseList
+      members: batchResponseList,
+
+      // setting this to "true" will update user details, if a user already exists
+      update_existing: true
     };
 
     const BASE_URL = `https://${destination.Config.datacenterId}.api.mailchimp.com/3.0/lists/${destination.Config.audienceId}`;
@@ -332,9 +335,10 @@ function batchEvents(arrayChunks) {
       `apiKey:${destination.Config.apiKey}`
     ).toString("base64");
 
-    batchEventResponse.batchedRequest.userId = message.userId
-      ? message.userId
-      : message.anonymousId;
+    batchEventResponse.batchedRequest.userId = getFieldValueFromMessage(
+      message,
+      "userId"
+    );
 
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json",
@@ -358,7 +362,7 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, identifyResponseList, eventsChunk) {
+function getEventChunks(event, eventsChunk) {
   // build eventsChunk of MAX_BATCH_SIZE
   eventsChunk.push(event);
 }
@@ -369,7 +373,6 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const identifyResponseList = []; // list containing single track event in batched format
   let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (n) batch size
   const errorRespList = [];
@@ -380,7 +383,7 @@ const processRouterDest = async inputs => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, identifyResponseList, eventsChunk);
+          getEventChunks(event, eventsChunk);
           // slice according to batch size
           if (
             eventsChunk.length &&
@@ -398,7 +401,6 @@ const processRouterDest = async inputs => {
               metadata: event.metadata,
               destination: event.destination
             },
-            identifyResponseList,
             eventsChunk
           );
           // slice according to batch size
@@ -426,10 +428,7 @@ const processRouterDest = async inputs => {
   if (arrayChunks.length > 0) {
     batchedResponseList = await batchEvents(arrayChunks);
   }
-  return [
-    ...batchedResponseList.concat(identifyResponseList),
-    ...errorRespList
-  ];
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

@@ -28,7 +28,8 @@
                 "anonymousI": "userId12345"
               }
             }
-          ]
+          ],
+          "update_existing": true
         },
         "XML": {},
         "JSON_ARRAY": {},

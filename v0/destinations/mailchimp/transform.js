@@ -38,6 +38,7 @@ const {
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   if (isDefined(traits)) {
     Object.keys(traits).forEach(trait => {
+      // if any trait field is present, other than the fixed mapping, that is passed as well.
       if (MAILCHIMP_IDENTIFY_EXCLUSION.indexOf(trait) === -1) {
         const tag = filterTagValue(trait);
         mergedFieldPayload[tag] = traits[trait];
@@ -58,10 +59,13 @@ const processPayloadBuild = async (
 ) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const email = getFieldValueFromMessage(message, "email");
+  // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
   const mergedFieldPayload = constructPayload(message, mergeConfig);
   const { apiKey, datacenterId } = Config;
   let allMergedFields;
 
+  // for sending any fields other than email_address, while the email is already existing
+  // enableMergeFields needs to be set to true.
   if (isDefinedAndNotNull(updateSubscription) && emailExists) {
     if (isDefined(enableMergeFields) && enableMergeFields === true) {
       allMergedFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
@@ -69,6 +73,9 @@ const processPayloadBuild = async (
       allMergedFields = null;
     }
   } else {
+    // if user sends a non-existing email, the trait fields are sent within 
+    // the merge_field object only
+
     // eslint-disable-next-line no-lonely-if
     if (email) {
       allMergedFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);

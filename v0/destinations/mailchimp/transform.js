@@ -324,7 +324,7 @@ function batchEvents(arrayChunks) {
 
     const BASE_URL = `https://${destination.Config.datacenterId}.api.mailchimp.com/3.0/lists/${destination.Config.audienceId}`;
 
-    const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=<false&skip_duplicate_check=true`;
+    const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=false&skip_duplicate_check=false`;
 
     batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
 
@@ -373,6 +373,8 @@ const processRouterDest = async inputs => {
   let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (n) batch size
   const errorRespList = [];
+  let batchedResponseList = [];
+
   await Promise.all(
     inputs.map(async (event, index) => {
       try {
@@ -421,8 +423,7 @@ const processRouterDest = async inputs => {
     })
   );
 
-  let batchedResponseList = [];
-  if (arrayChunks.length) {
+  if (arrayChunks.length > 0) {
     batchedResponseList = await batchEvents(arrayChunks);
   }
   return [

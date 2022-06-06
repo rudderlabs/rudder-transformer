@@ -8,7 +8,11 @@ const {
   removeUndefinedAndNullValues
 } = require("../../util");
 
-const { getAccessToken } = require("./util");
+const {
+  getAccessToken,
+  populateIncludes,
+  populateExcludes
+} = require("./util");
 
 const populateIdentifiers = (attributeArray, { Config }) => {
   const seedList = [];
@@ -62,15 +66,15 @@ const responseBuilder = async (message, destination) => {
       outputPayload = { seedListType: "SHA256IP" };
     }
   }
-  let listType;
+
   const domains = [];
-  const categoryIds = [];
+
   switch (audienceType) {
     case "mailDomain":
       listData[key].forEach(element => {
         const keys = Object.keys(element);
         keys.forEach(elementKey => {
-          if (elementKey === audienceType) {
+          if (elementKey === audienceType || elementKey === categoryIds) {
             listType = audienceType;
           }
         });
@@ -80,12 +84,15 @@ const responseBuilder = async (message, destination) => {
             400
           );
         }
-        domains.push(element.mailDomain);
-        categoryIds.push(element.categoryIds);
-        outputPayload = { domains, categoryIds };
+        domains.push(element?.mailDomain);
+        categoryIds.push(element?.categoryIds);
       });
+      outputPayload = { accountId, domains, categoryIds };
       break;
     case "pointOfInterest":
+      outputPayload.includes = populateIncludes(listData[key], audienceType);
+      outputPayload.excludes = populateExcludes(listData[key], audienceType);
+      outputPayload = { ...outputPayload, accountId };
       break;
     default:
       if (!seedListRequired.includes(audienceType)) {
@@ -130,6 +137,11 @@ const processEvent = async (message, destination) => {
   let response;
   if (message.type.toLowerCase() === "audiencelist") {
     response = await responseBuilder(message, destination);
+  } else {
+    throw new CustomError(
+      `[Yahoo_DSP]::Message type ${message.type} not supoorted`,
+      400
+    );
   }
   return response;
 };

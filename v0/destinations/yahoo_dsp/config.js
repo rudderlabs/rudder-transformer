@@ -13,7 +13,8 @@ const ENDPOINTS = {
   email: "email_address",
   deviceId: "device_id",
   ipAddress: "customsegments",
-  mailDomain: "mrt"
+  mailDomain: "mrt",
+  pointOfInterest: "poi"
 };
 
 module.exports = {

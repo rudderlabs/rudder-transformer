@@ -7,9 +7,7 @@ const { ACCESS_TOKEN_CACHE_TTL } = require("./config.js");
 const Cache = require("../../util/cache");
 
 const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
+
 const getUnixTimestamp = () => {
   return Math.floor(Date.now() / 1000);
 };
@@ -140,52 +138,14 @@ const getAccessToken = async params => {
       method: "POST"
     };
     const response = await httpSend(request);
-
-    return response.response?.data?.access_token;
+    if(response.success === false){
+      throw new CustomError(`${response.response.response.data.error}`,400);
+    }
+    return response.response?.data?.access_token
   });
 };
 
-const ProxyRequest = async request => {
-  const { body, method, endpoint, headers, params } = request;
-
-  const accessToken = await getAccessToken(params);
-  headers["X-Auth-Token"] = accessToken;
-  const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody);
-  return response;
-};
-const responseHandler = destinationResponse => {
-  const message = `[YAHOO_DSP] - Request Processed Successfully`;
-  const { status } = destinationResponse;
-  if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
-    return {
-      status,
-      message,
-      destinationResponse
-    };
-  }
-  // else successfully return status, message and original destination response
-  const { response } = destinationResponse;
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Yahoo_DSP: ${response.error.message} during Yahoo_DSP response transformation`
-    )
-    .setAuthErrorCategory()
-    .build();
-};
-
-class networkHandler {
-  constructor() {
-    this.proxy = ProxyRequest;
-    this.responseHandler = responseHandler;
-    this.processAxiosResponse = processAxiosResponse;
-  }
-}
 module.exports = {
-  networkHandler,
   getAccessToken,
   populateIncludes,
   populateExcludes

@@ -115,14 +115,14 @@ const responseBuilder = async (message, destination) => {
   response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
   response.body.JSON = removeUndefinedAndNullValues(outputPayload);
   response.method = defaultPutRequestConfig.requestMethod;
-  // const accessToken = await getAccessToken(destination.Config);
   response.params = {
     clientId: clientId,
     clientSecret: clientSecret,
     destinationId: destination.ID
   };
+  const accessToken = await getAccessToken(response.params);
   response.headers = {
-    // Authorization: `Bearer ${accessToken}`,
+    "X-Auth-Token" : accessToken,
     "X-Auth-Method": "OAuth2",
     "Content-Type": "application/json"
   };

@@ -16,7 +16,7 @@
   },
   {
     "destKey": "ip",
-    "sourceKeys": ["context.ip", "request_ip"],
+    "sourceKeys": "request_ip",
     "required": true
   },
   {
@@ -26,7 +26,7 @@
   },
   {
     "destKey": "att_authorization_status",
-    "sourceKeys": "context.device.adTrackingEnabled",
+    "sourceKeys": "context.device.attStatus",
     "required": true
   },
   {
@@ -54,11 +54,6 @@
   {
     "destKey": "skan_last_call_timestamp",
     "sourceKeys": "properties.skan_last_call_timestamp",
-    "required": false
-  },
-  {
-    "destKey": "e",
-    "sourceKeys": "properties.eventAttributes",
     "required": false
   },
   {

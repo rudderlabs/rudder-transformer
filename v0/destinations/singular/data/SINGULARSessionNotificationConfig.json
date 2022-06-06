@@ -16,7 +16,7 @@
   },
   {
     "destKey": "ip",
-    "sourceKeys": ["context.ip", "request_ip"],
+    "sourceKeys": "request_ip",
     "required": true
   },
   {
@@ -42,34 +42,43 @@
   {
     "destKey": "install_source",
     "sourceKeys": "properties.referring_application",
-    "required": true
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "install_receipt",
     "sourceKeys": "properties.install_receipt",
-    "required": true
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "asid",
     "sourceKeys": "properties.asid",
-    "required": true
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "openuri",
     "sourceKeys": "properties.url",
-    "required": true
-  },
-  {
-    "destKey": "dnt",
-    "sourceKeys": "properties.dnt",
     "required": true,
     "metadata": {
-      "default": true
+      "defaultValue": ""
     }
   },
   {
-    "destKey": "att_authorization_status",
+    "destKey": "dnt",
     "sourceKeys": "context.device.adTrackingEnabled",
+    "required": true
+  },
+  {
+    "destKey": "att_authorization_status",
+    "sourceKeys": "context.device.attStatus",
     "required": true
   },
   {
@@ -100,13 +109,8 @@
     "required": false
   },
   {
-    "destKey": "c",
-    "sourceKeys": "properties.c",
-    "required": false
-  },
-  {
     "destKey": "cn",
-    "sourceKeys": "properties.cn",
+    "sourceKeys": "context.network.carrier",
     "required": false
   },
   {
@@ -126,7 +130,7 @@
   },
   {
     "destKey": "ua",
-    "sourceKeys": "properties.ua",
+    "sourceKeys": "context.userAgent",
     "required": false
   },
   {
@@ -147,11 +151,6 @@
   {
     "destKey": "skan_last_call_timestamp",
     "sourceKeys": "properties.skan_last_call_timestamp",
-    "required": false
-  },
-  {
-    "destKey": "e",
-    "sourceKeys": "eventAttributes",
     "required": false
   }
 ]

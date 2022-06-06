@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const md5 = require("md5");
-const { isDefinedAndNotNull } = require("rudder-transformer-cdk/build/utils");
+const { isDefinedAndNotNull } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -32,7 +32,7 @@ const {
   MAILCHIMP_IDENTIFY_EXCLUSION,
   SUBSCRIPTION_STATUS,
   VALID_STATUSES,
-  mergeConfig
+  MERGE_CONFIG
 } = require("./config");
 
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
@@ -60,7 +60,7 @@ const processPayloadBuild = async (
   const traits = getFieldValueFromMessage(message, "traits");
   const email = getFieldValueFromMessage(message, "email");
   // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
-  const mergedFieldPayload = constructPayload(message, mergeConfig);
+  const mergedFieldPayload = constructPayload(message, MERGE_CONFIG);
   const { apiKey, datacenterId } = Config;
   let allMergedFields;
 
@@ -113,18 +113,34 @@ const processPayloadBuild = async (
 
   return removeUndefinedAndNullValues(primaryPayload);
 };
-const formFinalEndPoint = (datacenterId, audienceId, emailExists, email) => {
-  let endpoint;
-  if (emailExists) {
-    const hash = md5(email);
-    endpoint = `${getMailChimpEndpoint(
-      datacenterId,
-      audienceId
-    )}/members/${hash}`;
-  } else {
-    endpoint = `${getMailChimpEndpoint(datacenterId, audienceId)}/members`;
-  }
-  return endpoint;
+
+const stitchEndpointAndMethodForExistingEmails = (
+  datacenterId,
+  audienceId,
+  email,
+  response
+) => {
+  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-or-update-list-member/
+  const hash = md5(email);
+  response.endpoint = `${getMailChimpEndpoint(
+    datacenterId,
+    audienceId
+  )}/members/${hash}`;
+  response.method = defaultPutRequestConfig.requestMethod;
+};
+
+const stitchEndpointAndMethodForNONExistingEmails = (
+  datacenterId,
+  audienceId,
+  email,
+  response
+) => {
+  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-member-to-list/
+  response.endpoint = `${getMailChimpEndpoint(
+    datacenterId,
+    audienceId
+  )}/members`;
+  response.method = defaultPostRequestConfig.requestMethod;
 };
 const responseBuilderSimple = async (
   finalPayload,
@@ -136,15 +152,22 @@ const responseBuilderSimple = async (
   const { datacenterId, apiKey } = messageConfig;
   const response = defaultRequestConfig();
   const email = getFieldValueFromMessage(message, "email");
-  response.endpoint = formFinalEndPoint(
-    datacenterId,
-    audienceId,
-    emailExists,
-    email
-  );
-  response.method = emailExists
-    ? defaultPutRequestConfig.requestMethod
-    : defaultPostRequestConfig.requestMethod;
+  if (emailExists) {
+    stitchEndpointAndMethodForExistingEmails(
+      datacenterId,
+      audienceId,
+      email,
+      response
+    );
+  } else {
+    stitchEndpointAndMethodForNONExistingEmails(
+      datacenterId,
+      audienceId,
+      email,
+      response
+    );
+  }
+
   response.body.JSON = finalPayload;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   if (finalPayload.status && !VALID_STATUSES.includes(finalPayload.status)) {
@@ -159,7 +182,7 @@ const responseBuilderSimple = async (
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     },
-    userId: message.userId ? message.userId : message.anonymousId
+    userId: getFieldValueFromMessage(message, "userId")
   };
 };
 
@@ -167,6 +190,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const mappedToDestination = get(message, MappedToDestinationKey);
   const { apiKey, datacenterId, enableMergeFields } = Config;
   const email = getFieldValueFromMessage(message, "email");
+  let audienceId;
 
   if (!email) {
     throw new CustomError("email is required for identify", 400);
@@ -175,11 +199,15 @@ const identifyResponseBuilder = async (message, { Config }) => {
     email_address: email
   };
 
-  const audienceId = get(message, "context.MailChimp")
-    ? get(message, "context.MailChimp.listId")
-      ? message.context.MailChimp.listId
-      : Config.audienceId
-    : Config.audienceId;
+  if (message.context.MailChimp) {
+    if (message.context.MailChimp.listId) {
+      audienceId = message.context.MailChimp.listId;
+    } else {
+      audienceId = Config.audienceId;
+    }
+  } else {
+    audienceId = Config.audienceId;
+  }
 
   const emailExists = await checkIfMailExists(
     apiKey,
@@ -199,7 +227,16 @@ const identifyResponseBuilder = async (message, { Config }) => {
       emailExists
     );
   }
-
+  /* 
+  Integrations object is supposed to be present inside message, and is expected
+  to be in the following format:
+  
+   "integrations": {
+        "MailChimp": {
+          "subscriptionStatus": "subscribed"
+        }
+      }
+  */
   const updateSubscription = getIntegrationsObj(message, "mailchimp");
 
   const mergedFieldPayload = await processPayloadBuild(

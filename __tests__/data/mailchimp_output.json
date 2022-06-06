@@ -51,7 +51,7 @@
     "userId": "userId12345"
   },
   {
-    "error": "User does not have access to the requested operation"
+    "error": "[Mailchimp]:: User does not have access to the requested operation"
   },
   {
     "error": "message type page is not supported"

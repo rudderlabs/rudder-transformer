@@ -3,23 +3,25 @@ const md5 = require("md5");
 const logger = require("../../../logger");
 const { CustomError } = require("../../util");
 
-function getMailChimpEndpoint(datacenterId, audienceId) {
+const getMailChimpEndpoint = (datacenterId, audienceId) => {
   const mailChimpApi = "api.mailchimp.com";
   const listsUrl = `https://${datacenterId}.${mailChimpApi}/3.0/lists`;
   return `${listsUrl}/${audienceId}`;
-}
+};
 
 // Converts to upper case and removes spaces
-function filterTagValue(tag) {
+const filterTagValue = tag => {
   const maxLength = 10;
   const newTag = tag.replace(/[^\w\s]/gi, "");
   if (newTag.length > maxLength) {
     return newTag.slice(0, 10);
   }
   return newTag.toUpperCase();
-}
+};
 
-async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
+const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
+  // ref: https://mailchimp.com/developer/marketing/api/list-members/get-member-info/
+  let status = false;
   if (!email) {
     return false;
   }
@@ -29,7 +31,6 @@ async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
     audienceId
   )}/members/${hash}`;
 
-  let status = false;
   try {
     await axios.get(url, {
       auth: {
@@ -42,9 +43,9 @@ async function checkIfMailExists(apiKey, datacenterId, audienceId, email) {
     logger.error("axios error");
   }
   return status;
-}
+};
 
-async function checkIfDoubleOptIn(apiKey, datacenterId, audienceId) {
+const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   let response;
   const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
   try {
@@ -56,16 +57,31 @@ async function checkIfDoubleOptIn(apiKey, datacenterId, audienceId) {
     });
   } catch (error) {
     throw new CustomError(
-      "User does not have access to the requested operation",
+      "[Mailchimp]:: User does not have access to the requested operation",
       error.status || 400
     );
   }
   return !!response.data.double_optin;
-}
+};
+
+const finaliseAudienceId = async (message, configAudienceId) => {
+  let finalAudienceId;
+  if (message.context.MailChimp) {
+    if (message.context.MailChimp.listId) {
+      finalAudienceId = message.context.MailChimp.listId;
+    } else {
+      finalAudienceId = configAudienceId;
+    }
+  } else {
+    finalAudienceId = configAudienceId;
+  }
+  return finalAudienceId;
+};
 
 module.exports = {
   getMailChimpEndpoint,
   filterTagValue,
   checkIfMailExists,
-  checkIfDoubleOptIn
+  checkIfDoubleOptIn,
+  finaliseAudienceId
 };

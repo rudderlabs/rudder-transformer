@@ -1,6 +1,7 @@
 const { getMappingConfig } = require("../../util");
 
 const MAX_BATCH_SIZE = 10;
+// ref: https://mailchimp.com/developer/marketing/guides/run-async-requests-batch-endpoint/#:~:text=The%20Marketing%20API%20has%20a,you%20work%20around%20this%20limitation.
 
 const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "email",
@@ -39,5 +40,5 @@ module.exports = {
   MAILCHIMP_IDENTIFY_EXCLUSION,
   SUBSCRIPTION_STATUS,
   VALID_STATUSES,
-  mergeConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+  MERGE_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
 };

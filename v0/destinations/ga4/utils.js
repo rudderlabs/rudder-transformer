@@ -241,21 +241,29 @@ const GA4_ITEM_EXCLUSION = [
  * @param {*} message
  * @returns
  */
-function getItemList(message, isItemsRequired) {
+function getItemList(message, isItemsRequired = false) {
   let items;
   const products = get(message, "properties.products");
-  if ((!products && isItemsRequired) || (products && products.length === 0)) {
+  if (
+    (isItemsRequired && !products) ||
+    (isItemsRequired && products && products.length === 0)
+  ) {
     throw new CustomError(
       `Products is an required field for '${message.event}' event`,
       400
     );
   }
-  if (products && Array.isArray(products)) {
+
+  if (isItemsRequired && !Array.isArray(products)) {
+    throw new CustomError("Invalid type. Expected Array of products", 400);
+  }
+
+  if (products) {
     items = [];
     products.forEach((item, index) => {
       let element = constructPayload(
         item,
-        mappingConfig[ConfigCategory.ITEMS.name]
+        mappingConfig[ConfigCategory.ITEM_LIST.name]
       );
       if (
         !isDefinedAndNotNull(element.item_id) &&
@@ -279,8 +287,6 @@ function getItemList(message, isItemsRequired) {
 
       items.push(element);
     });
-  } else if (products && !Array.isArray(products)) {
-    throw new CustomError("Invalid type. Expected Array of products", 400);
   }
   return items;
 }
@@ -295,16 +301,16 @@ function getItem(message, isItemsRequired) {
   const products = get(message, "properties");
   if (!products && isItemsRequired) {
     throw new CustomError(
-      `Item parameters not found for '${message.event}' event`,
+      `Item/product parameters not found for '${message.event}' event`,
       400
     );
   }
 
   if (products) {
     items = [];
-    let element = constructPayload(
+    const element = constructPayload(
       products,
-      mappingConfig[ConfigCategory.ITEMS.name]
+      mappingConfig[ConfigCategory.ITEM.name]
     );
     if (
       !isDefinedAndNotNull(element.item_id) &&
@@ -314,17 +320,17 @@ function getItem(message, isItemsRequired) {
     }
 
     // take additional parameters apart from mapped one
-    let itemProperties = {};
-    itemProperties = extractCustomFields(
-      message,
-      itemProperties,
-      ["properties"],
-      GA4_ITEM_EXCLUSION
-    );
-    if (!isEmptyObject(itemProperties)) {
-      itemProperties = flattenJson(itemProperties);
-      element = { ...element, ...itemProperties };
-    }
+    // let itemProperties = {};
+    // itemProperties = extractCustomFields(
+    //   message,
+    //   itemProperties,
+    //   ["properties"],
+    //   GA4_ITEM_EXCLUSION
+    // );
+    // if (!isEmptyObject(itemProperties)) {
+    //   itemProperties = flattenJson(itemProperties);
+    //   element = { ...element, ...itemProperties };
+    // }
 
     items.push(element);
   }
@@ -337,7 +343,7 @@ function getItem(message, isItemsRequired) {
  * @param {*} mappingJson
  * @returns
  */
-function getExclusionList(mappingJson) {
+function getGA4ExclusionList(mappingJson) {
   let ga4ExclusionList = [];
 
   mappingJson.forEach(element => {
@@ -411,5 +417,5 @@ module.exports = {
   isReservedWebCustomPrefixName,
   getItemList,
   getItem,
-  getExclusionList
+  getGA4ExclusionList
 };

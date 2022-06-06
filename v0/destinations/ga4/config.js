@@ -4,7 +4,8 @@ const ENDPOINT = "https://www.google-analytics.com/mp/collect";
 
 const ConfigCategory = {
   COMMON: { name: "GA4CommonConfig" },
-  ITEMS: { name: "GA4ItemsConfig" },
+  ITEM_LIST: { name: "GA4ItemListConfig" },
+  ITEM: { name: "GA4ItemConfig" },
 
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/

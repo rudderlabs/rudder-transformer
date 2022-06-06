@@ -32,7 +32,8 @@ const {
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
   getItemList,
-  getExclusionList
+  getGA4ExclusionList,
+  getItem
 } = require("./utils");
 
 function trackResponseBuilder(message, { Config }) {
@@ -104,7 +105,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
+          )
         );
         break;
       case "product_list_viewed":
@@ -118,7 +121,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(
+          getGA4ExclusionList(
             mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
           )
         );
@@ -135,7 +138,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_VIEWED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
+          )
         );
         break;
       case "promotion_clicked":
@@ -149,40 +154,56 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PROMOTION_CLICKED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
+          )
         );
         break;
       /* Ordering Section */
-      case "product_clicked":
+      case "product_clicked": {
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
         );
-        payload.params.items = getItemList(message, true);
-        // payload.params.items = getItem(message, true);
+        payload.params.items = getItem(message, true);
+
+        let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
+          mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
+        );
+        ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+          getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
+        );
         payload.params = extractCustomFields(
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_CLICKED.name])
+          ITEM_EXCLUSION_LIST
         );
         break;
-      case "product_viewed":
+      }
+      case "product_viewed": {
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
           message,
           mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
         );
-        payload.params.items = getItemList(message, true);
-        // payload.params.items = getItem(message, true);
+        payload.params.items = getItem(message, true);
+
+        let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
+          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
+        );
+        ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+          getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
+        );
         payload.params = extractCustomFields(
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_VIEWED.name])
+          ITEM_EXCLUSION_LIST
         );
         break;
+      }
       case "product_added":
         payload.name = eventNameMapping[event.toLowerCase()];
         payload.params = constructPayload(
@@ -194,7 +215,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_ADDED.name])
+          getGA4ExclusionList(mappingConfig[ConfigCategory.PRODUCT_ADDED.name])
         );
         break;
       case "product_removed":
@@ -208,7 +229,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_REMOVED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
+          )
         );
         break;
       case "cart_viewed":
@@ -222,7 +245,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.CART_VIEWED.name])
+          getGA4ExclusionList(mappingConfig[ConfigCategory.CART_VIEWED.name])
         );
         break;
       case "checkout_started":
@@ -236,7 +259,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.CHECKOUT_STARTED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
+          )
         );
         break;
       case "payment_info_entered":
@@ -250,7 +275,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(
+          getGA4ExclusionList(
             mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
           )
         );
@@ -266,7 +291,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(
+          getGA4ExclusionList(
             mappingConfig[ConfigCategory.CHECKOUT_STEP_COMPLETED.name]
           )
         );
@@ -282,7 +307,9 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_COMPLETED.name])
+          getGA4ExclusionList(
+            mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
+          )
         );
         break;
       case "order_refunded":
@@ -296,7 +323,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.ORDER_REFUNDED.name])
+          getGA4ExclusionList(mappingConfig[ConfigCategory.ORDER_REFUNDED.name])
         );
         break;
       /* Wishlist Section */
@@ -311,7 +338,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(
+          getGA4ExclusionList(
             mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
           )
         );
@@ -327,7 +354,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.PRODUCT_SHARED.name])
+          getGA4ExclusionList(mappingConfig[ConfigCategory.PRODUCT_SHARED.name])
         );
         break;
       case "cart_shared":
@@ -340,7 +367,7 @@ function trackResponseBuilder(message, { Config }) {
           message,
           payload.params,
           ["properties"],
-          getExclusionList(mappingConfig[ConfigCategory.CART_SHARED.name])
+          getGA4ExclusionList(mappingConfig[ConfigCategory.CART_SHARED.name])
         );
         break;
       /* Group */
@@ -355,7 +382,7 @@ function trackResponseBuilder(message, { Config }) {
             message,
             payload.params,
             ["properties"],
-            getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+            getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name])
           );
         }
         break;
@@ -454,7 +481,7 @@ function trackResponseBuilder(message, { Config }) {
       message,
       payload.params,
       ["traits", "context.traits"],
-      getExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+      getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name])
     );
   } else {
     // track

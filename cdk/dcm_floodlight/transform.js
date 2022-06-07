@@ -19,14 +19,17 @@ function appendProperties(endpoint, payload) {
 
 // transform webapp dynamicForm custom floodlight variable
 // into {u1: value, u2: value, ...}
-function transformCustomVariable(customFloodlightVariable) {
+function transformCustomVariable(customFloodlightVariable, message) {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
     if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
-      customVariable[
-        `u${item.from.trim().replace(/u/g, "")}`
-      ] = `[${item.to.trim()}]`;
+      if (get(message, `properties.${item.to.trim()}`)) {
+        customVariable[`u${item.from.trim().replace(/u/g, "")}`] = `${get(
+          message,
+          `properties.${item.to.trim()}`
+        )}`;
+      }
     }
   });
 
@@ -48,7 +51,7 @@ function isValidFlag(key, value) {
   );
 }
 
-function trackPostMapper(input, mappedPayload, rudderContext) {
+function postMapper(input, mappedPayload, rudderContext) {
   const { message, destination } = input;
   const { advertiserId, conversionEvents } = destination.Config;
   let { activityTag, groupTag } = destination.Config;
@@ -57,7 +60,34 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
 
   const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
 
-  let event = getValueFromMessage(message, "event");
+  let event;
+  if (message.type === "page") {
+    const { category } = message.properties;
+    const { name } = message || message.properties;
+
+    if (!category && !name) {
+      throw new CustomError(
+        "[DCM Floodlight]:: category or name is required for page",
+        400
+      );
+    }
+
+    if (category && name) {
+      message.event = `Viewed ${category} ${name} Page`;
+      message.type = "track";
+    } else if (category) {
+      // categorized pages
+      message.event = `Viewed ${category} Page`;
+      message.type = "track";
+    } else {
+      // named pages
+      message.event = `Viewed ${name} Page`;
+      message.type = "track";
+    }
+  }
+
+  event = getValueFromMessage(message, "event");
+
   if (!event) {
     throw new CustomError(
       "[DCM Floodlight]:: event is required for track call",
@@ -101,7 +131,10 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     throw new CustomError("[DCM Floodlight]:: Conversion event not found", 400);
   }
 
-  customFloodlightVariable = transformCustomVariable(customFloodlightVariable);
+  customFloodlightVariable = transformCustomVariable(
+    customFloodlightVariable,
+    message
+  );
   mappedPayload = {
     src: advertiserId,
     cat: activityTag,
@@ -170,4 +203,4 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   return {};
 }
 
-module.exports = { trackPostMapper };
+module.exports = { postMapper };

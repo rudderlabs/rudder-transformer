@@ -23,7 +23,13 @@ function transformCustomVariable(customFloodlightVariable, message) {
   customFloodlightVariable.forEach(item => {
     if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
-      const itemValue = get(message, `properties.${item.to.trim()}`);
+      // first we consider taking custom variable from properties
+      // if not found we will take it from root level i.e message.*
+      let itemValue = get(message, `properties.${item.to.trim()}`);
+      // this condition adds support for numeric 0
+      if (!isDefinedAndNotNull(itemValue)) {
+        itemValue = get(message, item.to.trim());
+      }
       // supported data types are number and string
       if (isDefinedAndNotNull(itemValue) && typeof itemValue !== "boolean") {
         customVariable[`u${item.from.trim().replace(/u/g, "")}`] = itemValue;

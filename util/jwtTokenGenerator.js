@@ -21,7 +21,6 @@ function generateJWTToken(header, data, secret) {
   const encodedData = base64url(stringifiedData);
   const token = `${encodedHeader}.${encodedData}`;
   const signature = base64url(CryptoJS.HmacSHA256(token, secret));
-  //   signature = base64url(signature);
   return `${token}.${signature}`;
 }
 exports.generateJWTToken = generateJWTToken;

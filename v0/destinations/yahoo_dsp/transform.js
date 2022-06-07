@@ -52,37 +52,94 @@ const responseBuilder = async (message, destination) => {
     accountId,
     audienceId,
     audienceType,
-    clientId,
-    clientSecret
+    seedListType
   } = destination.Config;
 
+  let listType;
   let outputPayload = {};
   const key = "add";
 
-  const seedListRequired = ["email", "deviceId", "ipAddress"];
+  // const seedListRequired = ["email", "deviceId", "ipAddress"];
 
-  if (seedListRequired.includes(audienceType)) {
-    const seedList = populateIdentifiers(listData[key], destination);
-    if (seedList.length === 0) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
-        400
-      );
-    }
-    outputPayload = { ...outputPayload, accountId, seedList };
-    if (audienceType === "ipAddress") {
-      outputPayload = { seedListType: "SHA256IP" };
-    }
-  }
+  // if (seedListRequired.includes(audienceType)) {
+  //   const seedList = populateIdentifiers(listData[key], destination);
+  //   if (seedList.length === 0) {
+  //     throw new CustomError(
+  //       `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+  //       400
+  //     );
+  //   }
+  //   outputPayload = { ...outputPayload, accountId, seedList };
+  //   if (audienceType === "deviceId") {
+  //     if (!seedListType) {
+  //       throw new CustomError(
+  //         `[Yahoo_DSP]:: seedListType is required for deviceId audience`,
+  //         400
+  //       );
+  //     }
+  //     outputPayload = { ...outputPayload, seedListType: seedListType };
+  //   }
+  //   if (audienceType === "ipAddress") {
+  //     outputPayload = { ...outputPayload, seedListType: "SHA256IP" };
+  //   }
+  // }
 
   const domains = [];
+  const categoryIds = [];
+  let seedList = [];
 
   switch (audienceType) {
+    case "email":
+      seedList = populateIdentifiers(listData[key], destination);
+      if (seedList.length === 0) {
+        throw new CustomError(
+          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+          400
+        );
+      }
+      outputPayload = { ...outputPayload, accountId, seedList };
+      break;
+    case "deviceId":
+      seedList = populateIdentifiers(listData[key], destination);
+      if (seedList.length === 0) {
+        throw new CustomError(
+          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+          400
+        );
+      }
+      if (!seedListType) {
+        throw new CustomError(
+          `[Yahoo_DSP]:: seedListType is required for deviceId audience`,
+          400
+        );
+      }
+      outputPayload = {
+        ...outputPayload,
+        accountId,
+        seedList,
+        seedListType: seedListType
+      };
+      break;
+    case "ipAddress":
+      seedList = populateIdentifiers(listData[key], destination);
+      if (seedList.length === 0) {
+        throw new CustomError(
+          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+          400
+        );
+      }
+      outputPayload = {
+        ...outputPayload,
+        accountId,
+        seedList,
+        seedListType: "SHA256IP"
+      };
+      break;
     case "mailDomain":
       listData[key].forEach(element => {
         const keys = Object.keys(element);
         keys.forEach(elementKey => {
-          if (elementKey === audienceType || elementKey === categoryIds) {
+          if (elementKey === audienceType || keys.includes("categoryIds")) {
             listType = audienceType;
           }
         });
@@ -115,15 +172,10 @@ const responseBuilder = async (message, destination) => {
   response.endpoint = `${BASE_ENDPOINT}/traffic/audiences/${ENDPOINTS[audienceType]}/${audienceId}`;
   response.body.JSON = removeUndefinedAndNullValues(outputPayload);
   response.method = defaultPutRequestConfig.requestMethod;
-  response.params = {
-    clientId: clientId,
-    clientSecret: clientSecret,
-    destinationId: destination.ID
-  };
-  const accessToken = await getAccessToken(response.params);
+  const accessToken = await getAccessToken(destination);
   response.headers = {
-    "X-Auth-Token" : accessToken,
-    "X-Auth-Method": "OAuth2",
+    "X-Auth-Token": accessToken,
+    "X-Auth-Method": "OAuth2"
   };
   return response;
 };

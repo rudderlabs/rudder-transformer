@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const {
-  getValueFromMessage,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");

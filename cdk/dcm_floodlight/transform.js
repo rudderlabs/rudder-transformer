@@ -2,35 +2,39 @@
 const get = require("get-value");
 const {
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  getFieldValueFromMessage
 } = require("rudder-transformer-cdk/build/utils");
 const logger = require("../../logger");
 const { CustomError, getIntegrationsObj, isEmpty } = require("../../v0/util");
 
 // append properties to endpoint
 // eg: ${endpoint}key1=value1;key2=value2;....
-function appendProperties(endpoint, payload) {
+const appendProperties = (endpoint, payload) => {
   Object.keys(payload).forEach(key => {
     endpoint += `${key}=${payload[key]};`;
   });
 
   return endpoint;
-}
+};
 
 // transform webapp dynamicForm custom floodlight variable
 // into {u1: value, u2: value, ...}
 // Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
-function transformCustomVariable(customFloodlightVariable, message) {
+const transformCustomVariable = (customFloodlightVariable, message) => {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
     if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
       // first we consider taking custom variable from properties
-      // if not found we will take it from root level i.e message.*
+      // if not found then we will look into traits
       let itemValue = get(message, `properties.${item.to.trim()}`);
       // this condition adds support for numeric 0
       if (!isDefinedAndNotNull(itemValue)) {
-        itemValue = get(message, item.to.trim());
+        const traits = getFieldValueFromMessage(message, "traits");
+        if (traits) {
+          itemValue = traits[item.to.trim()];
+        }
       }
       if (
         itemValue &&
@@ -50,10 +54,10 @@ function transformCustomVariable(customFloodlightVariable, message) {
   });
 
   return customVariable;
-}
+};
 
 // valid flag should be provided [1|true] or [0|false]
-function isValidFlag(key, value) {
+const mapFlagValue = (key, value) => {
   if (["true", "1"].includes(value.toString())) {
     return 1;
   }
@@ -65,7 +69,7 @@ function isValidFlag(key, value) {
     `[DCM Floodlight]:: ${key}: valid parameters are [1|true] or [0|false]`,
     400
   );
-}
+};
 
 /**
  * postMapper does the processing after we do the initial mapping
@@ -75,7 +79,7 @@ function isValidFlag(key, value) {
  * @param {*} rudderContext
  * @returns
  */
-function postMapper(input, mappedPayload, rudderContext) {
+const postMapper = (input, mappedPayload, rudderContext) => {
   const { message, destination } = input;
   const { advertiserId, conversionEvents } = destination.Config;
   let { activityTag, groupTag } = destination.Config;
@@ -189,23 +193,23 @@ function postMapper(input, mappedPayload, rudderContext) {
   const integrationsObj = getIntegrationsObj(message, "dcm_floodlight");
   if (integrationsObj) {
     if (isDefinedAndNotNull(integrationsObj.COPPA)) {
-      mappedPayload.tag_for_child_directed_treatment = isValidFlag(
+      mappedPayload.tag_for_child_directed_treatment = mapFlagValue(
         "COPPA",
         integrationsObj.COPPA
       );
     }
 
     if (isDefinedAndNotNull(integrationsObj.GDPR)) {
-      mappedPayload.tfua = isValidFlag("GDPR", integrationsObj.GDPR);
+      mappedPayload.tfua = mapFlagValue("GDPR", integrationsObj.GDPR);
     }
 
     if (isDefinedAndNotNull(integrationsObj.npa)) {
-      mappedPayload.npa = isValidFlag("npa", integrationsObj.npa);
+      mappedPayload.npa = mapFlagValue("npa", integrationsObj.npa);
     }
   }
 
   if (isDefinedAndNotNull(mappedPayload.dc_lat)) {
-    mappedPayload.dc_lat = isValidFlag("dc_lat", mappedPayload.dc_lat);
+    mappedPayload.dc_lat = mapFlagValue("dc_lat", mappedPayload.dc_lat);
   }
 
   mappedPayload = removeUndefinedAndNullValues(mappedPayload);
@@ -222,6 +226,6 @@ function postMapper(input, mappedPayload, rudderContext) {
   rudderContext.endpoint = dcmEndpoint;
 
   return {};
-}
+};
 
 module.exports = { postMapper };

@@ -3559,7 +3559,7 @@
               },
               {
                 "from": "4",
-                "to": "context.device.brand"
+                "to": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -3612,6 +3612,9 @@
         "screen": {
           "density": 2
         },
+        "traits": {
+          "name2": "traits-v1"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
       "event": "Purchase",
@@ -3641,8 +3644,7 @@
         ],
         "rudder2": "0",
         "akash2": "akash2",
-        "friendlyName2": false,
-        "name2": "1234"
+        "friendlyName2": false
       },
       "integrations": {
         "All": true,

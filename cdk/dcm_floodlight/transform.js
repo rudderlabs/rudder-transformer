@@ -4,6 +4,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
+const logger = require("../../logger");
 const { CustomError, getIntegrationsObj, isEmpty } = require("../../v0/util");
 
 // append properties to endpoint
@@ -18,6 +19,7 @@ function appendProperties(endpoint, payload) {
 
 // transform webapp dynamicForm custom floodlight variable
 // into {u1: value, u2: value, ...}
+// Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
 function transformCustomVariable(customFloodlightVariable, message) {
   const customVariable = {};
   customFloodlightVariable.forEach(item => {
@@ -30,9 +32,19 @@ function transformCustomVariable(customFloodlightVariable, message) {
       if (!isDefinedAndNotNull(itemValue)) {
         itemValue = get(message, item.to.trim());
       }
+      if (
+        itemValue &&
+        typeof itemValue === "string" &&
+        ['"', "<", ">", "#"].some(key => itemValue.includes(key))
+      ) {
+        logger.info('", < , > or # string variable is not acceptable');
+        itemValue = undefined;
+      }
       // supported data types are number and string
       if (isDefinedAndNotNull(itemValue) && typeof itemValue !== "boolean") {
-        customVariable[`u${item.from.trim().replace(/u/g, "")}`] = itemValue;
+        customVariable[
+          `u${item.from.trim().replace(/u/g, "")}`
+        ] = encodeURIComponent(itemValue);
       }
     }
   });
@@ -139,6 +151,7 @@ function postMapper(input, mappedPayload, rudderContext) {
     );
   }
 
+  // Ref - https://support.google.com/displayvideo/answer/6040012?hl=en
   customFloodlightVariable = transformCustomVariable(
     customFloodlightVariable,
     message

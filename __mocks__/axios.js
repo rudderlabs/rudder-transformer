@@ -127,7 +127,7 @@ function post(url, payload) {
       resolve({ status: 201 });
     });
   }
-  if (url.includes("https://id.b2b.yahooinc.com/identity/oauth2/access_token")) {
+  if (url.includes("https://id.b2b.yahooinc.com")) {
     return new Promise((resolve, reject) => {
       resolve(yahooDspPostRequestHandler(url, payload));
     });

@@ -47,7 +47,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
       // throwing error if the audience type the user wants to add is not present in the input.
       if (!listType) {
         throw new CustomError(
-          `Audience type ${audienceType} not provided`,
+          `[Yahoo_DSP]:: Audience type ${audienceType} not provided`,
           400
         );
       }
@@ -114,9 +114,9 @@ const responseBuilder = async (message, destination) => {
         );
       }
       // throwing error if seedListType is not provided for deviceId type audience
-      if (!seedListType) {
+      if ((!seedListType) || (seedListType && seedListType!="IDFA"  && seedListType!= "GPADVID")) {
         throw new CustomError(
-          `[Yahoo_DSP]:: seedListType is required for deviceId audience`,
+          `[Yahoo_DSP]:: seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'`,
           400
         );
       }
@@ -157,7 +157,7 @@ const responseBuilder = async (message, destination) => {
         });
         if (!listType) {
           throw new CustomError(
-            `Audience type ${audienceType} not provided`,
+            `[Yahoo_DSP]:: Audience type ${audienceType} not provided`,
             400
           );
         }
@@ -174,7 +174,7 @@ const responseBuilder = async (message, destination) => {
       break;
     default:
       throw new CustomError(
-        `Audience Type "${audienceType}" is not supported`,
+        `[Yahoo_DSP]:: Audience Type "${audienceType}" is not supported`,
         400
       );
   }
@@ -194,19 +194,19 @@ const responseBuilder = async (message, destination) => {
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
-      "[Yahoo_DSP]::Message Type is not present. Aborting message.",
+      "[Yahoo_DSP]:: Message Type is not present. Aborting message.",
       400
     );
   }
   if (!message.properties) {
     throw new CustomError(
-      "[Yahoo_DSP]::Message properties is not present. Aborting message.",
+      "[Yahoo_DSP]:: Message properties is not present. Aborting message.",
       400
     );
   }
   if (!message.properties.listData) {
     throw new CustomError(
-      "[Yahoo_DSP]::listData is not present inside properties. Aborting message.",
+      "[Yahoo_DSP]:: listData is not present inside properties. Aborting message.",
       400
     );
   }
@@ -215,7 +215,7 @@ const processEvent = async (message, destination) => {
     response = await responseBuilder(message, destination);
   } else {
     throw new CustomError(
-      `[Yahoo_DSP]::Message type ${message.type} not supoorted`,
+      `[Yahoo_DSP]:: Message type ${message.type} not supoorted`,
       400
     );
   }

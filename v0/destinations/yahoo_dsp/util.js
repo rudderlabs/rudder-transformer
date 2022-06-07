@@ -41,7 +41,7 @@ const populateIncludes = (list, audienceType) => {
       }
     });
     if (!listType) {
-      throw new CustomError(`Audience type ${audienceType} not provided`, 400);
+      throw new CustomError(`[Yahoo_DSP]:: Audience type ${audienceType} not provided`, 400);
     }
     if (element.includeChains) {
       if (!includes.chains) {
@@ -81,7 +81,7 @@ const populateExcludes = (list, audienceType) => {
       }
     });
     if (!listType) {
-      throw new CustomError(`Audience type ${audienceType} not provided`, 400);
+      throw new CustomError(`[Yahoo_DSP]:: Audience type ${audienceType} not provided`, 400);
     }
     if (element.excludeChains) {
       if (!excludes.chains) {
@@ -160,7 +160,7 @@ const getAccessToken = async destination => {
     const response = await httpPOST(request.url, request.data, request.header);
     // If the request fails, throwing error.
     if(response.success === false){
-      throw new CustomError(`${response.response.response.data.error}`,400);
+      throw new CustomError(`[Yahoo_DSP]:: access token could not be gnerated due to ${response.response.response.data.error}`,400);
     }
     return response.response?.data?.access_token
   });

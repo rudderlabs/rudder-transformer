@@ -13,7 +13,15 @@ function base64url(source) {
 
   return encodedSource;
 }
-
+/* *
+ * Generating JWT token using the below function. JWT Token is used for generating access token with identifying
+ * client using Oauth2 client_credentials.
+ *
+ * A JWT primarily consists of three parts:
+ * 1. Header - Normalized structure specifying how the token is signed.
+ * 2. A free set of claims.
+ * 3. A signature to ensure data integrity.
+ * */
 function generateJWTToken(header, data, secret) {
   const stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
   const encodedHeader = base64url(stringifiedHeader);

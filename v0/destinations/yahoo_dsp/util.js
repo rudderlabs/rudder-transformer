@@ -6,7 +6,7 @@ const { CustomError } = require("../../util");
 const { ACCESS_TOKEN_CACHE_TTL } = require("./config.js");
 const Cache = require("../../util/cache");
 
-const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
+const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
 const getUnixTimestamp = () => {
   return Math.floor(Date.now() / 1000);
@@ -112,8 +112,8 @@ const populateExcludes = (list, audienceType) => {
 };
 
 /**
- * The funciton here is used to generate acccess token which needs some parameters like clientId, clientSecret which is being
- * taken from destination.Config. 
+ * The funciton here is used to generate acccess token using POST call which needs some parameters like clientId, clientSecret which is being
+ * taken from destination.Config and JWT token (generated using jwtTokenGenerator).
  * @param {*} destination 
  * @returns 
  */
@@ -125,7 +125,7 @@ const getAccessToken = async destination => {
    * The access token expires around every one hour. Cache is used here to check if the access token is present in the cache
    * it is taken from cache else a post call is made to get the access token.
    */
-  return accessTokenCache.get(accessTokenKey, async () => {
+  return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
     const header = {
       alg: "HS256",
       typ: "JWT"

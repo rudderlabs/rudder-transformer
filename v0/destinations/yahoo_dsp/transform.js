@@ -114,7 +114,10 @@ const responseBuilder = async (message, destination) => {
         );
       }
       // throwing error if seedListType is not provided for deviceId type audience
-      if ((!seedListType) || (seedListType && seedListType!="IDFA"  && seedListType!= "GPADVID")) {
+      if (
+        !seedListType ||
+        (seedListType && seedListType !== "IDFA" && seedListType !== "GPADVID")
+      ) {
         throw new CustomError(
           `[Yahoo_DSP]:: seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'`,
           400
@@ -124,7 +127,7 @@ const responseBuilder = async (message, destination) => {
         ...outputPayload,
         accountId,
         seedList,
-        seedListType: seedListType
+        seedListType
       };
       break;
     case "ipAddress":
@@ -151,6 +154,12 @@ const responseBuilder = async (message, destination) => {
         const keys = Object.keys(element);
         // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
         keys.forEach(elementKey => {
+          /**
+           * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
+           * mail from a domain belonging to the specified categories.
+           * Reference for use case of categoryIds:
+           * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
+           */
           if (elementKey === audienceType || keys.includes("categoryIds")) {
             listType = audienceType;
           }
@@ -161,13 +170,17 @@ const responseBuilder = async (message, destination) => {
             400
           );
         }
-        domains.push(element?.mailDomain);
-        categoryIds.push(element?.categoryIds);
+        domains.push(element.mailDomain);
+        categoryIds.push(element.categoryIds);
       });
       outputPayload = { accountId, domains, categoryIds };
       break;
     case "pointOfInterest":
-      // Here, populating includes and excludes object.
+      /**
+       * Here, populating includes and excludes object which contains POI locations visited by the consumer The consumer is
+       * added in the includes if the consumer has visited the POI location and is added in excludes if the
+       * consumer has not visited the POI.
+       */
       outputPayload.includes = populateIncludes(listData[key], audienceType);
       outputPayload.excludes = populateExcludes(listData[key], audienceType);
       outputPayload = { ...outputPayload, accountId };

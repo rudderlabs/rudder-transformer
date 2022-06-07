@@ -6,14 +6,21 @@ const {
   getFieldValueFromMessage
 } = require("rudder-transformer-cdk/build/utils");
 const logger = require("../../logger");
-const { CustomError, getIntegrationsObj, isEmpty } = require("../../v0/util");
+const {
+  CustomError,
+  getIntegrationsObj,
+  isEmpty,
+  isEmptyObject
+} = require("../../v0/util");
 
 // append properties to endpoint
 // eg: ${endpoint}key1=value1;key2=value2;....
 const appendProperties = (endpoint, payload) => {
-  Object.keys(payload).forEach(key => {
-    endpoint += `${key}=${payload[key]};`;
-  });
+  endpoint += Object.keys(payload)
+    .map(key => {
+      return `${key}=${payload[key]}`;
+    })
+    .join(";");
 
   return endpoint;
 };
@@ -218,10 +225,10 @@ const postMapper = (input, mappedPayload, rudderContext) => {
   );
 
   let dcmEndpoint = appendProperties(baseEndpoint, mappedPayload);
-  dcmEndpoint = appendProperties(dcmEndpoint, customFloodlightVariable).slice(
-    0,
-    -1
-  );
+  if (!isEmptyObject(customFloodlightVariable)) {
+    dcmEndpoint = dcmEndpoint.concat(";");
+    dcmEndpoint = appendProperties(dcmEndpoint, customFloodlightVariable);
+  }
 
   rudderContext.endpoint = dcmEndpoint;
 

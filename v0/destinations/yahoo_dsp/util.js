@@ -32,8 +32,8 @@ const includes = {};
 const excludes = {};
 
 // updating includes 
-const populateIncludes = (list, audienceType) => {
-  list.forEach(element => {
+const populateIncludes = (audienceList, audienceType) => {
+  audienceList.forEach(element => {
     const keys = Object.keys(element);
     keys.forEach(elementKey => {
       if (poiLocationType.includes(elementKey)) {
@@ -72,8 +72,8 @@ const populateIncludes = (list, audienceType) => {
 };
 
 // updating excludes
-const populateExcludes = (list, audienceType) => {
-  list.forEach(element => {
+const populateExcludes = (audienceList, audienceType) => {
+  audienceList.forEach(element => {
     const keys = Object.keys(element);
     keys.forEach(elementKey => {
       if (poiLocationType.includes(elementKey)) {

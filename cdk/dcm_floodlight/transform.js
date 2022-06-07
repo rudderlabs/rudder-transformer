@@ -72,21 +72,16 @@ function postMapper(input, mappedPayload, rudderContext) {
     const { category } = message.properties;
     const { name } = message || message.properties;
 
-    if (!category && !name) {
-      throw new CustomError(
-        "[DCM Floodlight]:: category or name is required for page",
-        400
-      );
-    }
-
     if (category && name) {
       message.event = `Viewed ${category} ${name} Page`;
     } else if (category) {
       // categorized pages
       message.event = `Viewed ${category} Page`;
-    } else {
+    } else if (name) {
       // named pages
       message.event = `Viewed ${name} Page`;
+    } else {
+      message.event = "Viewed Page";
     }
   }
 
@@ -94,7 +89,7 @@ function postMapper(input, mappedPayload, rudderContext) {
 
   if (!event) {
     throw new CustomError(
-      "[DCM Floodlight]:: event is required for track call",
+      `[DCM Floodlight] ${message.type}:: event is required`,
       400
     );
   }
@@ -102,7 +97,7 @@ function postMapper(input, mappedPayload, rudderContext) {
   const userAgent = get(message, "context.userAgent");
   if (!userAgent) {
     throw new CustomError(
-      "[DCM Floodlight]:: userAgent is required for track call",
+      `[DCM Floodlight] ${message.type}:: userAgent is required`,
       400
     );
   }
@@ -132,7 +127,10 @@ function postMapper(input, mappedPayload, rudderContext) {
   });
 
   if (!conversionEventFound) {
-    throw new CustomError("[DCM Floodlight]:: Conversion event not found", 400);
+    throw new CustomError(
+      `[DCM Floodlight] ${message.type}:: Conversion event not found`,
+      400
+    );
   }
 
   customFloodlightVariable = transformCustomVariable(

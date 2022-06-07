@@ -4,7 +4,7 @@ message:
     - page
   track:
     transformation:
-      mapperPath: ./mapping/track.yaml
+      mapperPath: ./mapping/DCMFloodlightConfig.yaml
       postMapper:
         name: "postMapper"
       response:
@@ -15,7 +15,7 @@ message:
           User-Agent: "{{ rudderContext.userAgent }}"
   page:
     transformation:
-      mapperPath: ./mapping/track.yaml
+      mapperPath: ./mapping/DCMFloodlightConfig.yaml
       postMapper:
         name: "postMapper"
       response:

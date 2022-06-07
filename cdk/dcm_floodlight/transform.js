@@ -24,7 +24,8 @@ function transformCustomVariable(customFloodlightVariable, message) {
     if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
       const itemValue = get(message, `properties.${item.to.trim()}`);
-      if (itemValue) {
+      // supported data types are number and string
+      if (isDefinedAndNotNull(itemValue) && typeof itemValue !== "boolean") {
         customVariable[`u${item.from.trim().replace(/u/g, "")}`] = itemValue;
       }
     }
@@ -48,6 +49,14 @@ function isValidFlag(key, value) {
   );
 }
 
+/**
+ * postMapper does the processing after we do the initial mapping
+ * defined in mapping/*.yaml
+ * @param {*} input
+ * @param {*} mappedPayload
+ * @param {*} rudderContext
+ * @returns
+ */
 function postMapper(input, mappedPayload, rudderContext) {
   const { message, destination } = input;
   const { advertiserId, conversionEvents } = destination.Config;
@@ -58,6 +67,7 @@ function postMapper(input, mappedPayload, rudderContext) {
   const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
 
   let event;
+  // for page() take event from name and category
   if (message.type === "page") {
     const { category } = message.properties;
     const { name } = message || message.properties;
@@ -69,7 +79,6 @@ function postMapper(input, mappedPayload, rudderContext) {
       );
     }
 
-    message.type = "track";
     if (category && name) {
       message.event = `Viewed ${category} ${name} Page`;
     } else if (category) {

@@ -1,5 +1,4 @@
 const get = require("get-value");
-const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -12,13 +11,11 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage,
-  isDefinedAndNotNullAndNotEmpty
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   ENDPOINT,
   trackCommonConfig,
-  eventNameMapping,
   mappingConfig,
   ConfigCategory
 } = require("./config");
@@ -61,19 +58,21 @@ function trackResponseBuilder(message, { Config }) {
 
   switch (Config.typesOfClient) {
     case "gtag":
-      // gtag.js
+      // gtag.js uses client_id
+      // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id =
         getDestinationExternalID(message, "ga4ClientId") ||
         get(message, "anonymousId") ||
         get(message, "messageId");
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
-          "context.client_id or messageId must be provided",
+          "ga4ClientId, anonymousId or messageId must be provided",
           400
         );
       }
       break;
     case "firebase":
+      // firebase uses app_instance_id
       rawPayload.app_instance_id = getDestinationExternalID(
         message,
         "ga4AppInstanceId"
@@ -90,326 +89,54 @@ function trackResponseBuilder(message, { Config }) {
   }
 
   let payload = {};
-  if (eventNameMapping[event.toLowerCase()]) {
+  if (message.type === "track" && ConfigCategory[`${event.toUpperCase()}`]) {
     // GA4 standard events
     // get event specific parameters
-    switch (event.toLowerCase()) {
-      /* Browsing Section */
-      case "products_searched":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
-          )
-        );
-        break;
-      case "product_list_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
-          )
-        );
-        break;
-      /* Promotions Section */
-      case "promotion_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
-          )
-        );
-        break;
-      case "promotion_clicked":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
-        );
-        payload.params.items = getItemList(message, false);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
-          )
-        );
-        break;
-      /* Ordering Section */
-      case "product_clicked": {
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
-        );
-        payload.params.items = getItem(message, true);
 
-        let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
-          mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
-        );
-        ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
-          getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          ITEM_EXCLUSION_LIST
-        );
-        break;
-      }
-      case "product_viewed": {
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
-        );
-        payload.params.items = getItem(message, true);
+    payload.name = ConfigCategory[`${event.toUpperCase()}`].event;
 
-        let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
-          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
-        );
-        ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
-          getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          ITEM_EXCLUSION_LIST
-        );
-        break;
-      }
-      case "product_added":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(mappingConfig[ConfigCategory.PRODUCT_ADDED.name])
-        );
-        break;
-      case "product_removed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
-          )
-        );
-        break;
-      case "cart_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CART_VIEWED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(mappingConfig[ConfigCategory.CART_VIEWED.name])
-        );
-        break;
-      case "checkout_started":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
-          )
-        );
-        break;
-      case "payment_info_entered":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
-          )
-        );
-        break;
-      case "checkout_step_completed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CHECKOUT_STEP_COMPLETED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.CHECKOUT_STEP_COMPLETED.name]
-          )
-        );
-        break;
-      case "order_completed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
-          )
-        );
-        break;
-      case "order_refunded":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
-        );
-        payload.params.items = getItemList(message, false);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(mappingConfig[ConfigCategory.ORDER_REFUNDED.name])
-        );
-        break;
-      /* Wishlist Section */
-      case "product_added_to_wishlist":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
-        );
-        payload.params.items = getItemList(message, true);
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(
-            mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
-          )
-        );
-        break;
-      /* Sharing Section */
-      case "product_shared":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_SHARED.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(mappingConfig[ConfigCategory.PRODUCT_SHARED.name])
-        );
-        break;
-      case "cart_shared":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CART_SHARED.name]
-        );
-        payload.params = extractCustomFields(
-          message,
-          payload.params,
-          ["properties"],
-          getGA4ExclusionList(mappingConfig[ConfigCategory.CART_SHARED.name])
-        );
-        break;
-      /* Group */
-      case "group":
-        if (message.type === "group") {
-          payload.name = eventNameMapping[event.toLowerCase()];
-          payload.params = constructPayload(
-            message,
-            mappingConfig[ConfigCategory.GROUP.name]
-          );
-          payload.params = extractCustomFields(
-            message,
-            payload.params,
-            ["properties"],
-            getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name])
-          );
-        }
-        break;
-      /* GA4 Events */
-      case "view_search_results": {
-        payload.name = eventNameMapping[event.toLowerCase()];
+    if (mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]) {
+      payload.params = constructPayload(
+        message,
+        mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
+      );
+    }
 
-        let customParameters = {};
-        customParameters = extractCustomFields(
-          message,
-          customParameters,
-          ["properties"],
-          GA4_RESERVED_PARAMETER_EXCLUSION.concat("products")
-        );
-        if (!isEmptyObject(customParameters)) {
-          customParameters = flattenJson(customParameters);
-          payload.params = {
-            ...payload.params,
-            ...customParameters
-          };
-        }
+    const { itemList } = ConfigCategory[`${event.toUpperCase()}`];
+    const { item } = ConfigCategory[`${event.toUpperCase()}`];
 
-        set(payload, "params.items", getItemList(message, true));
-        break;
-      }
-      default:
-        break;
+    if (item === "YES") {
+      payload.params.items = getItem(message, true);
+    } else if (item === "NO") {
+      payload.params.items = getItem(message, false);
+    } else if (itemList === "YES") {
+      payload.params.items = getItemList(message, true);
+    } else if (itemList === "NO") {
+      payload.params.items = getItemList(message, false);
+    }
+
+    if (payload.name === "select_item" || payload.name === "view_item") {
+      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
+        mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
+      );
+      ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+        getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
+      );
+      payload.params = extractCustomFields(
+        message,
+        payload.params,
+        ["properties"],
+        ITEM_EXCLUSION_LIST
+      );
+    } else {
+      payload.params = extractCustomFields(
+        message,
+        payload.params,
+        ["properties"],
+        getGA4ExclusionList(
+          mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
+        )
+      );
     }
   } else if (message.type === "identify") {
     payload.name = event;

@@ -2,6 +2,14 @@ const { getMappingConfig } = require("../../util");
 
 const ENDPOINT = "https://www.google-analytics.com/mp/collect";
 
+/**
+ * config for GA4 events
+ *
+ * For Items list these are the convention that is being followed
+ * "NA" - Item list is not present
+ * "YES" - Item list is present and is a required field
+ * "NO" - Item list is present and is not a required field
+ */
 const ConfigCategory = {
   COMMON: { name: "GA4CommonConfig" },
   ITEM_LIST: { name: "GA4ItemListConfig" },
@@ -10,75 +18,121 @@ const ConfigCategory = {
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
   /* Browsing Section */
-  PRODUCTS_SEARCHED: { name: "GA4ProductsSearchedConfig" },
-  PRODUCT_LIST_VIEWED: { name: "GA4ProductListViewedConfig" },
+
+  PRODUCTS_SEARCHED: {
+    name: "GA4ProductsSearchedConfig",
+    event: "search",
+    itemList: "NA"
+  },
+  PRODUCT_LIST_VIEWED: {
+    name: "GA4ProductListViewedConfig",
+    event: "view_item_list",
+    itemList: "YES"
+  },
 
   /* Promotions Section */
-  PROMOTION_VIEWED: { name: "GA4PromotionViewedConfig" },
-  PROMOTION_CLICKED: { name: "GA4PromotionClickedConfig" },
+  PROMOTION_VIEWED: {
+    name: "GA4PromotionViewedConfig",
+    event: "view_promotion",
+    itemList: "YES"
+  },
+  PROMOTION_CLICKED: {
+    name: "GA4PromotionClickedConfig",
+    event: "select_promotion",
+    itemList: "NO"
+  },
 
   /* Ordering Section */
-  PRODUCT_CLICKED: { name: "GA4ProductClickedConfig" },
-  PRODUCT_VIEWED: { name: "GA4ProductViewedConfig" },
-  PRODUCT_ADDED: { name: "GA4ProductAddedConfig" },
-  PRODUCT_REMOVED: { name: "GA4ProductRemovedConfig" },
-  CART_VIEWED: { name: "GA4CartViewedConfig" },
-  CHECKOUT_STARTED: { name: "GA4CheckoutStartedConfig" },
-  CHECKOUT_STEP_COMPLETED: { name: "GA4CheckoutStepCompleted" },
-  PAYMENT_INFO_ENTERED: { name: "GA4PaymentInfoEnteredConfig" },
-  ORDER_COMPLETED: { name: "GA4OrderCompletedConfig" },
-  ORDER_REFUNDED: { name: "GA4OrderRefundedConfig" },
+  PRODUCT_CLICKED: {
+    name: "GA4ProductClickedConfig",
+    event: "select_item",
+    itemList: "NA",
+    item: "YES"
+  },
+  PRODUCT_VIEWED: {
+    name: "GA4ProductViewedConfig",
+    event: "view_item",
+    itemList: "NA",
+    item: "YES"
+  },
+  PRODUCT_ADDED: {
+    name: "GA4ProductAddedConfig",
+    event: "add_to_cart",
+    itemList: "YES"
+  },
+  PRODUCT_REMOVED: {
+    name: "GA4ProductRemovedConfig",
+    event: "remove_from_cart",
+    itemList: "YES"
+  },
+  CART_VIEWED: {
+    name: "GA4CartViewedConfig",
+    event: "view_cart",
+    itemList: "YES"
+  },
+  CHECKOUT_STARTED: {
+    name: "GA4CheckoutStartedConfig",
+    event: "begin_checkout",
+    itemList: "YES"
+  },
+  PAYMENT_INFO_ENTERED: {
+    name: "GA4PaymentInfoEnteredConfig",
+    event: "add_payment_info",
+    itemList: "YES"
+  },
+  CHECKOUT_STEP_COMPLETED: {
+    name: "GA4CheckoutStepCompleted",
+    event: "add_shipping_info",
+    itemList: "YES"
+  },
+  ORDER_COMPLETED: {
+    name: "GA4OrderCompletedConfig",
+    event: "purchase",
+    itemList: "YES"
+  },
+  ORDER_REFUNDED: {
+    name: "GA4OrderRefundedConfig",
+    event: "refund",
+    itemList: "NO"
+  },
 
   /* Wishlist Section */
-  PRODUCT_ADDED_TO_WISHLIST: { name: "GA4ProductAddedToWishlistConfig" },
+  PRODUCT_ADDED_TO_WISHLIST: {
+    name: "GA4ProductAddedToWishlistConfig",
+    event: "add_to_wishlist",
+    itemList: "YES"
+  },
 
   /* Sharing Section */
-  PRODUCT_SHARED: { name: "GA4ProductSharedConfig" },
-  CART_SHARED: { name: "GA4CartSharedConfig" },
+  PRODUCT_SHARED: {
+    name: "GA4ProductSharedConfig",
+    event: "share",
+    itemList: "NA"
+  },
+  CART_SHARED: {
+    name: "GA4CartSharedConfig",
+    event: "share",
+    itemList: "NA"
+  },
 
   /* Group */
-  GROUP: { name: "GA4GroupConfig" },
+  GROUP: {
+    name: "GA4GroupConfig",
+    event: "group",
+    itemList: "NA"
+  },
 
   /* GA4 Events */
-  GENERATE_LEAD: { name: "GA4GenerateLeadConfig" }
-};
-
-/**
- * GA4 Events (29)
- * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events
- */
-const eventNameMapping = {
-  /* E-Commerce Events */
-  /* Browsing Section */
-  products_searched: "search",
-  product_list_viewed: "view_item_list",
-
-  /* Promotions Section */
-  promotion_viewed: "view_promotion",
-  promotion_clicked: "select_promotion",
-
-  /* Ordering Section */
-  product_clicked: "select_item",
-  product_viewed: "view_item",
-  product_added: "add_to_cart",
-  product_removed: "remove_from_cart",
-  cart_viewed: "view_cart",
-  checkout_started: "begin_checkout",
-  payment_info_entered: "add_payment_info",
-  checkout_step_completed: "add_shipping_info",
-
-  order_completed: "purchase",
-  order_refunded: "refund",
-
-  /* Wishlist Section */
-  product_added_to_wishlist: "add_to_wishlist",
-
-  /* Sharing Section */
-  product_shared: "share",
-  cart_shared: "share",
-
-  /* GA4 Events */
-  view_search_results: "view_search_results"
+  GENERATE_LEAD: {
+    name: "GA4GenerateLeadConfig",
+    event: "generate_lead",
+    itemList: "NA"
+  },
+  VIEW_SEARCH_RESULTS: {
+    name: "GA4ViewSearchResults",
+    event: "view_search_results",
+    itemList: "YES"
+  }
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
@@ -86,7 +140,7 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   ENDPOINT,
   ConfigCategory,
-  eventNameMapping,
+  // eventNameMapping,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name]
 };

@@ -8,9 +8,9 @@
     "destKey": "value",
     "sourceKeys": [
       "properties.total",
+      "properties.price",
       "properties.value",
-      "properties.revenue",
-      "properties.price"
+      "properties.revenue"
     ],
     "metadata": {
       "type": "toNumber"

@@ -8,6 +8,8 @@ const {
   isDefinedAndNotNull
 } = require("../../util");
 
+const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
+
 const getMailChimpEndpoint = (datacenterId, audienceId) => {
   const mailChimpApi = "api.mailchimp.com";
   const listsUrl = `https://${datacenterId}.${mailChimpApi}/3.0/lists`;
@@ -141,5 +143,6 @@ module.exports = {
   finaliseAudienceId,
   stitchEndpointAndMethodForExistingEmails,
   stitchEndpointAndMethodForNONExistingEmails,
-  getBatchEndpoint
+  getBatchEndpoint,
+  ADDRESS_MANDATORY_FIELDS
 };

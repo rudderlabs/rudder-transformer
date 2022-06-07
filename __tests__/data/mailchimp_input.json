@@ -11,7 +11,8 @@
       "Config": {
         "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
         "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "datacenterId": "us20",
+        "enableMergeFields": true
       },
       "Enabled": true,
       "Transformations": []
@@ -43,7 +44,8 @@
           "anonymousId": "userId12345",
           "email": "bob.dole@initech.com",
           "firstName": "Bob",
-          "lastName": "Dole"
+          "lastName": "Dole",
+          "zip": "123"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
       },

@@ -22,7 +22,8 @@ const {
   checkIfDoubleOptIn,
   stitchEndpointAndMethodForExistingEmails,
   stitchEndpointAndMethodForNONExistingEmails,
-  getBatchEndpoint
+  getBatchEndpoint,
+  ADDRESS_MANDATORY_FIELDS
 } = require("./utils");
 
 const { MappedToDestinationKey } = require("../../../constants");
@@ -47,6 +48,28 @@ const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   return mergedFieldPayload;
 };
 
+const formattingAddressObject = mergedFieldPayload => {
+  // this only works, when any of the address fields are intended to be sent.
+  if (
+    mergedFieldPayload.ADDRESS &&
+    Object.keys(mergedFieldPayload.ADDRESS).length > 0
+  ) {
+    const addressKeys = Object.keys(mergedFieldPayload.ADDRESS);
+    addressKeys.forEach((key, index) => {
+      if (ADDRESS_MANDATORY_FIELDS.indexOf(key) >= 0) {
+        ADDRESS_MANDATORY_FIELDS.splice(index - 1, 1);
+      }
+    });
+    // if any of ["addr1", "city", "state", "zip"] are not present
+    // setting it to empty string
+    if (ADDRESS_MANDATORY_FIELDS.length > 0) {
+      ADDRESS_MANDATORY_FIELDS.forEach(item => {
+        mergedFieldPayload.ADDRESS[item] = "";
+      });
+    }
+  }
+};
+
 const processPayloadBuild = async (
   message,
   updateSubscription,
@@ -62,6 +85,9 @@ const processPayloadBuild = async (
   const { apiKey, datacenterId } = Config;
   let mergeFields;
 
+  // From the behaviour of destination we know that, if address
+  // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
+  formattingAddressObject(mergedFieldPayload);
   // for sending any fields other than email_address, while the email is already existing
   // enableMergeFields needs to be set to true.
   if (isDefinedAndNotNull(updateSubscription) && emailExists) {
@@ -71,10 +97,11 @@ const processPayloadBuild = async (
       mergeFields = null;
     }
   } else {
-    // if user sends a non-existing email, the trait fields are sent within
-    // the merge_field object only
-
-    mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
+    // if user sends a non-existing email, then also enableMergeField is checked
+    // eslint-disable-next-line no-lonely-if
+    if (isDefined(enableMergeFields) && enableMergeFields === true) {
+      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
+    }
   }
   primaryPayload = { ...primaryPayload, merge_fields: mergeFields };
 

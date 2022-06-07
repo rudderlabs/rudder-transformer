@@ -12,6 +12,12 @@
     "body": {
       "JSON": {
         "merge_fields": {
+          "ADDRESS": {
+            "addr1": "",
+            "city": "",
+            "state": "",
+            "zip": "123"
+          },
           "FNAME": "Bob",
           "LNAME": "Dole",
           "ANONYMOUSI": "userId12345"
@@ -99,7 +105,6 @@
       "FORM": {},
       "JSON": {
         "status": "subscribed",
-        "merge_fields": {},
         "email_address": "jhon@gmail.com"
       },
       "JSON_ARRAY": {}
@@ -121,7 +126,6 @@
       "XML": {},
       "FORM": {},
       "JSON": {
-        "merge_fields": {},
         "email_address": "bob.dole@initech.com"
       },
       "JSON_ARRAY": {}

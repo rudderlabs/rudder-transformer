@@ -44,7 +44,8 @@
       "Config": {
         "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
         "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "datacenterId": "us20",
+        "enableMergeFields": true
       },
       "Enabled": true,
       "Transformations": []
@@ -100,5 +101,15 @@
       "Enabled": true,
       "Transformations": []
     }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   }
 ]

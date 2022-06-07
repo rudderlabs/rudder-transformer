@@ -1,12 +1,38 @@
 const axios = require("axios");
 const md5 = require("md5");
 const logger = require("../../../logger");
-const { CustomError } = require("../../util");
+const {
+  CustomError,
+  defaultPostRequestConfig,
+  defaultPutRequestConfig,
+  isDefinedAndNotNull
+} = require("../../util");
 
 const getMailChimpEndpoint = (datacenterId, audienceId) => {
   const mailChimpApi = "api.mailchimp.com";
   const listsUrl = `https://${datacenterId}.${mailChimpApi}/3.0/lists`;
   return `${listsUrl}/${audienceId}`;
+};
+
+const getBatchEndpoint = destConfig => {
+  const { datacenterId, audienceId, enableMergeFields } = destConfig;
+  let mergeFieldOption;
+  /*
+   if enableMergeFields option is not present in config, we will set it to false
+   which means, member data will be accepted with merge field values, which is also 
+   a default behaviour of Mailchimp itself
+  */
+  if (!isDefinedAndNotNull(enableMergeFields)) {
+    mergeFieldOption = false;
+  } else {
+    mergeFieldOption = enableMergeFields;
+  }
+  // ref: https://mailchimp.com/developer/marketing/api/lists/batch-subscribe-or-unsubscribe/
+  const BASE_URL = `https://${datacenterId}.api.mailchimp.com/3.0/lists/${audienceId}`;
+
+  const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=${mergeFieldOption}&skip_duplicate_check=false`;
+
+  return BATCH_ENDPOINT;
 };
 
 // Converts to upper case and removes spaces
@@ -78,10 +104,42 @@ const finaliseAudienceId = async (message, configAudienceId) => {
   return finalAudienceId;
 };
 
+const stitchEndpointAndMethodForExistingEmails = (
+  datacenterId,
+  audienceId,
+  email,
+  response
+) => {
+  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-or-update-list-member/
+  const hash = md5(email);
+  response.endpoint = `${getMailChimpEndpoint(
+    datacenterId,
+    audienceId
+  )}/members/${hash}`;
+  response.method = defaultPutRequestConfig.requestMethod;
+};
+
+const stitchEndpointAndMethodForNONExistingEmails = (
+  datacenterId,
+  audienceId,
+  email,
+  response
+) => {
+  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-member-to-list/
+  response.endpoint = `${getMailChimpEndpoint(
+    datacenterId,
+    audienceId
+  )}/members`;
+  response.method = defaultPostRequestConfig.requestMethod;
+};
+
 module.exports = {
   getMailChimpEndpoint,
   filterTagValue,
   checkIfMailExists,
   checkIfDoubleOptIn,
-  finaliseAudienceId
+  finaliseAudienceId,
+  stitchEndpointAndMethodForExistingEmails,
+  stitchEndpointAndMethodForNONExistingEmails,
+  getBatchEndpoint
 };

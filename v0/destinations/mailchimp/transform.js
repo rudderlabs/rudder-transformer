@@ -1,15 +1,12 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
-const md5 = require("md5");
 const { isDefinedAndNotNull } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
   constructPayload,
   defaultRequestConfig,
-  defaultPostRequestConfig,
-  defaultPutRequestConfig,
   addExternalIdToTraits,
   getFieldValueFromMessage,
   getIntegrationsObj,
@@ -20,10 +17,12 @@ const {
   defaultBatchRequestConfig
 } = require("../../util");
 const {
-  getMailChimpEndpoint,
   filterTagValue,
   checkIfMailExists,
-  checkIfDoubleOptIn
+  checkIfDoubleOptIn,
+  stitchEndpointAndMethodForExistingEmails,
+  stitchEndpointAndMethodForNONExistingEmails,
+  getBatchEndpoint
 } = require("./utils");
 
 const { MappedToDestinationKey } = require("../../../constants");
@@ -79,6 +78,22 @@ const processPayloadBuild = async (
   }
   primaryPayload = { ...primaryPayload, merge_fields: mergeFields };
 
+  /*
+
+  * The following block is dedicated for deducing the "status" field of the
+    output payload. 
+
+  * Status field can be manually changed "only" for the already existing subscribers.
+
+  * If the particular email is not suscribed already, Rudderstack will check if double 
+    opt-in is switched on, in that case, the status is set as "pending". Otherwise, it is 
+    set to "subscribed"
+
+  * Rudderstack is not setting any default status for already existing emails, unless appropriate 
+    "subscriptionStatus" is provided via integrations object.
+
+  */
+
   if (isDefinedAndNotNull(updateSubscription) && emailExists) {
     Object.keys(updateSubscription).forEach(field => {
       if (field === "subscriptionStatus") {
@@ -115,34 +130,6 @@ const processPayloadBuild = async (
   return removeUndefinedAndNullValues(primaryPayload);
 };
 
-const stitchEndpointAndMethodForExistingEmails = (
-  datacenterId,
-  audienceId,
-  email,
-  response
-) => {
-  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-or-update-list-member/
-  const hash = md5(email);
-  response.endpoint = `${getMailChimpEndpoint(
-    datacenterId,
-    audienceId
-  )}/members/${hash}`;
-  response.method = defaultPutRequestConfig.requestMethod;
-};
-
-const stitchEndpointAndMethodForNONExistingEmails = (
-  datacenterId,
-  audienceId,
-  email,
-  response
-) => {
-  // ref: https://mailchimp.com/developer/marketing/api/list-members/add-member-to-list/
-  response.endpoint = `${getMailChimpEndpoint(
-    datacenterId,
-    audienceId
-  )}/members`;
-  response.method = defaultPostRequestConfig.requestMethod;
-};
 const responseBuilderSimple = async (
   finalPayload,
   message,
@@ -210,6 +197,24 @@ const identifyResponseBuilder = async (message, { Config }) => {
     audienceId = Config.audienceId;
   }
 
+  if (mappedToDestination) {
+    /**
+    Passing the traits as it is, for reverseETL sources. For these sources, 
+    it is expected to have merge fields in proper format, along with appropriate status 
+    as well.
+     */
+    addExternalIdToTraits(message);
+    return responseBuilderSimple(
+      getFieldValueFromMessage(message, "traits"),
+      message,
+      Config,
+      audienceId,
+      false // sending emailExists as false, for reverseETL, as the events will be
+      // sent to the dedicated batching endpoint. Hence we do not need to deduce the
+      // endpoint or method for this case.
+    );
+  }
+
   const emailExists = await checkIfMailExists(
     apiKey,
     datacenterId,
@@ -217,17 +222,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
     email
   );
 
-  if (mappedToDestination) {
-    // build response with existing traits only
-    addExternalIdToTraits(message);
-    return responseBuilderSimple(
-      getFieldValueFromMessage(message, "traits"),
-      message,
-      Config,
-      audienceId,
-      emailExists
-    );
-  }
   /* 
   Integrations object is supposed to be present inside message, and is expected
   to be in the following format:
@@ -326,9 +320,7 @@ function batchEvents(arrayChunks) {
       update_existing: true
     };
 
-    const BASE_URL = `https://${destination.Config.datacenterId}.api.mailchimp.com/3.0/lists/${destination.Config.audienceId}`;
-
-    const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=false&skip_duplicate_check=false`;
+    const BATCH_ENDPOINT = getBatchEndpoint(destination.Config);
 
     batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
 
@@ -376,11 +368,22 @@ const processRouterDest = async inputs => {
 
   let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (n) batch size
-  const errorRespList = [];
+  const batchErrorRespList = [];
   let batchedResponseList = [];
+  const reverseETLEventArray = [];
+  const conventionalEventArray = [];
+
+  inputs.forEach(singleInput => {
+    const { message } = singleInput;
+    if (isDefinedAndNotNull(get(message, MappedToDestinationKey))) {
+      reverseETLEventArray.push(singleInput);
+    } else {
+      conventionalEventArray.push(singleInput);
+    }
+  });
 
   await Promise.all(
-    inputs.map(async (event, index) => {
+    reverseETLEventArray.map(async (event, index) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -415,7 +418,7 @@ const processRouterDest = async inputs => {
           }
         }
       } catch (error) {
-        errorRespList.push(
+        batchErrorRespList.push(
           getErrorRespEvents(
             [event.metadata],
             error.response ? error.response.status : 400,
@@ -425,11 +428,41 @@ const processRouterDest = async inputs => {
       }
     })
   );
+  const respList = await Promise.all(
+    conventionalEventArray.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
 
   if (arrayChunks.length > 0) {
     batchedResponseList = await batchEvents(arrayChunks);
   }
-  return [...batchedResponseList, ...errorRespList];
+  return [...batchedResponseList, ...respList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

@@ -20,20 +20,19 @@ const {
 } = require("../../util");
 
 const responseBuilderSimple = (message, { Config }) => {
-  let eventType = message.event;
   // trim and replace spaces with "_"
-  eventType = eventType.trim().replace(/\s+/g, " ");
+  message.event = message.event.trim().replace(/\s+/g, " ");
+  const eventType = message.event;
   const response = defaultRequestConfig();
 
-  /* eslint no-param-reassign: "error" */
-  const setPayload = payload => {
+  const setDevice = payload => {
     if (isAppleFamily(payload.p)) {
       payload.idfa = get(message, "context.device.advertisingId");
       payload.idfv = get(message, "context.device.id");
       /*
         Android - Captured from SDK. No need to pass it explicitly
         iOS - No need to capture from SDK. Need to pass it explicitly under properties.ua.
-       */
+      */
       payload.ua = get(message, "properties.ua");
     } else if (payload.p.toLowerCase() === "android") {
       payload.aifa = get(message, "context.device.advertisingId");
@@ -51,19 +50,18 @@ const responseBuilderSimple = (message, { Config }) => {
       // fail-safety for developer error
       throw new CustomError("Failed to Create Session Payload", 400);
     }
-    const eventAttributes = {};
-    extractCustomFields(
-      message,
-      eventAttributes,
-      ["properties"],
-      SINGULAR_SESSION_EXCLUSION
-    );
+    // const eventAttributes = {};
+    // extractCustomFields(
+    //   message,
+    //   eventAttributes,
+    //   ["properties"],
+    //   SINGULAR_SESSION_EXCLUSION
+    // );
     sessionPayload = {
       ...sessionPayload,
-      ...setPayload(sessionPayload, message),
-      e: eventAttributes
+      ...setDevice(sessionPayload)
+      // e: eventAttributes
     };
-    // sessionPayload = extractCustomFields(message, sessionPayload, )
     // Singular maps Connection Type to either wifi or carrier
     sessionPayload.c = message.context?.network?.wifi ? "wifi" : "carrier";
     /*
@@ -71,9 +69,12 @@ const responseBuilderSimple = (message, { Config }) => {
         else by default dnt value is true
     */
     sessionPayload.dnt = !sessionPayload.att_authorization_status;
-    response.endpoint = `${BASE_URL}/launch`;
     sessionPayload = { ...sessionPayload, a: Config.apiKey };
-    response.params = removeUndefinedAndNullAndEmptyValues(sessionPayload);
+    sessionPayload = removeUndefinedAndNullAndEmptyValues(sessionPayload);
+    let queryString = Object.keys(sessionPayload)
+      .map(key => key + "=" + sessionPayload[key])
+      .join("&");
+    response.endpoint = `${BASE_URL}/launch?${queryString}`;
   } else {
     let eventPayload = constructPayload(
       message,
@@ -93,7 +94,7 @@ const responseBuilderSimple = (message, { Config }) => {
     );
     eventPayload = {
       ...eventPayload,
-      ...setPayload(eventPayload, message),
+      ...setDevice(eventPayload),
       e: eventAttributes
     };
     response.params = removeUndefinedAndNullAndEmptyValues(eventPayload);

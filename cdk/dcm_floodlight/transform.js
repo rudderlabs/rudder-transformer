@@ -24,11 +24,9 @@ function transformCustomVariable(customFloodlightVariable, message) {
   customFloodlightVariable.forEach(item => {
     if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
       // remove u if already there
-      if (get(message, `properties.${item.to.trim()}`)) {
-        customVariable[`u${item.from.trim().replace(/u/g, "")}`] = `${get(
-          message,
-          `properties.${item.to.trim()}`
-        )}`;
+      const itemValue = get(message, `properties.${item.to.trim()}`);
+      if (itemValue) {
+        customVariable[`u${item.from.trim().replace(/u/g, "")}`] = itemValue;
       }
     }
   });
@@ -72,21 +70,19 @@ function postMapper(input, mappedPayload, rudderContext) {
       );
     }
 
+    message.type = "track";
     if (category && name) {
       message.event = `Viewed ${category} ${name} Page`;
-      message.type = "track";
     } else if (category) {
       // categorized pages
       message.event = `Viewed ${category} Page`;
-      message.type = "track";
     } else {
       // named pages
       message.event = `Viewed ${name} Page`;
-      message.type = "track";
     }
   }
 
-  event = getValueFromMessage(message, "event");
+  event = message.event;
 
   if (!event) {
     throw new CustomError(

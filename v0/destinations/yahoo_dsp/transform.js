@@ -124,7 +124,6 @@ const responseBuilder = async (message, destination) => {
   response.headers = {
     "X-Auth-Token" : accessToken,
     "X-Auth-Method": "OAuth2",
-    "Content-Type": "application/json"
   };
   return response;
 };

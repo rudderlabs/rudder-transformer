@@ -1,0 +1,55 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email/34893",
+    "headers": {
+      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "seedList": ["", "", ""],
+        "accountId": "12444"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893",
+    "headers": {
+      "X-Auth-Token": "4e448b8b-82c5-46f5-844d-2e3cd17579bf",
+      "X-Auth-Method": "OAuth2"
+    },
+    "params": {
+      "clientId": "b05ebeb8-f459-4cd6-b4c5-958b3d66d431",
+      "clientSecret": "XpewiPsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg"
+    },
+    "body": {
+      "JSON": {
+        "accountId": "12444",
+        "seedList": [
+          "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+          "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+          "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "Audience type email not provided"
+  }
+]

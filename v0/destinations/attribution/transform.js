@@ -27,15 +27,7 @@ function responseBuilderSimple(payload, attributionConfig) {
 }
 
 function getTransformedJSON(message) {
-  const {
-    anonymousId,
-    type,
-    userId,
-    event,
-    properties,
-    context,
-  } = message;
-  if (!type) {
+  if (!message.type) {
     throw new Error("Event type is required");
   }
 
@@ -43,18 +35,13 @@ function getTransformedJSON(message) {
   if (traits && traits.anonymousId) {
     delete traits.anonymousId;
   }
-  const timeStamp = getFieldValueFromMessage(message, "timestamp");
-
-  return removeUndefinedAndNullValues({
-    anonymousId,
-    type,
-    userId,
-    event,
+  const transformedMessage = {
+    ...message,
     traits,
-    properties,
-    timeStamp,
-    context,
-  });
+    timestamp: getFieldValueFromMessage(message, "timestamp"),
+  };
+
+  return removeUndefinedAndNullValues(transformedMessage);
 }
 
 function getAttributionConfig(destination) {

@@ -36,36 +36,47 @@ let outputPayload = {};
 
 
 /**
+ * This function is used to check if there is any common value in keys and poiLocationType array. This is done to check
+ * if any of the required location type is present in the input or not. 
+ * @param {*} keys
+ * @param {*} poiLocationType
+ * @returns 
+ */
+function isCommonElement(keys, poiLocationType) {
+  return keys.some(item => poiLocationType.includes(item))
+}
+
+
+/**
  *
- * @param {*} attributeArray  - It contains the audience lists to be added in the form of array". eg.
- * [{"email": "abc@email.com"},{"email": "abc@email.com"},{"email": "abc@email.com"}]
+ * @param {*} audienceList  - It is the list of audience to be added in the form of array". eg.
+ * [
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"}
+ * ]
  * @param {*} Config
  * @returns The function returns an array of Audience List provided by the user like "email", "deviceId", "ipAddress".
- * eg. [
+ * eg.[
  * "251014dafc651f68edac7",
  * "afbc34416ac6e7fbb9734",
  * "42cbe7eebb412bbcd5b56",
  * "379b4653a40878da7a584"
  * ]
  */
-const populateIdentifiers = (attributeArray, { Config }) => {
+const populateIdentifiers = (audienceList, Config) => {
   const seedList = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
   let listType;
-  if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
-    // traversing through every element in the add array for the elements to be added.
-    attributeArray.forEach(element => {
+  if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
+    // traversing through every userTraits in the add array for the traits to be added.
+    audienceList.forEach(userTraits => {
       // storing keys of an object inside the add array.
-      const keys = Object.keys(element);
+      const keys = Object.keys(userTraits);
       // checking for the audience type the user wants to add is present in the input or not.
-      keys.forEach(key => {
-        if (key === audienceType) {
-          listType = audienceType;
-        }
-      });
-      // throwing error if the audience type the user wants to add is not present in the input.
-      if (!listType) {
+      if(!keys.includes(audienceType)){
+        // throwing error if the audience type the user wants to add is not present in the input.
         throw new CustomError(
           `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
           400
@@ -73,9 +84,9 @@ const populateIdentifiers = (attributeArray, { Config }) => {
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(element[audienceType]));
+        seedList.push(sha256(userTraits[audienceType]));
       } else {
-        seedList.push(element[audienceType]);
+        seedList.push(userTraits[audienceType]);
       }
     });
   }
@@ -84,15 +95,20 @@ const populateIdentifiers = (attributeArray, { Config }) => {
 
 /**
  * This function is used to create the output Payload.
- * @param {*} audienceList - This is the list of audiences (in the form of a bunch of objects inside an array) to be updated. eg. [{},{},{}]
- * @param {*} destination 
+ * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
+ * [
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"}
+ * ]
+ * @param {*} Config 
  * @returns 
  */
-const createPayload = (audienceList, destination) => {
-  const accountId = destination.Config.accountId;
+const createPayload = (audienceList, Config) => {
+  const accountId = Config.accountId;
   let seedList = [];
    // Populating Seed List that conains audience list to be updated
-  seedList = populateIdentifiers(audienceList, destination);
+  seedList = populateIdentifiers(audienceList, Config);
   // throwing the error if nothing is present in the seedList
   if (seedList.length === 0) {
     throw new CustomError(
@@ -105,87 +121,97 @@ const createPayload = (audienceList, destination) => {
   return outputPayload;
 };
 
-// updating includes
+/**
+ * 
+ * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
+ * [
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"}
+ * ]
+ * @param {*} audienceType - it is the type of audience to be updated
+ * @returns 
+ */
 const populateIncludes = (audienceList, audienceType) => {
-  audienceList.forEach(element => {
-    const audieceListkeys = Object.keys(element);
-    audieceListkeys.forEach(elementKey => {
-      if (poiLocationType.includes(elementKey)) {
-        listType = audienceType;
-      }
-    });
-    if (!listType) {
+  audienceList.forEach(userTraits => {
+    const keys = Object.keys(userTraits);
+    if(!isCommonElement(keys, poiLocationType)){
       throw new CustomError(
         `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
         400
       );
     }
-    if (element.includeChains) {
+    if (userTraits.includeChains) {
       if (!includes.chains) {
         includes.chains = [];
       }
-      includes.chains.push(element.includeChains);
+      includes.chains.push(userTraits.includeChains);
     }
-    if (element.includeWoeids) {
+    if (userTraits.includeWoeids) {
       if (!includes.woeids) {
         includes.woeids = [];
       }
-      includes.woeids.push(element.includeWoeids);
+      includes.woeids.push(userTraits.includeWoeids);
     }
-    if (element.includeGids) {
+    if (userTraits.includeGids) {
       if (!includes.gids) {
         includes.gids = [];
       }
-      includes.gids.push(element.includeGids);
+      includes.gids.push(userTraits.includeGids);
     }
-    if (element.includeCategories) {
+    if (userTraits.includeCategories) {
       if (!includes.categories) {
         includes.categories = [];
       }
-      includes.categories.push(element.includeCategories);
+      includes.categories.push(userTraits.includeCategories);
     }
   });
   return includes;
 };
 
-// updating excludes
+/**
+ * 
+ * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
+ * [
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"}
+ * ]
+ * @param {*} audienceType - it is the type of audience to be updated
+ * @returns 
+ */
 const populateExcludes = (audienceList, audienceType) => {
-  audienceList.forEach(element => {
-    const audienceListKeys = Object.keys(element);
-    audienceListKeys.forEach(elementKey => {
-      if (poiLocationType.includes(elementKey)) {
-        listType = audienceType;
-      }
-    });
-    if (!listType) {
+  audienceList.forEach(userTraits => {
+    const keys = Object.keys(userTraits);
+    if(!isCommonElement(keys, poiLocationType)){
       throw new CustomError(
         `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
         400
       );
     }
-    if (element.excludeChains) {
+    if (userTraits.excludeChains) {
       if (!excludes.chains) {
         excludes.chains = [];
       }
-      excludes.chains.push(element.excludeChains);
+      excludes.chains.push(userTraits.excludeChains);
     }
-    if (element.excludeWoeids) {
+    if (userTraits.excludeWoeids) {
       if (!excludes.woeids) {
         excludes.woeids = [];
       }
-      excludes.woeids.push(element.excludeWoeids);
+      excludes.woeids.push(userTraits.excludeWoeids);
     }
-    if (element.excludeGids) {
+    if (userTraits.excludeGids) {
       if (!excludes.gids) {
         excludes.gids = [];
       }
-      excludes.gids.push(element.excludeGids);
+      excludes.gids.push(userTraits.excludeGids);
     }
-    if (element.excludeCategories) {
+    if (userTraits.excludeCategories) {
       if (!excludes.categories) {
         excludes.categories = [];
       }
-      excludes.categories.push(element.excludeCategories);
+      excludes.categories.push(userTraits.excludeCategories);
     }
   });
   return excludes;
@@ -193,7 +219,7 @@ const populateExcludes = (audienceList, audienceType) => {
 
 /**
  * The funciton here is used to generate acccess token using POST call which needs some parameters like clientId, clientSecret which is being
- * taken from destination.Config and JWT token (generated using jwtTokenGenerator).
+ * taken from destination.Config and JWT token (generated using jwtTokenGenerator which is inside common util folder).
  * @param {*} destination
  * @returns
  */

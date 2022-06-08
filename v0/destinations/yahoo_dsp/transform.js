@@ -38,6 +38,13 @@ const responseBuilder = async (message, destination) => {
 
   const domains = [];
   const categoryIds = [];
+  const listDataKey = listData[key];
+  if (!listDataKey) {
+    throw new CustomError(
+      `[Yahoo_DSP]:: The only supported operation for audience updation '${key}' is not present`,
+      400
+    );
+  }
 
   /**
    * The below written switch case is used to build the response for each of the supported audience type.
@@ -46,7 +53,7 @@ const responseBuilder = async (message, destination) => {
   switch (audienceType) {
     case "email":
       // creating the output payload using the audience list and Config
-      outputPayload = createPayload(listData[key], destination);
+      outputPayload = createPayload(listDataKey, destination.Config);
       break;
     case "deviceId":
       // throwing error if seedListType is not provided for deviceId type audience
@@ -59,7 +66,7 @@ const responseBuilder = async (message, destination) => {
           400
         );
       }
-      outputPayload = createPayload(listData[key], destination);
+      outputPayload = createPayload(listDataKey, destination.Config);
       // updatig seedListType here
       outputPayload = {
         ...outputPayload,
@@ -67,7 +74,7 @@ const responseBuilder = async (message, destination) => {
       };
       break;
     case "ipAddress":
-      outputPayload = createPayload(listData[key], destination);
+      outputPayload = createPayload(listDataKey, destination.Config);
       // updating seedListType in outputPayload
       outputPayload = {
         ...outputPayload,
@@ -76,7 +83,7 @@ const responseBuilder = async (message, destination) => {
       break;
     case "mailDomain":
       // traversing through every element in the add array for the elements to be added.
-      listData[key].forEach(element => {
+      listDataKey.forEach(element => {
         // storing keys of an object inside the add array.
         const keys = Object.keys(element);
         // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
@@ -108,8 +115,8 @@ const responseBuilder = async (message, destination) => {
        * added in the includes if the consumer has visited the POI location and is added in excludes if the
        * consumer has not visited the POI.
        */
-      outputPayload.includes = populateIncludes(listData[key], audienceType);
-      outputPayload.excludes = populateExcludes(listData[key], audienceType);
+      outputPayload.includes = populateIncludes(listDataKey, audienceType);
+      outputPayload.excludes = populateExcludes(listDataKey, audienceType);
       outputPayload = { ...outputPayload, accountId };
       break;
     default:

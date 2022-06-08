@@ -43,7 +43,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
     "to",
     false
   );
-Object.keys(customMapping).forEach(key => {
+  Object.keys(customMapping).forEach(key => {
     // it takes care of getting the value in the order.
     // returns null if not present
     const itemValue = getValueFromPropertiesOrTraits({

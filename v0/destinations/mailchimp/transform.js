@@ -52,11 +52,11 @@ const processPayloadBuild = async (
   const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
   const { apiKey, datacenterId } = Config;
   let mergeFields;
-  console.log(mergedAddressPayload);
+
   // From the behaviour of destination we know that, if address
   // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
   if (Object.keys(mergedAddressPayload).length > 0) {
-    console.log("here");
+
   const correctAddressPayload = validateAddressObject(mergedAddressPayload);
   mergedFieldPayload.ADDRESS = correctAddressPayload;
   }
@@ -206,11 +206,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
     const updatedTraits = getFieldValueFromMessage(message, "traits")
 
     const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-    console.log(mergedAddressPayload);
+    
     if (Object.keys(mergedAddressPayload).length > 0) {
       // From the behaviour of destination we know that, if address
       // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-      console.log("here");
+  
       const correctAddressPayload = validateAddressObject(mergedAddressPayload);
       updatedTraits.merge_fields.ADDRESS = correctAddressPayload;
       }

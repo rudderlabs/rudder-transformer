@@ -13,7 +13,7 @@ function base64url(source) {
 
   return encodedSource;
 }
-/* *
+/**
  * Generating JWT token using the below function. JWT Token is used for generating access token with identifying
  * client using Oauth2 client_credentials.
  *

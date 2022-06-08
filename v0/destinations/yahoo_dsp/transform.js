@@ -1,9 +1,7 @@
-const sha256 = require("sha256");
 const { BASE_ENDPOINT, ENDPOINTS } = require("./config");
 const {
   defaultRequestConfig,
   CustomError,
-  isDefinedAndNotNullAndNotEmpty,
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
@@ -13,54 +11,9 @@ const {
 const {
   getAccessToken,
   populateIncludes,
-  populateExcludes
+  populateExcludes,
+  createPayload
 } = require("./util");
-
-/**
- * 
- * @param {*} attributeArray  - It contains the audience lists to be added in the form of array". eg. [{"email": "abc@email.com"},{"email": "abc@email.com"},{"email": "abc@email.com"}] 
- * @param {*} Config
- * @returns The function returns an array of Audience List provided by the user like "email", "deviceId", "ipAddress". eg. [
-    "251014dafc651f68edac7",
-    "afbc34416ac6e7fbb9734",
-    "42cbe7eebb412bbcd5b56",
-    "379b4653a40878da7a584"
-  ]
- */
-
-const populateIdentifiers = (attributeArray, { Config }) => {
-  const seedList = [];
-  const { audienceType } = Config;
-  const { hashRequired } = Config;
-  let listType;
-  if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
-    // traversing through every element in the add array for the elements to be added.
-    attributeArray.forEach(element => {
-      // storing keys of an object inside the add array.
-      const keys = Object.keys(element);
-      // checking for the audience type the user wants to add is present in the input or not.
-      keys.forEach(key => {
-        if (key === audienceType) {
-          listType = audienceType;
-        }
-      });
-      // throwing error if the audience type the user wants to add is not present in the input.
-      if (!listType) {
-        throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
-          400
-        );
-      }
-      // here, hashing the data if is not hashed and pushing in the seedList array.
-      if (hashRequired) {
-        seedList.push(sha256(element[audienceType]));
-      } else {
-        seedList.push(element[audienceType]);
-      }
-    });
-  }
-  return seedList;
-};
 
 /**
  * This function is used for building the final response to be returned.
@@ -85,7 +38,6 @@ const responseBuilder = async (message, destination) => {
 
   const domains = [];
   const categoryIds = [];
-  let seedList = [];
 
   /**
    * The below written switch case is used to build the response for each of the supported audience type.
@@ -93,26 +45,10 @@ const responseBuilder = async (message, destination) => {
    */
   switch (audienceType) {
     case "email":
-      // seedList contains the list of emails to be updated
-      seedList = populateIdentifiers(listData[key], destination);
-      if (seedList.length === 0) {
-        throw new CustomError(
-          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
-          400
-        );
-      }
-      outputPayload = { ...outputPayload, accountId, seedList };
+      // creating the output payload using the audience list and Config
+      outputPayload = createPayload(listData[key], destination);
       break;
     case "deviceId":
-      // seedList contains the list of deviceIds to be updated
-      seedList = populateIdentifiers(listData[key], destination);
-      // throwing the error if nothing is present in the seedList
-      if (seedList.length === 0) {
-        throw new CustomError(
-          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
-          400
-        );
-      }
       // throwing error if seedListType is not provided for deviceId type audience
       if (
         !seedListType ||
@@ -123,27 +59,18 @@ const responseBuilder = async (message, destination) => {
           400
         );
       }
+      outputPayload = createPayload(listData[key], destination);
+      // updatig seedListType here
       outputPayload = {
         ...outputPayload,
-        accountId,
-        seedList,
         seedListType
       };
       break;
     case "ipAddress":
-      // seedList contains the list of ipAddresses to be updated
-      seedList = populateIdentifiers(listData[key], destination);
-      // throwing the error if nothing is present in the seedList
-      if (seedList.length === 0) {
-        throw new CustomError(
-          `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
-          400
-        );
-      }
+      outputPayload = createPayload(listData[key], destination);
+      // updating seedListType in outputPayload
       outputPayload = {
         ...outputPayload,
-        accountId,
-        seedList,
         seedListType: "SHA256IP"
       };
       break;

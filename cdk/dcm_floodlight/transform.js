@@ -33,7 +33,7 @@ const appendProperties = payload => {
 };
 
 // transform webapp dynamicForm custom floodlight variable
-// into {u1: value, u2: value, ...}
+// into {property1: u1, property2: u2, ...}
 // Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
 const transformCustomVariable = (customFloodlightVariable, message) => {
   const customVariable = {};

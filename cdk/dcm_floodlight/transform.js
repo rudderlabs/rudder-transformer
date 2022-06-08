@@ -20,7 +20,7 @@ const {
 const { BASE_URL, BLACKLISTED_CHARACTERS } = require("./config");
 
 // append properties to endpoint
-// eg: ${endpoint}key1=value1;key2=value2;....
+// eg: ${BASE_URL}key1=value1;key2=value2;....
 const appendProperties = payload => {
   let endpoint = "";
   endpoint += Object.keys(payload)
@@ -43,6 +43,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
     "to",
     false
   );
+
   Object.keys(customMapping).forEach(key => {
     // it takes care of getting the value in the order.
     // returns null if not present

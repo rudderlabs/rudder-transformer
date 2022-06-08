@@ -4,6 +4,7 @@ describe("Unit Test for postMapper", () => {
   it("should update the rudderContext with userAgent and valid endpoint", () => {
     const message = {
       event: "Checkout Started",
+      type: "track",
       properties: {
         orderId: 1234,
         quantity: 45,

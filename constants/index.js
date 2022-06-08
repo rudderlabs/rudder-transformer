@@ -53,8 +53,8 @@ const GENERIC_FALSE_VALUES = ["false", "False", "FALSE", "f", "F", "0"];
 
 module.exports = {
   EventType,
-  GENERIC_FALSE_VALUES,
   GENERIC_TRUE_VALUES,
+  GENERIC_FALSE_VALUES,
   MappedToDestinationKey,
   SpecedTraits,
   TraitsMapping,

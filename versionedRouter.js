@@ -819,10 +819,10 @@ const utHandler = async ctx => {
       if(transformResponse.status == 'fulfilled'){
         const payload = [];
         transformResponse.value.output.forEach( msg =>{
-            const orderNo = eventOrderIdMap.get(msg.messageId);
+            const orderNo = eventOrderIdMap.get(msg.transformedEvent.messageId);
             payload.push({
               "orderNo" : orderNo,
-              "event" : msg
+              "event" : msg.transformedEvent
             })
         })
         response.push({

@@ -154,12 +154,11 @@ const setValues = (payload, message, mappingJson) => {
 const getValueFromPropertiesOrTraits = ({ message, key }) => {
   const keySet = ["properties", "traits", "context.traits"];
 
-  return (
-    _.find(
-      _.map(keySet, k => get(message, `${k}.${key}`)),
-      val => !_.isNil(val)
-    ) || null
+  const val = _.find(
+    _.map(keySet, k => get(message, `${k}.${key}`)),
+    v => !_.isNil(v)
   );
+  return !_.isNil(val) ? val : null;
 };
 
 // function to flatten a json

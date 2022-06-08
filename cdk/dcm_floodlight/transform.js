@@ -2,10 +2,8 @@ const get = require("get-value");
 const _ = require("lodash");
 const {
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull,
-  getFieldValueFromMessage
+  isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
-const logger = require("../../logger");
 const {
   CustomError,
   getIntegrationsObj,
@@ -48,7 +46,12 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
   Object.keys(customMapping).forEach(key => {
     // it takes care of getting the value in the order.
     // returns null if not present
-    const itemValue = getValueFromPropertiesOrTraits({ message, key });
+    const itemValue = getValueFromPropertiesOrTraits({
+      message,
+      key: customMapping[key]
+    });
+
+
     if (
       // the value is not null
       !_.isNil(itemValue) &&
@@ -65,6 +68,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
       );
     }
   });
+
 
   // customFloodlightVariable.forEach(item => {
   //   if (item && !isEmpty(item.from) && !isEmpty(item.to)) {

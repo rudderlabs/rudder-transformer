@@ -1,6 +1,6 @@
 [
   {
-    "description": "success case 1",
+    "description": "success case 1 - taking price from properties first",
     "input": {
       "message": {
         "properties": {
@@ -21,7 +21,7 @@
     "output": 8.9
   },
   {
-    "description": "success case 2",
+    "description": "success case 2 - taking price from message.traits",
     "input": {
       "message": {
         "properties": {
@@ -41,7 +41,7 @@
     "output": 9.9
   },
   {
-    "description": "success case 3",
+    "description": "success case 3 - taking price from context.traits",
     "input": {
       "message": {
         "properties": {
@@ -59,7 +59,7 @@
     "output": 10.9
   },
   {
-    "description": "success case 4",
+    "description": "success case 4 - price not found",
     "input": {
       "message": {
         "properties": {

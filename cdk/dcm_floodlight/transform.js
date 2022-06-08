@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const _ = require("lodash");
 const {
@@ -51,7 +52,6 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
       key: customMapping[key]
     });
 
-
     if (
       // the value is not null
       !_.isNil(itemValue) &&
@@ -68,7 +68,6 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
       );
     }
   });
-
 
   // customFloodlightVariable.forEach(item => {
   //   if (item && !isEmpty(item.from) && !isEmpty(item.to)) {

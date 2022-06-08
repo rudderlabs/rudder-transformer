@@ -2,8 +2,7 @@ const {
   BASE_ENDPOINT,
   ENDPOINTS,
   DSP_SUPPORTED_OPERATION,
-  AUDIENCE_TYPE,
-  categoryId
+  AUDIENCE_TYPE
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -18,7 +17,8 @@ const {
   getAccessToken,
   populateIncludes,
   populateExcludes,
-  createPayload
+  createPayload,
+  populateMailDomain
 } = require("./util");
 
 /**
@@ -33,8 +33,6 @@ const responseBuilder = async (message, destination) => {
   const { listData } = message.properties;
   const { accountId, audienceId, audienceType, seedListType } = Config;
 
-  const domains = [];
-  const categoryIds = [];
   const traitsList = listData[DSP_SUPPORTED_OPERATION];
   if (!traitsList) {
     throw new CustomError(
@@ -78,27 +76,8 @@ const responseBuilder = async (message, destination) => {
       };
       break;
     case "mailDomain":
-      // traversing through every element in the add array for the elements to be added.
-      traitsList.forEach(userTraits => {
-        // storing keys of an object inside the add array.
-        const traits = Object.keys(userTraits);
-        // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
-        /**
-         * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
-         * mail from a domain belonging to the specified categories.
-         * Reference for use case of categoryIds:
-         * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
-         */
-        if (!(traits.includes(typeOfAudience) || traits.includes(categoryId))) {
-          throw new CustomError(
-            `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
-            400
-          );
-        }
-        domains.push(userTraits.mailDomain);
-        categoryIds.push(userTraits.categoryIds);
-      });
-      dspListPayload = { accountId, domains, categoryIds };
+      dspListPayload = populateMailDomain(traitsList, audienceType);
+      dspListPayload = { ...dspListPayload, accountId };
       break;
     case "pointOfInterest":
       /**

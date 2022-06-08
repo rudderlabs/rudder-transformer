@@ -4,7 +4,7 @@ const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
 const { httpPOST } = require("../../../adapters/network");
 const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
-const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE , DSP_SUPPORTED_OPERATION} = require("./config.js");
+const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE , DSP_SUPPORTED_OPERATION, categoryId} = require("./config.js");
 const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -28,6 +28,43 @@ const poiLocationType = [
   "excludeCategories",
   "excludeGids"
 ];
+
+/**
+ * This function is used for populating mailDomain data in a Payload to be returned
+ * @param {*} audienceList  - It is the list of audience to be added in the form of array". eg.
+ * [
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"},
+ *   {"email": "abc@email.com"}
+ * ]
+ * @param {*} audienceType - It is type of audience to be updated. eg. "mailDomain" here.
+ */
+const populateMailDomain = (audienceList, audienceType) =>{
+  const typeOfAudience = AUDIENCE_TYPE[audienceType];
+  const domains = [];
+  const categoryIds = [];
+  // traversing through every element in the add array for the elements to be added.
+  audienceList.forEach(userTraits => {
+    // storing keys of an object inside the add array.
+    const traits = Object.keys(userTraits);
+    // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
+    /**
+     * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
+     * mail from a domain belonging to the specified categories.
+     * Reference for use case of categoryIds:
+     * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
+     */
+    if (!(traits.includes(typeOfAudience) || traits.includes(categoryId))) {
+      throw new CustomError(
+        `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
+        400
+      );
+    }
+    domains.push(userTraits.mailDomain);
+    categoryIds.push(userTraits.categoryIds);
+  });
+  return dspListPayload = { domains, categoryIds };
+}
 
 /**
  * This function is used to check if there is any common value in traits and poiLocationType array. This is done to check
@@ -277,5 +314,6 @@ module.exports = {
   getAccessToken,
   populateIncludes,
   populateExcludes,
-  createPayload
+  createPayload,
+  populateMailDomain
 };

@@ -31,7 +31,6 @@ const responseBuilder = async (message, destination) => {
     seedListType
   } = destination.Config;
 
-  let listType;
   let outputPayload = {};
   // The only supported property for now is "add"
   const key = "add";
@@ -87,18 +86,13 @@ const responseBuilder = async (message, destination) => {
         // storing keys of an object inside the add array.
         const keys = Object.keys(element);
         // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
-        keys.forEach(elementKey => {
-          /**
-           * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
-           * mail from a domain belonging to the specified categories.
-           * Reference for use case of categoryIds:
-           * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
-           */
-          if (elementKey === audienceType || keys.includes("categoryIds")) {
-            listType = audienceType;
-          }
-        });
-        if (!listType) {
+        /**
+         * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
+         * mail from a domain belonging to the specified categories.
+         * Reference for use case of categoryIds:
+         * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
+         */
+        if (!(keys.includes(audienceType) || keys.includes("categoryIds"))) {
           throw new CustomError(
             `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
             400

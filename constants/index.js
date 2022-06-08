@@ -48,10 +48,15 @@ const WhiteListedTraits = [
 
 const MappedToDestinationKey = "context.mappedToDestination";
 
+const GENERIC_FALSE_VALUES = ["false", "0", "f", "F"];
+const GENERIC_TRUE_VALUES = ["true", "1", "t", "T"];
+
 module.exports = {
   EventType,
+  GENERIC_FALSE_VALUES,
+  GENERIC_TRUE_VALUES,
+  MappedToDestinationKey,
   SpecedTraits,
   TraitsMapping,
-  WhiteListedTraits,
-  MappedToDestinationKey
+  WhiteListedTraits
 };

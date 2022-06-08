@@ -52,7 +52,6 @@ const processPayloadBuild = async (
   const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
   const { apiKey, datacenterId } = Config;
   let mergeFields;
-
   // From the behaviour of destination we know that, if address
   // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
   if (Object.keys(mergedAddressPayload).length > 0) {
@@ -202,7 +201,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
     it is expected to have merge fields in proper format, along with appropriate status 
     as well.
      */
-    console.log("initial trits", JSON.stringify(getFieldValueFromMessage(message, "traits")));
     addExternalIdToTraits(message);
     const updatedTraits = getFieldValueFromMessage(message, "traits")
 
@@ -265,7 +263,6 @@ const identifyResponseBuilder = async (message, { Config }) => {
 };
 
 const process = async event => {
-  console.log("in mailchimp");
   const { message, destination } = event;
 
   const destConfig = destination.Config;
@@ -377,7 +374,6 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
   let eventsChunk = []; // temporary variable to divide payload into chunks
   const arrayChunks = []; // transformed payload of (n) batch size
   const batchErrorRespList = [];

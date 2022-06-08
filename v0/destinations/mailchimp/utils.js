@@ -24,7 +24,8 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "city",
   "state",
   "zip",
-  "phone"
+  "phone",
+  "address"
 ];
 
 /**
@@ -193,10 +194,12 @@ const stitchEndpointAndMethodForNONExistingEmails = (
 * @param {*} returns
 */
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
+ 
   if (isDefined(traits)) {
     Object.keys(traits).forEach(trait => {
       // if any trait field is present, other than the fixed mapping, that is passed as well.
       if (MAILCHIMP_IDENTIFY_EXCLUSION.indexOf(trait) === -1) {
+       
         const tag = filterTagValue(trait);
         mergedFieldPayload[tag] = traits[trait];
       }

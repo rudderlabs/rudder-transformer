@@ -49,7 +49,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
     // returns null if not present
     const itemValue = getValueFromPropertiesOrTraits({
       message,
-      key: customMapping[key]
+      key
     });
 
     if (
@@ -63,9 +63,9 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
       // boolean values are not supported
       typeof itemValue !== "boolean"
     ) {
-      customVariable[`u${key.replace(/u/g, "")}`] = encodeURIComponent(
-        itemValue
-      );
+      customVariable[
+        `u${customMapping[key].replace(/u/g, "")}`
+      ] = encodeURIComponent(itemValue);
     }
   });
 

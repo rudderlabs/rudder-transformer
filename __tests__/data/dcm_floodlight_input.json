@@ -9,12 +9,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "rudder2"
+                "from": "rudder2",
+                "to": "2"
               }
             ],
             "eventName": "Product viewed",
@@ -123,12 +123,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "from": "akash2",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -236,12 +236,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "from": "akash2",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -351,12 +351,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "from": "akash2",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -464,12 +464,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "from": "akash1",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -492,20 +492,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "from": "rudder2",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "from": "akash2",
+                "to": "2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "from": "friendlyName2",
+                "to": "3"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "from": "name2",
+                "to": "4"
               }
             ],
             "eventName": "Purchase",
@@ -625,12 +625,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "from": "akash1",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -653,20 +653,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "from": "rudder2",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "from": "akash2",
+                "to": "2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "from": "friendlyName2",
+                "to": "3"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "from": "name2",
+                "to": "4"
               }
             ],
             "eventName": "Purchase",
@@ -769,8 +769,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -781,12 +781,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "from": "akash1",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -809,20 +809,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -926,8 +926,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -938,12 +938,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -954,8 +954,8 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "akash1"
+                "to": "1",
+                "from": "akash1"
               }
             ],
             "eventName": "Checkout Started",
@@ -966,20 +966,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1084,8 +1084,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1096,12 +1096,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1118,20 +1118,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1235,8 +1235,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1247,12 +1247,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1269,20 +1269,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1386,8 +1386,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1398,12 +1398,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1420,20 +1420,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1529,8 +1529,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1541,12 +1541,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1563,20 +1563,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1679,8 +1679,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1691,12 +1691,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1713,20 +1713,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1810,8 +1810,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1822,12 +1822,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1844,20 +1844,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -1943,8 +1943,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -1955,12 +1955,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -1977,20 +1977,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2072,8 +2072,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2084,12 +2084,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2106,20 +2106,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2197,8 +2197,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2209,12 +2209,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2231,20 +2231,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2330,8 +2330,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2342,12 +2342,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2364,20 +2364,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2461,8 +2461,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2473,12 +2473,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2495,20 +2495,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2592,8 +2592,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2604,12 +2604,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2626,20 +2626,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2723,8 +2723,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2735,12 +2735,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2757,20 +2757,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2854,8 +2854,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -2866,12 +2866,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -2888,20 +2888,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -2984,8 +2984,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Viewed Sign up Completed Page",
@@ -2996,12 +2996,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -3018,20 +3018,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -3115,12 +3115,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "rudder2"
+                "from": "rudder2",
+                "to": "2"
               }
             ],
             "eventName": "Product viewed",
@@ -3227,12 +3227,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "from": "akash1",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -3255,20 +3255,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -3377,8 +3377,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Viewed Page",
@@ -3389,12 +3389,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -3411,20 +3411,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -3506,8 +3506,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Sign up Completed",
@@ -3518,12 +3518,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -3534,8 +3534,8 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
             "eventName": "Checkout Started",
@@ -3546,20 +3546,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",

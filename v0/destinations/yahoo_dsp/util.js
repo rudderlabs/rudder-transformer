@@ -1,10 +1,10 @@
 const qs = require("qs");
 const sha256 = require("sha256");
 const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
-const {  httpPOST } = require("../../../adapters/network");
+const { httpPOST } = require("../../../adapters/network");
 const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
-const { ACCESS_TOKEN_CACHE_TTL } = require("./config.js");
+const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE } = require("./config.js");
 const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -28,24 +28,17 @@ const poiLocationType = [
   "excludeCategories",
   "excludeGids"
 ];
-let listType;
-const includes = {};
-const excludes = {};
-let seedList = [];
-let outputPayload = {};
-
 
 /**
- * This function is used to check if there is any common value in keys and poiLocationType array. This is done to check
- * if any of the required location type is present in the input or not. 
- * @param {*} keys
+ * This function is used to check if there is any common value in traits and poiLocationType array. This is done to check
+ * if any of the required location type is present in the input or not.
+ * @param {*} traits
  * @param {*} poiLocationType
- * @returns 
+ * @returns
  */
-function isCommonElement(keys, poiLocationType) {
-  return keys.some(item => poiLocationType.includes(item))
+function isCommonElement(traits, poiLocationType) {
+  return traits.some(item => poiLocationType.includes(item));
 }
-
 
 /**
  *
@@ -56,7 +49,7 @@ function isCommonElement(keys, poiLocationType) {
  *   {"email": "abc@email.com"}
  * ]
  * @param {*} Config
- * @returns The function returns an array of Audience List provided by the user like "email", "deviceId", "ipAddress".
+ * @returns The function returns a hashed array of Audience List provided by the user like "email", "deviceId", "ipAddress".
  * eg.[
  * "251014dafc651f68edac7",
  * "afbc34416ac6e7fbb9734",
@@ -68,25 +61,25 @@ const populateIdentifiers = (audienceList, Config) => {
   const seedList = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
-  let listType;
+  
   if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
     // traversing through every userTraits in the add array for the traits to be added.
     audienceList.forEach(userTraits => {
       // storing keys of an object inside the add array.
-      const keys = Object.keys(userTraits);
+      const traits = Object.keys(userTraits);
       // checking for the audience type the user wants to add is present in the input or not.
-      if(!keys.includes(audienceType)){
+      if (!traits.includes(AUDIENCE_TYPE[audienceType])) {
         // throwing error if the audience type the user wants to add is not present in the input.
         throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
+          `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
           400
         );
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[audienceType]));
+        seedList.push(sha256(userTraits[AUDIENCE_TYPE[audienceType]]));
       } else {
-        seedList.push(userTraits[audienceType]);
+        seedList.push(userTraits[AUDIENCE_TYPE[audienceType]]);
       }
     });
   }
@@ -101,13 +94,15 @@ const populateIdentifiers = (audienceList, Config) => {
  *   {"email": "abc@email.com"},
  *   {"email": "abc@email.com"}
  * ]
- * @param {*} Config 
- * @returns 
+ * @param {*} Config
+ * @returns a created payload {dspListPayload) object updated with the required data
  */
 const createPayload = (audienceList, Config) => {
-  const accountId = Config.accountId;
+  let dspListPayload = {};
   let seedList = [];
-   // Populating Seed List that conains audience list to be updated
+  const { accountId } = Config;
+  
+  // Populating Seed List that conains audience list to be updated
   seedList = populateIdentifiers(audienceList, Config);
   // throwing the error if nothing is present in the seedList
   if (seedList.length === 0) {
@@ -116,13 +111,13 @@ const createPayload = (audienceList, Config) => {
       400
     );
   }
-  // Creating outputPayload
-  outputPayload = { ...outputPayload, accountId, seedList };
-  return outputPayload;
+  // Creating dspListPayload
+  dspListPayload = { accountId, seedList };
+  return dspListPayload;
 };
 
 /**
- * 
+ *
  * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
  * [
  *   {"email": "abc@email.com"},
@@ -130,14 +125,15 @@ const createPayload = (audienceList, Config) => {
  *   {"email": "abc@email.com"}
  * ]
  * @param {*} audienceType - it is the type of audience to be updated
- * @returns 
+ * @returns
  */
 const populateIncludes = (audienceList, audienceType) => {
+  const includes = {};
   audienceList.forEach(userTraits => {
-    const keys = Object.keys(userTraits);
-    if(!isCommonElement(keys, poiLocationType)){
+    const traits = Object.keys(userTraits);
+    if (!isCommonElement(traits, poiLocationType)) {
       throw new CustomError(
-        `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
+        `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
         400
       );
     }
@@ -170,7 +166,7 @@ const populateIncludes = (audienceList, audienceType) => {
 };
 
 /**
- * 
+ *
  * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
  * [
  *   {"email": "abc@email.com"},
@@ -178,14 +174,15 @@ const populateIncludes = (audienceList, audienceType) => {
  *   {"email": "abc@email.com"}
  * ]
  * @param {*} audienceType - it is the type of audience to be updated
- * @returns 
+ * @returns
  */
 const populateExcludes = (audienceList, audienceType) => {
+  const excludes = {};
   audienceList.forEach(userTraits => {
-    const keys = Object.keys(userTraits);
-    if(!isCommonElement(keys, poiLocationType)){
+    const traits = Object.keys(userTraits);
+    if (!isCommonElement(traits, poiLocationType)) {
       throw new CustomError(
-        `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
+        `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
         400
       );
     }
@@ -230,6 +227,7 @@ const getAccessToken = async destination => {
   /**
    * The access token expires around every one hour. Cache is used here to check if the access token is present in the cache
    * it is taken from cache else a post call is made to get the access token.
+   * Reference - https://developer.yahooinc.com/dsp/api/docs/authentication/vmdn-auth-overview.html#:~:text=the%20success%20message.-,Generate%20the%20Access%20Token,-%C2%B6
    */
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
     const header = {
@@ -244,7 +242,6 @@ const getAccessToken = async destination => {
       exp: getUnixTimestamp(),
       iat: getUnixTimestamp() + 3600
     };
-    const secret = clientSecret;
 
     const request = {
       header: {
@@ -259,19 +256,19 @@ const getAccessToken = async destination => {
         client_assertion_type:
           "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
         // Here, generateJWTToken is used to get JWT required for genrating access token.
-        client_assertion: generateJWTToken(header, data, secret)
+        client_assertion: generateJWTToken(header, data, clientSecret)
       }),
       method: "POST"
     };
-    const response = await httpPOST(request.url, request.data, request.header);
+    const dspAuthorisationData = await httpPOST(request.url, request.data, request.header);
     // If the request fails, throwing error.
-    if (response.success === false) {
+    if (dspAuthorisationData.success === false) {
       throw new CustomError(
         `[Yahoo_DSP]:: access token could not be gnerated due to ${response.response.response.data.error}`,
         400
       );
     }
-    return response.response?.data?.access_token;
+    return dspAuthorisationData.response?.data?.access_token;
   });
 };
 

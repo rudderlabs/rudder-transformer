@@ -990,8 +990,13 @@ describe("Integration options", () => {
     it("should generate two events for every track call", () => {
       const i = opInput("track");
       transformers.forEach((transformer, index) => {
+        const { jsonPaths } = i.destination.Config;
+        if (integrations[index] === "postgres") {
+          delete i.destination.Config.jsonPaths;
+        }
         const received = transformer.process(i);
-        expect(received).toMatchObject(opOutput("track", integrations[index]));
+        i.destination.Config.jsonPaths = jsonPaths;
+        expect(received).toEqual(opOutput("track", integrations[index]));
       });
     });
   });

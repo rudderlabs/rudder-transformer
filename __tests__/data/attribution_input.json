@@ -23,37 +23,16 @@
       "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
       "channel": "web",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.1-rc.2"
-        },
+        "ip": "12.12.12.12",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.1.1-rc.2"
-        },
-        "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "page": {
-          "path": "/tests/html/index4.html",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "http://localhost/tests/html/index4.html"
-        },
-        "screen": {
-          "density": 2
+          "name": "SomeLib",
+          "version": "1.0"
         },
         "traits": {
           "age": 23,
           "email": "testmp@rudderstack.com",
           "firstname": "Test Kafka"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        }
       },
       "integrations": {
         "All": true
@@ -100,37 +79,16 @@
       "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
       "channel": "web",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.1-rc.2"
-        },
+        "ip": "12.12.12.12",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.1.1-rc.2"
-        },
-        "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "page": {
-          "path": "/tests/html/index4.html",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "http://localhost/tests/html/index4.html"
-        },
-        "screen": {
-          "density": 2
-        },
-        "traits": {
-          "age": 23,
-          "email": "testmp@email.com",
-          "firstname": "Test Transformer"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+          "name": "SomeLib",
+          "version": "1.0"
+        }
+      },
+      "traits": {
+        "age": 23,
+        "email": "testmp@email.com",
+        "firstname": "Test Transformer"
       },
       "integrations": {
         "All": true
@@ -169,37 +127,11 @@
       "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
       "channel": "web",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.1-rc.2"
-        },
+        "ip": "12.12.12.12",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.1.1-rc.2"
-        },
-        "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "page": {
-          "path": "/tests/html/index4.html",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "http://localhost/tests/html/index4.html"
-        },
-        "screen": {
-          "density": 2
-        },
-        "traits": {
-          "age": 23,
-          "email": "testmp@email.com",
-          "firstname": "Test Transformer"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+          "name": "SomeLib",
+          "version": "1.0"
+        }
       },
       "event": "test track with property",
       "integrations": {
@@ -242,37 +174,11 @@
     "message": {
       "channel": "web",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.1-rc.2"
-        },
+        "ip": "12.12.12.12",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.1.1-rc.2"
-        },
-        "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "page": {
-          "path": "/tests/html/index4.html",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "http://localhost/tests/html/index4.html"
-        },
-        "screen": {
-          "density": 2
-        },
-        "traits": {
-          "age": 23,
-          "email": "testmp@rudderstack.com",
-          "firstname": "Test Kafka"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+          "name": "SomeLib",
+          "version": "1.0"
+        }
       },
       "integrations": {
         "All": true
@@ -319,33 +225,11 @@
       "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
       "channel": "web",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.1.1-rc.2"
-        },
+        "ip": "12.12.12.12",
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.1.1-rc.2"
-        },
-        "locale": "en-GB",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "page": {
-          "path": "/tests/html/index4.html",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": "http://localhost/tests/html/index4.html"
-        },
-        "screen": {
-          "density": 2
-        },
-
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+          "name": "SomeLib",
+          "version": "1.0"
+        }
       },
       "event": "test track with property",
       "integrations": {

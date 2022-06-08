@@ -1,21 +1,28 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
+const _ = require("lodash");
 const {
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull,
-  getFieldValueFromMessage
+  isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
-const logger = require("../../logger");
 const {
   CustomError,
   getIntegrationsObj,
   isEmpty,
-  isEmptyObject
+  isEmptyObject,
+  getValueFromPropertiesOrTraits,
+  getHashFromArray
 } = require("../../v0/util");
+const {
+  GENERIC_TRUE_VALUES,
+  GENERIC_FALSE_VALUES
+} = require("../../constants");
+const { BASE_URL, BLACKLISTED_CHARACTERS } = require("./config");
 
 // append properties to endpoint
 // eg: ${endpoint}key1=value1;key2=value2;....
-const appendProperties = (endpoint, payload) => {
+const appendProperties = payload => {
+  let endpoint = "";
   endpoint += Object.keys(payload)
     .map(key => {
       return `${key}=${payload[key]}`;
@@ -30,33 +37,34 @@ const appendProperties = (endpoint, payload) => {
 // Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
 const transformCustomVariable = (customFloodlightVariable, message) => {
   const customVariable = {};
-  customFloodlightVariable.forEach(item => {
-    if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
-      // remove u if already there
-      // first we consider taking custom variable from properties
-      // if not found then we will look into traits
-      let itemValue = get(message, `properties.${item.to.trim()}`);
-      // this condition adds support for numeric 0
-      if (!isDefinedAndNotNull(itemValue)) {
-        const traits = getFieldValueFromMessage(message, "traits");
-        if (traits) {
-          itemValue = traits[item.to.trim()];
-        }
-      }
-      if (
-        itemValue &&
+  const customMapping = getHashFromArray(
+    customFloodlightVariable,
+    "from",
+    "to",
+    false
+  );
+  Object.keys(customMapping).forEach(key => {
+    // it takes care of getting the value in the order.
+    // returns null if not present
+    const itemValue = getValueFromPropertiesOrTraits({
+      message,
+      key: customMapping[key]
+    });
+
+    if (
+      // the value is not null
+      !_.isNil(itemValue) &&
+      // the value is string and doesn't have any blacklisted characters
+      !(
         typeof itemValue === "string" &&
-        ['"', "<", ">", "#"].some(key => itemValue.includes(key))
-      ) {
-        logger.info('", < , > or # string variable is not acceptable');
-        itemValue = undefined;
-      }
-      // supported data types are number and string
-      if (isDefinedAndNotNull(itemValue) && typeof itemValue !== "boolean") {
-        customVariable[
-          `u${item.from.trim().replace(/u/g, "")}`
-        ] = encodeURIComponent(itemValue);
-      }
+        BLACKLISTED_CHARACTERS.some(k => itemValue.includes(k))
+      ) &&
+      // boolean values are not supported
+      typeof itemValue !== "boolean"
+    ) {
+      customVariable[`u${key.replace(/u/g, "")}`] = encodeURIComponent(
+        itemValue
+      );
     }
   });
 
@@ -65,10 +73,10 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
 
 // valid flag should be provided [1|true] or [0|false]
 const mapFlagValue = (key, value) => {
-  if (["true", "1"].includes(value.toString())) {
+  if (GENERIC_TRUE_VALUES.includes(value.toString())) {
     return 1;
   }
-  if (["false", "0"].includes(value.toString())) {
+  if (GENERIC_FALSE_VALUES.includes(value.toString())) {
     return 0;
   }
 
@@ -93,11 +101,9 @@ const postMapper = (input, mappedPayload, rudderContext) => {
   let customFloodlightVariable;
   let salesTag;
 
-  const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
-
   let event;
   // for page() take event from name and category
-  if (message.type === "page") {
+  if (message.type.toLowerCase() === "page") {
     const { category } = message.properties;
     const { name } = message || message.properties;
 
@@ -224,10 +230,11 @@ const postMapper = (input, mappedPayload, rudderContext) => {
     customFloodlightVariable
   );
 
-  let dcmEndpoint = appendProperties(baseEndpoint, mappedPayload);
+  let dcmEndpoint = `${BASE_URL}${appendProperties(mappedPayload)}`;
   if (!isEmptyObject(customFloodlightVariable)) {
-    dcmEndpoint = dcmEndpoint.concat(";");
-    dcmEndpoint = appendProperties(dcmEndpoint, customFloodlightVariable);
+    dcmEndpoint = `${dcmEndpoint};${appendProperties(
+      customFloodlightVariable
+    )}`;
   }
 
   rudderContext.endpoint = dcmEndpoint;

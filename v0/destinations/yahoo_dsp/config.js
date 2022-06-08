@@ -21,11 +21,13 @@ const AUDIENCE_TYPE = {
 };
 
 const DSP_SUPPORTED_OPERATION = "add";
+const categoryId = "categoryIds";
 
 module.exports = {
   BASE_ENDPOINT,
   ENDPOINTS,
   ACCESS_TOKEN_CACHE_TTL,
   DSP_SUPPORTED_OPERATION,
-  AUDIENCE_TYPE
+  AUDIENCE_TYPE,
+  categoryId
 };

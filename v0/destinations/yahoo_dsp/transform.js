@@ -2,7 +2,8 @@ const {
   BASE_ENDPOINT,
   ENDPOINTS,
   DSP_SUPPORTED_OPERATION,
-  AUDIENCE_TYPE
+  AUDIENCE_TYPE,
+  categoryId
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -32,8 +33,8 @@ const responseBuilder = async (message, destination) => {
   const { listData } = message.properties;
   const { accountId, audienceId, audienceType, seedListType } = Config;
 
-  let domains = [];
-  let categoryIds = [];
+  const domains = [];
+  const categoryIds = [];
   const traitsList = listData[DSP_SUPPORTED_OPERATION];
   if (!traitsList) {
     throw new CustomError(
@@ -46,7 +47,8 @@ const responseBuilder = async (message, destination) => {
    * The below written switch case is used to build the response for each of the supported audience type.
    *  eg. ["email", "deviceId", "ipAddress", "mailDomain", "pointOfInterest"].
    */
-  switch (AUDIENCE_TYPE[audienceType]) {
+  const typeOfAudience = AUDIENCE_TYPE[audienceType];
+  switch (typeOfAudience) {
     case "email":
       // creating the output payload using the audience list and Config
       dspListPayload = createPayload(traitsList, Config);
@@ -87,14 +89,9 @@ const responseBuilder = async (message, destination) => {
          * Reference for use case of categoryIds:
          * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
          */
-        if (
-          !(
-            traits.includes(AUDIENCE_TYPE[audienceType]) ||
-            traits.includes("categoryIds")
-          )
-        ) {
+        if (!(traits.includes(typeOfAudience) || traits.includes(categoryId))) {
           throw new CustomError(
-            `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
+            `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
             400
           );
         }
@@ -115,7 +112,7 @@ const responseBuilder = async (message, destination) => {
       break;
     default:
       throw new CustomError(
-        `[Yahoo_DSP]:: Audience Type "${AUDIENCE_TYPE[audienceType]}" is not supported`,
+        `[Yahoo_DSP]:: Audience Type "${typeOfAudience}" is not supported`,
         400
       );
   }

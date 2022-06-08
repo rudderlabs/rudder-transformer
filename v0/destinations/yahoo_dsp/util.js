@@ -4,7 +4,7 @@ const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
 const { httpPOST } = require("../../../adapters/network");
 const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
-const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE } = require("./config.js");
+const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE , DSP_SUPPORTED_OPERATION} = require("./config.js");
 const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -34,7 +34,7 @@ const poiLocationType = [
  * if any of the required location type is present in the input or not.
  * @param {*} traits
  * @param {*} poiLocationType
- * @returns
+ * @returns boolean
  */
 function isCommonElement(traits, poiLocationType) {
   return traits.some(item => poiLocationType.includes(item));
@@ -61,6 +61,7 @@ const populateIdentifiers = (audienceList, Config) => {
   const seedList = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
+  const typeOfAudience = AUDIENCE_TYPE[audienceType];
   
   if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
     // traversing through every userTraits in the add array for the traits to be added.
@@ -68,18 +69,18 @@ const populateIdentifiers = (audienceList, Config) => {
       // storing keys of an object inside the add array.
       const traits = Object.keys(userTraits);
       // checking for the audience type the user wants to add is present in the input or not.
-      if (!traits.includes(AUDIENCE_TYPE[audienceType])) {
+      if (!traits.includes(typeOfAudience)) {
         // throwing error if the audience type the user wants to add is not present in the input.
         throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
+          `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
           400
         );
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[AUDIENCE_TYPE[audienceType]]));
+        seedList.push(sha256(userTraits[typeOfAudience]));
       } else {
-        seedList.push(userTraits[AUDIENCE_TYPE[audienceType]]);
+        seedList.push(userTraits[typeOfAudience]);
       }
     });
   }
@@ -95,7 +96,7 @@ const populateIdentifiers = (audienceList, Config) => {
  *   {"email": "abc@email.com"}
  * ]
  * @param {*} Config
- * @returns a created payload {dspListPayload) object updated with the required data
+ * @returns {*} a created payload {dspListPayload) object updated with the required data
  */
 const createPayload = (audienceList, Config) => {
   let dspListPayload = {};
@@ -107,7 +108,7 @@ const createPayload = (audienceList, Config) => {
   // throwing the error if nothing is present in the seedList
   if (seedList.length === 0) {
     throw new CustomError(
-      `[Yahoo_DSP]:: No attributes are present in the '${key}' property.`,
+      `[Yahoo_DSP]:: No attributes are present in the '${DSP_SUPPORTED_OPERATION}' property.`,
       400
     );
   }

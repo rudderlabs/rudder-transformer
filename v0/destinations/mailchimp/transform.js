@@ -25,8 +25,7 @@ const {
   getBatchEndpoint,
   mergeAdditionalTraitsFields,
   formattingAddressObject,
-  ADDRESS_MANDATORY_FIELDS,
-  ADDRESS_OBJ_TEMPLATE
+  ADDRESS_MANDATORY_FIELDS
 } = require("./utils");
 
 const { MappedToDestinationKey } = require("../../../constants");
@@ -203,16 +202,16 @@ const identifyResponseBuilder = async (message, { Config }) => {
     it is expected to have merge fields in proper format, along with appropriate status 
     as well.
      */
+    console.log("initial trits", JSON.stringify(getFieldValueFromMessage(message, "traits")));
     addExternalIdToTraits(message);
     const updatedTraits = getFieldValueFromMessage(message, "traits")
 
-    // 
     const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
     if (Object.keys(mergedAddressPayload).length > 0) {
       // From the behaviour of destination we know that, if address
       // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
       const correctAddressPayload = formattingAddressObject(mergedAddressPayload);
-      updatedTraits.ADDRESS = correctAddressPayload;
+      updatedTraits.merge_fields.ADDRESS = correctAddressPayload;
       }
     return responseBuilderSimple(
       updatedTraits,

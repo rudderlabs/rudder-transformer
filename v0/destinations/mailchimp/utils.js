@@ -10,12 +10,7 @@ const {
 } = require("../../util");
 
 const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
-const ADDRESS_OBJ_TEMPLATE =  {
-  "zip": "",
-  "addr1": "",
-  "city": "",
-  "state": ""
-}
+
 
 const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "email",
@@ -32,12 +27,23 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "phone"
 ];
 
+/**
+ * Returns common endpoint for mailchimp
+ * @param {*} datacenterId <-- from webapp config
+ * @param {*} audienceId <-- from webapp config
+ * @returns 
+ */
 const getMailChimpEndpoint = (datacenterId, audienceId) => {
   const mailChimpApi = "api.mailchimp.com";
   const listsUrl = `https://${datacenterId}.${mailChimpApi}/3.0/lists`;
   return `${listsUrl}/${audienceId}`;
 };
 
+/**
+ * Returns common endpoint for mailchimp
+ * @param {*} destConfig <-- from event.destination.Config
+ * @returns 
+ */
 const getBatchEndpoint = destConfig => {
   const { datacenterId, audienceId, enableMergeFields } = destConfig;
   let mergeFieldOption;
@@ -59,7 +65,13 @@ const getBatchEndpoint = destConfig => {
   return BATCH_ENDPOINT;
 };
 
-// Converts to upper case and removes spaces
+/**
+ * Converts object keys to upper case along with removing spaces
+ * It also slices Keys more than 10 characters
+ * @param {*} tag <-- object key
+ * @param {*} returns
+ */
+
 const filterTagValue = tag => {
   const maxLength = 10;
   let newTag = tag.replace(/[^\w\s]/gi, "");
@@ -69,6 +81,14 @@ const filterTagValue = tag => {
   return newTag.toUpperCase();
 };
 
+/**
+ * Returns true if the email id already exists in mailchimp database
+ * @param {*} apiKey <-- from webapp config
+ * @param {*} datacenterId <-- from webapp config
+ * @param {*} audienceId <-- from webapp config
+ * @param {*} email <-- from webapp config
+ * @param {*} returns
+ */
 const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   // ref: https://mailchimp.com/developer/marketing/api/list-members/get-member-info/
   let status = false;
@@ -88,7 +108,6 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
           Authorization: `Basic ${basicAuth}`,
       },
   });
-    //console.log(response.data);
     status = true;
   } catch (error) {
     logger.error("axios error");
@@ -96,6 +115,13 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   return status;
 };
 
+/**
+ * Checks if double optin setup is switched on for the particular audience id in mailchimp
+ * @param {*} apiKey <-- from webapp config
+ * @param {*} datacenterId <-- from webapp config
+ * @param {*} audienceId <-- from webapp config
+ * @param {*} returns
+ */
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   let doubleOptin;
   const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
@@ -115,20 +141,14 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
 return !!doubleOptin;
 };
 
-const finaliseAudienceId = async (message, configAudienceId) => {
-  let finalAudienceId;
-  if (message.context.MailChimp) {
-    if (message.context.MailChimp.listId) {
-      finalAudienceId = message.context.MailChimp.listId;
-    } else {
-      finalAudienceId = configAudienceId;
-    }
-  } else {
-    finalAudienceId = configAudienceId;
-  }
-  return finalAudienceId;
-};
-
+/**
+ * Deduces final endpoint and method for existing emails in mailchimp
+ * @param {*} datacenterId <-- from webapp config
+ * @param {*} audienceId <-- from webapp config
+ * @param {*} email <-- email value from input payload
+ * @param {*} response <-- default rudder response structure
+ * @param {*} returns
+ */
 const stitchEndpointAndMethodForExistingEmails = (
   datacenterId,
   audienceId,
@@ -144,6 +164,14 @@ const stitchEndpointAndMethodForExistingEmails = (
   response.method = defaultPutRequestConfig.requestMethod;
 };
 
+/** 
+* Deduces final endpoint and method for non existing emails in mailchimp
+* @param {*} datacenterId <-- from webapp config
+* @param {*} audienceId <-- from webapp config
+* @param {*} email <-- email value from input payload
+* @param {*} response <-- default rudder response structure
+* @param {*} returns
+*/
 const stitchEndpointAndMethodForNONExistingEmails = (
   datacenterId,
   audienceId,
@@ -158,6 +186,12 @@ const stitchEndpointAndMethodForNONExistingEmails = (
   response.method = defaultPostRequestConfig.requestMethod;
 };
 
+/** 
+* Formats and adds the remaining trait fields, other than the mapped fields using "mailchimpMergeFieldConfig"
+* @param {*} traits <-- message.traits or message.context.traits
+* @param {*} mergedFieldPayload <-- payload consisting of merged fields, mapped using "mailchimpMergeFieldConfig"
+* @param {*} returns
+*/
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   if (isDefined(traits)) {
     Object.keys(traits).forEach(trait => {
@@ -171,6 +205,12 @@ const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   return mergedFieldPayload;
 };
 
+/** 
+* Formats and adds the remaining address fields, other than the mapped fields using "mailchimpMergeAddressConfig"
+* Address field is not mandatory, but if sent, needs to be sent with all ["addr1", "city", "state", "zip"]
+* @param {*} mergedAddressPayload <-- payload formed using "mailchimpMergeAddressConfig"
+* @param {*} returns
+*/
 const formattingAddressObject = (mergedAddressPayload) => {
   ADDRESS_MANDATORY_FIELDS.forEach(singleField => {
     if(mergedAddressPayload.hasOwnProperty(singleField) === false) {
@@ -185,12 +225,10 @@ module.exports = {
   filterTagValue,
   checkIfMailExists,
   checkIfDoubleOptIn,
-  finaliseAudienceId,
   stitchEndpointAndMethodForExistingEmails,
   stitchEndpointAndMethodForNONExistingEmails,
   getBatchEndpoint,
   mergeAdditionalTraitsFields,
   formattingAddressObject,
-  ADDRESS_MANDATORY_FIELDS,
-  ADDRESS_OBJ_TEMPLATE
+  ADDRESS_MANDATORY_FIELDS
 };

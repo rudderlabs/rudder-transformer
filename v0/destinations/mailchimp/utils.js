@@ -5,10 +5,32 @@ const {
   CustomError,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isDefined
 } = require("../../util");
 
 const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
+const ADDRESS_OBJ_TEMPLATE =  {
+  "zip": "",
+  "addr1": "",
+  "city": "",
+  "state": ""
+}
+
+const MAILCHIMP_IDENTIFY_EXCLUSION = [
+  "email",
+  "firstName",
+  "lastName",
+  "FirstName",
+  "LastName",
+  "firstname",
+  "lastname",
+  "addr1",
+  "city",
+  "state",
+  "zip",
+  "phone"
+];
 
 const getMailChimpEndpoint = (datacenterId, audienceId) => {
   const mailChimpApi = "api.mailchimp.com";
@@ -58,14 +80,15 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
     datacenterId,
     audienceId
   )}/members/${hash}`;
+  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
 
   try {
-    await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
-    });
+    response = await axios.get(url, {
+      headers: {
+          Authorization: `Basic ${basicAuth}`,
+      },
+  });
+    //console.log(response.data);
     status = true;
   } catch (error) {
     logger.error("axios error");
@@ -74,22 +97,22 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
 };
 
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
-  let response;
+  let doubleOptin;
   const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
+  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   try {
     response = await axios.get(url, {
-      auth: {
-        username: "apiKey",
-        password: `${apiKey}`
-      }
+        headers: {
+            Authorization: `Basic ${basicAuth}`,
+        },
     });
-  } catch (error) {
-    throw new CustomError(
-      "[Mailchimp]:: User does not have access to the requested operation",
-      error.status || 400
-    );
-  }
-  return !!response.data.double_optin;
+} catch (error) {
+  throw new CustomError(
+          "[Mailchimp]:: User does not have access to the requested operation",
+             error.status || 400
+           );
+}
+return !!doubleOptin;
 };
 
 const finaliseAudienceId = async (message, configAudienceId) => {
@@ -135,6 +158,28 @@ const stitchEndpointAndMethodForNONExistingEmails = (
   response.method = defaultPostRequestConfig.requestMethod;
 };
 
+const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
+  if (isDefined(traits)) {
+    Object.keys(traits).forEach(trait => {
+      // if any trait field is present, other than the fixed mapping, that is passed as well.
+      if (MAILCHIMP_IDENTIFY_EXCLUSION.indexOf(trait) === -1) {
+        const tag = filterTagValue(trait);
+        mergedFieldPayload[tag] = traits[trait];
+      }
+    });
+  }
+  return mergedFieldPayload;
+};
+
+const formattingAddressObject = (mergedAddressPayload) => {
+  ADDRESS_MANDATORY_FIELDS.forEach(singleField => {
+    if(mergedAddressPayload.hasOwnProperty(singleField) === false) {
+      mergedAddressPayload[singleField] = "";
+    }
+});
+return mergedAddressPayload;
+};
+
 module.exports = {
   getMailChimpEndpoint,
   filterTagValue,
@@ -144,5 +189,8 @@ module.exports = {
   stitchEndpointAndMethodForExistingEmails,
   stitchEndpointAndMethodForNONExistingEmails,
   getBatchEndpoint,
-  ADDRESS_MANDATORY_FIELDS
+  mergeAdditionalTraitsFields,
+  formattingAddressObject,
+  ADDRESS_MANDATORY_FIELDS,
+  ADDRESS_OBJ_TEMPLATE
 };

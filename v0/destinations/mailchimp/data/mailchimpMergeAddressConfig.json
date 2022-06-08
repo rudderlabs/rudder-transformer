@@ -1,0 +1,46 @@
+[  
+  {
+    "destKey": "addr1",
+    "sourceKeys": [
+        "traits.addr1",
+        "traits.address.addr1",
+        "traits.merge_fields.ADDRESS.addr1",
+        "context.traits.addr1",
+        "context.traits.address.addr1"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+        "traits.city",
+        "traits.address.city",
+        "traits.merge_fields.ADDRESS.city",
+        "context.traits.city",
+        "context.traits.address.city"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+        "traits.state",
+        "traits.address.state",
+        "traits.merge_fields.ADDRESS.state",
+        "context.traits.state",
+        "context.traits.address.state"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": [
+        "traits.zip",
+        "traits.address.zip",
+        "traits.merge_fields.ADDRESS.zip",
+        "context.traits.zip",
+        "context.traits.address.zip"
+      ],
+    "required": false
+  }
+]

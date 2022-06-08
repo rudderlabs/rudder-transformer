@@ -12,46 +12,6 @@
         "required": false
     },
     {
-        "destKey": "ADDRESS.addr1",
-        "sourceKeys": [
-            "traits.addr1",
-            "traits.address.addr1",
-            "context.traits.addr1",
-            "context.traits.address.addr1"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "ADDRESS.city",
-        "sourceKeys": [
-            "traits.city",
-            "traits.address.city",
-            "context.traits.city",
-            "context.traits.address.city"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "ADDRESS.state",
-        "sourceKeys": [
-            "traits.state",
-            "traits.address.state",
-            "context.traits.state",
-            "context.traits.address.state"
-        ],
-        "required": false
-    },
-    {
-        "destKey": "ADDRESS.zip",
-        "sourceKeys": [
-            "traits.zip",
-            "traits.address.zip",
-            "context.traits.zip",
-            "context.traits.address.zip"
-        ],
-        "required": false
-    },
-    {
         "destKey": "PHONE",
         "sourceKeys": "phone",
         "sourceFromGenericMap": true,

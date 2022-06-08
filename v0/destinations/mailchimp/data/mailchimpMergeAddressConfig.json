@@ -2,12 +2,24 @@
   {
     "destKey": "addr1",
     "sourceKeys": [
-        "traits.addr1",
-        "traits.address.addr1",
+        "traits.addressLine1",
+        "traits.address.addressLine1",
         "traits.merge_fields.ADDRESS.addr1",
-        "context.traits.addr1",
-        "context.traits.address.addr1",
+        "context.traits.addressLine1",
+        "context.traits.address.addressLine1",
         "context.traits.merge_fields.ADDRESS.addr1"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "addr2",
+    "sourceKeys": [
+        "traits.addressLine2",
+        "traits.address.addressLine2",
+        "traits.merge_fields.ADDRESS.addr2",
+        "context.traits.addressLine2",
+        "context.traits.address.addressLine2",
+        "context.traits.merge_fields.ADDRESS.addr2"
       ],
     "required": false
   },
@@ -44,6 +56,18 @@
         "context.traits.zip",
         "context.traits.address.zip",
         "context.traits.merge_fields.ADDRESS.zip"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+        "traits.country",
+        "traits.address.country",
+        "traits.merge_fields.ADDRESS.country",
+        "context.traits.country",
+        "context.traits.address.country",
+        "context.traits.merge_fields.ADDRESS.country"
       ],
     "required": false
   }

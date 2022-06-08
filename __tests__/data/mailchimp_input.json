@@ -1,68 +1,71 @@
 [
   {
     "destination": {
-      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
-      "Name": "test-mc",
-      "DestinationDefinition": {
-        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
-        "Name": "MC",
-        "DisplayName": "MailChimp"
-      },
-      "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
-        "enableMergeFields": true
-      },
-      "Enabled": true,
-      "Transformations": []
+        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+        "Name": "test-mc",
+        "DestinationDefinition": {
+            "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+            "Name": "MC",
+            "DisplayName": "MailChimp"
+        },
+        "Config": {
+            "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+            "audienceId": "df42a82d07",
+            "datacenterId": "us20",
+            "enableMergeFields": true
+        },
+        "Enabled": true,
+        "Transformations": []
     },
     "message": {
-      "anonymousId": "userId12345",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
+        "anonymousId": "userId12345",
+        "channel": "web",
+        "context": {
+            "app": {
+                "build": "1.0.0",
+                "name": "RudderLabs JavaScript SDK",
+                "namespace": "com.rudderlabs.javascript",
+                "version": "1.0.0"
+            },
+            "ip": "0.0.0.0",
+            "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "1.0.0"
+            },
+            "locale": "en-US",
+            "os": {
+                "name": "",
+                "version": ""
+            },
+            "screen": {
+                "density": 2
+            },
+            "traits": {
+                "anonymousId": "userId12345",
+                "email": "bob.dole@initech.com",
+                "firstName": "Bob",
+                "lastName": "Dole",
+                "zip": "123",
+                "state": "test",
+                "city": "test",
+                "addressLine1": "test"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
         },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
+        "integrations": {
+            "All": true
         },
-        "locale": "en-US",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "traits": {
-          "anonymousId": "userId12345",
-          "email": "bob.dole@initech.com",
-          "firstName": "Bob",
-          "lastName": "Dole",
-          "zip": "123"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
-      },
-      "integrations": {
-        "All": true
-      },
-      "messageId": "21e475b2-3694-477b-afb6-5b94a81aac21",
-      "originalTimestamp": "2019-11-15T10:22:32Z",
-      "receivedAt": "2019-11-15T15:52:37+05:30",
-      "request_ip": "[::1]:62921",
-      "sentAt": "2019-11-15T10:22:37Z",
-      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
-      "timestamp": "2019-11-15T15:52:32+05:30",
-      "type": "identify",
-      "userId": "userId12345"
+        "messageId": "21e475b2-3694-477b-afb6-5b94a81aac21",
+        "originalTimestamp": "2019-11-15T10:22:32Z",
+        "receivedAt": "2019-11-15T15:52:37+05:30",
+        "request_ip": "[::1]:62921",
+        "sentAt": "2019-11-15T10:22:37Z",
+        "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+        "timestamp": "2019-11-15T15:52:32+05:30",
+        "type": "identify",
+        "userId": "userId12345"
     }
-  },
+},
   {
     "destination": {
       "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",

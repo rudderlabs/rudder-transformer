@@ -6,7 +6,8 @@ const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   isDefinedAndNotNull,
-  isDefined
+  isDefined,
+  checkSubsetOfArray
 } = require("../../util");
 
 const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
@@ -25,7 +26,9 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "state",
   "zip",
   "phone",
-  "address"
+  "address",
+  "addressLine1",
+  "addressLine2"
 ];
 
 /**
@@ -214,12 +217,20 @@ const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
 * @param {*} mergedAddressPayload <-- payload formed using "mailchimpMergeAddressConfig"
 * @param {*} returns
 */
-const formattingAddressObject = (mergedAddressPayload) => {
+const validateAddressObject = (mergedAddressPayload) => {
+  const providedAddressKeys = Object.keys(mergedAddressPayload);
+
+if(checkSubsetOfArray(providedAddressKeys,ADDRESS_MANDATORY_FIELDS)) {
   ADDRESS_MANDATORY_FIELDS.forEach(singleField => {
-    if(mergedAddressPayload.hasOwnProperty(singleField) === false) {
-      mergedAddressPayload[singleField] = "";
-    }
-});
+      if(mergedAddressPayload[singleField] === "") {
+        throw new CustomError (`To send as address information, ${singleField} field should be valid string`, 400);
+      } else {
+        mergedAddressPayload[singleField] = String (mergedAddressPayload[singleField]);
+      }
+  });
+} else {
+   throw new CustomError ("For sending address information [\"addr1\", \"city\", \"state\", \"zip\"] fields are mandatory", 400);
+}
 return mergedAddressPayload;
 };
 
@@ -232,6 +243,6 @@ module.exports = {
   stitchEndpointAndMethodForNONExistingEmails,
   getBatchEndpoint,
   mergeAdditionalTraitsFields,
-  formattingAddressObject,
+  validateAddressObject,
   ADDRESS_MANDATORY_FIELDS
 };

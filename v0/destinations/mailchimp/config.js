@@ -19,7 +19,7 @@ const VALID_STATUSES = [
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: "mailchimpMergeFieldConfig" },
-  MERGE_ADDRESS: { name: "mailchimpMergeAddressConfig" }
+   MERGE_ADDRESS: { name: "mailchimpMergeAddressConfig" }
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

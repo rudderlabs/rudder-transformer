@@ -13,9 +13,9 @@
       "JSON": {
         "merge_fields": {
           "ADDRESS": {
-            "addr1": "",
-            "city": "",
-            "state": "",
+            "addr1": "test",
+            "city": "test",
+            "state": "test",
             "zip": "123"
           },
           "FNAME": "Bob",

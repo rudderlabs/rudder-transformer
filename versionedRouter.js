@@ -735,6 +735,126 @@ router.post("/batch", ctx => {
   ctx.set("apiVersion", API_VERSION);
   batchHandler(ctx);
 });
+/**
+ * 
+ * 
+      "orderNo":1,
+			"event": {
+        "type": "Track",
+		     ...
+        "anonymousId": "bc73bb87-8fb4-4498-97c8-570299a4686d",
+        "userId": "debanjanchatterjee",
+        "context": {},
+        "integrations": {}
+      },
+      "transformationIds": [
+        "transformer1_id",
+        "transformer2_id"
+      ]
+    @param {{}} ctx 
+ * @returns 
+ */
+const utHandler = async ctx => {
+
+  const eventRequests  = ctx.request.body;
+  
+
+  if(eventRequests == null || eventRequests.size <= 0){
+    return null;
+  }
+  
+  // refactoring requests to batches for transformer
+  const transformationEventMap = new Map();
+  //for maintaining order id in response
+  const eventOrderIdMap = new Map();
+
+  eventRequests.forEach( eventRequest => {
+
+    //storing the message_id to order_id mapping
+    eventOrderIdMap.set(eventRequest.event.messageId, eventRequest.orderNo);
+
+    eventRequest.transformationIds.forEach( t_id =>{
+      // const output = await userTransformHandler(, versionId, []);
+      const messageFormatted = {
+        "message": eventRequest.event
+     };
+
+      //the refactoring to transformations to events map
+      if(transformationEventMap.has(t_id)){
+        transformationEventMap.get(t_id).push(messageFormatted);
+      }else{
+        transformationEventMap.set(t_id, [messageFormatted]);
+      }
+    });
+  });
+
+  const transformPromises = [];
+  const response = []
+
+  transformationEventMap.forEach( async (messages, transformationId) =>{
+        
+    //apply transformation
+    transformPromises.push(
+    new Promise(async (resolve, reject) =>{
+      try{
+      const output = await userTransformHandler()(messages, transformationId, []);
+      console.log("trans out", output);
+      resolve({
+        "id" : transformationId,
+        "output" : output})
+      console.log("resolve", resolve);
+      }catch(ex){
+        console.log("ex", ex);
+        reject({
+          "id" : transformationId,
+          "error": ex
+        })
+      }
+    }))
+  })
+  const promiseResponse = await Promise.allSettled(transformPromises);
+    
+  promiseResponse.forEach( transformResponse => {
+      console.log("trans_resp", transformResponse)
+      if(transformResponse.status == 'fulfilled'){
+        const payload = [];
+        transformResponse.value.output.forEach( msg =>{
+            const orderNo = eventOrderIdMap.get(msg.messageId);
+            payload.push({
+              "orderNo" : orderNo,
+              "event" : msg
+            })
+        })
+        response.push({
+          "transformation":{
+            "id": transformResponse.value.id,
+            "status": 200,
+            "payload" : payload
+          }
+        })
+      }else{
+        response.push({
+          "transformation":{
+            "id": transformResponse.reason.id,
+            "status": 400,
+            "payload" : null,
+            "error": transformResponse.reason.error
+          }
+        })
+      }
+    
+    }
+
+    )
+  
+  ctx.body = response;
+};
+
+router.post("/usertransformation", async ctx => {
+  
+  ctx.set("apiVersion", API_VERSION);
+  return utHandler(ctx);
+});
 
 const fileUpload = async ctx => {
   const { destType } = ctx.request.body;
@@ -913,5 +1033,6 @@ module.exports = {
   handleDeletionOfUsers,
   fileUpload,
   pollStatus,
-  getJobStatus
+  getJobStatus,
+  utHandler
 };

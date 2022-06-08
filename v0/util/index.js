@@ -210,6 +210,7 @@ const getOffsetInSec = value => {
   }
   return undefined;
 };
+
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE

@@ -17,7 +17,7 @@ const {
   GENERIC_TRUE_VALUES,
   GENERIC_FALSE_VALUES
 } = require("../../constants");
-const { BLACKLISTED_CHARACTERS } = require("./config");
+const { BASE_URL, BLACKLISTED_CHARACTERS } = require("./config");
 
 // append properties to endpoint
 // eg: ${endpoint}key1=value1;key2=value2;....
@@ -43,8 +43,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
     "to",
     false
   );
-
-  Object.keys(customMapping).forEach(key => {
+Object.keys(customMapping).forEach(key => {
     // it takes care of getting the value in the order.
     // returns null if not present
     const itemValue = getValueFromPropertiesOrTraits({
@@ -68,36 +67,6 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
       );
     }
   });
-
-  // customFloodlightVariable.forEach(item => {
-  //   if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
-  //     // remove u if already there
-  //     // first we consider taking custom variable from properties
-  //     // if not found then we will look into traits
-  //     let itemValue = get(message, `properties.${item.to.trim()}`);
-  //     // this condition adds support for numeric 0
-  //     if (!isDefinedAndNotNull(itemValue)) {
-  //       const traits = getFieldValueFromMessage(message, "traits");
-  //       if (traits) {
-  //         itemValue = traits[item.to.trim()];
-  //       }
-  //     }
-  //     if (
-  //       itemValue &&
-  //       typeof itemValue === "string" &&
-  //       BLACKLISTED_CHARACTERS.some(key => itemValue.includes(key))
-  //     ) {
-  //       logger.info('", < , > or # string variable is not acceptable');
-  //       itemValue = undefined;
-  //     }
-  //     // supported data types are number and string
-  //     if (isDefinedAndNotNull(itemValue) && typeof itemValue !== "boolean") {
-  //       customVariable[
-  //         `u${item.from.trim().replace(/u/g, "")}`
-  //       ] = encodeURIComponent(itemValue);
-  //     }
-  //   }
-  // });
 
   return customVariable;
 };
@@ -131,8 +100,6 @@ const postMapper = (input, mappedPayload, rudderContext) => {
   let { activityTag, groupTag } = destination.Config;
   let customFloodlightVariable;
   let salesTag;
-
-  const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
 
   let event;
   // for page() take event from name and category
@@ -263,7 +230,7 @@ const postMapper = (input, mappedPayload, rudderContext) => {
     customFloodlightVariable
   );
 
-  let dcmEndpoint = `${baseEndpoint}${appendProperties(mappedPayload)}`;
+  let dcmEndpoint = `${BASE_URL}${appendProperties(mappedPayload)}`;
   if (!isEmptyObject(customFloodlightVariable)) {
     dcmEndpoint = `${dcmEndpoint};${appendProperties(
       customFloodlightVariable

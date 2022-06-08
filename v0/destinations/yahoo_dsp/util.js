@@ -34,14 +34,14 @@ const excludes = {};
 // updating includes 
 const populateIncludes = (audienceList, audienceType) => {
   audienceList.forEach(element => {
-    const keys = Object.keys(element);
-    keys.forEach(elementKey => {
+    const audieceListkeys = Object.keys(element);
+    audieceListkeys.forEach(elementKey => {
       if (poiLocationType.includes(elementKey)) {
         listType = audienceType;
       }
     });
     if (!listType) {
-      throw new CustomError(`[Yahoo_DSP]:: Audience type ${audienceType} not provided`, 400);
+      throw new CustomError(`[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`, 400);
     }
     if (element.includeChains) {
       if (!includes.chains) {
@@ -74,14 +74,14 @@ const populateIncludes = (audienceList, audienceType) => {
 // updating excludes
 const populateExcludes = (audienceList, audienceType) => {
   audienceList.forEach(element => {
-    const keys = Object.keys(element);
-    keys.forEach(elementKey => {
+    const audienceListKeys = Object.keys(element);
+    audienceListKeys.forEach(elementKey => {
       if (poiLocationType.includes(elementKey)) {
         listType = audienceType;
       }
     });
     if (!listType) {
-      throw new CustomError(`[Yahoo_DSP]:: Audience type ${audienceType} not provided`, 400);
+      throw new CustomError(`[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`, 400);
     }
     if (element.excludeChains) {
       if (!excludes.chains) {

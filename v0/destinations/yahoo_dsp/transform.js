@@ -47,7 +47,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
       // throwing error if the audience type the user wants to add is not present in the input.
       if (!listType) {
         throw new CustomError(
-          `[Yahoo_DSP]:: Audience type ${audienceType} not provided`,
+          `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
           400
         );
       }
@@ -166,7 +166,7 @@ const responseBuilder = async (message, destination) => {
         });
         if (!listType) {
           throw new CustomError(
-            `[Yahoo_DSP]:: Audience type ${audienceType} not provided`,
+            `[Yahoo_DSP]:: Required property for ${audienceType} type audience is not available in an object`,
             400
           );
         }

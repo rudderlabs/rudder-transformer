@@ -26,7 +26,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Audience type email not provided"
+    "error": "[Yahoo_DSP]:: Required property for email type audience is not available in an object"
   },
   {
     "version": "1",
@@ -140,6 +140,6 @@
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Audience type deviceId not provided"
+    "error": "[Yahoo_DSP]:: Required property for deviceId type audience is not available in an object"
   }
 ]

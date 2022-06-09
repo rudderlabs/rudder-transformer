@@ -91,5 +91,26 @@
   {
     "statusCode": 400,
     "error": "[Yahoo_DSP]:: Audience Type \"DEVICEID\" is not supported"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Yahoo_DSP]:: The only supported operation for audience updation 'add' is not present"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Yahoo_DSP]:: Message type track not supoorted"
+  },
+  {
+    "statusCode": 400,
+    "error": "[Yahoo_DSP]:: Message Type is not present. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "[Yahoo_DSP]:: listData is not present inside properties. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "[Yahoo_DSP]:: Message properties is not present. Aborting message."
   }
+  
 ]

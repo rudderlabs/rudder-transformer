@@ -253,7 +253,7 @@ function responseBuilderSimple(message, payload, destination) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     // Forward the client IP: https://developers.facebook.com/docs/marketing-api/app-event-api#http
-    "x-forwarded-for": message.context.ip
+    "x-forwarded-for": message?.context.ip || message.request_ip
   };
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.FORM = removeUndefinedValues(payload);

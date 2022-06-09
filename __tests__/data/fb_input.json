@@ -1074,6 +1074,7 @@
       "properties": {
         "name": "Viewed Main Screen1 by expicit call Screen"
       },
+      "request_ip": "2.3.4.5",
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
     },

@@ -228,7 +228,9 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
-    "headers": {},
+    "headers": {
+      "x-forwarded-for": "2.3.4.5"
+    },
     "params": {},
     "body": {
       "JSON": {},

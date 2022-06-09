@@ -1,5 +1,4 @@
 const get = require("get-value");
-const moment = require("moment");
 const { proxyRequest } = require("../../../adapters/network");
 const {
   getDynamicMeta,
@@ -19,43 +18,12 @@ const ErrorBuilder = require("../../util/error");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
- * converts to Unix timestamp (in microseconds)
- * @param {*} timestamp
- * @returns
- */
-function msUnixTimestamp(timestamp) {
-  const currentTime = moment.unix(moment().format("X"));
-  const time = moment.unix(moment(timestamp).format("X"));
-
-  const timeDifferenceInHours = Math.ceil(
-    moment.duration(currentTime.diff(time)).asHours()
-  );
-  if (timeDifferenceInHours > 72) {
-    throw new CustomError(
-      "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
-      400
-    );
-  }
-
-  if (timeDifferenceInHours <= 0) {
-    if (Math.ceil(moment.duration(time.diff(currentTime)).asMinutes()) > 15) {
-      throw new CustomError(
-        "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
-        400
-      );
-    }
-  }
-
-  return time.toDate().getTime() * 1000 + time.toDate().getMilliseconds();
-}
-
-/**
  * Reserved event names cannot be used
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_names
  * @param {*} event
  * @returns
  */
-function isReservedEventName(event) {
+const isReservedEventName = event => {
   const reservedEventNames = [
     "ad_activeview",
     "ad_click",
@@ -82,7 +50,7 @@ function isReservedEventName(event) {
   ];
 
   return reservedEventNames.includes(event.toLowerCase());
-}
+};
 
 /* Event parameters */
 /**
@@ -100,7 +68,7 @@ const GA4_RESERVED_PARAMETER_EXCLUSION = [
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  * @param {*} parameter
  */
-function removeReservedParameterPrefixNames(parameter) {
+const removeReservedParameterPrefixNames = parameter => {
   const reservedPrefixesNames = ["google_", "ga_", "firebase_"];
 
   if (!parameter) {
@@ -121,7 +89,7 @@ function removeReservedParameterPrefixNames(parameter) {
       delete parameter[key];
     }
   });
-}
+};
 
 /* user property */
 /**
@@ -141,7 +109,7 @@ const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
  * @param {*} userProperties
  */
-function removeReservedUserPropertyPrefixNames(userProperties) {
+const removeReservedUserPropertyPrefixNames = userProperties => {
   const reservedPrefixesNames = ["google_", "ga_", "firebase_"];
 
   if (!userProperties) {
@@ -162,7 +130,7 @@ function removeReservedUserPropertyPrefixNames(userProperties) {
       delete userProperties[key];
     }
   });
-}
+};
 
 /* For custom events */
 /**
@@ -171,7 +139,7 @@ function removeReservedUserPropertyPrefixNames(userProperties) {
  * @param {*} event
  * @returns
  */
-function isReservedWebCustomEventName(event) {
+const isReservedWebCustomEventName = event => {
   const reservedEventNames = [
     "app_remove",
     "app_store_refund",
@@ -186,7 +154,7 @@ function isReservedWebCustomEventName(event) {
   ];
 
   return reservedEventNames.includes(event.toLowerCase());
-}
+};
 
 /**
  * Reserved custom event name cannot start with reserved prefixes (Web)
@@ -194,7 +162,7 @@ function isReservedWebCustomEventName(event) {
  * @param {*} event
  * @returns
  */
-function isReservedWebCustomPrefixName(event) {
+const isReservedWebCustomPrefixName = event => {
   const reservedPrefixesNames = ["_", "firebase_", "ga_", "google_", "gtag."];
 
   // As soon as a single true is returned, .some() will itself return true and stop
@@ -204,7 +172,7 @@ function isReservedWebCustomPrefixName(event) {
     }
     return false;
   });
-}
+};
 
 const GA4_ITEM_EXCLUSION = [
   "item_id",
@@ -241,7 +209,7 @@ const GA4_ITEM_EXCLUSION = [
  * @param {*} message
  * @returns
  */
-function getItemList(message, isItemsRequired = false) {
+const getItemList = (message, isItemsRequired = false) => {
   let items;
   const products = get(message, "properties.products");
   if (
@@ -289,14 +257,14 @@ function getItemList(message, isItemsRequired = false) {
     });
   }
   return items;
-}
+};
 
 /**
  * get product properties for a event.
  * @param {*} message
  * @returns
  */
-function getItem(message, isItemsRequired) {
+const getItem = (message, isItemsRequired) => {
   let items;
   const products = get(message, "properties");
   if (!products && isItemsRequired) {
@@ -335,7 +303,7 @@ function getItem(message, isItemsRequired) {
     items.push(element);
   }
   return items;
-}
+};
 
 /**
  * get exclusion list for a particular event
@@ -343,7 +311,7 @@ function getItem(message, isItemsRequired) {
  * @param {*} mappingJson
  * @returns
  */
-function getGA4ExclusionList(mappingJson) {
+const getGA4ExclusionList = mappingJson => {
   let ga4ExclusionList = [];
 
   mappingJson.forEach(element => {
@@ -365,7 +333,7 @@ function getGA4ExclusionList(mappingJson) {
   ga4ExclusionList = ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
 
   return ga4ExclusionList;
-}
+};
 
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
@@ -407,7 +375,6 @@ const networkHandler = function() {
 
 module.exports = {
   networkHandler,
-  msUnixTimestamp,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,

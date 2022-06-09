@@ -5,10 +5,13 @@ const ENDPOINT = "https://www.google-analytics.com/mp/collect";
 /**
  * config for GA4 events
  *
- * For Items list these are the convention that is being followed
- * "NA" - Item list is not present
+ * For Item list these are the convention that is being followed
  * "YES" - Item list is present and is a required field
  * "NO" - Item list is present and is not a required field
+ *
+ * for Item parameters present at root level (properties)
+ * "YES" - Item is present and is a required field
+ * "NO" - Item is present and is not a required field
  */
 const ConfigCategory = {
   COMMON: { name: "GA4CommonConfig" },
@@ -17,12 +20,11 @@ const ConfigCategory = {
 
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
-  /* Browsing Section */
 
+  /* Browsing Section */
   PRODUCTS_SEARCHED: {
     name: "GA4ProductsSearchedConfig",
-    event: "search",
-    itemList: "NA"
+    event: "search"
   },
   PRODUCT_LIST_VIEWED: {
     name: "GA4ProductListViewedConfig",
@@ -46,13 +48,11 @@ const ConfigCategory = {
   PRODUCT_CLICKED: {
     name: "GA4ProductClickedConfig",
     event: "select_item",
-    itemList: "NA",
     item: "YES"
   },
   PRODUCT_VIEWED: {
     name: "GA4ProductViewedConfig",
     event: "view_item",
-    itemList: "NA",
     item: "YES"
   },
   PRODUCT_ADDED: {
@@ -106,27 +106,23 @@ const ConfigCategory = {
   /* Sharing Section */
   PRODUCT_SHARED: {
     name: "GA4ProductSharedConfig",
-    event: "share",
-    itemList: "NA"
+    event: "share"
   },
   CART_SHARED: {
     name: "GA4CartSharedConfig",
-    event: "share",
-    itemList: "NA"
+    event: "share"
   },
 
   /* Group */
   GROUP: {
     name: "GA4GroupConfig",
-    event: "group",
-    itemList: "NA"
+    event: "group"
   },
 
   /* GA4 Events */
   GENERATE_LEAD: {
     name: "GA4GenerateLeadConfig",
-    event: "generate_lead",
-    itemList: "NA"
+    event: "generate_lead"
   },
   VIEW_SEARCH_RESULTS: {
     name: "GA4ViewSearchResults",
@@ -140,7 +136,6 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   ENDPOINT,
   ConfigCategory,
-  // eventNameMapping,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name]
 };

@@ -9049,7 +9049,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
+      "error": "Allowed timestamp is [72 hours] into the past",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -9140,7 +9140,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
+      "error": "Allowed timestamp is [15 minutes] into the future",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",

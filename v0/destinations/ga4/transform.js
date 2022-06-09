@@ -20,7 +20,6 @@ const {
   ConfigCategory
 } = require("./config");
 const {
-  msUnixTimestamp,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
@@ -33,7 +32,7 @@ const {
   getItem
 } = require("./utils");
 
-function trackResponseBuilder(message, { Config }) {
+const responseBuilder = (message, { Config }) => {
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("Event name is required", 400);
@@ -52,9 +51,6 @@ function trackResponseBuilder(message, { Config }) {
 
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
-  if (rawPayload.timestamp_micros) {
-    rawPayload.timestamp_micros = msUnixTimestamp(rawPayload.timestamp_micros);
-  }
 
   switch (Config.typesOfClient) {
     case "gtag":
@@ -89,21 +85,22 @@ function trackResponseBuilder(message, { Config }) {
   }
 
   let payload = {};
-  if (message.type === "track" && ConfigCategory[`${event.toUpperCase()}`]) {
+  const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
+  if (message.type === "track" && eventConfig) {
     // GA4 standard events
     // get event specific parameters
 
-    payload.name = ConfigCategory[`${event.toUpperCase()}`].event;
+    payload.name = eventConfig.event;
 
-    if (mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]) {
+    if (mappingConfig[eventConfig.name]) {
       payload.params = constructPayload(
         message,
-        mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
+        mappingConfig[eventConfig.name]
       );
     }
 
-    const { itemList } = ConfigCategory[`${event.toUpperCase()}`];
-    const { item } = ConfigCategory[`${event.toUpperCase()}`];
+    const { itemList } = eventConfig;
+    const { item } = eventConfig;
 
     if (item === "YES") {
       payload.params.items = getItem(message, true);
@@ -115,9 +112,11 @@ function trackResponseBuilder(message, { Config }) {
       payload.params.items = getItemList(message, false);
     }
 
+    // for select_item and view_item event we take custom properties from root
+    // excluding items[..] properties
     if (payload.name === "select_item" || payload.name === "view_item") {
       let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
-        mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
+        mappingConfig[eventConfig.name]
       );
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
         getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
@@ -133,9 +132,7 @@ function trackResponseBuilder(message, { Config }) {
         message,
         payload.params,
         ["properties"],
-        getGA4ExclusionList(
-          mappingConfig[ConfigCategory[`${event.toUpperCase()}`].name]
-        )
+        getGA4ExclusionList(mappingConfig[eventConfig.name])
       );
     }
   } else if (message.type === "identify") {
@@ -152,9 +149,12 @@ function trackResponseBuilder(message, { Config }) {
     switch (event) {
       case "login":
       case "sign_up": {
+        // taking method property from traits depending
+        // on loginSignupMethod key defined in Config
         const method = traits[`${Config.loginSignupMethod}`];
 
         if (method) {
+          // params for login and sign_up event
           payload.params = { method }; // method: "Google"
         }
 
@@ -301,9 +301,9 @@ function trackResponseBuilder(message, { Config }) {
 
   response.body.JSON = rawPayload;
   return response;
-}
+};
 
-function process(event) {
+const process = event => {
   const { message, destination } = event;
   const { Config } = destination;
 
@@ -348,13 +348,13 @@ function process(event) {
           message.event = "login";
         }
 
-        response.push(trackResponseBuilder(message, destination));
+        response.push(responseBuilder(message, destination));
       }
 
       // 2. send generate_lead based on config
       if (Config.generateLead) {
         message.event = "generate_lead";
-        response.push(trackResponseBuilder(message, destination));
+        response.push(responseBuilder(message, destination));
       }
 
       if (response.length === 0) {
@@ -366,22 +366,22 @@ function process(event) {
 
       break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      response = responseBuilder(message, destination);
       break;
     case EventType.PAGE:
       // GA4 custom event (page_view) is fired for page
       message.event = "page_view";
-      response = trackResponseBuilder(message, destination);
+      response = responseBuilder(message, destination);
       break;
     case EventType.GROUP:
       // GA4 standard event (join_group) is fired for group
       message.event = "join_group";
-      response = trackResponseBuilder(message, destination);
+      response = responseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
-}
+};
 
 module.exports = { process };

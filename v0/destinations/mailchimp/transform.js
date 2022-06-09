@@ -304,10 +304,23 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(arrayChunks) {
+function batchEvents(destEvents) {
   // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
   const batchedResponseList = [];
+  let eventsChunk = []; // temporary variable to divide payload into chunks
+  let arrayChunks = [];  // transformed payload of (n) batch size
 
+  destEvents.forEach((event, index) => {
+    eventsChunk.push(event);
+    if (
+      eventsChunk.length &&
+      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+    ) {
+      arrayChunks.push(eventsChunk);
+      eventsChunk = [];
+    }
+  });
+  
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
     const batchResponseList = [];
@@ -377,12 +390,15 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-  let eventsChunk = []; // temporary variable to divide payload into chunks
-  const arrayChunks = []; // transformed payload of (n) batch size
   const batchErrorRespList = [];
-  let batchedResponseList = [];
+  let batchSuccessRespList = [];
   const reverseETLEventArray = [];
   const conventionalEventArray = [];
+  // using the first destination config for transforming the batch
+  const { destination } = inputs[0];
+
+
+  let successRespList = [];
 
   inputs.forEach(singleInput => {
     const { message } = singleInput;
@@ -392,7 +408,7 @@ const processRouterDest = async inputs => {
       conventionalEventArray.push(singleInput);
     }
   });
-
+// only events coming from reverseETL sources are sent to batch endPoint.
   await Promise.all(
     reverseETLEventArray.map(async (event, index) => {
       try {
@@ -410,23 +426,11 @@ const processRouterDest = async inputs => {
           }
         } else {
           // if not transformed
-          getEventChunks(
-            {
+          batchSuccessRespList.push({
               message: await process(event),
               metadata: event.metadata,
-              destination: event.destination
-            },
-            eventsChunk
-          );
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
+              destination
+          });
         }
       } catch (error) {
         batchErrorRespList.push(
@@ -439,6 +443,8 @@ const processRouterDest = async inputs => {
       }
     })
   );
+
+// array of events recieved from sources except of reverseETL, are sent using normal router transform
   const respList = await Promise.all(
     conventionalEventArray.map(async input => {
       try {
@@ -470,10 +476,11 @@ const processRouterDest = async inputs => {
     })
   );
 
-  if (arrayChunks.length > 0) {
-    batchedResponseList = await batchEvents(arrayChunks);
+  if (batchSuccessRespList.length > 0) {
+    batchSuccessRespList = await batchEvents(batchSuccessRespList);
   }
-  return [...batchedResponseList, ...respList, ...batchErrorRespList];
+  
+  return [...batchSuccessRespList, ...respList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

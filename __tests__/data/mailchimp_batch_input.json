@@ -1,4 +1,6 @@
 [
+  
+   
     {
       "destination": {
         "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
@@ -140,7 +142,57 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 3
+        "jobId": 4
+      },
+      "message": {
+        "type": "identify",
+        "traits": {
+          "status": "subscribed"
+        },
+        "userId": "emrichardson820+22822@gmail.com",
+        "channel": "sources",
+        "context": {
+          "sources": {
+            "job_id": "24c5HJxHomh6YCngEOCgjS5r1KX/Syncher",
+            "task_id": "vw_rs_mailchimp_mocked_hg_data",
+            "version": "v1.8.1",
+            "batch_id": "f252c69d-c40d-450e-bcd2-2cf26cb62762",
+            "job_run_id": "c8el40l6e87v0c4hkbl0",
+            "task_run_id": "c8el40l6e87v0c4hkblg"
+          },
+          "externalId": [
+            {
+              "id": "emrichardson820+22822@gmail.com",
+              "type": "MAILCHIMP-92e1f1ad2c",
+              "identifierType": "email_address"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "4d5d0ed0-9db8-41cc-9bb0-a032f6bfa97a",
+        "messageId": "b3bee036-fc26-4f6d-9867-c17f85708a82"
+      }
+    },
+    {
+      "destination": {
+        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+        "Name": "test-mc",
+        "DestinationDefinition": {
+          "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+          "Name": "MC",
+          "DisplayName": "MailChimp"
+        },
+        "Config": {
+          "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+          "audienceId": "df42a82d07",
+          "datacenterId": "us20"
+        },
+        "Enabled": true,
+        "Transformations": []
+      },
+      "metadata": {
+        "jobId": 5
       },
       "message": {
         "type": "identify",

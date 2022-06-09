@@ -1,65 +1,81 @@
 [
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07?skip_merge_validation=false&skip_duplicate_check=false",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "members": [
-              {
-                "merge_fields": {
-                  "FIRSTNAME": "Bob"
-                },
-                "status": "subscribed",
-                "email_address": "bob.dole@initech.com"
-              },
-              {
-                "status": "subscribed",
-                "email_address": "emrichardson820+22822@gmail.com"
-              }
-            ],
-            "update_existing": true
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "userId12345"
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07?skip_merge_validation=false&skip_duplicate_check=false",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
       },
-      "metadata": [
-        {
-          "jobId": 2
+      "params": {},
+      "body": {
+        "JSON": {
+          "members": [
+            {
+              "merge_fields": {
+                "FIRSTNAME": "Bob"
+              },
+              "status": "subscribed",
+              "email_address": "bob.dole@initech.com"
+            },
+            {
+              "status": "subscribed",
+              "email_address": "emrichardson820+22822@gmail.com"
+            },
+            {
+              "status": "subscribed",
+              "email_address": "emrichardson820+22822@gmail.com"
+            }
+          ],
+          "update_existing": true
         },
-        {
-          "jobId": 3
-        }
-      ],
-      "batched": true,
-      "statusCode": 200,
-      "destination": {
-        "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
-        "Name": "test-mc",
-        "DestinationDefinition": {
-          "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
-          "Name": "MC",
-          "DisplayName": "MailChimp"
-        },
-        "Config": {
-          "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-          "audienceId": "df42a82d07",
-          "datacenterId": "us20"
-        },
-        "Enabled": true,
-        "Transformations": []
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "userId12345"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      },
+      {
+        "jobId": 3
+      },
+      {
+        "jobId": 4
       }
+    ],
+    "batched": true,
+    "statusCode": 200,
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
     }
-  ]
-  
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+  }
+]

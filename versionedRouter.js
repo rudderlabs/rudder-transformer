@@ -18,7 +18,8 @@ const {
   generateErrorObject,
   CustomError,
   isCdkDestination,
-  recursiveRemoveUndefined
+  recursiveRemoveUndefined,
+  isHttpStatusSuccess
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -29,6 +30,7 @@ const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
+const { mirrorComparatorMiddleware } = require("./middlewares/comparator");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -44,229 +46,11 @@ const startDestTransformer =
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
 // eslint-disable-next-line prefer-destructuring
-const OLD_TRANSFORMER_URL = process.env.OLD_TRANSFORMER_URL;
+// const OLD_TRANSFORMER_URL = process.env.OLD_TRANSFORMER_URL;
 
 const router = new Router();
 
-const isRouteIncluded = path => {
-  const includeRoutes = [
-    "/v0/",
-    "/customTransform",
-    "/batch",
-    "fileUpload",
-    "/getFailedJos",
-    "/pollStatus",
-    "/getWarningJobs",
-    "/deleteUsers",
-    "/features"
-  ];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const route of includeRoutes) {
-    if (path.includes(route)) return true;
-  }
-  return false;
-};
-
-const isRouteExcluded = path => {
-  const excludeRoutes = ["/v0/sources/webhook", "/proxy"];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const route of excludeRoutes) {
-    if (path.includes(route)) return false;
-  }
-  return true;
-};
-
-const formatResponsePayload = (payload, path) => {
-  if (path.includes("/v0/ga") || path.includes("/v0/ga360")) {
-    payload.forEach(res => {
-      if (
-        res.output &&
-        res.output.params &&
-        res.output.params.hasOwnProperty("qt")
-      ) {
-        delete res.output.params.qt;
-      }
-    });
-  }
-
-  if (path.includes("/v0/facebook_pixel")) {
-    payload.forEach(res => {
-      if (
-        res.output &&
-        res.output.body &&
-        res.output.body.FORM &&
-        res.output.body.FORM.hasOwnProperty("data")
-      ) {
-        delete res.output.body.FORM.data;
-      }
-    });
-  }
-
-  if (path.includes("/v0/snowflake")) {
-    payload.forEach(res => {
-      if (
-        res.output &&
-        res.output.metadata &&
-        res.output.metadata.hasOwnProperty("receivedAt")
-      ) {
-        delete res.output.metadata.receivedAt;
-      }
-      if (
-        res.output &&
-        res.output.data &&
-        res.output.data.hasOwnProperty("ID")
-      ) {
-        delete res.output.data.ID;
-      }
-      if (
-        res.output &&
-        res.output.data &&
-        res.output.data.hasOwnProperty("RECEIVED_AT")
-      ) {
-        delete res.output.data.RECEIVED_AT;
-      }
-    });
-  }
-
-  if (path.includes("/v0/sfmc") || path.includes("/v0/salesforce")) {
-    payload.forEach(res => {
-      if (
-        res.output &&
-        res.output.headers &&
-        res.output.headers.hasOwnProperty("Authorization")
-      ) {
-        delete res.output.headers.Authorization;
-      }
-    });
-  }
-
-  if (path.includes("/customTransform")) {
-    payload.forEach(res => {
-      if (
-        res.output &&
-        res.output.header &&
-        res.output.header.hasOwnProperty("Authorization")
-      ) {
-        delete res.output.header.Authorization;
-      }
-      if (res.output && res.output.hasOwnProperty("userId")) {
-        delete res.output.userId;
-      }
-      if (res.output && res.output.hasOwnProperty("event_time")) {
-        delete res.output.event_time;
-      }
-    });
-  }
-
-  if (!path.includes("/v0/sources") && !path.includes("/v0/destinations")) {
-    payload.sort((a, b) =>
-      a.metadata.messageId > b.metadata.messageId
-        ? 1
-        : a.metadata.messageId < b.metadata.messageId
-        ? -1
-        : 0
-    );
-  }
-
-  if (path.includes("/customTransform")) {
-    payload.sort((a, b) =>
-      a.output.messageId > b.output.messageId
-        ? 1
-        : a.output.messageId < b.output.messageId
-        ? -1
-        : 0
-    );
-  }
-
-  return payload;
-};
-
-router.use(async (ctx, next) => {
-  if (!OLD_TRANSFORMER_URL) {
-    logger.error(
-      "OLD TRANSFORMER URL not configured.consider removing the comparison middleware"
-    );
-    await next();
-    return;
-  }
-
-  if (!isRouteIncluded(ctx.request.url) || !isRouteExcluded(ctx.request.url)) {
-    logger.debug(
-      "url does not contain path v0 or customTransform. Omitting request"
-    );
-    await next();
-    return;
-  }
-
-  const url = combineURLs(OLD_TRANSFORMER_URL, ctx.request.url);
-  let response;
-  try {
-    if (ctx.request.method.toLowerCase() === "get") {
-      response = await axios.get(url, {
-        headers: ctx.request.headers
-      });
-    } else {
-      response = await axios.post(url, ctx.request.body);
-    }
-  } catch (e) {
-    logger.error(`Failed to send request to old - ${e.message}`);
-    await next();
-    return;
-  }
-
-  let oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
-  // send req to current service
-  await next();
-  let currentTransformerResponse = JSON.parse(
-    JSON.stringify(ctx.response.body)
-  );
-
-  try {
-    oldTransformerResponse = formatResponsePayload(
-      oldTransformerResponse,
-      ctx.request.url
-    );
-  } catch (err) {
-    logger.error(
-      `Failed to sort metadata message id (old): ${ctx.request.url}`
-    );
-  }
-  try {
-    currentTransformerResponse = formatResponsePayload(
-      currentTransformerResponse,
-      ctx.request.url
-    );
-  } catch (err) {
-    logger.error(
-      `Failed to sort metadata message id (new): ${ctx.request.url}`
-    );
-  }
-
-  if (!match(oldTransformerResponse, currentTransformerResponse)) {
-    stats.counter("payload_fail_match", 1, {
-      path: ctx.request.path,
-      method: ctx.request.method.toLowerCase()
-    });
-    logger.error(`API comparison: payload mismatch `);
-    logger.error(`old Url : ${url}`);
-    logger.error(`new Url : ${ctx.request.url}`);
-    logger.error(`new Method : ${ctx.request.method}`);
-    logger.error(`new Body : ${JSON.stringify(ctx.request.body)}`);
-    logger.error(`new Payload: ${JSON.stringify(currentTransformerResponse)}`);
-    logger.error(`old Payload: ${JSON.stringify(oldTransformerResponse)} `);
-    logger.error(
-      `diff: ${jsonDiff.diffString(
-        oldTransformerResponse,
-        currentTransformerResponse
-      )}`
-    );
-  } else {
-    stats.counter("payload_success_match", 1, {
-      path: ctx.request.path,
-      method: ctx.request.method.toLowerCase()
-    });
-  }
-});
+router.use(mirrorComparatorMiddleware);
 
 const isDirectory = source => {
   return fs.lstatSync(source).isDirectory();
@@ -809,19 +593,35 @@ async function handleProxyRequest(destination, ctx) {
   );
   let response;
   try {
+    stats.counter("tf_proxy_dest_req_count", 1, {
+      destination
+    });
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
     stats.timing("transformer_proxy_time", startTime, {
       destination
     });
+    stats.counter("tf_proxy_dest_resp_count", 1, {
+      destination,
+      success: rawProxyResponse.success
+    });
+
     const processedProxyResponse = destNetworkHandler.processAxiosResponse(
       rawProxyResponse
     );
+    stats.counter("tf_proxy_proc_ax_response_count", 1, {
+      destination
+    });
     response = destNetworkHandler.responseHandler(
       processedProxyResponse,
       destination
     );
+    stats.counter("tf_proxy_resp_handler_count", 1, {
+      destination
+    });
   } catch (err) {
+    logger.error("Error occurred while completing proxy request:");
+    logger.error(err);
     response = generateErrorObject(
       err,
       destination,
@@ -831,9 +631,14 @@ async function handleProxyRequest(destination, ctx) {
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
+    stats.counter("tf_proxy_err_count", 1, {
+      destination
+    });
   }
   ctx.body = { output: response };
-  ctx.status = response.status;
+  // Sending `204` status(obtained from destination) is not working as expected
+  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
+  ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
   return ctx.body;
 }
 

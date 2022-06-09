@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "productId",
+    "sourceKeys": "product_id",
+    "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "productVariantId",
+    "sourceKeys": "variant",
+    "required": true
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": "quantity",
+    "required": false
+  },
+  {
+    "destKey": "productImage",
+    "sourceKeys": "image_url",
+    "required": false
+  },
+  {
+    "destKey": "productUrl",
+    "sourceKeys": "url",
+    "required": false
+  }
+]

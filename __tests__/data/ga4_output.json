@@ -15,7 +15,7 @@
     "body": {
       "JSON": {
         "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-        "timestamp_micros": 1650625078000000,
+        "timestamp_micros": 1650950229000000,
         "events": [
           {
             "name": "search",
@@ -47,7 +47,7 @@
     "body": {
       "JSON": {
         "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-        "timestamp_micros": 1650880788000000,
+        "timestamp_micros": 1650950229000000,
         "non_personalized_ads": false,
         "events": [
           {
@@ -442,7 +442,7 @@
     },
     "params": {
       "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
-      "measurement_id": "G-T40PE6KET4"
+      "firebase_app_id": "1:17864591371:android:7a9520d3c78962e21f9fee"
     },
     "body": {
       "JSON": {
@@ -2247,7 +2247,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type page not supported",
+    "error": "Message type group not supported",
     "statTags": {
       "destination": "ga4",
       "stage": "transform",
@@ -2392,5 +2392,181 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "events": [
+          {
+            "name": "page_view"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "events": [
+          {
+            "name": "page_view",
+            "params": {
+              "view": "login"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[GA4]:: Measurement protocol only supports timestamps [72h] into the past",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[GA4]:: Measurement protocol only supports timestamps [15m] into the future",
+    "statTags": {
+      "destination": "ga4",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "purchase",
+            "params": {
+              "checkout_id": "12345",
+              "transaction_id": "1234",
+              "myCustomProp": "My arbitray value",
+              "affiliation": "Apple Store",
+              "value": 20,
+              "revenue": 15.0,
+              "shipping": 22,
+              "tax": 1,
+              "discount": 1.5,
+              "coupon": "ImagePro",
+              "currency": "USD",
+              "items": [
+                {
+                  "item_id": "123",
+                  "sku": "G-32",
+                  "item_name": "Monopoly",
+                  "price": 14,
+                  "quantity": 1,
+                  "item_category": "Games",
+                  "item_category2": "Board games",
+                  "url": "https://www.website.com/product/path",
+                  "image_url": "https://www.website.com/product/path.jpg"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/mp/collect",
+    "headers": {
+      "HOST": "www.google-analytics.com",
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+      "measurement_id": "G-T40PE6KET4"
+    },
+    "body": {
+      "JSON": {
+        "client_id": "client_id",
+        "timestamp_micros": 1650950229000000,
+        "non_personalized_ads": false,
+        "events": [
+          {
+            "name": "select_promotion",
+            "params": {
+              "customProp-1": "check-1",
+              "customProp-2": "check-2",
+              "creative_name": "Summer Banner",
+              "creative_slot": "featured_app_1",
+              "location_id": "L_12345",
+              "promotion_id": "P_12345",
+              "promotion_name": "Summer Sale"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

@@ -81,60 +81,6 @@
     "files": {}
   },
   {
-    "version": "1",
-    "type": "REST",
-    "method": "PUT",
-    "endpoint": "https://dspapi.admanagerplus.yahoo.com/traffic/audiences/mrt/34893",
-    "headers": {
-      "X-Auth-Token": "fb8c05c9-3a32-409a-9993-3f53d307fe75",
-      "X-Auth-Method": "OAuth2"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "accountId": "12444",
-        "domains": ["yahoo.com", "yahoo.com", "yahoo.com"],
-        "categoryIds": [1, 1, 2]
-      },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "PUT",
-    "endpoint": "https://dspapi.admanagerplus.yahoo.com/traffic/audiences/poi/34893",
-    "headers": {
-      "X-Auth-Token": "fb8c05c9-3a32-409a-9993-3f53d307fe75",
-      "X-Auth-Method": "OAuth2"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "includes": {
-          "chains": [1573, 1573, 1573],
-          "woeids": [1673, 1673, 1673],
-          "gids": [1773, 1773, 1773],
-          "categories": [1873, 1873, 1873]
-        },
-        "excludes": {
-          "chains": [1572, 1572, 1572],
-          "woeids": [1672, 1672, 1672],
-          "gids": [1772, 1772, 1772],
-          "categories": [1872, 1872, 1872]
-        },
-        "accountId": "12444"
-      },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
     "statusCode": 400,
     "error": "[Yahoo_DSP]:: seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'"
   },
@@ -144,26 +90,6 @@
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Required property for pointOfInterest type audience is not available in an object"
-  },
-  {
-    "statusCode": 400,
-    "error": "[Yahoo_DSP]:: The only supported operation for audience updation 'add' is not present"
-  },
-  {
-    "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message type track not supoorted"
-  },
-  {
-    "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message Type is not present. Aborting message."
-  },
-  {
-    "statusCode": 400,
-    "error": "[Yahoo_DSP]:: listData is not present inside properties. Aborting message."
-  },
-  {
-    "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message properties is not present. Aborting message."
+    "error": "[Yahoo_DSP]:: Audience Type \"DEVICEID\" is not supported"
   }
 ]

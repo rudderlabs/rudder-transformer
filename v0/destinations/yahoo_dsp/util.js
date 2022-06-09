@@ -4,7 +4,11 @@ const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
 const { httpPOST } = require("../../../adapters/network");
 const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
-const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_TYPE , DSP_SUPPORTED_OPERATION, categoryId} = require("./config.js");
+const {
+  ACCESS_TOKEN_CACHE_TTL,
+  AUDIENCE_TYPE,
+  DSP_SUPPORTED_OPERATION
+} = require("./config.js");
 const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -12,70 +16,6 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 const getUnixTimestamp = () => {
   return Math.floor(Date.now() / 1000);
 };
-
-/**
- * There are four location types which are stored in the poiLocationType error. These are ["chains", "woeids", "gids", "categories"].
- * The ones to be added in includes Object will be taken from audienceType with include as Prefix. The ones to be added in excludes
- * Object will be taken from audienceType with exclude as Prefix.
- */
-const poiLocationType = [
-  "includeChains",
-  "includeWoeids",
-  "includeCategories",
-  "includeGids",
-  "excludeChains",
-  "excludeWoeids",
-  "excludeCategories",
-  "excludeGids"
-];
-
-/**
- * This function is used for populating mailDomain data in a Payload to be returned
- * @param {*} audienceList  - It is the list of audience to be added in the form of array". eg.
- * [
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"}
- * ]
- * @param {*} audienceType - It is type of audience to be updated. eg. "mailDomain" here.
- */
-const populateMailDomain = (audienceList, audienceType) =>{
-  const typeOfAudience = AUDIENCE_TYPE[audienceType];
-  const domains = [];
-  const categoryIds = [];
-  // traversing through every element in the add array for the elements to be added.
-  audienceList.forEach(userTraits => {
-    // storing keys of an object inside the add array.
-    const traits = Object.keys(userTraits);
-    // For mailDomain the mailDomain or categoryIds must be present. throwing error if not present.
-    /**
-     * If mailDomain is not provided categoryIds is required. The audience includes consumers who have received
-     * mail from a domain belonging to the specified categories.
-     * Reference for use case of categoryIds:
-     * https://developer.yahooinc.com/dsp/api/docs/traffic/audience/mrt-audience.html#:~:text=Optional-,categoryIds,-Specifies%20an%20array
-     */
-    if (!(traits.includes(typeOfAudience) || traits.includes(categoryId))) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
-        400
-      );
-    }
-    domains.push(userTraits.mailDomain);
-    categoryIds.push(userTraits.categoryIds);
-  });
-  return dspListPayload = { domains, categoryIds };
-}
-
-/**
- * This function is used to check if there is any common value in traits and poiLocationType array. This is done to check
- * if any of the required location type is present in the input or not.
- * @param {*} traits
- * @param {*} poiLocationType
- * @returns boolean
- */
-function isCommonElement(traits, poiLocationType) {
-  return traits.some(item => poiLocationType.includes(item));
-}
 
 /**
  *
@@ -99,7 +39,7 @@ const populateIdentifiers = (audienceList, Config) => {
   const { audienceType } = Config;
   const { hashRequired } = Config;
   const typeOfAudience = AUDIENCE_TYPE[audienceType];
-  
+
   if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
     // traversing through every userTraits in the add array for the traits to be added.
     audienceList.forEach(userTraits => {
@@ -139,7 +79,7 @@ const createPayload = (audienceList, Config) => {
   let dspListPayload = {};
   let seedList = [];
   const { accountId } = Config;
-  
+
   // Populating Seed List that conains audience list to be updated
   seedList = populateIdentifiers(audienceList, Config);
   // throwing the error if nothing is present in the seedList
@@ -152,104 +92,6 @@ const createPayload = (audienceList, Config) => {
   // Creating dspListPayload
   dspListPayload = { accountId, seedList };
   return dspListPayload;
-};
-
-/**
- *
- * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
- * [
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"}
- * ]
- * @param {*} audienceType - it is the type of audience to be updated
- * @returns
- */
-const populateIncludes = (audienceList, audienceType) => {
-  const includes = {};
-  audienceList.forEach(userTraits => {
-    const traits = Object.keys(userTraits);
-    if (!isCommonElement(traits, poiLocationType)) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
-        400
-      );
-    }
-    if (userTraits.includeChains) {
-      if (!includes.chains) {
-        includes.chains = [];
-      }
-      includes.chains.push(userTraits.includeChains);
-    }
-    if (userTraits.includeWoeids) {
-      if (!includes.woeids) {
-        includes.woeids = [];
-      }
-      includes.woeids.push(userTraits.includeWoeids);
-    }
-    if (userTraits.includeGids) {
-      if (!includes.gids) {
-        includes.gids = [];
-      }
-      includes.gids.push(userTraits.includeGids);
-    }
-    if (userTraits.includeCategories) {
-      if (!includes.categories) {
-        includes.categories = [];
-      }
-      includes.categories.push(userTraits.includeCategories);
-    }
-  });
-  return includes;
-};
-
-/**
- *
- * @param {*} audienceList - It is the list of audience to be added in the form of array". eg.
- * [
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"},
- *   {"email": "abc@email.com"}
- * ]
- * @param {*} audienceType - it is the type of audience to be updated
- * @returns
- */
-const populateExcludes = (audienceList, audienceType) => {
-  const excludes = {};
-  audienceList.forEach(userTraits => {
-    const traits = Object.keys(userTraits);
-    if (!isCommonElement(traits, poiLocationType)) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: Required property for ${AUDIENCE_TYPE[audienceType]} type audience is not available in an object`,
-        400
-      );
-    }
-    if (userTraits.excludeChains) {
-      if (!excludes.chains) {
-        excludes.chains = [];
-      }
-      excludes.chains.push(userTraits.excludeChains);
-    }
-    if (userTraits.excludeWoeids) {
-      if (!excludes.woeids) {
-        excludes.woeids = [];
-      }
-      excludes.woeids.push(userTraits.excludeWoeids);
-    }
-    if (userTraits.excludeGids) {
-      if (!excludes.gids) {
-        excludes.gids = [];
-      }
-      excludes.gids.push(userTraits.excludeGids);
-    }
-    if (userTraits.excludeCategories) {
-      if (!excludes.categories) {
-        excludes.categories = [];
-      }
-      excludes.categories.push(userTraits.excludeCategories);
-    }
-  });
-  return excludes;
 };
 
 /**
@@ -298,7 +140,11 @@ const getAccessToken = async destination => {
       }),
       method: "POST"
     };
-    const dspAuthorisationData = await httpPOST(request.url, request.data, request.header);
+    const dspAuthorisationData = await httpPOST(
+      request.url,
+      request.data,
+      request.header
+    );
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {
       throw new CustomError(
@@ -312,8 +158,5 @@ const getAccessToken = async destination => {
 
 module.exports = {
   getAccessToken,
-  populateIncludes,
-  populateExcludes,
-  createPayload,
-  populateMailDomain
+  createPayload
 };

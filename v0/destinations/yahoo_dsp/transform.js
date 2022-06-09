@@ -10,17 +10,10 @@ const {
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  isDefinedAndNotNullAndNotEmpty
+  getErrorRespEvents
 } = require("../../util");
 
-const {
-  getAccessToken,
-  populateIncludes,
-  populateExcludes,
-  createPayload,
-  populateMailDomain
-} = require("./util");
+const { getAccessToken, createPayload } = require("./util");
 
 /**
  * This function is used for building the final response to be returned.
@@ -32,7 +25,7 @@ const responseBuilder = async (message, destination) => {
   let dspListPayload = {};
   const { Config } = destination;
   const { listData } = message.properties;
-  const { accountId, audienceId, audienceType, seedListType } = Config;
+  const { audienceId, audienceType, seedListType } = Config;
 
   const traitsList = listData[DSP_SUPPORTED_OPERATION];
   if (!traitsList) {
@@ -76,23 +69,9 @@ const responseBuilder = async (message, destination) => {
         seedListType: "SHA256IP"
       };
       break;
-    case "mailDomain":
-      dspListPayload = populateMailDomain(traitsList, audienceType);
-      dspListPayload = { ...dspListPayload, accountId };
-      break;
-    case "pointOfInterest":
-      /**
-       * Here, populating includes and excludes object which contains POI locations visited by the consumer The consumer is
-       * added in the includes if the consumer has visited the POI location and is added in excludes if the
-       * consumer has not visited the POI.
-       */
-      dspListPayload.includes = populateIncludes(traitsList, audienceType);
-      dspListPayload.excludes = populateExcludes(traitsList, audienceType);
-      dspListPayload = { ...dspListPayload, accountId };
-      break;
     default:
       throw new CustomError(
-        `[Yahoo_DSP]:: Audience Type "${typeOfAudience}" is not supported`,
+        `[Yahoo_DSP]:: Audience Type "${audienceType}" is not supported`,
         400
       );
   }

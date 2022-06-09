@@ -48,7 +48,7 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-  
+
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
@@ -56,15 +56,11 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  describe('Batching', async () => {
-  const batchInputData = JSON.parse(batchInputDataFile);
-  const batchExpectedData = JSON.parse(batchOutputDataFile);
-  it("Payload", async () => {
-  const output = await transformer.processRouterDest(batchInputData);
-  expect(Array.isArray(output)).toEqual(true);
-  expect(output).toEqual(batchExpectedData);
-});
+  describe("Batching", () => {
+    it("Payload", async () => {
+      const output = await transformer.processRouterDest(batchInputData);
+      expect(Array.isArray(output)).toEqual(true);
+      expect(output).toEqual(batchExpectedData);
+    });
   });
-
-  
 });

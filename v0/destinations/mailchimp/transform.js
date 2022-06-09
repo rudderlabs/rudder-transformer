@@ -17,15 +17,13 @@ const {
   defaultBatchRequestConfig
 } = require("../../util");
 const {
-  filterTagValue,
   checkIfMailExists,
   checkIfDoubleOptIn,
   stitchEndpointAndMethodForExistingEmails,
   stitchEndpointAndMethodForNONExistingEmails,
   getBatchEndpoint,
   mergeAdditionalTraitsFields,
-  validateAddressObject,
-  ADDRESS_MANDATORY_FIELDS
+  validateAddressObject
 } = require("./utils");
 
 const { MappedToDestinationKey } = require("../../../constants");
@@ -56,9 +54,8 @@ const processPayloadBuild = async (
   // From the behaviour of destination we know that, if address
   // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
   if (Object.keys(mergedAddressPayload).length > 0) {
-
-  const correctAddressPayload = validateAddressObject(mergedAddressPayload);
-  mergedFieldPayload.ADDRESS = correctAddressPayload;
+    const correctAddressPayload = validateAddressObject(mergedAddressPayload);
+    mergedFieldPayload.ADDRESS = correctAddressPayload;
   }
 
   // for sending any fields other than email_address, while the email is already existing
@@ -203,17 +200,17 @@ const identifyResponseBuilder = async (message, { Config }) => {
     as well.
      */
     addExternalIdToTraits(message);
-    const updatedTraits = getFieldValueFromMessage(message, "traits")
+    const updatedTraits = getFieldValueFromMessage(message, "traits");
 
     const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-    
+
     if (Object.keys(mergedAddressPayload).length > 0) {
       // From the behaviour of destination we know that, if address
       // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-  
+
       const correctAddressPayload = validateAddressObject(mergedAddressPayload);
       updatedTraits.merge_fields.ADDRESS = correctAddressPayload;
-      }
+    }
     return responseBuilderSimple(
       updatedTraits,
       message,
@@ -304,38 +301,37 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(destEvents) {
+function batchEvents(successRespList) {
   // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
-  const batchedResponseList = [];
   let eventsChunk = []; // temporary variable to divide payload into chunks
-  let arrayChunks = [];  // transformed payload of (n) batch size
+  const batchedResponseList = [];
+  const arrayChunks = []; // transformed payload of (n) batch size
 
-  destEvents.forEach((event, index) => {
+  successRespList.forEach((event, index) => {
     eventsChunk.push(event);
     if (
-      eventsChunk.length &&
-      (eventsChunk.length === MAX_BATCH_SIZE || index === destEvents.length - 1)
+      eventsChunk.length === MAX_BATCH_SIZE ||
+      index === successRespList.length - 1
     ) {
       arrayChunks.push(eventsChunk);
       eventsChunk = [];
     }
   });
-  
+
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
+    let batchEventResponse = defaultBatchRequestConfig();
     const batchResponseList = [];
     const metadata = [];
 
     // extracting destination
     // from the first event in a batch
-    const { destination, message } = chunk[0];
-
-    let batchEventResponse = defaultBatchRequestConfig();
+    const { destination } = chunk[0];
 
     // Batch event into dest batch structure
-    chunk.forEach(ev => {
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
+    chunk.forEach(event => {
+      batchResponseList.push(event.message.body.JSON);
+      metadata.push(event.metadata);
     });
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -353,15 +349,11 @@ function batchEvents(destEvents) {
       `apiKey:${destination.Config.apiKey}`
     ).toString("base64");
 
-    batchEventResponse.batchedRequest.userId = getFieldValueFromMessage(
-      message,
-      "userId"
-    );
-
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     };
+
     batchEventResponse = {
       ...batchEventResponse,
       metadata,
@@ -380,25 +372,18 @@ function batchEvents(destEvents) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, eventsChunk) {
-  // build eventsChunk of MAX_BATCH_SIZE
-  eventsChunk.push(event);
-}
-
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
+  let batchResponseList = [];
   const batchErrorRespList = [];
-  let batchSuccessRespList = [];
   const reverseETLEventArray = [];
   const conventionalEventArray = [];
+  const successRespList = [];
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-
-
-  let successRespList = [];
 
   inputs.forEach(singleInput => {
     const { message } = singleInput;
@@ -408,28 +393,23 @@ const processRouterDest = async inputs => {
       conventionalEventArray.push(singleInput);
     }
   });
-// only events coming from reverseETL sources are sent to batch endPoint.
+  // only events coming from reverseETL sources are sent to batch endPoint.
   await Promise.all(
-    reverseETLEventArray.map(async (event, index) => {
+    reverseETLEventArray.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, eventsChunk);
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
+          successRespList.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination
+          });
         } else {
           // if not transformed
-          batchSuccessRespList.push({
-              message: await process(event),
-              metadata: event.metadata,
-              destination
+          successRespList.push({
+            message: await process(event),
+            metadata: event.metadata,
+            destination
           });
         }
       } catch (error) {
@@ -444,7 +424,7 @@ const processRouterDest = async inputs => {
     })
   );
 
-// array of events recieved from sources except of reverseETL, are sent using normal router transform
+  // array of events recieved from sources except of reverseETL, are sent using normal router transform
   const respList = await Promise.all(
     conventionalEventArray.map(async input => {
       try {
@@ -475,12 +455,11 @@ const processRouterDest = async inputs => {
       }
     })
   );
-
-  if (batchSuccessRespList.length > 0) {
-    batchSuccessRespList = await batchEvents(batchSuccessRespList);
+  if (successRespList.length > 0) {
+    batchResponseList = batchEvents(successRespList);
   }
-  
-  return [...batchSuccessRespList, ...respList, ...batchErrorRespList];
+
+  return [...batchResponseList, ...respList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

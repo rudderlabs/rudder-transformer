@@ -28,7 +28,8 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   "phone",
   "address",
   "addressLine1",
-  "addressLine2"
+  "addressLine2",
+  "birthday"
 ];
 
 /**

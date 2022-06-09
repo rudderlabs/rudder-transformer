@@ -48,7 +48,8 @@
                 "zip": "123",
                 "state": "test",
                 "city": "test",
-                "addressLine1": "test"
+                "addressLine1": "test",
+                "birthday": "2000-05-06"
             },
             "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
         },

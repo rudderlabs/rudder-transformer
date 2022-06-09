@@ -16,5 +16,13 @@
         "sourceKeys": "phone",
         "sourceFromGenericMap": true,
         "required": false
+    },
+    {
+        "destKey": "BIRTHDAY",
+        "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+        "required": false,
+        "metadata": {
+            "type": "dobInMMDD"
+          }
     }
 ]

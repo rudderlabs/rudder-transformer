@@ -807,7 +807,7 @@ const utHandler = async ctx => {
         console.log("ex", ex);
         reject({
           "id" : transformationId,
-          "error": ex
+          "error": ex.message? ex.message: ex
         })
       }
     }))

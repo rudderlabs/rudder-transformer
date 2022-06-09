@@ -287,19 +287,6 @@ const getItem = (message, isItemsRequired) => {
       throw new CustomError("One of product_id or name is required", 400);
     }
 
-    // take additional parameters apart from mapped one
-    // let itemProperties = {};
-    // itemProperties = extractCustomFields(
-    //   message,
-    //   itemProperties,
-    //   ["properties"],
-    //   GA4_ITEM_EXCLUSION
-    // );
-    // if (!isEmptyObject(itemProperties)) {
-    //   itemProperties = flattenJson(itemProperties);
-    //   element = { ...element, ...itemProperties };
-    // }
-
     items.push(element);
   }
   return items;

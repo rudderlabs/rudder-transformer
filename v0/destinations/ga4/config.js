@@ -9,7 +9,8 @@ const ENDPOINT = "https://www.google-analytics.com/mp/collect";
  * "YES" - Item list is present and is a required field
  * "NO" - Item list is present and is not a required field
  *
- * for Item parameters present at root level (properties)
+ * Item parameters present in properties {}
+ * following are the convention
  * "YES" - Item is present and is a required field
  * "NO" - Item is present and is not a required field
  */

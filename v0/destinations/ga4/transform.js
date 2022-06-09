@@ -91,33 +91,25 @@ const responseBuilder = (message, { Config }) => {
     // get event specific parameters
 
     payload.name = eventConfig.event;
+    payload.params = constructPayload(message, mappingConfig[eventConfig.name]);
 
-    if (mappingConfig[eventConfig.name]) {
-      payload.params = constructPayload(
-        message,
-        mappingConfig[eventConfig.name]
-      );
+    const { itemList, item } = eventConfig;
+    if (item) {
+      // item
+      payload.params.items = getItem(message, item === "YES");
+    } else if (itemList) {
+      // itemList
+      payload.params.items = getItemList(message, itemList === "YES");
     }
 
-    const { itemList } = eventConfig;
-    const { item } = eventConfig;
-
-    if (item === "YES") {
-      payload.params.items = getItem(message, true);
-    } else if (item === "NO") {
-      payload.params.items = getItem(message, false);
-    } else if (itemList === "YES") {
-      payload.params.items = getItemList(message, true);
-    } else if (itemList === "NO") {
-      payload.params.items = getItemList(message, false);
-    }
-
-    // for select_item and view_item event we take custom properties from root
-    // excluding items[..] properties
+    // for select_item and view_item event we take custom properties from properties
+    // excluding items/product properties
     if (payload.name === "select_item" || payload.name === "view_item") {
+      // exclude event properties
       let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
         mappingConfig[eventConfig.name]
       );
+      // exclude items/product properties
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
         getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
       );
@@ -140,31 +132,35 @@ const responseBuilder = (message, { Config }) => {
     const traits = getFieldValueFromMessage(message, "traits");
 
     // exclusion list for login/signup and generate_lead
-    const GA4_IDENTIFY_EXCLUSION = [];
-    GA4_IDENTIFY_EXCLUSION.push(`${Config.signupTrait}`);
-    GA4_IDENTIFY_EXCLUSION.push(`${Config.loginSignupMethod}`);
-    GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadValueTrait}`);
-    GA4_IDENTIFY_EXCLUSION.push(`${Config.generateLeadCurrencyTrait}`);
+    const GA4_IDENTIFY_EXCLUSION = [
+      `${Config.signupTrait}`,
+      `${Config.loginSignupMethod}`,
+      `${Config.generateLeadValueTrait}`,
+      `${Config.generateLeadCurrencyTrait}`
+    ];
 
     switch (event) {
       case "login":
       case "sign_up": {
-        // taking method property from traits depending
-        // on loginSignupMethod key defined in Config
+        // taking method property from traits
+        // depending on loginSignupMethod key defined in Config
         const method = traits[`${Config.loginSignupMethod}`];
 
         if (method) {
           // params for login and sign_up event
           payload.params = { method }; // method: "Google"
         }
-
         break;
       }
       case "generate_lead": {
         let parameter = {};
+        // taking value parameter
+        // depending on generateLeadValueTrait key defined in Config
         parameter.value = parseFloat(
           traits[`${Config.generateLeadValueTrait}`]
         );
+        // taking currency paramter
+        // depending on generateLeadCurrencyTrait key defined in Config
         parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
         parameter = removeUndefinedAndNullValues(parameter);
 
@@ -333,8 +329,10 @@ const process = event => {
     case EventType.IDENTIFY:
       response = [];
       // 1. send login/signup event based on config
+      // Convert identify event to Login or Signup event toggle is enabled
       if (Config.sendLoginSignup) {
         const traits = getFieldValueFromMessage(message, "traits");
+        // signupTrait can be 'firstLogin' keyword - true/false
         const firstLogin = traits[`${Config.signupTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
@@ -369,12 +367,12 @@ const process = event => {
       response = responseBuilder(message, destination);
       break;
     case EventType.PAGE:
-      // GA4 custom event (page_view) is fired for page
+      // GA4 custom event 'page_view' is fired for page
       message.event = "page_view";
       response = responseBuilder(message, destination);
       break;
     case EventType.GROUP:
-      // GA4 standard event (join_group) is fired for group
+      // GA4 standard event 'join_group' is fired for group
       message.event = "join_group";
       response = responseBuilder(message, destination);
       break;

@@ -302,7 +302,7 @@ const getAccessToken = async destination => {
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {
       throw new CustomError(
-        `[Yahoo_DSP]:: access token could not be gnerated due to ${response.response.response.data.error}`,
+        `[Yahoo_DSP]:: access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
         400
       );
     }

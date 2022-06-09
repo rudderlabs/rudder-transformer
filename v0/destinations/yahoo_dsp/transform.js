@@ -10,7 +10,8 @@ const {
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 
 const {
@@ -101,6 +102,9 @@ const responseBuilder = async (message, destination) => {
   response.body.JSON = removeUndefinedAndNullValues(dspListPayload);
   response.method = defaultPutRequestConfig.requestMethod;
   const accessToken = await getAccessToken(destination);
+  if (!accessToken) {
+    throw new CustomError(`[Yahoo_DSP]:: access token is not available`, 400);
+  }
   response.headers = {
     "X-Auth-Token": accessToken,
     "X-Auth-Method": "OAuth2"

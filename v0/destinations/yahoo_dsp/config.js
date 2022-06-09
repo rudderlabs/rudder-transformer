@@ -7,17 +7,13 @@ const ACCESS_TOKEN_CACHE_TTL = process.env.ACESS_TOKEN_CACHE_TTL
 const ENDPOINTS = {
   EMAIL: "email_address",
   DEVICE_ID: "device_id",
-  IP_ADDRESS: "customsegments",
-  MAIL_DOMAIN: "mrt",
-  POINT_OF_INTEREST: "poi"
+  IP_ADDRESS: "customsegments"
 };
 
 const AUDIENCE_TYPE = {
   EMAIL: "email",
   DEVICE_ID: "deviceId",
-  IP_ADDRESS: "ipAddress",
-  MAIL_DOMAIN: "mailDomain",
-  POINT_OF_INTEREST: "pointOfInterest"
+  IP_ADDRESS: "ipAddress"
 };
 
 const DSP_SUPPORTED_OPERATION = "add";

@@ -14,6 +14,7 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "channel": "web",
             "context": {
               "ip": "12.12.12.12",
               "library": {
@@ -33,6 +34,12 @@
               "email": "testmp@rudderstack.com",
               "firstname": "Test Kafka"
             },
+            "integrations": {
+              "All": true
+            },
+            "messageId": "258b77c6-442d-4bdc-8729-f0e4cef41353",
+            "name": "home",
+            "originalTimestamp": "2020-04-17T14:55:31.367Z",
             "properties": {
               "path": "/tests/html/index4.html",
               "referrer": "",
@@ -40,7 +47,10 @@
               "title": "",
               "url": "http://localhost/tests/html/index4.html"
             },
-            "timeStamp": "2020-04-17T14:55:31.367Z"
+            "receivedAt": "2020-04-17T20:25:31.381+05:30",
+            "request_ip": "[::1]:57363",
+            "sentAt": "2020-04-17T14:55:31.367Z",
+            "timestamp": "2020-04-17T14:55:31.367Z"
           }
         ]
       },
@@ -66,6 +76,7 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "channel": "web",
             "type": "identify",
             "userId": "user12345",
             "context": {
@@ -80,7 +91,15 @@
               "email": "testmp@email.com",
               "firstname": "Test Transformer"
             },
-            "timeStamp": "2020-04-17T14:55:31.37Z"
+            "integrations": {
+              "All": true
+            },
+            "messageId": "023a3a48-190a-4968-9394-a8e99b81a3c0",
+            "originalTimestamp": "2020-04-17T14:55:31.37Z",
+            "receivedAt": "2020-04-17T20:25:31.401+05:30",
+            "request_ip": "[::1]:57364",
+            "sentAt": "2020-04-17T14:55:31.37Z",
+            "timestamp": "2020-04-17T14:55:31.37Z"
           }
         ]
       },
@@ -106,9 +125,15 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "channel": "web",
             "type": "track",
             "userId": "user12345",
             "event": "test track with property",
+            "integrations": {
+              "All": true
+            },
+            "messageId": "584fde02-901a-4964-a4a0-4078b999d5b2",
+            "originalTimestamp": "2020-04-17T14:55:31.372Z",
             "context": {
               "ip": "12.12.12.12",
               "library": {
@@ -117,7 +142,10 @@
               }
             },
             "properties": { "test_prop_1": "test prop", "test_prop_2": 1232 },
-            "timeStamp": "2020-04-17T14:55:31.372Z"
+            "receivedAt": "2020-04-17T20:25:31.401+05:30",
+            "request_ip": "[::1]:57365",
+            "sentAt": "2020-04-17T14:55:31.372Z",
+            "timestamp": "2020-04-17T14:55:31.372Z"
           }
         ]
       },
@@ -144,6 +172,7 @@
           {
             "type": "page",
             "userId": "user12345",
+            "channel": "web",
             "context": {
               "ip": "12.12.12.12",
               "library": {
@@ -151,6 +180,12 @@
                 "version": "1.0"
               }
             },
+            "integrations": {
+              "All": true
+            },
+            "messageId": "258b77c6-442d-4bdc-8729-f0e4cef41353",
+            "name": "home",
+            "originalTimestamp": "2020-04-17T14:55:31.367Z",
             "properties": {
               "path": "/tests/html/index4.html",
               "referrer": "",
@@ -158,7 +193,10 @@
               "title": "",
               "url": "http://localhost/tests/html/index4.html"
             },
-            "timeStamp": "2020-04-17T14:55:31.367Z"
+            "receivedAt": "2020-04-17T20:25:31.381+05:30",
+            "request_ip": "[::1]:57363",
+            "sentAt": "2020-04-17T14:55:31.367Z",
+            "timestamp": "2020-04-17T14:55:31.367Z"
           }
         ]
       },
@@ -184,6 +222,7 @@
         "batch": [
           {
             "anonymousId": "ac7722c2-ccb6-4ae2-baf6-1effe861f4cd",
+            "channel": "web",
             "context": {
               "ip": "12.12.12.12",
               "library": {
@@ -194,11 +233,19 @@
             "type": "track",
             "userId": "user12345",
             "event": "test track with property",
+            "integrations": {
+              "All": true
+            },
+            "messageId": "584fde02-901a-4964-a4a0-4078b999d5b2",
+            "originalTimestamp": "2020-04-17T14:55:31.372Z",
             "properties": {
               "test_prop_1": "test prop",
               "test_prop_2": 1232
             },
-            "timeStamp": "2020-04-17T14:55:31.372Z"
+            "receivedAt": "2020-04-17T20:25:31.401+05:30",
+            "request_ip": "[::1]:57365",
+            "sentAt": "2020-04-17T14:55:31.372Z",
+            "timestamp": "2020-04-17T14:55:31.372Z"
           }
         ]
       },

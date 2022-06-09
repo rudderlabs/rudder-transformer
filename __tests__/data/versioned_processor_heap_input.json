@@ -9,7 +9,10 @@
           "DestinationDefinition": {
             "DisplayName": "Heap.io",
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
-            "Name": "HEAP"
+            "Name": "HEAP",
+            "Config": {
+              "cdkEnabled":true
+            }
           },
           "Enabled": true,
           "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
@@ -17,7 +20,7 @@
           "Transformations": []
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 1
         },
         "message": {
           "anonymousId": "sampath",
@@ -69,7 +72,10 @@
           "DestinationDefinition": {
             "DisplayName": "Heap.io",
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
-            "Name": "HEAP"
+            "Name": "HEAP",
+            "Config": {
+              "cdkEnabled":true
+            }
           },
           "Enabled": true,
           "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
@@ -130,7 +136,10 @@
           "DestinationDefinition": {
             "DisplayName": "Heap.io",
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
-            "Name": "HEAP"
+            "Name": "HEAP",
+            "Config": {
+              "cdkEnabled":true
+            }
           },
           "Enabled": true,
           "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
@@ -138,7 +147,7 @@
           "Transformations": []
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 3
         },
         "message": {
           "anonymousId": "sampath",
@@ -188,12 +197,15 @@
             "appId": "<app id>"
           },
           "metadata": {
-            "jobId": 2
+            "jobId": 4
           },
           "DestinationDefinition": {
             "DisplayName": "Heap.io",
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
-            "Name": "HEAP"
+            "Name": "HEAP",
+            "Config": {
+              "cdkEnabled":true
+            }
           },
           "Enabled": true,
           "ID": "1WTcDSEOE437e4ePH10BJNELXmE",

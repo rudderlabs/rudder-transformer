@@ -54,7 +54,7 @@
   },
   {
     "statusCode": 400,
-    "error": "message type page not supported for autopilot"
+    "error": "message type \"page\" not supported for \"autopilot\""
   },
   {
     "statusCode": 400,
@@ -62,11 +62,11 @@
   },
   {
     "statusCode": 400,
-    "error": "invalid message type for autopilot"
+    "error": "\"type\" is a required field and it must be a string"
   },
   {
     "statusCode": 400,
-    "error": "message type group not supported for autopilot"
+    "error": "message type \"group\" not supported for \"autopilot\""
   },
   {
         "version": "1",
@@ -95,10 +95,10 @@
 },
 {
   "statusCode": 400,
-  "error":  "invalid message type for autopilot"
+  "error":  "\"type\" is a required field and it must be a string"
 },
 {
   "statusCode": 400,
-  "error":  "message type group not supported for autopilot"
+  "error":  "message type \"group\" not supported for \"autopilot\""
 }
 ]

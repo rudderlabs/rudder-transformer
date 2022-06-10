@@ -9,12 +9,3118 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "rudder2"
+                "from": "rudder2",
+                "to": "2"
+              }
+            ],
+            "eventName": "Product viewed",
+            "floodlightActivityTag": "signu01",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "signu01",
+            "floodlightGroupTag": "conv02",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Product viewed",
+      "properties": {
+        "orderId": 111,
+        "quantity": 2,
+        "revenue": 800,
+        "rudder1": "rudder-v1",
+        "rudder2": "rudder-v2"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash2",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Sign up Completed",
+      "properties": {
+        "orderId": 111,
+        "quantity": 2,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash2",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order Complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 2,
+        "revenue": 800,
+        "rudder1": "rudder-v1",
+        "akash2": "akash-v2"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash2",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "quantity": 2,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash1",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder2",
+                "to": "1"
+              },
+              {
+                "from": "akash2",
+                "to": "2"
+              },
+              {
+                "from": "friendlyName2",
+                "to": "3"
+              },
+              {
+                "from": "name2",
+                "to": "4"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Purchase",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "rudder2": "rudder2",
+        "akash2": "akash2",
+        "friendlyName2": "friendlyName2",
+        "name2": "name2"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash1",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder2",
+                "to": "1"
+              },
+              {
+                "from": "akash2",
+                "to": "2"
+              },
+              {
+                "from": "friendlyName2",
+                "to": "3"
+              },
+              {
+                "from": "name2",
+                "to": "4"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Sign up Completed",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "akash1",
+                "to": "2"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "from": "",
+                "to": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "event": "Sign up Completed",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "akash1": "akash-v1"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Sample event",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 4,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Checkout Started",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "OrDeR complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "rudder1": "rudder-v1",
+        "akash1": "akash-v1"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "rudder1": "rudder-v1",
+        "akash1": "akash-v1"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {}
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "rudder1": 100,
+        "akash1": 5987
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "rudder1": "rudder-v1",
+        "akash1": "akash-v1"
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": 1,
+          "GDPR": 1,
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "Yes",
+          "GDPR": "1",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "Yes",
+          "npa": true
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": true,
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "No"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "Yes",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Order complete",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "true"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "page",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "Yes",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "true"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "12649566",
+        "activityTag": "check0",
+        "groupTag": "conv00",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Viewed Sign up Completed Page",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "",
+            "floodlightGroupTag": "",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "page",
+      "channel": "web",
+      "name": "Sign up Completed",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": "true"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "advertiserId": "22448662",
+        "activityTag": "",
+        "groupTag": "",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "from": "rudder1",
+                "to": "1"
+              },
+              {
+                "from": "rudder2",
+                "to": "2"
               }
             ],
             "eventName": "Product viewed",
@@ -121,351 +3227,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "from": "rudder1",
+                "to": "1"
               },
               {
-                "from": "2",
-                "to": "akash2"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "check0",
-            "floodlightGroupTag": "conv00",
-            "salesTag": true
-          }
-        ],
-        "groupTag": ""
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Sign up Completed",
-      "properties": {
-        "orderId": 111,
-        "quantity": 2,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "activityTag": "",
-        "advertiserId": "12649566",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "check0",
-            "floodlightGroupTag": "conv00",
-            "salesTag": true
-          }
-        ],
-        "groupTag": ""
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order Complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 2,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "activityTag": "",
-        "advertiserId": "12649566",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "check0",
-            "floodlightGroupTag": "conv00",
-            "salesTag": true
-          }
-        ],
-        "groupTag": ""
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "quantity": 2,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "activityTag": "",
-        "advertiserId": "12649566",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
+                "from": "akash1",
+                "to": "2"
               }
             ],
             "eventName": "Order Complete",
@@ -488,20 +3255,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -579,319 +3346,11 @@
             "quantity": 2,
             "product_id": "505bd76785ebb509fc183733"
           }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "activityTag": "",
-        "advertiserId": "12649566",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "check0",
-            "floodlightGroupTag": "conv00",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
         ],
-        "groupTag": ""
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Sign up Completed",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "activityTag": "",
-        "advertiserId": "12649566",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "check0",
-            "floodlightGroupTag": "conv00",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ],
-        "groupTag": ""
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "event": "Sign up Completed",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
+        "rudder2": 0,
+        "akash2": "akash2",
+        "friendlyName2": false,
+        "name2": "1234"
       },
       "integrations": {
         "All": true,
@@ -918,11 +3377,11 @@
           {
             "customVariables": [
               {
-                "from": "",
-                "to": ""
+                "to": "",
+                "from": ""
               }
             ],
-            "eventName": "Sign up Completed",
+            "eventName": "Viewed Page",
             "floodlightActivityTag": "signu0",
             "floodlightGroupTag": "conv01",
             "salesTag": false
@@ -930,12 +3389,12 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder1"
+                "to": "1",
+                "from": "rudder1"
               },
               {
-                "from": "2",
-                "to": "akash1"
+                "to": "2",
+                "from": "akash1"
               }
             ],
             "eventName": "Order Complete",
@@ -944,12 +3403,6 @@
             "salesTag": false
           },
           {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "akash1"
-              }
-            ],
             "eventName": "Checkout Started",
             "floodlightActivityTag": "",
             "floodlightGroupTag": "",
@@ -958,20 +3411,20 @@
           {
             "customVariables": [
               {
-                "from": "1",
-                "to": "rudder2"
+                "to": "1",
+                "from": "rudder2"
               },
               {
-                "from": "2",
-                "to": "akash2"
+                "to": "2",
+                "from": "akash2"
               },
               {
-                "from": "3",
-                "to": "friendlyName2"
+                "to": "3",
+                "from": "friendlyName2"
               },
               {
-                "from": "4",
-                "to": "name2"
+                "to": "4",
+                "from": "name2"
               }
             ],
             "eventName": "Purchase",
@@ -990,7 +3443,7 @@
     "message": {
       "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
       "userId": "1234",
-      "type": "track",
+      "type": "page",
       "channel": "web",
       "context": {
         "app": {
@@ -1024,1789 +3477,6 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
       },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Sample event",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 1,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "revenue": 800,
-        "products": [
-          {
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "category": "Games",
-            "quantity": 4,
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "product_id": "507f1f77bcf86cd799439011"
-          },
-          {
-            "sku": "46493-32",
-            "name": "Uno Card Game",
-            "price": 3,
-            "category": "Games",
-            "quantity": 2,
-            "product_id": "505bd76785ebb509fc183733"
-          }
-        ]
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Checkout Started",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "OrDeR complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {}
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "true",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": true,
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": 1,
-          "GDPR": 1,
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": true,
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "Yes",
-          "GDPR": "1",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": true,
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "Yes",
-          "npa": true
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": true,
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
-      "properties": {
-        "orderId": 111,
-        "quantity": 999999,
-        "revenue": 800
-      },
-      "integrations": {
-        "All": true,
-        "DCM Floodlight": {
-          "COPPA": "false",
-          "GDPR": "1",
-          "npa": "No"
-        }
-      },
-      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
-      "originalTimestamp": "2020-01-17T04:53:51.185Z",
-      "receivedAt": "2020-01-17T10:23:52.688+05:30",
-      "sentAt": "2020-01-17T04:53:52.667Z",
-      "timestamp": "2020-01-17T10:23:51.206+05:30"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "advertiserId": "12649566",
-        "activityTag": "check0",
-        "groupTag": "conv00",
-        "conversionEvents": [
-          {
-            "customVariables": [
-              {
-                "from": "",
-                "to": ""
-              }
-            ],
-            "eventName": "Sign up Completed",
-            "floodlightActivityTag": "signu0",
-            "floodlightGroupTag": "conv01",
-            "salesTag": false
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder1"
-              },
-              {
-                "from": "2",
-                "to": "akash1"
-              }
-            ],
-            "eventName": "Order Complete",
-            "floodlightActivityTag": "order0",
-            "floodlightGroupTag": "conv000",
-            "salesTag": false
-          },
-          {
-            "eventName": "Checkout Started",
-            "floodlightActivityTag": "",
-            "floodlightGroupTag": "",
-            "salesTag": true
-          },
-          {
-            "customVariables": [
-              {
-                "from": "1",
-                "to": "rudder2"
-              },
-              {
-                "from": "2",
-                "to": "akash2"
-              },
-              {
-                "from": "3",
-                "to": "friendlyName2"
-              },
-              {
-                "from": "4",
-                "to": "name2"
-              }
-            ],
-            "eventName": "Purchase",
-            "floodlightActivityTag": "Pur0",
-            "floodlightGroupTag": "conv111",
-            "salesTag": false
-          }
-        ]
-      },
-      "DestinationDefinition": {
-        "Config": {
-          "cdkEnabled": true
-        }
-      }
-    },
-    "message": {
-      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-      "userId": "1234",
-      "type": "track",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "device": {
-          "adTrackingEnabled": "Yes",
-          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-          "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
-          "name": "generic_x86_arm",
-          "type": "ios",
-          "attTrackingStatus": 3
-        },
-        "ip": "0.0.0.0",
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "locale": "en-US",
-        "os": {
-          "name": "iOS",
-          "version": "14.4.1"
-        },
-        "screen": {
-          "density": 2
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-      },
-      "event": "Order complete",
       "properties": {
         "orderId": 111,
         "quantity": 999999,
@@ -2818,6 +3488,170 @@
           "COPPA": "false",
           "GDPR": "1",
           "npa": "true"
+        }
+      },
+      "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",
+      "originalTimestamp": "2020-01-17T04:53:51.185Z",
+      "receivedAt": "2020-01-17T10:23:52.688+05:30",
+      "sentAt": "2020-01-17T04:53:52.667Z",
+      "timestamp": "2020-01-17T10:23:51.206+05:30"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "activityTag": "",
+        "advertiserId": "12649566",
+        "conversionEvents": [
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Sign up Completed",
+            "floodlightActivityTag": "signu0",
+            "floodlightGroupTag": "conv01",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder1"
+              },
+              {
+                "to": "2",
+                "from": "akash1"
+              }
+            ],
+            "eventName": "Order Complete",
+            "floodlightActivityTag": "order0",
+            "floodlightGroupTag": "conv000",
+            "salesTag": false
+          },
+          {
+            "customVariables": [
+              {
+                "to": "",
+                "from": ""
+              }
+            ],
+            "eventName": "Checkout Started",
+            "floodlightActivityTag": "check0",
+            "floodlightGroupTag": "conv00",
+            "salesTag": true
+          },
+          {
+            "customVariables": [
+              {
+                "to": "1",
+                "from": "rudder2"
+              },
+              {
+                "to": "2",
+                "from": "akash2"
+              },
+              {
+                "to": "3",
+                "from": "friendlyName2"
+              },
+              {
+                "to": "4",
+                "from": "name2"
+              }
+            ],
+            "eventName": "Purchase",
+            "floodlightActivityTag": "Pur0",
+            "floodlightGroupTag": "conv111",
+            "salesTag": false
+          }
+        ],
+        "groupTag": ""
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    },
+    "message": {
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "1234",
+      "type": "track",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "device": {
+          "adTrackingEnabled": "true",
+          "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+          "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "type": "ios",
+          "attTrackingStatus": 3,
+          "brand": "Google2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "iOS",
+          "version": "14.4.1"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "name2": "traits-v1"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+      },
+      "event": "Purchase",
+      "properties": {
+        "orderId": 111,
+        "quantity": 999999,
+        "revenue": 800,
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "rudder2": "0",
+        "akash2": "akash2",
+        "friendlyName2": false
+      },
+      "integrations": {
+        "All": true,
+        "DCM Floodlight": {
+          "COPPA": "false",
+          "GDPR": "1",
+          "npa": true
         }
       },
       "messageId": "ea5cfab2-3961-4d8a-8187-3d1858c90a9f",

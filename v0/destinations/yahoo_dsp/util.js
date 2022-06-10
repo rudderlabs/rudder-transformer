@@ -6,7 +6,7 @@ const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
 const {
   ACCESS_TOKEN_CACHE_TTL,
-  AUDIENCE_TYPE,
+  AUDIENCE_ATTRIBUTE,
   DSP_SUPPORTED_OPERATION
 } = require("./config.js");
 const Cache = require("../../util/cache");
@@ -38,7 +38,7 @@ const populateIdentifiers = (audienceList, Config) => {
   const seedList = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
-  const typeOfAudience = AUDIENCE_TYPE[audienceType];
+  const audienceAttribute = AUDIENCE_ATTRIBUTE[audienceType];
 
   if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
     // traversing through every userTraits in the add array for the traits to be added.
@@ -46,18 +46,18 @@ const populateIdentifiers = (audienceList, Config) => {
       // storing keys of an object inside the add array.
       const traits = Object.keys(userTraits);
       // checking for the audience type the user wants to add is present in the input or not.
-      if (!traits.includes(typeOfAudience)) {
+      if (!traits.includes(audienceAttribute)) {
         // throwing error if the audience type the user wants to add is not present in the input.
         throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${typeOfAudience} type audience is not available in an object`,
+          `[Yahoo_DSP]:: Required property for ${audienceAttribute} type audience is not available in an object`,
           400
         );
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[typeOfAudience]));
+        seedList.push(sha256(userTraits[audienceAttribute]));
       } else {
-        seedList.push(userTraits[typeOfAudience]);
+        seedList.push(userTraits[audienceAttribute]);
       }
     });
   }

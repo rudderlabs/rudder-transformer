@@ -10,7 +10,7 @@ const ENDPOINTS = {
   IP_ADDRESS: "customsegments"
 };
 
-const AUDIENCE_TYPE = {
+const AUDIENCE_ATTRIBUTE = {
   EMAIL: "email",
   DEVICE_ID: "deviceId",
   IP_ADDRESS: "ipAddress"
@@ -24,6 +24,6 @@ module.exports = {
   ENDPOINTS,
   ACCESS_TOKEN_CACHE_TTL,
   DSP_SUPPORTED_OPERATION,
-  AUDIENCE_TYPE,
+  AUDIENCE_ATTRIBUTE,
   categoryId
 };

@@ -2,7 +2,7 @@ const {
   BASE_ENDPOINT,
   ENDPOINTS,
   DSP_SUPPORTED_OPERATION,
-  AUDIENCE_TYPE
+  AUDIENCE_ATTRIBUTE
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -37,10 +37,10 @@ const responseBuilder = async (message, destination) => {
 
   /**
    * The below written switch case is used to build the response for each of the supported audience type.
-   *  eg. ["email", "deviceId", "ipAddress", "mailDomain", "pointOfInterest"].
+   *  eg. ["email", "deviceId", "ipAddress"].
    */
-  const typeOfAudience = AUDIENCE_TYPE[audienceType];
-  switch (typeOfAudience) {
+  const audienceAttribute = AUDIENCE_ATTRIBUTE[audienceType];
+  switch (audienceAttribute) {
     case "email":
       // creating the output payload using the audience list and Config
       dspListPayload = createPayload(traitsList, Config);

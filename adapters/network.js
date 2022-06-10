@@ -196,7 +196,11 @@ const proxyRequest = async request => {
     case "FORM":
       data = new URLSearchParams();
       Object.keys(payload).forEach(key => {
-        data.append(`${key}`, `${payload[key]}`);
+        let payloadKeyStr = `${payload[key]}`;
+        if (Array.isArray(payload[key])) {
+          payloadKeyStr = JSON.stringify(payload[key]);
+        }
+        data.append(`${key}`, payloadKeyStr);
       });
       headers = {
         ...headers,

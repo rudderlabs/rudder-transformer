@@ -161,13 +161,7 @@ const httpPATCH = async (url, data, options) => {
   return clientResponse;
 };
 
-/**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
- * note: needed for test api
- * @param {*} request
- * @returns
- */
-const proxyRequest = async request => {
+const prepareProxyRequest = request => {
   const { body, method, params, endpoint } = request;
   let { headers } = request;
   let data;
@@ -197,7 +191,7 @@ const proxyRequest = async request => {
       data = new URLSearchParams();
       Object.keys(payload).forEach(key => {
         let payloadKeyStr = `${payload[key]}`;
-        if (Array.isArray(payload[key])) {
+        if (typeof payload[key] === "object") {
           payloadKeyStr = JSON.stringify(payload[key]);
         }
         data.append(`${key}`, payloadKeyStr);
@@ -213,6 +207,19 @@ const proxyRequest = async request => {
     default:
       log.debug(`body format ${payloadFormat} not supported`);
   }
+  return { endpoint, data, params, headers, method };
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const proxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
   const requestOptions = {
     url: endpoint,
     data,

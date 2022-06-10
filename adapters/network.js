@@ -190,11 +190,11 @@ const prepareProxyRequest = request => {
     case "FORM":
       data = new URLSearchParams();
       Object.keys(payload).forEach(key => {
-        let payloadKeyStr = `${payload[key]}`;
+        let payloadValStr = `${payload[key]}`;
         if (typeof payload[key] === "object") {
-          payloadKeyStr = JSON.stringify(payload[key]);
+          payloadValStr = JSON.stringify(payload[key]);
         }
-        data.append(`${key}`, payloadKeyStr);
+        data.append(`${key}`, payloadValStr);
       });
       headers = {
         ...headers,

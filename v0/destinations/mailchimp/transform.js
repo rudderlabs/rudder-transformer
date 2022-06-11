@@ -1,158 +1,40 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
-const { isDefinedAndNotNull } = require("../../util");
+const { isDefinedAndNotNull, defaultPutRequestConfig } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
-  constructPayload,
   defaultRequestConfig,
-  addExternalIdToTraits,
   getFieldValueFromMessage,
-  getIntegrationsObj,
-  isDefined,
-  removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
   defaultBatchRequestConfig
 } = require("../../util");
 const {
-  checkIfMailExists,
-  checkIfDoubleOptIn,
-  stitchEndpointAndMethodForExistingEmails,
-  stitchEndpointAndMethodForNONExistingEmails,
   getBatchEndpoint,
-  mergeAdditionalTraitsFields,
-  validateAddressObject
+  processPayload,
+  mailChimpSubscriptionEndpoint,
+  getAudienceId
 } = require("./utils");
 
 const { MappedToDestinationKey } = require("../../../constants");
-const {
-  MAX_BATCH_SIZE,
-  SUBSCRIPTION_STATUS,
-  VALID_STATUSES,
-  MERGE_CONFIG,
-  MERGE_ADDRESS
-} = require("./config");
-
-const processPayloadBuild = async (
-  message,
-  updateSubscription,
-  primaryPayload,
-  Config,
-  emailExists,
-  audienceId,
-  enableMergeFields
-) => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
-  const mergedFieldPayload = constructPayload(message, MERGE_CONFIG);
-  const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-  const { apiKey, datacenterId } = Config;
-  let mergeFields;
-
-  // From the behaviour of destination we know that, if address
-  // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-  if (Object.keys(mergedAddressPayload).length > 0) {
-    const correctAddressPayload = validateAddressObject(mergedAddressPayload);
-    mergedFieldPayload.ADDRESS = correctAddressPayload;
-  }
-
-  // for sending any fields other than email_address, while the email is already existing
-  // enableMergeFields needs to be set to true.
-  if (isDefinedAndNotNull(updateSubscription) && emailExists) {
-    if (isDefined(enableMergeFields) && enableMergeFields === true) {
-      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
-    } else {
-      mergeFields = null;
-    }
-  } else {
-    // if user sends a non-existing email, then also enableMergeField is checked
-    // eslint-disable-next-line no-lonely-if
-    if (isDefined(enableMergeFields) && enableMergeFields === true) {
-      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
-    }
-  }
-  primaryPayload = { ...primaryPayload, merge_fields: mergeFields };
-
-  /*
-
-  * The following block is dedicated for deducing the "status" field of the
-    output payload. 
-
-  * Status field can be manually changed "only" for the already existing subscribers.
-
-  * If the particular email is not suscribed already, Rudderstack will check if double 
-    opt-in is switched on, in that case, the status is set as "pending". Otherwise, it is 
-    set to "subscribed"
-
-  * Rudderstack is not setting any default status for already existing emails, unless appropriate 
-    "subscriptionStatus" is provided via integrations object.
-
-  */
-
-  if (isDefinedAndNotNull(updateSubscription) && emailExists) {
-    Object.keys(updateSubscription).forEach(field => {
-      if (field === "subscriptionStatus") {
-        // for existing emails, the status of the user can be changed manually
-        // from the integrations object values
-        primaryPayload.status = updateSubscription[field];
-      } else {
-        // other integration object fields will be sent as it is with the payload
-        primaryPayload[field] = updateSubscription[field];
-      }
-    });
-  } else if (!emailExists) {
-    const isDoubleOptin = await checkIfDoubleOptIn(
-      apiKey,
-      datacenterId,
-      audienceId
-    );
-    if (isDoubleOptin) {
-      primaryPayload.status = SUBSCRIPTION_STATUS.pending;
-    } else {
-      primaryPayload.status = SUBSCRIPTION_STATUS.subscribed;
-    }
-  }
-  if (
-    primaryPayload.status &&
-    !VALID_STATUSES.includes(primaryPayload.status)
-  ) {
-    throw new CustomError(
-      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
-      400
-    );
-  }
-
-  return removeUndefinedAndNullValues(primaryPayload);
-};
+const { MAX_BATCH_SIZE, VALID_STATUSES } = require("./config");
 
 const responseBuilderSimple = async (
   finalPayload,
-  message,
-  messageConfig,
-  audienceId,
-  emailExists
+  email,
+  Config,
+  audienceId
 ) => {
-  const { datacenterId, apiKey } = messageConfig;
+  const { datacenterId, apiKey } = Config;
   const response = defaultRequestConfig();
-  const email = getFieldValueFromMessage(message, "email");
-  if (emailExists) {
-    stitchEndpointAndMethodForExistingEmails(
-      datacenterId,
-      audienceId,
-      email,
-      response
-    );
-  } else {
-    stitchEndpointAndMethodForNONExistingEmails(
-      datacenterId,
-      audienceId,
-      email,
-      response
-    );
-  }
-
+  response.endpoint = mailChimpSubscriptionEndpoint(
+    datacenterId,
+    audienceId,
+    email
+  );
+  response.method = defaultPutRequestConfig.requestMethod;
   response.body.JSON = finalPayload;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   if (finalPayload.status && !VALID_STATUSES.includes(finalPayload.status)) {
@@ -167,105 +49,26 @@ const responseBuilderSimple = async (
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     },
-    userId: getFieldValueFromMessage(message, "userId")
+    audienceId
   };
 };
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  const { apiKey, datacenterId, enableMergeFields } = Config;
   const email = getFieldValueFromMessage(message, "email");
-  let audienceId;
-
   if (!email) {
-    throw new CustomError("email is required for identify", 400);
+    throw new CustomError("[Mailchimp] :: Email is required for identify", 400);
   }
-  const primaryPayload = {
-    email_address: email
-  };
-
-  if (message.context.MailChimp) {
-    if (message.context.MailChimp.listId) {
-      audienceId = message.context.MailChimp.listId;
-    } else {
-      audienceId = Config.audienceId;
-    }
-  } else {
-    audienceId = Config.audienceId;
-  }
-  if (mappedToDestination) {
-    /**
-    Passing the traits as it is, for reverseETL sources. For these sources, 
-    it is expected to have merge fields in proper format, along with appropriate status 
-    as well.
-     */
-    addExternalIdToTraits(message);
-    const updatedTraits = getFieldValueFromMessage(message, "traits");
-
-    const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-
-    if (Object.keys(mergedAddressPayload).length > 0) {
-      // From the behaviour of destination we know that, if address
-      // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-
-      const correctAddressPayload = validateAddressObject(mergedAddressPayload);
-      updatedTraits.merge_fields.ADDRESS = correctAddressPayload;
-    }
-    return responseBuilderSimple(
-      updatedTraits,
-      message,
-      Config,
-      audienceId,
-      false // sending emailExists as false, for reverseETL, as the events will be
-      // sent to the dedicated batching endpoint. Hence we do not need to deduce the
-      // endpoint or method for this case.
-    );
-  }
-
-  const emailExists = await checkIfMailExists(
-    apiKey,
-    datacenterId,
-    audienceId,
-    email
-  );
-
-  // const emailExists = false;
-
-  /* 
-  Integrations object is supposed to be present inside message, and is expected
-  to be in the following format:
-  
-   "integrations": {
-        "MailChimp": {
-          "subscriptionStatus": "subscribed"
-        }
-      }
-  */
-  const updateSubscription = getIntegrationsObj(message, "mailchimp");
-
-  const mergedFieldPayload = await processPayloadBuild(
-    message,
-    updateSubscription,
-    primaryPayload,
-    Config,
-    emailExists,
-    audienceId,
-    enableMergeFields
-  );
-
-  return responseBuilderSimple(
-    mergedFieldPayload,
-    message,
-    Config,
-    audienceId,
-    emailExists
-  );
+  const audienceId = getAudienceId(message, Config);
+  const processedPayload = await processPayload(message, Config, audienceId);
+  return responseBuilderSimple(processedPayload, email, Config, audienceId);
 };
 
 const process = async event => {
+  let response;
   const { message, destination } = event;
-
+  const messageType = message.type.toLowerCase();
   const destConfig = destination.Config;
+
   if (!destConfig.apiKey) {
     throw new CustomError("API Key not found. Aborting", 400);
   }
@@ -285,9 +88,6 @@ const process = async event => {
     );
   }
 
-  const messageType = message.type.toLowerCase();
-
-  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, destination);

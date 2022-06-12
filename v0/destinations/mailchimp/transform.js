@@ -95,14 +95,21 @@ const process = async event => {
 // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
 const batchEvents = successRespList => {
   const batchedResponseList = [];
+  // {
+  //    audienceId1: [...events]
+  //    audienceId2: [...events]
+  // }
   const audienceEventGroups = _.groupBy(
     successRespList,
     event => event.message.audienceId
   );
-  // { audienceId: [event_array], }
   Object.keys(audienceEventGroups).forEach(audienceId => {
-    const eventChunk = _.chunk(audienceEventGroups[audienceId], MAX_BATCH_SIZE);
-    eventChunk.forEach(chunk => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = _.chunk(
+      audienceEventGroups[audienceId],
+      MAX_BATCH_SIZE
+    );
+    eventChunks.forEach(chunk => {
       const batchEventResponse = generateBatchedPaylaodForArray(
         audienceId,
         chunk

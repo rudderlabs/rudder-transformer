@@ -128,7 +128,7 @@ const filterTagValue = tag => {
 };
 
 /**
- * Returns true if the email id already exists in mailchimp database
+ * Returns userstatus if the email id already exists in mailchimp database
  * ref: https://mailchimp.com/developer/marketing/api/list-members/get-member-info/
  * @param {*} apiKey
  * @param {*} datacenterId
@@ -140,7 +140,10 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   if (!email) {
     return false;
   }
-  let status = false;
+  const userStatus = {
+    exists: false,
+    subscriptionStatus: null
+  };
   const url = `${mailChimpSubscriptionEndpoint(
     datacenterId,
     audienceId,
@@ -153,15 +156,16 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
         Authorization: `Basic ${basicAuth}`
       }
     });
-    if (response.data?.contact_id) {
-      status = true;
+    if (response?.data?.contact_id) {
+      userStatus.exists = true;
+      userStatus.subscriptionStatus = response.data.status;
     }
   } catch (error) {
     logger.info(
       `[Mailchimp] :: Email does not exists, Error: ${error.message}`
     );
   }
-  return status;
+  return userStatus;
 };
 
 /**
@@ -247,7 +251,8 @@ const validateAddressObject = mergedAddressPayload => {
 
 /**
  * Overrides status of primary payload for mailchimp integration based on the
- * subscriptuon status provided via integrations object inside message
+ * subscriptuon status provided via integrations object inside message. If not present
+ * Rudderstack will not change the exisitng status of the user
  * ----------------------
  * "integrations": {
  *      "MailChimp": {
@@ -257,15 +262,19 @@ const validateAddressObject = mergedAddressPayload => {
  * ----------------------
  * @param {*} message
  * @param {*} primaryPayload
+ * @param {*} userStatus
  * @returns
  */
-const overrideSubscriptionStatus = (message, primaryPayload) => {
+const overrideSubscriptionStatus = (message, primaryPayload, userStatus) => {
   const integrationsObj = getIntegrationsObj(message, "mailchimp");
   if (
     !isDefinedAndNotNull(integrationsObj) ||
     !isDefinedAndNotNull(integrationsObj.subscriptionStatus)
   ) {
-    return primaryPayload;
+    return {
+      ...primaryPayload,
+      status: userStatus.subscriptionStatus || "subscribed"
+    };
   }
   if (!VALID_STATUSES.includes(integrationsObj.subscriptionStatus)) {
     throw new CustomError(
@@ -325,33 +334,37 @@ const processPayload = async (message, Config, audienceId) => {
     }
   }
 
-  const emailExists = await checkIfMailExists(
+  const userStatus = await checkIfMailExists(
     apiKey,
     datacenterId,
     audienceId,
     email
   );
 
-  if (!emailExists) {
+  if (!userStatus.exists) {
     const isDoubleOptin = await checkIfDoubleOptIn(
       apiKey,
       datacenterId,
       audienceId
     );
-    primaryPayload.status_if_new = isDoubleOptin
+    primaryPayload.status = isDoubleOptin
       ? SUBSCRIPTION_STATUS.pending
       : SUBSCRIPTION_STATUS.subscribed;
   } else {
-    primaryPayload = overrideSubscriptionStatus(message, primaryPayload);
+    primaryPayload = overrideSubscriptionStatus(
+      message,
+      primaryPayload,
+      userStatus
+    );
   }
   return removeUndefinedAndNullValues(primaryPayload);
 };
 
 /**
  * Create Mailchimp Batch payload based on the passed events and audienceId
- * @param {*} audienceId 
- * @param {*} events 
- * @returns 
+ * @param {*} audienceId
+ * @param {*} events
+ * @returns
  */
 const generateBatchedPaylaodForArray = (audienceId, events) => {
   let batchEventResponse = defaultBatchRequestConfig();
@@ -393,15 +406,8 @@ const generateBatchedPaylaodForArray = (audienceId, events) => {
 };
 
 module.exports = {
-  checkIfMailExists,
-  checkIfDoubleOptIn,
-  filterTagValue,
   getAudienceId,
-  getBatchEndpoint,
   generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
-  mergeAdditionalTraitsFields,
-  processPayload,
-  validateAddressObject,
-  ADDRESS_MANDATORY_FIELDS
+  processPayload
 };

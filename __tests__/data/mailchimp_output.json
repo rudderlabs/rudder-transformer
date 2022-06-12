@@ -30,7 +30,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
     "version": "1",
@@ -55,7 +55,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
     "error": "[Mailchimp]:: User does not have access to the requested operation"
@@ -66,8 +66,8 @@
   {
     "version": "1",
     "type": "REST",
-    "method": "POST",
-    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
@@ -86,14 +86,14 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
-    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+    "error": "[Mailchimp]:: User does not have access to the requested operation"
   },
   {
     "statusCode": 400,
-    "error": "email is required for identify",
+    "error": "[Mailchimp] :: Email is required for identify",
     "statTags": {
       "destination": "mailchimp",
       "stage": "transform",
@@ -135,7 +135,7 @@
     "files": {},
     "method": "PUT",
     "params": {},
-    "userId": "userId12345",
+    "audienceId": "df42a82d07",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
@@ -163,7 +163,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
     "error": "API Key not found. Aborting"

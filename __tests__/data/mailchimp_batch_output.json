@@ -22,10 +22,12 @@
             },
             {
               "status": "subscribed",
+              "status_if_new": "subscribed",
               "email_address": "emrichardson820+22822@gmail.com"
             },
             {
               "status": "subscribed",
+              "status_if_new": "subscribed",
               "email_address": "emrichardson820+22822@gmail.com"
             }
           ],

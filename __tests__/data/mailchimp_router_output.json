@@ -19,7 +19,8 @@
                 "FNAME": "Bob",
                 "LNAME": "Dole",
                 "ANONYMOUSI": "userId12345"
-              }
+              },
+              "status": "subscribed"
             },
             {
               "email_address": "bob.dole@initech.com",

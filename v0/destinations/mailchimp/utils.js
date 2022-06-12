@@ -347,6 +347,12 @@ const processPayload = async (message, Config, audienceId) => {
   return removeUndefinedAndNullValues(primaryPayload);
 };
 
+/**
+ * Create Mailchimp Batch payload based on the passed events and audienceId
+ * @param {*} audienceId 
+ * @param {*} events 
+ * @returns 
+ */
 const generateBatchedPaylaodForArray = (audienceId, events) => {
   let batchEventResponse = defaultBatchRequestConfig();
   const batchResponseList = [];

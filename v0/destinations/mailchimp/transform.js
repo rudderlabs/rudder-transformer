@@ -1,32 +1,23 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-param-reassign */
-const get = require("get-value");
-const { isDefinedAndNotNull, defaultPutRequestConfig } = require("../../util");
+const _ = require("lodash");
+const { defaultPutRequestConfig } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
   defaultRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  defaultBatchRequestConfig
+  getErrorRespEvents
 } = require("../../util");
 const {
-  getBatchEndpoint,
   processPayload,
   mailChimpSubscriptionEndpoint,
-  getAudienceId
+  getAudienceId,
+  generateBatchedPaylaodForArray
 } = require("./utils");
 
-const { MappedToDestinationKey } = require("../../../constants");
 const { MAX_BATCH_SIZE, VALID_STATUSES } = require("./config");
 
-const responseBuilderSimple = async (
-  finalPayload,
-  email,
-  Config,
-  audienceId
-) => {
+const responseBuilderSimple = (finalPayload, email, Config, audienceId) => {
   const { datacenterId, apiKey } = Config;
   const response = defaultRequestConfig();
   response.endpoint = mailChimpSubscriptionEndpoint(
@@ -101,76 +92,33 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(successRespList) {
-  // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
-  let eventsChunk = []; // temporary variable to divide payload into chunks
+// Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
+const batchEvents = successRespList => {
   const batchedResponseList = [];
-  const arrayChunks = []; // transformed payload of (n) batch size
-
-  successRespList.forEach((event, index) => {
-    eventsChunk.push(event);
-    if (
-      eventsChunk.length === MAX_BATCH_SIZE ||
-      index === successRespList.length - 1
-    ) {
-      arrayChunks.push(eventsChunk);
-      eventsChunk = [];
-    }
-  });
-
-  // list of chunks [ [..], [..] ]
-  arrayChunks.forEach(chunk => {
-    let batchEventResponse = defaultBatchRequestConfig();
-    const batchResponseList = [];
-    const metadata = [];
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-
-    // Batch event into dest batch structure
-    chunk.forEach(event => {
-      batchResponseList.push(event.message.body.JSON);
-      metadata.push(event.metadata);
+  const audienceEventGroups = _.groupBy(
+    successRespList,
+    event => event.message.audienceId
+  );
+  // { audienceId: [event_array], }
+  Object.keys(audienceEventGroups).forEach(audienceId => {
+    const eventChunk = _.chunk(audienceEventGroups[audienceId], MAX_BATCH_SIZE);
+    eventChunk.forEach(chunk => {
+      const batchEventResponse = generateBatchedPaylaodForArray(
+        audienceId,
+        chunk
+      );
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true
+        )
+      );
     });
-
-    batchEventResponse.batchedRequest.body.JSON = {
-      members: batchResponseList,
-
-      // setting this to "true" will update user details, if a user already exists
-      update_existing: true
-    };
-
-    const BATCH_ENDPOINT = getBatchEndpoint(destination.Config);
-
-    batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
-
-    const basicAuth = Buffer.from(
-      `apiKey:${destination.Config.apiKey}`
-    ).toString("base64");
-
-    batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true
-      )
-    );
   });
-
   return batchedResponseList;
-}
+};
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
@@ -179,23 +127,10 @@ const processRouterDest = async inputs => {
   }
   let batchResponseList = [];
   const batchErrorRespList = [];
-  const reverseETLEventArray = [];
-  const conventionalEventArray = [];
   const successRespList = [];
-  // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-
-  inputs.forEach(singleInput => {
-    const { message } = singleInput;
-    if (isDefinedAndNotNull(get(message, MappedToDestinationKey))) {
-      reverseETLEventArray.push(singleInput);
-    } else {
-      conventionalEventArray.push(singleInput);
-    }
-  });
-  // only events coming from reverseETL sources are sent to batch endPoint.
   await Promise.all(
-    reverseETLEventArray.map(async event => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -206,11 +141,12 @@ const processRouterDest = async inputs => {
           });
         } else {
           // if not transformed
-          successRespList.push({
+          const transformedPayload = {
             message: await process(event),
             metadata: event.metadata,
             destination
-          });
+          };
+          successRespList.push(transformedPayload);
         }
       } catch (error) {
         batchErrorRespList.push(
@@ -223,43 +159,11 @@ const processRouterDest = async inputs => {
       }
     })
   );
-
-  // array of events recieved from sources except of reverseETL, are sent using normal router transform
-  const respList = await Promise.all(
-    conventionalEventArray.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);
   }
 
-  return [...batchResponseList, ...respList, ...batchErrorRespList];
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

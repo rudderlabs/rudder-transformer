@@ -10,7 +10,11 @@ const {
   checkSubsetOfArray,
   getIntegrationsObj,
   isDefinedAndNotNullAndNotEmpty,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  getFieldValueFromMessage,
+  removeUndefinedAndNullValues,
+  defaultBatchRequestConfig,
+  constructPayload
 } = require("../../util");
 const {
   MERGE_CONFIG,
@@ -56,7 +60,7 @@ const getMailChimpBaseEndpoint = (datacenterId, audienceId) => {
  * @param {*} datacenterId
  * @param {*} audienceId
  * @param {*} email
- * @param {*} returns
+ * @returns
  */
 const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) => {
   return `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(
@@ -70,12 +74,13 @@ const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) => {
  * which means, member data will be accepted with merge field values, which is also
  * a default behaviour of Mailchimp itself
  * ref: https://mailchimp.com/developer/marketing/api/lists/batch-subscribe-or-unsubscribe/
- * @param {*} destConfig <-- from event.destination.Config
+ * @param {*} destConfig
+ * @param {*} audienceId
  * @returns
  */
-const getBatchEndpoint = destConfig => {
+const getBatchEndpoint = (destConfig, audienceId) => {
   let mergeFieldOption;
-  const { datacenterId, audienceId, enableMergeFields } = destConfig;
+  const { datacenterId, enableMergeFields } = destConfig;
   if (!isDefinedAndNotNull(enableMergeFields)) {
     mergeFieldOption = false;
   } else {
@@ -101,7 +106,7 @@ const getAudienceId = (message, Config) => {
     return integrationsObj.listId;
   }
   // Need to depricate this
-  if (get(message.context.MailChimp.listId)) {
+  if (get(message, "context.MailChimp.listId")) {
     return message.context.MailChimp.listId;
   }
   return Config.audienceId;
@@ -110,8 +115,8 @@ const getAudienceId = (message, Config) => {
 /**
  * Converts object keys to upper case along with removing spaces
  * It also slices Keys more than 10 characters
- * @param {*} tag <-- object key
- * @param {*} returns
+ * @param {*} tag
+ * @returns
  */
 const filterTagValue = tag => {
   const maxLength = 10;
@@ -129,20 +134,19 @@ const filterTagValue = tag => {
  * @param {*} datacenterId
  * @param {*} audienceId
  * @param {*} email
- * @param {*} returns
+ * @returns
  */
 const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   if (!email) {
     return false;
   }
   let status = false;
-  const hash = md5(email);
-  const url = `${getMailChimpEndpoint(
+  const url = `${mailChimpSubscriptionEndpoint(
     datacenterId,
-    audienceId
-  )}/members/${hash}`;
+    audienceId,
+    email
+  )}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
-
   try {
     response = await axios.get(url, {
       headers: {
@@ -153,8 +157,8 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
       status = true;
     }
   } catch (error) {
-    throw CustomError(
-      `[Mailchimp] :: Failed to check if email exisits for mailchimp, Error: ${error.message}`
+    logger.info(
+      `[Mailchimp] :: Email does not exists, Error: ${error.message}`
     );
   }
   return status;
@@ -165,11 +169,11 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
  * @param {*} apiKey
  * @param {*} datacenterId
  * @param {*} audienceId
- * @param {*} returns
+ * @returns
  */
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   let response;
-  const url = `${getMailChimpEndpoint(datacenterId, audienceId)}`;
+  const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   try {
     response = await axios.get(url, {
@@ -183,14 +187,14 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
       error.status || 400
     );
   }
-  return !!response.data.doubleOptin;
+  return !!response.data.double_optin;
 };
 
 /**
  * Formats and adds the remaining trait fields, other than the mapped fields using "mailchimpMergeFieldConfig"
- * @param {*} traits message.traits or message.context.traits
- * @param {*} mergedFieldPayload payload consisting of merged fields, mapped using "mailchimpMergeFieldConfig"
- * @param {*} returns
+ * @param {*} traits
+ * @param {*} mergedFieldPayload
+ * @returns
  */
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   if (isDefined(traits)) {
@@ -209,8 +213,8 @@ const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
  * Formats and adds the remaining address fields, other than the mapped fields using "mailchimpMergeAddressConfig"
  * Address field is not mandatory, but if sent, needs to be sent with all ["addr1", "city", "state", "zip"]
  * If address data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
- * @param {*} mergedAddressPayload <-- payload formed using "mailchimpMergeAddressConfig"
- * @param {*} returns
+ * @param {*} mergedAddressPayload
+ * @returns
  */
 const validateAddressObject = mergedAddressPayload => {
   const providedAddressKeys = Object.keys(mergedAddressPayload);
@@ -289,8 +293,8 @@ const processPayload = async (message, Config, audienceId) => {
     // Passing the traits as it is, for reverseETL sources. For these sources,
     // it is expected to have merge fields in proper format, along with appropriate status.
     addExternalIdToTraits(message);
-    email = get(message, "email_address");
     primaryPayload = getFieldValueFromMessage(message, "traits");
+    email = get(primaryPayload, "email_address");
     const mappedAddress = get(primaryPayload, "merge_fields.ADDRESS");
     if (mappedAddress && Object.keys(mappedAddress).length > 0) {
       primaryPayload.merge_fields.ADDRESS = validateAddressObject(
@@ -340,8 +344,46 @@ const processPayload = async (message, Config, audienceId) => {
   } else {
     primaryPayload = overrideSubscriptionStatus(message, primaryPayload);
   }
-
   return removeUndefinedAndNullValues(primaryPayload);
+};
+
+const generateBatchedPaylaodForArray = (audienceId, events) => {
+  let batchEventResponse = defaultBatchRequestConfig();
+  const batchResponseList = [];
+  const metadata = [];
+  // extracting destination from the first event in a batch
+  const { destination } = events[0];
+  // Batch event into dest batch structure
+  events.forEach(ev => {
+    batchResponseList.push(ev.message.body.JSON);
+    metadata.push(ev.metadata);
+  });
+
+  batchEventResponse.batchedRequest.body.JSON = {
+    members: batchResponseList,
+    // setting this to "true" will update user details, if a user already exists
+    update_existing: true
+  };
+
+  const BATCH_ENDPOINT = getBatchEndpoint(destination.Config, audienceId);
+
+  batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
+
+  const basicAuth = Buffer.from(`apiKey:${destination.Config.apiKey}`).toString(
+    "base64"
+  );
+
+  batchEventResponse.batchedRequest.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${basicAuth}`
+  };
+
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination
+  };
+  return batchEventResponse;
 };
 
 module.exports = {
@@ -350,6 +392,7 @@ module.exports = {
   filterTagValue,
   getAudienceId,
   getBatchEndpoint,
+  generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
   mergeAdditionalTraitsFields,
   processPayload,

@@ -1,11 +1,11 @@
 [
   {
-    "destKey": "product_id",
-    "sourceKeys": "product_id",
+    "destKey": "purchase_product_id",
+    "sourceKeys": ["product_id", "sku"],
     "required": false
   },
   {
-    "destKey": "price",
+    "destKey": "amt",
     "sourceKeys": "price",
     "required": false
   },
@@ -16,12 +16,12 @@
   },
   {
     "destKey": "cur",
-    "sourceKeys": "cur",
+    "sourceKeys": "currency",
     "required": false
   },
   {
-    "destKey": "product_transaction_id",
-    "sourceKeys": "product_transaction_id",
+    "destKey": "purchase_transaction_id",
+    "sourceKeys": "purchase_transaction_id",
     "required": false
   }
 ]

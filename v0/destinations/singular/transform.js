@@ -20,6 +20,9 @@ const {
   getValueFromMessage
 } = require("../../util");
 
+/*
+  All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes
+*/
 const extractExtraFields = (message, EXCLUSION_FIELDS) => {
   const eventAttributes = {};
   extractCustomFields(
@@ -32,8 +35,6 @@ const extractExtraFields = (message, EXCLUSION_FIELDS) => {
 };
 
 const responseBuilderSimple = (message, { Config }) => {
-  // trim and replace spaces with "_"
-  message.event = message.event.trim().replace(/\s+/g, " ");
   let payload, endPoint;
   let eventAttributes = {};
   const eventType = message.event;
@@ -42,6 +43,10 @@ const responseBuilderSimple = (message, { Config }) => {
   if (!platform) {
     throw new CustomError("[Singular] :: Platform name is missing", 400);
   }
+  /*
+    Use the session notification endpoint to report a session to Singular
+    https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Session_Notification_Endpoint
+  */
   if (
     Config.sessionEventList.includes(eventType) ||
     sessionEvents.includes(eventType)
@@ -83,7 +88,7 @@ const responseBuilderSimple = (message, { Config }) => {
     }
 
     // Singular maps Connection Type to either wifi or carrier
-    if (message.context?.network?.wifi === "wifi") {
+    if (message.context?.network?.wifi) {
       payload.c = "wifi";
     } else {
       payload.c = "carrier";
@@ -92,7 +97,10 @@ const responseBuilderSimple = (message, { Config }) => {
     payload = removeUndefinedAndNullAndEmptyValues(payload);
     endPoint = `${BASE_URL}/launch`;
   } else {
-    // event payload
+    /*
+      Use this endpoint to report any event occurring in your application other than the session
+      https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Event_Notification_Endpoint
+    */
     if (platform.toLowerCase() === "android") {
       payload = constructPayload(
         message,

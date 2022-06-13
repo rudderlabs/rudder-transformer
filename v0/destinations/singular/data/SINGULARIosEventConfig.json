@@ -78,7 +78,7 @@
   },
   {
     "destKey": "purchase_product_id",
-    "sourceKeys": "properties.product_id",
+    "sourceKeys": ["properties.product_id", "properties.sku"],
     "required": false
   },
   {

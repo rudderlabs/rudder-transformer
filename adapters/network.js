@@ -165,7 +165,7 @@ const getPayloadData = body => {
   let payload;
   let payloadFormat;
   Object.entries(body).forEach(([key, value]) => {
-    if (!isEmpty(value)) {
+    if (!_.isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }

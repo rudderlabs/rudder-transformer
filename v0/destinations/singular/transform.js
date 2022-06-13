@@ -28,6 +28,9 @@ const responseBuilderSimple = (message, { Config }) => {
   const eventAttributes = {};
   let payload, endPoint;
   const platform = getValueFromMessage(message, "context.os.name");
+  if (!platform) {
+    throw new CustomError("[Singular] :: Platform name is missing", 400);
+  }
   if (
     Config.sessionEventList.includes(eventType) ||
     sessionEvents.includes(eventType)
@@ -116,11 +119,11 @@ const responseBuilderSimple = (message, { Config }) => {
     } else {
       throw new CustomError("[Singular] :: Invalid Platform", 400);
     }
-    const productList = message.properties?.products;
-    if (productList && Array.isArray(productList)) {
+    const { products } = message.properties;
+    if (products && Array.isArray(products)) {
       const responseArray = [];
       const finalPayload = payload;
-      for (const product of productList) {
+      for (const product of products) {
         const productDetails = constructPayload(
           product,
           MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name]
@@ -201,15 +204,3 @@ const processRouterDest = async inputs => {
   return respList;
 };
 module.exports = { process, processRouterDest };
-
-/*
-// e -> custom_attributes
-
-
-price
-cur
-purchase_receipt
-product_id
-product_transaction_id
-
-*/

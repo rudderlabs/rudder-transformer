@@ -1,6 +1,7 @@
 const {
-  proxyRequest,
-  prepareProxyRequest
+  prepareProxyRequest,
+  getPayloadData,
+  httpSend
 } = require("../../../adapters/network");
 const {
   processAxiosResponse
@@ -101,10 +102,49 @@ const responseHandler = destinationResponse => {
   };
 };
 
+const prepareProxyReq = async request => {
+  const { body } = request;
+  const proxyRequestData = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = proxyRequestData;
+
+  const { payloadFormat } = getPayloadData(body);
+  if (payloadFormat === "FORM") {
+    data.append("format", "json");
+  }
+
+  return {
+    endpoint,
+    data,
+    params,
+    headers,
+    method
+  };
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const pardotProxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method
+  };
+  const response = await httpSend(requestOptions);
+  return response;
+};
+
 const networkHandler = function() {
   this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
-  this.prepareProxy = prepareProxyRequest;
+  this.proxy = pardotProxyRequest;
+  this.prepareProxy = prepareProxyReq;
   this.processAxiosResponse = processAxiosResponse;
 };
 

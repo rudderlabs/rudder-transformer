@@ -1,4 +1,7 @@
-const { proxyRequest } = require("../../../adapters/network");
+const {
+  proxyRequest,
+  prepareProxyRequest
+} = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -101,6 +104,7 @@ const responseHandler = destinationResponse => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

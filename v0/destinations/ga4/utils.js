@@ -1,6 +1,9 @@
 const get = require("get-value");
 const moment = require("moment");
-const { proxyRequest } = require("../../../adapters/network");
+const {
+  proxyRequest,
+  prepareProxyRequest
+} = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -347,6 +350,7 @@ const responseHandler = (destinationResponse, dest) => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

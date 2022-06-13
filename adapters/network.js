@@ -237,6 +237,7 @@ const proxyRequest = async request => {
   const response = await httpSend(requestOptions);
   return response;
 };
+
 module.exports = {
   httpSend,
   httpGET,
@@ -244,5 +245,6 @@ module.exports = {
   httpPOST,
   httpPUT,
   httpPATCH,
-  proxyRequest
+  proxyRequest,
+  prepareProxyRequest
 };

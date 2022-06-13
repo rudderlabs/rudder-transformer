@@ -19,6 +19,9 @@ const {
 const {
   networkHandler: GA4NetworkHandler
 } = require("../v0/destinations/ga4/utils");
+const {
+  networkHandler: YahooDSP
+} = require("../v0/destinations/yahoo_dsp/util");
 
 const handler = {
   generic: GenericNetworkHandler,
@@ -27,7 +30,8 @@ const handler = {
   pardot: PardotNetworkHandler,
   google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
   google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions,
-  ga4: GA4NetworkHandler
+  ga4: GA4NetworkHandler,
+  yahoo_dsp: YahooDSP
 };
 
 const getNetworkHandler = type => {

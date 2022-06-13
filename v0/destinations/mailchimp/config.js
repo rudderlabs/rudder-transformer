@@ -1,21 +1,14 @@
-const getEndpoint = (dataCenterId, audienceId) => {
-  const mailChimpApi = "api.mailchimp.com";
-  const listsUrl = `https://${dataCenterId}.${mailChimpApi}/3.0/lists`;
-  return `${listsUrl}/${audienceId}`;
-};
+const { getMappingConfig } = require("../../util");
 
-const destinationConfigKeys = {
-  apiKey: "apiKey",
-  audienceId: "audienceId",
-  dataCenterId: "datacenterId"
-};
+const MAX_BATCH_SIZE = 500;
+// ref: https://mailchimp.com/developer/marketing/api/lists/batch-subscribe-or-unsubscribe/
 
-const subscriptionStatus = {
+const SUBSCRIPTION_STATUS = {
   subscribed: "subscribed",
   pending: "pending"
 };
 
-const validStatuses = [
+const VALID_STATUSES = [
   "subscribed",
   "unsubscribed",
   "cleaned",
@@ -23,9 +16,16 @@ const validStatuses = [
   "transactional"
 ];
 
+const CONFIG_CATEGORIES = {
+  IDENTIFY: { name: "mailchimpMergeFieldConfig" },
+  MERGE_ADDRESS: { name: "mailchimpMergeAddressConfig" }
+};
+const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+
 module.exports = {
-  getEndpoint,
-  destinationConfigKeys,
-  subscriptionStatus,
-  validStatuses
+  MAX_BATCH_SIZE,
+  SUBSCRIPTION_STATUS,
+  VALID_STATUSES,
+  MERGE_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
+  MERGE_ADDRESS: MAPPING_CONFIG[CONFIG_CATEGORIES.MERGE_ADDRESS.name]
 };

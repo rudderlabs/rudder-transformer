@@ -564,7 +564,8 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     defaultValue,
     excludes,
     multikeyMap,
-    allowedKeyCheck
+    allowedKeyCheck,
+    dobInMMDD
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -596,6 +597,10 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "dobInMMDD":
+        formattedVal = String(formattedVal).slice(5);
+        formattedVal = formattedVal.replace("-","/");
         break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify

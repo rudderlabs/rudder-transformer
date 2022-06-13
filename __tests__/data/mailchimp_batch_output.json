@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07?skip_merge_validation=true&skip_duplicate_check=false",
+      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
@@ -14,20 +14,19 @@
         "JSON": {
           "members": [
             {
-              "email_address": "bob.dole@initech.com",
               "merge_fields": {
-                "FNAME": "Bob",
-                "LNAME": "Dole",
-                "ANONYMOUSI": "userId12345"
+                "FIRSTNAME": "Bob"
               },
-              "status": "subscribed"
+              "status": "subscribed",
+              "email_address": "bob.dole@initech.com"
             },
             {
-              "email_address": "bob.dole@initech.com",
-              "merge_fields": {
-                "ANONYMOUSI": "userId12345"
-              },
-              "status": "subscribed"
+              "status": "subscribed",
+              "email_address": "emrichardson820+22822@gmail.com"
+            },
+            {
+              "status": "subscribed",
+              "email_address": "emrichardson820+22822@gmail.com"
             }
           ],
           "update_existing": true
@@ -44,6 +43,9 @@
       },
       {
         "jobId": 3
+      },
+      {
+        "jobId": 4
       }
     ],
     "batched": true,
@@ -58,9 +60,8 @@
       },
       "Config": {
         "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
-        "enableMergeFields": true
+        "audienceId": "1232yyqw22",
+        "datacenterId": "us20"
       },
       "Enabled": true,
       "Transformations": []
@@ -69,7 +70,7 @@
   {
     "metadata": [
       {
-        "jobId": 4
+        "jobId": 5
       }
     ],
     "batched": false,

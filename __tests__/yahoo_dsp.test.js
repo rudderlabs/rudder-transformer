@@ -1,5 +1,5 @@
-const integration = "mailchimp";
-const name = "Mailchimp";
+const integration = "yahoo_dsp";
+const name = "Yahoo DSP";
 
 const fs = require("fs");
 const path = require("path");
@@ -25,15 +25,7 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-const batchInputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
-);
-const batchOutputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
-);
-
-const batchInputData = JSON.parse(batchInputDataFile);
-const batchExpectedData = JSON.parse(batchOutputDataFile);
+// Date.now = jest.fn(() => new Date("2019-10-14T09:03:17.562Z"));
 
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
@@ -53,14 +45,6 @@ describe(`${name} Tests`, () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
-    });
-  });
-
-  describe("Batching", () => {
-    it("Payload", async () => {
-      const output = await transformer.processRouterDest(batchInputData);
-      expect(Array.isArray(output)).toEqual(true);
-      expect(output).toEqual(batchExpectedData);
     });
   });
 });

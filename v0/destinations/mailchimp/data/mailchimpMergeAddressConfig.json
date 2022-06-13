@@ -1,0 +1,74 @@
+[  
+  {
+    "destKey": "addr1",
+    "sourceKeys": [
+        "traits.addressLine1",
+        "traits.address.addressLine1",
+        "traits.merge_fields.ADDRESS.addr1",
+        "context.traits.addressLine1",
+        "context.traits.address.addressLine1",
+        "context.traits.merge_fields.ADDRESS.addr1"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "addr2",
+    "sourceKeys": [
+        "traits.addressLine2",
+        "traits.address.addressLine2",
+        "traits.merge_fields.ADDRESS.addr2",
+        "context.traits.addressLine2",
+        "context.traits.address.addressLine2",
+        "context.traits.merge_fields.ADDRESS.addr2"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+        "traits.city",
+        "traits.address.city",
+        "traits.merge_fields.ADDRESS.city",
+        "context.traits.city",
+        "context.traits.address.city",
+        "context.traits.merge_fields.ADDRESS.city"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+        "traits.state",
+        "traits.address.state",
+        "traits.merge_fields.ADDRESS.state",
+        "context.traits.state",
+        "context.traits.address.state",
+        "context.traits.merge_fields.ADDRESS.state"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": [
+        "traits.zip",
+        "traits.address.zip",
+        "traits.merge_fields.ADDRESS.zip",
+        "context.traits.zip",
+        "context.traits.address.zip",
+        "context.traits.merge_fields.ADDRESS.zip"
+      ],
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+        "traits.country",
+        "traits.address.country",
+        "traits.merge_fields.ADDRESS.country",
+        "context.traits.country",
+        "context.traits.address.country",
+        "context.traits.merge_fields.ADDRESS.country"
+      ],
+    "required": false
+  }
+]

@@ -1,158 +1,31 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-param-reassign */
-const get = require("get-value");
-const { isDefinedAndNotNull } = require("../../util");
+const _ = require("lodash");
+const { defaultPutRequestConfig } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
-  constructPayload,
   defaultRequestConfig,
-  addExternalIdToTraits,
   getFieldValueFromMessage,
-  getIntegrationsObj,
-  isDefined,
-  removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  defaultBatchRequestConfig
+  getErrorRespEvents
 } = require("../../util");
 const {
-  checkIfMailExists,
-  checkIfDoubleOptIn,
-  stitchEndpointAndMethodForExistingEmails,
-  stitchEndpointAndMethodForNONExistingEmails,
-  getBatchEndpoint,
-  mergeAdditionalTraitsFields,
-  validateAddressObject
+  processPayload,
+  mailChimpSubscriptionEndpoint,
+  getAudienceId,
+  generateBatchedPaylaodForArray
 } = require("./utils");
 
-const { MappedToDestinationKey } = require("../../../constants");
-const {
-  MAX_BATCH_SIZE,
-  SUBSCRIPTION_STATUS,
-  VALID_STATUSES,
-  MERGE_CONFIG,
-  MERGE_ADDRESS
-} = require("./config");
+const { MAX_BATCH_SIZE, VALID_STATUSES } = require("./config");
 
-const processPayloadBuild = async (
-  message,
-  updateSubscription,
-  primaryPayload,
-  Config,
-  emailExists,
-  audienceId,
-  enableMergeFields
-) => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
-  const mergedFieldPayload = constructPayload(message, MERGE_CONFIG);
-  const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-  const { apiKey, datacenterId } = Config;
-  let mergeFields;
-
-  // From the behaviour of destination we know that, if address
-  // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-  if (Object.keys(mergedAddressPayload).length > 0) {
-    const correctAddressPayload = validateAddressObject(mergedAddressPayload);
-    mergedFieldPayload.ADDRESS = correctAddressPayload;
-  }
-
-  // for sending any fields other than email_address, while the email is already existing
-  // enableMergeFields needs to be set to true.
-  if (isDefinedAndNotNull(updateSubscription) && emailExists) {
-    if (isDefined(enableMergeFields) && enableMergeFields === true) {
-      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
-    } else {
-      mergeFields = null;
-    }
-  } else {
-    // if user sends a non-existing email, then also enableMergeField is checked
-    // eslint-disable-next-line no-lonely-if
-    if (isDefined(enableMergeFields) && enableMergeFields === true) {
-      mergeFields = mergeAdditionalTraitsFields(traits, mergedFieldPayload);
-    }
-  }
-  primaryPayload = { ...primaryPayload, merge_fields: mergeFields };
-
-  /*
-
-  * The following block is dedicated for deducing the "status" field of the
-    output payload. 
-
-  * Status field can be manually changed "only" for the already existing subscribers.
-
-  * If the particular email is not suscribed already, Rudderstack will check if double 
-    opt-in is switched on, in that case, the status is set as "pending". Otherwise, it is 
-    set to "subscribed"
-
-  * Rudderstack is not setting any default status for already existing emails, unless appropriate 
-    "subscriptionStatus" is provided via integrations object.
-
-  */
-
-  if (isDefinedAndNotNull(updateSubscription) && emailExists) {
-    Object.keys(updateSubscription).forEach(field => {
-      if (field === "subscriptionStatus") {
-        // for existing emails, the status of the user can be changed manually
-        // from the integrations object values
-        primaryPayload.status = updateSubscription[field];
-      } else {
-        // other integration object fields will be sent as it is with the payload
-        primaryPayload[field] = updateSubscription[field];
-      }
-    });
-  } else if (!emailExists) {
-    const isDoubleOptin = await checkIfDoubleOptIn(
-      apiKey,
-      datacenterId,
-      audienceId
-    );
-    if (isDoubleOptin) {
-      primaryPayload.status = SUBSCRIPTION_STATUS.pending;
-    } else {
-      primaryPayload.status = SUBSCRIPTION_STATUS.subscribed;
-    }
-  }
-  if (
-    primaryPayload.status &&
-    !VALID_STATUSES.includes(primaryPayload.status)
-  ) {
-    throw new CustomError(
-      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
-      400
-    );
-  }
-
-  return removeUndefinedAndNullValues(primaryPayload);
-};
-
-const responseBuilderSimple = async (
-  finalPayload,
-  message,
-  messageConfig,
-  audienceId,
-  emailExists
-) => {
-  const { datacenterId, apiKey } = messageConfig;
+const responseBuilderSimple = (finalPayload, email, Config, audienceId) => {
+  const { datacenterId, apiKey } = Config;
   const response = defaultRequestConfig();
-  const email = getFieldValueFromMessage(message, "email");
-  if (emailExists) {
-    stitchEndpointAndMethodForExistingEmails(
-      datacenterId,
-      audienceId,
-      email,
-      response
-    );
-  } else {
-    stitchEndpointAndMethodForNONExistingEmails(
-      datacenterId,
-      audienceId,
-      email,
-      response
-    );
-  }
-
+  response.endpoint = mailChimpSubscriptionEndpoint(
+    datacenterId,
+    audienceId,
+    email
+  );
+  response.method = defaultPutRequestConfig.requestMethod;
   response.body.JSON = finalPayload;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   if (finalPayload.status && !VALID_STATUSES.includes(finalPayload.status)) {
@@ -167,105 +40,26 @@ const responseBuilderSimple = async (
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     },
-    userId: getFieldValueFromMessage(message, "userId")
+    audienceId
   };
 };
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  const { apiKey, datacenterId, enableMergeFields } = Config;
   const email = getFieldValueFromMessage(message, "email");
-  let audienceId;
-
   if (!email) {
-    throw new CustomError("email is required for identify", 400);
+    throw new CustomError("[Mailchimp] :: Email is required for identify", 400);
   }
-  const primaryPayload = {
-    email_address: email
-  };
-
-  if (message.context.MailChimp) {
-    if (message.context.MailChimp.listId) {
-      audienceId = message.context.MailChimp.listId;
-    } else {
-      audienceId = Config.audienceId;
-    }
-  } else {
-    audienceId = Config.audienceId;
-  }
-  if (mappedToDestination) {
-    /**
-    Passing the traits as it is, for reverseETL sources. For these sources, 
-    it is expected to have merge fields in proper format, along with appropriate status 
-    as well.
-     */
-    addExternalIdToTraits(message);
-    const updatedTraits = getFieldValueFromMessage(message, "traits");
-
-    const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-
-    if (Object.keys(mergedAddressPayload).length > 0) {
-      // From the behaviour of destination we know that, if address
-      // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
-
-      const correctAddressPayload = validateAddressObject(mergedAddressPayload);
-      updatedTraits.merge_fields.ADDRESS = correctAddressPayload;
-    }
-    return responseBuilderSimple(
-      updatedTraits,
-      message,
-      Config,
-      audienceId,
-      false // sending emailExists as false, for reverseETL, as the events will be
-      // sent to the dedicated batching endpoint. Hence we do not need to deduce the
-      // endpoint or method for this case.
-    );
-  }
-
-  const emailExists = await checkIfMailExists(
-    apiKey,
-    datacenterId,
-    audienceId,
-    email
-  );
-
-  // const emailExists = false;
-
-  /* 
-  Integrations object is supposed to be present inside message, and is expected
-  to be in the following format:
-  
-   "integrations": {
-        "MailChimp": {
-          "subscriptionStatus": "subscribed"
-        }
-      }
-  */
-  const updateSubscription = getIntegrationsObj(message, "mailchimp");
-
-  const mergedFieldPayload = await processPayloadBuild(
-    message,
-    updateSubscription,
-    primaryPayload,
-    Config,
-    emailExists,
-    audienceId,
-    enableMergeFields
-  );
-
-  return responseBuilderSimple(
-    mergedFieldPayload,
-    message,
-    Config,
-    audienceId,
-    emailExists
-  );
+  const audienceId = getAudienceId(message, Config);
+  const processedPayload = await processPayload(message, Config, audienceId);
+  return responseBuilderSimple(processedPayload, email, Config, audienceId);
 };
 
 const process = async event => {
+  let response;
   const { message, destination } = event;
-
+  const messageType = message.type.toLowerCase();
   const destConfig = destination.Config;
+
   if (!destConfig.apiKey) {
     throw new CustomError("API Key not found. Aborting", 400);
   }
@@ -285,9 +79,6 @@ const process = async event => {
     );
   }
 
-  const messageType = message.type.toLowerCase();
-
-  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, destination);
@@ -301,76 +92,40 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(successRespList) {
-  // Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
-  let eventsChunk = []; // temporary variable to divide payload into chunks
+// Batching reference doc: https://mailchimp.com/developer/marketing/api/lists/
+const batchEvents = successRespList => {
   const batchedResponseList = [];
-  const arrayChunks = []; // transformed payload of (n) batch size
-
-  successRespList.forEach((event, index) => {
-    eventsChunk.push(event);
-    if (
-      eventsChunk.length === MAX_BATCH_SIZE ||
-      index === successRespList.length - 1
-    ) {
-      arrayChunks.push(eventsChunk);
-      eventsChunk = [];
-    }
-  });
-
-  // list of chunks [ [..], [..] ]
-  arrayChunks.forEach(chunk => {
-    let batchEventResponse = defaultBatchRequestConfig();
-    const batchResponseList = [];
-    const metadata = [];
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-
-    // Batch event into dest batch structure
-    chunk.forEach(event => {
-      batchResponseList.push(event.message.body.JSON);
-      metadata.push(event.metadata);
-    });
-
-    batchEventResponse.batchedRequest.body.JSON = {
-      members: batchResponseList,
-
-      // setting this to "true" will update user details, if a user already exists
-      update_existing: true
-    };
-
-    const BATCH_ENDPOINT = getBatchEndpoint(destination.Config);
-
-    batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
-
-    const basicAuth = Buffer.from(
-      `apiKey:${destination.Config.apiKey}`
-    ).toString("base64");
-
-    batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true
-      )
+  // {
+  //    audienceId1: [...events]
+  //    audienceId2: [...events]
+  // }
+  const audienceEventGroups = _.groupBy(
+    successRespList,
+    event => event.message.audienceId
+  );
+  Object.keys(audienceEventGroups).forEach(audienceId => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = _.chunk(
+      audienceEventGroups[audienceId],
+      MAX_BATCH_SIZE
     );
+    eventChunks.forEach(chunk => {
+      const batchEventResponse = generateBatchedPaylaodForArray(
+        audienceId,
+        chunk
+      );
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true
+        )
+      );
+    });
   });
-
   return batchedResponseList;
-}
+};
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
@@ -379,23 +134,10 @@ const processRouterDest = async inputs => {
   }
   let batchResponseList = [];
   const batchErrorRespList = [];
-  const reverseETLEventArray = [];
-  const conventionalEventArray = [];
   const successRespList = [];
-  // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-
-  inputs.forEach(singleInput => {
-    const { message } = singleInput;
-    if (isDefinedAndNotNull(get(message, MappedToDestinationKey))) {
-      reverseETLEventArray.push(singleInput);
-    } else {
-      conventionalEventArray.push(singleInput);
-    }
-  });
-  // only events coming from reverseETL sources are sent to batch endPoint.
   await Promise.all(
-    reverseETLEventArray.map(async event => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -406,11 +148,12 @@ const processRouterDest = async inputs => {
           });
         } else {
           // if not transformed
-          successRespList.push({
+          const transformedPayload = {
             message: await process(event),
             metadata: event.metadata,
             destination
-          });
+          };
+          successRespList.push(transformedPayload);
         }
       } catch (error) {
         batchErrorRespList.push(
@@ -423,43 +166,11 @@ const processRouterDest = async inputs => {
       }
     })
   );
-
-  // array of events recieved from sources except of reverseETL, are sent using normal router transform
-  const respList = await Promise.all(
-    conventionalEventArray.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);
   }
 
-  return [...batchResponseList, ...respList, ...batchErrorRespList];
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

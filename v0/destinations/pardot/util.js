@@ -104,9 +104,12 @@ const responseHandler = destinationResponse => {
 
 const prepareProxyReq = async request => {
   const { body } = request;
-  const proxyRequestData = prepareProxyRequest(request);
-  const { endpoint, data, method, params, headers } = proxyRequestData;
+  // Build the destination request data using the generic method
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
 
+  // Modify the data
   const { payloadFormat } = getPayloadData(body);
   if (payloadFormat === "FORM") {
     data.append("format", "json");

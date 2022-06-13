@@ -11,7 +11,7 @@ const {
   constructPayload,
   defaultRequestConfig,
   defaultGetRequestConfig,
-  removeUndefinedAndNullAndEmptyValues,
+  removeUndefinedAndNullValues,
   CustomError,
   extractCustomFields,
   getValueFromMessage
@@ -49,7 +49,7 @@ const generateRevenuePayload = (products, payload, Config, eventAttributes) => {
     let finalpayload = { ...payload, ...productDetails };
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}/evt`;
-    finalpayload = removeUndefinedAndNullAndEmptyValues(finalpayload);
+    finalpayload = removeUndefinedAndNullValues(finalpayload);
     response.params = { ...finalpayload, a: Config.apiKey, e: eventAttributes };
     response.method = defaultGetRequestConfig.requestMethod;
     responseArray.push(response);
@@ -110,12 +110,6 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
         `${platform.toLowerCase()}_${typeOfEvent.toLowerCase()}_exclusion_list`
       ]
     );
-
-    /*
-      if att_authorization_status is true then dnt will be false,
-      else by default dnt value is true
-    */
-    payload.dnt = !payload.att_authorization_status;
   } else {
     throw new CustomError("[Singular] :: Invalid Platform", 400);
   }

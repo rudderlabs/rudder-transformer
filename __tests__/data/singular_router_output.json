@@ -88,7 +88,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     }
   },
@@ -181,7 +191,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     }
   },
@@ -274,7 +294,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     }
   }

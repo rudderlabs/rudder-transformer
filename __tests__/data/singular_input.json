@@ -3,7 +3,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -24,9 +34,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -104,7 +114,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -125,9 +145,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -205,7 +225,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -225,9 +255,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -291,7 +321,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -312,9 +352,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -380,7 +420,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -401,9 +451,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -469,7 +519,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -490,9 +550,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -557,7 +617,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "titanium"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -578,9 +648,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -641,7 +711,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -662,9 +742,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -725,7 +805,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -746,9 +836,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -807,7 +897,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -828,9 +928,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -894,7 +994,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -915,9 +1025,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -981,7 +1091,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -1002,9 +1122,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -1068,7 +1188,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -1089,9 +1219,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {
@@ -1155,7 +1285,17 @@
     "destination": {
       "Config": {
         "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "sessionEventList": ["mysessionevent", "randomuser", "myrandomevent"]
+        "sessionEventList": [
+          {
+            "sessionEventName": "mysessionevent"
+          },
+          {
+            "sessionEventName": "randomuser"
+          },
+          {
+            "sessionEventName": "titanium"
+          }
+        ]
       }
     },
     "message": {
@@ -1176,9 +1316,9 @@
           "name": "generic_x86",
           "type": "android",
           "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "attStatus": "true",
+          "attStatus": true,
           "id": "fc8d449516de0dfb",
-          "adTrackingEnabled": "true",
+          "adTrackingEnabled": true,
           "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
         },
         "library": {

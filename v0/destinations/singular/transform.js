@@ -1,23 +1,10 @@
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  BASE_URL,
-  sessionEvents,
-  SINGULAR_SESSION_ANDROID_EXCLUSION,
-  SINGULAR_SESSION_IOS_EXCLUSION,
-  SINGULAR_EVENT_ANDROID_EXCLUSION,
-  SINGULAR_EVENT_IOS_EXCLUSION
-} = require("./config");
+const { BASE_URL, sessionEvents } = require("./config");
 const {
   defaultRequestConfig,
-  constructPayload,
-  CustomError,
   defaultGetRequestConfig,
-  removeUndefinedAndNullAndEmptyValues,
+  removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  extractCustomFields,
-  getValueFromMessage
+  getErrorRespEvents
 } = require("../../util");
 
 const {
@@ -33,10 +20,10 @@ const responseBuilderSimple = (message, { Config }) => {
     Use the session notification endpoint to report a session to Singular
     https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Session_Notification_Endpoint
   */
-  if (
-    Config.sessionEventList.includes(eventType) ||
-    sessionEvents.includes(eventType)
-  ) {
+  const sessionName = Config.sessionEventList.findIndex(
+    o => o.sessionEventName === eventType
+  );
+  if (sessionName != -1 || sessionEvents.includes(eventType)) {
     let { payload, eventAttributes } = platformWisePayloadGenerator(
       message,
       true
@@ -49,7 +36,7 @@ const responseBuilderSimple = (message, { Config }) => {
       payload.c = "carrier";
     }
 
-    payload = removeUndefinedAndNullAndEmptyValues(payload);
+    payload = removeUndefinedAndNullValues(payload);
     endPoint = `${BASE_URL}/launch`;
     response.endpoint = `${endPoint}`;
     response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
@@ -69,7 +56,7 @@ const responseBuilderSimple = (message, { Config }) => {
       return generateRevenuePayload(products, payload, Config, eventAttributes);
     }
     endPoint = `${BASE_URL}/evt`;
-    payload = removeUndefinedAndNullAndEmptyValues(payload);
+    payload = removeUndefinedAndNullValues(payload);
     response.endpoint = `${endPoint}`;
     response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
     response.method = defaultGetRequestConfig.requestMethod;

@@ -335,13 +335,14 @@ const process = event => {
         const traits = getFieldValueFromMessage(message, "traits");
         // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
+        if (!isDefinedAndNotNull(firstLogin)) {
+          throw new CustomError(
+            `[GA4] Identify:: ${Config.newOrExistingUserTrait} is a required field in traits`,
+            400
+          );
+        }
+
         if (Config.sendLoginSignup) {
-          if (!isDefinedAndNotNull(firstLogin)) {
-            throw new CustomError(
-              `[GA4] Idenitfy:: ${Config.newOrExistingUserTrait} is a required field in traits`,
-              400
-            );
-          }
           if (firstLogin) {
             message.event = "sign_up";
           } else {

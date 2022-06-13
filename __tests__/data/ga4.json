@@ -380,7 +380,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -560,7 +563,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -713,7 +719,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -854,7 +863,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1015,7 +1027,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1185,7 +1200,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1362,7 +1380,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1535,7 +1556,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1701,7 +1725,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -1867,7 +1894,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2034,7 +2064,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2203,7 +2236,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2373,7 +2409,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2546,7 +2585,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2722,7 +2764,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -2875,7 +2920,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3023,7 +3071,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3167,7 +3218,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3284,7 +3338,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3401,7 +3458,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3519,7 +3579,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3634,7 +3697,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3749,7 +3815,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3865,7 +3934,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -3981,7 +4053,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4097,7 +4172,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4217,7 +4295,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4333,7 +4414,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4448,7 +4532,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4563,7 +4650,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4680,7 +4770,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4800,7 +4893,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -4919,7 +5015,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5035,7 +5134,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5150,7 +5252,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5265,7 +5370,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5382,7 +5490,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5503,7 +5614,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5619,7 +5733,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5731,7 +5848,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5846,7 +5966,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -5987,7 +6110,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6150,7 +6276,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6290,7 +6419,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6411,7 +6543,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6532,7 +6667,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6629,7 +6767,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6756,7 +6897,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6886,7 +7030,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -6983,7 +7130,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7102,7 +7252,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7241,7 +7394,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7358,7 +7514,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7474,7 +7633,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7590,7 +7752,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7680,7 +7845,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7771,7 +7939,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7862,7 +8033,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -7973,7 +8147,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8063,7 +8240,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8149,7 +8329,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8251,7 +8434,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8342,7 +8528,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8432,7 +8621,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8569,7 +8761,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8738,7 +8933,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8820,7 +9018,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -8927,7 +9128,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -9042,7 +9246,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -9133,7 +9340,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -9250,7 +9460,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -9396,7 +9609,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }
@@ -9521,6 +9737,7 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": false,
           "sendLoginSignup": false,
           "generateLead": false
         },
@@ -9642,6 +9859,7 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": false,
           "sendLoginSignup": false,
           "generateLead": false
         },
@@ -9650,7 +9868,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4] Idenitfy:: Server side identify is not enabled",
+      "error": "[GA4] Identify:: Server side identify is not enabled",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -9659,7 +9877,7 @@
     }
   },
   {
-    "description": "[Error] GA4: Idenitfy event without providing traits properties",
+    "description": "[Error] GA4: identify event without providing traits properties",
     "input": {
       "message": {
         "channel": "web",
@@ -9738,8 +9956,9 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": true,
           "sendLoginSignup": true,
-          "signupTrait": "firstLogin",
+          "newOrExistingUserTrait": "firstLogin",
           "loginSignupMethod": "method",
           "generateLead": false
         },
@@ -9748,7 +9967,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4] Idenitfy:: firstLogin is a required field in traits",
+      "error": "[GA4] Identify:: firstLogin is a required field in traits",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -9837,8 +10056,9 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": true,
           "sendLoginSignup": true,
-          "signupTrait": "firstLogin",
+          "newOrExistingUserTrait": "firstLogin",
           "loginSignupMethod": "method",
           "generateLead": false
         },
@@ -9935,7 +10155,8 @@
         "type": "identify",
         "traits": {
           "value": 10,
-          "cust1": 1234
+          "cust1": 1234,
+          "firstLogin": true
         },
         "integrations": {
           "All": true
@@ -9962,6 +10183,8 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": true,
+          "newOrExistingUserTrait": "firstLogin",
           "sendLoginSignup": false,
           "generateLead": true,
           "generateLeadValueTrait": "value",
@@ -10090,8 +10313,9 @@
               "eventName": ""
             }
           ],
+          "enableServerSideIdentify": true,
           "sendLoginSignup": true,
-          "signupTrait": "firstLogin",
+          "newOrExistingUserTrait": "firstLogin",
           "loginSignupMethod": "method",
           "generateLead": true,
           "generateLeadValueTrait": "value",
@@ -10276,7 +10500,10 @@
             {
               "eventName": ""
             }
-          ]
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
         },
         "Enabled": true
       }

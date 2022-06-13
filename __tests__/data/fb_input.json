@@ -372,6 +372,7 @@
           "advertisingId": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
           "type": "Android"
         },
+        "ip": "1.2.3.4",
         "network": {
           "carrier": "Banglalink"
         },
@@ -380,9 +381,11 @@
           "version": "8.1.0"
         },
         "screen": {
-          "height": "100",
-          "density": 50
+          "width": "640",
+          "height": "480",
+          "density": 1.23456
         },
+        "timezone": "Europe/Berlin",
         "traits": {
           "email": "abc@gmail.com",
           "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
@@ -1071,6 +1074,7 @@
       "properties": {
         "name": "Viewed Main Screen1 by expicit call Screen"
       },
+      "request_ip": "2.3.4.5",
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "type": "screen"
     },

@@ -161,6 +161,11 @@ const httpPATCH = async (url, data, options) => {
   return clientResponse;
 };
 
+/**
+ * Prepares the proxy request
+ * @param {*} request
+ * @returns
+ */
 const prepareProxyRequest = request => {
   const { body, method, params, endpoint } = request;
   let { headers } = request;
@@ -207,6 +212,8 @@ const prepareProxyRequest = request => {
     default:
       log.debug(`body format ${payloadFormat} not supported`);
   }
+  // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
+  headers["User-Agent"] = "RudderLabs";
   return { endpoint, data, params, headers, method };
 };
 

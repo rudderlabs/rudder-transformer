@@ -102,7 +102,7 @@ const responseHandler = destinationResponse => {
   };
 };
 
-const prepareProxyReq = async request => {
+const prepareProxyReq = request => {
   const { body } = request;
   // Build the destination request data using the generic method
   const { endpoint, data, method, params, headers } = prepareProxyRequest(

@@ -132,8 +132,10 @@ const responseBuilder = (message, { Config }) => {
     const traits = getFieldValueFromMessage(message, "traits");
 
     // exclusion list for login/signup and generate_lead
+    // identify has newOrExistingUserTrait, loginSignupMethod
+    // generateLeadValueTrait, generateLeadCurrencyTrait property
     const GA4_IDENTIFY_EXCLUSION = [
-      `${Config.signupTrait}`,
+      `${Config.newOrExistingUserTrait}`,
       `${Config.loginSignupMethod}`,
       `${Config.generateLeadValueTrait}`,
       `${Config.generateLeadCurrencyTrait}`
@@ -156,9 +158,7 @@ const responseBuilder = (message, { Config }) => {
         let parameter = {};
         // taking value parameter
         // depending on generateLeadValueTrait key defined in Config
-        parameter.value = parseFloat(
-          traits[`${Config.generateLeadValueTrait}`]
-        );
+        parameter.value = traits[`${Config.generateLeadValueTrait}`];
         // taking currency paramter
         // depending on generateLeadCurrencyTrait key defined in Config
         parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
@@ -166,7 +166,7 @@ const responseBuilder = (message, { Config }) => {
 
         if (!isDefinedAndNotNull(parameter.value)) {
           throw new CustomError(
-            `[GA4] Identify:: ${Config.generateLeadValueTrait} is a required field in traits`,
+            `[GA4] Identify:: ${Config.generateLeadValueTrait} is a required field in traits for 'generate_lead' event`,
             400
           );
         }
@@ -175,6 +175,7 @@ const responseBuilder = (message, { Config }) => {
           parameter.currency = "USD";
         }
 
+        parameter.value = parseFloat(parameter.value);
         payload.params = parameter;
         break;
       }
@@ -327,41 +328,40 @@ const process = event => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = [];
-      // 1. send login/signup event based on config
-      // Convert identify event to Login or Signup event toggle is enabled
-      if (Config.sendLoginSignup) {
+      if (Config.enableServerSideIdentify) {
+        response = [];
+        // 1. send login/signup event based on config
+        // Convert identify event to Login or Signup event
         const traits = getFieldValueFromMessage(message, "traits");
-        // signupTrait can be 'firstLogin' keyword - true/false
-        const firstLogin = traits[`${Config.signupTrait}`];
-        if (!isDefinedAndNotNull(firstLogin)) {
-          throw new CustomError(
-            `[GA4] Idenitfy:: ${Config.signupTrait} is a required field in traits`,
-            400
-          );
+        // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
+        const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
+        if (Config.sendLoginSignup) {
+          if (!isDefinedAndNotNull(firstLogin)) {
+            throw new CustomError(
+              `[GA4] Idenitfy:: ${Config.newOrExistingUserTrait} is a required field in traits`,
+              400
+            );
+          }
+          if (firstLogin) {
+            message.event = "sign_up";
+          } else {
+            message.event = "login";
+          }
+
+          response.push(responseBuilder(message, destination));
         }
-        if (firstLogin) {
-          message.event = "sign_up";
-        } else {
-          message.event = "login";
+
+        // 2. send generate_lead based on config
+        if (Config.generateLead && firstLogin === true) {
+          message.event = "generate_lead";
+          response.push(responseBuilder(message, destination));
         }
-
-        response.push(responseBuilder(message, destination));
-      }
-
-      // 2. send generate_lead based on config
-      if (Config.generateLead) {
-        message.event = "generate_lead";
-        response.push(responseBuilder(message, destination));
-      }
-
-      if (response.length === 0) {
+      } else {
         throw new CustomError(
-          "[GA4] Idenitfy:: Server side identify is not enabled",
+          "[GA4] Identify:: Server side identify is not enabled",
           400
         );
       }
-
       break;
     case EventType.TRACK:
       response = responseBuilder(message, destination);

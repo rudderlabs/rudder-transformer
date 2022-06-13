@@ -90,7 +90,7 @@
     "audienceId": "df42a82d07"
   },
   {
-    "error": "[Mailchimp]:: User does not have access to the requested operation"
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   },
   {
     "statusCode": 400,

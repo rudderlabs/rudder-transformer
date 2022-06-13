@@ -298,6 +298,7 @@ const processPayload = async (message, Config, audienceId) => {
   let email;
   const { apiKey, datacenterId, enableMergeFields } = Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
+  // Events from RETL Source
   if (mappedToDestination) {
     // Passing the traits as it is, for reverseETL sources. For these sources,
     // it is expected to have merge fields in proper format, along with appropriate status.
@@ -332,31 +333,31 @@ const processPayload = async (message, Config, audienceId) => {
         merge_fields: mergeAdditionalTraitsFields(traits, mergedFieldPayload)
       };
     }
-  }
-
-  const userStatus = await checkIfMailExists(
-    apiKey,
-    datacenterId,
-    audienceId,
-    email
-  );
-
-  if (!userStatus.exists) {
-    const isDoubleOptin = await checkIfDoubleOptIn(
+    const userStatus = await checkIfMailExists(
       apiKey,
       datacenterId,
-      audienceId
+      audienceId,
+      email
     );
-    primaryPayload.status = isDoubleOptin
-      ? SUBSCRIPTION_STATUS.pending
-      : SUBSCRIPTION_STATUS.subscribed;
-  } else {
-    primaryPayload = overrideSubscriptionStatus(
-      message,
-      primaryPayload,
-      userStatus
-    );
+
+    if (!userStatus.exists) {
+      const isDoubleOptin = await checkIfDoubleOptIn(
+        apiKey,
+        datacenterId,
+        audienceId
+      );
+      primaryPayload.status = isDoubleOptin
+        ? SUBSCRIPTION_STATUS.pending
+        : SUBSCRIPTION_STATUS.subscribed;
+    } else {
+      primaryPayload = overrideSubscriptionStatus(
+        message,
+        primaryPayload,
+        userStatus
+      );
+    }
   }
+
   return removeUndefinedAndNullValues(primaryPayload);
 };
 

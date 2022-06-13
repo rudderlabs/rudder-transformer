@@ -124,7 +124,7 @@
   },
   {
     "destKey": "bd",
-    "sourceKeys": "properties.build",
+    "sourceKeys": "context.app.build",
     "required": true
   },
   {

@@ -62,6 +62,11 @@
     "required": false
   },
   {
+    "destKey": "product_id",
+    "sourceKeys": "properties.product_id",
+    "required": false
+  },
+  {
     "destKey": "purchase_transaction_id",
     "sourceKeys": "properties.purchase_transaction_id",
     "required": false

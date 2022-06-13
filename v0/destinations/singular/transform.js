@@ -20,13 +20,24 @@ const {
   getValueFromMessage
 } = require("../../util");
 
+const extractExtraFields = (message, EXCLUSION_FIELDS) => {
+  const eventAttributes = {};
+  extractCustomFields(
+    message,
+    eventAttributes,
+    ["properties"],
+    EXCLUSION_FIELDS
+  );
+  return eventAttributes;
+};
+
 const responseBuilderSimple = (message, { Config }) => {
   // trim and replace spaces with "_"
   message.event = message.event.trim().replace(/\s+/g, " ");
+  let payload, endPoint;
+  let eventAttributes = {};
   const eventType = message.event;
   const response = defaultRequestConfig();
-  const eventAttributes = {};
-  let payload, endPoint;
   const platform = getValueFromMessage(message, "context.os.name");
   if (!platform) {
     throw new CustomError("[Singular] :: Platform name is missing", 400);
@@ -44,10 +55,8 @@ const responseBuilderSimple = (message, { Config }) => {
         // fail-safety for developer error
         throw new CustomError("Failed to Create Android Session Payload", 400);
       }
-      extractCustomFields(
+      eventAttributes = extractExtraFields(
         message,
-        eventAttributes,
-        ["properties"],
         SINGULAR_SESSION_ANDROID_EXCLUSION
       );
     } else if (platform.toLowerCase() === "ios") {
@@ -59,10 +68,8 @@ const responseBuilderSimple = (message, { Config }) => {
         // fail-safety for developer error
         throw new CustomError("Failed to Create iOS Session Payload", 400);
       }
-      extractCustomFields(
+      eventAttributes = extractExtraFields(
         message,
-        eventAttributes,
-        ["properties"],
         SINGULAR_SESSION_IOS_EXCLUSION
       );
 
@@ -95,10 +102,9 @@ const responseBuilderSimple = (message, { Config }) => {
         // fail-safety for developer error
         throw new CustomError("Failed to Create Android Event Payload", 400);
       }
-      extractCustomFields(
+
+      eventAttributes = extractExtraFields(
         message,
-        eventAttributes,
-        ["properties"],
         SINGULAR_EVENT_ANDROID_EXCLUSION
       );
     } else if (platform.toLowerCase() === "ios") {
@@ -110,10 +116,9 @@ const responseBuilderSimple = (message, { Config }) => {
         // fail-safety for developer error
         throw new CustomError("Failed to Create iOS Event Payload", 400);
       }
-      extractCustomFields(
+
+      eventAttributes = extractExtraFields(
         message,
-        eventAttributes,
-        ["properties"],
         SINGULAR_EVENT_IOS_EXCLUSION
       );
     } else {

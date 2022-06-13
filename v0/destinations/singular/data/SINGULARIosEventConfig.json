@@ -1,0 +1,99 @@
+[
+  {
+    "destKey": "n",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "p",
+    "sourceKeys": "context.os.name",
+    "required": true
+  },
+  {
+    "destKey": "i",
+    "sourceKeys": "context.app.namespace",
+    "required": true
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": "request_ip",
+    "required": true
+  },
+  {
+    "destKey": "ve",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "att_authorization_status",
+    "sourceKeys": "context.device.attStatus",
+    "required": true
+  },
+  {
+    "destKey": "custom_user_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "utimȩ",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "skan_conversion_value",
+    "sourceKeys": "properties.skan_conversion_value",
+    "required": false
+  },
+  {
+    "destKey": "skan_first_call_timestamp",
+    "sourceKeys": "properties.skan_first_call_timestamp",
+    "required": false
+  },
+  {
+    "destKey": "skan_last_call_timestamp",
+    "sourceKeys": "properties.skan_last_call_timestamp",
+    "required": false
+  },
+  {
+    "destKey": "is_revenue_event",
+    "sourceKeys": "properties.is_revenue_event",
+    "required": false
+  },
+  {
+    "destKey": "amt",
+    "sourceKeys": "properties.price",
+    "required": false
+  },
+  {
+    "destKey": "cur",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "purchase_receipt",
+    "sourceKeys": "properties.purchase_receipt",
+    "required": false
+  },
+  {
+    "destKey": "purchase_product_id",
+    "sourceKeys": "properties.product_id",
+    "required": false
+  },
+  {
+    "destKey": "purchase_transaction_id",
+    "sourceKeys": "properties.purchase_transaction_id",
+    "required": false
+  },
+  {
+    "destKey": "idfa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "idfv",
+    "sourceKeys": "context.device.id",
+    "required": true
+  }
+]

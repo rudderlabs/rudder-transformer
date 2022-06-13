@@ -25,11 +25,6 @@
     "required": true
   },
   {
-    "destKey": "att_authorization_status",
-    "sourceKeys": "context.device.attStatus",
-    "required": true
-  },
-  {
     "destKey": "custom_user_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
@@ -39,21 +34,6 @@
     "destKey": "utimȩ",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
-    "destKey": "skan_conversion_value",
-    "sourceKeys": "properties.skan_conversion_value",
-    "required": false
-  },
-  {
-    "destKey": "skan_first_call_timestamp",
-    "sourceKeys": "properties.skan_first_call_timestamp",
-    "required": false
-  },
-  {
-    "destKey": "skan_last_call_timestamp",
-    "sourceKeys": "properties.skan_last_call_timestamp",
     "required": false
   },
   {
@@ -84,6 +64,29 @@
   {
     "destKey": "purchase_transaction_id",
     "sourceKeys": "properties.purchase_transaction_id",
+    "required": false
+  },
+  {
+    "destKey": "aifa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "andi",
+    "sourceKeys": "context.device.id",
+    "required": true
+  },
+  {
+    "destKey": "asid",
+    "sourceKeys": "properties.asid",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "receipt_signature",
+    "sourceKeys": "properties.receipt_signature",
     "required": false
   }
 ]

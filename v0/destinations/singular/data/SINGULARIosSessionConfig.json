@@ -40,24 +40,8 @@
     "required": true
   },
   {
-    "destKey": "install_source",
-    "sourceKeys": "properties.referring_application",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
     "destKey": "install_receipt",
     "sourceKeys": "properties.install_receipt",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
-    "destKey": "asid",
-    "sourceKeys": "properties.asid",
     "required": true,
     "metadata": {
       "defaultValue": ""
@@ -87,11 +71,6 @@
     "required": true
   },
   {
-    "destKey": "install_ref",
-    "sourceKeys": "properties.install_ref",
-    "required": false
-  },
-  {
     "destKey": "custom_user_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
@@ -114,23 +93,13 @@
     "required": false
   },
   {
-    "destKey": "fcm",
-    "sourceKeys": "context.device.token",
-    "required": false
-  },
-  {
-    "destKey": "gcm",
-    "sourceKeys": "context.device.token",
-    "required": false
-  },
-  {
     "destKey": "apns_token",
     "sourceKeys": "context.device.token",
     "required": false
   },
   {
     "destKey": "ua",
-    "sourceKeys": "context.userAgent",
+    "sourceKeys": "properties.userAgent",
     "required": false
   },
   {
@@ -152,5 +121,37 @@
     "destKey": "skan_last_call_timestamp",
     "sourceKeys": "properties.skan_last_call_timestamp",
     "required": false
+  },
+  {
+    "destKey": "bd",
+    "sourceKeys": "properties.build",
+    "required": true
+  },
+  {
+    "destKey": "install",
+    "sourceKeys": "properties.install",
+    "required": true
+  },
+  {
+    "destKey": "idfa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "idfv",
+    "sourceKeys": "context.device.id",
+    "required": true
+  },
+  {
+    "destKey": "install_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "update_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
   }
 ]

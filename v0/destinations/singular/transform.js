@@ -1,11 +1,12 @@
-const get = require("get-value");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   BASE_URL,
   sessionEvents,
-  SINGULAR_SESSION_EXCLUSION,
-  SINGULAR_EVENT_EXCLUSION
+  SINGULAR_SESSION_ANDROID_EXCLUSION,
+  SINGULAR_SESSION_IOS_EXCLUSION,
+  SINGULAR_EVENT_ANDROID_EXCLUSION,
+  SINGULAR_EVENT_IOS_EXCLUSION
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -13,10 +14,10 @@ const {
   CustomError,
   defaultGetRequestConfig,
   removeUndefinedAndNullAndEmptyValues,
-  isAppleFamily,
   getSuccessRespEvents,
   getErrorRespEvents,
-  extractCustomFields
+  extractCustomFields,
+  getValueFromMessage
 } = require("../../util");
 
 const responseBuilderSimple = (message, { Config }) => {
@@ -24,81 +25,123 @@ const responseBuilderSimple = (message, { Config }) => {
   message.event = message.event.trim().replace(/\s+/g, " ");
   const eventType = message.event;
   const response = defaultRequestConfig();
+  const eventAttributes = {};
+  let payload, endPoint;
+  const platform = getValueFromMessage(message, "context.os.name");
+  if (
+    Config.sessionEventList.includes(eventType) ||
+    sessionEvents.includes(eventType)
+  ) {
+    if (platform.toLowerCase() === "android") {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION_ANDROID.name]
+      );
+      if (!payload) {
+        // fail-safety for developer error
+        throw new CustomError("Failed to Create Android Session Payload", 400);
+      }
+      extractCustomFields(
+        message,
+        eventAttributes,
+        ["properties"],
+        SINGULAR_SESSION_ANDROID_EXCLUSION
+      );
+    } else if (platform.toLowerCase() === "ios") {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION_IOS.name]
+      );
+      if (!payload) {
+        // fail-safety for developer error
+        throw new CustomError("Failed to Create iOS Session Payload", 400);
+      }
+      extractCustomFields(
+        message,
+        eventAttributes,
+        ["properties"],
+        SINGULAR_SESSION_IOS_EXCLUSION
+      );
 
-  const setDevice = payload => {
-    if (isAppleFamily(payload.p)) {
-      payload.idfa = get(message, "context.device.advertisingId");
-      payload.idfv = get(message, "context.device.id");
       /*
-        Android - Captured from SDK. No need to pass it explicitly
-        iOS - No need to capture from SDK. Need to pass it explicitly under properties.ua.
-      */
-      payload.ua = get(message, "properties.ua");
-    } else if (payload.p.toLowerCase() === "android") {
-      payload.aifa = get(message, "context.device.advertisingId");
-      payload.andi = get(message, "context.device.id");
-    }
-    return payload;
-  };
-
-  if (sessionEvents.includes(eventType)) {
-    let sessionPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.SESSION.name]
-    );
-    if (!sessionPayload) {
-      // fail-safety for developer error
-      throw new CustomError("Failed to Create Session Payload", 400);
-    }
-    // const eventAttributes = {};
-    // extractCustomFields(
-    //   message,
-    //   eventAttributes,
-    //   ["properties"],
-    //   SINGULAR_SESSION_EXCLUSION
-    // );
-    sessionPayload = {
-      ...sessionPayload,
-      ...setDevice(sessionPayload)
-      // e: eventAttributes
-    };
-    // Singular maps Connection Type to either wifi or carrier
-    sessionPayload.c = message.context?.network?.wifi ? "wifi" : "carrier";
-    /*
         if att_authorization_status is true then dnt will be false,
         else by default dnt value is true
-    */
-    sessionPayload.dnt = !sessionPayload.att_authorization_status;
-    sessionPayload = { ...sessionPayload, a: Config.apiKey };
-    sessionPayload = removeUndefinedAndNullAndEmptyValues(sessionPayload);
-    let queryString = Object.keys(sessionPayload)
-      .map(key => key + "=" + sessionPayload[key])
-      .join("&");
-    response.endpoint = `${BASE_URL}/launch?${queryString}`;
-  } else {
-    let eventPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT.name]
-    );
-    if (!eventPayload) {
-      // fail-safety for developer error
-      throw new CustomError("Failed to Create Event Payload", 400);
+      */
+      payload.dnt = !payload.att_authorization_status;
+    } else {
+      throw new CustomError("[Singular] :: Invalid Platform", 400);
     }
-    response.endpoint = `${BASE_URL}/evt`;
-    const eventAttributes = {};
-    extractCustomFields(
-      message,
-      eventAttributes,
-      ["properties"],
-      SINGULAR_EVENT_EXCLUSION
-    );
-    eventPayload = {
-      ...eventPayload,
-      ...setDevice(eventPayload),
-      e: eventAttributes
-    };
-    response.params = removeUndefinedAndNullAndEmptyValues(eventPayload);
+
+    // Singular maps Connection Type to either wifi or carrier
+    if (message.context?.network?.wifi === "wifi") {
+      payload.c = "wifi";
+    } else {
+      payload.c = "carrier";
+    }
+
+    payload = removeUndefinedAndNullAndEmptyValues(payload);
+    endPoint = `${BASE_URL}/launch`;
+  } else {
+    // event payload
+    if (platform.toLowerCase() === "android") {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT_ANDROID.name]
+      );
+      if (!payload) {
+        // fail-safety for developer error
+        throw new CustomError("Failed to Create Android Event Payload", 400);
+      }
+      extractCustomFields(
+        message,
+        eventAttributes,
+        ["properties"],
+        SINGULAR_EVENT_ANDROID_EXCLUSION
+      );
+    } else if (platform.toLowerCase() === "ios") {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.EVENT_IOS.name]
+      );
+      if (!payload) {
+        // fail-safety for developer error
+        throw new CustomError("Failed to Create iOS Event Payload", 400);
+      }
+      extractCustomFields(
+        message,
+        eventAttributes,
+        ["properties"],
+        SINGULAR_EVENT_IOS_EXCLUSION
+      );
+    } else {
+      throw new CustomError("[Singular] :: Invalid Platform", 400);
+    }
+    const productList = message.properties?.products;
+    if (productList && Array.isArray(productList)) {
+      const responseArray = [];
+      const finalPayload = payload;
+      for (const product of productList) {
+        const productDetails = constructPayload(
+          product,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name]
+        );
+        payload = { ...payload, ...productDetails };
+        const response = defaultRequestConfig();
+        response.endpoint = `${BASE_URL}/evt`;
+        payload = removeUndefinedAndNullAndEmptyValues(payload);
+        response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
+        response.method = defaultGetRequestConfig.requestMethod;
+        responseArray.push(response);
+        payload = finalPayload;
+      }
+      return responseArray;
+    }
+    endPoint = `${BASE_URL}/evt`;
+    payload = removeUndefinedAndNullAndEmptyValues(payload);
   }
+
+  response.endpoint = `${endPoint}`;
+  response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
   response.method = defaultGetRequestConfig.requestMethod;
   return response;
 };
@@ -158,3 +201,15 @@ const processRouterDest = async inputs => {
   return respList;
 };
 module.exports = { process, processRouterDest };
+
+/*
+// e -> custom_attributes
+
+
+price
+cur
+purchase_receipt
+product_id
+product_transaction_id
+
+*/

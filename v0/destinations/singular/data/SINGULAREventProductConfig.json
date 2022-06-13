@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "product_id",
+    "sourceKeys": "product_id",
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "purchase_receipt",
+    "sourceKeys": "purchase_receipt",
+    "required": false
+  },
+  {
+    "destKey": "cur",
+    "sourceKeys": "cur",
+    "required": false
+  },
+  {
+    "destKey": "product_transaction_id",
+    "sourceKeys": "product_transaction_id",
+    "required": false
+  }
+]

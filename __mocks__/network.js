@@ -14,7 +14,8 @@ const urlDirectoryMap = {
   "braze.com": "braze",
   "bigquery.googleapis.com": "bqstream",
   "pi.pardot.com": "pardot",
-  "googleads.googleapis.com": "google_adwords_remarketing_lists"
+  "googleads.googleapis.com": "google_adwords_remarketing_lists",
+  "graph.facebook.com": "facebook_pixel"
 };
 
 function getData(url) {

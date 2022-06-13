@@ -162,12 +162,11 @@ const httpPATCH = async (url, data, options) => {
 };
 
 /**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
- * note: needed for test api
+ * Prepares the proxy request
  * @param {*} request
  * @returns
  */
-const proxyRequest = async request => {
+const prepareProxyRequest = request => {
   const { body, method, params, endpoint } = request;
   let { headers } = request;
   let data;
@@ -196,7 +195,11 @@ const proxyRequest = async request => {
     case "FORM":
       data = new URLSearchParams();
       Object.keys(payload).forEach(key => {
-        data.append(`${key}`, `${payload[key]}`);
+        let payloadValStr = `${payload[key]}`;
+        if (typeof payload[key] === "object") {
+          payloadValStr = JSON.stringify(payload[key]);
+        }
+        data.append(`${key}`, payloadValStr);
       });
       headers = {
         ...headers,
@@ -209,6 +212,21 @@ const proxyRequest = async request => {
     default:
       log.debug(`body format ${payloadFormat} not supported`);
   }
+  // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
+  headers["User-Agent"] = "RudderLabs";
+  return { endpoint, data, params, headers, method };
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const proxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
   const requestOptions = {
     url: endpoint,
     data,

@@ -161,6 +161,18 @@ const httpPATCH = async (url, data, options) => {
   return clientResponse;
 };
 
+const getPayloadData = body => {
+  let payload;
+  let payloadFormat;
+  Object.entries(body).forEach(([key, value]) => {
+    if (!isEmpty(value)) {
+      payload = value;
+      payloadFormat = key;
+    }
+  });
+  return { payload, payloadFormat };
+};
+
 /**
  * Prepares the proxy request
  * @param {*} request
@@ -168,16 +180,9 @@ const httpPATCH = async (url, data, options) => {
  */
 const prepareProxyRequest = request => {
   const { body, method, params, endpoint } = request;
+  const { payload, payloadFormat } = getPayloadData(body);
   let { headers } = request;
   let data;
-  let payload;
-  let payloadFormat;
-  for (const [key, value] of Object.entries(body)) {
-    if (!_.isEmpty(value)) {
-      payload = value;
-      payloadFormat = key;
-    }
-  }
 
   switch (payloadFormat) {
     case "JSON_ARRAY":
@@ -246,5 +251,6 @@ module.exports = {
   httpPUT,
   httpPATCH,
   proxyRequest,
-  prepareProxyRequest
+  prepareProxyRequest,
+  getPayloadData
 };

@@ -28,43 +28,43 @@ const CONFIG_CATEGORIES = {
 };
 
 const SINGULAR_SESSION_ANDROID_EXCLUSION = [
-  "install_source",
+  "referring_application",
   "asid",
-  "openuri",
+  "url",
   "install_ref",
-  "bd",
+  "build",
   "install"
 ];
 
 const SINGULAR_SESSION_IOS_EXCLUSION = [
   "install_receipt",
-  "openuri",
-  "ua",
+  "url",
+  "userAgent",
   "attribution_token",
   "skan_conversion_value",
   "skan_first_call_timestamp",
   "skan_last_call_timestamp",
-  "bd",
+  "build",
   "install"
 ];
 
 const SINGULAR_EVENT_ANDROID_EXCLUSION = [
-  "amt",
-  "cur",
+  "price",
+  "currency",
   "asid",
   "is_revenue_event",
   "purchase_receipt",
-  "purchase_product_id",
+  "product_id",
   "purchase_transaction_id",
   "receipt_signature",
   "products"
 ];
 const SINGULAR_EVENT_IOS_EXCLUSION = [
-  "amt",
-  "cur",
+  "price",
+  "currency",
   "is_revenue_event",
   "purchase_receipt",
-  "purchase_product_id",
+  "product_id",
   "purchase_transaction_id",
   "skan_conversion_value",
   "skan_first_call_timestamp",

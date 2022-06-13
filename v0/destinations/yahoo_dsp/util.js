@@ -119,8 +119,8 @@ const getAccessToken = async destination => {
       aud: "https://id.b2b.yahooinc.com/identity/oauth2/access_token?realm=dsp",
       sub: clientId,
       iss: clientId,
-      exp: getUnixTimestamp(),
-      iat: getUnixTimestamp() + 3600
+      exp: getUnixTimestamp() + 3600,
+      iat: getUnixTimestamp()
     };
 
     const request = {

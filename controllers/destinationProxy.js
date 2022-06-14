@@ -6,6 +6,7 @@ const {
 const stats = require("../util/stats");
 const match = require("match-json");
 const jsonDiff = require("json-diff");
+const logger = require("../logger");
 
 class DestProxyController {
   /**

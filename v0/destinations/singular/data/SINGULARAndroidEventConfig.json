@@ -43,7 +43,24 @@
   },
   {
     "destKey": "amt",
-    "sourceKeys": "properties.price",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price",
+            "default": 0
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "default": 1
+          }
+        ]
+      }
+    ],
     "required": false
   },
   {

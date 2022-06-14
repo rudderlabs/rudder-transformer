@@ -4,76 +4,79 @@ const {
   defaultGetRequestConfig,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  CustomError
 } = require("../../util");
 
 const {
-  generateRevenuePayload,
-  platformWisePayloadGenerator
+  platformWisePayloadGenerator,
+  generateRevenuePayloadArray,
+  isSessionEvent
 } = require("./util");
 
 const responseBuilderSimple = (message, { Config }) => {
-  let endPoint;
-  const eventType = message.event;
-  const response = defaultRequestConfig();
-  /*
-    Use the session notification endpoint to report a session to Singular
-    https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Session_Notification_Endpoint
-  */
-  const sessionName = Config.sessionEventList.findIndex(
-    o => o.sessionEventName === eventType
-  );
-  if (sessionName != -1 || sessionEvents.includes(eventType)) {
-    let { payload, eventAttributes } = platformWisePayloadGenerator(
-      message,
-      true
-    );
+  let endpoint;
+  let eventAttributes;
+  let payload;
+  let singularEventParams;
+  const eventName = message.event;
 
-    // Singular maps Connection Type to either wifi or carrier
-    if (message.context?.network?.wifi) {
-      payload.c = "wifi";
-    } else {
-      payload.c = "carrier";
-    }
-
-    payload = removeUndefinedAndNullValues(payload);
-    endPoint = `${BASE_URL}/launch`;
-    response.endpoint = `${endPoint}`;
-    response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
-    response.method = defaultGetRequestConfig.requestMethod;
-    return response;
-  } else {
-    /*
-      Use this endpoint to report any event occurring in your application other than the session
-      https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Event_Notification_Endpoint
-    // */
-    let { payload, eventAttributes } = platformWisePayloadGenerator(
-      message,
-      false
+  if (!eventName) {
+    throw new CustomError(
+      "[Singular]::event name is not present for the event",
+      400
     );
-    const { products } = message.properties;
-    if (products && Array.isArray(products)) {
-      return generateRevenuePayload(products, payload, Config, eventAttributes);
-    }
-    endPoint = `${BASE_URL}/evt`;
-    payload = removeUndefinedAndNullValues(payload);
-    response.endpoint = `${endPoint}`;
-    response.params = { ...payload, a: Config.apiKey, e: eventAttributes };
-    response.method = defaultGetRequestConfig.requestMethod;
-    return response;
   }
+
+  if (isSessionEvent(Config, eventName)) {
+    // Use the session notification endpoint to report a session to Singular
+    // https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Session_Notification_Endpoint
+    singularEventParams = platformWisePayloadGenerator(message, true);
+    endpoint = `${BASE_URL}/launch`;
+    eventAttributes = singularEventParams.eventAttributes;
+    payload = singularEventParams.payload;
+  } else {
+    // Use this endpoint to report any event occurring in your application other than the session
+    // https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Event_Notification_Endpoint
+    endpoint = `${BASE_URL}/evt`;
+    singularEventParams = platformWisePayloadGenerator(message, false);
+    eventAttributes = singularEventParams.eventAttributes;
+    payload = singularEventParams.payload;
+    const { products } = message.properties;
+    // If we have an event where we have an array of Products, example Order Completed
+    // We are returning an array of revenue events
+    if (products && Array.isArray(products)) {
+      return generateRevenuePayloadArray(
+        products,
+        payload,
+        Config,
+        eventAttributes
+      );
+    }
+  }
+
+  const response = { ...defaultRequestConfig(), endpoint };
+  response.params = { ...payload, a: Config.apiKey };
+  if (eventAttributes) {
+    response.params = { ...response.params, e: eventAttributes };
+  }
+  response.method = defaultGetRequestConfig.requestMethod;
+  return response;
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw new CustomError(
+      "Message Type is not present. Aborting message.",
+      400
+    );
   }
   const messageType = message.type.toLowerCase();
 
   if (messageType === "track")
     return responseBuilderSimple(message, destination);
 
-  throw new Error("[Singular]: Message type not supported");
+  throw new CustomError("[Singular]: Message type not supported", 400);
 };
 
 const process = event => {

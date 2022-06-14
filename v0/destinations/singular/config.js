@@ -2,9 +2,8 @@ const { getMappingConfig } = require("../../util");
 
 const BASE_URL = "https://s2s.singular.net/api/v1";
 
-/* Supported events in Singular: SessionNotification, EventNotification
-   ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
- */
+// Supported events in Singular: SessionNotification, EventNotification
+// ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
 const CONFIG_CATEGORIES = {
   SESSION_ANDROID: {
     name: "SINGULARAndroidSessionConfig",
@@ -25,6 +24,11 @@ const CONFIG_CATEGORIES = {
   PRODUCT_PROPERTY: {
     name: "SINGULAREventProductConfig"
   }
+};
+
+const SUPPORTED_PLATFORM = {
+  android: "ANDROID",
+  ios: "IOS"
 };
 
 const SINGULAR_SESSION_ANDROID_EXCLUSION = [
@@ -50,21 +54,25 @@ const SINGULAR_SESSION_IOS_EXCLUSION = [
 
 const SINGULAR_EVENT_ANDROID_EXCLUSION = [
   "price",
+  "quantity",
   "currency",
   "asid",
   "is_revenue_event",
   "purchase_receipt",
   "product_id",
+  "sku",
   "purchase_transaction_id",
   "receipt_signature",
   "products"
 ];
 const SINGULAR_EVENT_IOS_EXCLUSION = [
   "price",
+  "quantity",
   "currency",
   "is_revenue_event",
   "purchase_receipt",
   "product_id",
+  "sku",
   "purchase_transaction_id",
   "skan_conversion_value",
   "skan_first_call_timestamp",
@@ -72,20 +80,21 @@ const SINGULAR_EVENT_IOS_EXCLUSION = [
   "products"
 ];
 
-const sessionEvents = [
-  "Application Installed",
-  "Application Updated",
-  "Application Opened"
+const SESSIONEVENTS = [
+  "application installed",
+  "application updated",
+  "application opened"
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  sessionEvents,
+  SESSIONEVENTS,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
   SINGULAR_EVENT_IOS_EXCLUSION,
+  SUPPORTED_PLATFORM,
   BASE_URL
 };

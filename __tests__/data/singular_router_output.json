@@ -33,42 +33,7 @@
         "update_time": "2021-09-01T15:46:51.000Z",
         "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
         "c": "wifi",
-        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "e": {
-          "category": "Games",
-          "checkout_id": "12345",
-          "order_id": "1234",
-          "affiliation": "Apple Store",
-          "receipt_signature": "1234dfghnh",
-          "total": 20,
-          "revenue": 15,
-          "shipping": 22,
-          "tax": 1,
-          "discount": 1.5,
-          "coupon": "ImagePro",
-          "currency": "USD",
-          "fetch_token": "123asd23",
-          "product_id": "123",
-          "products": [
-            {
-              "product_id": "789",
-              "sku": "G-32",
-              "name": "Monopoly",
-              "price": 14,
-              "quantity": 1,
-              "category": "Games",
-              "url": "https://www.website.com/product/path",
-              "image_url": "https://www.website.com/product/path.jpg"
-            },
-            {
-              "sku": "F-32",
-              "name": "UNO",
-              "price": 3.45,
-              "quantity": 2,
-              "category": "Games"
-            }
-          ]
-        }
+        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
       },
       "body": {
         "JSON": {},
@@ -136,42 +101,7 @@
         "update_time": "2021-09-01T15:46:51.000Z",
         "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
         "c": "wifi",
-        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "e": {
-          "category": "Games",
-          "checkout_id": "12345",
-          "order_id": "1234",
-          "affiliation": "Apple Store",
-          "receipt_signature": "1234dfghnh",
-          "total": 20,
-          "revenue": 15,
-          "shipping": 22,
-          "tax": 1,
-          "discount": 1.5,
-          "coupon": "ImagePro",
-          "currency": "USD",
-          "fetch_token": "123asd23",
-          "product_id": "123",
-          "products": [
-            {
-              "product_id": "789",
-              "sku": "G-32",
-              "name": "Monopoly",
-              "price": 14,
-              "quantity": 1,
-              "category": "Games",
-              "url": "https://www.website.com/product/path",
-              "image_url": "https://www.website.com/product/path.jpg"
-            },
-            {
-              "sku": "F-32",
-              "name": "UNO",
-              "price": 3.45,
-              "quantity": 2,
-              "category": "Games"
-            }
-          ]
-        }
+        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
       },
       "body": {
         "JSON": {},
@@ -239,42 +169,7 @@
         "update_time": "2021-09-01T15:46:51.000Z",
         "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
         "c": "wifi",
-        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-        "e": {
-          "category": "Games",
-          "checkout_id": "12345",
-          "order_id": "1234",
-          "affiliation": "Apple Store",
-          "receipt_signature": "1234dfghnh",
-          "total": 20,
-          "revenue": 15,
-          "shipping": 22,
-          "tax": 1,
-          "discount": 1.5,
-          "coupon": "ImagePro",
-          "currency": "USD",
-          "fetch_token": "123asd23",
-          "product_id": "123",
-          "products": [
-            {
-              "product_id": "789",
-              "sku": "G-32",
-              "name": "Monopoly",
-              "price": 14,
-              "quantity": 1,
-              "category": "Games",
-              "url": "https://www.website.com/product/path",
-              "image_url": "https://www.website.com/product/path.jpg"
-            },
-            {
-              "sku": "F-32",
-              "name": "UNO",
-              "price": 3.45,
-              "quantity": 2,
-              "category": "Games"
-            }
-          ]
-        }
+        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
       },
       "body": {
         "JSON": {},

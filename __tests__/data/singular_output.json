@@ -32,43 +32,7 @@
       "install_time": "2021-09-01T15:46:51.000Z",
       "update_time": "2021-09-01T15:46:51.000Z",
       "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-
-      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-      "e": {
-        "category": "Games",
-        "checkout_id": "12345",
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "receipt_signature": "1234dfghnh",
-        "total": 20,
-        "revenue": 15,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "products": [
-          {
-            "product_id": "789",
-            "sku": "G-32",
-            "name": "Monopoly",
-            "price": 14,
-            "quantity": 1,
-            "category": "Games",
-            "url": "https://www.website.com/product/path",
-            "image_url": "https://www.website.com/product/path.jpg"
-          },
-          {
-            "sku": "F-32",
-            "name": "UNO",
-            "price": 3.45,
-            "quantity": 2,
-            "category": "Games"
-          }
-        ]
-      }
+      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "body": {
       "JSON": {},
@@ -94,12 +58,13 @@
         "custom_user_id": "ruddersampleX4",
         "utime": "2021-09-01T15:46:51.000Z",
         "cur": "USD",
-        "amt": 14,
+        "amt": 28,
         "aifa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
         "andi": "fc8d449516de0dfb",
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "receipt_signature": "1234dfghnh",
         "purchase_product_id": "789",
+        "c":"wifi",
         "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
         "e": {
           "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
@@ -144,10 +109,11 @@
         "purchase_product_id": "F-32",
         "aifa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
         "andi": "fc8d449516de0dfb",
-        "amt": 3.45,
+        "amt": 6.9,
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "receipt_signature": "1234dfghnh",
         "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "c":"wifi",
         "e": {
           "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
           "install": "SM-G935F",
@@ -176,7 +142,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "Missing required value from \"event\"",
+    "error": "[Singular]::event name is not present for the event",
     "statTags": {
       "destination": "singular",
       "stage": "transform",
@@ -214,9 +180,10 @@
       "andi": "fc8d449516de0dfb",
       "asid": "IISqwYJKoZIcNqts0jvcNvPc",
       "receipt_signature": "1234dfghnh",
-      "amt": 14,
+      "amt": 20,
       "is_revenue_event": true,
       "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "c":"wifi",
       "e": {
         "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
         "install": "SM-G935F",
@@ -231,9 +198,7 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "fetch_token": "123asd23",
-        "sku": "G-32",
         "name": "Monopoly",
-        "quantity": 1,
         "image_url": "https://www.website.com/product/path.jpg"
       }
     },
@@ -287,26 +252,7 @@
       "install_time": "2021-09-01T15:46:51.000Z",
       "update_time": "2021-09-01T15:46:51.000Z",
       "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-
-      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-      "e": {
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "receipt_signature": "1234dfghnh",
-        "purchase_transaction_id": "2134dfg",
-        "total": 20,
-        "revenue": 15,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "sku": "G-32",
-        "name": "Monopoly",
-        "price": 14
-      }
+      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "body": {
       "JSON": {},
@@ -350,25 +296,7 @@
       "update_time": "2021-09-01T15:46:51.000Z",
       "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
 
-      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-      "e": {
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "receipt_signature": "1234dfghnh",
-        "purchase_transaction_id": "2134dfg",
-        "total": 20,
-        "revenue": 15,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "sku": "G-32",
-        "name": "Monopoly",
-        "price": 14
-      }
+      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "body": {
       "JSON": {},
@@ -424,27 +352,7 @@
       "idfv": "fc8d449516de0dfb",
       "install_time": "2021-09-01T15:46:51.000Z",
       "update_time": "2021-09-01T15:46:51.000Z",
-
-      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-      "e": {
-        "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "receipt_signature": "1234dfghnh",
-        "purchase_transaction_id": "2134dfg",
-        "total": 20,
-        "revenue": 15,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "sku": "G-32",
-        "name": "Monopoly",
-        "price": 14
-      }
+      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "body": {
       "JSON": {},
@@ -473,12 +381,13 @@
       "skan_first_call_timestamp": "1651853656",
       "skan_last_call_timestamp": "1654532056",
       "cur": "USD",
-      "amt": 14,
+      "amt": 20,
       "purchase_product_id": "123",
       "purchase_transaction_id": "2134dfg",
       "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
       "idfv": "fc8d449516de0dfb",
       "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+      "c":"carrier",
       "e": {
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
@@ -496,7 +405,6 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "fetch_token": "123asd23",
-        "sku": "G-32",
         "name": "Monopoly"
       }
     },
@@ -545,27 +453,7 @@
       "idfv": "fc8d449516de0dfb",
       "install_time": "2021-09-01T15:46:51.000Z",
       "update_time": "2021-09-01T15:46:51.000Z",
-
-      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-      "e": {
-        "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-        "order_id": "1234",
-        "affiliation": "Apple Store",
-        "receipt_signature": "1234dfghnh",
-        "purchase_transaction_id": "2134dfg",
-        "total": 20,
-        "revenue": 15,
-        "shipping": 22,
-        "tax": 1,
-        "discount": 1.5,
-        "coupon": "ImagePro",
-        "currency": "USD",
-        "fetch_token": "123asd23",
-        "product_id": "123",
-        "sku": "G-32",
-        "name": "Monopoly",
-        "price": 14
-      }
+      "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
     },
     "body": {
       "JSON": {},
@@ -577,7 +465,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Singular] :: Invalid Platform",
+    "error": "[Singular] :: Platform is not supported",
     "statTags": {
       "destination": "singular",
       "stage": "transform",

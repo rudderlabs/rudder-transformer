@@ -5,7 +5,9 @@ const {
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
   SINGULAR_EVENT_IOS_EXCLUSION,
-  BASE_URL
+  BASE_URL,
+  SUPPORTED_PLATFORM,
+  SESSIONEVENTS
 } = require("./config");
 const {
   constructPayload,
@@ -39,7 +41,12 @@ const extractExtraFields = (message, EXCLUSION_FIELDS) => {
  * @param {*} eventAttributes custom attributes
  * @returns list of revenue event responses
  */
-const generateRevenuePayload = (products, payload, Config, eventAttributes) => {
+const generateRevenuePayloadArray = (
+  products,
+  payload,
+  Config,
+  eventAttributes
+) => {
   const responseArray = [];
   products.forEach(product => {
     const productDetails = constructPayload(
@@ -47,10 +54,13 @@ const generateRevenuePayload = (products, payload, Config, eventAttributes) => {
       MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name]
     );
     let finalpayload = { ...payload, ...productDetails };
+    finalpayload = removeUndefinedAndNullValues(finalpayload);
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}/evt`;
-    finalpayload = removeUndefinedAndNullValues(finalpayload);
-    response.params = { ...finalpayload, a: Config.apiKey, e: eventAttributes };
+    response.params = { ...finalpayload, a: Config.apiKey };
+    if (eventAttributes) {
+      response.params = { ...response.params, e: eventAttributes };
+    }
     response.method = defaultGetRequestConfig.requestMethod;
     responseArray.push(response);
   });
@@ -58,62 +68,86 @@ const generateRevenuePayload = (products, payload, Config, eventAttributes) => {
 };
 
 const exclusionList = {
-  android_session_exclusion_list: SINGULAR_SESSION_ANDROID_EXCLUSION,
-  ios_session_exclusion_list: SINGULAR_SESSION_IOS_EXCLUSION,
-  android_event_exclusion_list: SINGULAR_EVENT_ANDROID_EXCLUSION,
-  ios_event_exclusion_list: SINGULAR_EVENT_IOS_EXCLUSION
+  ANDROID_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_ANDROID_EXCLUSION,
+  IOS_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_IOS_EXCLUSION,
+  ANDROID_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_ANDROID_EXCLUSION,
+  IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION
 };
 
+/**
+ * Determinse if the event is a session event or not
+ * @param {*} Config
+ * @param {*} eventName
+ */
+const isSessionEvent = (Config, eventName) => {
+  const mappedSessionEventIndex = Config.sessionEventList.findIndex(
+    object => object.sessionEventName === eventName
+  );
+  if (
+    mappedSessionEventIndex !== -1 ||
+    SESSIONEVENTS.includes(eventName.toLowerCase())
+  ) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Based on platform of device this function generates payload for singular API
+ * @param {*} message
+ * @param {*} isSessionEvent
+ * @returns
+ */
 const platformWisePayloadGenerator = (message, isSessionEvent) => {
   let payload;
   let eventAttributes;
-  let typeOfEvent;
-  const platform = getValueFromMessage(message, "context.os.name");
+  let platform = getValueFromMessage(message, "context.os.name");
+  const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
   if (!platform) {
     throw new CustomError("[Singular] :: Platform name is missing", 400);
   }
-  if (isSessionEvent) {
-    typeOfEvent = "SESSION";
-  } else {
-    typeOfEvent = "EVENT";
+  platform = platform.toLowerCase();
+  if (!SUPPORTED_PLATFORM[platform]) {
+    throw new CustomError("[Singular] :: Platform is not supported");
   }
-  if (platform.toLowerCase() === "android") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES[`${typeOfEvent}_ANDROID`].name]
+
+  payload = constructPayload(
+    message,
+    MAPPING_CONFIG[
+      CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name
+    ]
+  );
+
+  if (!payload) {
+    throw new CustomError(
+      `Failed to Create ${platform} ${typeOfEvent} Payload`,
+      400
     );
-    if (!payload) {
-      // fail-safety for developer error
-      throw new CustomError(
-        `Failed to Create Android ${typeOfEvent} Payload`,
-        400
-      );
-    }
+  }
+
+  // Custom Attribues is not supported by session events
+  if (!isSessionEvent) {
     eventAttributes = extractExtraFields(
       message,
       exclusionList[
-        `${platform.toLowerCase()}_${typeOfEvent.toLowerCase()}_exclusion_list`
+        `${SUPPORTED_PLATFORM[platform]}_${typeOfEvent}_EXCLUSION_LIST`
       ]
     );
-  } else if (platform.toLowerCase() === "ios") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES[`${typeOfEvent}_IOS`].name]
-    );
-    if (!payload) {
-      // fail-safety for developer error
-      throw new CustomError(`Failed to Create iOS ${typeOfEvent} Payload`, 400);
-    }
-    eventAttributes = extractExtraFields(
-      message,
-      exclusionList[
-        `${platform.toLowerCase()}_${typeOfEvent.toLowerCase()}_exclusion_list`
-      ]
-    );
-  } else {
-    throw new CustomError("[Singular] :: Invalid Platform", 400);
+    eventAttributes = removeUndefinedAndNullValues(eventAttributes);
   }
+
+  // Singular maps Connection Type to either wifi or carrier
+  if (message.context?.network?.wifi) {
+    payload.c = "wifi";
+  } else {
+    payload.c = "carrier";
+  }
+  payload = removeUndefinedAndNullValues(payload);
   return { payload, eventAttributes };
 };
 
-module.exports = { generateRevenuePayload, platformWisePayloadGenerator };
+module.exports = {
+  generateRevenuePayloadArray,
+  isSessionEvent,
+  platformWisePayloadGenerator
+};

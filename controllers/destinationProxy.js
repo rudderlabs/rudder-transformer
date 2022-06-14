@@ -8,6 +8,12 @@ const match = require("match-json");
 const jsonDiff = require("json-diff");
 
 class DestProxyController {
+  /**
+   * Handler for testing the destination proxy
+   * @param {*} destination Destination name
+   * @param {*} ctx 
+   * @returns 
+   */
   static handleProxyTestRequest = async (destination, ctx) => {
     const { deliveryPayload: routerDeliveryPayload, destinationRequestPayload: routerDestReqPayload } = ctx.request.body;
     let response;

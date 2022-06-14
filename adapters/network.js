@@ -195,6 +195,9 @@ const prepareProxyRequest = request => {
       break;
     case "XML":
       data = `${payload}`;
+      if (payload && typeof payload === "object") {
+        data = JSON.stringify(payload);
+      }
       headers = { ...headers, "Content-Type": "application/xml" };
       break;
     case "FORM":

@@ -180,9 +180,8 @@ const getPayloadData = body => {
  * @returns
  */
 const prepareProxyRequest = request => {
-  const { body, method, params, endpoint } = request;
+  const { body, method, params, endpoint, headers } = request;
   const { payload, payloadFormat } = getPayloadData(body);
-  let { headers } = request;
   let data;
 
   switch (payloadFormat) {
@@ -192,14 +191,12 @@ const prepareProxyRequest = request => {
       break;
     case "JSON":
       data = payload;
-      headers = { ...headers, "Content-Type": "application/json" };
       break;
     case "XML":
       data = `${payload}`;
       if (payload && typeof payload === "object") {
         data = JSON.stringify(payload);
       }
-      headers = { ...headers, "Content-Type": "application/xml" };
       break;
     case "FORM":
       data = new URLSearchParams();
@@ -210,10 +207,6 @@ const prepareProxyRequest = request => {
         }
         data.append(`${key}`, payloadValStr);
       });
-      headers = {
-        ...headers,
-        "Content-Type": "application/x-www-form-urlencoded"
-      };
       break;
     case "MULTIPART-FORM":
       // TODO:

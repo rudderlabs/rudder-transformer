@@ -29,6 +29,7 @@ require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
+const { getIntegrations } = require("./routes/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -48,15 +49,6 @@ const router = new Router();
 
 // Router for assistance in profiling
 router.use(profilingRouter);
-
-router.use(destProxyRoutes);
-
-const isDirectory = source => {
-  return fs.lstatSync(source).isDirectory();
-};
-
-const getIntegrations = type =>
-  fs.readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
@@ -284,7 +276,7 @@ async function routerHandleDest(ctx) {
 if (startDestTransformer) {
   SUPPORTED_VERSIONS.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
-    destinations.push (...getIntegrations(CDK_DEST_PATH));
+    destinations.push(...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
@@ -682,6 +674,8 @@ if (transformerProxy) {
       );
     });
   });
+
+  router.use(destProxyRoutes);
 }
 
 router.get("/version", ctx => {

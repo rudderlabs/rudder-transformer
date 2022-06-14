@@ -676,6 +676,10 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
         break;
+      case "dobInMMDD":
+        formattedVal = String(formattedVal).slice(5);
+        formattedVal = formattedVal.replace("-", "/");
+        break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify
         // calling stringify on string will add escape characters

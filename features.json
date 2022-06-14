@@ -23,6 +23,7 @@
     "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS": true,
     "ACTIVE_CAMPAIGN": true,
     "SNAPCHAT_CONVERSION": true,
+    "MAILCHIMP": true,
     "YAHOO_DSP": true
   }
 }

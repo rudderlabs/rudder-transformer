@@ -1,3 +1,4 @@
+const { removeUndefinedValues } = require("../../util");
 const {
   prepareProxyRequest,
   getPayloadData,
@@ -115,13 +116,13 @@ const prepareProxyReq = request => {
     data.append("format", "json");
   }
 
-  return {
+  return removeUndefinedValues({
     endpoint,
     data,
     params,
     headers,
     method
-  };
+  });
 };
 
 /**

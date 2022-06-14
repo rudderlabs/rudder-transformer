@@ -6,6 +6,7 @@ const http = require("http");
 const https = require("https");
 const axios = require("axios");
 const log = require("../logger");
+const { removeUndefinedValues } = require("../v0/util")
 
 const MAX_CONTENT_LENGTH =
   parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
@@ -222,7 +223,7 @@ const prepareProxyRequest = request => {
   }
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers["User-Agent"] = "RudderLabs";
-  return { endpoint, data, params, headers, method };
+  return removeUndefinedValues({ endpoint, data, params, headers, method });
 };
 
 /**

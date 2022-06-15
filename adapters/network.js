@@ -193,10 +193,7 @@ const prepareProxyRequest = request => {
       data = payload;
       break;
     case "XML":
-      data = `${payload}`;
-      if (payload && typeof payload === "object") {
-        data = JSON.stringify(payload);
-      }
+      data = payload.payload;
       break;
     case "FORM":
       data = new URLSearchParams();

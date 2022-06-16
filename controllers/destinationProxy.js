@@ -34,15 +34,15 @@ class DestProxyController {
           destination
         });
 
-        logger.error(`Destination request payload mismatch!`);
+        logger.error(`[TransformerProxyTest] Destination request payload mismatch!`);
         logger.error(
-          `Delivery payload (router): ${JSON.stringify(routerDeliveryPayload)}`
+          `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(routerDeliveryPayload)}`
         );
         logger.error(
-          `Destination request payload (router): ${JSON.stringify(routerDestReqPayload)}`
+          `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(routerDestReqPayload)}`
         );
         logger.error(
-          `Destination request payload (proxy): ${JSON.stringify(proxyDestReqPayload)} `
+          `[TransformerProxyTest] Destination request payload (proxy): ${JSON.stringify(proxyDestReqPayload)} `
         );
 
         // Compute output difference
@@ -50,7 +50,7 @@ class DestProxyController {
           routerDestReqPayload,
           proxyDestReqPayload
         );
-        logger.error(`Destination request payload difference: ${outputDiff}`);
+        logger.error(`[TransformerProxyTest] Destination request payload difference: ${outputDiff}`);
         response = {
           outputDiff,
           ...response
@@ -70,14 +70,14 @@ class DestProxyController {
         destination,
         TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
       );
-      response.message = `Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
+      response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
       logger.error(response.message);
       logger.error(err);
       logger.error(
-        `Delivery payload (router): ${JSON.stringify(routerDeliveryPayload)}`
+        `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(routerDeliveryPayload)}`
       );
       logger.error(
-        `Destination request payload (router): ${JSON.stringify(routerDestReqPayload)}`
+        `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(routerDestReqPayload)}`
       );
     }
 

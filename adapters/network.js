@@ -6,7 +6,7 @@ const http = require("http");
 const https = require("https");
 const axios = require("axios");
 const log = require("../logger");
-const { removeUndefinedValues } = require("../v0/util")
+const { removeUndefinedValues } = require("../v0/util");
 
 const MAX_CONTENT_LENGTH =
   parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
@@ -175,11 +175,58 @@ const getPayloadData = body => {
 };
 
 /**
+ * Method for stringification of query parameters
+ * To understand the use-case for this method, please take a look at the code mentioned below:
+ *
+ * @param {*} value
+ * @returns {String}
+ */
+function stringifyQueryParam(value) {
+  let stringifiedValue = `${value}`;
+  if (Array.isArray(value)) {
+    stringifiedValue = value.map(v => stringifyQueryParam(v)).join(",");
+    return `[${stringifiedValue}]`;
+  }
+  if (value && typeof value === "object") {
+    // check for value is being done to avoid null inside since typeof null = "object"
+    stringifiedValue = JSON.stringify(value);
+  }
+  return stringifiedValue;
+}
+
+/**
+ * Obtain FORM payload-format data to send the data to destination
+ *
+ * @param {Object} payload
+ * @returns {String}
+ */
+function getFormData(payload, isCustom) {
+  let data = new URLSearchParams();
+  Object.keys(payload).forEach(key => {
+    let payloadValStr = `${payload[key]}`;
+    if (typeof payload[key] === "object") {
+      payloadValStr = stringifyQueryParam(payload[key]);
+    }
+    data.append(key, payloadValStr);
+  });
+  if (!isCustom) {
+    // This should not go into the fix``
+    // This is to only use for comparison purposes
+    data = data.toString();
+    // Replace '*' from '%2A' as that is being done in Router
+    // Probably this change is not required in production ?
+    // Ref: https://bobbyhadz.com/blog/javascript-typeerror-replaceall-is-not-a-function#:~:text=The%20%22replaceAll%22%20is%20not%20a,on%20strings%20in%20supported%20browsers
+    data = data.replace(/\*/g, "%2A");
+  }
+  return data;
+}
+
+/**
  * Prepares the proxy request
  * @param {*} request
  * @returns
  */
-const prepareProxyRequest = request => {
+const prepareProxyRequest = (request, isCustom) => {
   const { body, method, params, endpoint, headers } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   let data;
@@ -196,14 +243,7 @@ const prepareProxyRequest = request => {
       data = payload.payload;
       break;
     case "FORM":
-      data = new URLSearchParams();
-      Object.keys(payload).forEach(key => {
-        let payloadValStr = `${payload[key]}`;
-        if (typeof payload[key] === "object") {
-          payloadValStr = JSON.stringify(payload[key]);
-        }
-        data.append(`${key}`, payloadValStr);
-      });
+      data = getFormData(payload, isCustom);
       break;
     case "MULTIPART-FORM":
       // TODO:
@@ -246,5 +286,6 @@ module.exports = {
   httpPATCH,
   proxyRequest,
   prepareProxyRequest,
-  getPayloadData
+  getPayloadData,
+  getFormData
 };

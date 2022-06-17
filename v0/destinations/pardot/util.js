@@ -107,7 +107,8 @@ const prepareProxyReq = request => {
   const { body } = request;
   // Build the destination request data using the generic method
   const { endpoint, data, method, params, headers } = prepareProxyRequest(
-    request
+    request,
+    true
   );
 
   // Modify the data

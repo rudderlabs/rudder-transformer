@@ -217,6 +217,8 @@ function getFormData(payload, isCustom) {
     // Probably this change is not required in production ?
     // Ref: https://bobbyhadz.com/blog/javascript-typeerror-replaceall-is-not-a-function#:~:text=The%20%22replaceAll%22%20is%20not%20a,on%20strings%20in%20supported%20browsers
     data = data.replace(/\*/g, "%2A");
+    // Replace '%7E' with `~`(the encoding for "~"[Ref: https://www.w3schools.com/tags/ref_urlencode.asp])
+    data = data.replace("%7E", "~");
   }
   return data;
 }

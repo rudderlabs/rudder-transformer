@@ -203,10 +203,7 @@ function stringifyQueryParam(value) {
 function getFormData(payload, isCustom) {
   let data = new URLSearchParams();
   Object.keys(payload).forEach(key => {
-    let payloadValStr = `${payload[key]}`;
-    if (typeof payload[key] === "object") {
-      payloadValStr = stringifyQueryParam(payload[key]);
-    }
+    const payloadValStr = stringifyQueryParam(payload[key]);
     data.append(key, payloadValStr);
   });
   if (!isCustom) {

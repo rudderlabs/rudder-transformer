@@ -33,18 +33,18 @@ class DestProxyController {
       // URL parameters differently
       const { payloadFormat } = getPayloadData(routerDeliveryPayload.body);
       if (payloadFormat === "FORM") {
-        // This is to make sure we encode `~` in the data coming from the router
-        // The result coming from the router is already a query parameter string
-        const routerBodyVal = new URLSearchParams(routerDestReqPayload.body);
-        routerDestReqPayload.body = routerBodyVal;
+        // This is to make sure we encode `~` in the data coming from the router.
+        // The data coming from the router is already a query parameter string
+        const routerDataVal = new URLSearchParams(routerDestReqPayload.data);
+        routerDestReqPayload.data = routerDataVal;
   
-        const proxyBodyVal = new URLSearchParams();
-        proxyDestReqPayload.body.forEach(function(value, key) {
+        const proxyDataVal = new URLSearchParams();
+        proxyDestReqPayload.data.forEach(function(value, key) {
           const encodeAsterisk = (x) => x.replace(/\*/g, "%2A");
           // Router encodes `*` as well
-          proxyBodyVal.append(encodeAsterisk(key), encodeAsterisk(value));
+          proxyDataVal.append(encodeAsterisk(key), encodeAsterisk(value));
         });
-        proxyDestReqPayload.body = proxyBodyVal;
+        proxyDestReqPayload.data = proxyDataVal;
       }
 
       // Compare the destination request payloads from router and proxy

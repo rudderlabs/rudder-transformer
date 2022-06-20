@@ -65,6 +65,11 @@ const formDataEscapeCases = [
     testCase: '"~" as a character in the data should not be encoded',
     input: { data: "~" },
     expected: "data=~"
+  },
+  {
+    testCase: 'All "~" should not be encoded as "%7E"',
+    input: { data: "ab~cd~ef~gh" },
+    expected: "data=ab~cd~ef~gh"
   }
 ]
 

@@ -1,4 +1,5 @@
 const networkHandlerFactory = require('../adapters/networkHandlerFactory');
+const { getPayloadData } = require("../adapters/network");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 const {
   generateErrorObject,
@@ -27,6 +28,24 @@ class DestProxyController {
       response = {
         destinationRequestPayload: proxyDestReqPayload,
       };
+
+      // Special handling required as Go and JavaScript encodes
+      // URL parameters differently
+      const { payloadFormat } = getPayloadData(routerDeliveryPayload.body);
+      if (payloadFormat === "FORM") {
+        // This is to make sure we encode `~` in the data coming from the router
+        // The result coming from the router is already a query parameter string
+        const routerBodyVal = new URLSearchParams(routerDestReqPayload.body);
+        routerDestReqPayload.body = routerBodyVal;
+  
+        const proxyBodyVal = new URLSearchParams();
+        proxyDestReqPayload.body.forEach(function(value, key) {
+          const encodeAsterisk = (x) => x.replace(/\*/g, "%2A");
+          // Router encodes `*` as well
+          proxyBodyVal.append(encodeAsterisk(key), encodeAsterisk(value));
+        });
+        proxyDestReqPayload.body = proxyBodyVal;
+      }
 
       // Compare the destination request payloads from router and proxy
       if (!match(routerDestReqPayload, proxyDestReqPayload)) {

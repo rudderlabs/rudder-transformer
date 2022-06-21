@@ -2,7 +2,6 @@ const { BASE_URL, sessionEvents } = require("./config");
 const {
   defaultRequestConfig,
   defaultGetRequestConfig,
-  removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError
@@ -15,10 +14,6 @@ const {
 } = require("./util");
 
 const responseBuilderSimple = (message, { Config }) => {
-  let endpoint;
-  let eventAttributes;
-  let payload;
-  let singularEventParams;
   const eventName = message.event;
 
   if (!eventName) {
@@ -28,23 +23,17 @@ const responseBuilderSimple = (message, { Config }) => {
     );
   }
 
-  if (isSessionEvent(Config, eventName)) {
-    // Use the session notification endpoint to report a session to Singular
-    // https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Session_Notification_Endpoint
-    singularEventParams = platformWisePayloadGenerator(message, true);
-    endpoint = `${BASE_URL}/launch`;
-    eventAttributes = singularEventParams.eventAttributes;
-    payload = singularEventParams.payload;
-  } else {
-    // Use this endpoint to report any event occurring in your application other than the session
-    // https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference#Event_Notification_Endpoint
-    endpoint = `${BASE_URL}/evt`;
-    singularEventParams = platformWisePayloadGenerator(message, false);
-    eventAttributes = singularEventParams.eventAttributes;
-    payload = singularEventParams.payload;
+  const sessionEvent = isSessionEvent(Config, eventName);
+  const { eventAttributes, payload } = platformWisePayloadGenerator(
+    message,
+    sessionEvent
+  );
+  const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
+
+  if (!sessionEvent) {
     const { products } = message.properties;
     // If we have an event where we have an array of Products, example Order Completed
-    // We are returning an array of revenue events
+    // We will convert the event to revenue events
     if (products && Array.isArray(products)) {
       return generateRevenuePayloadArray(
         products,
@@ -55,12 +44,15 @@ const responseBuilderSimple = (message, { Config }) => {
     }
   }
 
-  const response = { ...defaultRequestConfig(), endpoint };
-  response.params = { ...payload, a: Config.apiKey };
+  const response = {
+    ...defaultRequestConfig(),
+    endpoint,
+    params: { ...payload, a: Config.apiKey },
+    method: defaultGetRequestConfig.requestMethod
+  };
   if (eventAttributes) {
     response.params = { ...response.params, e: eventAttributes };
   }
-  response.method = defaultGetRequestConfig.requestMethod;
   return response;
 };
 
@@ -73,8 +65,9 @@ const processEvent = (message, destination) => {
   }
   const messageType = message.type.toLowerCase();
 
-  if (messageType === "track")
+  if (messageType === "track") {
     return responseBuilderSimple(message, destination);
+  }
 
   throw new CustomError("[Singular]: Message type not supported", 400);
 };
@@ -83,13 +76,13 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  const respList = Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
@@ -102,7 +95,7 @@ const processRouterDest = async inputs => {
         }
         // if not transformed
         return getSuccessRespEvents(
-          await process(input),
+          process(input),
           [input.metadata],
           input.destination
         );

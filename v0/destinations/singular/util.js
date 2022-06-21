@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -80,16 +81,24 @@ const exclusionList = {
  * @param {*} eventName
  */
 const isSessionEvent = (Config, eventName) => {
-  const mappedSessionEventIndex = Config.sessionEventList.findIndex(
-    object => object.sessionEventName === eventName
+  const mappedSessionEvents = _.map(
+    Config.sessionEventList,
+    "sessionEventName"
   );
-  if (
-    mappedSessionEventIndex !== -1 ||
-    SESSIONEVENTS.includes(eventName.toLowerCase())
-  ) {
-    return true;
-  }
-  return false;
+  return (
+    mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName)
+  );
+
+  // const mappedSessionEventIndex = Config.sessionEventList.findIndex(
+  //   object => object.sessionEventName === eventName
+  // );
+  // if (
+  //   mappedSessionEventIndex !== -1 ||
+  //   SESSIONEVENTS.includes(eventName.toLowerCase())
+  // ) {
+  //   return true;
+  // }
+  // return false;
 };
 
 /**

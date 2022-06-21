@@ -127,14 +127,12 @@
   },
   {
     "destKey": "install_time",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
     "required": true
   },
   {
     "destKey": "update_time",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
     "required": true
   },
   {

@@ -65,6 +65,7 @@ const SINGULAR_EVENT_ANDROID_EXCLUSION = [
   "receipt_signature",
   "products"
 ];
+
 const SINGULAR_EVENT_IOS_EXCLUSION = [
   "price",
   "quantity",

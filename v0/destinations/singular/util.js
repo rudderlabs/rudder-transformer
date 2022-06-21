@@ -86,19 +86,9 @@ const isSessionEvent = (Config, eventName) => {
     "sessionEventName"
   );
   return (
-    mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName)
+    mappedSessionEvents.includes(eventName) ||
+    SESSIONEVENTS.includes(eventName.toLowerCase())
   );
-
-  // const mappedSessionEventIndex = Config.sessionEventList.findIndex(
-  //   object => object.sessionEventName === eventName
-  // );
-  // if (
-  //   mappedSessionEventIndex !== -1 ||
-  //   SESSIONEVENTS.includes(eventName.toLowerCase())
-  // ) {
-  //   return true;
-  // }
-  // return false;
 };
 
 /**

@@ -1,4 +1,4 @@
-const { BASE_URL, sessionEvents } = require("./config");
+const { BASE_URL } = require("./config");
 const {
   defaultRequestConfig,
   defaultGetRequestConfig,

@@ -281,6 +281,7 @@
           "p": "Android",
           "i": "com.rudderstack.demo.android",
           "ip": "14.5.67.21",
+          "is_revenue_event": true,
           "ve": "9",
           "custom_user_id": "ruddersampleX4",
           "utime": "2021-09-01T15:46:51.000Z",
@@ -329,6 +330,7 @@
           "p": "Android",
           "i": "com.rudderstack.demo.android",
           "ip": "14.5.67.21",
+          "is_revenue_event": true,
           "ve": "9",
           "custom_user_id": "ruddersampleX4",
           "utime": "2021-09-01T15:46:51.000Z",
@@ -1386,520 +1388,521 @@
   {
     "description": "iOS custom event",
     "input": {
-        "destination": {
-          "Config": {
-            "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-            "sessionEventList": [
-              {
-                "sessionEventName": "mysessionevent"
-              },
-              {
-                "sessionEventName": "randomuser"
-              },
-              {
-                "sessionEventName": "titanium"
-              }
-            ]
-          }
-        },
-        "message": {
-          "type": "track",
-          "event": "myevent",
-          "userId": "ruddersampleX5",
-          "request_ip": "14.5.67.21",
-          "context": {
-            "app": {
-              "build": "1",
-              "name": "RudderAndroidClient",
-              "namespace": "com.rudderstack.demo.android",
-              "version": "1.0"
+      "destination": {
+        "Config": {
+          "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+          "sessionEventList": [
+            {
+              "sessionEventName": "mysessionevent"
             },
-            "device": {
-              "manufacturer": "Google",
-              "model": "Android SDK built for x86",
-              "name": "generic_x86",
-              "type": "android",
-              "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-              "attStatus": true,
-              "id": "fc8d449516de0dfb",
-              "adTrackingEnabled": true,
-              "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+            {
+              "sessionEventName": "randomuser"
             },
-            "library": {
-              "name": "com.rudderstack.android.sdk.core",
-              "version": "0.1.4"
-            },
-            "locale": "en-US",
-            "network": {
-              "carrier": "iOS",
-              "bluetooth": false,
-              "cellular": true
-            },
-            "campaign": {
-              "source": "google",
-              "medium": "medium",
-              "term": "keyword",
-              "content": "some content"
-            },
-            "os": {
-              "name": "iOS",
-              "version": "9"
-            },
-            "screen": {
-              "density": 420,
-              "height": 1794,
-              "width": 1080
-            },
-            "timezone": "Asia/Mumbai"
-          },
-          "properties": {
-            "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-            "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-            "install": "SM-G935F",
-            "order_id": "1234",
-            "affiliation": "Apple Store",
-            "receipt_signature": "1234dfghnh",
-            "purchase_transaction_id": "2134dfg",
-            "skan_last_call_timestamp": "1654532056",
-            "skan_first_call_timestamp": "1651853656",
-            "skan_conversion_value": "2",
-            "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-            "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-            "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-            "total": 20,
-            "revenue": 15.0,
-            "shipping": 22,
-            "tax": 1,
-            "discount": 1.5,
-            "coupon": "ImagePro",
-            "currency": "USD",
-            "fetch_token": "123asd23",
-            "product_id": "123",
-            "sku": "G-32",
-            "name": "Monopoly",
-            "price": 14
-          },
-          "timestamp": "2021-09-01T15:46:51.000Z"
+            {
+              "sessionEventName": "titanium"
+            }
+          ]
         }
       },
-    "output": {
-        "version": "1",
-        "type": "REST",
-        "method": "GET",
-        "endpoint": "https://s2s.singular.net/api/v1/evt",
-        "headers": {},
-        "params": {
-          "n": "myevent",
-          "p": "iOS",
-          "i": "com.rudderstack.demo.android",
-          "ip": "14.5.67.21",
-          "ve": "9",
-          "att_authorization_status": true,
-          "custom_user_id": "ruddersampleX5",
-          "utimȩ": "2021-09-01T15:46:51.000Z",
-          "skan_conversion_value": "2",
-          "skan_first_call_timestamp": "1651853656",
-          "skan_last_call_timestamp": "1654532056",
-          "cur": "USD",
-          "amt": 20,
-          "purchase_product_id": "123",
+      "message": {
+        "type": "track",
+        "event": "myevent",
+        "userId": "ruddersampleX5",
+        "request_ip": "14.5.67.21",
+        "context": {
+          "app": {
+            "build": "1",
+            "name": "RudderAndroidClient",
+            "namespace": "com.rudderstack.demo.android",
+            "version": "1.0"
+          },
+          "device": {
+            "manufacturer": "Google",
+            "model": "Android SDK built for x86",
+            "name": "generic_x86",
+            "type": "android",
+            "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+            "attStatus": true,
+            "id": "fc8d449516de0dfb",
+            "adTrackingEnabled": true,
+            "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "0.1.4"
+          },
+          "locale": "en-US",
+          "network": {
+            "carrier": "iOS",
+            "bluetooth": false,
+            "cellular": true
+          },
+          "campaign": {
+            "source": "google",
+            "medium": "medium",
+            "term": "keyword",
+            "content": "some content"
+          },
+          "os": {
+            "name": "iOS",
+            "version": "9"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080
+          },
+          "timezone": "Asia/Mumbai"
+        },
+        "properties": {
+          "asid": "IISqwYJKoZIcNqts0jvcNvPc",
+          "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
+          "install": "SM-G935F",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "receipt_signature": "1234dfghnh",
           "purchase_transaction_id": "2134dfg",
-          "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "idfv": "fc8d449516de0dfb",
-          "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-          "c":"carrier",
-          "e": {
-            "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-            "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-            "install": "SM-G935F",
-            "order_id": "1234",
-            "affiliation": "Apple Store",
-            "receipt_signature": "1234dfghnh",
-            "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-            "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-            "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-            "total": 20,
-            "revenue": 15,
-            "shipping": 22,
-            "tax": 1,
-            "discount": 1.5,
-            "coupon": "ImagePro",
-            "fetch_token": "123asd23",
-            "name": "Monopoly"
-          }
+          "skan_last_call_timestamp": "1654532056",
+          "skan_first_call_timestamp": "1651853656",
+          "skan_conversion_value": "2",
+          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+          "total": 20,
+          "revenue": 15.0,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14
         },
-        "body": {
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
+        "timestamp": "2021-09-01T15:46:51.000Z"
       }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "GET",
+      "endpoint": "https://s2s.singular.net/api/v1/evt",
+      "headers": {},
+      "params": {
+        "n": "myevent",
+        "p": "iOS",
+        "i": "com.rudderstack.demo.android",
+        "ip": "14.5.67.21",
+        "is_revenue_event": true,
+        "ve": "9",
+        "att_authorization_status": true,
+        "custom_user_id": "ruddersampleX5",
+        "utimȩ": "2021-09-01T15:46:51.000Z",
+        "skan_conversion_value": "2",
+        "skan_first_call_timestamp": "1651853656",
+        "skan_last_call_timestamp": "1654532056",
+        "cur": "USD",
+        "amt": 20,
+        "purchase_product_id": "123",
+        "purchase_transaction_id": "2134dfg",
+        "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+        "idfv": "fc8d449516de0dfb",
+        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+        "c": "carrier",
+        "e": {
+          "asid": "IISqwYJKoZIcNqts0jvcNvPc",
+          "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
+          "install": "SM-G935F",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "receipt_signature": "1234dfghnh",
+          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+          "total": 20,
+          "revenue": 15,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "fetch_token": "123asd23",
+          "name": "Monopoly"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   },
   {
     "description": "Android Lifeycle Session event",
     "input": {
-        "destination": {
-          "Config": {
-            "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-            "sessionEventList": [
-              {
-                "sessionEventName": "mysessionevent"
-              },
-              {
-                "sessionEventName": "randomuser"
-              },
-              {
-                "sessionEventName": "titanium"
-              }
-            ]
-          }
-        },
-        "message": {
-          "type": "track",
-          "event": "Application Installed",
-          "userId": "ruddersampleX5",
-          "request_ip": "14.5.67.21",
-          "context": {
-            "app": {
-              "build": "1",
-              "name": "RudderAndroidClient",
-              "namespace": "com.rudderstack.demo.android",
-              "version": "1.0"
+      "destination": {
+        "Config": {
+          "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+          "sessionEventList": [
+            {
+              "sessionEventName": "mysessionevent"
             },
-            "device": {
-              "manufacturer": "Google",
-              "model": "Android SDK built for x86",
-              "name": "generic_x86",
-              "type": "android",
-              "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-              "attStatus": true,
-              "id": "fc8d449516de0dfb",
-              "adTrackingEnabled": true,
-              "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+            {
+              "sessionEventName": "randomuser"
             },
-            "library": {
-              "name": "com.rudderstack.android.sdk.core",
-              "version": "0.1.4"
-            },
-            "locale": "en-US",
-            "network": {
-              "carrier": "iOS",
-              "bluetooth": false,
-              "cellular": true
-            },
-            "campaign": {
-              "source": "google",
-              "medium": "medium",
-              "term": "keyword",
-              "content": "some content"
-            },
-            "os": {
-              "name": "iOS",
-              "version": "9"
-            },
-            "screen": {
-              "density": 420,
-              "height": 1794,
-              "width": 1080
-            },
-            "timezone": "Asia/Mumbai"
-          },
-          "properties": {
-            "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-            "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-            "install": "SM-G935F",
-            "order_id": "1234",
-            "affiliation": "Apple Store",
-            "receipt_signature": "1234dfghnh",
-            "purchase_transaction_id": "2134dfg",
-            "skan_last_call_timestamp": "1654532056",
-            "skan_first_call_timestamp": "1651853656",
-            "skan_conversion_value": "2",
-            "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-            "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-            "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-            "total": 20,
-            "revenue": 15.0,
-            "shipping": 22,
-            "tax": 1,
-            "discount": 1.5,
-            "coupon": "ImagePro",
-            "currency": "USD",
-            "fetch_token": "123asd23",
-            "product_id": "123",
-            "sku": "G-32",
-            "name": "Monopoly",
-            "price": 14
-          },
-          "timestamp": "2021-09-01T15:46:51.000Z"
+            {
+              "sessionEventName": "titanium"
+            }
+          ]
         }
       },
-    "output": {
-        "version": "1",
-        "type": "REST",
-        "method": "GET",
-        "endpoint": "https://s2s.singular.net/api/v1/launch",
-        "headers": {},
-        "params": {
-          "p": "iOS",
-          "i": "com.rudderstack.demo.android",
-          "app_v": "1.0",
-          "ip": "14.5.67.21",
-          "ve": "9",
-          "mo": "Android SDK built for x86",
-          "ma": "Google",
-          "c": "carrier",
-          "dnt": true,
-          "lc": "en-US",
-          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-          "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-          "att_authorization_status": true,
-          "sessionNotificationName": "Application Installed",
-          "custom_user_id": "ruddersampleX5",
-          "n": "RudderAndroidClient",
-          "utime": "2021-09-01T15:46:51.000Z",
-          "cn": "iOS",
-          "apns_token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1",
-          "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-          "skan_conversion_value": "2",
-          "skan_first_call_timestamp": "1651853656",
-          "skan_last_call_timestamp": "1654532056",
-          "bd": "1",
+      "message": {
+        "type": "track",
+        "event": "Application Installed",
+        "userId": "ruddersampleX5",
+        "request_ip": "14.5.67.21",
+        "context": {
+          "app": {
+            "build": "1",
+            "name": "RudderAndroidClient",
+            "namespace": "com.rudderstack.demo.android",
+            "version": "1.0"
+          },
+          "device": {
+            "manufacturer": "Google",
+            "model": "Android SDK built for x86",
+            "name": "generic_x86",
+            "type": "android",
+            "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+            "attStatus": true,
+            "id": "fc8d449516de0dfb",
+            "adTrackingEnabled": true,
+            "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "0.1.4"
+          },
+          "locale": "en-US",
+          "network": {
+            "carrier": "iOS",
+            "bluetooth": false,
+            "cellular": true
+          },
+          "campaign": {
+            "source": "google",
+            "medium": "medium",
+            "term": "keyword",
+            "content": "some content"
+          },
+          "os": {
+            "name": "iOS",
+            "version": "9"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080
+          },
+          "timezone": "Asia/Mumbai"
+        },
+        "properties": {
+          "asid": "IISqwYJKoZIcNqts0jvcNvPc",
+          "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
           "install": "SM-G935F",
-          "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-          "idfv": "fc8d449516de0dfb",
-          "install_time": "2021-09-01T15:46:51.000Z",
-          "update_time": "2021-09-01T15:46:51.000Z",
-          "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "receipt_signature": "1234dfghnh",
+          "purchase_transaction_id": "2134dfg",
+          "skan_last_call_timestamp": "1654532056",
+          "skan_first_call_timestamp": "1651853656",
+          "skan_conversion_value": "2",
+          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+          "total": 20,
+          "revenue": 15.0,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14
         },
-        "body": {
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
+        "timestamp": "2021-09-01T15:46:51.000Z"
       }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "GET",
+      "endpoint": "https://s2s.singular.net/api/v1/launch",
+      "headers": {},
+      "params": {
+        "p": "iOS",
+        "i": "com.rudderstack.demo.android",
+        "app_v": "1.0",
+        "ip": "14.5.67.21",
+        "ve": "9",
+        "mo": "Android SDK built for x86",
+        "ma": "Google",
+        "c": "carrier",
+        "dnt": true,
+        "lc": "en-US",
+        "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+        "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
+        "att_authorization_status": true,
+        "sessionNotificationName": "Application Installed",
+        "custom_user_id": "ruddersampleX5",
+        "n": "RudderAndroidClient",
+        "utime": "2021-09-01T15:46:51.000Z",
+        "cn": "iOS",
+        "apns_token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1",
+        "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+        "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+        "skan_conversion_value": "2",
+        "skan_first_call_timestamp": "1651853656",
+        "skan_last_call_timestamp": "1654532056",
+        "bd": "1",
+        "install": "SM-G935F",
+        "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+        "idfv": "fc8d449516de0dfb",
+        "install_time": "2021-09-01T15:46:51.000Z",
+        "update_time": "2021-09-01T15:46:51.000Z",
+        "a": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd"
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   },
   {
     "description": "Android Session Event - Lifecycle event",
     "input": {
-        "destination": {
-          "Config": {
-            "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-            "sessionEventList": [
-              {
-                "sessionEventName": "mysessionevent"
-              },
-              {
-                "sessionEventName": "randomuser"
-              },
-              {
-                "sessionEventName": "titanium"
-              }
-            ]
-          }
-        },
-        "message": {
-          "type": "track",
-          "event": "Application Installed",
-          "userId": "ruddersampleX5",
-          "request_ip": "14.5.67.21",
-          "context": {
-            "app": {
-              "build": "1",
-              "name": "RudderAndroidClient",
-              "namespace": "com.rudderstack.demo.android",
-              "version": "1.0"
+      "destination": {
+        "Config": {
+          "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+          "sessionEventList": [
+            {
+              "sessionEventName": "mysessionevent"
             },
-            "device": {
-              "manufacturer": "Google",
-              "model": "Android SDK built for x86",
-              "name": "generic_x86",
-              "type": "android",
-              "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-              "attStatus": true,
-              "id": "fc8d449516de0dfb",
-              "adTrackingEnabled": true,
-              "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+            {
+              "sessionEventName": "randomuser"
             },
-            "library": {
-              "name": "com.rudderstack.android.sdk.core",
-              "version": "0.1.4"
-            },
-            "locale": "en-US",
-            "network": {
-              "carrier": "iOS",
-              "bluetooth": false,
-              "cellular": true
-            },
-            "campaign": {
-              "source": "google",
-              "medium": "medium",
-              "term": "keyword",
-              "content": "some content"
-            },
-            "os": {
-              "name": "window",
-              "version": "9"
-            },
-            "screen": {
-              "density": 420,
-              "height": 1794,
-              "width": 1080
-            },
-            "timezone": "Asia/Mumbai"
-          },
-          "properties": {
-            "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-            "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-            "install": "SM-G935F",
-            "order_id": "1234",
-            "affiliation": "Apple Store",
-            "receipt_signature": "1234dfghnh",
-            "purchase_transaction_id": "2134dfg",
-            "skan_last_call_timestamp": "1654532056",
-            "skan_first_call_timestamp": "1651853656",
-            "skan_conversion_value": "2",
-            "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-            "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-            "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-            "total": 20,
-            "revenue": 15.0,
-            "shipping": 22,
-            "tax": 1,
-            "discount": 1.5,
-            "coupon": "ImagePro",
-            "currency": "USD",
-            "fetch_token": "123asd23",
-            "product_id": "123",
-            "sku": "G-32",
-            "name": "Monopoly",
-            "price": 14
-          },
-          "timestamp": "2021-09-01T15:46:51.000Z"
+            {
+              "sessionEventName": "titanium"
+            }
+          ]
         }
       },
-    "output": {
-        "statusCode": 400,
-        "error": "[Singular] :: Platform is not supported",
-        "statTags": {
-          "destination": "singular",
-          "stage": "transform",
-          "scope": "exception"
-        }
+      "message": {
+        "type": "track",
+        "event": "Application Installed",
+        "userId": "ruddersampleX5",
+        "request_ip": "14.5.67.21",
+        "context": {
+          "app": {
+            "build": "1",
+            "name": "RudderAndroidClient",
+            "namespace": "com.rudderstack.demo.android",
+            "version": "1.0"
+          },
+          "device": {
+            "manufacturer": "Google",
+            "model": "Android SDK built for x86",
+            "name": "generic_x86",
+            "type": "android",
+            "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+            "attStatus": true,
+            "id": "fc8d449516de0dfb",
+            "adTrackingEnabled": true,
+            "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "0.1.4"
+          },
+          "locale": "en-US",
+          "network": {
+            "carrier": "iOS",
+            "bluetooth": false,
+            "cellular": true
+          },
+          "campaign": {
+            "source": "google",
+            "medium": "medium",
+            "term": "keyword",
+            "content": "some content"
+          },
+          "os": {
+            "name": "window",
+            "version": "9"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080
+          },
+          "timezone": "Asia/Mumbai"
+        },
+        "properties": {
+          "asid": "IISqwYJKoZIcNqts0jvcNvPc",
+          "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
+          "install": "SM-G935F",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "receipt_signature": "1234dfghnh",
+          "purchase_transaction_id": "2134dfg",
+          "skan_last_call_timestamp": "1654532056",
+          "skan_first_call_timestamp": "1651853656",
+          "skan_conversion_value": "2",
+          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+          "total": 20,
+          "revenue": 15.0,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14
+        },
+        "timestamp": "2021-09-01T15:46:51.000Z"
       }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[Singular] :: Platform is not supported",
+      "statTags": {
+        "destination": "singular",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
   },
   {
     "description": "Unsupported Identify Call made",
     "input": {
-        "destination": {
-          "Config": {
-            "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
-            "sessionEventList": [
-              {
-                "sessionEventName": "mysessionevent"
-              },
-              {
-                "sessionEventName": "randomuser"
-              },
-              {
-                "sessionEventName": "titanium"
-              }
-            ]
-          }
-        },
-        "message": {
-          "type": "identify",
-          "event": "Application Installed",
-          "userId": "ruddersampleX5",
-          "request_ip": "14.5.67.21",
-          "context": {
-            "app": {
-              "build": "1",
-              "name": "RudderAndroidClient",
-              "namespace": "com.rudderstack.demo.android",
-              "version": "1.0"
+      "destination": {
+        "Config": {
+          "apiKey": "ab7eb717-cdd8-tr63-a7f5-93339d7beelkd",
+          "sessionEventList": [
+            {
+              "sessionEventName": "mysessionevent"
             },
-            "device": {
-              "manufacturer": "Google",
-              "model": "Android SDK built for x86",
-              "name": "generic_x86",
-              "type": "android",
-              "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-              "attStatus": true,
-              "id": "fc8d449516de0dfb",
-              "adTrackingEnabled": true,
-              "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+            {
+              "sessionEventName": "randomuser"
             },
-            "library": {
-              "name": "com.rudderstack.android.sdk.core",
-              "version": "0.1.4"
-            },
-            "locale": "en-US",
-            "network": {
-              "carrier": "iOS",
-              "bluetooth": false,
-              "cellular": true
-            },
-            "campaign": {
-              "source": "google",
-              "medium": "medium",
-              "term": "keyword",
-              "content": "some content"
-            },
-            "os": {
-              "name": "window",
-              "version": "9"
-            },
-            "screen": {
-              "density": 420,
-              "height": 1794,
-              "width": 1080
-            },
-            "timezone": "Asia/Mumbai"
-          },
-          "properties": {
-            "asid": "IISqwYJKoZIcNqts0jvcNvPc",
-            "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-            "install": "SM-G935F",
-            "order_id": "1234",
-            "affiliation": "Apple Store",
-            "receipt_signature": "1234dfghnh",
-            "purchase_transaction_id": "2134dfg",
-            "skan_last_call_timestamp": "1654532056",
-            "skan_first_call_timestamp": "1651853656",
-            "skan_conversion_value": "2",
-            "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-            "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
-            "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
-            "total": 20,
-            "revenue": 15.0,
-            "shipping": 22,
-            "tax": 1,
-            "discount": 1.5,
-            "coupon": "ImagePro",
-            "currency": "USD",
-            "fetch_token": "123asd23",
-            "product_id": "123",
-            "sku": "G-32",
-            "name": "Monopoly",
-            "price": 14
-          },
-          "timestamp": "2021-09-01T15:46:51.000Z"
+            {
+              "sessionEventName": "titanium"
+            }
+          ]
         }
       },
-    "output":  {
-        "statusCode": 400,
-        "error": "[Singular]: Message type not supported",
-        "statTags": {
-          "destination": "singular",
-          "stage": "transform",
-          "scope": "exception"
-        }
+      "message": {
+        "type": "identify",
+        "event": "Application Installed",
+        "userId": "ruddersampleX5",
+        "request_ip": "14.5.67.21",
+        "context": {
+          "app": {
+            "build": "1",
+            "name": "RudderAndroidClient",
+            "namespace": "com.rudderstack.demo.android",
+            "version": "1.0"
+          },
+          "device": {
+            "manufacturer": "Google",
+            "model": "Android SDK built for x86",
+            "name": "generic_x86",
+            "type": "android",
+            "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
+            "attStatus": true,
+            "id": "fc8d449516de0dfb",
+            "adTrackingEnabled": true,
+            "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "0.1.4"
+          },
+          "locale": "en-US",
+          "network": {
+            "carrier": "iOS",
+            "bluetooth": false,
+            "cellular": true
+          },
+          "campaign": {
+            "source": "google",
+            "medium": "medium",
+            "term": "keyword",
+            "content": "some content"
+          },
+          "os": {
+            "name": "window",
+            "version": "9"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080
+          },
+          "timezone": "Asia/Mumbai"
+        },
+        "properties": {
+          "asid": "IISqwYJKoZIcNqts0jvcNvPc",
+          "url": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
+          "install": "SM-G935F",
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "receipt_signature": "1234dfghnh",
+          "purchase_transaction_id": "2134dfg",
+          "skan_last_call_timestamp": "1654532056",
+          "skan_first_call_timestamp": "1651853656",
+          "skan_conversion_value": "2",
+          "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
+          "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
+          "total": 20,
+          "revenue": 15.0,
+          "shipping": 22,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "fetch_token": "123asd23",
+          "product_id": "123",
+          "sku": "G-32",
+          "name": "Monopoly",
+          "price": 14
+        },
+        "timestamp": "2021-09-01T15:46:51.000Z"
       }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[Singular]: Message type not supported",
+      "statTags": {
+        "destination": "singular",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
   }
 ]

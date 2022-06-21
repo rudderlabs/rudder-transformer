@@ -38,7 +38,7 @@
   },
   {
     "destKey": "purchase_transaction_id",
-    "sourceKeys": "purchase_transaction_id",
+    "sourceKeys": ["orderId", "purchase_transaction_id"],
     "required": false
   }
 ]

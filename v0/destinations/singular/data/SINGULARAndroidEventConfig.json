@@ -51,8 +51,7 @@
         "operation": "multiplication",
         "args": [
           {
-            "sourceKeys": "properties.price",
-            "default": 0
+            "sourceKeys": "properties.price"
           },
           {
             "sourceKeys": "properties.quantity",

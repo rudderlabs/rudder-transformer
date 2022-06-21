@@ -17,7 +17,8 @@ const {
   removeUndefinedAndNullValues,
   CustomError,
   extractCustomFields,
-  getValueFromMessage
+  getValueFromMessage,
+  isDefinedAndNotNull
 } = require("../../util");
 
 /*
@@ -133,6 +134,12 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
       ]
     );
     eventAttributes = removeUndefinedAndNullValues(eventAttributes);
+
+    // If anyone out of value, revenue, total is set,we will have amt in payload
+    // and we will consider the event as revenue event.
+    if (!isDefinedAndNotNull(payload.is_revenue_event) && payload.amt) {
+      payload.is_revenue_event = true;
+    }
   }
 
   // Singular maps Connection Type to either wifi or carrier

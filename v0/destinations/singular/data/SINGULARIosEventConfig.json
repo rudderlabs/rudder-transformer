@@ -16,7 +16,7 @@
   },
   {
     "destKey": "ip",
-    "sourceKeys": "request_ip",
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": true
   },
   {
@@ -100,7 +100,7 @@
   },
   {
     "destKey": "purchase_transaction_id",
-    "sourceKeys": "properties.purchase_transaction_id",
+    "sourceKeys": ["properties.orderId", "properties.purchase_transaction_id"],
     "required": false
   },
   {

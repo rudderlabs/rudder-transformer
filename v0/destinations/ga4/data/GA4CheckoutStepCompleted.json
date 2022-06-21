@@ -1,0 +1,30 @@
+[
+    {
+      "destKey": "currency",
+      "sourceKeys": "properties.currency",
+      "required": true
+    },
+    {
+      "destKey": "value",
+      "sourceKeys": [
+        "properties.total",
+        "properties.value",
+        "properties.revenue"
+      ],
+      "metadata": {
+        "type": "toNumber"
+      },
+      "required": true
+    },
+    {
+      "destKey": "coupon",
+      "sourceKeys": "properties.coupon",
+      "required": false
+    },
+    {
+      "destKey": "shipping_tier",
+      "sourceKeys": "properties.shipping_method",
+      "required": false
+    }
+  ]
+  

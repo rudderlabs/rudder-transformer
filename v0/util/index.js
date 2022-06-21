@@ -565,7 +565,7 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     excludes,
     multikeyMap,
     allowedKeyCheck,
-    dobInMMDD
+    validateTimestamp
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -574,6 +574,78 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   }
   // we've got a correct value. start processing
   let formattedVal = value;
+
+  /**
+   * validate allowed time difference
+   */
+  if (validateTimestamp) {
+    const {
+      allowedPastTimeDifference,
+      allowedPastTimeUnit, // seconds, minutes, hours
+      allowedFutureTimeDifference,
+      allowedFutureTimeUnit // seconds, minutes, hours
+    } = validateTimestamp;
+
+    let pastTimeDifference;
+    let futureTimeDifference;
+
+    const currentTime = moment.unix(moment().format("X"));
+    const time = moment.unix(moment(formattedVal).format("X"));
+
+    switch (allowedPastTimeUnit) {
+      case "seconds":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asSeconds()
+        );
+        break;
+      case "minutes":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asMinutes()
+        );
+        break;
+      case "hours":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asHours()
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (pastTimeDifference > allowedPastTimeDifference) {
+      throw new Error(
+        `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
+      );
+    }
+
+    if (pastTimeDifference <= 0) {
+      switch (allowedFutureTimeUnit) {
+        case "seconds":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asSeconds()
+          );
+          break;
+        case "minutes":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asMinutes()
+          );
+          break;
+        case "hours":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asHours()
+          );
+          break;
+        default:
+          break;
+      }
+
+      if (futureTimeDifference > allowedFutureTimeDifference) {
+        throw new Error(
+          `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
+        );
+      }
+    }
+  }
 
   // handle type and format
   if (type) {
@@ -585,6 +657,12 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         formattedVal = Math.floor(
           formatTimeStamp(formattedVal, typeFormat) / 1000
         );
+        break;
+      case "microSecondTimestamp":
+        formattedVal = moment.unix(moment(formattedVal).format("X"));
+        formattedVal =
+          formattedVal.toDate().getTime() * 1000 +
+          formattedVal.toDate().getMilliseconds();
         break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
@@ -600,7 +678,7 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "dobInMMDD":
         formattedVal = String(formattedVal).slice(5);
-        formattedVal = formattedVal.replace("-","/");
+        formattedVal = formattedVal.replace("-", "/");
         break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify

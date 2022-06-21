@@ -266,28 +266,28 @@ const getItemList = (message, isItemsRequired = false) => {
  */
 const getItem = (message, isItemsRequired) => {
   let items;
-  const products = get(message, "properties");
-  if (!products && isItemsRequired) {
+  const properties = get(message, "properties");
+  if (!properties && isItemsRequired) {
     throw new CustomError(
       `Item/product parameters not found for '${message.event}' event`,
       400
     );
   }
 
-  if (products) {
+  if (properties) {
     items = [];
-    const element = constructPayload(
-      products,
+    const product = constructPayload(
+      properties,
       mappingConfig[ConfigCategory.ITEM.name]
     );
     if (
-      !isDefinedAndNotNull(element.item_id) &&
-      !isDefinedAndNotNull(element.item_name)
+      !isDefinedAndNotNull(product.item_id) &&
+      !isDefinedAndNotNull(product.item_name)
     ) {
       throw new CustomError("One of product_id or name is required", 400);
     }
 
-    items.push(element);
+    items.push(product);
   }
   return items;
 };

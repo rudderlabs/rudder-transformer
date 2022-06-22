@@ -8,26 +8,22 @@ const version = "v0";
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 
 // Processor Test files
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}.json`)
 );
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
+const testData = JSON.parse(testDataFile);
 
 Date.now = jest.fn(() => new Date("2022-04-29T05:17:09Z"));
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
-    inputData.forEach(async (input, index) => {
-      it(`Payload - ${index}`, async () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, () => {
         try {
-          const output = await transformer.process(input);
-          expect(output).toEqual(expectedData[index]);
+          const output = transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
         } catch (error) {
-          expect(error.message).toEqual(expectedData[index].error);
+          expect(error.message).toEqual(dataPoint.output.error);
         }
       });
     });

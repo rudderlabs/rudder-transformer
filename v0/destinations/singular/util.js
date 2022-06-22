@@ -124,6 +124,19 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
       400
     );
   }
+  if (isSessionEvent) {
+    // context.device.adTrackingEnabled = true implies Singular's do not track (dnt)
+    // to be 0 and vice-versa.
+    let adTrackingEnabled = getValueFromMessage(
+      message,
+      "context.device.adTrackingEnabled"
+    );
+    if (adTrackingEnabled === true) {
+      payload.dnt = 0;
+    } else {
+      payload.dnt = 1;
+    }
+  }
 
   // Custom Attribues is not supported by session events
   if (!isSessionEvent) {

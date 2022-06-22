@@ -56,13 +56,8 @@
     }
   },
   {
-    "destKey": "dnt",
-    "sourceKeys": "context.device.adTrackingEnabled",
-    "required": true
-  },
-  {
     "destKey": "att_authorization_status",
-    "sourceKeys": "context.device.attStatus",
+    "sourceKeys": "context.device.attTrackingStatus",
     "required": true
   },
   {

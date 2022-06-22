@@ -1,6 +1,6 @@
 [
   {
-    "description": "Android Session Event",
+    "description": "(Android) Session Event",
     "input": {
       "destination": {
         "Config": {
@@ -128,7 +128,7 @@
         "ma": "Google",
         "lc": "en-US",
         "c": "wifi",
-        "dnt": true,
+        "dnt": 0,
         "install_source": "2134dfg",
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
@@ -157,7 +157,7 @@
     }
   },
   {
-    "description": "Android Custom Event",
+    "description": "(Android) Custom Event with multiple products",
     "input": {
       "destination": {
         "Config": {
@@ -371,7 +371,7 @@
     ]
   },
   {
-    "description": "Event Name is required for Custom Events",
+    "description": "[Error]: (Android) Custom Event without the event name",
     "input": {
       "destination": {
         "Config": {
@@ -479,7 +479,7 @@
     }
   },
   {
-    "description": "Check for a required field (referring application) for Session event",
+    "description": "[Error]: (Android) Required field referring application missing for Session event",
     "input": {
       "destination": {
         "Config": {
@@ -590,7 +590,7 @@
     }
   },
   {
-    "description": "Android Session Event with many non-Singular properties",
+    "description": "(Android) Session Event with additional properties",
     "input": {
       "destination": {
         "Config": {
@@ -744,7 +744,7 @@
     }
   },
   {
-    "description": "Platform is required for Custom Events",
+    "description": "[Error]: (Android) Required Platform field missing for Custom Events",
     "input": {
       "destination": {
         "Config": {
@@ -854,7 +854,7 @@
     }
   },
   {
-    "description": "Android Session Event mapped from config",
+    "description": "(Android) Session Event mapped from config",
     "input": {
       "destination": {
         "Config": {
@@ -968,7 +968,7 @@
         "install_source": "Amazon",
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-        "dnt": true,
+        "dnt": 0,
         "sessionNotificationName": "mysessionevent",
         "custom_user_id": "ruddersampleX5",
         "n": "RudderAndroidClient",
@@ -994,7 +994,7 @@
     }
   },
   {
-    "description": "Session Event with a single product",
+    "description": "(Android) Session Event with a single product",
     "input": {
       "destination": {
         "Config": {
@@ -1108,7 +1108,7 @@
         "install_source": "Amazon",
         "asid": "IISqwYJKoZIcNqts0jvcNvPc",
         "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-        "dnt": true,
+        "dnt": 0,
         "sessionNotificationName": "mysessionevent",
         "custom_user_id": "ruddersampleX5",
         "n": "RudderAndroidClient",
@@ -1135,7 +1135,7 @@
     }
   },
   {
-    "description": "Android Session Event",
+    "description": "[Error]: (Android) Session Event",
     "input": {
       "destination": {
         "Config": {
@@ -1239,7 +1239,7 @@
     }
   },
   {
-    "description": "iOS Session Event",
+    "description": "(iOS) Session Event",
     "input": {
       "destination": {
         "Config": {
@@ -1275,7 +1275,7 @@
             "name": "generic_x86",
             "type": "android",
             "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-            "attStatus": true,
+            "attTrackingStatus": 3,
             "id": "fc8d449516de0dfb",
             "adTrackingEnabled": true,
             "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
@@ -1355,7 +1355,7 @@
         "lc": "en-US",
         "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
         "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-        "att_authorization_status": true,
+        "att_authorization_status": 3,
         "sessionNotificationName": "mysessionevent",
         "custom_user_id": "ruddersampleX5",
         "n": "RudderAndroidClient",
@@ -1368,7 +1368,7 @@
         "skan_first_call_timestamp": "1651853656",
         "skan_last_call_timestamp": "1654532056",
         "bd": "1",
-        "dnt": true,
+        "dnt": 0,
         "install": "SM-G935F",
         "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",
         "idfv": "fc8d449516de0dfb",
@@ -1386,7 +1386,7 @@
     }
   },
   {
-    "description": "iOS custom event",
+    "description": "(iOS) Custom event",
     "input": {
       "destination": {
         "Config": {
@@ -1422,7 +1422,7 @@
             "name": "generic_x86",
             "type": "android",
             "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-            "attStatus": true,
+            "attTrackingStatus": 3,
             "id": "fc8d449516de0dfb",
             "adTrackingEnabled": true,
             "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
@@ -1497,7 +1497,7 @@
         "ip": "14.5.67.21",
         "is_revenue_event": true,
         "ve": "9",
-        "att_authorization_status": true,
+        "att_authorization_status": 3,
         "custom_user_id": "ruddersampleX5",
         "utimȩ": "2021-09-01T15:46:51.000Z",
         "skan_conversion_value": "2",
@@ -1577,7 +1577,7 @@
             "name": "generic_x86",
             "type": "android",
             "advertisingId": "8ecd7512-2864-440c-93f3-a3cabe62525b",
-            "attStatus": true,
+            "attTrackingStatus": 3,
             "id": "fc8d449516de0dfb",
             "adTrackingEnabled": true,
             "token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1"
@@ -1654,11 +1654,11 @@
         "mo": "Android SDK built for x86",
         "ma": "Google",
         "c": "carrier",
-        "dnt": true,
+        "dnt": 0,
         "lc": "en-US",
         "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
         "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
-        "att_authorization_status": true,
+        "att_authorization_status": 3,
         "sessionNotificationName": "Application Installed",
         "custom_user_id": "ruddersampleX5",
         "n": "RudderAndroidClient",
@@ -1688,7 +1688,7 @@
     }
   },
   {
-    "description": "Android Session Event - Lifecycle event",
+    "description": "(Android) Session Event - Application Installed lifecycle event ",
     "input": {
       "destination": {
         "Config": {
@@ -1797,7 +1797,7 @@
     }
   },
   {
-    "description": "Unsupported Identify Call made",
+    "description": "[Error]: Unsupported Identify Call made",
     "input": {
       "destination": {
         "Config": {

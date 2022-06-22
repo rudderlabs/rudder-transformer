@@ -64,11 +64,6 @@
     }
   },
   {
-    "destKey": "dnt",
-    "sourceKeys": "context.device.adTrackingEnabled",
-    "required": true
-  },
-  {
     "destKey": "sessionNotificationName",
     "sourceKeys": "event",
     "required": true

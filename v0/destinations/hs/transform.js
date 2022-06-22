@@ -302,7 +302,7 @@ function batchEvents(destEvents) {
       const { properties } = ev.message.body.JSON
       if (properties && !(properties instanceof Array)) {
         identifyResponseList.push({...ev.message.body.JSON})
-        batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+        batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList
         };
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`

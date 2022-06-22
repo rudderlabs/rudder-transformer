@@ -756,8 +756,8 @@ router.post("/batch", ctx => {
  */
 const utHandler = async ctx => {
 
-  const eventRequests  = ctx.request.body;
-  
+  const eventRequests  = ctx.request.body.batch;
+  const libraryIds = ctx.request.body.libraryIds;
 
   if(eventRequests == null || eventRequests.size <= 0){
     return null;
@@ -797,7 +797,8 @@ const utHandler = async ctx => {
     transformPromises.push(
     new Promise(async (resolve, reject) =>{
       try{
-      const output = await userTransformHandler()(messages, transformationId, []);
+        //library version ids to be needed
+      const output = await userTransformHandler()(messages, transformationId, libraryIds || []);
       console.log("trans out", output);
       resolve({
         "id" : transformationId,
@@ -847,7 +848,9 @@ const utHandler = async ctx => {
 
     )
   
-  ctx.body = response;
+  ctx.body = {
+    "transformedBatch" : response
+  };
 };
 
 router.post("/usertransformation", async ctx => {

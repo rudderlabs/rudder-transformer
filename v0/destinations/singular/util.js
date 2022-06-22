@@ -56,6 +56,8 @@ const generateRevenuePayloadArray = (
       MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name]
     );
     let finalpayload = { ...payload, ...productDetails };
+    // is_revenue_event will be true as here payload for a REVENUE event is being generated
+    finalpayload.is_revenue_event = true;
     finalpayload = removeUndefinedAndNullValues(finalpayload);
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}/evt`;

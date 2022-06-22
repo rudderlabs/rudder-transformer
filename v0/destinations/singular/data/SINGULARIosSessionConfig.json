@@ -16,7 +16,7 @@
   },
   {
     "destKey": "ip",
-    "sourceKeys": "request_ip",
+    "sourceKeys": ["context.ip", "request_ip"],
     "required": true
   },
   {

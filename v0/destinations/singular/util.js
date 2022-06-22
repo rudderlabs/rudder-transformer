@@ -136,10 +136,8 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     } else {
       payload.dnt = 1;
     }
-  }
-
-  // Custom Attribues is not supported by session events
-  if (!isSessionEvent) {
+  } else {
+    // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(
       message,
       exclusionList[

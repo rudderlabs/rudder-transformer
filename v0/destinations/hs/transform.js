@@ -56,8 +56,8 @@ async function getProperties(destination) {
       if (err.response) {
         throw new CustomError(
           JSON.stringify(err.response.data) ||
-            JSON.stringify(err.response.statusText) ||
-            "Failed to get hubspot properties",
+          JSON.stringify(err.response.statusText) ||
+          "Failed to get hubspot properties",
           err.response.status || 500
         );
       }
@@ -299,22 +299,30 @@ function batchEvents(destEvents) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      const { email, updatedProperties } = getEmailAndUpdatedProps(
-        ev.message.body.JSON.properties
-      );
-      ev.message.body.JSON.properties = updatedProperties;
-      identifyResponseList.push({
-        email,
-        properties: ev.message.body.JSON.properties
-      });
-      metadata.push(ev.metadata);
+      const { properties } = ev.message.body.JSON
+      if (properties && !(properties instanceof Array)) {
+        identifyResponseList.push({...ev.message.body.JSON})
+        batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+          inputs: identifyResponseList
+        };
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`
+      } else {
+        const { email, updatedProperties } = getEmailAndUpdatedProps(
+          ev.message.body.JSON.properties
+        );
+        ev.message.body.JSON.properties = updatedProperties;
+        identifyResponseList.push({
+          email,
+          properties: ev.message.body.JSON.properties
+        });
+        metadata.push(ev.metadata);
+        batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+          batch: JSON.stringify(identifyResponseList)
+        };
+        batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+      }
     });
 
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(identifyResponseList)
-    };
-
-    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"
     };

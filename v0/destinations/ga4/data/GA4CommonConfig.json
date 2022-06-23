@@ -9,7 +9,16 @@
     "destKey": "timestamp_micros",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "validateTimestamp": {
+        "allowedFutureTimeDifference": 15,
+        "allowedFutureTimeUnit": "minutes",
+        "allowedPastTimeDifference": 72,
+        "allowedPastTimeUnit": "hours"
+      },
+      "type": "microSecondTimestamp"
+    }
   },
   {
     "destKey": "non_personalized_ads",
@@ -19,11 +28,11 @@
       "multikeyMap": [
         {
           "sourceVal": ["true", true, "1", 1],
-          "destVal": true
+          "destVal": false
         },
         {
           "sourceVal": ["false", false, "0", 0],
-          "destVal": false
+          "destVal": true
         }
       ]
     }

@@ -1,0 +1,108 @@
+[
+  {
+    "destKey": "n",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "p",
+    "sourceKeys": "context.os.name",
+    "required": true
+  },
+  {
+    "destKey": "i",
+    "sourceKeys": "context.app.namespace",
+    "required": true
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": true
+  },
+  {
+    "destKey": "ve",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "custom_user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "is_revenue_event",
+    "sourceKeys": "properties.is_revenue_event",
+    "required": false
+  },
+  {
+    "destKey": "amt",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "default": 1
+          }
+        ]
+      }
+    ],
+    "required": false
+  },
+  {
+    "destKey": "cur",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "purchase_receipt",
+    "sourceKeys": "properties.purchase_receipt",
+    "required": false
+  },
+  {
+    "destKey": "purchase_product_id",
+    "sourceKeys": ["properties.product_id", "properties.sku"],
+    "required": false
+  },
+  {
+    "destKey": "purchase_transaction_id",
+    "sourceKeys": ["properties.orderId", "properties.purchase_transaction_id"],
+    "required": false
+  },
+  {
+    "destKey": "aifa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "andi",
+    "sourceKeys": "context.device.id",
+    "required": true
+  },
+  {
+    "destKey": "asid",
+    "sourceKeys": "properties.asid",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "receipt_signature",
+    "sourceKeys": "properties.receipt_signature",
+    "required": false
+  }
+]

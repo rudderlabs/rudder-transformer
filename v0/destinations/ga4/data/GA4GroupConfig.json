@@ -1,7 +1,8 @@
 [
   {
     "destKey": "group_id",
-    "sourceKeys": ["groupId", "properties.groupId", "properties.group_id"],
+    "sourceKeys": "groupId",
+    "sourceFromGenericMap": true,
     "required": false
   }
 ]

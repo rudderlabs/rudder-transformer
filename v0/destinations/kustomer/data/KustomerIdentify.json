@@ -49,6 +49,10 @@
     "required": false
   },
   {
+    "destKey": "importedAt",
+    "sourceKeys": ["traits.importedAt", "context.traits.importedAt"]
+  },
+  {
     "destKey": "avatarUrl",
     "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
@@ -115,15 +119,15 @@
     "sourceKeys": ["traits.instagramIds", "context.traits.instagramIds"]
   },
   {
-    "destKey": "socials",
-    "sourceKeys": ["traits.socials", "context.traits.socials"]
-  },
-  {
     "destKey": "timeZone",
     "sourceKeys": ["traits.timeZone", "context.traits.timeZone"]
   },
   {
     "destKey": "defaultLang",
     "sourceKeys": ["traits.defaultLanguage", "context.traits.defaultLanguage"]
+  },
+  {
+    "destKey": "rev",
+    "sourceKeys": ["traits.rev", "context.traits.rev"]
   }
 ]

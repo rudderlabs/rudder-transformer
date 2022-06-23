@@ -1541,7 +1541,7 @@
     }
   },
   {
-    "description": "Android Lifeycle Session event",
+    "description": "(Android) Lifeycle Session event",
     "input": {
       "destination": {
         "Config": {

@@ -11,7 +11,7 @@
   },
   {
     "destKey": "item_id",
-    "sourceKeys": "properties.item_id",
+    "sourceKeys": ["properties.item_id", "properties.cart_id"],
     "required": false
   }
 ]

@@ -1,0 +1,43 @@
+[
+  {
+    "destKey": "purchase_product_id",
+    "sourceKeys": ["product_id", "sku"],
+    "required": false
+  },
+  {
+    "destKey": "amt",
+    "sourceKeys": [
+      "total",
+      "value",
+      "revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "price"
+          },
+          {
+            "sourceKeys": "quantity",
+            "default": 1
+          }
+        ]
+      }
+    ],
+    "required": false
+  },
+  {
+    "destKey": "purchase_receipt",
+    "sourceKeys": "purchase_receipt",
+    "required": false
+  },
+  {
+    "destKey": "cur",
+    "sourceKeys": "currency",
+    "required": false
+  },
+  {
+    "destKey": "purchase_transaction_id",
+    "sourceKeys": ["orderId", "purchase_transaction_id"],
+    "required": false
+  }
+]

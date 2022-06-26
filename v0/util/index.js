@@ -600,7 +600,7 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "dobInMMDD":
         formattedVal = String(formattedVal).slice(5);
-        formattedVal = formattedVal.replace("-","/");
+        formattedVal = formattedVal.replace("-", "/");
         break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify
@@ -633,6 +633,9 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "toInt":
         formattedVal = parseInt(formattedVal, 10);
+        break;
+      case "toLower":
+        formattedVal = formattedVal.toString().toLowerCase();
         break;
       case "hashToSha256":
         formattedVal =

@@ -1,19 +1,26 @@
-const integration = "ga4";
-const name = "Google Analytics 4";
+const integration = "singular";
+const name = "singular";
 
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
-
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 
-// Processor Test files
+// Processor Test Data
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)
 );
 const testData = JSON.parse(testDataFile);
 
-Date.now = jest.fn(() => new Date("2022-04-29T05:17:09Z"));
+// Router Test Data
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -26,6 +33,13 @@ describe(`${name} Tests`, () => {
           expect(error.message).toEqual(dataPoint.output.error);
         }
       });
+    });
+  });
+
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
   });
 });

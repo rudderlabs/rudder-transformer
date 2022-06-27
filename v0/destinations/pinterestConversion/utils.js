@@ -93,7 +93,7 @@ const processCommonPayload = message => {
   const adTrackingEnabled = message.context?.device?.adtrackingEnabled;
   if(isDefinedAndNotNull(adTrackingEnabled))
   {
-        commonPayload.opt_out = adTrackingEnabled === 'true'? 'false' : 'true';
+        commonPayload.opt_out = adTrackingEnabled === true? false : true;
   }
   return commonPayload;
 };

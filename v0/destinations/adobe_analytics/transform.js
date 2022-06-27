@@ -435,14 +435,16 @@ const process = async event => {
   const formattedDestination = formatDestinationConfig(destination.Config);
   let payload;
 
+  const messageClone = { ...message };
+  if (messageType === EventType.PAGE || messageType === EventType.SCREEN) {
+    messageClone.event = message.name;
+  }
+
   switch (messageType) {
     case EventType.TRACK:
     case EventType.PAGE:
     case EventType.SCREEN:
-      if (messageType === "page" || messageType === "screen") {
-        message.event = message.name;
-      }
-      payload = handleTrack(message, formattedDestination);
+      payload = handleTrack(messageClone, formattedDestination);
       break;
     default:
       throw new Error("Message type is not supported");

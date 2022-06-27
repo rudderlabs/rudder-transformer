@@ -439,6 +439,9 @@ const process = async event => {
     case EventType.TRACK:
     case EventType.PAGE:
     case EventType.SCREEN:
+      if (messageType === "page" || messageType === "screen") {
+        message.event = message.name;
+      }
       payload = handleTrack(message, formattedDestination);
       break;
     default:

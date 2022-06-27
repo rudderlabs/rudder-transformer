@@ -16,11 +16,18 @@ function batch(destEvents) {
 }
 
 function process(event) {
-  const result = {
+  const schemaId = event.message?.integrations?.KAFKA?.schemaId;
+  if (schemaId) {
+    return {
+      message: event.message,
+      userId: event.message.userId || event.message.anonymousId,
+      schemaId
+    };
+  }
+  return {
     message: event.message,
     userId: event.message.userId || event.message.anonymousId
   };
-  return result;
 }
 
 module.exports = { process, batch };

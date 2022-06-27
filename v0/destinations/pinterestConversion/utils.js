@@ -90,10 +90,14 @@ const processCommonPayload = message => {
       400
     );
   }
-  const adTrackingEnabled = message.context?.device?.adtrackingEnabled;
-  if(isDefinedAndNotNull(adTrackingEnabled))
-  {
-        commonPayload.opt_out = adTrackingEnabled === true? false : true;
+  const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
+  
+  if(isDefinedAndNotNull(adTrackingEnabled)) {
+        if(adTrackingEnabled === true) {
+          commonPayload.opt_out = false;
+        } else if (adTrackingEnabled === false) {
+          commonPayload.opt_out = true;
+        }
   }
   return commonPayload;
 };

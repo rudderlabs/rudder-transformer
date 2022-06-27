@@ -176,7 +176,8 @@ const getPayloadData = body => {
 
 /**
  * Method for stringification of query parameters
- * To understand the use-case for this method, please take a look at the code mentioned below:
+ * To understand the use-case for this method, please take a look at the below mentioned link:
+ * https://github.com/rudderlabs/rudder-transformer/pull/1244#issuecomment-1158900136
  *
  * @param {*} value
  * @returns {String}

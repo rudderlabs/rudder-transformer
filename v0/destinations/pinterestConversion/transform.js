@@ -132,7 +132,7 @@ const trackResponseBuilder = (message, destination) => {
 const process = event => {
   let response;
   const { message, destination } = event;
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type?.toLowerCase();
   const destConfig = destination.Config;
 
   if (!destConfig.advertiserId) {

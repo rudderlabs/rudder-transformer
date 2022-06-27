@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "identity.id"
+  },
+  {
+    "sourceKeys": "event",
+    "destKey": "event_name"
+  },
+  {
+    "sourceKeys": "properties",
+    "destKey": "data"
+  }
+]

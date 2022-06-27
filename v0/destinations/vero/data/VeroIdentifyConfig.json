@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "id"
+  },
+  {
+    "sourceKeys": "email",
+    "destKey": "email"
+  },
+  {
+    "sourceKeys": "traits",
+    "destKey": "data"
+  }
+]

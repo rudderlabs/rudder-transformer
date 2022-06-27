@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "new_id"
+  },
+  {
+    "sourceKeys": "previousId",
+    "destKey": "id"
+  }
+]

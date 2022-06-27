@@ -1,4 +1,4 @@
-const { httpSend } = require("../../../adapters/network");
+const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -186,6 +186,7 @@ const responseHandler = destinationResponse => {
 const networkHandler = function() {
   this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
+  this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
 };
 module.exports = { networkHandler };

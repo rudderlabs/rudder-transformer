@@ -1,7 +1,7 @@
 const ErrorBuilder = require("../../v0/util/error");
 const { isHttpStatusSuccess } = require("../../v0/util/index");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
-const { proxyRequest } = require("../network");
+const { proxyRequest, prepareProxyRequest } = require("../network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -50,6 +50,7 @@ const responseHandler = (destinationResponse, dest) => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

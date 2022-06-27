@@ -7,6 +7,7 @@ const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
+const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 
 const {
   isNonFuncObject,
@@ -21,19 +22,18 @@ const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
+const destProxyRoutes = require("./routes/destinationProxy");
 const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
+const { getIntegrations } = require("./routes/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
 ConfigFactory.init({ basePath, loggingMode: "production" });
-
-const versions = ["v0"];
-const API_VERSION = "2";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -41,6 +41,7 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
+const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -49,13 +50,6 @@ const router = new Router();
 
 // Router for assistance in profiling
 router.use(profilingRouter);
-
-const isDirectory = source => {
-  return fs.lstatSync(source).isDirectory();
-};
-
-const getIntegrations = type =>
-  fs.readdirSync(type).filter(destName => isDirectory(`${type}/${destName}`));
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
@@ -281,9 +275,9 @@ async function routerHandleDest(ctx) {
 }
 
 if (startDestTransformer) {
-  versions.forEach(version => {
+  SUPPORTED_VERSIONS.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
-    destinations.push (...getIntegrations(CDK_DEST_PATH));
+    destinations.push(...getIntegrations(CDK_DEST_PATH));
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async ctx => {
@@ -590,7 +584,7 @@ async function handleSource(ctx, version, source) {
 }
 
 if (startSourceTransformer) {
-  versions.forEach(version => {
+  SUPPORTED_VERSIONS.forEach(version => {
     const sources = getIntegrations(`${version}/sources`);
     sources.forEach(source => {
       // eg. v0/sources/customerio
@@ -664,7 +658,7 @@ async function handleProxyRequest(destination, ctx) {
 }
 
 if (transformerProxy) {
-  versions.forEach(version => {
+  SUPPORTED_VERSIONS.forEach(version => {
     const destinations = getIntegrations(`${version}/destinations`);
     destinations.forEach(destination => {
       router.post(
@@ -681,6 +675,10 @@ if (transformerProxy) {
       );
     });
   });
+}
+
+if (proxyTestModeEnabled) {
+  router.use(destProxyRoutes);
 }
 
 router.get("/version", ctx => {

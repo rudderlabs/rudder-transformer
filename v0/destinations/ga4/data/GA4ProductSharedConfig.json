@@ -11,7 +11,11 @@
   },
   {
     "destKey": "item_id",
-    "sourceKeys": "properties.item_id",
+    "sourceKeys": [
+      "properties.item_id",
+      "properties.product_id",
+      "properties.sku"
+    ],
     "required": false
   }
 ]

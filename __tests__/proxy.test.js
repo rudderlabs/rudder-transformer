@@ -31,6 +31,7 @@ inputData.forEach((input, index) => {
       const output = await service("any", input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
+      console.log(error);
       expect(error).toEqual(expectedData[index]);
     }
   });
@@ -54,6 +55,7 @@ destinations.forEach(destination => {
         const output = await service(destination, input);
         expect(output).toEqual(expectedData[index]);
       } catch (error) {
+        console.log(error);
         expect(error).toEqual(expectedData[index]);
       }
     });

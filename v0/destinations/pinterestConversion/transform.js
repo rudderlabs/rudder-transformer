@@ -36,12 +36,6 @@ const responseBuilderSimple = finalPayload => {
 
 const identifyPageResponseBuilder = (message, { Config }) => {
   const { appId, advertiserId } = Config;
-  if (!isDefined(advertiserId)) {
-    throw new CustomError(
-      "Advertiser ID is mandatory for sending events to Pinterest Conversion API",
-      400
-    );
-  }
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
   const userPayload = constructPayload(message, USER_CONFIGS);
@@ -175,9 +169,9 @@ const generateBatchedPaylaodForArray = events => {
   // extracting destination from the first event in a batch
   const { destination } = events[0];
   // Batch event into dest batch structure
-  events.forEach(ev => {
-    batchResponseList.push(ev.message.body.JSON);
-    metadata.push(ev.metadata);
+  events.forEach(event => {
+    batchResponseList.push(event.message.body.JSON);
+    metadata.push(event.metadata);
   });
 
   batchEventResponse.batchedRequest.body.JSON = {

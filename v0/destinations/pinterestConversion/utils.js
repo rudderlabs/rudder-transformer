@@ -78,7 +78,6 @@ const processUserPayload = userPayload => {
  * action source types and deduces opt_out status
  * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
  */
-
 const processCommonPayload = message => {
   const commonPayload = constructPayload(message, COMMON_CONFIGS);
   const presentActionSource = commonPayload.action_source;

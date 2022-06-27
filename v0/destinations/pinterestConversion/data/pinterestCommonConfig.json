@@ -33,8 +33,11 @@
         "destKey": "event_id",
         "sourceKeys": [
             "traits.event_id",
+            "traits.eventId",
             "context.traits.event_id",
+            "context.traits.eventId",
             "properties.event_id",
+            "properties.eventId",
             "messageId"
         ]
     },
@@ -42,15 +45,10 @@
         "destKey": "action_source",
         "sourceKeys": [
             "context.traits.action_source",
+            "context.traits.actionSource",
             "properties.action_source",
+            "properties.actionSource",
             "channel"
-        ]
-    },
-    {
-        "destKey": "app_id",
-        "sourceKeys": [
-            "properties.appId",
-            "context.app.appId"
         ]
     },
     {

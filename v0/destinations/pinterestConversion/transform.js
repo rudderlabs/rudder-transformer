@@ -48,7 +48,7 @@ const identifyPageResponseBuilder = (message, { Config }) => {
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
     throw new CustomError(
-      "It is required at least one of: 1)em, 2)hashed_maids or 3) pair of client_ip_address + client_user_agent.",
+      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent.",
       400
     );
   }

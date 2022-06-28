@@ -325,6 +325,34 @@ const getGA4ExclusionList = mappingJson => {
   return ga4ExclusionList;
 };
 
+/**
+ * get ga4 custom parameters for all events
+ * @param {*} message
+ * @param {*} keys
+ * @param {*} exclusionFields
+ * @returns
+ */
+const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
+  let customParameters = {};
+  customParameters = extractCustomFields(
+    message,
+    customParameters,
+    keys,
+    exclusionFields
+  );
+  if (!isEmptyObject(customParameters)) {
+    customParameters = flattenJson(customParameters, "_");
+    // eslint-disable-next-line no-param-reassign
+    payload.params = {
+      ...payload.params,
+      ...customParameters
+    };
+    return payload.params;
+  }
+
+  return payload.params;
+};
+
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
@@ -375,5 +403,6 @@ module.exports = {
   isReservedWebCustomPrefixName,
   getItemList,
   getItem,
-  getGA4ExclusionList
+  getGA4ExclusionList,
+  getGA4CustomParameters
 };

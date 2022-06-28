@@ -261,7 +261,7 @@ const processTrackEvent = (
   }
 
   // product string section
-  const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
+  let adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
   const prodString = [];
   if (adobeProdEvent) {
     const isSingleProdEvent =
@@ -288,10 +288,14 @@ const processTrackEvent = (
         productMerchEventToAdobeEvent[event.toLowerCase()] &&
         productMerchProperties
       ) {
+        adobeProdEvent = adobeProdEvent.toString().split(",");
         productMerchProperties.forEach(rudderProp => {
-          if (rudderProp.productMerchProperties.startsWith("products.")) {
+          if (
+            rudderProp.productMerchProperties.startsWith("products.") &&
+            isSingleProdEvent === false
+          ) {
             const key = rudderProp.productMerchProperties.split(".");
-            const v = get(properties, key[1]);
+            const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
               Object.keys(adobeProdEvent).forEach(val => {
                 merchMap.push(`${adobeProdEvent[val]}=${v}`);

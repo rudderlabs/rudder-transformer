@@ -1,0 +1,19 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "identity.id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "event",
+    "destKey": "event_name"
+  },
+  {
+    "sourceKeys": "properties",
+    "destKey": "data"
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "extras.check_id"
+  }
+]

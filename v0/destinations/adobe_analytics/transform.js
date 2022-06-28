@@ -261,7 +261,7 @@ const processTrackEvent = (
   }
 
   // product string section
-  let adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
+  const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
   const prodString = [];
   if (adobeProdEvent) {
     const isSingleProdEvent =
@@ -271,6 +271,7 @@ const processTrackEvent = (
         event.toLowerCase() !== "product list viewed") ||
       !Array.isArray(properties.products);
     const productsArr = isSingleProdEvent ? [properties] : properties.products;
+    const adobeProdEventArr = adobeProdEvent.split(",");
 
     productsArr.forEach(value => {
       const category = value.category || "";
@@ -288,7 +289,6 @@ const processTrackEvent = (
         productMerchEventToAdobeEvent[event.toLowerCase()] &&
         productMerchProperties
       ) {
-        adobeProdEvent = adobeProdEvent.toString().split(",");
         productMerchProperties.forEach(rudderProp => {
           if (
             rudderProp.productMerchProperties.startsWith("products.") &&
@@ -297,14 +297,14 @@ const processTrackEvent = (
             const key = rudderProp.productMerchProperties.split(".");
             const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
-              Object.keys(adobeProdEvent).forEach(val => {
-                merchMap.push(`${adobeProdEvent[val]}=${v}`);
+              Object.keys(adobeProdEventArr).forEach(val => {
+                merchMap.push(`${adobeProdEventArr[val]}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
-            Object.keys(adobeProdEvent).forEach(val => {
+            Object.keys(adobeProdEventArr).forEach(val => {
               merchMap.push(
-                `${adobeProdEvent[val]}=${
+                `${adobeProdEventArr[val]}=${
                   properties[rudderProp.productMerchProperties]
                 }`
               );

@@ -290,7 +290,6 @@ const processTrackEvent = (
         productMerchProperties
       ) {
         productMerchProperties.forEach(rudderProp => {
-
           // adding product level merchandise properties
           if (
             rudderProp.productMerchProperties.startsWith("products.") &&

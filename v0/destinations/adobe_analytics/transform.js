@@ -290,6 +290,8 @@ const processTrackEvent = (
         productMerchProperties
       ) {
         productMerchProperties.forEach(rudderProp => {
+
+          // adding product level merchandise properties
           if (
             rudderProp.productMerchProperties.startsWith("products.") &&
             isSingleProdEvent === false
@@ -297,16 +299,15 @@ const processTrackEvent = (
             const key = rudderProp.productMerchProperties.split(".");
             const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
-              Object.keys(adobeProdEventArr).forEach(val => {
-                merchMap.push(`${adobeProdEventArr[val]}=${v}`);
+              adobeProdEventArr.forEach(val => {
+                merchMap.push(`${val}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
-            Object.keys(adobeProdEventArr).forEach(val => {
+            // adding root level merchandise properties
+            adobeProdEventArr.forEach(val => {
               merchMap.push(
-                `${adobeProdEventArr[val]}=${
-                  properties[rudderProp.productMerchProperties]
-                }`
+                `${val}=${properties[rudderProp.productMerchProperties]}`
               );
             });
           }

@@ -127,5 +127,216 @@
         "files": {}
       }
     ]
+  },
+  {
+    "description": "Add tags in identify call",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "address": "Caravela Beach Goa",
+            "homwTown": "Mawsynram",
+            "email": "user1005@tech.com"
+          }
+        },
+        "integerations": {
+          "vero": {
+            "tags": {
+              "add": ["a", "b"]
+            }
+          }
+        },
+        "type": "Identify",
+        "userId": "fprediruser001"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "fprediruser001",
+            "data": {
+              "address": "Caravela Beach Goa",
+              "homwTown": "Mawsynram",
+              "email": "user1005@tech.com"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Track Call with nonexistent userId- Creates new user with event",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "event": "Random event with nonexisting userId and email",
+        "properties": {
+          "movieWatched": 3,
+          "gamesPlayed": 4,
+          "email": "eventIdn01@sample.com"
+        },
+        "type": "track",
+        "userId": "eventIdn01"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/events/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "identity": {
+              "id": "eventIdn01"
+            },
+            "event_name": "Random event with nonexisting userId and email",
+            "data": {
+              "movieWatched": 3,
+              "gamesPlayed": 4,
+              "email": "eventIdn01@sample.com"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Track Call with already existing userId and removing tags",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "event": "Random event with existing userId and some tags removed",
+        "properties": {
+          "movieWatched": 3,
+          "gamesPlayed": 4,
+          "email": "eventIdn01@sample.com"
+        },
+        "integrations": {
+          "Vero": {
+            "tags": {
+              "remove": ["a"]
+            }
+          }
+        },
+        "type": "track",
+        "userId": "fprediruser001"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/events/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "identity": {
+              "id": "fprediruser001"
+            },
+            "event_name": "Random event with existing userId and some tags removed",
+            "data": {
+              "movieWatched": 3,
+              "gamesPlayed": 4,
+              "email": "eventIdn01@sample.com"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://api.getvero.com/api/v2/users/tags/edit",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF",
+            "id": "fprediruser001",
+            "remove": ["a"]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+
+  {
+    "description": "Alias Call - Merge two user profiles",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "type": "alias",
+        "userId": "sample101",
+        "previousId": "newsamplel01"
+      }
+    },
+    "output": 
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://api.getvero.com/api/v2/users/reidentify",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "new_id": "sample101",
+            "id": "newsamplel01",
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
   }
 ]

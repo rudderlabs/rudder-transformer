@@ -10,6 +10,8 @@ const {
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, BASE_URL } = require("./config");
 
+// This function handles any tag add or removal requests.
+
 const tagResponseBuilder = async (message, tags, destination) => {
   const response = defaultRequestConfig();
 
@@ -20,6 +22,7 @@ const tagResponseBuilder = async (message, tags, destination) => {
   const id = getValueFromMessage(message, "userId");
   set(payload, "id", id);
 
+  // add[] and remove[] arrays contain the tags to be added or removed.
   const addTags = getValueFromMessage(tags, "add");
   if (Array.isArray(addTags) && addTags.length > 0)
     set(payload, "add", addTags);
@@ -35,6 +38,8 @@ const tagResponseBuilder = async (message, tags, destination) => {
   return response;
 };
 
+// This function handles the common response payload for the supported calls
+
 const commonResponseBuilder = async (message, category, destination) => {
   const response = defaultRequestConfig();
 
@@ -44,6 +49,13 @@ const commonResponseBuilder = async (message, category, destination) => {
 
   const address = get(payload, "channels.address");
   const platform = get(payload, "channels.platform");
+  /*
+    here we are adding a K-V pair in the channels object, i.e 
+    channels : {
+      "type" : "push"
+    }
+    This is a mandatory but also unchanging field for channels object.
+  */
   if (isDefinedAndNotNull(address) && isDefinedAndNotNull(platform)) {
     set(payload, "channels.type", "push");
   }
@@ -54,6 +66,9 @@ const commonResponseBuilder = async (message, category, destination) => {
   return response;
 };
 
+// This function handles identify and track requests as well as
+// addition-removal of tags.
+
 const identifyAndTrackResponseBuilder = async (
   message,
   category,
@@ -63,7 +78,7 @@ const identifyAndTrackResponseBuilder = async (
   const response = await commonResponseBuilder(message, category, destination);
   respList.push(response);
 
-  // Tags
+  // Tags are being passed around from Integrations object.
   const tags = getValueFromMessage(message, "integrations.Vero.tags");
   if (isDefinedAndNotNull(tags)) {
     const tagsResponse = await tagResponseBuilder(message, tags, destination);
@@ -72,7 +87,7 @@ const identifyAndTrackResponseBuilder = async (
 
   return respList;
 };
-
+// This function handles alias calls.
 const aliasResponseBuilder = async (message, category, destination) => {
   const response = await commonResponseBuilder(message, category, destination);
   response.method = "PUT";

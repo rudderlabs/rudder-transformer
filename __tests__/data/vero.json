@@ -1,0 +1,131 @@
+[
+  {
+    "description": "Identify Call with userId only",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "homwTown": "kanpur",
+            "age": "24"
+          }
+        },
+        "type": "Identify",
+        "userId": "yash001",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "yash001",
+            "data": {
+              "homwTown": "kanpur",
+              "age": "24"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Identify Call with both userId and email",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "email": "user1001@tech.com"
+          }
+        },
+        "type": "Identify",
+        "userId": "user1001"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "user1001",
+            "data": {
+              "email": "user1001@tech.com"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Identify Call with anonymousId and email only",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "email": "user1002@tech.com"
+          }
+        },
+        "type": "Identify",
+        "anonymousId": "b4ffheww8eisndbdjgdewifewfgerwibderv"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "b4ffheww8eisndbdjgdewifewfgerwibderv",
+            "data": {
+              "email": "user1002@tech.com"
+            },
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  }
+]

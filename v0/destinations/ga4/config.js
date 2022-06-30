@@ -121,10 +121,6 @@ const ConfigCategory = {
   },
 
   /* GA4 Events */
-  GENERATE_LEAD: {
-    name: "GA4GenerateLeadConfig",
-    event: "generate_lead"
-  },
   VIEW_SEARCH_RESULTS: {
     name: "GA4ViewSearchResults",
     event: "view_search_results",

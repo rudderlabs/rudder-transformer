@@ -1,7 +1,8 @@
 const {
   httpGET,
   httpPOST,
-  proxyRequest
+  proxyRequest,
+  prepareProxyRequest
 } = require("../../../adapters/network");
 const {
   getDynamicMeta,
@@ -164,6 +165,7 @@ const responseHandler = (destinationResponse, _dest) => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

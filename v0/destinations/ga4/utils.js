@@ -326,7 +326,7 @@ const getGA4ExclusionList = mappingJson => {
 };
 
 /**
- * get ga4 custom parameters for all events
+ * takes all extra/custom parameters that is passed for GA4 standard or custom events
  * @param {*} message
  * @param {*} keys
  * @param {*} exclusionFields
@@ -340,6 +340,7 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
     keys,
     exclusionFields
   );
+  // append in the params if any custom fields are passed after flattening the JSON
   if (!isEmptyObject(customParameters)) {
     customParameters = flattenJson(customParameters, "_");
     // eslint-disable-next-line no-param-reassign
@@ -360,7 +361,7 @@ const responseHandler = (destinationResponse, dest) => {
     status = 200;
   }
 
-  // if the responsee from destination is not a success case build an explicit error
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)

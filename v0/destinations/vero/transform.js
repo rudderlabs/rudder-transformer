@@ -5,36 +5,25 @@ const {
   CustomError,
   constructPayload,
   getValueFromMessage,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, BASE_URL } = require("./config");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 
 // This function handles any tag add or removal requests.
-
+// Ref - https://developers.getvero.com/?bash#tags
 const tagResponseBuilder = async (message, tags, destination) => {
   const response = defaultRequestConfig();
+  const category = CONFIG_CATEGORIES.TAGS;
 
-  const payload = {};
+  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const authToken = get(destination, "Config.authToken");
   set(payload, "auth_token", authToken);
 
-  const id = getValueFromMessage(message, "userId");
-  set(payload, "id", id);
-
-  // add[] and remove[] arrays contain the tags to be added or removed.
-  const addTags = getValueFromMessage(tags, "add");
-  if (Array.isArray(addTags) && addTags.length > 0)
-    set(payload, "add", addTags);
-
-  const removeTags = getValueFromMessage(tags, "remove");
-  if (Array.isArray(removeTags) && removeTags.length > 0)
-    set(payload, "remove", removeTags);
-
-  response.endpoint = `${BASE_URL}/users/tags/edit`;
+  response.endpoint = category.endpoint;
   response.body.JSON = payload;
   response.method = "PUT";
-
   return response;
 };
 
@@ -47,17 +36,18 @@ const commonResponseBuilder = async (message, category, destination) => {
   const authToken = get(destination, "Config.authToken");
   set(payload, "auth_token", authToken);
 
+  // channels is defined only for Identify call. For other calls both address and platform are undefined
   const address = get(payload, "channels.address");
   const platform = get(payload, "channels.platform");
   /*
-    here we are adding a K-V pair in the channels object, i.e 
+    here we are adding a K-V pair in the channels object, i.e
     channels : {
       "type" : "push"
     }
     This is a mandatory but also unchanging field for channels object.
   */
   if (isDefinedAndNotNull(address) && isDefinedAndNotNull(platform)) {
-    set(payload, "channels.type", "push");
+    set(payload, "channels.type", category.channelType);
   }
 
   response.endpoint = category.endpoint;
@@ -68,7 +58,8 @@ const commonResponseBuilder = async (message, category, destination) => {
 
 // This function handles identify and track requests as well as
 // addition-removal of tags.
-
+// Identify Ref - https://developers.getvero.com/?bash#users-identify
+// Track Ref - https://developers.getvero.com/?bash#events-track
 const identifyAndTrackResponseBuilder = async (
   message,
   category,
@@ -80,14 +71,23 @@ const identifyAndTrackResponseBuilder = async (
 
   // Tags are being passed around from Integrations object.
   const tags = getValueFromMessage(message, "integrations.Vero.tags");
-  if (isDefinedAndNotNull(tags)) {
+  const addTags = get(tags, "add");
+  const removeTags = get(tags, "remove");
+  // Both add and remove should be an array and at least one should have a length > 0
+  if (
+    isDefinedAndNotNullAndNotEmpty(tags) &&
+    ((Array.isArray(removeTags) && removeTags.length > 0) ||
+      (Array.isArray(addTags) && addTags.length > 0))
+  ) {
     const tagsResponse = await tagResponseBuilder(message, tags, destination);
     respList.push(tagsResponse);
   }
 
   return respList;
 };
+
 // This function handles alias calls.
+// Ref - https://developers.getvero.com/?bash#users-alias
 const aliasResponseBuilder = async (message, category, destination) => {
   const response = await commonResponseBuilder(message, category, destination);
   response.method = "PUT";

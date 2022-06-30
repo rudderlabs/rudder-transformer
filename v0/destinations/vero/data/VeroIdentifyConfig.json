@@ -1,8 +1,7 @@
 [
   {
-    "sourceKeys": "userId",
-    "destKey": "id",
-    "sourceFromGenericMap": true
+    "sourceKeys": ["userId", "context.traits.email", "traits.email", "anonymousId"],
+    "destKey": "id"
   },
   {
     "sourceKeys": ["context.traits", "traits"],

@@ -114,7 +114,7 @@
         "params": {},
         "body": {
           "JSON": {
-            "id": "b4ffheww8eisndbdjgdewifewfgerwibderv",
+            "id": "user1002@tech.com",
             "data": {
               "email": "user1002@tech.com"
             },
@@ -318,7 +318,7 @@
         "previousId": "newsamplel01"
       }
     },
-    "output": 
+    "output":
       {
         "version": "1",
         "type": "REST",

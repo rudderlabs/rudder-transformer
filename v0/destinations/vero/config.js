@@ -6,7 +6,8 @@ const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: "VeroIdentifyConfig",
     type: "identify",
-    endpoint: `${BASE_URL}/users/track`
+    endpoint: `${BASE_URL}/users/track`,
+    channelType: "push"
   },
   TRACK: {
     name: "VeroTrackConfig",
@@ -17,6 +18,11 @@ const CONFIG_CATEGORIES = {
     name: "VeroAliasConfig",
     type: "alias",
     endpoint: `${BASE_URL}/users/reidentify`
+  },
+  TAGS: {
+    name: "VeroTagsConfig",
+    type: "identify",
+    endpoint: `${BASE_URL}/users/tags/edit`
   }
 };
 

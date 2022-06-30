@@ -7,22 +7,26 @@ const CONFIG_CATEGORIES = {
     name: "VeroIdentifyConfig",
     type: "identify",
     endpoint: `${BASE_URL}/users/track`,
+    method: "POST",
     channelType: "push"
   },
   TRACK: {
     name: "VeroTrackConfig",
     type: "track",
-    endpoint: `${BASE_URL}/events/track`
+    endpoint: `${BASE_URL}/events/track`,
+    method: "POST"
   },
   ALIAS: {
     name: "VeroAliasConfig",
     type: "alias",
-    endpoint: `${BASE_URL}/users/reidentify`
+    endpoint: `${BASE_URL}/users/reidentify`,
+    method: "PUT"
   },
   TAGS: {
     name: "VeroTagsConfig",
     type: "identify",
-    endpoint: `${BASE_URL}/users/tags/edit`
+    endpoint: `${BASE_URL}/users/tags/edit`,
+    method: "PUT"
   }
 };
 

@@ -11,24 +11,7 @@ const {
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 
-// This function handles any tag add or removal requests.
-// Ref - https://developers.getvero.com/?bash#tags
-const tagResponseBuilder = async (message, tags, destination) => {
-  const response = defaultRequestConfig();
-  const category = CONFIG_CATEGORIES.TAGS;
-
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const authToken = get(destination, "Config.authToken");
-  set(payload, "auth_token", authToken);
-
-  response.endpoint = category.endpoint;
-  response.body.JSON = payload;
-  response.method = "PUT";
-  return response;
-};
-
 // This function handles the common response payload for the supported calls
-
 const commonResponseBuilder = async (message, category, destination) => {
   const response = defaultRequestConfig();
 
@@ -52,6 +35,7 @@ const commonResponseBuilder = async (message, category, destination) => {
 
   response.endpoint = category.endpoint;
   response.body.JSON = payload;
+  response.method = category.method;
 
   return response;
 };
@@ -70,6 +54,8 @@ const identifyAndTrackResponseBuilder = async (
   respList.push(response);
 
   // Tags are being passed around from Integrations object.
+  // This block handles any tag add or removal requests.
+  // Ref - https://developers.getvero.com/?bash#tags
   const tags = getValueFromMessage(message, "integrations.Vero.tags");
   const addTags = get(tags, "add");
   const removeTags = get(tags, "remove");
@@ -79,7 +65,12 @@ const identifyAndTrackResponseBuilder = async (
     ((Array.isArray(removeTags) && removeTags.length > 0) ||
       (Array.isArray(addTags) && addTags.length > 0))
   ) {
-    const tagsResponse = await tagResponseBuilder(message, tags, destination);
+    const tagCategory = CONFIG_CATEGORIES.TAGS;
+    const tagsResponse = await commonResponseBuilder(
+      message,
+      tagCategory,
+      destination
+    );
     respList.push(tagsResponse);
   }
 
@@ -89,10 +80,7 @@ const identifyAndTrackResponseBuilder = async (
 // This function handles alias calls.
 // Ref - https://developers.getvero.com/?bash#users-alias
 const aliasResponseBuilder = async (message, category, destination) => {
-  const response = await commonResponseBuilder(message, category, destination);
-  response.method = "PUT";
-
-  return response;
+  return commonResponseBuilder(message, category, destination);
 };
 
 const process = async event => {

@@ -4,8 +4,15 @@
     "destKey": "id"
   },
   {
+    "sourceKeys": ["context.traits.email", "traits.email"],
+    "destKey": "email"
+  },
+  {
     "sourceKeys": ["context.traits", "traits"],
-    "destKey": "data"
+    "destKey": "data",
+    "metadata": {
+      "excludes": ["email"]
+    }
   },
   {
     "sourceKeys": "context.os.name",

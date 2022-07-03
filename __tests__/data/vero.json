@@ -73,9 +73,7 @@
         "body": {
           "JSON": {
             "id": "user1001",
-            "data": {
-              "email": "user1001@tech.com"
-            },
+            "email": "user1001@tech.com",
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
           },
           "JSON_ARRAY": {},
@@ -115,9 +113,7 @@
         "body": {
           "JSON": {
             "id": "user1002@tech.com",
-            "data": {
-              "email": "user1002@tech.com"
-            },
+            "email": "user1002@tech.com",
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
           },
           "JSON_ARRAY": {},
@@ -166,10 +162,10 @@
         "body": {
           "JSON": {
             "id": "fprediruser001",
+            "email": "user1005@tech.com",
             "data": {
               "address": "Caravela Beach Goa",
-              "homwTown": "Mawsynram",
-              "email": "user1005@tech.com"
+              "homwTown": "Mawsynram"
             },
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
           },

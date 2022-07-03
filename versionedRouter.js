@@ -738,7 +738,9 @@ router.post("/batch", ctx => {
 /**
  * 
  * 
-      "orderNo":1,
+     "metadata": {
+				"orderNo":1
+			},
 			"event": {
         "type": "Track",
 		     ...
@@ -771,7 +773,7 @@ const utHandler = async ctx => {
   eventRequests.forEach( eventRequest => {
 
     //storing the message_id to order_id mapping
-    eventOrderIdMap.set(eventRequest.event.messageId, eventRequest.orderNo);
+    eventOrderIdMap.set(eventRequest.event.messageId, eventRequest.metadata.orderNo);
 
     eventRequest.transformationIds.forEach( t_id =>{
       // const output = await userTransformHandler(, versionId, []);

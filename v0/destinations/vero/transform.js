@@ -101,6 +101,20 @@ const process = async event => {
       // Alias Ref - https://developers.getvero.com/?bash#users-alias
       response = commonResponseBuilder(message, category, destination);
       break;
+    case EventType.PAGE:
+    case EventType.SCREEN: {
+      const eventCategory = get(message, "properties.category");
+      const name = get(message, "name");
+      message.event = `Viewed ${eventCategory ? `${eventCategory} ` : ""}${
+        name ? `${name} ` : ""
+      }Page`;
+      response = commonResponseBuilder(
+        message,
+        CONFIG_CATEGORIES.TRACK,
+        destination
+      );
+      break;
+    }
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }

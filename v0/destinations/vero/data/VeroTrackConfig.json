@@ -13,6 +13,9 @@
   },
   {
     "sourceKeys": "originalTimestamp",
-    "destKey": "extras.check_id"
+    "destKey": "extras.check_id",
+    "metadata": {
+      "type": "microSecondTimestamp"
+    }
   }
 ]

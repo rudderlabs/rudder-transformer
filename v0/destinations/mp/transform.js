@@ -5,7 +5,6 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues,
   constructPayload,
   getBrowserInfo,
   getValuesAsArrayFromConfig,
@@ -128,7 +127,7 @@ function getEventValueForTrackEvent(message, destination) {
     time: unixTimestamp
   };
 
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message?.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
@@ -211,7 +210,7 @@ function processIdentifyEvents(message, type, destination) {
     }
     properties = { ...properties, ...payload };
   }
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message?.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
@@ -225,7 +224,7 @@ function processIdentifyEvents(message, type, destination) {
     $ip: get(message, "context.ip") || message.request_ip,
     $time: unixTimestamp
   };
-  if (message.context?.active === false) {
+  if (message?.context?.active === false) {
     parameters.$ignore_time = true;
   }
   returnValue.push(
@@ -305,7 +304,7 @@ function processPageOrScreenEvents(message, type, destination) {
   if (message.category) {
     properties.category = message.category;
   }
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message?.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;

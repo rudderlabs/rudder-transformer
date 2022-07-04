@@ -5,8 +5,9 @@
     "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": ["context.traits.email", "traits.email"],
-    "destKey": "email"
+    "sourceKeys": "email",
+    "destKey": "email",
+    "sourceFromGenericMap": true
   },
   {
     "sourceKeys": ["context.traits", "traits"],

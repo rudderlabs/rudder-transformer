@@ -5,8 +5,11 @@ const {
   CustomError,
   constructPayload,
   isDefinedAndNotNull,
-  removeUndefinedAndNullAndEmptyValues,
-  getIntegrationsObj
+  getIntegrationsObj,
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNullAndNotEmpty,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
@@ -19,9 +22,8 @@ const commonResponseBuilder = (message, category, destination) => {
 
   // channels is defined only for Identify call
   if (category.type === EventType.IDENTIFY) {
-    const channels = get(payload, "channels");
-    const address = get(channels, "address");
-    const platform = get(channels, "platform");
+    const address = get(payload, "channels.address");
+    const platform = get(payload, "channels.platform");
 
     // Vero only accepts a valid channels object - address, platform and type should be defined and not null
     // Added this block because channels & channels.device can be defined and not null, which should be removed
@@ -33,45 +35,74 @@ const commonResponseBuilder = (message, category, destination) => {
   // Setting required tag fields
   if (category.type === "tags") {
     const integrationsObj = getIntegrationsObj(message, "vero");
-    const tags = get(integrationsObj, "tags");
-    const addTags = get(tags, "add");
-    const removeTags = get(tags, "remove");
+    const addTags = get(integrationsObj, "tags.add");
+    const removeTags = get(integrationsObj, "tags.remove");
     set(payload, "add", addTags);
     set(payload, "remove", removeTags);
   }
 
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = category.method;
 
   return response;
 };
 
-// This function handles identify and track requests as well as addition-removal of tags.
-const identifyAndTrackResponseBuilder = (message, category, destination) => {
-  const respList = [];
-  const response = commonResponseBuilder(message, category, destination);
-  respList.push(response);
-
-  // This block handles any tag addition or removal requests.
-  // Ref - https://developers.getvero.com/?bash#tags
+// This block handles any tag addition or removal requests.
+// Ref - https://developers.getvero.com/?bash#tags
+const tagResponseBuilder = (message, category, destination) => {
   const integrationsObj = getIntegrationsObj(message, "vero");
-  const tags = get(integrationsObj, "tags");
-  const addTags = get(tags, "add");
-  const removeTags = get(tags, "remove");
+  const addTags = get(integrationsObj, "tags.add");
+  const removeTags = get(integrationsObj, "tags.remove");
+  let tagResponse = {};
   // Both add and remove should be an array and at least one should have a length > 0
   if (
     (Array.isArray(removeTags) && removeTags.length > 0) ||
     (Array.isArray(addTags) && addTags.length > 0)
   ) {
     const tagCategory = CONFIG_CATEGORIES.TAGS;
-    const tagsResponse = commonResponseBuilder(
-      message,
-      tagCategory,
-      destination
-    );
-    respList.push(tagsResponse);
+    tagResponse = commonResponseBuilder(message, tagCategory, destination);
+  }
+
+  return tagResponse;
+};
+
+// This function handles identify requests as well as addition-removal of tags.
+// Identify Ref - https://developers.getvero.com/?bash#users-identify
+const identifyResponseBuilder = (message, category, destination) => {
+  const respList = [];
+  const response = commonResponseBuilder(message, category, destination);
+  respList.push(response);
+
+  // Handling tags
+  const tagResponse = tagResponseBuilder(message, category, destination);
+  if (isDefinedAndNotNullAndNotEmpty(tagResponse)) {
+    respList.push(tagResponse);
+  }
+
+  return respList;
+};
+
+// This function handles track requests as well as addition-removal of tags.
+// Track Ref - https://developers.getvero.com/?bash#events-track
+const trackResponseBuilder = (message, category, destination) => {
+  if (
+    message.event.toLowerCase() === "unsubscribe" ||
+    message.event.toLowerCase() === "resubscribe"
+  ) {
+    const eventCategory = CONFIG_CATEGORIES[message.event.toUpperCase()];
+    return commonResponseBuilder(message, eventCategory, destination);
+  }
+
+  const respList = [];
+  const response = commonResponseBuilder(message, category, destination);
+  respList.push(response);
+
+  // Handling tags
+  const tagResponse = tagResponseBuilder(message, category, destination);
+  if (isDefinedAndNotNullAndNotEmpty(tagResponse)) {
+    respList.push(tagResponse);
   }
 
   return respList;
@@ -93,21 +124,28 @@ const process = async event => {
 
   let response;
   const messageType = message.type.toLowerCase();
-  const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   switch (messageType) {
     case EventType.TRACK:
-    case EventType.IDENTIFY:
-      // Identify Ref - https://developers.getvero.com/?bash#users-identify
-      // Track Ref - https://developers.getvero.com/?bash#events-track
-      response = identifyAndTrackResponseBuilder(
+      response = trackResponseBuilder(
         message,
-        category,
+        CONFIG_CATEGORIES.TRACK,
+        destination
+      );
+      break;
+    case EventType.IDENTIFY:
+      response = identifyResponseBuilder(
+        message,
+        CONFIG_CATEGORIES.IDENTIFY,
         destination
       );
       break;
     case EventType.ALIAS:
       // Alias Ref - https://developers.getvero.com/?bash#users-alias
-      response = commonResponseBuilder(message, category, destination);
+      response = commonResponseBuilder(
+        message,
+        CONFIG_CATEGORIES.ALIAS,
+        destination
+      );
       break;
     case EventType.PAGE:
     case EventType.SCREEN: {
@@ -131,4 +169,43 @@ const process = async event => {
   return response;
 };
 
-module.exports = { process };
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

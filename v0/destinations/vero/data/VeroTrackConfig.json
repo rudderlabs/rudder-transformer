@@ -5,6 +5,11 @@
     "sourceFromGenericMap": true
   },
   {
+    "sourceKeys": "email",
+    "destKey": "identity.email",
+    "sourceFromGenericMap": true
+  },
+  {
     "sourceKeys": "event",
     "destKey": "event_name"
   },

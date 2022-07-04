@@ -74,6 +74,7 @@
           "JSON": {
             "id": "user1001",
             "email": "user1001@tech.com",
+            "data": {},
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
           },
           "JSON_ARRAY": {},
@@ -114,6 +115,7 @@
           "JSON": {
             "id": "b4ffheww8eisndbdjgdewifewfgerwibderv",
             "email": "user1002@tech.com",
+            "data": {},
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
           },
           "JSON_ARRAY": {},
@@ -207,7 +209,8 @@
         "body": {
           "JSON": {
             "identity": {
-              "id": "eventIdn01"
+              "id": "eventIdn01",
+              "email": "eventIdn01@sample.com"
             },
             "event_name": "Random event with nonexisting userId and email",
             "data": {
@@ -262,7 +265,8 @@
         "body": {
           "JSON": {
             "identity": {
-              "id": "fprediruser001"
+              "id": "fprediruser001",
+              "email": "eventIdn01@sample.com"
             },
             "event_name": "Random event with existing userId and some tags removed",
             "data": {
@@ -334,5 +338,104 @@
         },
         "files": {}
       }
+  },
+  {
+    "description": "Identify Call with valid channels",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "email": "user1001@tech.com"
+          },
+          "os": {
+            "name": "android"
+          },
+          "device": {
+            "token": "qwertyuioiuytrewwertyu",
+            "name": "Mi"
+          }
+        },
+        "type": "Identify",
+        "userId": "user1001"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "user1001",
+            "email": "user1001@tech.com",
+            "channels": {
+              "platform": "android",
+              "address": "qwertyuioiuytrewwertyu",
+              "device": "Mi",
+              "type": "push"
+            },
+            "data": {},
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Identify Call with invalid channels",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "email": "user1001@tech.com"
+          },
+          "device": {
+            "token": "qwertyuioiuytrewwertyu",
+            "name": "Mi"
+          }
+        },
+        "type": "Identify",
+        "userId": "user1001"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.getvero.com/api/v2/users/track",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "user1001",
+            "email": "user1001@tech.com",
+            "data": {},
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   }
 ]

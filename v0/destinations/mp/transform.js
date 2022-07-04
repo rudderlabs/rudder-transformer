@@ -23,6 +23,7 @@ const {
   MP_IDENTIFY_EXCLUSION_LIST
 } = require("./config");
 
+// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
   mappingConfig[ConfigCategory.PROFILE_ANDROID.name];

@@ -4,7 +4,7 @@
     "sourceKeys": ["properties.referring_domain", "context.page.referring_domain", "properties.domain", "properties.url", "context.page.url"],
     "required": true,
     "metadata": {
-      "type": "domainUrl"
+      "type": "domainUrlV2"
     }
   }
 ]

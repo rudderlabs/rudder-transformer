@@ -82,7 +82,7 @@
       "channel": "web",
       "context": {
         "page": {
-          "referring_domain": "rudderlabs.com"
+          "referring_domain": "https://www.rudderlabs.com"
         },
         "app": {
           "build": "1.0.0",
@@ -196,7 +196,7 @@
         "name": "ApplicationLoaded",
         "path": "/test",
         "referrer": "Rudder",
-        "referring_domain": "rudderlabs.com",
+        "referring_domain": "https://www.rudderlabs.com",
         "search": "abc",
         "title": "Test Page",
         "url": "https://www.rudderlabs.com"

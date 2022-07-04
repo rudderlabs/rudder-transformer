@@ -4,9 +4,9 @@ const {
   defaultRequestConfig,
   CustomError,
   constructPayload,
-  getValueFromMessage,
   isDefinedAndNotNull,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullAndEmptyValues,
+  getIntegrationsObj
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
@@ -14,7 +14,7 @@ const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 // This function handles the common response payload for the supported calls
 const commonResponseBuilder = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const authToken = get(destination, "Config.authToken");
+  const { authToken } = destination.Config;
   set(payload, "auth_token", authToken);
 
   // channels is defined only for Identify call
@@ -24,13 +24,20 @@ const commonResponseBuilder = (message, category, destination) => {
     const platform = get(channels, "platform");
 
     // Vero only accepts a valid channels object - address, platform and type should be defined and not null
-    if (isDefinedAndNotNull(address) && isDefinedAndNotNull(platform)) {
-      set(payload, "channels.type", category.channelType);
-    }
     // Added this block because channels & channels.device can be defined and not null, which should be removed
-    else if (isDefinedAndNotNull(channels)) {
+    if (!(isDefinedAndNotNull(address) && isDefinedAndNotNull(platform))) {
       delete payload.channels;
     }
+  }
+
+  // Setting required tag fields
+  if (category.type === "tags") {
+    const integrationsObj = getIntegrationsObj(message, "vero");
+    const tags = get(integrationsObj, "tags");
+    const addTags = get(tags, "add");
+    const removeTags = get(tags, "remove");
+    set(payload, "add", addTags);
+    set(payload, "remove", removeTags);
   }
 
   const response = defaultRequestConfig();
@@ -49,7 +56,8 @@ const identifyAndTrackResponseBuilder = (message, category, destination) => {
 
   // This block handles any tag addition or removal requests.
   // Ref - https://developers.getvero.com/?bash#tags
-  const tags = getValueFromMessage(message, "integrations.Vero.tags");
+  const integrationsObj = getIntegrationsObj(message, "vero");
+  const tags = get(integrationsObj, "tags");
   const addTags = get(tags, "add");
   const removeTags = get(tags, "remove");
   // Both add and remove should be an array and at least one should have a length > 0
@@ -105,9 +113,11 @@ const process = async event => {
     case EventType.SCREEN: {
       const eventCategory = get(message, "properties.category");
       const name = get(message, "name");
+      const evtType =
+        message.type.toLowerCase() === EventType.PAGE ? "Page" : "Screen";
       message.event = `Viewed ${eventCategory ? `${eventCategory} ` : ""}${
         name ? `${name} ` : ""
-      }Page`;
+      }${evtType}`;
       response = commonResponseBuilder(
         message,
         CONFIG_CATEGORIES.TRACK,

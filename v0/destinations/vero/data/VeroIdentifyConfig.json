@@ -1,7 +1,8 @@
 [
   {
-    "sourceKeys": ["userId", "context.traits.email", "traits.email", "anonymousId"],
-    "destKey": "id"
+    "sourceKeys": "userId",
+    "destKey": "id",
+    "sourceFromGenericMap": true
   },
   {
     "sourceKeys": ["context.traits.email", "traits.email"],
@@ -25,6 +26,13 @@
   {
     "sourceKeys": "context.device.name",
     "destKey": "channels.device"
+  },
+  {
+    "sourceKeys": "",
+    "destKey": "channels.type",
+    "metadata": {
+      "defaultValue": "push"
+    }
   },
   {
     "sourceKeys": "context.timezone",

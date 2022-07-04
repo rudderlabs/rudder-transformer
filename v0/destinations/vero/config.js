@@ -7,8 +7,7 @@ const CONFIG_CATEGORIES = {
     name: "VeroIdentifyConfig",
     type: "identify",
     endpoint: `${BASE_URL}/users/track`,
-    method: "POST",
-    channelType: "push"
+    method: "POST"
   },
   TRACK: {
     name: "VeroTrackConfig",
@@ -24,7 +23,7 @@ const CONFIG_CATEGORIES = {
   },
   TAGS: {
     name: "VeroTagsConfig",
-    type: "identify",
+    type: "tags",
     endpoint: `${BASE_URL}/users/tags/edit`,
     method: "PUT"
   }

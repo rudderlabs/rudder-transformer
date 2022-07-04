@@ -15,7 +15,7 @@ const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 
 // This function handles the common response payload for the supported calls
-const commonResponseBuilder = (message, category, destination) => {
+const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { authToken } = destination.Config;
   set(payload, "auth_token", authToken);
@@ -62,7 +62,7 @@ const tagResponseBuilder = (message, category, destination) => {
     (Array.isArray(addTags) && addTags.length > 0)
   ) {
     const tagCategory = CONFIG_CATEGORIES.TAGS;
-    tagResponse = commonResponseBuilder(message, tagCategory, destination);
+    tagResponse = responseBuilderSimple(message, tagCategory, destination);
   }
 
   return tagResponse;
@@ -72,7 +72,7 @@ const tagResponseBuilder = (message, category, destination) => {
 // Identify Ref - https://developers.getvero.com/?bash#users-identify
 const identifyResponseBuilder = (message, category, destination) => {
   const respList = [];
-  const response = commonResponseBuilder(message, category, destination);
+  const response = responseBuilderSimple(message, category, destination);
   respList.push(response);
 
   // Handling tags
@@ -87,16 +87,14 @@ const identifyResponseBuilder = (message, category, destination) => {
 // This function handles track requests as well as addition-removal of tags.
 // Track Ref - https://developers.getvero.com/?bash#events-track
 const trackResponseBuilder = (message, category, destination) => {
-  if (
-    message.event.toLowerCase() === "unsubscribe" ||
-    message.event.toLowerCase() === "resubscribe"
-  ) {
+  const event = message.event.toLowerCase();
+  if (event === "unsubscribe" || event === "resubscribe") {
     const eventCategory = CONFIG_CATEGORIES[message.event.toUpperCase()];
-    return commonResponseBuilder(message, eventCategory, destination);
+    return responseBuilderSimple(message, eventCategory, destination);
   }
 
   const respList = [];
-  const response = commonResponseBuilder(message, category, destination);
+  const response = responseBuilderSimple(message, category, destination);
   respList.push(response);
 
   // Handling tags
@@ -141,7 +139,7 @@ const process = async event => {
       break;
     case EventType.ALIAS:
       // Alias Ref - https://developers.getvero.com/?bash#users-alias
-      response = commonResponseBuilder(
+      response = responseBuilderSimple(
         message,
         CONFIG_CATEGORIES.ALIAS,
         destination
@@ -156,7 +154,7 @@ const process = async event => {
       message.event = `Viewed ${eventCategory ? `${eventCategory} ` : ""}${
         name ? `${name} ` : ""
       }${evtType}`;
-      response = commonResponseBuilder(
+      response = responseBuilderSimple(
         message,
         CONFIG_CATEGORIES.TRACK,
         destination

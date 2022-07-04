@@ -22,19 +22,19 @@ const CONFIG_CATEGORIES = {
     method: "PUT"
   },
   TAGS: {
-    name: "VeroTagsConfig",
+    name: "VeroSimpleConfig",
     type: "tags",
     endpoint: `${BASE_URL}/users/tags/edit`,
     method: "PUT"
   },
   UNSUBSCRIBE: {
-    name: "VeroTagsConfig",
+    name: "VeroSimpleConfig",
     type: "unsubscribe",
     endpoint: `${BASE_URL}/users/unsubscribe`,
     method: "POST"
   },
   RESUBSCRIBE: {
-    name: "VeroTagsConfig",
+    name: "VeroSimpleConfig",
     type: "resubscribe",
     endpoint: `${BASE_URL}/users/resubscribe`,
     method: "POST"

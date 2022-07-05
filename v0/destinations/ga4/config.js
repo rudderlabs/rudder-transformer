@@ -114,6 +114,12 @@ const ConfigCategory = {
     event: "share"
   },
 
+  /* Page */
+  PAGE: {
+    name: "GA4PageConfig",
+    event: "page"
+  },
+
   /* Group */
   GROUP: {
     name: "GA4GroupConfig",

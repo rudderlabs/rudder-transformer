@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "path",
+    "sourceKeys": "context.page.path",
+    "required": false
+  },
+  {
+    "destKey": "referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  },
+  {
+    "destKey": "search",
+    "sourceKeys": "context.page.search",
+    "required": false
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "context.page.title",
+    "required": false
+  },
+  {
+    "destKey": "url",
+    "sourceKeys": "context.page.url",
+    "required": false
+  }
+]

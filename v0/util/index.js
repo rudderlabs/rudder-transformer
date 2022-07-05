@@ -729,6 +729,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           .replace("https://", "")
           .replace("http://", "");
         break;
+      case "domainUrlV2": {
+        const url = new URL(formattedVal);
+        formattedVal = url.hostname.replace("www.", "");
+        break;
+      }
       case "IsBoolean":
         if (!(typeof formattedVal === "boolean")) {
           logger.debug("Boolean value missing, so dropping it");

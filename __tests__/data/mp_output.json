@@ -1,418 +1,673 @@
 [
   {
-    "event": "Loaded a Page",
-    "properties": {
-      "ip": "0.0.0.0",
-      "$user_id": "hjikl",
-      "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-      "$screen_dpi": 2,
-      "mp_lib": "RudderLabs JavaScript SDK",
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "distinct_id": "hjikl",
-      "time": 1579847342,
-      "name": "Contact Us",
-      "$browser": "Chrome",
-      "$browser_version": "79.0.3945.117"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Page",
+        "properties": {
+          "ip": "0.0.0.0",
+          "$user_id": "hjikl",
+          "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "hjikl",
+          "time": 1579847342,
+          "name": "Contact Us",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   {
-    "event": "Loaded a Page",
-    "properties": {
-      "ip": "0.0.0.0",
-      "$user_id": "hjikl",
-      "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-      "$screen_dpi": 2,
-      "mp_lib": "RudderLabs JavaScript SDK",
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "distinct_id": "hjikl",
-      "time": 1579847342,
-      "name": "Contact Us",
-      "category": "Contact",
-      "$browser": "Chrome",
-      "$browser_version": "79.0.3945.117"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Page",
+        "properties": {
+          "ip": "0.0.0.0",
+          "$user_id": "hjikl",
+          "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "hjikl",
+          "time": 1579847342,
+          "name": "Contact Us",
+          "category": "Contact",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   {
-    "event": "Loaded a Screen",
-    "properties": {
-      "category": "communication",
-      "ip": "0.0.0.0",
-      "$user_id": "hjikl",
-      "$screen_dpi": 2,
-      "mp_lib": "RudderLabs JavaScript SDK",
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "distinct_id": "hjikl",
-      "time": 1579847342,
-      "name": "Contact Us"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Screen",
+        "properties": {
+          "category": "communication",
+          "ip": "0.0.0.0",
+          "$user_id": "hjikl",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "hjikl",
+          "time": 1579847342,
+          "name": "Contact Us"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   {
-    "event": "Loaded a Screen",
-    "properties": {
-      "path": "/tests/html/index2.html",
-      "referrer": "",
-      "search": "",
-      "title": "",
-      "url": "http://localhost/tests/html/index2.html",
-      "ip": "0.0.0.0",
-      "$user_id": "hjiklmk",
-      "$screen_dpi": 2,
-      "mp_lib": "RudderLabs Android SDK",
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "distinct_id": "hjiklmk",
-      "time": 1579847342,
-      "name": "Contact Us",
-      "category": "Contact"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Screen",
+        "properties": {
+          "path": "/tests/html/index2.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html",
+          "ip": "0.0.0.0",
+          "$user_id": "hjiklmk",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs Android SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "hjiklmk",
+          "time": 1579847342,
+          "name": "Contact Us",
+          "category": "Contact"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   {
-    "event": "Loaded a Screen",
-    "properties": {
-      "ip": "0.0.0.0",
-      "$user_id": "hjikl",
-      "$screen_dpi": 2,
-      "mp_lib": "RudderLabs JavaScript SDK",
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "distinct_id": "hjikl",
-      "time": 1579847342,
-      "name": "Contact Us"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Screen",
+        "properties": {
+          "ip": "0.0.0.0",
+          "$user_id": "hjikl",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "hjikl",
+          "time": 1579847342,
+          "name": "Contact Us"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   [
     {
-      "$set": {
-        "$created": "2020-01-23T08:54:02.362Z",
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
-    }
-  ],
-  [
-    {
-      "$append": {
-        "$transactions": {
-          "$amount": 45.89,
-          "$time": "2020-01-24T06:29:02.403Z"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$created": "2020-01-23T08:54:02.362Z",
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
         }
       },
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$time": "2020-01-24T06:29:02.403Z",
+              "$amount": 45.89
+            }
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
-      "event": "test revenue MIXPANEL",
-      "properties": {
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$insert_id": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
-        "$screen_dpi": 2,
-        "city": "Disney",
-        "country": "USA",
-        "currency": "USD",
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "email": "mickey@disney.com",
-        "firstName": "Mickey",
-        "ip": "0.0.0.0",
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "revenue": 45.89,
-        "time": 1579847342,
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "test revenue MIXPANEL",
+          "properties": {
+            "currency": "USD",
+            "revenue": 45.89,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstName": "Mickey",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   {
-    "event": "$create_alias",
-    "properties": {
-      "alias": "1234abc",
-      "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "$create_alias",
+        "properties": {
+          "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "alias": "1234abc",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   [
     {
-      "$append": {
-        "$transactions": {
-          "$amount": 25,
-          "$time": "2020-01-24T06:29:02.402Z"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$time": "2020-01-24T06:29:02.402Z",
+              "$amount": 25
+            }
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
         }
       },
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
-      "event": "KM Order Completed",
-      "properties": {
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-        "$screen_dpi": 2,
-        "affiliation": "Google Store",
-        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-        "city": "Disney",
-        "country": "USA",
-        "coupon": "hasbros",
-        "currency": "USD",
-        "discount": 2.5,
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "email": "mickey@disney.com",
-        "firstName": "Mickey",
-        "ip": "0.0.0.0",
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "order_id": "50314b8e9bcf000000000000",
-        "products": [
-          {
-            "category": "Games",
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "product_id": "507f1f77bcf86cd799439011",
-            "quantity": 1,
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path"
-          },
-          {
-            "category": "Games",
-            "name": "Uno Card Game",
-            "price": 3,
-            "product_id": "505bd76785ebb509fc183733",
-            "quantity": 2,
-            "sku": "46493-32"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "KM Order Completed",
+          "properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "revenue": 25,
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "total": 27.5,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstName": "Mickey",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
           }
-        ],
-        "revenue": 25,
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "time": 1579847342,
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "total": 27.5
-      }
-    }
-  ],
-  [
-    {
-      "$append": {
-        "$transactions": {
-          "$amount": 34,
-          "$time": "2020-01-24T06:29:02.402Z"
         }
       },
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$time": "2020-01-24T06:29:02.402Z",
+              "$amount": 34
+            }
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
-      "event": "KM Order Completed",
-      "properties": {
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-        "$screen_dpi": 2,
-        "affiliation": "Google Store",
-        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-        "city": "Disney",
-        "country": "USA",
-        "coupon": "hasbros",
-        "currency": "USD",
-        "discount": 2.5,
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "email": "mickey@disney.com",
-        "first_name": "Mickey",
-        "ip": "0.0.0.0",
-        "key_1": {
-          "child_key1": "child_value1",
-          "child_key2": {
-            "child_key21": "child_value21",
-            "child_key22": "child_value22"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "KM Order Completed",
+          "properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "revenue": 34,
+            "key_1": {
+              "child_key1": "child_value1",
+              "child_key2": {
+                "child_key21": "child_value21",
+                "child_key22": "child_value22"
+              }
+            },
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "total": 27.5,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "first_name": "Mickey",
+            "lastName": "Mouse",
+            "name": "Mickey Mouse",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
           }
-        },
-        "lastName": "Mouse",
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "name": "Mickey Mouse",
-        "order_id": "50314b8e9bcf000000000000",
-        "products": [
-          {
-            "category": "Games",
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "product_id": "507f1f77bcf86cd799439011",
-            "quantity": 1,
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path"
-          },
-          {
-            "category": "Games",
-            "name": "Uno Card Game",
-            "price": 3,
-            "product_id": "505bd76785ebb509fc183733",
-            "quantity": 2,
-            "sku": "46493-32"
-          }
-        ],
-        "revenue": 34,
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "time": 1579847342,
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "total": 27.5
-      }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "event": " new Order Completed totally",
-      "properties": {
-        "affiliation": "Google Store",
-        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-        "coupon": "hasbros",
-        "currency": "USD",
-        "discount": 2.5,
-        "total": 23,
-        "order_id": "50314b8e9bcf000000000000",
-        "key_1": {
-          "child_key1": "child_value1",
-          "child_key2": {
-            "child_key21": "child_value21",
-            "child_key22": "child_value22"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": " new Order Completed totally",
+          "properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "total": 23,
+            "order_id": "50314b8e9bcf000000000000",
+            "key_1": {
+              "child_key1": "child_value1",
+              "child_key2": {
+                "child_key21": "child_value21",
+                "child_key22": "child_value22"
+              }
+            },
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstName": "Mickey",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
           }
-        },
-        "products": [
-          {
-            "category": "Games",
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "product_id": "507f1f77bcf86cd799439011",
-            "quantity": 1,
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path"
-          },
-          {
-            "category": "Games",
-            "name": "Uno Card Game",
-            "price": 3,
-            "product_id": "505bd76785ebb509fc183733",
-            "quantity": 2,
-            "sku": "46493-32"
-          }
-        ],
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "city": "Disney",
-        "country": "USA",
-        "email": "mickey@disney.com",
-        "firstName": "Mickey",
-        "ip": "0.0.0.0",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$screen_dpi": 2,
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "time": 1579847342,
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
-      }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "event": " Order Completed ",
-      "properties": {
-        "affiliation": "Google Store",
-        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-        "coupon": "hasbros",
-        "currency": "USD",
-        "discount": 2.5,
-        "total": 23,
-        "order_id": "50314b8e9bcf000000000000",
-        "key_1": {
-          "child_key1": "child_value1",
-          "child_key2": {
-            "child_key21": "child_value21",
-            "child_key22": "child_value22"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": " Order Completed ",
+          "properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "total": 23,
+            "order_id": "50314b8e9bcf000000000000",
+            "key_1": {
+              "child_key1": "child_value1",
+              "child_key2": {
+                "child_key21": "child_value21",
+                "child_key22": "child_value22"
+              }
+            },
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "Billing Amount": "77",
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstName": "Mickey",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
           }
-        },
-        "products": [
-          {
-            "category": "Games",
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "product_id": "507f1f77bcf86cd799439011",
-            "quantity": 1,
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path"
-          },
-          {
-            "category": "Games",
-            "name": "Uno Card Game",
-            "price": 3,
-            "product_id": "505bd76785ebb509fc183733",
-            "quantity": 2,
-            "sku": "46493-32"
-          }
-        ],
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "Billing Amount": "77",
-        "city": "Disney",
-        "country": "USA",
-        "email": "mickey@disney.com",
-        "firstName": "Mickey",
-        "ip": "0.0.0.0",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$screen_dpi": 2,
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "time": 1579847342,
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
-      }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   {
@@ -421,427 +676,820 @@
   },
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$firstName": "Mickey",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
-    }
-  ],
-  [
-    {
-      "$distinct_id": "hjikl",
-      "$set": {
-        "company": [
-          "testComp"
-        ]
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    {
-      "$group_id": "testComp",
-      "$group_key": "company",
-      "$set": {
-        "company": "testComp"
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    }
-  ],
-  [
-    {
-      "$set": {
-        "company": [
-          "testComp"
-        ]
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    {
-      "$group_id": "testComp",
-      "$group_key": "company",
-      "$set": {
-        "company": "testComp"
-      },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    }
-  ],
-  [
-    {
-      "$append": {
-        "$transactions": {
-          "$amount": 25,
-          "$time": "2020-01-24T06:29:02.402Z"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$firstName": "Mickey",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
         }
       },
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
     {
-      "event": "KM Order Completed",
-      "properties": {
-        "$app_build_number": "1.0.0",
-        "$app_version_string": "1.0.5",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117",
-        "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-        "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-        "$screen_dpi": 2,
-        "affiliation": "Google Store",
-        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-        "city": "Disney",
-        "country": "USA",
-        "coupon": "hasbros",
-        "currency": "USD",
-        "discount": 2.5,
-        "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "email": "mickey@disney.com",
-        "firstname": "Mickey",
-        "ip": "0.0.0.0",
-        "lastname": "Mouse",
-        "mp_lib": "RudderLabs JavaScript SDK",
-        "order_id": "50314b8e9bcf000000000000",
-        "products": [
-          {
-            "category": "Games",
-            "image_url": "https:///www.example.com/product/path.jpg",
-            "name": "Monopoly: 3rd Edition",
-            "price": 19,
-            "product_id": "507f1f77bcf86cd799439011",
-            "quantity": 1,
-            "sku": "45790-32",
-            "url": "https://www.example.com/product/path"
-          },
-          {
-            "category": "Games",
-            "name": "Uno Card Game",
-            "price": 3,
-            "product_id": "505bd76785ebb509fc183733",
-            "quantity": 2,
-            "sku": "46493-32"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "hjikl",
+          "$set": {
+            "company": [
+              "testComp"
+            ]
           }
-        ],
-        "revenue": 25,
-        "shipping": 3,
-        "subtotal": 22.5,
-        "tax": 2,
-        "time": 1579847342,
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "total": 27.5
-      }
-    }
-  ],
-  [
-    {
-      "$set": {
-        "$carrier": "Android",
-        "$manufacturer": "Google",
-        "$model": "Android SDK built for x86",
-        "$screen_height": 1794,
-        "$screen_width": 1080,
-        "$wifi": true,
-        "anonymousId": "5094f5704b9cf2b3",
-        "$android_devices": [
-          "test_device_token"
-        ],
-        "$os": "Android",
-        "$android_model": "Android SDK built for x86",
-        "$android_os_version": "8.1.0",
-        "$android_manufacturer": "Google",
-        "$android_app_version": "1.0",
-        "$android_app_version_code": "1.0",
-        "$android_brand": "Google"
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "5094f5704b9cf2b3",
-      "$time": null
-    }
-  ],
-  [
-    {
-      "$distinct_id": "test_user_id",
-      "$set": {
-        "$carrier": "Android",
-        "$ios_app_release": "1",
-        "$ios_app_version": "1.0",
-        "$ios_device_model": "Android SDK built for x86",
-        "$ios_devices": [
-          "test_device_token"
-        ],
-        "$ios_version": "8.1.0",
-        "$manufacturer": "Google",
-        "$model": "Android SDK built for x86",
-        "$os": "iOS",
-        "$screen_height": 1794,
-        "$screen_width": 1080,
-        "$wifi": true,
-        "anonymousId": "5094f5704b9cf2b3",
-        "userId": "test_user_id"
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "$time": null,
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
     {
-      "event": "$merge",
-      "properties": {
-        "$distinct_ids": [
-          "test_user_id",
-          "5094f5704b9cf2b3"
-        ],
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$group_key": "company",
+          "$group_id": "testComp",
+          "$set": {
+            "company": "testComp"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$set": {
+            "company": [
+              "testComp"
+            ]
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$group_key": "company",
+          "$group_id": "testComp",
+          "$set": {
+            "company": "testComp"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$time": "2020-01-24T06:29:02.402Z",
+              "$amount": 25
+            }
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "KM Order Completed",
+          "properties": {
+            "affiliation": "Google Store",
+            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+            "coupon": "hasbros",
+            "currency": "USD",
+            "discount": 2.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "products": [
+              {
+                "category": "Games",
+                "image_url": "https:///www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "product_id": "507f1f77bcf86cd799439011",
+                "quantity": 1,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "category": "Games",
+                "name": "Uno Card Game",
+                "price": 3,
+                "product_id": "505bd76785ebb509fc183733",
+                "quantity": 2,
+                "sku": "46493-32"
+              }
+            ],
+            "revenue": 25,
+            "shipping": 3,
+            "subtotal": 22.5,
+            "tax": 2,
+            "total": 27.5,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "lastname": "Mouse",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$carrier": "Android",
+            "$manufacturer": "Google",
+            "$model": "Android SDK built for x86",
+            "$screen_height": 1794,
+            "$screen_width": 1080,
+            "$wifi": true,
+            "anonymousId": "5094f5704b9cf2b3",
+            "$android_devices": [
+              "test_device_token"
+            ],
+            "$os": "Android",
+            "$android_model": "Android SDK built for x86",
+            "$android_os_version": "8.1.0",
+            "$android_manufacturer": "Google",
+            "$android_app_version": "1.0",
+            "$android_app_version_code": "1.0",
+            "$android_brand": "Google"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "5094f5704b9cf2b3",
+          "$time": null
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$carrier": "Android",
+            "$manufacturer": "Google",
+            "$model": "Android SDK built for x86",
+            "$screen_height": 1794,
+            "$screen_width": 1080,
+            "$wifi": true,
+            "anonymousId": "5094f5704b9cf2b3",
+            "userId": "test_user_id",
+            "$ios_devices": [
+              "test_device_token"
+            ],
+            "$os": "iOS",
+            "$ios_device_model": "Android SDK built for x86",
+            "$ios_version": "8.1.0",
+            "$ios_app_release": "1",
+            "$ios_app_version": "1.0"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "test_user_id",
+          "$time": null
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
+      },
+      "params": {
+        "data": {
+          "event": "$merge",
+          "properties": {
+            "$distinct_ids": [
+              "test_user_id",
+              "5094f5704b9cf2b3"
+            ],
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
     }
   ],
   {
-    "event": "Loaded a Page",
-    "properties": {
-      "$app_build_number": "1.0.0",
-      "$app_version_string": "1.0.5",
-      "$browser": "Chrome",
-      "$browser_version": "79.0.3945.117",
-      "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
-      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
-      "$screen_dpi": 2,
-      "category": "communication",
-      "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "ip": "0.0.0.0",
-      "mp_lib": "RudderLabs JavaScript SDK",
-      "name": "Contact Us",
-      "path": "/tests/html/index2.html",
-      "referrer": "",
-      "search": "",
-      "time": 1579847342,
-      "title": "",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "url": "http://localhost/tests/html/index2.html"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Page",
+        "properties": {
+          "path": "/tests/html/index2.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html",
+          "category": "communication",
+          "ip": "0.0.0.0",
+          "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "time": 1579847342,
+          "name": "Contact Us",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   {
-    "event": "$create_alias",
-    "properties": {
-      "alias": "1234abc",
-      "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    }
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "$create_alias",
+        "properties": {
+          "distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "alias": "1234abc",
+          "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
   },
   [
     {
-      "$distinct_id": "test_user_id",
-      "$set": {
-        "$carrier": "Android",
-        "$ios_app_release": "1",
-        "$ios_app_version": "1.0",
-        "$ios_device_model": "Android SDK built for x86",
-        "$ios_devices": [
-          "test_device_token"
-        ],
-        "$manufacturer": "Google",
-        "$model": "Android SDK built for x86",
-        "$screen_height": 1794,
-        "$screen_width": 1080,
-        "$wifi": true,
-        "anonymousId": "5094f5704b9cf2b3",
-        "createdat": "2020-01-23T08:54:02.362Z",
-        "userId": "test_user_id"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$carrier": "Android",
+            "$manufacturer": "Google",
+            "$model": "Android SDK built for x86",
+            "$screen_height": 1794,
+            "$screen_width": 1080,
+            "$wifi": true,
+            "anonymousId": "5094f5704b9cf2b3",
+            "userId": "test_user_id",
+            "createdat": "2020-01-23T08:54:02.362Z",
+            "$ios_devices": [
+              "test_device_token"
+            ],
+            "$ios_device_model": "Android SDK built for x86",
+            "$ios_app_release": "1",
+            "$ios_app_version": "1.0"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "test_user_id",
+          "$time": null
+        }
       },
-      "$time": null,
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
     },
     {
-      "event": "$merge",
-      "properties": {
-        "$distinct_ids": [
-          "test_user_id",
-          "5094f5704b9cf2b3"
-        ],
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
+      },
+      "params": {
+        "data": {
+          "event": "$merge",
+          "properties": {
+            "$distinct_ids": [
+              "test_user_id",
+              "5094f5704b9cf2b3"
+            ],
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$firstName": "Mickey",
-        "$lastName": "Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$firstName": "Mickey",
+            "$lastName": "Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$firstName": "Mickey",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$firstName": "Mickey",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$name": "Mickey Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$region": "US",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$firstName": "Mickey",
-        "$lastName": "Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$name": "Mickey Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$region": "US",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$firstName": "Mickey",
+            "$lastName": "Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$firstName": "Mickey",
-        "$lastName": "Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$firstName": "Mickey",
+            "$lastName": "Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$firstName": "Mickey",
-        "$lastName": "Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$firstName": "Mickey",
+            "$lastName": "Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$name": "Mickey Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$region": "US",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$name": "Mickey Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$region": "US",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   {
@@ -854,33 +1502,52 @@
   },
   [
     {
-      "event": "MainActivity",
-      "properties": {
-        "name": "MainActivity",
-        "automatic": true,
-        "anonymousId": "5094f5704b9cf2b3",
-        "userId": "test_user_id",
-        "$user_id": "test_user_id",
-        "$os": "iOS",
-        "$screen_height": 1794,
-        "$screen_width": 1080,
-        "$screen_dpi": 420,
-        "$carrier": "Android",
-        "$os_version": "8.1.0",
-        "$device": "generic_x86",
-        "$manufacturer": "Google",
-        "$model": "Android SDK built for x86",
-        "mp_device_model": "Android SDK built for x86",
-        "$wifi": true,
-        "$bluetooth_enabled": false,
-        "mp_lib": "com.rudderstack.android.sdk.core",
-        "$app_build_number": "1",
-        "$app_version_string": "1.0",
-        "$insert_id": "id2",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "distinct_id": "test_user_id",
-        "time": 1520845503
-      }
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og=="
+      },
+      "params": {
+        "data": {
+          "event": "MainActivity",
+          "properties": {
+            "name": "MainActivity",
+            "automatic": true,
+            "anonymousId": "5094f5704b9cf2b3",
+            "userId": "test_user_id",
+            "$user_id": "test_user_id",
+            "$os": "iOS",
+            "$screen_height": 1794,
+            "$screen_width": 1080,
+            "$screen_dpi": 420,
+            "$carrier": "Android",
+            "$os_version": "8.1.0",
+            "$device": "generic_x86",
+            "$manufacturer": "Google",
+            "$model": "Android SDK built for x86",
+            "mp_device_model": "Android SDK built for x86",
+            "$wifi": true,
+            "$bluetooth_enabled": false,
+            "mp_lib": "com.rudderstack.android.sdk.core",
+            "$app_build_number": "1",
+            "$app_version_string": "1.0",
+            "$insert_id": "id2",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "test_user_id",
+            "time": 1520845503
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
     }
   ],
   {
@@ -893,45 +1560,79 @@
   },
   [
     {
-      "$set": {
-        "$created": "2020-01-23T08:54:02.362Z",
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$created": "2020-01-23T08:54:02.362Z",
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342,
+          "$ignore_time": true
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342,
-      "$ignore_time": true
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   [
     {
-      "$set": {
-        "$created": "2020-01-23T08:54:02.362Z",
-        "$email": "mickey@disney.com",
-        "$first_name": "Mickey",
-        "$last_name": "Mouse",
-        "$country_code": "USA",
-        "$city": "Disney",
-        "$initial_referrer": "https://docs.rudderstack.com",
-        "$initial_referring_domain": "docs.rudderstack.com",
-        "$name": "Mickey Mouse",
-        "$browser": "Chrome",
-        "$browser_version": "79.0.3945.117"
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$created": "2020-01-23T08:54:02.362Z",
+            "$email": "mickey@disney.com",
+            "$first_name": "Mickey",
+            "$last_name": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
       },
-      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "$ip": "0.0.0.0",
-      "$time": 1579847342
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
   {

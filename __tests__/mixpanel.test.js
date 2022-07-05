@@ -25,11 +25,10 @@ inputData.forEach((input, index) => {
       if(Array.isArray(output) && output.length >= 1) {
         output.forEach((eachPayload) => {
           const decodedPayload = JSON.parse(Buffer.from(JSON.stringify(eachPayload.params.data), 'base64').toString());
-          arrayOutput.push(decodedPayload);
+          eachPayload.params.data = decodedPayload;
         });
-        output = arrayOutput;
       } else {
-        output = JSON.parse(Buffer.from(JSON.stringify(output.params.data), 'base64').toString());
+        output.params.data = JSON.parse(Buffer.from(JSON.stringify(output.params.data), 'base64').toString());
       }
       expected = expectedData[index];
     } catch (error) {
@@ -55,7 +54,6 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
     let arrayOutput = [];
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
-      let singleBatchedPayload = [];
       routerOutput.forEach((eachPayload,index) => {
         // when batched payload is an array itself
         if(Array.isArray(eachPayload.batchedRequest)) {
@@ -64,18 +62,15 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
           batchedRequest.forEach(request => {
             const decodedPayload = JSON.parse(Buffer.from(JSON.stringify(request.params.data), 'base64').toString());
            // creating for one single batch array payload
-            singleBatchedPayload.push(decodedPayload);
+            request.params.data = decodedPayload;
           });
-          arrayOutput.push(singleBatchedPayload);
         } else {
          // where batched request is a simple object
           const decodedPayload = JSON.parse(Buffer.from(JSON.stringify(eachPayload.batchedRequest.params.data), 'base64').toString());
-          arrayOutput.push(decodedPayload);
+          eachPayload.batchedRequest.params.data = decodedPayload;
         }
         });
-        output = arrayOutput;
-      
-      expect(output).toEqual(expectedRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
   });
   

@@ -9996,7 +9996,7 @@
     }
   },
   {
-    "description": "GA4: Identify sign_up event",
+    "description": "(gtag): Identify sign_up event",
     "input": {
       "message": {
         "channel": "web",
@@ -10127,7 +10127,7 @@
     ]
   },
   {
-    "description": "(GA4): sending generate_lead event for identify",
+    "description": "(gtag): sending generate_lead event for identify",
     "input": {
       "message": {
         "channel": "web",
@@ -10421,7 +10421,7 @@
     ]
   },
   {
-    "description": "(ga4): check args keyword for price x currency multiplication",
+    "description": "(gtag): check args keyword for price x currency multiplication",
     "input": {
       "message": {
         "channel": "web",
@@ -10581,6 +10581,133 @@
                 ],
                 "price": 2.4,
                 "quantity": 2
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "(gtag): take page properties from context.page for 'page' call along with custom properties",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-26T05:17:09Z",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "page": {
+            "url": "http://morkey.in",
+            "path": "/cart",
+            "title": "miphone",
+            "search": "MI",
+            "referrer": "morkey"
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "page",
+        "integrations": {
+          "All": true
+        },
+        "properties": {
+          "cust1": 1234
+        },
+        "sentAt": "2022-04-20T15:20:57Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "enableServerSideIdentify": false,
+          "sendLoginSignup": false,
+          "generateLead": false
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://www.google-analytics.com/mp/collect",
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "body": {
+        "JSON": {
+          "timestamp_micros": 1650950229000000,
+          "non_personalized_ads": true,
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+          "events": [
+            {
+              "name": "page_view",
+              "params": {
+                "path": "/cart",
+                "referrer": "morkey",
+                "search": "MI",
+                "title": "miphone",
+                "url": "http://morkey.in",
+                "cust1": 1234
               }
             }
           ]

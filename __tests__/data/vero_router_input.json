@@ -54,7 +54,7 @@
           "email": "user005@tech.com"
         }
       },
-      "integerations": {
+      "integrations": {
         "vero": {
           "tags": {
             "add": ["a", "b"]

@@ -96,6 +96,25 @@
           "FORM": {}
         },
         "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://api.getvero.com/api/v2/users/tags/edit",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF",
+            "id": "fprediruser001",
+            "add": ["a", "b"]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
       }
     ],
     "destination": {

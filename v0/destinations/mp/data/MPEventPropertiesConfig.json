@@ -120,7 +120,7 @@
     "destKey": "$app_version_string"
   },
   {
-    "sourceKeys": "properties.brand",
+    "sourceKeys": ["device.manufacturer","properties.brand"],
     "destKey": "$brand"
   },
   {

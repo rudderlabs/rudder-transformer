@@ -5,8 +5,8 @@ const {
   removeUndefinedValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues,
   constructPayload,
+  isDefined,
   getBrowserInfo,
   getValuesAsArrayFromConfig,
   toUnixTimestamp,
@@ -21,9 +21,11 @@ const {
 const {
   ConfigCategory,
   mappingConfig,
-  MP_IDENTIFY_EXCLUSION_LIST
+  MP_IDENTIFY_EXCLUSION_LIST,
+  GEO_SOURCE_ALLOWED_VALUES
 } = require("./config");
 
+// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
   mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -128,7 +130,7 @@ function getEventValueForTrackEvent(message, destination) {
     time: unixTimestamp
   };
 
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
@@ -158,6 +160,9 @@ function processTrack(message, destination) {
 
 function getTransformedJSON(message, mappingJson, useNewMapping) {
   let rawPayload = constructPayload(message, mappingJson);
+  if(isDefined(rawPayload.$geo_source) && (!GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source))) {
+    throw new CustomError ("$geo_source value must be either null or 'reverse_geocoding' ", 400);
+  }
   const userName = get(rawPayload, "$name");
   if (!userName) {
     set(rawPayload, "$name", getFullName(message));
@@ -211,7 +216,7 @@ function processIdentifyEvents(message, type, destination) {
     }
     properties = { ...properties, ...payload };
   }
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
@@ -305,7 +310,7 @@ function processPageOrScreenEvents(message, type, destination) {
   if (message.category) {
     properties.category = message.category;
   }
-  if (message.channel === "web" && message.context.userAgent) {
+  if (message.channel === "web" && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;

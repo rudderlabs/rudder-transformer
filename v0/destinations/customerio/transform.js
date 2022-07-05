@@ -73,7 +73,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     adduserIdFromExternalId(message);
   }
 
-  const userId = getFieldValueFromMessage(message, "userId");
+  let userId = getFieldValueFromMessage(message, "userIdOnly");
   const response = defaultRequestConfig();
   response.userId = userId || message.anonymousId;
   response.headers = {
@@ -83,6 +83,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   };
 
   if (evType === EventType.IDENTIFY) {
+    userId = userId || message.anonymousId;
     // if userId is not there simply drop the payload
     if (!userId) {
       throw new CustomError("userId not present", 400);

@@ -47,7 +47,10 @@
   },
   {
     "destKey": "$avatar",
-    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "sourceKeys": [
+      "traits.avatar",
+      "context.traits.avatar"
+    ],
     "required": false
   },
   {

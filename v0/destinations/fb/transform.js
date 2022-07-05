@@ -212,13 +212,13 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           let count = parentArray.length;
           while (count > 0) {
             const intendValue = get(parentArray[length], suffixSlice);
-            updatedEvent.custom_events[0][fbEventPath][length] =
-              getCorrectedTypedValue(
-                fbEventPath,
-                intendValue,
-                parentArray[length]
-              ) || "";
-
+            updatedEvent.custom_events[0][fbEventPath][
+              length
+            ] = getCorrectedTypedValue(
+              fbEventPath,
+              intendValue,
+              parentArray[length]
+            );
             length += 1;
             count -= 1;
           }
@@ -229,8 +229,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           set(
             updatedEvent.custom_events[0],
             fbEventPath,
-            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath) ||
-              ""
+            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath)
           );
         }
       } else {

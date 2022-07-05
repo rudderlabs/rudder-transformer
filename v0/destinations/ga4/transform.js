@@ -7,7 +7,6 @@ const {
   defaultRequestConfig,
   extractCustomFields,
   isEmptyObject,
-  flattenJson,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
@@ -189,6 +188,20 @@ const responseBuilder = (message, { Config }) => {
       message,
       ["traits", "context.traits"],
       GA4_IDENTIFY_EXCLUSION,
+      payload
+    );
+  } else if (message.type === "page") {
+    // page event
+    payload.name = event;
+    payload.params = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.PAGE.name]
+    );
+
+    payload.params = getGA4CustomParameters(
+      message,
+      ["properties"],
+      GA4_RESERVED_PARAMETER_EXCLUSION,
       payload
     );
   } else if (message.type === "group") {

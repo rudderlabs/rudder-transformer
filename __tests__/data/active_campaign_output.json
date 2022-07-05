@@ -49,7 +49,51 @@
       "JSON_ARRAY": {},
       "JSON": {
         "siteTrackingDomain": {
-          "name": "www.rudderlabs.com"
+          "name": "rudderlabs.com"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "siteTrackingDomain": {
+          "name": "rudderlabs.com"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://active.campaigns.rudder.com/api/3/siteTrackingDomains"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "siteTrackingDomain": {
+          "name": "rudderlabs.com"
         }
       }
     },

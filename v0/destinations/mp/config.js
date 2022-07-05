@@ -38,8 +38,11 @@ const MP_IDENTIFY_EXCLUSION_LIST = [
   "unsubscribed"
 ];
 
+const GEO_SOURCE_ALLOWED_VALUES = [null, "reverse_geocoding"];
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
-  MP_IDENTIFY_EXCLUSION_LIST
+  MP_IDENTIFY_EXCLUSION_LIST,
+  GEO_SOURCE_ALLOWED_VALUES
 };

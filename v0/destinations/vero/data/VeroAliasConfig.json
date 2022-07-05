@@ -1,0 +1,11 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "new_id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "previousId",
+    "destKey": "id"
+  }
+]

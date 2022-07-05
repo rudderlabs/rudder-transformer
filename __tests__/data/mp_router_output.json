@@ -1,94 +1,39 @@
 [
   {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.mixpanel.com/track/",
-      "headers": {},
-      "params": {
-        "data": "eyJldmVudCI6IkxvYWRlZCBhIFBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwiJGFwcF9idWlsZF9udW1iZXIiOiIxLjAuMCIsIiRhcHBfdmVyc2lvbl9zdHJpbmciOiIxLjAuNSIsIiRpbnNlcnRfaWQiOiJkZDI2NmM2Ny05MTk5LTRhNTItYmEzMi1mNDZkZGRlNjczMTIiLCJ0b2tlbiI6Ijk0MzJmMTFmNzBmOGNlMzg2ZjUxMTBjOGM5MjRiM2VjNGY4MjUyNTYiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6MTU3OTg0NzM0MiwibmFtZSI6IkNvbnRhY3QgVXMiLCIkYnJvd3NlciI6IkNocm9tZSIsIiRicm93c2VyX3ZlcnNpb24iOiI3OS4wLjM5NDUuMTE3In19"
-      },
-      "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
-      },
-      "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
-        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
-      },
-      "Enabled": true,
-      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
-      "Transformations": []
+    "event": "Loaded a Page",
+    "properties": {
+      "ip": "0.0.0.0",
+      "$user_id": "hjikl",
+      "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+      "$screen_dpi": 2,
+      "mp_lib": "RudderLabs JavaScript SDK",
+      "$app_build_number": "1.0.0",
+      "$app_version_string": "1.0.5",
+      "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+      "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "distinct_id": "hjikl",
+      "time": 1579847342,
+      "name": "Contact Us",
+      "$browser": "Chrome",
+      "$browser_version": "79.0.3945.117"
     }
   },
-  {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.mixpanel.com/engage/",
-        "headers": {},
-        "params": {
-          "data": "eyIkc2V0Ijp7IiRlbWFpbCI6Im1pY2tleUBkaXNuZXkuY29tIiwiJGNvdW50cnlfY29kZSI6IlVTQSIsIiRjaXR5IjoiRGlzbmV5IiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwiJGZpcnN0TmFtZSI6Ik1pY2tleSIsIiRicm93c2VyIjoiQ2hyb21lIiwiJGJyb3dzZXJfdmVyc2lvbiI6Ijc5LjAuMzk0NS4xMTcifSwiJHRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsIiRkaXN0aW5jdF9pZCI6ImU2YWIyYzVlLTJjZGEtNDRhOS1hOTYyLWUyZjY3ZGY3OGJjYSIsIiRpcCI6IjAuMC4wLjAiLCIkdGltZSI6MTU3OTg0NzM0Mn0="
-        },
-        "body": {
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "prefixProperties": true,
-        "useNativeSDK": false,
-        "useOldMapping": true
+  [
+    {
+      "$set": {
+        "$email": "mickey@disney.com",
+        "$country_code": "USA",
+        "$city": "Disney",
+        "$initial_referrer": "https://docs.rudderstack.com",
+        "$initial_referring_domain": "docs.rudderstack.com",
+        "$firstName": "Mickey",
+        "$browser": "Chrome",
+        "$browser_version": "79.0.3945.117"
       },
-      "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
-        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
-      },
-      "Enabled": true,
-      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
-      "Transformations": []
+      "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "$ip": "0.0.0.0",
+      "$time": 1579847342
     }
-  }
+  ]
 ]

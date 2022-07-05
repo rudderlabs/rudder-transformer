@@ -130,8 +130,8 @@
   },
   {
     "sourceKeys": [
-      "device.manufacturer",
-      "properties.brand"
+      "properties.brand",
+      "device.manufacturer"
     ],
     "destKey": "$brand"
   },
@@ -166,9 +166,5 @@
   {
     "sourceKeys": "messageId",
     "destKey": "$insert_id"
-  },
-  {
-    "sourceKeys": "properties.mpApiEndpoint",
-    "destKey": "$mp_api_endpoint"
   }
 ]

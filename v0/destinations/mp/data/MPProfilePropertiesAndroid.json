@@ -29,8 +29,8 @@
   },
   {
     "sourceKeys": [
-      "context.device.manufacturer",
-      "properties.androidBrand"
+      "properties.androidBrand",
+      "context.device.manufacturer"
     ],
     "destKey": "$android_brand"
   }

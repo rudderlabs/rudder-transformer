@@ -28,7 +28,10 @@
     "destKey": "$android_lib_version"
   },
   {
-    "sourceKeys": "properties.androidBrand",
+    "sourceKeys": [
+      "properties.androidBrand",
+      "context.device.manufacturer"
+    ],
     "destKey": "$android_brand"
   }
 ]

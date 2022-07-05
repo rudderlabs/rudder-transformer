@@ -1,4 +1,3 @@
-const { base64decode } = require('nodejs-base64');
 const integration = "mp";
 const name = "Mixpanel";
 

@@ -16,11 +16,11 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
+const stats = require("../../util/stats");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const { cdkEnabled } = require("../../features.json");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -149,8 +149,20 @@ const setValues = (payload, message, mappingJson) => {
   return payload;
 };
 
+// get the value from the message given a key
+// it'll look for properties, traits and context.traits in the order
+const getValueFromPropertiesOrTraits = ({ message, key }) => {
+  const keySet = ["properties", "traits", "context.traits"];
+
+  const val = _.find(
+    _.map(keySet, k => get(message, `${k}.${key}`)),
+    v => !_.isNil(v)
+  );
+  return !_.isNil(val) ? val : null;
+};
+
 // function to flatten a json
-function flattenJson(data) {
+function flattenJson(data, separator = ".") {
   const result = {};
   let l;
 
@@ -170,7 +182,7 @@ function flattenJson(data) {
       let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
         isEmptyFlag = false;
-        recurse(cur[key], prop ? `${prop}.${key}` : key);
+        recurse(cur[key], prop ? `${prop}${separator}${key}` : key);
       });
       if (isEmptyFlag && prop) result[prop] = {};
     }
@@ -198,6 +210,7 @@ const getOffsetInSec = value => {
   }
   return undefined;
 };
+
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE
@@ -398,29 +411,121 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-const getValueFromMessage = (message, sourceKey) => {
-  if (Array.isArray(sourceKey) && sourceKey.length > 0) {
-    if (sourceKey.length === 1) {
+// This method handles the operations between two keys from the sourceKeys. One of the possible
+// usecase is to calculate the value from the "price" and "quantity"
+//
+// Definition of the operation object is as follows
+//
+// {
+//   "operation": "multiplication",
+//   "args": [
+//     {
+//       "sourceKeys": "properties.price"
+//     },
+//     {
+//       "sourceKeys": "properties.quantity",
+//       "defaultVal": 1
+//     }
+//   ]
+// }
+//
+// Supported operations are "addition", "multiplication"
+//
+const handleSourceKeysOperation = ({ message, operationObject }) => {
+  const { operation, args } = operationObject;
+
+  // populate the values from the arguments
+  // in the same order it is populated
+  const argValues = args.map(arg => {
+    const { sourceKeys, defaultVal } = arg;
+    const val = get(message, sourceKeys);
+    if (val || val === false || val === 0) {
+      return val;
+    }
+    return defaultVal;
+  });
+
+  // quick sanity check for the undefined values in the list.
+  // if there is any undefined values, return null
+  // without going further for operations
+  const isAllDefined = _.every(argValues, v => {
+    return !_.isNil(v);
+  });
+  if (!isAllDefined) {
+    return null;
+  }
+
+  // start handling operations
+  let result = null;
+  switch (operation) {
+    case "multiplication":
+      result = 1;
+      for (let ind = 0; ind < argValues.length; ind += 1) {
+        const v = argValues[ind];
+        if (_.isNumber(v)) {
+          result *= v;
+        } else {
+          // if there is a non number argument simply return null
+          // non numbers can't be operated arithmatically
+          return null;
+        }
+      }
+      return result;
+    case "addition":
+      result = 0;
+      for (let ind = 0; ind < argValues.length; ind += 1) {
+        const v = argValues[ind];
+        if (_.isNumber(v)) {
+          result += v;
+        } else {
+          // if there is a non number argument simply return null
+          // non numbers can't be operated arithmatically
+          return null;
+        }
+      }
+      return result;
+    default:
+      return null;
+  }
+};
+
+const getValueFromMessage = (message, sourceKeys) => {
+  if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+    if (sourceKeys.length === 1) {
       logger.warn(
         "List with single element is not ideal. Use it as string instead"
       );
     }
     // got the possible sourceKeys
-    for (let index = 0; index < sourceKey.length; index += 1) {
-      const val = get(message, sourceKey[index]);
+    for (let index = 0; index < sourceKeys.length; index += 1) {
+      const sourceKey = sourceKeys[index];
+      let val = null;
+      // if the sourceKey is an object we expect it to be a operation
+      if (typeof sourceKey === "object") {
+        val = handleSourceKeysOperation({
+          message,
+          operationObject: sourceKey
+        });
+      } else {
+        val = get(message, sourceKeys[index]);
+      }
       if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
       }
     }
-  } else if (typeof sourceKey === "string") {
+  } else if (typeof sourceKeys === "string") {
     // got a single key
     // - we don't need to iterate over a loop for a single possible value
-    return get(message, sourceKey);
+    return get(message, sourceKeys);
+  } else if (typeof sourceKeys === "object") {
+    // if the sourceKey is an object we expect it to be a operation
+    return handleSourceKeysOperation({ message, operationObject: sourceKeys });
   } else {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
+    // TODO - think of a way to crash the pod
     throw new Error("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
@@ -459,15 +564,88 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     defaultValue,
     excludes,
     multikeyMap,
-    allowedKeyCheck
+    allowedKeyCheck,
+    validateTimestamp
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
-  if (!value) {
+  if (!isDefinedAndNotNull(value)) {
     return defaultValue || value;
   }
   // we've got a correct value. start processing
   let formattedVal = value;
+
+  /**
+   * validate allowed time difference
+   */
+  if (validateTimestamp) {
+    const {
+      allowedPastTimeDifference,
+      allowedPastTimeUnit, // seconds, minutes, hours
+      allowedFutureTimeDifference,
+      allowedFutureTimeUnit // seconds, minutes, hours
+    } = validateTimestamp;
+
+    let pastTimeDifference;
+    let futureTimeDifference;
+
+    const currentTime = moment.unix(moment().format("X"));
+    const time = moment.unix(moment(formattedVal).format("X"));
+
+    switch (allowedPastTimeUnit) {
+      case "seconds":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asSeconds()
+        );
+        break;
+      case "minutes":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asMinutes()
+        );
+        break;
+      case "hours":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asHours()
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (pastTimeDifference > allowedPastTimeDifference) {
+      throw new Error(
+        `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
+      );
+    }
+
+    if (pastTimeDifference <= 0) {
+      switch (allowedFutureTimeUnit) {
+        case "seconds":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asSeconds()
+          );
+          break;
+        case "minutes":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asMinutes()
+          );
+          break;
+        case "hours":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asHours()
+          );
+          break;
+        default:
+          break;
+      }
+
+      if (futureTimeDifference > allowedFutureTimeDifference) {
+        throw new Error(
+          `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
+        );
+      }
+    }
+  }
 
   // handle type and format
   if (type) {
@@ -480,6 +658,12 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           formatTimeStamp(formattedVal, typeFormat) / 1000
         );
         break;
+      case "microSecondTimestamp":
+        formattedVal = moment.unix(moment(formattedVal).format("X"));
+        formattedVal =
+          formattedVal.toDate().getTime() * 1000 +
+          formattedVal.toDate().getMilliseconds();
+        break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
         break;
@@ -491,6 +675,10 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "dobInMMDD":
+        formattedVal = String(formattedVal).slice(5);
+        formattedVal = formattedVal.replace("-", "/");
         break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify
@@ -590,7 +778,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     let foundVal = false;
     if (Array.isArray(multikeyMap)) {
       multikeyMap.some(map => {
-        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+        if (
+          !map.sourceVal ||
+          !isDefinedAndNotNull(map.destVal) ||
+          !Array.isArray(map.sourceVal)
+        ) {
           logger.warn(
             "multikeyMap skipped: sourceVal and destVal must be of valid type"
           );
@@ -1172,6 +1364,56 @@ function isCdkDestination(event) {
   );
 }
 
+/**
+ * This function helps to remove any invalid object values from the config generated by dynamicForm,
+ * dynamicCustomForm, and dynamicSelectForm web app form elements.
+ *
+ * example:
+ * input: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    },
+                    {
+                        "to": "Schedule"
+                    }
+                ]
+ * output: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    }
+                ]
+
+ * @param {*} attributeArray -> This is the config output (array) from dynamicForm/dynamicCustomForm/dynamicSelectForm element.
+ * @param {*} keyLeft -> This is the name of the leftKey, in general it is 'from'.
+ * @param {*} keyRight -> This is the name of the rightKey, in general it is 'to'.
+ * @param {*} destinationType -> This is the type of the destination.
+ * @param {*} destinationId -> This is the id of the destination.
+ * @returns
+ */
+function getValidDynamicFormConfig(
+  attributeArray,
+  keyLeft,
+  keyRight,
+  destinationType,
+  destinationId
+) {
+  const res = attributeArray.filter(element => {
+    return (
+      (element[keyLeft] || element[keyLeft] === "") &&
+      (element[keyRight] || element[keyRight] === "")
+    );
+  });
+  if (res.length < attributeArray.length) {
+    stats.increment("dest_transform_invalid_dynamicConfig_count", 1, {
+      destinationType,
+      destinationId
+    });
+  }
+  return res;
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1196,12 +1438,12 @@ module.exports = {
   flattenMap,
   formatTimeStamp,
   formatValue,
-  generateUUID,
-  getSuccessRespEvents,
   generateErrorObject,
+  generateUUID,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDestinationExternalIDInfoForRetl,
   getDeviceModel,
   getErrorRespEvents,
   getFieldValueFromMessage,
@@ -1213,22 +1455,31 @@ module.exports = {
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
+  getSuccessRespEvents,
   getTimeDifference,
   getType,
+  getValidDynamicFormConfig,
   getValueFromMessage,
+  getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  handleSourceKeysOperation,
+  isAppleFamily,
   isBlank,
+  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
-  isHttpStatusSuccess,
   isHttpStatusRetryable,
+  isHttpStatusSuccess,
   isNonFuncObject,
+  isOAuthDestination,
+  isOAuthSupported,
   isObject,
   isPrimitive,
   isValidUrl,
+  removeHyphens,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
@@ -1238,11 +1489,5 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload,
-  isOAuthSupported,
-  isOAuthDestination,
-  isAppleFamily,
-  isCdkDestination,
-  getDestinationExternalIDInfoForRetl,
-  removeHyphens
+  updatePayload
 };

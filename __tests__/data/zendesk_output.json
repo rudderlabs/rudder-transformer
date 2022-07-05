@@ -424,5 +424,37 @@
   {
     "statusCode": 400,
     "error": "Message type not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://blendohelp.zendesk.com/api/v2/organizations/create_or_update.json",
+    "headers": {
+      "Authorization": "Basic Zm90aXNAYmxlbmRvLmNvL3Rva2VuOnVNdEZnSUxYd3BvNVJVQnBEaGo3YnFSMzZZTnF3VlFxWUlmZVkxV20=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339",
+      "X-Zendesk-Marketplace-App-Id": "263241"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "organization": {
+          "name": "group-124",
+          "domain_names": "cw124.com",
+          "external_id": "group-124",
+          "organization_fields": {
+            "id": "group-124",
+            "email": "group_email_124@xyz.com"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   }
 ]

@@ -25,12 +25,12 @@
   },
   {
     "destKey": "conversionAdjustments[0].restatementValue.currencyCode",
-    "sourceKeys": "properties.currencyCode",
+    "sourceKeys": ["properties.currencyCode", "properties.currency"],
     "required": false
   },
   {
     "destKey": "conversionAdjustments[0].orderId",
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
     "required": true,
     "metadata": {
       "type": "toString"
@@ -107,7 +107,7 @@
       "context.traits.countryCode",
       "context.traits.country",
       "context.traits.address.countryCode",
-      "context.traits.address.countryCode"
+      "context.traits.address.country"
     ],
     "required": false,
     "metadata": {

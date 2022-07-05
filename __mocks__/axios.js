@@ -8,6 +8,7 @@ const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
+const yahooDspPostRequestHandler = require("./yahoo_dsp.mock");
 const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
 const { hsGetRequestHandler } = require("./hs.mock");
 const { delightedGetRequestHandler } = require("./delighted.mock");
@@ -21,8 +22,7 @@ const urlDirectoryMap = {
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
-  "api.profitwell.com": "profitwell",
-  "api.getblueshift.com": "blueshift"
+  "api.profitwell.com": "profitwell"
 };
 
 const fs = require("fs");
@@ -125,6 +125,11 @@ function post(url, payload) {
   if (url.includes("https://api.aptrinsic.com")) {
     return new Promise(resolve => {
       resolve({ status: 201 });
+    });
+  }
+  if (url.includes("https://id.b2b.yahooinc.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(yahooDspPostRequestHandler(url, payload));
     });
   }
   if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {

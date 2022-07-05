@@ -6,7 +6,11 @@ const http = require("http");
 const https = require("https");
 const axios = require("axios");
 const log = require("../logger");
+const { removeUndefinedValues } = require("../v0/util");
 
+const MAX_CONTENT_LENGTH =
+  parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
+const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
@@ -47,7 +51,9 @@ const httpSend = async options => {
   // here the options argument K-Vs will take priority over requestOptions
   const requestOptions = {
     ...networkClientConfigs,
-    ...options
+    ...options,
+    maxContentLength: MAX_CONTENT_LENGTH,
+    maxBodyLength: MAX_BODY_LENGTH
   };
   try {
     const response = await axios(requestOptions);
@@ -156,24 +162,63 @@ const httpPATCH = async (url, data, options) => {
   return clientResponse;
 };
 
-/**
- * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
- * note: needed for test api
- * @param {*} request
- * @returns
- */
-const proxyRequest = async request => {
-  const { body, method, params, endpoint } = request;
-  let { headers } = request;
-  let data;
+const getPayloadData = body => {
   let payload;
   let payloadFormat;
-  for (const [key, value] of Object.entries(body)) {
+  Object.entries(body).forEach(([key, value]) => {
     if (!_.isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }
+  });
+  return { payload, payloadFormat };
+};
+
+/**
+ * Method for stringification of query parameters
+ * To understand the use-case for this method, please take a look at the below mentioned link:
+ * https://github.com/rudderlabs/rudder-transformer/pull/1244#issuecomment-1158900136
+ *
+ * @param {*} value
+ * @returns {String}
+ */
+function stringifyQueryParam(value) {
+  let stringifiedValue = `${value}`;
+  if (Array.isArray(value)) {
+    stringifiedValue = value.map(v => stringifyQueryParam(v)).join(",");
+    return `[${stringifiedValue}]`;
   }
+  if (value && typeof value === "object") {
+    // check for value is being done to avoid null inside since typeof null = "object"
+    stringifiedValue = JSON.stringify(value);
+  }
+  return stringifiedValue;
+}
+
+/**
+ * Obtain FORM payload-format data to send the data to destination
+ *
+ * @param {Object} payload
+ * @returns {String}
+ */
+function getFormData(payload) {
+  const data = new URLSearchParams();
+  Object.keys(payload).forEach(key => {
+    const payloadValStr = stringifyQueryParam(payload[key]);
+    data.append(key, payloadValStr);
+  });
+  return data;
+}
+
+/**
+ * Prepares the proxy request
+ * @param {*} request
+ * @returns
+ */
+const prepareProxyRequest = request => {
+  const { body, method, params, endpoint, headers } = request;
+  const { payload, payloadFormat } = getPayloadData(body);
+  let data;
 
   switch (payloadFormat) {
     case "JSON_ARRAY":
@@ -182,21 +227,12 @@ const proxyRequest = async request => {
       break;
     case "JSON":
       data = payload;
-      headers = { ...headers, "Content-Type": "application/json" };
       break;
     case "XML":
-      data = `${payload}`;
-      headers = { ...headers, "Content-Type": "application/xml" };
+      data = payload.payload;
       break;
     case "FORM":
-      data = new URLSearchParams();
-      Object.keys(payload).forEach(key => {
-        data.append(`${key}`, `${payload[key]}`);
-      });
-      headers = {
-        ...headers,
-        "Content-Type": "application/x-www-form-urlencoded"
-      };
+      data = getFormData(payload);
       break;
     case "MULTIPART-FORM":
       // TODO:
@@ -204,6 +240,21 @@ const proxyRequest = async request => {
     default:
       log.debug(`body format ${payloadFormat} not supported`);
   }
+  // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
+  headers["User-Agent"] = "RudderLabs";
+  return removeUndefinedValues({ endpoint, data, params, headers, method });
+};
+
+/**
+ * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
+ * note: needed for test api
+ * @param {*} request
+ * @returns
+ */
+const proxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
   const requestOptions = {
     url: endpoint,
     data,
@@ -214,6 +265,7 @@ const proxyRequest = async request => {
   const response = await httpSend(requestOptions);
   return response;
 };
+
 module.exports = {
   httpSend,
   httpGET,
@@ -221,5 +273,8 @@ module.exports = {
   httpPOST,
   httpPUT,
   httpPATCH,
-  proxyRequest
+  proxyRequest,
+  prepareProxyRequest,
+  getPayloadData,
+  getFormData
 };

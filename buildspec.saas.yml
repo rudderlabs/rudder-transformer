@@ -37,7 +37,8 @@ phases:
       - cd rudder-devops/helm-charts/shared-services/per-az
       - git checkout -b shared-transformer-\"$VERSION\"
       - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-      - git add values.blue-release.yaml
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - git add values.blue-release.yaml values.prod.yaml
       - git commit -m "changing version for shared transformer"
       - git push -u origin shared-transformer-\"$VERSION\"
       - hub pull-request -m "rudder-transformer version change-\"$VERSION\" "

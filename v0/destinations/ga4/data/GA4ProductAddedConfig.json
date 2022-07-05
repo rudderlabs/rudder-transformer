@@ -1,0 +1,31 @@
+[
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": true
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": true
+  }
+]

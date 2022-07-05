@@ -638,7 +638,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -713,7 +713,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -786,7 +786,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -877,7 +877,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -968,7 +968,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product list viewed",
@@ -1073,7 +1073,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "my product list",
@@ -1178,7 +1178,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product viewed",
@@ -1262,7 +1262,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -1342,7 +1342,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -1440,7 +1440,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "checkout started",
@@ -1518,13 +1518,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1605,13 +1599,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1712,7 +1700,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "products searched",
@@ -1791,7 +1779,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "products searched",
@@ -1870,7 +1858,7 @@
       },
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "properties": {
@@ -2021,7 +2009,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "my product list",
@@ -2201,7 +2189,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2278,7 +2266,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2355,7 +2343,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "product added",
@@ -2435,14 +2423,12 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": [
-          "clothing", "fishing"
-        ],
+        "category": ["clothing", "fishing"],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,
@@ -2536,7 +2522,7 @@
       },
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
       "event": "order completed",
@@ -2608,103 +2594,445 @@
   },
   {
     "message": {
-        "channel": "web",
-        "context": {
-            "app": {
-                "build": "1.0.0",
-                "name": "RudderLabs JavaScript SDK",
-                "namespace": "com.rudderlabs.javascript",
-                "version": "1.0.0"
-            },
-            "traits": {
-                "email": "sayan@gmail.com"
-            },
-            "library": {
-                "name": "RudderLabs JavaScript SDK",
-                "version": "1.0.0"
-            },
-            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-            "locale": "en-US",
-            "os": {
-                "name": "",
-                "version": ""
-            },
-            "screen": {
-                "density": 2
-            }
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
         },
-        "type": "track",
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-        "originalTimestamp": "2019-10-14T11:15:18.300Z",
-        "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
-        "event": "order completed",
-        "properties": {
-            "category": {
-                "category1": "1"
-            },
-            "order_id": "ruchiraorder1",
-            "total": 99.99,
-            "revenue": 12.24,
-            "shipping": 13.99,
-            "tax": 20.99,
-            "currency": "INR",
-            "products": [
-                {
-                    "quantity": 1,
-                    "price": 24.75,
-                    "name": "my product",
-                    "sku": "p-298"
-                },
-                {
-                    "quantity": 3,
-                    "price": 24.75,
-                    "name": "other product",
-                    "sku": "p-299"
-                }
-            ]
+        "traits": {
+          "email": "sayan@gmail.com"
         },
-        "integrations": {
-            "All": true
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
         },
-        "sentAt": "2019-10-14T11:15:53.296Z"
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "order completed",
+      "properties": {
+        "category": {
+          "category1": "1"
+        },
+        "order_id": "ruchiraorder1",
+        "total": 99.99,
+        "revenue": 12.24,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
-        "Config": {
-            "blacklistPiiProperties": [
-                {
-                    "blacklistPiiProperties": "",
-                    "blacklistPiiHash": true
-                }
-            ],
-            "categoryToContent": [
-                {
-                    "from": "clothing",
-                    "to": "product"
-                }
-            ],
-            "accessToken": "09876",
-            "pixelId": "dfgdfgdgd",
-            "eventsToEvents": [
-                {
-                    "from": "",
-                    "to": ""
-                }
-            ],
-            "eventCustomProperties": [
-                {
-                    "eventCustomProperties": ""
-                }
-            ],
-            "valueFieldIdentifier": "properties.price",
-            "advancedMapping": false,
-            "whitelistPiiProperties": [
-                {
-                    "whitelistPiiProperties": ""
-                }
-            ]
-        },
-        "Enabled": true
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
     }
-}
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "destination_props": {
+        "Fb": {
+          "app_id": "RudderFbApp"
+        }
+      },
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "height": "100",
+          "density": 50
+        },
+        "traits": {
+          "email": "abc@gmail.com",
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "revenue": 400,
+        "additional_bet_index": 0
+      },
+      "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "type": "track"
+    },
+    "destination": {
+      "Config": {
+        "limitedDataUsage": true,
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "spin_result",
+            "to": "Schedule"
+          },
+          {
+            "to": "Schedule"
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "destination_props": {
+        "Fb": {
+          "app_id": "RudderFbApp"
+        }
+      },
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "height": "100",
+          "density": 50
+        },
+        "traits": {
+          "email": "abc@gmail.com",
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "revenue": 400,
+        "additional_bet_index": 0
+      },
+      "timestamp": "2019-08-24T15:46:51.693229+05:30",
+      "type": "track"
+    },
+    "destination": {
+      "Config": {
+        "limitedDataUsage": true,
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "spin_result",
+            "to": "Schedule"
+          },
+          {
+            "to": "Schedule"
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "destination_props": {
+        "Fb": {
+          "app_id": "RudderFbApp"
+        }
+      },
+      "context": {
+        "device": {
+          "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+          "manufacturer": "Xiaomi",
+          "model": "Redmi 6",
+          "name": "xiaomi"
+        },
+        "network": {
+          "carrier": "Banglalink"
+        },
+        "os": {
+          "name": "android",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "height": "100",
+          "density": 50
+        },
+        "traits": {
+          "email": "abc@gmail.com",
+          "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+        }
+      },
+      "event": "spin_result",
+      "integrations": {
+        "All": true
+      },
+      "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+      "properties": {
+        "revenue": 400,
+        "additional_bet_index": 0
+      },
+      "originalTimestamp": "2019-04-16T15:50:51.693229+05:30",
+      "type": "track"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "accessToken": "EAAUMWU0Ql8kBALehZBtEcAyKx6kbM4shVl1sjZCE3rYFUDLn5bdk1QSmClQrq1Oamg2dN9ZAH5Sn4QJA1i9hRSRyvmQ74wWmyoQZBLLiFTDvGZCtecf77ZAAjegyXZAxXbFTD8VlzfXqXZBWR9kkP4n0UIH3w2Lt9Uv2Kws2pcOLdZBXgIvRtc9QOyqPFie8TiVYZD",
+        "pixelId": "658311142062817",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": true,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "order completed",
+      "properties": {
+        "order_id": "ruchiraorder1",
+        "total": 99.99,
+        "revenue": 12.24,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product"
+          },
+          {
+            "quantity": 3,
+            "price": 24.75,
+            "name": "other product",
+            "sku": "p-299"
+          }
+        ]
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  }
 ]

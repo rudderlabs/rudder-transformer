@@ -17,6 +17,7 @@
         "tracking_enabled": true,
         "currency": "EUR",
         "s2s": 1,
+        "ip_address": "[::1]",
         "app_token": "t1yurrb968zk",
         "event_token": "tf4gm5",
         "environment": "production"
@@ -113,6 +114,7 @@
         "tracking_enabled": true,
         "currency": "EUR",
         "s2s": 1,
+        "ip_address": "[::1]",
         "app_token": "t1yurrb968zk",
         "event_token": "tf4gm5",
         "environment": "production"

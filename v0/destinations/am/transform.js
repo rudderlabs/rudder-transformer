@@ -102,12 +102,12 @@ function addMinIdlength() {
 function setPriceQuanityInPayload(message, rawPayload) {
   let price;
   let quantity;
-  if (!message.properties.price) {
-    price = message.properties.revenue;
-    quantity = 1;
-  } else {
+  if (isDefinedAndNotNull(message.properties.price)) {
     price = message.properties.price;
     quantity = message.properties.quantity || 1;
+  } else {
+    price = message.properties.revenue;
+    quantity = 1;
   }
   rawPayload.price = price;
   rawPayload.quantity = quantity;

@@ -1,0 +1,40 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "timestamp_micros",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "validateTimestamp": {
+        "allowedFutureTimeDifference": 15,
+        "allowedFutureTimeUnit": "minutes",
+        "allowedPastTimeDifference": 72,
+        "allowedPastTimeUnit": "hours"
+      },
+      "type": "microSecondTimestamp"
+    }
+  },
+  {
+    "destKey": "non_personalized_ads",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["true", true, "1", 1],
+          "destVal": false
+        },
+        {
+          "sourceVal": ["false", false, "0", 0],
+          "destVal": true
+        }
+      ]
+    }
+  }
+]

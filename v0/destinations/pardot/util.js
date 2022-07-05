@@ -1,5 +1,9 @@
-const { isEmpty } = require("lodash");
-const { httpSend } = require("../../../adapters/network");
+const { removeUndefinedValues } = require("../../util");
+const {
+  prepareProxyRequest,
+  getPayloadData,
+  httpSend
+} = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -9,7 +13,6 @@ const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const logger = require("../../../logger");
 const ErrorBuilder = require("../../util/error");
 const { DESTINATION } = require("./config");
 
@@ -100,6 +103,28 @@ const responseHandler = destinationResponse => {
   };
 };
 
+const prepareProxyReq = request => {
+  const { body } = request;
+  // Build the destination request data using the generic method
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
+
+  // Modify the data
+  const { payloadFormat } = getPayloadData(body);
+  if (payloadFormat === "FORM") {
+    data.append("format", "json");
+  }
+
+  return removeUndefinedValues({
+    endpoint,
+    data,
+    params,
+    headers,
+    method
+  });
+};
+
 /**
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
@@ -107,48 +132,8 @@ const responseHandler = destinationResponse => {
  * @returns
  */
 const pardotProxyRequest = async request => {
-  const { body, method, params, endpoint } = request;
-  let { headers } = request;
-  let data;
-  let payload;
-  let payloadFormat;
-  Object.entries(body).forEach(([key, value]) => {
-    if (!isEmpty(value)) {
-      payload = value;
-      payloadFormat = key;
-    }
-  });
+  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
-  switch (payloadFormat) {
-    case "JSON_ARRAY":
-      data = payload.batch;
-      // TODO: add headers
-      break;
-    case "JSON":
-      data = payload;
-      headers = { ...headers, "Content-Type": "application/json" };
-      break;
-    case "XML":
-      data = `${payload}`;
-      headers = { ...headers, "Content-Type": "application/xml" };
-      break;
-    case "FORM":
-      data = new URLSearchParams();
-      data.append("format", "json");
-      Object.keys(payload).forEach(key => {
-        data.append(`${key}`, `${payload[key]}`);
-      });
-      headers = {
-        ...headers,
-        "Content-Type": "application/x-www-form-urlencoded"
-      };
-      break;
-    case "MULTIPART-FORM":
-      // TODO:
-      break;
-    default:
-      logger.debug(`body format ${payloadFormat} not supported`);
-  }
   const requestOptions = {
     url: endpoint,
     data,
@@ -163,6 +148,7 @@ const pardotProxyRequest = async request => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = pardotProxyRequest;
+  this.prepareProxy = prepareProxyReq;
   this.processAxiosResponse = processAxiosResponse;
 };
 

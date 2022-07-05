@@ -11,7 +11,8 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  generateErrorObject
+  generateErrorObject,
+  isDefinedAndNotNull
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -233,7 +234,7 @@ function getPurchaseObjs(message) {
     products.forEach(product => {
       const productId = product.product_id || product.sku;
       const { price, quantity, currency } = product;
-      if (productId && price && quantity) {
+      if (productId && isDefinedAndNotNull(price) && quantity) {
         if (Number.isNaN(price) || Number.isNaN(quantity)) {
           return;
         }
@@ -370,10 +371,11 @@ function process(event) {
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
 
+  // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
   if (destination.Config.dataCenter) {
     const dataCenterArr = destination.Config.dataCenter.trim().split("-");
     if (dataCenterArr[0].toLowerCase() === "eu") {
-      destination.Config.endPoint = "https://rest.fra-01.braze.eu";
+      destination.Config.endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
     } else {
       destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
     }

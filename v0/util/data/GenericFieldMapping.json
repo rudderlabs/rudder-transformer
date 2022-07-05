@@ -7,7 +7,12 @@
     "originalTimestamp"
   ],
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
-  "email": ["traits.email", "context.traits.email", "properties.email", "context.externalId.0.id"],
+  "email": [
+    "traits.email",
+    "context.traits.email",
+    "properties.email",
+    "context.externalId.0.id"
+  ],
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
@@ -60,5 +65,17 @@
   "GApageUrl": ["properties.url", "context.page.url"],
   "GApageRef": ["properties.referrer", "context.page.referrer"],
   "GApageTitle": ["properties.title", "context.page.title"],
-  "GApageSearch": ["properties.search", "context.page.search"]
+  "GApageSearch": ["properties.search", "context.page.search"],
+  "birthday": [
+    "traits.birthday",
+    "context.traits.birthday",
+    "traits.dateOfBirth",
+    "context.traits.dateOfBirth",
+    "traits.dateofbirth",
+    "context.dateofbirth",
+    "traits.dob",
+    "context.traits.dob",
+    "traits.DOB",
+    "context.traits.DOB"
+  ]
 }

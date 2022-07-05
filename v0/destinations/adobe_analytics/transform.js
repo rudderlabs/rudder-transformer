@@ -271,6 +271,7 @@ const processTrackEvent = (
         event.toLowerCase() !== "product list viewed") ||
       !Array.isArray(properties.products);
     const productsArr = isSingleProdEvent ? [properties] : properties.products;
+    const adobeProdEventArr = adobeProdEvent.split(",");
 
     productsArr.forEach(value => {
       const category = value.category || "";
@@ -289,20 +290,23 @@ const processTrackEvent = (
         productMerchProperties
       ) {
         productMerchProperties.forEach(rudderProp => {
-          if (rudderProp.productMerchProperties.startsWith("products.")) {
+          // adding product level merchandise properties
+          if (
+            rudderProp.productMerchProperties.startsWith("products.") &&
+            isSingleProdEvent === false
+          ) {
             const key = rudderProp.productMerchProperties.split(".");
-            const v = get(properties, key[1]);
+            const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
-              Object.keys(adobeProdEvent).forEach(val => {
-                merchMap.push(`${adobeProdEvent[val]}=${v}`);
+              adobeProdEventArr.forEach(val => {
+                merchMap.push(`${val}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
-            Object.keys(adobeProdEvent).forEach(val => {
+            // adding root level merchandise properties
+            adobeProdEventArr.forEach(val => {
               merchMap.push(
-                `${adobeProdEvent[val]}=${
-                  properties[rudderProp.productMerchProperties]
-                }`
+                `${val}=${properties[rudderProp.productMerchProperties]}`
               );
             });
           }
@@ -435,11 +439,16 @@ const process = async event => {
   const formattedDestination = formatDestinationConfig(destination.Config);
   let payload;
 
+  const messageClone = { ...message };
+  if (messageType === EventType.PAGE || messageType === EventType.SCREEN) {
+    messageClone.event = message.name;
+  }
+
   switch (messageType) {
     case EventType.TRACK:
     case EventType.PAGE:
     case EventType.SCREEN:
-      payload = handleTrack(message, formattedDestination);
+      payload = handleTrack(messageClone, formattedDestination);
       break;
     default:
       throw new Error("Message type is not supported");

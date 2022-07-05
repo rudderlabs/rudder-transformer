@@ -837,7 +837,10 @@
           "item_category5": "Short sleeve",
           "item_list_id": "related_products",
           "item_list_name": "Related Products",
-          "location_id": "L_12345"
+          "location_id": "L_12345",
+          "timezone": {
+            "name": "Europe/Tallinn"
+          }
         },
         "integrations": {
           "All": true
@@ -917,7 +920,8 @@
                     "item_list_name": "Related Products",
                     "location_id": "L_12345"
                   }
-                ]
+                ],
+                "timezone_name": "Europe/Tallinn"
               }
             }
           ]
@@ -2305,7 +2309,7 @@
     }
   },
   {
-    "description": "(gtag) check all property mappings for 'payment info entered' -> 'add_shipping_info' event",
+    "description": "(gtag) check all property mappings for 'checkout Step Completed' -> 'add_shipping_info' event",
     "input": {
       "message": {
         "channel": "web",
@@ -6393,7 +6397,10 @@
         "type": "track",
         "event": "rudderstack event",
         "properties": {
-          "total": "10"
+          "total": "10",
+          "timezone": {
+            "name": "Europe/Tallinn"
+          }
         },
         "integrations": {
           "All": true
@@ -6449,7 +6456,8 @@
             {
               "name": "rudderstack_event",
               "params": {
-                "total": "10"
+                "total": "10",
+                "timezone_name": "Europe/Tallinn"
               }
             }
           ]
@@ -9359,7 +9367,7 @@
     }
   },
   {
-    "description": "(gtag) pass custom properties excluding products: [..] parameters to GA4 standard events along with its stated ones",
+    "description": "(gtag) pass custom properties along with products: [..] parameters to GA4 standard events along with its stated ones",
     "input": {
       "message": {
         "channel": "web",
@@ -9434,7 +9442,10 @@
               "url": "https://www.website.com/product/path",
               "image_url": "https://www.website.com/product/path.jpg"
             }
-          ]
+          ],
+          "timezone": {
+            "name": "Europe/Tallinn"
+          }
         },
         "integrations": {
           "All": true
@@ -9512,7 +9523,8 @@
                     "url": "https://www.website.com/product/path",
                     "image_url": "https://www.website.com/product/path.jpg"
                   }
-                ]
+                ],
+                "timezone_name": "Europe/Tallinn"
               }
             }
           ]
@@ -9525,7 +9537,7 @@
     }
   },
   {
-    "description": "(gtag) pass custom properties along with products: [..] parameter to GA4 standard events along with its stated ones",
+    "description": "(gtag) pass custom properties excluding products: [..] parameter to GA4 standard events along with its stated ones",
     "input": {
       "message": {
         "channel": "web",
@@ -9579,6 +9591,9 @@
         "properties": {
           "customProp-1": "check-1",
           "customProp-2": "check-2",
+          "timezone": {
+            "name": "Europe/Tallinn"
+          },
           "creative_name": "Summer Banner",
           "creative_slot": "featured_app_1",
           "location_id": "L_12345",
@@ -9641,6 +9656,7 @@
               "params": {
                 "customProp-1": "check-1",
                 "customProp-2": "check-2",
+                "timezone_name": "Europe/Tallinn",
                 "creative_name": "Summer Banner",
                 "creative_slot": "featured_app_1",
                 "location_id": "L_12345",
@@ -9710,7 +9726,10 @@
         "type": "group",
         "traits": {
           "custom1": 1234,
-          "custom2": "custom2"
+          "custom2": "custom2",
+          "timezone": {
+            "name": "Europe/Tallinn"
+          }
         },
         "integrations": {
           "All": true
@@ -9767,7 +9786,8 @@
               "name": "join_group",
               "params": {
                 "custom1": 1234,
-                "custom2": "custom2"
+                "custom2": "custom2",
+                "timezone_name": "Europe/Tallinn"
               }
             }
           ]
@@ -9967,7 +9987,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4] Identify:: firstLogin is a required field in traits",
+      "error": "[GA4] Identify:: 'firstLogin' is a required field in traits",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -10029,6 +10049,9 @@
         "traits": {
           "firstLogin": true,
           "Cust1": 1234,
+          "timezone": {
+            "name": "Europe/Tallinn"
+          },
           "method": "Google"
         },
         "integrations": {
@@ -10089,7 +10112,8 @@
                 "name": "sign_up",
                 "params": {
                   "method": "Google",
-                  "Cust1": 1234
+                  "Cust1": 1234,
+                  "timezone_name": "Europe/Tallinn"
                 }
               }
             ]

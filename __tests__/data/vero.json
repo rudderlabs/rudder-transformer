@@ -142,7 +142,7 @@
             "email": "user1005@tech.com"
           }
         },
-        "integerations": {
+        "integrations": {
           "vero": {
             "tags": {
               "add": ["a", "b"]
@@ -170,6 +170,25 @@
               "homwTown": "Mawsynram"
             },
             "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://api.getvero.com/api/v2/users/tags/edit",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF",
+            "id": "fprediruser001",
+            "add": ["a", "b"]
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -303,7 +322,6 @@
       }
     ]
   },
-
   {
     "description": "Alias Call - Merge two user profiles",
     "input": {
@@ -437,5 +455,106 @@
         "files": {}
       }
     ]
+  },
+  {
+    "description": "Track Call to unsubscribe a userId",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "event": "unsubscribe",
+        "type": "track",
+        "userId": "eventIdn01"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.getvero.com/api/v2/users/unsubscribe",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "id": "eventIdn01",
+          "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Page Call with an existing userID",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "name": "Rudderstack",
+        "properties": {
+          "title": "rudderstack",
+          "path": "/"
+        },
+        "type": "page",
+        "userId": "eventIdn01"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.getvero.com/api/v2/events/track",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "identity": {
+            "id": "eventIdn01"
+          },
+          "event_name": "Viewed Rudderstack Page",
+          "data": {
+            "title": "rudderstack",
+            "path": "/"
+          },
+          "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Error flow - message type not supported",
+    "input": {
+      "destination": {
+        "Config": {
+          "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "groupId": "1234",
+        "traits": {
+          "name": "MyGroup",
+          "industry": "IT",
+          "employees": 450,
+          "plan": "basic"
+        },
+        "type": "group",
+        "userId": "eventIdn01"
+      }
+    },
+    "output": {
+      "error": "Message type group not supported"
+    }
   }
 ]

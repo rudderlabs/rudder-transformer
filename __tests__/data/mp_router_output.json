@@ -7,9 +7,14 @@
       "endpoint": "https://api.mixpanel.com/track/",
       "headers": {},
       "params": {
-        "data": "eyJldmVudCI6IkxvYWRlZCBhIFBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwiJGFwcF9idWlsZF9udW1iZXIiOiIxLjAuMCIsIiRhcHBfdmVyc2lvbl9zdHJpbmciOiIxLjAuNSIsInRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsImRpc3RpbmN0X2lkIjoiaGppa2wiLCJ0aW1lIjoxNTc5ODQ3MzQyLCJuYW1lIjoiQ29udGFjdCBVcyIsIiRicm93c2VyIjoiQ2hyb21lIiwiJGJyb3dzZXJfdmVyc2lvbiI6Ijc5LjAuMzk0NS4xMTcifX0="
+        "data": "eyJldmVudCI6IkxvYWRlZCBhIFBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwiJGFwcF9idWlsZF9udW1iZXIiOiIxLjAuMCIsIiRhcHBfdmVyc2lvbl9zdHJpbmciOiIxLjAuNSIsIiRpbnNlcnRfaWQiOiJkZDI2NmM2Ny05MTk5LTRhNTItYmEzMi1mNDZkZGRlNjczMTIiLCJ0b2tlbiI6Ijk0MzJmMTFmNzBmOGNlMzg2ZjUxMTBjOGM5MjRiM2VjNGY4MjUyNTYiLCJkaXN0aW5jdF9pZCI6ImhqaWtsIiwidGltZSI6MTU3OTg0NzM0MiwibmFtZSI6IkNvbnRhY3QgVXMiLCIkYnJvd3NlciI6IkNocm9tZSIsIiRicm93c2VyX3ZlcnNpb24iOiI3OS4wLjM5NDUuMTE3In19"
       },
-      "body": { "JSON": {}, "JSON_ARRAY": {}, "XML": {}, "FORM": {} },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
       "files": {},
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     },
@@ -50,7 +55,12 @@
         "params": {
           "data": "eyIkc2V0Ijp7IiRlbWFpbCI6Im1pY2tleUBkaXNuZXkuY29tIiwiJGNvdW50cnlfY29kZSI6IlVTQSIsIiRjaXR5IjoiRGlzbmV5IiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwiJGZpcnN0TmFtZSI6Ik1pY2tleSIsIiRicm93c2VyIjoiQ2hyb21lIiwiJGJyb3dzZXJfdmVyc2lvbiI6Ijc5LjAuMzk0NS4xMTcifSwiJHRva2VuIjoiOTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1NiIsIiRkaXN0aW5jdF9pZCI6ImU2YWIyYzVlLTJjZGEtNDRhOS1hOTYyLWUyZjY3ZGY3OGJjYSIsIiRpcCI6IjAuMC4wLjAiLCIkdGltZSI6MTU3OTg0NzM0Mn0="
         },
-        "body": { "JSON": {}, "JSON_ARRAY": {}, "XML": {}, "FORM": {} },
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
         "files": {},
         "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
       }

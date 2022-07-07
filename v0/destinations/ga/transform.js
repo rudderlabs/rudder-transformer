@@ -24,7 +24,8 @@ const {
   getDestinationExternalID,
   getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject
+  generateErrorObject,
+  CustomError
 } = require("../../util");
 
 const gaDisplayName = "Google Analytics";
@@ -367,6 +368,23 @@ function responseBuilderSimple(
     ? new Date(message.originalTimestamp)
     : new Date(message.timestamp);
   finalPayload.qt = Date.now() - timestamp.getTime();
+
+  // payload must be no longer than 8192 bytes.
+  // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#using-post
+  const endpointPathname = new URL(GA_ENDPOINT).pathname + "?";
+  // stringfy the JSON and remove {, }, " from it as these char do not include in the final payload
+  let payload_size =
+    endpointPathname + JSON.stringify(finalPayload).replace(/[{}"]/g, "");
+
+  // payload size + GA internally url encodes spaces and count them as 3 char at their end
+  payload_size = payload_size.length + payload_size.match(/ /g).length * 2;
+
+  if (payload_size > 8192) {
+    throw new CustomError(
+      `The size of the payload is ${payload_size} bytes. The payload data must be no longer than 8192 bytes.`,
+      400
+    );
+  }
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

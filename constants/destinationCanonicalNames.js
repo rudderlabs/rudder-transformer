@@ -38,7 +38,8 @@ const DestCanonicalNames = {
   ],
   webhook: ["webhook", "Webhook", "WebHook", "WEBHOOK"],
   mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
-  kafka: ["KAFKA", "kafka", "Kafka"]
+  kafka: ["KAFKA", "kafka", "Kafka"],
+  vero: ["vero", "Vero", "VERO"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

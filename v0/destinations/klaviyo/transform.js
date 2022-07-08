@@ -147,10 +147,15 @@ const identifyRequestHandler = async (message, category, destination) => {
     token: destination.Config.publicApiKey,
     properties: propertyPayload
   };
-  const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
+  // const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;
-  response.method = defaultGetRequestConfig.requestMethod;
+  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json",
+    Accept: "text/html"
+  };
+  response.body.json = removeUndefinedAndNullValues(payload);
   return response;
 };
 

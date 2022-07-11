@@ -1,3 +1,5 @@
+const { getIntegrationsObj } = require("../../util");
+
 function batch(destEvents) {
   const respList = [];
   const batchedRequest = [];
@@ -16,11 +18,19 @@ function batch(destEvents) {
 }
 
 function process(event) {
-  const result = {
+  const integrationsObj = getIntegrationsObj(event.message, "kafka");
+  const { schemaId } = integrationsObj;
+  if (schemaId) {
+    return {
+      message: event.message,
+      userId: event.message.userId || event.message.anonymousId,
+      schemaId
+    };
+  }
+  return {
     message: event.message,
     userId: event.message.userId || event.message.anonymousId
   };
-  return result;
 }
 
 module.exports = { process, batch };

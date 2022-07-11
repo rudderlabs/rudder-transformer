@@ -10702,11 +10702,9 @@
             {
               "name": "page_view",
               "params": {
-                "path": "/cart",
-                "referrer": "morkey",
-                "search": "MI",
-                "title": "miphone",
-                "url": "http://morkey.in",
+                "page_referrer": "morkey",
+                "page_title": "miphone",
+                "page_location": "http://morkey.in",
                 "cust1": 1234
               }
             }

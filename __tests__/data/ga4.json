@@ -840,7 +840,9 @@
           "location_id": "L_12345",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -921,7 +923,9 @@
                     "location_id": "L_12345"
                   }
                 ],
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -1703,7 +1707,9 @@
               "item_list_name": "Related Products",
               "location_id": "L_12345"
             }
-          ]
+          ],
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -1783,7 +1789,9 @@
                     "item_list_name": "Related Products",
                     "location_id": "L_12345"
                   }
-                ]
+                ],
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -3675,7 +3683,9 @@
         "type": "track",
         "event": "group",
         "properties": {
-          "group_id": "G_12345"
+          "group_id": "G_12345",
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -3731,7 +3741,9 @@
             {
               "name": "group",
               "params": {
-                "group_id": "G_12345"
+                "group_id": "G_12345",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -6400,7 +6412,9 @@
           "total": "10",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -6457,7 +6471,9 @@
               "name": "rudderstack_event",
               "params": {
                 "total": "10",
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -9729,7 +9745,9 @@
           "custom2": "custom2",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -9787,7 +9805,9 @@
               "params": {
                 "custom1": 1234,
                 "custom2": "custom2",
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -10310,7 +10330,9 @@
           "firstLogin": true,
           "method": "Google",
           "value": 10,
-          "cust1": 1234
+          "cust1": 1234,
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -10372,7 +10394,9 @@
                 "name": "sign_up",
                 "params": {
                   "method": "Google",
-                  "cust1": 1234
+                  "cust1": 1234,
+                  "engagement_time_msec": 100,
+                  "session_id": 655
                 }
               }
             ]
@@ -10407,7 +10431,9 @@
                 "params": {
                   "value": 10,
                   "currency": "USD",
-                  "cust1": 1234
+                  "cust1": 1234,
+                  "engagement_time_msec": 100,
+                  "session_id": 655
                 }
               }
             ]
@@ -10649,7 +10675,9 @@
           "All": true
         },
         "properties": {
-          "cust1": 1234
+          "cust1": 1234,
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "sentAt": "2022-04-20T15:20:57Z"
       },
@@ -10705,7 +10733,9 @@
                 "page_referrer": "morkey",
                 "page_title": "miphone",
                 "page_location": "http://morkey.in",
-                "cust1": 1234
+                "cust1": 1234,
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]

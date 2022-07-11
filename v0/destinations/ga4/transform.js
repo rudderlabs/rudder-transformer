@@ -1,4 +1,5 @@
 const get = require("get-value");
+const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -29,7 +30,8 @@ const {
   getItemList,
   getGA4ExclusionList,
   getItem,
-  getGA4CustomParameters
+  getGA4CustomParameters,
+  GA4_PARAMETERS_EXCLUSION
 } = require("./utils");
 
 const responseBuilder = (message, { Config }) => {
@@ -187,7 +189,7 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["traits", "context.traits"],
-      GA4_IDENTIFY_EXCLUSION,
+      GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
   } else if (message.type === "page") {
@@ -201,7 +203,7 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
   } else if (message.type === "group") {
@@ -242,9 +244,25 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+  }
+
+  // take optional engagement_time_msec, session_id parameters for reports
+  if (message.type === "identify" || message.type === "group") {
+    const traits = getFieldValueFromMessage(message, "traits");
+    if (traits) {
+      set(payload, "params.engagement_time_msec", traits.engagementTimeMsec);
+      set(payload, "params.session_id", traits.sessionId);
+    }
+  } else {
+    set(
+      payload,
+      "params.engagement_time_msec",
+      get(message, "properties.engagementTimeMsec")
+    );
+    set(payload, "params.session_id", get(message, "properties.sessionId"));
   }
 
   removeReservedParameterPrefixNames(payload.params);

@@ -17,7 +17,7 @@
           "email": "test_1@test.com",
           "phone": "9876543210",
           "name": "Test Name",
-          "signed_up_at": 1601493060337,
+          "signed_up_at": 1601493060,
           "last_seen_user_agent": "unknown",
           "update_last_request_at": true,
           "user_id": "test_user_id_1",
@@ -65,7 +65,7 @@
         "JSON": {
           "email": "test_1@test.com",
           "phone": "9876543210",
-          "signed_up_at": 1601493060337,
+          "signed_up_at": 1601493060,
           "name": "Test Name",
           "last_seen_user_agent": "unknown",
           "update_last_request_at": true,

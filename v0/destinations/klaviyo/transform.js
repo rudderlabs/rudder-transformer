@@ -19,6 +19,7 @@ const {
   eventNameMapping,
   jsonNameMapping
 } = require("./config");
+const { isProfileExist } = require("./util");
 const {
   defaultRequestConfig,
   constructPayload,
@@ -34,8 +35,10 @@ const {
   CustomError,
   isEmptyObject,
   addExternalIdToTraits,
-  adduserIdFromExternalId
+  adduserIdFromExternalId,
+  defaultPutRequestConfig
 } = require("../../util");
+const { httpPOST } = require("../../../adapters/network");
 
 // A sigle func to handle the addition of user to a list
 // from an identify call.
@@ -74,7 +77,7 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   profile = removeUndefinedValues(profile);
   // send network request
   try {
-    await axios.post(
+    await httpPOST(
       targetUrl,
       {
         api_key: destination.Config.privateApiKey,
@@ -91,16 +94,11 @@ const addUserToList = async (message, traitsInfo, conf, destination) => {
   }
 };
 
-// ---------------------
-// Main Identify request handler func
-// internally it uses axios if membership and(or)
-// subscription is enabled for that user to
-// specific List.
-// DOCS: https://www.klaviyo.com/docs/http-api
-// ---------------------
-const identifyRequestHandler = async (message, category, destination) => {
-  // If listId property is present try to subscribe/member user in list
-  const traitsInfo = getFieldValueFromMessage(message, "traits");
+const checkForMembersAndSubscribe = async (
+  message,
+  traitsInfo,
+  destination
+) => {
   if (
     (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
     destination.Config.privateApiKey
@@ -119,43 +117,71 @@ const identifyRequestHandler = async (message, category, destination) => {
       `Cannot process list operation as listId is not available, either in message or config, or private key not present`
     );
   }
+};
 
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  if (mappedToDestination) {
-    addExternalIdToTraits(message);
-    adduserIdFromExternalId(message);
-  }
-  // actual identify call
-  let propertyPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
-  // Extract other K-V property from traits about user custom properties
-  propertyPayload = extractCustomFields(
-    message,
-    propertyPayload,
-    ["traits", "context.traits"],
-    WhiteListedTraits
-  );
-  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete propertyPayload.$id;
-    propertyPayload._id = getFieldValueFromMessage(message, "userId");
-  }
-
-  const payload = {
-    token: destination.Config.publicApiKey,
-    properties: propertyPayload
-  };
-  // const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
+// ---------------------
+// Main Identify request handler func
+// internally it uses axios if membership and(or)
+// subscription is enabled for that user to
+// specific List.
+// DOCS: https://www.klaviyo.com/docs/http-api
+// ---------------------
+const identifyRequestHandler = async (message, category, destination) => {
+  // If listId property is present try to subscribe/member user in list
+  const traitsInfo = getFieldValueFromMessage(message, "traits");
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    "Content-Type": "application/json",
-    Accept: "text/html"
-  };
-  response.body.json = removeUndefinedAndNullValues(payload);
+  const personId = await isProfileExist(message, destination);
+  if (!personId) {
+    const mappedToDestination = get(message, MappedToDestinationKey);
+    if (mappedToDestination) {
+      addExternalIdToTraits(message);
+      adduserIdFromExternalId(message);
+    }
+    // actual identify call
+    let propertyPayload = constructPayload(
+      message,
+      MAPPING_CONFIG[category.name]
+    );
+    // Extract other K-V property from traits about user custom properties
+    propertyPayload = extractCustomFields(
+      message,
+      propertyPayload,
+      ["traits", "context.traits"],
+      WhiteListedTraits
+    );
+    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+    if (destination.Config.enforceEmailAsPrimary) {
+      delete propertyPayload.$id;
+      propertyPayload._id = getFieldValueFromMessage(message, "userId");
+    }
+
+    const payload = {
+      token: destination.Config.publicApiKey,
+      properties: propertyPayload
+    };
+    response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "text/html"
+    };
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+
+    await checkForMembersAndSubscribe(message, traitsInfo, destination);
+  } else {
+    const propertyPayload = constructPayload(
+      message,
+      MAPPING_CONFIG[category.name]
+    );
+    response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      Accept: "application/json"
+    };
+    response.params = removeUndefinedAndNullValues(propertyPayload);
+    response.params.api_key = destination.Config.privateApiKey;
+    await checkForMembersAndSubscribe(message, traitsInfo, destination);
+  }
   return response;
 };
 

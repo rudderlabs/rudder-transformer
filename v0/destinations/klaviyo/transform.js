@@ -286,10 +286,14 @@ const trackRequestHandler = (message, category, destination) => {
   if (message.timestamp) {
     payload.time = toUnixTimestamp(message.timestamp);
   }
-  const encodedData = Buffer.from(JSON.stringify(payload)).toString("base64");
   const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}?data=${encodedData}`;
-  response.method = defaultGetRequestConfig.requestMethod;
+  response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json",
+    Accept: "text/html"
+  };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };
 
@@ -331,7 +335,7 @@ const groupRequestHandler = async (message, category, destination) => {
     }
     // send network request
     try {
-      await axios.post(
+      await httpPOST(
         targetUrl,
         {
           api_key: destination.Config.privateApiKey,

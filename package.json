@@ -63,7 +63,7 @@
     "node-fetch": "^2.6.7",
     "object-hash": "^2.2.0",
     "parse-static-imports": "^1.1.0",
-    "pprof": "3.2.0",
+    "pprof": "^3.2.0",
     "prom-client": "^14.0.1",
     "rudder-transformer-cdk": "^1.1.1",
     "set-value": "^4.0.1",

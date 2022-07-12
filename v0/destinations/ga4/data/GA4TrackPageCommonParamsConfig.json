@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "engagement_time_msec",
+    "sourceKeys": "properties.engagementTimeMsec",
+    "required": false
+  },
+  {
+    "destKey": "session_id",
+    "sourceKeys": "properties.sessionId",
+    "required": false
+  }
+]

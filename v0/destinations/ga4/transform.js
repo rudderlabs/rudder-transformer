@@ -130,6 +130,15 @@ const responseBuilder = (message, { Config }) => {
         payload
       );
     }
+
+    // take optional params parameters for track()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "identify") {
     payload.name = event;
     const traits = getFieldValueFromMessage(message, "traits");
@@ -192,6 +201,15 @@ const responseBuilder = (message, { Config }) => {
       GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for identify()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "page") {
     // page event
     payload.name = event;
@@ -206,6 +224,15 @@ const responseBuilder = (message, { Config }) => {
       GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for page()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "group") {
     // group event
     payload.name = event;
@@ -220,6 +247,15 @@ const responseBuilder = (message, { Config }) => {
       getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
       payload
     );
+
+    // take optional params parameters for group()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else {
     // track
     // custom events category
@@ -247,22 +283,15 @@ const responseBuilder = (message, { Config }) => {
       GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
-  }
 
-  // take optional engagement_time_msec, session_id parameters for reports
-  if (message.type === "identify" || message.type === "group") {
-    const traits = getFieldValueFromMessage(message, "traits");
-    if (traits) {
-      set(payload, "params.engagement_time_msec", traits.engagementTimeMsec);
-      set(payload, "params.session_id", traits.sessionId);
-    }
-  } else {
-    set(
-      payload,
-      "params.engagement_time_msec",
-      get(message, "properties.engagementTimeMsec")
-    );
-    set(payload, "params.session_id", get(message, "properties.sessionId"));
+    // take optional params parameters for custom events
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   }
 
   removeReservedParameterPrefixNames(payload.params);

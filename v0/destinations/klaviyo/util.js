@@ -11,10 +11,7 @@ const isProfileExist = async (message, { Config }) => {
   const identifiers = Object.keys(userIdentifiers);
   let personId;
   identifiers.forEach(async id => {
-    if (
-      isDefinedAndNotNull(userIdentifiers[id]) &&
-      isDefinedAndNotNull(personId)
-    ) {
+    if (isDefinedAndNotNull(userIdentifiers[id]) && !personId) {
       const request = {
         url: "https://a.klaviyo.com/api/v2/people/search",
         header: {
@@ -23,7 +20,7 @@ const isProfileExist = async (message, { Config }) => {
         method: "GET",
         params: {
           api_key: privateApiKey,
-          id: userIdentifiers[id]
+          [id]: userIdentifiers[id]
         }
       };
       const profileResponse = await httpGET(

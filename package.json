@@ -25,7 +25,7 @@
     "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
     "testTestRouter": "npx jest testRouter",
-    "test": "npx jest --runInBand --detectOpenHandles --coverage --notify && npx jest versionedRouter --destName=heap --type=all --detectOpenHandles  --notify && npx jest testRouter"
+    "test": "npm run testDestinations && npm run testVersioned && npm run testTestRouter"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
@@ -63,7 +63,7 @@
     "node-fetch": "^2.6.7",
     "object-hash": "^2.2.0",
     "parse-static-imports": "^1.1.0",
-    "pprof": "^3.2.0",
+    "pprof": "3.2.0",
     "prom-client": "^14.0.1",
     "rudder-transformer-cdk": "^1.1.1",
     "set-value": "^4.0.1",

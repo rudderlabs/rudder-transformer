@@ -31,6 +31,10 @@
     "statusCode": 200
   },
   {
+    "message": "userId not present",
+    "statusCode": 400
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},

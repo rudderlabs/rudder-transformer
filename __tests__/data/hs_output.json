@@ -33,7 +33,7 @@
   },
   {
     "statusCode": 400,
-    "error": "message type page is not supported"
+    "error": "Message type page is not supported"
   },
   {
     "version": "1",
@@ -91,7 +91,10 @@
     "files": {},
     "statusCode": 200
   },
-  { "statusCode": 400, "error": "Identify without email is not supported." },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: Identify without email is not supported."
+  },
   {
     "version": "1",
     "type": "REST",

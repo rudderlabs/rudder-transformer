@@ -1,125 +1,35 @@
 const get = require("get-value");
-const set = require("set-value");
-const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
-  removeUndefinedValues,
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
-  ConfigCategory,
-  mappingConfig,
   BATCH_CONTACT_ENDPOINT,
-  MAX_BATCH_SIZE
+  MAX_BATCH_SIZE,
+  TRACK_ENDPOINT,
+  IDENTIFY_CREATE_UPDATE_CONTACT,
+  IDENTIFY_CREATE_NEW_CONTACT,
+  hsIdentifyConfigJson
 } = require("./config");
-const { getEmailAndUpdatedProps } = require("./util");
+const {
+  getTraits,
+  getProperties,
+  getTransformedJSON,
+  getEmailAndUpdatedProps,
+  formatPropertyValueForIdentify
+} = require("./util");
 
-const hSIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-
-let hubSpotPropertyMap = {};
-
-function getKey(key) {
-  let modifiedKey = key.toLowerCase();
-  modifiedKey = modifiedKey.replace(/\s/g, "_");
-  modifiedKey = modifiedKey.replace(/\./g, "_");
-  return modifiedKey;
-}
-
-function getTraits(message) {
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (!traits || !Object.keys(traits).length) {
-    traits = message.properties;
-  }
-
-  return traits;
-}
-
-async function getProperties(destination) {
-  if (!hubSpotPropertyMap.length) {
-    let response;
-    const { apiKey } = destination.Config;
-    const url = `https://api.hubapi.com/properties/v1/contacts/properties?hapikey=${apiKey}`;
-    try {
-      response = await axios.get(url);
-    } catch (err) {
-      // check if exists err.response && err.response.status else 500
-
-      if (err.response) {
-        throw new CustomError(
-          JSON.stringify(err.response.data) ||
-            JSON.stringify(err.response.statusText) ||
-            "Failed to get hubspot properties",
-          err.response.status || 500
-        );
-      }
-      throw new CustomError(
-        "Failed to get hubspot properties : indvalid response",
-        500
-      );
-    }
-
-    const propertyMap = {};
-    response.data.forEach(element => {
-      propertyMap[element.name] = element.type;
-    });
-    hubSpotPropertyMap = propertyMap;
-  }
-  return hubSpotPropertyMap;
-}
-
-async function getTransformedJSON(
-  message,
-  mappingJson,
-  destination,
-  propertyMap
-) {
-  const rawPayload = {};
-  const sourceKeys = Object.keys(mappingJson);
-  const traits = getTraits(message);
-
-  if (traits) {
-    const traitsKeys = Object.keys(traits);
-    if (!propertyMap) {
-      propertyMap = await getProperties(destination);
-    }
-    sourceKeys.forEach(sourceKey => {
-      if (get(traits, sourceKey)) {
-        set(rawPayload, mappingJson[sourceKey], get(traits, sourceKey));
-      }
-    });
-    traitsKeys.forEach(traitsKey => {
-      const hsSupportedKey = getKey(traitsKey);
-      if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
-        let propValue = traits[traitsKey];
-        if (propertyMap[hsSupportedKey] === "date") {
-          const time = propValue;
-          const date = new Date(time);
-          date.setUTCHours(0, 0, 0, 0);
-          propValue = date.getTime();
-        }
-        rawPayload[hsSupportedKey] = propValue;
-      }
-    });
-  }
-  return { ...rawPayload };
-}
-
-function getPropertyValueForIdentify(propMap) {
-  return Object.keys(propMap).map(key => {
-    return { property: key, value: propMap[key] };
-  });
-}
-
-function responseBuilderSimple(payload, message, eventType, destination) {
-  let endpoint = "https://track.hubspot.com/v1/event";
+const responseBuilderSimple = (payload, message, eventType, destination) => {
+  let endpoint = TRACK_ENDPOINT;
   let params = {};
 
   const response = defaultRequestConfig();
@@ -131,14 +41,17 @@ function responseBuilderSimple(payload, message, eventType, destination) {
     const { apiKey } = destination.Config;
     params = { hapikey: apiKey };
     if (email) {
-      endpoint = `https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/${email}`;
+      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
+        ":contact_email",
+        email
+      );
     } else {
-      endpoint = "https://api.hubapi.com/contacts/v1/contact";
+      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
     }
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedValues(payload);
+    response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
-    params = removeUndefinedValues(payload);
+    params = removeUndefinedAndNullValues(payload);
   }
   response.headers = {
     "Content-Type": "application/json"
@@ -149,9 +62,9 @@ function responseBuilderSimple(payload, message, eventType, destination) {
   response.statusCode = 200;
 
   return response;
-}
+};
 
-async function processTrack(message, destination, propertyMap) {
+const processTrack = async (message, destination, propertyMap) => {
   const parameters = {
     _a: destination.Config.hubID,
     _n: message.event
@@ -166,7 +79,7 @@ async function processTrack(message, destination, propertyMap) {
   }
   const userProperties = await getTransformedJSON(
     message,
-    hSIdentifyConfigJson,
+    hsIdentifyConfigJson,
     destination,
     propertyMap
   );
@@ -177,45 +90,46 @@ async function processTrack(message, destination, propertyMap) {
     EventType.TRACK,
     destination
   );
-}
+};
 
-// function handleError(message) {
-//   throw new Error(message);
-// }
-
-async function processIdentify(message, destination, propertyMap) {
+const processIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  // If mapped to destination, Add externalId to traits
+  // if mappedToDestination is set true, then add externalId to traits
   if (mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
   if (!traits || !traits.email) {
-    throw new CustomError("Identify without email is not supported.", 400);
+    throw new CustomError(
+      "[HS]:: Identify without email is not supported.",
+      400
+    );
   }
   const userProperties = await getTransformedJSON(
     message,
-    hSIdentifyConfigJson,
+    hsIdentifyConfigJson,
     destination,
     propertyMap
   );
-  const properties = getPropertyValueForIdentify(userProperties);
+  const properties = formatPropertyValueForIdentify(userProperties);
   return responseBuilderSimple(
     { properties },
     message,
     EventType.IDENTIFY,
     destination
   );
-}
+};
 
-async function processSingleMessage(message, destination, propertyMap) {
-  let response;
-
+const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
-    throw new CustomError("message type not present", 400);
+    throw new CustomError(
+      "Message type is not present. Aborting message.",
+      400
+    );
   }
 
+  let response;
   switch (message.type) {
     case EventType.TRACK:
       response = await processTrack(message, destination, propertyMap);
@@ -225,20 +139,20 @@ async function processSingleMessage(message, destination, propertyMap) {
       break;
     default:
       throw new CustomError(
-        `message type ${message.type} is not supported`,
+        `Message type ${message.type} is not supported`,
         400
       );
   }
 
   return response;
-}
+};
 
 // has been deprecated - using routerTransform for both the versions
-function process(event) {
+const process = event => {
   return processSingleMessage(event.message, event.destination);
-}
+};
 
-function batchEvents(destEvents) {
+const batchEvents = destEvents => {
   const batchedResponseList = [];
   const trackResponseList = [];
   let eventsChunk = [];
@@ -295,6 +209,7 @@ function batchEvents(destEvents) {
       const { email, updatedProperties } = getEmailAndUpdatedProps(
         ev.message.body.JSON.properties
       );
+      // eslint-disable-next-line no-param-reassign
       ev.message.body.JSON.properties = updatedProperties;
       identifyResponseList.push({
         email,
@@ -328,7 +243,7 @@ function batchEvents(destEvents) {
   });
 
   return batchedResponseList.concat(trackResponseList);
-}
+};
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {

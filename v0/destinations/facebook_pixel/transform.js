@@ -493,8 +493,8 @@ const responseBuilderSimple = (
           break;
         case "products searched":
           const query = message.properties?.query;
-          if (query && typeof query !== "string") {
-            throw new CustomError("'query' should be in string format only", 400);
+          if (query && typeof query !== "string" && typeof query !== "number") {
+            throw new CustomError("'query' should be in (string (or) number) format only", 400);
           }
           customData = {
             ...customData,

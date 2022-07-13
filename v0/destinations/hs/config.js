@@ -4,9 +4,10 @@ const BASE_ENDPOINT = "https://api.hubapi.com";
 
 const CONTACT_PROPERTIES = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
 
-const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 const IDENTIFY_CREATE_UPDATE_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact/createOrUpdate/email/:contact_email`;
 const IDENTIFY_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact`;
+
+const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 
 const BATCH_CONTACT_ENDPOINT = `${BASE_ENDPOINT}/contacts/v1/contact/batch/`;
 const MAX_BATCH_SIZE = 1000;

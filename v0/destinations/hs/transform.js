@@ -10,7 +10,8 @@ const {
   CustomError,
   addExternalIdToTraits,
   defaultBatchRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getDestinationExternalID
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -65,18 +66,19 @@ const responseBuilderSimple = (payload, message, eventType, destination) => {
 };
 
 const processTrack = async (message, destination, propertyMap) => {
-  const parameters = {
+  let parameters = {
     _a: destination.Config.hubID,
     _n: message.event
   };
 
-  if (
-    message.properties &&
-    (message.properties.revenue || message.properties.value)
-  ) {
-    // eslint-disable-next-line dot-notation
-    parameters["_m"] = message.properties.revenue || message.properties.value;
+  if (message.properties) {
+    // eslint-disable-next-line no-underscore-dangle
+    parameters._m =
+      get(message, "properties.revenue") || get(message, "properties.value");
+    parameters.id = getDestinationExternalID(message, "hubspotId");
   }
+
+  parameters = removeUndefinedAndNullValues(parameters);
   const userProperties = await getTransformedJSON(
     message,
     hsIdentifyConfigJson,

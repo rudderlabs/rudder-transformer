@@ -234,5 +234,49 @@
     },
     "files": {},
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+    },
+    "body": {
+      "JSON": {
+        "properties": [
+          {
+            "property": "email",
+            "value": "testhubspot2@email.com"
+          },
+          {
+            "property": "firstname",
+            "value": "Test Hubspot"
+          },
+          {
+            "property": "hs_lead_status",
+            "value": "IN_PROGRESS"
+          },
+          {
+            "property": "lifecyclestage",
+            "value": "marketingqualifiedlead"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000",
+    "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "Invalid value. 'hs_lead_status' valid values are [NEW,OPEN,IN_PROGRESS,OPEN_DEAL,UNQUALIFIED,ATTEMPTED_TO_CONTACT,CONNECTED,BAD_TIMING]"
   }
 ]

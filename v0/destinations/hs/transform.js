@@ -131,11 +131,11 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 
   let response;
   switch (message.type) {
-    case EventType.TRACK:
-      response = await processTrack(message, destination, propertyMap);
-      break;
     case EventType.IDENTIFY:
       response = await processIdentify(message, destination, propertyMap);
+      break;
+    case EventType.TRACK:
+      response = await processTrack(message, destination, propertyMap);
       break;
     default:
       throw new CustomError(
@@ -245,6 +245,7 @@ const batchEvents = destEvents => {
   return batchedResponseList.concat(trackResponseList);
 };
 
+// we are batching by default at routerTransform
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");

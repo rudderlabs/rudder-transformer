@@ -829,19 +829,20 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
 // It'll look for the canonical names for that integration and return the
 // `integrations` object for that destination, else null
 const getIntegrationsObj = (message, destinationName = null) => {
-  if (destinationName) {
-    const canonicalNames = DestCanonicalNames[destinationName];
-    for (let index = 0; index < canonicalNames.length; index += 1) {
-      const integrationsObj = get(
-        message,
-        `integrations.${canonicalNames[index]}`
-      );
-      if (integrationsObj) {
-        return integrationsObj;
-      }
+  if (!destinationName) {
+    return {};
+  }
+  const canonicalNames = DestCanonicalNames[destinationName];
+  
+  for (let index = 0; index < canonicalNames.length; index += 1) {
+    const integrationsObj = get(
+      message,
+      `integrations.${canonicalNames[index]}`
+    );
+    if (integrationsObj) {
+      return integrationsObj;
     }
   }
-  return null;
 };
 
 // construct payload from an event and mappingJson

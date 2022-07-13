@@ -601,7 +601,7 @@
   },
   {
     "statusCode": 400,
-    "error": "'query' should be in (string (or) number) format only"
+    "error": "'query' should be in string format only"
   },
   {
     "version": "1",

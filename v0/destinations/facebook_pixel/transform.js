@@ -25,7 +25,6 @@ const {
   isObject,
   getValidDynamicFormConfig
 } = require("../../util");
-const logger = require("../../../logger");
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue
@@ -493,8 +492,12 @@ const responseBuilderSimple = (
           break;
         case "products searched":
           const query = message.properties?.query;
-          if (query && typeof query !== "string" && typeof query !== "number") {
-            throw new CustomError("'query' should be in (string (or) number) format only", 400);
+          const validQueryType = ["string", "number", "boolean"];
+          if (query && !validQueryType.includes(typeof query)) {
+            throw new CustomError(
+              "'query' should be in string format only",
+              400
+            );
           }
           customData = {
             ...customData,

@@ -1,3 +1,5 @@
+import { each } from "lodash";
+
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require("./config");
 const {
@@ -53,6 +55,20 @@ function responseBuilderSimple(message, category, destination) {
       );
     } else {
       payload.callback_params = null;
+    }
+
+    const partnerParamsKeysMap = getHashFromArray(
+      destination.Config.partnerParamsKeys
+    );
+    if (partnerParamsKeysMap) {
+      payload.partner_params = {};
+      each((val, key) => {
+        if (message.properties[key]) {
+          payload.partner_params[key] = message.properties[key];
+        }
+      }, partnerParamsKeysMap);
+    } else {
+      payload.partner_params = null;
     }
 
     response.endpoint = baseEndpoint;

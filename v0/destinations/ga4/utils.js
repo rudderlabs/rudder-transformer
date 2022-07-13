@@ -325,6 +325,35 @@ const getGA4ExclusionList = mappingJson => {
   return ga4ExclusionList;
 };
 
+/**
+ * takes all extra/custom parameters that is passed for GA4 standard or custom events
+ * @param {*} message
+ * @param {*} keys
+ * @param {*} exclusionFields
+ * @returns
+ */
+const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
+  let customParameters = {};
+  customParameters = extractCustomFields(
+    message,
+    customParameters,
+    keys,
+    exclusionFields
+  );
+  // append in the params if any custom fields are passed after flattening the JSON
+  if (!isEmptyObject(customParameters)) {
+    customParameters = flattenJson(customParameters, "_");
+    // eslint-disable-next-line no-param-reassign
+    payload.params = {
+      ...payload.params,
+      ...customParameters
+    };
+    return payload.params;
+  }
+
+  return payload.params;
+};
+
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
@@ -332,7 +361,7 @@ const responseHandler = (destinationResponse, dest) => {
     status = 200;
   }
 
-  // if the responsee from destination is not a success case build an explicit error
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ErrorBuilder()
       .setStatus(status)
@@ -375,5 +404,6 @@ module.exports = {
   isReservedWebCustomPrefixName,
   getItemList,
   getItem,
-  getGA4ExclusionList
+  getGA4ExclusionList,
+  getGA4CustomParameters
 };

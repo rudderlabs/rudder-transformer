@@ -398,26 +398,26 @@ const processRouterDest = async inputs => {
   );
 
   let batchedResponseList = [];
-  // adding this if we don't want batching for custom objects
-  if (successRespList.length && !(successRespList[0].message.body.JSON.properties instanceof Array)) {
-   const respList = successRespList.map(input => {
-      console.log(getSuccessRespEvents(
-        input.message,
-       [input.metadata],
-       input.destination
-     ))
-    return getSuccessRespEvents(
-       input.message,
-      [input.metadata],
-      input.destination
-    );})
-    return respList
-  }else{
+  // // adding this if we don't want batching for custom objects
+  // if (successRespList.length && !(successRespList[0].message.body.JSON.properties instanceof Array)) {
+  //  const respList = successRespList.map(input => {
+  //     console.log(getSuccessRespEvents(
+  //       input.message,
+  //      [input.metadata],
+  //      input.destination
+  //    ))
+  //   return getSuccessRespEvents(
+  //      input.message,
+  //     [input.metadata],
+  //     input.destination
+  //   );})
+  //   return respList
+  // }else{
   if (successRespList.length) {
     batchedResponseList = await batchEvents(successRespList);
   }
   return [...batchedResponseList, ...errorRespList];
-}
+// }
 };
 
 module.exports = { process, processRouterDest };

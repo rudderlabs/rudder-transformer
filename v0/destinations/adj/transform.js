@@ -1,5 +1,3 @@
-import { each } from "lodash";
-
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require("./config");
 const {
@@ -46,6 +44,23 @@ function responseBuilderSimple(message, category, destination) {
     response.headers = {
       Accept: "*/*"
     };
+
+    const partnerParamsKeysMap = getHashFromArray(
+      destination.Config.partnerParamsKeys
+    );
+    if (partnerParamsKeysMap) {
+      payload.partner_params = {};
+      Object.keys(partnerParamsKeysMap).forEach(key => {
+        if (message.properties[key]) {
+          payload.partner_params[partnerParamsKeysMap[key]] =
+            message.properties[key];
+        }
+      });
+    }
+    if (Object.keys(payload.partner_params).length === 0) {
+      payload.partner_params = null;
+    }
+
     if (payload.callback_params) {
       rejectParams.forEach(rejectParam => {
         delete payload.callback_params[rejectParam];
@@ -55,20 +70,6 @@ function responseBuilderSimple(message, category, destination) {
       );
     } else {
       payload.callback_params = null;
-    }
-
-    const partnerParamsKeysMap = getHashFromArray(
-      destination.Config.partnerParamsKeys
-    );
-    if (partnerParamsKeysMap) {
-      payload.partner_params = {};
-      each((val, key) => {
-        if (message.properties[key]) {
-          payload.partner_params[key] = message.properties[key];
-        }
-      }, partnerParamsKeysMap);
-    } else {
-      payload.partner_params = null;
     }
 
     response.endpoint = baseEndpoint;

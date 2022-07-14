@@ -2013,6 +2013,10 @@
           {
             "from": "revenue",
             "to": "price"
+          },
+          {
+            "from": "novalue",
+            "to": "check"
           }
         ],
         "environment": true

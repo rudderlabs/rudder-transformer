@@ -331,7 +331,7 @@
       "partner_params": {
         "partnerParamKey-1": "value1",
         "partnerParamKey-2": "value2",
-        "price": 20.37566
+        "price": "20.37566"
       },
       "revenue": 20.38,
       "android_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",

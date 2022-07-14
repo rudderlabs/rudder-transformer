@@ -46,14 +46,14 @@ function responseBuilderSimple(message, category, destination) {
     };
 
     const partnerParamsKeysMap = getHashFromArray(
-      destination.Config.partnerParamsKeys
+      destination?.Config?.partnerParamsKeys
     );
     if (partnerParamsKeysMap) {
       payload.partner_params = {};
       Object.keys(partnerParamsKeysMap).forEach(key => {
         if (message.properties[key]) {
           payload.partner_params[partnerParamsKeysMap[key]] =
-            message.properties[key];
+            message.properties[key].toString();;
         }
       });
     }

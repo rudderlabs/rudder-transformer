@@ -19,7 +19,7 @@ const {
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
-  hsIdentifyConfigJson
+  hsCommonConfigJson
 } = require("./config");
 const {
   getTraits,
@@ -29,72 +29,8 @@ const {
   formatPropertyValueForIdentify
 } = require("./util");
 
-const responseBuilderSimple = (payload, message, eventType, destination) => {
-  let endpoint = TRACK_ENDPOINT;
-  let params = {};
-
-  const response = defaultRequestConfig();
-  response.method = defaultGetRequestConfig.requestMethod;
-
-  if (eventType !== EventType.TRACK) {
-    const traits = getFieldValueFromMessage(message, "traits");
-    const { email } = traits;
-    const { apiKey } = destination.Config;
-    params = { hapikey: apiKey };
-    if (email) {
-      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
-        ":contact_email",
-        email
-      );
-    } else {
-      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
-    }
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    params = removeUndefinedAndNullValues(payload);
-  }
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.endpoint = endpoint;
-  response.userId = message.anonymousId;
-  response.params = params;
-  response.statusCode = 200;
-
-  return response;
-};
-
-const processTrack = async (message, destination, propertyMap) => {
-  let parameters = {
-    _a: destination.Config.hubID,
-    _n: message.event
-  };
-
-  if (message.properties) {
-    // eslint-disable-next-line no-underscore-dangle
-    parameters._m =
-      get(message, "properties.revenue") || get(message, "properties.value");
-    parameters.id = getDestinationExternalID(message, "hubspotId");
-  }
-
-  parameters = removeUndefinedAndNullValues(parameters);
-  const userProperties = await getTransformedJSON(
-    message,
-    hsIdentifyConfigJson,
-    destination,
-    propertyMap
-  );
-
-  return responseBuilderSimple(
-    { ...parameters, ...userProperties },
-    message,
-    EventType.TRACK,
-    destination
-  );
-};
-
 const processIdentify = async (message, destination, propertyMap) => {
+  const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
@@ -108,19 +44,66 @@ const processIdentify = async (message, destination, propertyMap) => {
       400
     );
   }
+
   const userProperties = await getTransformedJSON(
     message,
-    hsIdentifyConfigJson,
+    hsCommonConfigJson,
     destination,
     propertyMap
   );
-  const properties = formatPropertyValueForIdentify(userProperties);
-  return responseBuilderSimple(
-    { properties },
+
+  const payload = {
+    properties: formatPropertyValueForIdentify(userProperties)
+  };
+
+  const { email } = traits;
+  let endpoint;
+  if (email) {
+    endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(":contact_email", email);
+  } else {
+    endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+  }
+
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.params = { hapikey: Config.apiKey };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+
+  return response;
+};
+
+const processTrack = async (message, destination, propertyMap) => {
+  let parameters = {
+    _a: destination.Config.hubID,
+    _n: message.event,
+    _m: get(message, "properties.revenue") || get(message, "properties.value"),
+    id: getDestinationExternalID(message, "hubspotId")
+  };
+
+  parameters = removeUndefinedAndNullValues(parameters);
+  const userProperties = await getTransformedJSON(
     message,
-    EventType.IDENTIFY,
-    destination
+    hsCommonConfigJson,
+    destination,
+    propertyMap
   );
+
+  const payload = { ...parameters, ...userProperties };
+  const params = removeUndefinedAndNullValues(payload);
+
+  const response = defaultRequestConfig();
+  response.endpoint = TRACK_ENDPOINT;
+  response.method = defaultGetRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.params = params;
+
+  return response;
 };
 
 const processSingleMessage = async (message, destination, propertyMap) => {

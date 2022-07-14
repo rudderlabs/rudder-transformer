@@ -840,5 +840,62 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "hubspotId",
+            "id": "6556"
+          }
+        ]
+      },
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "test track event HS 2",
+      "properties": {
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345,
+        "address": {
+          "street": "24. park"
+        },
+        "company": {
+          "name": "RudderStack"
+        }
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "hubID": "6405167"
+      },
+      "Enabled": true
+    }
   }
 ]

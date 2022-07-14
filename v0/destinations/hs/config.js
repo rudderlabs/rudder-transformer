@@ -4,17 +4,20 @@ const BASE_ENDPOINT = "https://api.hubapi.com";
 
 const CONTACT_PROPERTIES = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
 
+// identify
 const IDENTIFY_CREATE_UPDATE_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact/createOrUpdate/email/:contact_email`;
 const IDENTIFY_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact`;
 
+// track
 const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 
+// batch for identify
 const BATCH_CONTACT_ENDPOINT = `${BASE_ENDPOINT}/contacts/v1/contact/batch/`;
 const MAX_BATCH_SIZE = 1000;
 
 const ConfigCategory = {
   IDENTIFY: {
-    name: "HSIdentifyConfig"
+    name: "HSCommonConfig"
   }
 };
 
@@ -43,7 +46,7 @@ const LIFECYCLE_STAGE = [
 ];
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-const hsIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+const hsCommonConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 module.exports = {
   BASE_ENDPOINT,
@@ -57,5 +60,5 @@ module.exports = {
   LEAD_STATUS,
   LIFECYCLE_STAGE,
   mappingConfig,
-  hsIdentifyConfigJson
+  hsCommonConfigJson
 };

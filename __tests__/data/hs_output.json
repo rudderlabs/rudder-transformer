@@ -7,7 +7,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
     },
@@ -28,8 +27,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -43,7 +41,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -56,8 +53,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "version": "1",
@@ -67,7 +63,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
     },
@@ -88,8 +83,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -103,7 +97,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -117,8 +110,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "version": "1",
@@ -128,7 +120,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -142,8 +133,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "error": "{\"status\":\"error\",\"message\":\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"INVALID_AUTHENTICATION\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
@@ -159,7 +149,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -172,8 +161,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "version": "1",
@@ -183,7 +171,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
     },
@@ -208,8 +195,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "version": "1",
@@ -219,7 +205,6 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "userId": "00000000000000000000000000",
     "params": {
       "_a": "6405167",
       "_n": "test track event HS",
@@ -232,8 +217,7 @@
       "FORM": {},
       "JSON_ARRAY": {}
     },
-    "files": {},
-    "statusCode": 200
+    "files": {}
   },
   {
     "version": "1",
@@ -271,9 +255,7 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "00000000000000000000000000",
-    "statusCode": 200
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -300,8 +282,29 @@
       "XML": {},
       "FORM": {}
     },
-    "files": {},
-    "userId": "00000000000000000000000000",
-    "statusCode": 200
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "endpoint": "https://track.hubspot.com/v1/event",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {
+      "_a": "6405167",
+      "_n": "test track event HS 2",
+      "id": "6556",
+      "address": "24. park",
+      "company": "RudderStack"
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

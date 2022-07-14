@@ -1,23 +1,38 @@
 [
   {
     "batchedRequest": {
-      "body": {
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {},
-        "JSON": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "GET",
-      "params": {},
-      "headers": {},
       "version": "1",
-      "endpoint": "https://a.klaviyo.com/api/identify?data=eyJ0b2tlbiI6IldKcWlqOSIsInByb3BlcnRpZXMiOnsiJGlkIjoidXRzYWJjIiwiJGVtYWlsIjoidXRzYWJAcnVkZGVyc3RhY2suY29tIiwiJGZpcnN0X25hbWUiOiJVdHNhYiIsIiRsYXN0X25hbWUiOiJDaG93ZGh1cnkiLCIkcGhvbmVfbnVtYmVyIjoiKzEyIDM0NSA1NzggOTAwIiwiJHRpdGxlIjoiRGV2ZWxvcGVyIiwiJG9yZ2FuaXphdGlvbiI6IlJ1ZGRlciIsIiRjaXR5IjoiVG9reW8iLCIkcmVnaW9uIjoiS2FudG8iLCIkY291bnRyeSI6IkpQIiwiJHppcCI6IjEwMC0wMDAxIiwiRmxhZ2dlZCI6ZmFsc2UsIlJlc2lkZW5jZSI6IlNoaWJ1eWEifX0="
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "params": {
+        "$id": "utsabc",
+        "$email": "utsab@rudderstack.com",
+        "$first_name": "Utsab",
+        "$last_name": "Chowdhury",
+        "$phone_number": "+12 345 578 900",
+        "$title": "Developer",
+        "$organization": "Rudder",
+        "$city": "Tokyo",
+        "$region": "Kanto",
+        "$country": "JP",
+        "$zip": "100-0001",
+        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -31,19 +46,36 @@
   },
   {
     "batchedRequest": {
-      "body": {
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {},
-        "JSON": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "GET",
-      "params": {},
-      "headers": {},
       "version": "1",
-      "endpoint": "https://a.klaviyo.com/api/track?data=eyJldmVudCI6IlRlc3RFdmVuMDAxIiwicHJvcGVydGllcyI6eyJQcmV2aW91c2x5VmljZVByZXNpZGVudCI6dHJ1ZSwiWWVhckVsZWN0ZWQiOjE4MDEsIlZpY2VQcmVzaWRlbnRzIjpbIkFhcm9uIEJ1cnIiLCJHZW9yZ2UgQ2xpbnRvbiJdfSwidG9rZW4iOiJXSnFpajkiLCJjdXN0b21lcl9wcm9wZXJ0aWVzIjp7IiRpZCI6InNhamFsMTIiLCIkZW1haWwiOiJ1dHNhYkBydWRkZXJzdGFjay5jb20iLCIkcGhvbmVfbnVtYmVyIjoiOTExMjM0MDM3NSIsImFnZSI6IjIyIn19"
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "text/html"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event": "TestEven001",
+          "properties": {
+            "PreviouslyVicePresident": true,
+            "YearElected": 1801,
+            "VicePresidents": ["Aaron Burr", "George Clinton"]
+          },
+          "token": "WJqij9",
+          "customer_properties": {
+            "$id": "sajal12",
+            "$email": "utsab@rudderstack.com",
+            "$phone_number": "9112340375",
+            "age": "22"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
     },
     "metadata": [
       {

@@ -1,5 +1,4 @@
 const get = require("get-value");
-const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   CustomError,

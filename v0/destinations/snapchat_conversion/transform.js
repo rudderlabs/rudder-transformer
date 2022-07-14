@@ -185,27 +185,50 @@ function trackResponseBuilder(message, { Config }) {
     payload.event_tag = message.properties.event_tag;
   }
 
-  payload.hashed_email = getHashedValue(
-    message?.context?.traits?.email
-      ?.trim()
-      ?.toString()
-      ?.toLowerCase()
-  );
-  payload.hashed_phone_number = getHashedValue(
-    getNormalizedPhoneNumber(message)
-      ?.toString()
-      ?.toLowerCase()
-  );
-  payload.user_agent = message?.context?.userAgent?.toString()?.toLowerCase();
-  payload.hashed_ip_address = getHashedValue(
-    message?.context?.ip?.toString()?.toLowerCase()
-  );
-  (hashed_mobile_ad_id = getHashedValue(
-    message?.context?.idfa?.toString()?.toLowerCase()
-  )),
-    (hashed_idfv = getHashedValue(
-      message?.context?.idfv?.toString()?.toLowerCase()
-    ));
+  const email = getFieldValueFromMessage(message, "email");
+  if (email) {
+    payload.hashed_email = getHashedValue(
+      email
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  const phone = getNormalizedPhoneNumber(message);
+  if (phone) {
+    payload.hashed_phone_number = getHashedValue(
+      phone
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  const ip = message.context?.ip || message.request_ip;
+  if (ip) {
+    payload.hashed_ip_address = getHashedValue(
+      ip
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  // only in case of ios platform this is required
+  if (
+    message.context?.device?.type?.toLowerCase() === "ios" &&
+    (message.properties?.idfv || message.contex?.device?.id)
+  ) {
+    payload.hashed_idfv = getHashedValue(
+      message.properties?.idfv || message.contex?.device?.id
+    );
+  }
+
+  if (message.properties?.adId || message.context?.device?.advertisingId) {
+    payload.hashed_ad_id = getHashedValue(
+      message.properties?.adId || message.context?.device?.advertisingId
+    );
+  }
+
+  payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 
   if (
     !payload.hashed_email &&
@@ -214,7 +237,7 @@ function trackResponseBuilder(message, { Config }) {
     !(payload.hashed_ip_address && payload.user_agent)
   ) {
     throw new CustomError(
-      "At least one of email or phone or idfa or ip and userAgent is required",
+      "At least one of email or phone or advertisingId or ip and userAgent is required",
       400
     );
   }
@@ -252,6 +275,13 @@ function trackResponseBuilder(message, { Config }) {
     payload.pixel_id = pixelId;
   }
 
+  // adding for deduplication for more than one source
+  if (Config.enableDeduplication) {
+    payload.client_dedup_id = get(
+      message,
+      `${Config.deduplicationKey || "messageId"}`
+    );
+  }
   payload = removeUndefinedAndNullValues(payload);
 
   // build response

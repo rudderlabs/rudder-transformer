@@ -2,7 +2,7 @@ const get = require("get-value");
 const sha256 = require("sha256");
 const { logger } = require("handlebars");
 
-const { isDefinedAndNotNull } = require("../../util");
+const { isDefinedAndNotNull, getFieldValueFromMessage } = require("../../util");
 
 const channelMapping = {
   web: "WEB",
@@ -24,10 +24,12 @@ function getHashedValue(identifier) {
     }
     return identifier;
   }
+  return null;
 }
+
 function getNormalizedPhoneNumber(message) {
   const regexExp = /^[a-f0-9]{64}$/gi;
-  let phoneNumber = message?.context?.traits?.phone?.toString();
+  let phoneNumber = getFieldValueFromMessage(message, "phone");
   if (regexExp.test(phoneNumber)) {
     return phoneNumber;
   }
@@ -36,16 +38,17 @@ function getNormalizedPhoneNumber(message) {
     for (let i = 0; i < phoneNumber.length; i += 1) {
       if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], "");
-        i--;
+        i -= 1;
       } else if (phoneNumber[i] === "0" && leadingZero) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], "");
-        i--;
+        i -= 1;
       } else {
         leadingZero = false;
       }
     }
     return phoneNumber;
   }
+  return null;
 }
 
 function getDataUseValue(message) {
@@ -62,6 +65,7 @@ function getDataUseValue(message) {
     limitAdTracking = "['lmu']";
     return limitAdTracking;
   }
+  return null;
 }
 
 function getItemIds(message) {

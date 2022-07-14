@@ -44,6 +44,23 @@ function responseBuilderSimple(message, category, destination) {
     response.headers = {
       Accept: "*/*"
     };
+
+    const partnerParamsKeysMap = getHashFromArray(
+      destination?.Config?.partnerParamsKeys
+    );
+    if (partnerParamsKeysMap) {
+      payload.partner_params = {};
+      Object.keys(partnerParamsKeysMap).forEach(key => {
+        if (message.properties[key]) {
+          payload.partner_params[partnerParamsKeysMap[key]] =
+            message.properties[key].toString();
+        }
+      });
+    }
+    if (Object.keys(payload.partner_params).length === 0) {
+      payload.partner_params = null;
+    }
+
     if (payload.callback_params) {
       rejectParams.forEach(rejectParam => {
         delete payload.callback_params[rejectParam];

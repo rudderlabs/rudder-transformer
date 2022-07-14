@@ -21,30 +21,6 @@ const ConfigCategory = {
   }
 };
 
-/**
- * HubSpot's default contact properties fields
- */
-const LEAD_STATUS = [
-  "NEW",
-  "OPEN",
-  "IN_PROGRESS",
-  "OPEN_DEAL",
-  "UNQUALIFIED",
-  "ATTEMPTED_TO_CONTACT",
-  "CONNECTED",
-  "BAD_TIMING"
-];
-const LIFECYCLE_STAGE = [
-  "subscriber",
-  "lead",
-  "marketingqualifiedlead",
-  "salesqualifiedlead",
-  "opportunity",
-  "customer",
-  "evangelist",
-  "other"
-];
-
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const hsCommonConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
@@ -57,8 +33,6 @@ module.exports = {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
   ConfigCategory,
-  LEAD_STATUS,
-  LIFECYCLE_STAGE,
   mappingConfig,
   hsCommonConfigJson
 };

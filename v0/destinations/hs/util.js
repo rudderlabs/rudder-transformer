@@ -4,11 +4,7 @@ const {
   constructPayload,
   CustomError
 } = require("../../util");
-const {
-  CONTACT_PROPERTIES,
-  LEAD_STATUS,
-  LIFECYCLE_STAGE
-} = require("./config");
+const { CONTACT_PROPERTIES } = require("./config");
 
 const formatKey = key => {
   // lowercase and replace spaces and . with _
@@ -90,35 +86,6 @@ const getTransformedJSON = async (
           const date = new Date(time);
           date.setUTCHours(0, 0, 0, 0);
           propValue = date.getTime();
-        } else {
-          switch (hsSupportedKey) {
-            case "hs_lead_status":
-              propValue = propValue
-                .toString()
-                .replace(/\s+/g, "_")
-                .toUpperCase();
-              if (!LEAD_STATUS.includes(propValue)) {
-                throw new CustomError(
-                  `Invalid value. 'hs_lead_status' valid values are [${LEAD_STATUS}]`,
-                  400
-                );
-              }
-              break;
-            case "lifecyclestage":
-              propValue = propValue
-                .toString()
-                .replace(/ /g, "")
-                .toLowerCase();
-              if (!LIFECYCLE_STAGE.includes(propValue)) {
-                throw new CustomError(
-                  `Invalid value. 'hs_lead_status' valid values are [${LIFECYCLE_STAGE}]`,
-                  400
-                );
-              }
-              break;
-            default:
-              break;
-          }
         }
         rawPayload[hsSupportedKey] = propValue;
       }

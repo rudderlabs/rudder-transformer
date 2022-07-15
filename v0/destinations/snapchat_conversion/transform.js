@@ -34,7 +34,7 @@ const {
 } = require("./util");
 
 function trackResponseBuilder(message, { Config }) {
-  let payload;
+  let payload = {};
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("[Snapchat] :: Event name is required", 400);

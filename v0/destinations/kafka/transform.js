@@ -19,7 +19,7 @@ function batch(destEvents) {
 
 function process(event) {
   const integrationsObj = getIntegrationsObj(event.message, "kafka");
-  const { schemaId } = integrationsObj;
+  const { schemaId } = integrationsObj || {};
   if (schemaId) {
     return {
       message: event.message,

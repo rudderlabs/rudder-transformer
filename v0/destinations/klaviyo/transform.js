@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
-const axios = require("axios");
 const logger = require("../../../logger");
 const {
   EventType,
@@ -24,7 +23,6 @@ const {
   defaultRequestConfig,
   constructPayload,
   getFieldValueFromMessage,
-  defaultGetRequestConfig,
   defaultPostRequestConfig,
   extractCustomFields,
   removeUndefinedValues,

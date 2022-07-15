@@ -29,7 +29,7 @@ const isProfileExist =  async (message, { Config }) => {
         request.url,
         request.requestOptions
       );
-      if (profileResponse.response?.data?.id) {
+      if (profileResponse.success) {
         personId = profileResponse.response?.data?.id;
       }
     }

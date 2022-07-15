@@ -34,6 +34,7 @@ const {
 } = require("./util");
 
 function trackResponseBuilder(message, { Config }) {
+  let payload;
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("[Snapchat] :: Event name is required", 400);
@@ -77,7 +78,6 @@ function trackResponseBuilder(message, { Config }) {
   if (eventNameMapping[event.toLowerCase()]) {
     // Snapchat standard events
     // get event specific parameters
-
     switch (event.toLowerCase()) {
       /* Browsing Section */
       case "products_searched":

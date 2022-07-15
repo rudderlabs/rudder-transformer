@@ -13,7 +13,8 @@ const {
   defaultBatchRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily
 } = require("../../util");
 const {
   ENDPOINT,
@@ -214,7 +215,7 @@ function trackResponseBuilder(message, { Config }) {
   }
   // only in case of ios platform this is required
   if (
-    message.context?.device?.type?.toLowerCase() === "ios" &&
+    isAppleFamily(message.context?.device?.type) &&
     (message.properties?.idfv || message.contex?.device?.id)
   ) {
     payload.hashed_idfv = getHashedValue(

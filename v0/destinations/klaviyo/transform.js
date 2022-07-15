@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require("get-value");
-const logger = require("../../../logger");
 const {
   EventType,
   WhiteListedTraits,
@@ -12,20 +11,22 @@ const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
   MAPPING_CONFIG,
-  LIST_CONF,
   ecomExclusionKeys,
   ecomEvents,
   eventNameMapping,
   jsonNameMapping
 } = require("./config");
-const { isProfileExist } = require("./util");
+const {
+  isProfileExist,
+  checkForMembersAndSubscribe,
+  createCustomerProperties
+} = require("./util");
 const {
   defaultRequestConfig,
   constructPayload,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
   extractCustomFields,
-  removeUndefinedValues,
   toUnixTimestamp,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
@@ -36,86 +37,6 @@ const {
   adduserIdFromExternalId,
   defaultPutRequestConfig
 } = require("../../util");
-const { httpPOST } = require("../../../adapters/network");
-
-// A sigle func to handle the addition of user to a list
-// from an identify call.
-// DOCS: https://www.klaviyo.com/docs/api/v2/lists
-const addUserToList = async (message, traitsInfo, conf, destination) => {
-  // Check if list Id is present in message properties, if yes override
-  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${destination.Config.listId}`;
-  if (get(traitsInfo.properties, "listId")) {
-    targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-      traitsInfo.properties,
-      "listId"
-    )}`;
-  }
-  let profile = {
-    id: getFieldValueFromMessage(message, "userId"),
-    email: getFieldValueFromMessage(message, "email"),
-    phone_number: getFieldValueFromMessage(message, "phone")
-  };
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete profile.id;
-    profile._id = getFieldValueFromMessage(message, "userId");
-  }
-  // If func is called as membership func else subscribe func
-  if (conf === LIST_CONF.MEMBERSHIP) {
-    targetUrl = `${targetUrl}/members`;
-  } else {
-    // get consent statuses from message if availabe else from dest config
-    targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent = get(traitsInfo.properties, "smsConsent")
-      ? get(traitsInfo.properties, "smsConsent")
-      : destination.Config.smsConsent;
-    profile.$consent = get(traitsInfo.properties, "consent")
-      ? get(traitsInfo.properties, "consent")
-      : destination.Config.consent;
-  }
-  profile = removeUndefinedValues(profile);
-  // send network request
-  try {
-    await httpPOST(
-      targetUrl,
-      {
-        api_key: destination.Config.privateApiKey,
-        profiles: [profile]
-      },
-      {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
-  } catch (err) {
-    logger.debug("[Klaviyo :: addToList]", err);
-  }
-};
-
-const checkForMembersAndSubscribe = async (
-  message,
-  traitsInfo,
-  destination
-) => {
-  if (
-    (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
-    destination.Config.privateApiKey
-  ) {
-    await addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
-    if (get(traitsInfo.properties, "subscribe") === true) {
-      await addUserToList(
-        message,
-        traitsInfo,
-        LIST_CONF.SUBSCRIBE,
-        destination
-      );
-    }
-  } else {
-    logger.info(
-      `Cannot process list operation as listId is not available, either in message or config, or private key not present`
-    );
-  }
-};
 
 // ---------------------
 // Main Identify request handler func
@@ -164,8 +85,6 @@ const identifyRequestHandler = async (message, category, destination) => {
       Accept: "text/html"
     };
     response.body.JSON = removeUndefinedAndNullValues(payload);
-
-    await checkForMembersAndSubscribe(message, traitsInfo, destination);
   } else {
     const propertyPayload = constructPayload(
       message,
@@ -178,9 +97,12 @@ const identifyRequestHandler = async (message, category, destination) => {
     };
     response.params = removeUndefinedAndNullValues(propertyPayload);
     response.params.api_key = destination.Config.privateApiKey;
-    await checkForMembersAndSubscribe(message, traitsInfo, destination);
   }
-  return response;
+  const responseArray = [response];
+  responseArray.push(
+    ...checkForMembersAndSubscribe(message, traitsInfo, destination)
+  );
+  return responseArray;
 };
 
 // ----------------------
@@ -189,21 +111,6 @@ const identifyRequestHandler = async (message, category, destination) => {
 // DOCS: https://www.klaviyo.com/docs/http-api
 // ----------------------
 
-const createCustomerProperties = message => {
-  let customerProperties = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
-  );
-  // Extract other K-V property from traits about user custom properties
-  customerProperties = extractCustomFields(
-    message,
-    customerProperties,
-    ["traits", "context.traits"],
-    WhiteListedTraits
-  );
-  customerProperties = removeUndefinedAndNullValues(customerProperties);
-  return customerProperties;
-};
 const trackRequestHandler = (message, category, destination) => {
   let payload = {};
   let event = get(message, "event");
@@ -323,6 +230,7 @@ const groupRequestHandler = async (message, category, destination) => {
     delete profile.$id;
     profile._id = getFieldValueFromMessage(message, "userId");
   }
+  const responseArray = [];
   if (get(message.traits, "subscribe") === true) {
     // If consent info not present draw it from dest config
     if (!profile.sms_consent) {
@@ -332,40 +240,37 @@ const groupRequestHandler = async (message, category, destination) => {
       profile.$consent = destination.Config.consent;
     }
     // send network request
-    try {
-      await httpPOST(
-        targetUrl,
-        {
-          api_key: destination.Config.privateApiKey,
-          profiles: [profile]
-        },
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-    } catch (err) {
-      logger.debug("[Klaviyo :: groupRequestHandler (addToList)", err);
-    }
+    const payload = {
+      profiles: [profile]
+    };
+    const subscribeResponse = defaultRequestConfig();
+    subscribeResponse.endpoint = targetUrl;
+    subscribeResponse.headers = {
+      "Content-Type": "application/json"
+    };
+    subscribeResponse.body.JSON = payload;
+    subscribeResponse.method = defaultPostRequestConfig.requestMethod;
+    subscribeResponse.params = { api_key: destination.Config.privateApiKey };
+    responseArray.push(subscribeResponse);
   }
   delete profile.sms_consent;
   delete profile.$consent;
   const payload = {
-    api_key: destination.Config.privateApiKey,
     profiles: [profile]
   };
-  const response = defaultRequestConfig();
-  response.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
+  const membersResponse = defaultRequestConfig();
+  membersResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
     message,
     "groupId"
   )}/members`;
-  response.headers = {
+  membersResponse.headers = {
     "Content-Type": "application/json"
   };
-  response.body.JSON = payload;
-  response.method = defaultPostRequestConfig.requestMethod;
-  return response;
+  membersResponse.body.JSON = payload;
+  membersResponse.method = defaultPostRequestConfig.requestMethod;
+  membersResponse.params = { api_key: destination.Config.privateApiKey };
+  responseArray.push(membersResponse);
+  return responseArray;
 };
 
 // Main event processor using specific handler funcs

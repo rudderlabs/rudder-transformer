@@ -34,7 +34,7 @@ const ecomEventMaps = [
  * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
  */
 const processUserPayload = userPayload => {
-  let formatValue;
+  let formatValue = "";
   Object.keys(userPayload).forEach(key => {
     switch (key) {
       case "em":
@@ -128,7 +128,7 @@ const processCommonPayload = message => {
 
 const deduceTrackEventName = (message, Config) => {
   const { event } = message;
-  let eventName;
+  let eventName = "";
   /*
   Step 1: To find if the particular event is amongst the list of standard 
           Rudderstack ecommerce events, used specifically for Pinterest Conversion API 
@@ -138,6 +138,7 @@ const deduceTrackEventName = (message, Config) => {
     if (eventMap.src.includes(event.toLowerCase())) {
       return eventMap;
     }
+    return false;
   });
   /*
   Step 2: If the event is not amongst the above list of ecommerce events, will look for
@@ -171,7 +172,7 @@ const deduceTrackEventName = (message, Config) => {
  */
 const deduceEventName = (message, Config) => {
   const { type } = message;
-  let eventName;
+  let eventName = "";
   switch (type) {
     case EventType.IDENTIFY:
       eventName = "identify";

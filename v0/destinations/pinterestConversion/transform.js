@@ -4,7 +4,6 @@ const { EventType } = require("../../../constants");
 const {
   CustomError,
   defaultRequestConfig,
-  isDefined,
   isDefinedAndNotNull,
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -130,7 +129,7 @@ const trackResponseBuilder = (message, destination) => {
   return finalTrackPayload;
 };
 const process = event => {
-  let response;
+  let response = {};
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
   const destConfig = destination.Config;

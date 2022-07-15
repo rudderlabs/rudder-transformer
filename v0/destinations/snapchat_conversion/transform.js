@@ -216,10 +216,10 @@ function trackResponseBuilder(message, { Config }) {
   // only in case of ios platform this is required
   if (
     isAppleFamily(message.context?.device?.type) &&
-    (message.properties?.idfv || message.contex?.device?.id)
+    (message.properties?.idfv || message.context?.device?.id)
   ) {
     payload.hashed_idfv = getHashedValue(
-      message.properties?.idfv || message.contex?.device?.id
+      message.properties?.idfv || message.context?.device?.id
     );
   }
 

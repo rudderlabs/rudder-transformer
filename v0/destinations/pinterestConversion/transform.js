@@ -9,7 +9,8 @@ const {
   getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getIntegrationsObj
 } = require("../../util");
 const {
   processUserPayload,
@@ -35,10 +36,11 @@ const responseBuilderSimple = finalPayload => {
 };
 
 const identifyPageResponseBuilder = (message, { Config }) => {
+  let processedUserPayload;
   const { appId, advertiserId } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
-  const userPayload = constructPayload(message, USER_CONFIGS);
+  const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
     throw new CustomError(
@@ -46,7 +48,25 @@ const identifyPageResponseBuilder = (message, { Config }) => {
       400
     );
   }
-  const processedUserPayload = processUserPayload(userPayload);
+
+  /*
+   * If user needs to send already hashed data to Rudderstack, it needs to be sent 
+   * integrations object like below:
+   * integrations: {
+      "Pinterest": {
+        "hashed": true,
+      }
+    }
+   */
+  const integrationsObj = getIntegrationsObj(message, "pinterest");
+  if (!isDefinedAndNotNull(integrationsObj) || integrationsObj?.hashed !== true) {
+     processedUserPayload = processUserPayload(userPayload);
+  } else {
+    processedUserPayload = userPayload;
+    // getFbGenderVal works on only specific values like m, male, MALE, f, F, Female
+    // if hashed data is sent from the user, it is directly set over here
+    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;
+  }
   const deducedEventName = deduceEventName(message, Config);
 
   const finalPayload = {

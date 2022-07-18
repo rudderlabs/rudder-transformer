@@ -1349,5 +1349,83 @@
             "Enabled": true,
             "Transformations": []
         }
+    },
+    {
+        "message": {
+            "type": "page",
+            "name": "ApplicationLoaded",
+            "category": "test category",
+            "channel": "web",
+            "sentAt": "2020-08-14T05:30:30.118Z",
+            "context": {
+                "source": "test",
+                "userAgent": "chrome",
+                "requestIP": "127.0.0.0",
+                "traits": {
+                    "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+                    "phone": "Hashed phone",
+                    "gender": "Hashed Gender",
+                    "dob": "Hashed DB",
+                    "lastname": "Hashed Lastname",
+                    "firstName": "Hashed FirstName",
+                    "address": {
+                        "city": "Hashed City",
+                        "state": "Hashed State",
+                        "zip": "Hashed Zip",
+                        "country": "Hashed country"
+                    }
+                },
+                "device": {
+                    "adTrackingEnabled": false,
+                    "advertisingId": "Hashed maids"
+                },
+                "library": {
+                    "name": "rudder-sdk-ruby-sync",
+                    "version": "1.0.6"
+                }
+            },
+            "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+            "timestamp": "2020-08-14T05:30:30.118Z",
+            "properties": {
+                "path": "",
+                "referrer": "",
+                "search": "",
+                "title": "",
+                "url": ""
+            },
+            "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "integrations": {
+                "All": true,
+                "Pinterest": {
+                    "hashed": true
+                }
+            }
+        },
+        "destination": {
+            "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+            "Name": "PINTEREST_TAG",
+            "Config": {
+                "tagId": "123456789",
+                "advertiserId": "123456",
+                "appId": "429047995",
+                "enhancedMatch": true,
+                "customProperties": [
+                    {
+                        "properties": "presentclass"
+                    },
+                    {
+                        "properties": "presentgrade"
+                    }
+                ],
+                "eventsMapping": [
+                    {
+                        "from": "ABC Searched",
+                        "to": "Watch Video"
+                    }
+                ]
+            },
+            "Enabled": true,
+            "Transformations": []
+        }
     }
 ]

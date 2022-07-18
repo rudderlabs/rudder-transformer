@@ -51,12 +51,12 @@ const processUserPayload = userPayload => {
         }
         userPayload[key] = [sha256(formatValue)];
         break;
-      case "ge":
       case "ct":
       case "st":
       case "country":
         userPayload[key] = [sha256(formatValue)];
         break;
+      case "ge":
       case "db":
       case "ln":
       case "fn":

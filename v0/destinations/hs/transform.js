@@ -306,6 +306,7 @@ function batchEvents(destEvents) {
           inputs: identifyResponseList
         };
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`
+        metadata.push(ev.metadata);
       } else {
         const { email, updatedProperties } = getEmailAndUpdatedProps(
           ev.message.body.JSON.properties

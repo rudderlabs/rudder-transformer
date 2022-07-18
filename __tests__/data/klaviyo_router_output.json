@@ -1,35 +1,92 @@
 [
   {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "PUT",
-      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
-      "headers": {
-        "Accept": "application/json"
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "params": {
+          "$id": "utsabc",
+          "$email": "utsab@rudderstack.com",
+          "$first_name": "Utsab",
+          "$last_name": "Chowdhury",
+          "$phone_number": "+12 345 578 900",
+          "$title": "Developer",
+          "$organization": "Rudder",
+          "$city": "Tokyo",
+          "$region": "Kanto",
+          "$country": "JP",
+          "$zip": "100-0001",
+          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
       },
-      "params": {
-        "$id": "utsabc",
-        "$email": "utsab@rudderstack.com",
-        "$first_name": "Utsab",
-        "$last_name": "Chowdhury",
-        "$phone_number": "+12 345 578 900",
-        "$title": "Developer",
-        "$organization": "Rudder",
-        "$city": "Tokyo",
-        "$region": "Kanto",
-        "$country": "JP",
-        "$zip": "100-0001",
-        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {
+            "profiles": [
+              {
+                "id": "utsabc",
+                "email": "utsab@rudderstack.com",
+                "phone_number": "+12 345 578 900"
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
       },
-      "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {
+            "profiles": [
+              {
+                "id": "utsabc",
+                "email": "utsab@rudderstack.com",
+                "phone_number": "+12 345 578 900",
+                "$consent": "email"
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
     "metadata": [
       {
         "jobId": 1

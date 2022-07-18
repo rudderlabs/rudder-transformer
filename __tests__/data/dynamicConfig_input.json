@@ -265,7 +265,7 @@
             "key": "{{ event.key || \" default value \" }}",
             "key1": "{{ event.key1 || \" default value  }}",
             "key2": "{{ event.key1 || default value \" }}",
-            "key3": "{{ event.traits.appId || 123.1234 }}",
+            "key3": "{{ message.traits.appId || 123.1234 }}",
             "key4": [
               "{{ event.traits.key4 || defaultVal }}",
               "{{ event.key4 || defaultVal }}"

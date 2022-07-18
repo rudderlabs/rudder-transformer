@@ -9,7 +9,7 @@ function getDynamicConfigValue(event, value) {
   const defFormat = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
   const matResult = value.match(defFormat);
   if (matResult) {
-    // Support "event.<obj1>.key" alias for "message.<obj1>.key"
+    // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
     const fieldPath = matResult.groups.path.replace(
       /^event\.(.*)$/,
       "message.$1"

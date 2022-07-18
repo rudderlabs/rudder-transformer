@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const get = require("get-value");
 const {
   getValueFromMessage,
@@ -87,61 +88,79 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   return responseMessage;
 };
 
-// Main process Function to handle transformation
-const process = event => {
+const batch = events => {
+  return { batch: events };
+};
+
+// Function for transforming single payload
+const processSingleMessage = event => {
   const { message, destination } = event;
   if (destination.Config.sheetName) {
     const payload = {
-      message: processWithCustomMapping(
-        message,
-        destination.Config.eventKeyMap
-      ),
-      spreadSheetId: destination.Config.sheetId,
-      spreadSheet: destination.Config.sheetName
+      message: processWithCustomMapping(message, destination.Config.eventKeyMap)
     };
     return payload;
   }
   throw new CustomError("No Spread Sheet set for this event", 400);
 };
 
+// Main process Function to handle transformation
+// Server expects the message to be wrapped in batch attribute,
+// hence the payload is wrapped and returned using this function
+const process = event => {
+  const payload = processSingleMessage(event);
+  const batchedResponse = batch(payload);
+  batchedResponse.spreadSheetId = event.destination.Config.sheetId;
+  batchedResponse.spreadSheet = event.destination.Config.sheetName;
+  return batchedResponse;
+};
+
+// Router transform with batching by default
 const processRouterDest = async inputs => {
+  const successRespList = [];
+  const errorRespList = [];
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
-  const respList = await Promise.all(
+  await Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          successRespList.push(input.message);
         }
         // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
+        successRespList.push(processSingleMessage(input));
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+        errorRespList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            error.response
+              ? error.response.status
+              : error.code
+              ? error.code
+              : 400,
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+  const batchedResponse = batch(successRespList);
+  batchedResponse.spreadSheetId = inputs[0].destination.Config.sheetId;
+  batchedResponse.spreadSheet = inputs[0].destination.Config.sheetName;
+  return [
+    getSuccessRespEvents(
+      batchedResponse,
+      inputs.map(input => {
+        return input.metadata;
+      }),
+      inputs[0].destination,
+      true
+    ),
+    ...errorRespList
+  ];
 };
 
 module.exports = { process, processRouterDest };
-

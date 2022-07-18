@@ -162,7 +162,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data) {
+function flattenJson(data, separator = ".") {
   const result = {};
   let l;
 
@@ -182,7 +182,7 @@ function flattenJson(data) {
       let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
         isEmptyFlag = false;
-        recurse(cur[key], prop ? `${prop}.${key}` : key);
+        recurse(cur[key], prop ? `${prop}${separator}${key}` : key);
       });
       if (isEmptyFlag && prop) result[prop] = {};
     }
@@ -729,6 +729,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           .replace("https://", "")
           .replace("http://", "");
         break;
+      case "domainUrlV2": {
+        const url = new URL(formattedVal);
+        formattedVal = url.hostname.replace("www.", "");
+        break;
+      }
       case "IsBoolean":
         if (!(typeof formattedVal === "boolean")) {
           logger.debug("Boolean value missing, so dropping it");

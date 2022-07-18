@@ -1,0 +1,150 @@
+[
+  {
+    "destKey": "p",
+    "sourceKeys": "context.os.name",
+    "required": true
+  },
+  {
+    "destKey": "i",
+    "sourceKeys": "context.app.namespace",
+    "required": true
+  },
+  {
+    "destKey": "app_v",
+    "sourceKeys": "context.app.version",
+    "required": true
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": true
+  },
+  {
+    "destKey": "ve",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "mo",
+    "sourceKeys": "context.device.model",
+    "required": true
+  },
+  {
+    "destKey": "ma",
+    "sourceKeys": "context.device.manufacturer",
+    "required": true
+  },
+  {
+    "destKey": "lc",
+    "sourceKeys": "context.locale",
+    "required": true
+  },
+  {
+    "destKey": "install_receipt",
+    "sourceKeys": "properties.install_receipt",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "openuri",
+    "sourceKeys": "properties.url",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "att_authorization_status",
+    "sourceKeys": "context.device.attTrackingStatus",
+    "required": true
+  },
+  {
+    "destKey": "sessionNotificationName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "custom_user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "n",
+    "sourceKeys": "context.app.name",
+    "required": false
+  },
+  {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "cn",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "apns_token",
+    "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
+    "destKey": "ua",
+    "sourceKeys": "properties.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "attribution_token",
+    "sourceKeys": "properties.attribution_token",
+    "required": false
+  },
+  {
+    "destKey": "skan_conversion_value",
+    "sourceKeys": "properties.skan_conversion_value",
+    "required": false
+  },
+  {
+    "destKey": "skan_first_call_timestamp",
+    "sourceKeys": "properties.skan_first_call_timestamp",
+    "required": false
+  },
+  {
+    "destKey": "skan_last_call_timestamp",
+    "sourceKeys": "properties.skan_last_call_timestamp",
+    "required": false
+  },
+  {
+    "destKey": "bd",
+    "sourceKeys": "context.app.build",
+    "required": true
+  },
+  {
+    "destKey": "install",
+    "sourceKeys": "properties.install",
+    "required": true
+  },
+  {
+    "destKey": "idfa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "idfv",
+    "sourceKeys": "context.device.id",
+    "required": true
+  },
+  {
+    "destKey": "install_time",
+    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
+    "required": true
+  },
+  {
+    "destKey": "update_time",
+    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
+    "required": true
+  }
+]

@@ -24,9 +24,9 @@ const {
   getDestinationExternalID,
   getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const { validatePayloadSize } = require("./utils");
 
 const gaDisplayName = "Google Analytics";
 
@@ -371,38 +371,7 @@ function responseBuilderSimple(
 
   // payload must be no longer than 8192 bytes.
   // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#using-post
-  // we are mimicking the behaviour of go language at server side to calculate the approx length
-  const endpointPathname = new URL(GA_ENDPOINT).pathname + "?";
-  // stringfy the JSON and remove {, }, " from it as these char do not include in the final payload
-  // encodeURIComponent does not encode A-Z a-z 0-9 - _ . ~ ! * ' ( ) where as rudder server encodes ! * ' ( ) and transforms ' '(spaces) to '+'
-  let payload_size = {};
-  Object.keys(finalPayload).forEach(keys => {
-    if (typeof finalPayload[keys] === "number") {
-      // go encodes this in exponential format
-      payload_size[keys] = encodeURIComponent(
-        finalPayload[keys].toExponential()
-      ).replace(/%20/g, "+");
-    } else {
-      // replacing ' ' with +
-      payload_size[keys] = encodeURIComponent(finalPayload[keys]).replace(
-        /%20/g,
-        "+"
-      );
-    }
-  });
-  payload_size =
-    endpointPathname.length +
-    // remove {, }, " char
-    JSON.stringify(payload_size).replace(/[{}"]/g, "").length +
-    // adding the length of these encoded values ! * ' ( ) which go encodes
-    JSON.stringify(payload_size).match(/[!*'()]/g).length * 2;
-
-  if (payload_size > 8192) {
-    throw new CustomError(
-      `The size of the payload is ${payload_size} bytes. The payload data must be no longer than 8192 bytes.`,
-      400
-    );
-  }
+  validatePayloadSize(finalPayload);
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

@@ -25,10 +25,24 @@ const getTraits = message => {
 
 const getProperties = async destination => {
   let hubSpotPropertyMap = {};
-  const { apiKey } = destination.Config;
-  const url = `${CONTACT_PROPERTIES}?hapikey=${apiKey}`;
+  let res;
+  const { Config } = destination;
 
-  const res = await httpGET(url);
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Config.accessToken}`
+      }
+    };
+    res = await httpGET(CONTACT_PROPERTIES, requestOptions);
+  } else {
+    // API Key
+    const url = `${CONTACT_PROPERTIES}?hapikey=${Config.apiKey}`;
+    res = await httpGET(url);
+  }
 
   if (res.success === false) {
     // check if exists err.response && err.response.status else 500

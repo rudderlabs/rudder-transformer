@@ -29,6 +29,14 @@ const {
   formatPropertyValueForIdentify
 } = require("./util");
 
+/**
+ * Using New API
+ * Ref - https://developers.hubspot.com/docs/api/crm/contacts
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propertyMap
+ * @returns
+ */
 const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
@@ -70,13 +78,94 @@ const processIdentify = async (message, destination, propertyMap) => {
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.params = { hapikey: Config.apiKey };
   response.body.JSON = removeUndefinedAndNullValues(payload);
+
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  } else {
+    // API Key
+    response.params = { hapikey: Config.apiKey };
+  }
 
   return response;
 };
 
+/**
+ * using legacy API
+ * Reference:
+ * https://legacydocs.hubspot.com/docs/methods/contacts/create_contact
+ * https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propertyMap
+ * @returns
+ */
+const processLegacyIdentify = async (message, destination, propertyMap) => {
+  const { Config } = destination;
+  const traits = getFieldValueFromMessage(message, "traits");
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // if mappedToDestination is set true, then add externalId to traits
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+  }
+
+  if (!traits || !traits.email) {
+    throw new CustomError(
+      "[HS]:: Identify without email is not supported.",
+      400
+    );
+  }
+
+  const userProperties = await getTransformedJSON(
+    message,
+    hsCommonConfigJson,
+    destination,
+    propertyMap
+  );
+
+  const payload = {
+    properties: formatPropertyValueForIdentify(userProperties)
+  };
+
+  const { email } = traits;
+  let endpoint;
+  if (email) {
+    endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(":contact_email", email);
+  } else {
+    endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+  }
+
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  } else {
+    // API Key
+    response.params = { hapikey: Config.apiKey };
+  }
+
+  return response;
+};
+
+// using new API
 const processTrack = async (message, destination, propertyMap) => {
+  const { Config } = destination;
   let parameters = {
     _a: destination.Config.hubID,
     _n: message.event,
@@ -101,6 +190,66 @@ const processTrack = async (message, destination, propertyMap) => {
   response.headers = {
     "Content-Type": "application/json"
   };
+
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // remove hubId
+    // eslint-disable-next-line no-underscore-dangle
+    delete params._a;
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  }
+  response.params = params;
+
+  return response;
+};
+
+/**
+ * using legacy API
+ * Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propertyMap
+ * @returns
+ */
+const processLegacyTrack = async (message, destination, propertyMap) => {
+  const { Config } = destination;
+  let parameters = {
+    _a: Config.hubID,
+    _n: message.event,
+    _m: get(message, "properties.revenue") || get(message, "properties.value"),
+    id: getDestinationExternalID(message, "hubspotId")
+  };
+
+  parameters = removeUndefinedAndNullValues(parameters);
+  const userProperties = await getTransformedJSON(
+    message,
+    hsCommonConfigJson,
+    destination,
+    propertyMap
+  );
+
+  const payload = { ...parameters, ...userProperties };
+  const params = removeUndefinedAndNullValues(payload);
+
+  const response = defaultRequestConfig();
+  response.endpoint = TRACK_ENDPOINT;
+  response.method = defaultGetRequestConfig.requestMethod;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // eslint-disable-next-line no-underscore-dangle
+    delete params._a;
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  }
   response.params = params;
 
   return response;
@@ -117,10 +266,22 @@ const processSingleMessage = async (message, destination, propertyMap) => {
   let response;
   switch (message.type) {
     case EventType.IDENTIFY:
-      response = await processIdentify(message, destination, propertyMap);
+      if (destination.Config.apiVersion === "newApi") {
+        response = await processIdentify(message, destination, propertyMap);
+      } else {
+        response = await processLegacyIdentify(
+          message,
+          destination,
+          propertyMap
+        );
+      }
       break;
     case EventType.TRACK:
-      response = await processTrack(message, destination, propertyMap);
+      if (destination.Config.apiVersion === "newApi") {
+        response = await processTrack(message, destination, propertyMap);
+      } else {
+        response = await processLegacyTrack(message, destination, propertyMap);
+      }
       break;
     default:
       throw new CustomError(
@@ -166,6 +327,7 @@ const batchEvents = destEvents => {
         )
       );
     } else {
+      // making chunks for identify
       eventsChunk.push(event);
     }
     if (
@@ -185,8 +347,7 @@ const batchEvents = destEvents => {
     // extracting destination, apiKey value
     // from the first event in a batch
     const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-    const params = { hapikey: apiKey };
+    const { Config } = destination;
 
     let batchEventResponse = defaultBatchRequestConfig();
 
@@ -211,7 +372,19 @@ const batchEvents = destEvents => {
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"
     };
-    batchEventResponse.batchedRequest.params = params;
+
+    // choosing API Type
+    if (Config.authorizationType === "newPrivateAppApi") {
+      // Private Apps
+      batchEventResponse.batchedRequest.headers = {
+        ...batchEventResponse.batchedRequest.headers,
+        Authorization: `Bearer ${Config.accessToken}`
+      };
+    } else {
+      // API Key
+      batchEventResponse.batchedRequest.params = { hapikey: Config.apiKey };
+    }
+
     batchEventResponse = {
       ...batchEventResponse,
       metadata,

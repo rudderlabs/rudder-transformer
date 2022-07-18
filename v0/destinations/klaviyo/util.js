@@ -25,6 +25,7 @@ const {
 /**
  * This function is used to check if the user/profile already exists or not, if already exists unique person_id 
  * for that user is getting returned else false is returned.
+ * Docs: https://developers.klaviyo.com/en/reference/get-profile-id
  * @param {*} message 
  * @param {*} Config 
  * @returns
@@ -36,10 +37,9 @@ const isProfileExist = async (message, { Config }) => {
     external_id: getFieldValueFromMessage(message, "userId"),
     phone_number: getFieldValueFromMessage(message, "phone")
   };
-  //   const identifiers = Object.keys(userIdentifiers);
-  let personId;
+  
   for (const id in userIdentifiers) {
-    if (isDefinedAndNotNull(userIdentifiers[id]) && !personId) {
+    if (isDefinedAndNotNull(userIdentifiers[id])) {
       const profileResponse = await httpGET(
         `${BASE_ENDPOINT}/api/v2/people/search`,
         {
@@ -67,7 +67,7 @@ const isProfileExist = async (message, { Config }) => {
 const addUserToList = (message, traitsInfo, conf, destination) => {
   // Check if list Id is present in message properties, if yes override
   let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${destination.Config.listId}`;
-  if (get(traitsInfo.properties, "listId")) {
+  if (get(traitsInfo?.properties, "listId")) {
     targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
       traitsInfo.properties,
       "listId"

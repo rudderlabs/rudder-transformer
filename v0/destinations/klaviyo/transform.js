@@ -47,10 +47,22 @@ const {
 // ---------------------
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
+  if (!destination.Config.privateApiKey) {
+    throw new CustomError(
+      "Private API Key is a required field for identify events",
+      400
+    );
+  }
   const traitsInfo = getFieldValueFromMessage(message, "traits");
   const response = defaultRequestConfig();
   const personId = await isProfileExist(message, destination);
   if (!personId) {
+    if (!destination.Config.publicApiKey) {
+      throw new CustomError(
+        "Public API Key is a required field for identify events",
+        400
+      );
+    }
     const mappedToDestination = get(message, MappedToDestinationKey);
     if (mappedToDestination) {
       addExternalIdToTraits(message);
@@ -69,7 +81,7 @@ const identifyRequestHandler = async (message, category, destination) => {
       WhiteListedTraits
     );
     propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-    if (destination.Config.enforceEmailAsPrimary) {
+    if (destination.Config?.enforceEmailAsPrimary) {
       delete propertyPayload.$id;
       propertyPayload._id = getFieldValueFromMessage(message, "userId");
     }
@@ -113,6 +125,12 @@ const identifyRequestHandler = async (message, category, destination) => {
 
 const trackRequestHandler = (message, category, destination) => {
   let payload = {};
+  if (!destination.Config.publicApiKey) {
+    throw new CustomError(
+      "Public API Key is a required field for track events",
+      400
+    );
+  }
   let event = get(message, "event");
   event = event ? event.trim().toLowerCase() : event;
   if (ecomEvents.includes(event) && message.properties) {
@@ -213,6 +231,12 @@ const groupRequestHandler = (message, category, destination) => {
     message,
     "groupId"
   )}/subscribe`;
+  if (!destination.Config.privateApiKey) {
+    throw new CustomError(
+      "Private API Key is a required field for group events",
+      400
+    );
+  }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   const groupWhitelistedTraits = [

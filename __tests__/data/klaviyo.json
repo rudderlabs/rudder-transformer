@@ -1025,5 +1025,134 @@
         "files": {}
       }
     ]
+  },
+  {
+    "description": "Existing Profile updation call",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9"
+        }
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "utsabc",
+        "channel": "web",
+        "context": {
+          "mappedToDestination": true,
+          "externalId": [
+            {
+              "identifierType": "$email",
+              "id": "utsab@rudderstack.com"
+            }
+          ],
+          "os": { "name": "", "version": "" },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "$first_name": "Utsab",
+            "$last_name": "Chowdhury",
+            "omega": "omegashenron"
+          },
+          "locale": "en-US",
+          "screen": { "density": 2 },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": { "All": true },
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+        "error": "Private API Key is a required field for identify events"
+    }
+  },
+  {
+    "description": "Track event call",
+    "input": {
+      "destination": {
+        "Config": {
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      },
+      "message": {
+        "type": "screen",
+        "event": "TestEven001",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "10"
+          },
+          "app": {
+            "name": "KlaviyoTest",
+            "build": "1",
+            "version": "1.0",
+            "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+          },
+          "device": {
+            "id": "9c6bd77ea9da3e68",
+            "name": "raphaelin",
+            "type": "android",
+            "model": "Redmi K20 Pro",
+            "manufacturer": "Xiaomi"
+          },
+          "locale": "en-IN",
+          "screen": {
+            "width": 1080,
+            "height": 2210,
+            "density": 440
+          },
+          "traits": {
+            "id": "utsabc",
+            "age": "22",
+            "email": "utsab@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.2"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "airtel",
+            "cellular": true,
+            "bluetooth": false
+          },
+          "timezone": "Asia/Kolkata",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.4.0.QFKINXM)"
+        },
+        "rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+        "messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+        "properties": {
+          "PreviouslyVicePresident": true,
+          "YearElected": 1801,
+          "VicePresidents": ["Aaron Burr", "George Clinton"]
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      }
+    },
+    "output": {
+        "error": "Public API Key is a required field for track events"
+    }
   }
 ]

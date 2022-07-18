@@ -1,6 +1,6 @@
 const { get, set } = require("lodash");
 const sha256 = require("sha256");
-const { httpSend } = require("../../../adapters/network");
+const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -148,6 +148,7 @@ class networkHandler {
     this.proxy = ProxyRequest;
     this.responseHandler = responseHandler;
     this.processAxiosResponse = processAxiosResponse;
+    this.prepareProxy = prepareProxyRequest;
   }
 }
 module.exports = { networkHandler };

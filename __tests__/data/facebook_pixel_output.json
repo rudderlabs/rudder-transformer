@@ -598,5 +598,28 @@
   {
     "statusCode": 400,
     "error": "Product id is required for product 0. Event not sent"
+  },
+  {
+    "statusCode": 400,
+    "error": "'query' should be in string format only"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"custom_data\":{\"search_string\":50,\"currency\":\"USD\"}}"
+        ]
+      }
+    },
+    "files": {}
   }
 ]

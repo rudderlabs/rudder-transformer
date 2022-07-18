@@ -7,7 +7,6 @@ const {
   defaultRequestConfig,
   extractCustomFields,
   isEmptyObject,
-  flattenJson,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
@@ -29,7 +28,8 @@ const {
   isReservedWebCustomPrefixName,
   getItemList,
   getGA4ExclusionList,
-  getItem
+  getItem,
+  getGA4CustomParameters
 } = require("./utils");
 
 const responseBuilder = (message, { Config }) => {
@@ -113,18 +113,19 @@ const responseBuilder = (message, { Config }) => {
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
         getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
       );
-      payload.params = extractCustomFields(
+
+      payload.params = getGA4CustomParameters(
         message,
-        payload.params,
         ["properties"],
-        ITEM_EXCLUSION_LIST
+        ITEM_EXCLUSION_LIST,
+        payload
       );
     } else {
-      payload.params = extractCustomFields(
+      payload.params = getGA4CustomParameters(
         message,
-        payload.params,
         ["properties"],
-        getGA4ExclusionList(mappingConfig[eventConfig.name])
+        getGA4ExclusionList(mappingConfig[eventConfig.name]),
+        payload
       );
     }
   } else if (message.type === "identify") {
@@ -166,7 +167,7 @@ const responseBuilder = (message, { Config }) => {
 
         if (!isDefinedAndNotNull(parameter.value)) {
           throw new CustomError(
-            `[GA4] Identify:: ${Config.generateLeadValueTrait} is a required field in traits for 'generate_lead' event`,
+            `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`,
             400
           );
         }
@@ -183,17 +184,26 @@ const responseBuilder = (message, { Config }) => {
         break;
     }
 
-    let customParameters = {};
-    customParameters = extractCustomFields(
+    payload.params = getGA4CustomParameters(
       message,
-      customParameters,
       ["traits", "context.traits"],
-      GA4_IDENTIFY_EXCLUSION
+      GA4_IDENTIFY_EXCLUSION,
+      payload
+    );
+  } else if (message.type === "page") {
+    // page event
+    payload.name = event;
+    payload.params = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.PAGE.name]
     );
 
-    if (customParameters) {
-      payload.params = { ...payload.params, ...customParameters };
-    }
+    payload.params = getGA4CustomParameters(
+      message,
+      ["properties"],
+      GA4_RESERVED_PARAMETER_EXCLUSION,
+      payload
+    );
   } else if (message.type === "group") {
     // group event
     payload.name = event;
@@ -201,11 +211,12 @@ const responseBuilder = (message, { Config }) => {
       message,
       mappingConfig[ConfigCategory.GROUP.name]
     );
-    payload.params = extractCustomFields(
+
+    payload.params = getGA4CustomParameters(
       message,
-      payload.params,
       ["traits", "context.traits"],
-      getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name])
+      getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
+      payload
     );
   } else {
     // track
@@ -228,20 +239,12 @@ const responseBuilder = (message, { Config }) => {
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params
-    let customParameters = {};
-    customParameters = extractCustomFields(
+    payload.params = getGA4CustomParameters(
       message,
-      customParameters,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION
+      GA4_RESERVED_PARAMETER_EXCLUSION,
+      payload
     );
-    if (!isEmptyObject(customParameters)) {
-      customParameters = flattenJson(customParameters);
-      payload.params = {
-        ...payload.params,
-        ...customParameters
-      };
-    }
   }
 
   removeReservedParameterPrefixNames(payload.params);
@@ -263,7 +266,6 @@ const responseBuilder = (message, { Config }) => {
     GA4_RESERVED_USER_PROPERTY_EXCLUSION
   );
   if (!isEmptyObject(userProperties)) {
-    userProperties = flattenJson(userProperties);
     rawPayload.user_properties = userProperties;
   }
 
@@ -337,7 +339,7 @@ const process = event => {
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
-            `[GA4] Identify:: ${Config.newOrExistingUserTrait} is a required field in traits`,
+            `[GA4] Identify:: '${Config.newOrExistingUserTrait}' is a required field in traits`,
             400
           );
         }

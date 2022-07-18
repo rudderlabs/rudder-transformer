@@ -1,10 +1,10 @@
-const { send, httpGET } = require("../../../adapters/network");
+const { send, httpGET, httpPOST } = require("../../../adapters/network");
 const {
   getFieldValueFromMessage,
   constructPayload,
   CustomError
 } = require("../../util");
-const { CONTACT_PROPERTIES } = require("./config");
+const { CONTACT_PROPERTIES, IDENTIFY_CRM_SEARCH_CONTACT } = require("./config");
 
 const formatKey = key => {
   // lowercase and replace spaces and . with _
@@ -131,6 +131,97 @@ const getEmailAndUpdatedProps = properties => {
   };
 };
 
+/* NEW API util functions */
+
+/**
+ * look for the contact in hubspot and extract its contactId for updation
+ * @param {*} destination
+ * @returns
+ */
+const searchContacts = async (message, destination) => {
+  const { Config } = destination;
+  let res;
+  let contactId = null;
+  const traits = getFieldValueFromMessage(message, "traits");
+
+  const propertyName = traits[`${Config.lookupField}`];
+  const value = traits[`${propertyName}`];
+
+  if (!value) {
+    throw new CustomError(
+      `[HS] Identify:: '${propertyName}' key name i.e provided in config is required under traits for contact lookup`,
+      400
+    );
+  }
+
+  const requestData = {
+    filterGroups: [
+      {
+        filters: [
+          {
+            propertyName,
+            value,
+            operator: "EQ"
+          }
+        ]
+      }
+    ],
+    sorts: ["ascending"],
+    properties: [propertyName],
+    limit: 2,
+    after: 0
+  };
+
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Config.accessToken}`
+      }
+    };
+    res = await httpPOST(
+      IDENTIFY_CRM_SEARCH_CONTACT,
+      requestData,
+      requestOptions
+    );
+  } else {
+    // API Key
+    const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
+    res = await httpPOST(url, requestData);
+  }
+
+  if (res.success === false) {
+    // check if exists err.response && err.response.status else 500
+    const error = res.response;
+    if (error.response) {
+      throw new CustomError(
+        JSON.stringify(error.response.data) ||
+          JSON.stringify(error.response.statusText) ||
+          "Failed to get hubspot contacts",
+        error.response.status || 500
+      );
+    }
+    throw new CustomError(
+      "Failed to get hubspot contacts : invalid response",
+      500
+    );
+  }
+
+  if (res.response.data.results.length > 1) {
+    throw new CustomError(
+      "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
+      400
+    );
+  } else if (res.response.data.results.length === 1) {
+    // while updating contactId is a required
+    contactId = res.response.data.results[0].id;
+  }
+
+  // contact not found
+  return contactId;
+};
+
 module.exports = {
   formatKey,
   getTraits,
@@ -138,5 +229,6 @@ module.exports = {
   getTransformedJSON,
   formatPropertyValueForIdentify,
   getAllContactProperties,
-  getEmailAndUpdatedProps
+  getEmailAndUpdatedProps,
+  searchContacts
 };

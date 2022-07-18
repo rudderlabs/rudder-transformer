@@ -376,5 +376,22 @@
     { "name": "associatedcompanylastupdated", "type": "number" },
     { "name": "hs_predictivecontactscorebucket", "type": "enumeration" },
     { "name": "hs_predictivecontactscore", "type": "number" }
-  ]
+  ],
+  "https://api.hubapi.com/crm/v3/objects/contacts/search": {
+    "total": 1,
+    "results": [
+      {
+        "id": "103601",
+        "properties": {
+          "createdate": "2022-07-14T15:25:08.975Z",
+          "email": "testhubspot@email.com",
+          "hs_object_id": "103601",
+          "lastmodifieddate": "2022-07-14T15:26:49.590Z"
+        },
+        "createdAt": "2022-07-14T15:25:08.975Z",
+        "updatedAt": "2022-07-14T15:26:49.590Z",
+        "archived": false
+      }
+    ]
+  }
 }

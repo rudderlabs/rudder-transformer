@@ -19,14 +19,17 @@ const {
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  IDENTIFY_CRM_CREATE_NEW_CONTACT
 } = require("./config");
 const {
   getTraits,
   getProperties,
   getTransformedJSON,
   getEmailAndUpdatedProps,
-  formatPropertyValueForIdentify
+  formatPropertyValueForIdentify,
+  searchContacts
 } = require("./util");
 
 /**
@@ -39,18 +42,23 @@ const {
  */
 const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
   if (mappedToDestination) {
     addExternalIdToTraits(message);
   }
 
-  if (!traits || !traits.email) {
-    throw new CustomError(
-      "[HS]:: Identify without email is not supported.",
-      400
-    );
+  // if (!traits || !traits.email) {
+  //   throw new CustomError(
+  //     "[HS]:: Identify without email is not supported.",
+  //     400
+  //   );
+  // }
+
+  let contactId = getDestinationExternalID(message, "hsContactId");
+
+  if (!contactId) {
+    contactId = await searchContacts(message, destination);
   }
 
   const userProperties = await getTransformedJSON(
@@ -64,12 +72,13 @@ const processIdentify = async (message, destination, propertyMap) => {
     properties: formatPropertyValueForIdentify(userProperties)
   };
 
-  const { email } = traits;
   let endpoint;
-  if (email) {
-    endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(":contact_email", email);
+  if (contactId) {
+    // update
+    endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(":contactId", contactId);
   } else {
-    endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+    // create
+    endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
   }
 
   const response = defaultRequestConfig();

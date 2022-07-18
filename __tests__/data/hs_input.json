@@ -786,6 +786,7 @@
   },
   {
     "message": {
+      "description": "[HS] (legacyApi): use (newPrivateAppApi) for contact endpoint",
       "channel": "web",
       "context": {
         "app": {
@@ -833,21 +834,233 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "22315509",
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
         "apiVersion": "legacyApi",
+        "lookupField": "",
         "blacklistedEvents": [
           {
             "eventName": ""
           }
         ],
-        "eventDelivery": true,
-        "eventDeliveryTS": 1658148885827,
-        "eventFilteringOption": "disable",
-        "hubID": "22315509",
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "description": "[HS] (newApi): get contact from hs with email (lookupField) exactly matching with one contact",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "testhubspot@email.com",
+          "firstname": "Test Hubspot",
+          "anonymousId": "12345",
+          "lookupField": "email"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        }
+      },
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
         "authorizationType": "newPrivateAppApi",
-        "lookupPropertyName": "",
-        "lookupValue": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "hubID": "22315509",
+        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "description": "[HS] (newApi): get contact from hs with email (lookupField) having no contacts",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "noname@email.com",
+          "firstname": "Test Hubspot",
+          "anonymousId": "12345",
+          "lookupField": "email"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        }
+      },
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "hubID": "22315509",
+        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "description": "[HS] (newApi): get contact from hs with firstname (lookupField) having more than one result",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "nonamess@email.com",
+          "firstname": "Jhon",
+          "anonymousId": "12345",
+          "lookupField": "firstname"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        }
+      },
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "hubID": "22315509",
+        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
         "whitelistedEvents": [
           {
             "eventName": ""

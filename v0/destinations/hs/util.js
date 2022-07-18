@@ -138,13 +138,19 @@ const getEmailAndUpdatedProps = properties => {
  * @param {*} destination
  * @returns
  */
-const searchContacts = async (message, destination) => {
+const searchContacts = async (message, destination, lookupField = null) => {
   const { Config } = destination;
   let res;
   let contactId = null;
   const traits = getFieldValueFromMessage(message, "traits");
+  let propertyName;
 
-  const propertyName = traits[`${Config.lookupField}`];
+  if (lookupField) {
+    propertyName = lookupField;
+  } else {
+    propertyName = traits[`${Config.lookupField}`];
+  }
+
   const value = traits[`${propertyName}`];
 
   if (!value) {
@@ -222,6 +228,15 @@ const searchContacts = async (message, destination) => {
   return contactId;
 };
 
+const getCRMUpdatedProps = properties => {
+  const updatedProps = {};
+  properties.forEach(key => {
+    const { property, value } = key;
+    updatedProps[property] = value;
+  });
+  return updatedProps;
+};
+
 module.exports = {
   formatKey,
   getTraits,
@@ -230,5 +245,6 @@ module.exports = {
   formatPropertyValueForIdentify,
   getAllContactProperties,
   getEmailAndUpdatedProps,
+  getCRMUpdatedProps,
   searchContacts
 };

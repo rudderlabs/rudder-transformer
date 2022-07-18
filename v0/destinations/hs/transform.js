@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { isEmpty } = require("lodash");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
@@ -21,7 +22,10 @@ const {
   IDENTIFY_CREATE_NEW_CONTACT,
   hsCommonConfigJson,
   IDENTIFY_CRM_UPDATE_NEW_CONTACT,
-  IDENTIFY_CRM_CREATE_NEW_CONTACT
+  IDENTIFY_CRM_CREATE_NEW_CONTACT,
+  MAX_BATCH_SIZE_CRM_CONTACT,
+  BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
+  BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT
 } = require("./config");
 const {
   getTraits,
@@ -29,7 +33,8 @@ const {
   getTransformedJSON,
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
-  searchContacts
+  searchContacts,
+  getCRMUpdatedProps
 } = require("./util");
 
 /**
@@ -42,6 +47,7 @@ const {
  */
 const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
+  const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
   if (mappedToDestination) {
@@ -59,6 +65,9 @@ const processIdentify = async (message, destination, propertyMap) => {
 
   if (!contactId) {
     contactId = await searchContacts(message, destination);
+    if (!contactId && traits.email) {
+      contactId = await searchContacts(message, destination, "email");
+    }
   }
 
   const userProperties = await getTransformedJSON(
@@ -307,7 +316,197 @@ const process = event => {
   return processSingleMessage(event.message, event.destination);
 };
 
+const batchIdentify = (
+  arrayChunksIdentify,
+  batchedResponseList,
+  batchOperation
+) => {
+  // list of chunks [ [..], [..] ]
+  arrayChunksIdentify.forEach(chunk => {
+    const identifyResponseList = [];
+    const metadata = [];
+
+    // extracting message, destination value
+    // from the first event in a batch
+    const { message, destination } = chunk[0];
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    if (batchOperation === "create") {
+      // create operation
+      chunk.forEach(ev => {
+        // format properties into batch structure
+        // eslint-disable-next-line no-param-reassign
+        ev.message.body.JSON.properties = getCRMUpdatedProps(
+          ev.message.body.JSON.properties
+        );
+
+        // duplicate email can cause issue with create in batch
+        // updating the existing one to avoid duplicate
+        // as same event can fire in batch one of the reason
+        // can be due to network lag or processor being busy
+        const isDuplicate = identifyResponseList.find(data => {
+          return (
+            data.properties.email === ev.message.body.JSON.properties.email
+          );
+        });
+        if (!isEmpty(isDuplicate)) {
+          // array is being shallow copied hence changes are affecting the original reference
+          isDuplicate.properties = ev.message.body.JSON.properties;
+        } else {
+          // appending unique events
+          identifyResponseList.push({
+            properties: ev.message.body.JSON.properties
+          });
+        }
+        metadata.push(ev.metadata);
+      });
+    } else {
+      // update operation
+      chunk.forEach(ev => {
+        // eslint-disable-next-line no-param-reassign
+        ev.message.body.JSON.properties = getCRMUpdatedProps(
+          ev.message.body.JSON.properties
+        );
+        // update has id and properties
+        const id = ev.message.endpoint.split("/").pop();
+
+        // duplicate contactId is not allowed in batch
+        // updating the existing one to avoid duplicate
+        // as same event can fire in batch one of the reason
+        // can be due to network lag or processor being busy
+        const isDuplicate = identifyResponseList.find(data => {
+          return data.id === id;
+        });
+        if (!isEmpty(isDuplicate)) {
+          isDuplicate.properties = ev.message.body.JSON.properties;
+        } else {
+          // appending unique events
+          identifyResponseList.push({
+            id,
+            properties: ev.message.body.JSON.properties
+          });
+        }
+        metadata.push(ev.metadata);
+      });
+    }
+
+    batchEventResponse.batchedRequest.body.JSON = {
+      inputs: identifyResponseList
+    };
+
+    if (batchOperation === "create") {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+    } else {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
+    }
+    batchEventResponse.batchedRequest.headers = message.headers;
+    batchEventResponse.batchedRequest.params = message.params;
+
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList;
+};
+
 const batchEvents = destEvents => {
+  let batchedResponseList = [];
+  const trackResponseList = [];
+  let createContactEventsChunk = [];
+  let updateContactEventsChunk = [];
+  const arrayChunksIdentifyCreateContact = [];
+  const arrayChunksIdentifyUpdateContact = [];
+  destEvents.forEach((event, index) => {
+    // handler for track call
+    if (event.message.method === "GET") {
+      const { message, metadata, destination } = event;
+      const endpoint = get(message, "endpoint");
+
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultGetRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else if (
+      event.message.endpoint ===
+      "https://api.hubapi.com/crm/v3/objects/contacts"
+    ) {
+      // Identify: making chunks for CRM create contact endpoint
+      createContactEventsChunk.push(event);
+    } else {
+      // Identify: making chunks for CRM update contact endpoint
+      updateContactEventsChunk.push(event);
+    }
+
+    // CRM create contact endpoint chunks
+    if (
+      createContactEventsChunk.length &&
+      (createContactEventsChunk.length === MAX_BATCH_SIZE_CRM_CONTACT ||
+        index === destEvents.length - 1)
+    ) {
+      arrayChunksIdentifyCreateContact.push(createContactEventsChunk);
+      createContactEventsChunk = [];
+    }
+
+    // CRM update contact endpoint chunks
+    if (
+      updateContactEventsChunk.length &&
+      (updateContactEventsChunk.length === MAX_BATCH_SIZE_CRM_CONTACT ||
+        index === destEvents.length - 1)
+    ) {
+      arrayChunksIdentifyUpdateContact.push(updateContactEventsChunk);
+      updateContactEventsChunk = [];
+    }
+  });
+
+  // batching up 'create' contact endpoint chunks
+  if (arrayChunksIdentifyCreateContact.length) {
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyCreateContact,
+      batchedResponseList,
+      "create"
+    );
+  }
+
+  // batching up 'update' contact endpoint chunks
+  if (arrayChunksIdentifyUpdateContact.length) {
+    batchedResponseList = batchedResponseList.concat(
+      batchIdentify(
+        arrayChunksIdentifyUpdateContact,
+        batchedResponseList,
+        "update"
+      )
+    );
+  }
+
+  return batchedResponseList.concat(trackResponseList);
+};
+
+const legacyBatchEvents = destEvents => {
   const batchedResponseList = [];
   const trackResponseList = [];
   let eventsChunk = [];
@@ -467,7 +666,11 @@ const processRouterDest = async inputs => {
 
   let batchedResponseList = [];
   if (successRespList.length) {
-    batchedResponseList = await batchEvents(successRespList);
+    if (destination.Config.apiVersion === "newApi") {
+      batchedResponseList = await batchEvents(successRespList);
+    } else {
+      batchedResponseList = await legacyBatchEvents(successRespList);
+    }
   }
   return [...batchedResponseList, ...errorRespList];
 };

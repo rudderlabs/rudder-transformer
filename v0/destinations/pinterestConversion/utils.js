@@ -90,8 +90,8 @@ const processCommonPayload = message => {
       400
     );
   }
-  const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
-  
+   const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
+
   if(isDefinedAndNotNull(adTrackingEnabled)) {
         if(adTrackingEnabled === true) {
           commonPayload.opt_out = false;

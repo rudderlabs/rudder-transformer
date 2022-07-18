@@ -8,7 +8,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
-  defaultBatchRequestConfig
+  defaultBatchRequestConfig,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   processUserPayload,
@@ -24,7 +25,7 @@ const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
   response.endpoint = "https://ct.pinterest.com/events/v3";
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = finalPayload;
+  response.body.JSON = removeUndefinedAndNullValues(finalPayload);
   return {
     ...response,
     headers: {
@@ -131,10 +132,9 @@ const trackResponseBuilder = (message, destination) => {
 const process = event => {
   let response = {};
   const { message, destination } = event;
-  const messageType = message.type?.toLowerCase();
-  const destConfig = destination.Config;
+   const messageType = message.type?.toLowerCase();
 
-  if (!destConfig.advertiserId) {
+  if (!destination.Config?.advertiserId) {
     throw new CustomError("Advertiser Id not found. Aborting", 400);
   }
 

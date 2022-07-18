@@ -2,19 +2,33 @@ const get = require("get-value");
 const { httpGET } = require("../../../adapters/network");
 const logger = require("../../../logger");
 
-const {
-    defaultRequestConfig,
-    constructPayload,
-    getFieldValueFromMessage,
-    isDefinedAndNotNull,
-    removeUndefinedValues,
-    defaultPostRequestConfig,
-    extractCustomFields,
-    removeUndefinedAndNullValues,
-  } = require("../../util");
-  
-const { BASE_ENDPOINT, LIST_CONF, } = require("./config");
+const { WhiteListedTraits } = require("../../../constants");
 
+const {
+  defaultRequestConfig,
+  constructPayload,
+  getFieldValueFromMessage,
+  isDefinedAndNotNull,
+  removeUndefinedValues,
+  defaultPostRequestConfig,
+  extractCustomFields,
+  removeUndefinedAndNullValues
+} = require("../../util");
+
+const {
+  BASE_ENDPOINT,
+  LIST_CONF,
+  MAPPING_CONFIG,
+  CONFIG_CATEGORIES
+} = require("./config");
+
+/**
+ * This function is used to check if the user/profile already exists or not, if already exists unique person_id 
+ * for that user is getting returned else false is returned.
+ * @param {*} message 
+ * @param {*} Config 
+ * @returns
+ */
 const isProfileExist = async (message, { Config }) => {
   const { privateApiKey } = Config;
   const userIdentifiers = {
@@ -97,6 +111,15 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
   return response;
 };
 
+/**
+ * This function is used to check if the user needs to be added to list or needs to be subscribed or not.
+ * Building and returning response array for both the members(for adding to the list) and subscribe
+ * endpoints (for subscribing)
+ * @param {*} message 
+ * @param {*} traitsInfo 
+ * @param {*} destination 
+ * @returns 
+ */
 const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
@@ -127,6 +150,7 @@ const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   return responseArray;
 };
 
+// This function is used for creating and returning customer properties using mapping json
 const createCustomerProperties = message => {
   let customerProperties = constructPayload(
     message,

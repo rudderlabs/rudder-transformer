@@ -208,7 +208,7 @@ const trackRequestHandler = (message, category, destination) => {
 // based on property sent
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 // ----------------------
-const groupRequestHandler = async (message, category, destination) => {
+const groupRequestHandler = (message, category, destination) => {
   const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
     message,
     "groupId"
@@ -297,7 +297,7 @@ const processEvent = async (message, destination) => {
       break;
     case EventType.GROUP:
       category = CONFIG_CATEGORIES.GROUP;
-      response = await groupRequestHandler(message, category, destination);
+      response = groupRequestHandler(message, category, destination);
       break;
     default:
       throw new CustomError("Message type not supported", 400);

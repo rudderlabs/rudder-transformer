@@ -346,7 +346,7 @@ const process = event => {
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
-            `[GA4] Identify:: '${Config.newOrExistingUserTrait}' key name i.e provided in config is required under traits in order to differentiate between new or existing user`,
+            `[GA4] Identify:: traits should contain 'firstLogin' parameter with a boolean value to differentiate between the new or existing user`,
             400
           );
         }

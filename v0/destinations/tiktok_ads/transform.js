@@ -15,7 +15,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  getHashFromArray,
   getHashFromArrayWithDuplicate
 } = require("../../util");
 const {

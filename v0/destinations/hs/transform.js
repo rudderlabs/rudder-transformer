@@ -195,6 +195,7 @@ const processTrack = async (message, destination) => {
     mappingConfig[ConfigCategory.TRACK.name]
   );
 
+  // fetch event name and its properties from config (webapp)
   payload = getEventAndPropertiesFromConfig(message, destination, payload);
 
   payload.properties = {
@@ -205,6 +206,7 @@ const processTrack = async (message, destination) => {
     )
   };
 
+  // either of email or utk or contactId should be present
   if (!payload.email && !payload.utk && !payload.contactId) {
     throw new CustomError(
       "[HS]:: either of email, utk or contactId is required for custom behavioral events",

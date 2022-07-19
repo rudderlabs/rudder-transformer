@@ -1072,6 +1072,7 @@
   },
   {
     "message": {
+      "description": "[HS] (newApi): Track - validate properties of custom behavioral events",
       "channel": "web",
       "context": {
         "app": {

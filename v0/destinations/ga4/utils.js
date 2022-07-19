@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { isNotNull } = require("rudder-transformer-cdk/build/utils");
 const {
   proxyRequest,
   prepareProxyRequest
@@ -355,10 +356,38 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
 };
 
 const responseHandler = (destinationResponse, dest) => {
+  // Config.debug decided
+  // }
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
-  let { status } = destinationResponse;
+  let { status, response } = destinationResponse;
   if (status === 204) {
     status = 200;
+  } else if (status === 200 && isNotNull(response)) {
+    const {
+      description,
+      validationCode,
+      fieldPath
+    } = destinationResponse.response.validationMessages[0];
+    if (destinationResponse.response.validationMessages.length === 0) {
+      status = 200;
+    } else {
+      throw new ErrorBuilder()
+        .setStatus(destinationResponse.status)
+        .setMessage(
+          `[GA4 Validation Server Response Handler] Validation Error for ${dest} of fieldPath :${fieldPath} | ${validationCode}-${description}`
+        )
+        .isTransformResponseFailure(true)
+        .setDestinationResponse(
+          destinationResponse.response.validationMessages[0].description
+        )
+        .setStatTags({
+          destination: dest,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(status)
+        })
+        .build();
+    }
   }
 
   // if the response from destination is not a success case build an explicit error

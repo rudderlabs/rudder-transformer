@@ -13,7 +13,8 @@ const {
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
-  constructPayload
+  constructPayload,
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -29,7 +30,8 @@ const {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   mappingConfig,
   ConfigCategory,
-  TRACK_CRM_ENDPOINT
+  TRACK_CRM_ENDPOINT,
+  CRM_ASSOCIATION_V3
 } = require("./config");
 const {
   getTraits,
@@ -42,6 +44,7 @@ const {
   getEventAndPropertiesFromConfig
 } = require("./util");
 
+// use legacy API
 /**
  * Using New API
  * Ref - https://developers.hubspot.com/docs/api/crm/contacts
@@ -111,7 +114,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       Authorization: `Bearer ${Config.accessToken}`
     };
   } else {
-    // API Key
+    // use legacy API Key
     response.params = { hapikey: Config.apiKey };
   }
 
@@ -179,7 +182,79 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       Authorization: `Bearer ${Config.accessToken}`
     };
   } else {
-    // API Key
+    // use legacy API Key
+    response.params = { hapikey: Config.apiKey };
+  }
+
+  return response;
+};
+
+/**
+ * CRM Custom Objects
+ * Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+ * Associations v3
+ * Ref - https://developers.hubspot.com/docs/api/crm/associations/v3
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propertyMap
+ */
+const processCRMCustomObjects = async (message, destination, traits) => {
+  const { Config } = destination;
+  let response = {};
+
+  const { contactId, qualifiedName, objects } = traits.hubspot;
+  if (!contactId) {
+    throw new Error(
+      "HubSpot contactId is not provided. Aborting custom-object association",
+      400
+    );
+  }
+
+  if (!qualifiedName) {
+    throw new Error(
+      "HubSpot qualifiedName is not provided. Aborting custom-object association",
+      400
+    );
+  }
+
+  if (!objects || !Array.isArray(objects) || objects.length === 0) {
+    throw new Error(
+      "HubSpot objects are not provided.  Aborting custom-object association",
+      400
+    );
+  }
+
+  const endpoint = CRM_ASSOCIATION_V3.replace(
+    ":fromObjectType",
+    qualifiedName
+  ).replace(":toObjectType", "contact");
+
+  const inputs = [];
+  objects.forEach(item => {
+    inputs.push({
+      from: { id: item.objectId },
+      to: { id: contactId },
+      type: `${item.objectType}_to_contact`
+    });
+  });
+
+  // creating response
+  response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.headers = {
+    "Content-Type": "application/json"
+  };
+  response.body.JSON = { inputs };
+
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  } else {
+    // use legacy API Key
     response.params = { hapikey: Config.apiKey };
   }
 
@@ -297,17 +372,25 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 
   let response;
   switch (message.type) {
-    case EventType.IDENTIFY:
+    case EventType.IDENTIFY: {
+      response = [];
       if (destination.Config.apiVersion === "newApi") {
-        response = await processIdentify(message, destination, propertyMap);
+        response.push(await processIdentify(message, destination, propertyMap));
       } else {
-        response = await processLegacyIdentify(
-          message,
-          destination,
-          propertyMap
+        response.push(
+          await processLegacyIdentify(message, destination, propertyMap)
+        );
+      }
+
+      // handle CRM custom-objects
+      const traits = getFieldValueFromMessage(message, "traits");
+      if (traits.hubspot) {
+        response.push(
+          await processCRMCustomObjects(message, destination, traits)
         );
       }
       break;
+    }
     case EventType.TRACK:
       if (destination.Config.apiVersion === "newApi") {
         response = await processTrack(message, destination, propertyMap);
@@ -656,15 +739,28 @@ const processRouterDest = async inputs => {
           });
         } else {
           // event is not transformed
-          successRespList.push({
-            message: await processSingleMessage(
-              input.message,
-              destination,
-              propertyMap
-            ),
-            metadata: input.metadata,
-            destination
-          });
+          const receivedResponse = await processSingleMessage(
+            input.message,
+            destination,
+            propertyMap
+          );
+          if (Array.isArray(receivedResponse)) {
+            // received response is in array format [{}, {}, {}, ..., {}]
+            receivedResponse.forEach(element => {
+              successRespList.push({
+                message: element,
+                metadata: input.metadata,
+                destination
+              });
+            });
+          } else {
+            // received response is in JSON format {}
+            successRespList.push({
+              message: receivedResponse,
+              metadata: input.metadata,
+              destination
+            });
+          }
         }
       } catch (error) {
         errorRespList.push(

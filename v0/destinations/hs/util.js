@@ -157,7 +157,7 @@ const searchContacts = async (message, destination, lookupField = null) => {
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' key name i.e provided in config is required under traits for contact lookup`,
+      `[HS] Identify:: '${Config.lookupField}' key name i.e provided in config is required under traits for contact lookup`,
       400
     );
   }

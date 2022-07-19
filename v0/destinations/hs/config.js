@@ -30,6 +30,9 @@ const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 // track
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
+/* CRM Custom Objects */
+const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`;
+
 const ConfigCategory = {
   COMMON: {
     name: "HSCommonConfig"
@@ -60,6 +63,7 @@ module.exports = {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT,
+  CRM_ASSOCIATION_V3,
   ConfigCategory,
   mappingConfig,
   hsCommonConfigJson

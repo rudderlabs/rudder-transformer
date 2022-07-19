@@ -14,7 +14,9 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getHashFromArray,
+  getHashFromArrayWithDuplicate
 } = require("../../util");
 const {
   trackMapping,
@@ -35,6 +37,7 @@ function checkIfValidPhoneNumber(str) {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const pixel_code = Config.pixelCode;
+  const eventsToStandard = Config.eventsToStandard;
 
   let event = get(message, "event");
   event = event ? event.trim().toLowerCase() : event;
@@ -42,10 +45,21 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Event name is required", 400);
   }
 
-  if (eventNameMapping[event] === undefined) {
+  const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
+  const trimmedEvent = event.toLowerCase().trim();
+
+  if (
+    eventNameMapping[event] === undefined &&
+    !standardEventsMap[trimmedEvent]
+  ) {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
-  event = eventNameMapping[event];
+
+  if (standardEventsMap[trimmedEvent]) {
+    event = standardEventsMap[trimmedEvent];
+  } else {
+    event = eventNameMapping[event];
+  }
 
   let payload = constructPayload(message, trackMapping);
 

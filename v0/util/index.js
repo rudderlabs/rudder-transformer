@@ -120,6 +120,39 @@ const getHashFromArray = (
   return hashMap;
 };
 
+/**
+ * Format the destination.Config.dynamicMap arrays to hashMap
+ * Convert an array map to hashmap(value as an array)
+ * @param  {} arrays [{"from":"prop1","to":"val1"},{"from":"prop1","to":"val2"},{"from":"prop2","to":"val2"}]
+ * @param  {} fromKey="from"
+ * @param  {} toKey="to"
+ * @param  {} isLowerCase=true
+ * @param  {} return hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
+ */
+const getHashFromArrayWithDuplicate = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (!isNotEmpty(array[fromKey])) return;
+      const key = isLowerCase
+        ? array[fromKey].toLowerCase().trim()
+        : array[fromKey].trim();
+
+      if (hashMap[key]) {
+        hashMap[key].push(array[toKey]);
+      } else {
+        hashMap[key] = [array[toKey]];
+      }
+    });
+  }
+  return hashMap;
+};
+
 // NEED to decouple value finding and `required` checking
 // NEED TO DEPRECATE
 const setValues = (payload, message, mappingJson) => {
@@ -1455,6 +1488,7 @@ module.exports = {
   getFirstAndLastName,
   getFullName,
   getHashFromArray,
+  getHashFromArrayWithDuplicate,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,

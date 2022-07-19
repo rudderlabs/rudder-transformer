@@ -1,8 +1,10 @@
+const get = require("get-value");
 const { send, httpGET, httpPOST } = require("../../../adapters/network");
 const {
   getFieldValueFromMessage,
   constructPayload,
-  CustomError
+  CustomError,
+  isEmpty
 } = require("../../util");
 const { CONTACT_PROPERTIES, IDENTIFY_CRM_SEARCH_CONTACT } = require("./config");
 
@@ -237,6 +239,53 @@ const getCRMUpdatedProps = properties => {
   return updatedProps;
 };
 
+const getEventAndPropertiesFromConfig = (message, destination, payload) => {
+  const { eventProperties, customBehavioralEvents } = destination.Config;
+
+  let event = get(message, "event");
+  if (!event) {
+    throw new CustomError("event is required for track call", 400);
+  }
+  event = event.trim().toLowerCase();
+  let eventName;
+  const properties = {};
+
+  // 1. fetch event name from webapp config
+  const customBehavioralEventFound = customBehavioralEvents.some(
+    customBehavioralEvent => {
+      if (
+        customBehavioralEvent &&
+        customBehavioralEvent.from &&
+        customBehavioralEvent.from.trim().toLowerCase() === event
+      ) {
+        if (!isEmpty(customBehavioralEvent.to)) {
+          eventName = customBehavioralEvent.to.trim();
+          return true;
+        }
+      }
+      return false;
+    }
+  );
+
+  if (!customBehavioralEventFound) {
+    throw new CustomError(`[HS]:: '${event}' event not found`, 400);
+  }
+
+  // 2. fetch event properties from webapp config
+  eventProperties.forEach(eventProperty => {
+    if (eventProperty && eventProperty.from) {
+      const value = get(message, `properties.${eventProperty.from}`);
+      if (value && eventProperty.to) {
+        properties[`${eventProperty.to}`] = value;
+      }
+    }
+  });
+
+  // eslint-disable-next-line no-param-reassign
+  payload = { ...payload, eventName, properties };
+  return payload;
+};
+
 module.exports = {
   formatKey,
   getTraits,
@@ -246,5 +295,6 @@ module.exports = {
   getAllContactProperties,
   getEmailAndUpdatedProps,
   getCRMUpdatedProps,
+  getEventAndPropertiesFromConfig,
   searchContacts
 };

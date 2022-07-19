@@ -54,6 +54,8 @@ describe(`${name} Tests`, () => {
   });
 
   // Legacy API
+  // It has different test cases as this (NEW API) destination config can
+  // change in the middle of legacy batching causing issue with the existing flow
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(

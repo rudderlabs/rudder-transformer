@@ -355,5 +355,30 @@
   {
     "statusCode": 400,
     "error": "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.hubapi.com/events/v3/send",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "testhubspot2@email.com",
+        "occurredAt": "2019-10-15T09:35:31.291Z",
+        "eventName": "pe22315509_rs_hub_test",
+        "properties": {
+          "value": 100
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

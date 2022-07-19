@@ -24,16 +24,26 @@ const IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contact
 // batch for identify
 const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
 const BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
+// Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 
+// track
+const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
+
 const ConfigCategory = {
-  IDENTIFY: {
+  COMMON: {
     name: "HSCommonConfig"
+  },
+  TRACK: {
+    name: "HSTrackConfig"
+  },
+  TRACK_PROPERTIES: {
+    name: "HSTrackPropertiesConfig"
   }
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-const hsCommonConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
+const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 
 module.exports = {
   BASE_ENDPOINT,
@@ -49,6 +59,7 @@ module.exports = {
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
+  TRACK_CRM_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   hsCommonConfigJson

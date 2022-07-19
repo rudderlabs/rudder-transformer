@@ -12,7 +12,8 @@ const {
   addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  getDestinationExternalID
+  getDestinationExternalID,
+  constructPayload
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -25,7 +26,10 @@ const {
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT
+  BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  mappingConfig,
+  ConfigCategory,
+  TRACK_CRM_ENDPOINT
 } = require("./config");
 const {
   getTraits,
@@ -34,7 +38,8 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   searchContacts,
-  getCRMUpdatedProps
+  getCRMUpdatedProps,
+  getEventAndPropertiesFromConfig
 } = require("./util");
 
 /**
@@ -182,44 +187,51 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 };
 
 // using new API
-const processTrack = async (message, destination, propertyMap) => {
+const processTrack = async (message, destination) => {
   const { Config } = destination;
-  let parameters = {
-    _a: destination.Config.hubID,
-    _n: message.event,
-    _m: get(message, "properties.revenue") || get(message, "properties.value"),
-    id: getDestinationExternalID(message, "hubspotId")
-  };
 
-  parameters = removeUndefinedAndNullValues(parameters);
-  const userProperties = await getTransformedJSON(
+  let payload = constructPayload(
     message,
-    hsCommonConfigJson,
-    destination,
-    propertyMap
+    mappingConfig[ConfigCategory.TRACK.name]
   );
 
-  const payload = { ...parameters, ...userProperties };
-  const params = removeUndefinedAndNullValues(payload);
+  payload = getEventAndPropertiesFromConfig(message, destination, payload);
+
+  payload.properties = {
+    ...payload.properties,
+    ...constructPayload(
+      message,
+      mappingConfig[ConfigCategory.TRACK_PROPERTIES.name]
+    )
+  };
+
+  if (!payload.email && !payload.utk && !payload.contactId) {
+    throw new CustomError(
+      "[HS]:: either of email, utk or contactId is required for custom behavioral events",
+      400
+    );
+  }
 
   const response = defaultRequestConfig();
-  response.endpoint = TRACK_ENDPOINT;
-  response.method = defaultGetRequestConfig.requestMethod;
+  response.endpoint = TRACK_CRM_ENDPOINT;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
   };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
     // remove hubId
     // eslint-disable-next-line no-underscore-dangle
-    delete params._a;
     response.headers = {
       ...response.headers,
       Authorization: `Bearer ${Config.accessToken}`
     };
+  } else {
+    // using legacyApiKey
+    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.hapikey}`;
   }
-  response.params = params;
 
   return response;
 };

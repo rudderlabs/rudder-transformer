@@ -356,23 +356,24 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
 };
 
 const responseHandler = (destinationResponse, dest) => {
-  // Config.debug decided
-  // }
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
-  let { status, response } = destinationResponse;
+  let { status } = destinationResponse;
+  const { response } = destinationResponse;
   if (status === 204) {
     status = 200;
+    // for GA4 debug validation endpoint, status is always 200
   } else if (status === 200 && isNotNull(response)) {
     const {
       description,
       validationCode,
       fieldPath
-    } = destinationResponse.response.validationMessages[0];
+    } = destinationResponse?.response?.validationMessages[0];
     if (destinationResponse.response.validationMessages.length === 0) {
+      // validationMessages[] is empty, thus event is valid
       status = 200;
     } else {
       throw new ErrorBuilder()
-        .setStatus(destinationResponse.status)
+        .setStatus(400)
         .setMessage(
           `[GA4 Validation Server Response Handler] Validation Error for ${dest} of fieldPath :${fieldPath} | ${validationCode}-${description}`
         )

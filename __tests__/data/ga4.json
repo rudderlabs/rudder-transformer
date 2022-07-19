@@ -9987,7 +9987,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[GA4] Identify:: 'firstLogin' is a required field in traits",
+      "error": "[GA4] Identify:: 'firstLogin' key name i.e provided in config is required under traits in order to differentiate between new or existing user",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",

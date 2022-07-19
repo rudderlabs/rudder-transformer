@@ -278,6 +278,8 @@ const responseBuilder = (message, { Config }) => {
   // build response
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
+  // if debug_mode is true, we need to send the event to debug validation server
+  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
   if (Config.debugMode) {
     response.endpoint = DEBUGENDPOINT;
   } else {
@@ -304,13 +306,6 @@ const responseBuilder = (message, { Config }) => {
   }
 
   response.body.JSON = rawPayload;
-
-  // // if debug_mode is true, we need to send the event to debug validation server
-  // // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
-  // if (Config.debugMode) {
-  //   let debugModePayload = rawPayload;
-
-  // }
   return response;
 };
 

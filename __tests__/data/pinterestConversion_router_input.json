@@ -83,6 +83,8 @@
                 "tagId": "123456789",
                 "advertiserId": "429047995",
                 "appId": "429047995",
+                "enableDeduplication": true,
+                "deduplicationKey": "messageId",
                 "enhancedMatch": true,
                 "customProperties": [
                     {
@@ -187,6 +189,8 @@
                 "tagId": "123456789",
                 "advertiserId": "429047995",
                 "appId": "429047995",
+                "enableDeduplication": true,
+                "deduplicationKey": "messageId",
                 "enhancedMatch": true,
                 "customProperties": [
                     {
@@ -272,6 +276,8 @@
                 "tagId": "123456789",
                 "advertiserId": "429047995",
                 "appId": "429047995",
+                "enableDeduplication": true,
+                "deduplicationKey": "messageId",
                 "enhancedMatch": true,
                 "customProperties": [
                     {
@@ -376,6 +382,8 @@
                 "tagId": "123456789",
                 "advertiserId": "",
                 "appId": "429047995",
+                "enableDeduplication": true,
+                "deduplicationKey": "messageId",
                 "enhancedMatch": true,
                 "customProperties": [
                     {

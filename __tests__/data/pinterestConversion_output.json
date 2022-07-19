@@ -656,7 +656,6 @@
       "JSON": {
         "event_time": 1597383030,
         "opt_out": true,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
         "action_source": "web",
         "event_name": "ViewCategory",
         "app_id": "429047995",

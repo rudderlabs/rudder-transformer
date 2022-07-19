@@ -21,6 +21,7 @@ const {
 } = require("./utils");
 
 const { MAX_BATCH_SIZE, USER_CONFIGS, CUSTOM_CONFIGS } = require("./config");
+const { get } = require("lodash");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
@@ -37,9 +38,17 @@ const responseBuilderSimple = finalPayload => {
 
 const identifyPageResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
-  const { appId, advertiserId } = Config;
+  const { appId, advertiserId, enableDeduplication, deduplicationKey } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
+  /* 
+    message deduplication facility is provided *only* for the users who are using the *new configuration*.
+    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be 
+    sent as "event_id". On it's absence it will fallback to "messageId".
+  */
+  if(isDefinedAndNotNull(enableDeduplication) && enableDeduplication === true) {
+    processedCommonPayload.event_id = isDefinedAndNotNull(deduplicationKey) ? get(message,`${Config.deduplicationKey}`) : message.messageId;
+  }
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {

@@ -126,8 +126,9 @@ const processCommonPayload = message => {
  * will be labled as "custom" events.
  */
 
-const deduceTrackEventName = (message, Config) => {
-  const { event } = message;
+const deduceTrackScreenEventName = (message, Config) => {
+  const { event,name } = message;
+  let trackEventOrScreenName = event || name;
   let eventName = "";
   /*
   Step 1: To find if the particular event is amongst the list of standard 
@@ -135,7 +136,7 @@ const deduceTrackEventName = (message, Config) => {
           mappings.
   */
   const eventMapInfo = ecomEventMaps.find(eventMap => {
-    if (eventMap.src.includes(event.toLowerCase())) {
+    if (eventMap.src.includes(trackEventOrScreenName.toLowerCase())) {
       return eventMap;
     }
     return false;
@@ -146,7 +147,7 @@ const deduceTrackEventName = (message, Config) => {
    */
   if (!eventMapInfo && Config.eventsMapping.length > 0) {
     const keyMap = getHashFromArray(Config.eventsMapping, "from", "to", false);
-    eventName = keyMap[event];
+    eventName = keyMap[trackEventOrScreenName];
   } else if (isDefinedAndNotNull(eventMapInfo)) {
     eventName = eventMapInfo.dest;
   }
@@ -183,7 +184,8 @@ const deduceEventName = (message, Config) => {
         : "PageVisit";
       break;
     case EventType.TRACK:
-      eventName = deduceTrackEventName(message, Config);
+    case EventType.SCREEN:
+      eventName = deduceTrackScreenEventName(message, Config);
       break;
     default:
       throw new CustomError(`The event of type ${type} is not supported`, 400);

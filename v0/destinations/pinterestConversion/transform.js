@@ -47,7 +47,7 @@ const identifyPageResponseBuilder = (message, { Config }) => {
     sent as "event_id". On it's absence it will fallback to "messageId".
   */
   if(isDefinedAndNotNull(enableDeduplication) && enableDeduplication === true) {
-    processedCommonPayload.event_id = isDefinedAndNotNull(deduplicationKey) ? get(message,`${Config.deduplicationKey}`) : message.messageId;
+    processedCommonPayload.event_id = get(message,`${Config.deduplicationKey}`) || message.messageId;
   }
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
@@ -177,6 +177,7 @@ const process = event => {
   switch (messageType) {
     case EventType.IDENTIFY:
     case EventType.PAGE:
+    case EventType.SCREEN:
       response = identifyPageResponseBuilder(message, destination);
       break;
     case EventType.TRACK:

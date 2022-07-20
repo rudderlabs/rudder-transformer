@@ -1314,7 +1314,7 @@
             "context": {
                 "source": "test",
                 "userAgent": "chrome",
-                "requestIP": "127.0.0.0",
+                "ip": "127.0.0.0",
                 "traits": {
                     "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
                     "phone": "+1234589947",
@@ -1423,13 +1423,7 @@
                 "title": "",
                 "url": ""
             },
-            "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-            "integrations": {
-                "All": true,
-                "Pinterest": {
-                    "hashed": true
-                }
-            }
+            "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
         "destination": {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
@@ -1438,6 +1432,7 @@
                 "tagId": "123456789",
                 "advertiserId": "123456",
                 "appId": "429047995",
+                "hashed": true,
                 "enhancedMatch": true,
                 "customProperties": [
                     {
@@ -1483,7 +1478,8 @@
                     }
                 },
                 "device": {
-                    "advertisingId": "abc123"
+                    "advertisingId": "abc123",
+                    "attStatus": 3
                 },
                 "library": {
                     "name": "rudder-sdk-ruby-sync",

@@ -19,17 +19,6 @@
         "sourceFromGenericMap": true
     },
     {
-        "destKey": "opt_out",
-        "sourceKeys": [
-            "context.device.attStatus",
-            "context.device.adTrackingEnabled",
-            "context.traits.opt_out",
-            "context.traits.optOut",
-            "properties.opt_out",
-            "properties.optOut"
-        ]
-    },
-    {
         "destKey": "action_source",
         "sourceKeys": [
             "context.traits.action_source",

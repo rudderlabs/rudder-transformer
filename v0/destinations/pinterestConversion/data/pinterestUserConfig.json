@@ -19,35 +19,35 @@
         ],
         "required": false,
         "metadata": {
-            "type": "getFbGenderVal"
-        }
+            "multikeyMap": [
+              {
+                "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+                "destVal": "f"
+              },
+              {
+                "sourceVal": ["m", "M", "Male", "male", "MALE"],
+                "destVal": "m"
+              }
+            ]
+          }
     },
     {
         "destKey": "db",
         "sourceKeys": "birthday",
         "required": false,
-        "sourceFromGenericMap": true,
-        "metadata": {
-            "type": "hashToSha256"
-        }
+        "sourceFromGenericMap": true
     },
     {
         "destKey": "ln",
         "sourceKeys": "lastName",
         "required": false,
-        "sourceFromGenericMap": true,
-        "metadata": {
-            "type": "hashToSha256"
-        }
+        "sourceFromGenericMap": true
     },
     {
         "destKey": "fn",
         "sourceKeys": "firstName",
         "required": false,
-        "sourceFromGenericMap": true,
-        "metadata": {
-            "type": "hashToSha256"
-        }
+        "sourceFromGenericMap": true
     },
     {
         "destKey": "ct",
@@ -95,19 +95,13 @@
         "sourceKeys": [
             "context.device.advertisingId"
         ],
-        "required": false,
-        "metadata": {
-            "type": "hashToSha256"
-        }
+        "required": false
     },
     {
         "destKey": "client_ip_address",
         "sourceKeys": [
             "context.ip",
-            "request_ip",
-            "context.requestIP",
-            "properties.ip",
-            "properties.clientIpAddress"
+            "request_ip"
         ],
         "required": false
     },

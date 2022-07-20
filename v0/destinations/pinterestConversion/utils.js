@@ -5,6 +5,7 @@ const {
   CustomError,
   constructPayload,
   isDefinedAndNotNull,
+  isDefined,
   getHashFromArray
 } = require("../../util");
 const { COMMON_CONFIGS } = require("./config");
@@ -54,20 +55,47 @@ const processUserPayload = userPayload => {
       case "ct":
       case "st":
       case "country":
-        userPayload[key] = [sha256(formatValue)];
-        break;
       case "ge":
       case "db":
       case "ln":
       case "fn":
       case "hashed_maids":
-        userPayload[key] = [userPayload[key]];
+        userPayload[key] = [sha256(userPayload[key])];
         break;
       default:
         userPayload[key] = String(userPayload[key]);
     }
   });
   return userPayload;
+};
+
+/**
+ * 
+ * @param {*} message 
+ * @returns opt_out status 
+ *
+ */
+
+const deduceOptOutStatus = ( message) => {
+  const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
+   const attStatus = message.context?.device?.attStatus;
+  let opt_out;
+
+  // for android
+  if(isDefinedAndNotNull(adTrackingEnabled)) {
+    if(adTrackingEnabled === true) {
+      opt_out = false;
+    } else if (adTrackingEnabled === false) {
+      opt_out = true;
+    }
+}
+  // for ios
+  if (isDefinedAndNotNull(attStatus)) {
+    opt_out = attStatus === 3 ? true : false;
+  }
+
+  return opt_out;
+
 };
 
 /**
@@ -90,15 +118,9 @@ const processCommonPayload = message => {
       400
     );
   }
-   const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
 
-  if(isDefinedAndNotNull(adTrackingEnabled)) {
-        if(adTrackingEnabled === true) {
-          commonPayload.opt_out = false;
-        } else if (adTrackingEnabled === false) {
-          commonPayload.opt_out = true;
-        }
-  }
+   commonPayload.opt_out = deduceOptOutStatus(message);
+   
   return commonPayload;
 };
 
@@ -141,6 +163,10 @@ const deduceTrackScreenEventName = (message, Config) => {
     }
     return false;
   });
+
+  if (isDefinedAndNotNull(eventMapInfo)) {
+    return eventMapInfo.dest;
+  }
   /*
   Step 2: If the event is not amongst the above list of ecommerce events, will look for
           the event mapping in the UI. In case it is similar, will map to that.
@@ -148,17 +174,15 @@ const deduceTrackScreenEventName = (message, Config) => {
   if (!eventMapInfo && Config.eventsMapping.length > 0) {
     const keyMap = getHashFromArray(Config.eventsMapping, "from", "to", false);
     eventName = keyMap[trackEventOrScreenName];
-  } else if (isDefinedAndNotNull(eventMapInfo)) {
-    eventName = eventMapInfo.dest;
-  }
+    if(isDefined(eventName)) {
+      return eventName;
+    }
+  } 
   /*
   Step 3: In case both of the above stated cases fail, will mark the event as "custom"
  */
-  if (!isDefinedAndNotNull(eventName)) {
-    eventName = "custom";
-  }
 
-  return eventName;
+  return "custom";
 };
 
 /**

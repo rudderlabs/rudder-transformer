@@ -38,7 +38,7 @@ const responseBuilderSimple = finalPayload => {
 
 const commonFieldResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
-  const { appId, advertiserId, enableDeduplication, deduplicationKey } = Config;
+  const { appId, advertiserId, enableDeduplication, deduplicationKey, hashed } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
   /* 
@@ -46,7 +46,7 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be 
     sent as "event_id". On it's absence it will fallback to "messageId".
   */
-  if(isDefinedAndNotNull(enableDeduplication) && enableDeduplication === true) {
+  if(enableDeduplication) {
     processedCommonPayload.event_id = get(message,`${deduplicationKey}`) || message.messageId;
   }
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
@@ -58,23 +58,17 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     );
   }
 
-  /*
-   * If user needs to send already hashed data to Rudderstack, it needs to be sent 
-   * integrations object like below:
-   * integrations: {
-      "Pinterest": {
-        "hashed": true,
-      }
-    }
+  /**
+   * User can configure hashed checkbox to true if they are sending already hashed data to Rudderstack
+   * Otherwise we will hash data user data by default.
    */
-  const integrationsObj = getIntegrationsObj(message, "pinterest");
-  if (!isDefinedAndNotNull(integrationsObj) || integrationsObj?.hashed !== true) {
-     processedUserPayload = processUserPayload(userPayload);
-  } else {
+  if (hashed) {
     processedUserPayload = userPayload;
-    // getFbGenderVal works on only specific values like m, male, MALE, f, F, Female
+    // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
     // if hashed data is sent from the user, it is directly set over here
-    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;
+    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;  
+  } else {
+    processedUserPayload = processUserPayload(userPayload);
   }
   const deducedEventName = deduceEventName(message, Config);
 
@@ -95,12 +89,11 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     There is no mention of it, in the documentation. In case, if we can send, 
     will add that.
  */
-const trackResponseBuilder = (message, destination) => {
+const trackResponseBuilder = (message, mandatoryPayload) => {
   const contentArray = [];
   const contentIds = [];
   const { properties } = message;
   let totalQuantity = 0;
-  const mandatoryPayload = commonFieldResponseBuilder(message, destination);
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   let customPayload = constructPayload(message, CUSTOM_CONFIGS);
 
@@ -160,6 +153,7 @@ const trackResponseBuilder = (message, destination) => {
 };
 const process = event => {
   let response = {};
+  let mandatoryPayload = {};
   const { message, destination } = event;
    const messageType = message.type?.toLowerCase();
 
@@ -178,16 +172,22 @@ const process = event => {
     case EventType.IDENTIFY:
     case EventType.PAGE:
     case EventType.SCREEN:
-      response = commonFieldResponseBuilder(message, destination);
-      break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+       mandatoryPayload = commonFieldResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(
         `message type ${messageType} is not supported`,
         400
       );
+  }
+  /**
+   * Track payloads will need additional custom parameters
+   */
+  if(messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, mandatoryPayload);
+  } else {
+    response = mandatoryPayload;
   }
   return responseBuilderSimple(response);
 };

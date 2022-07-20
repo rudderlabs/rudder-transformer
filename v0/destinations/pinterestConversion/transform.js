@@ -36,7 +36,7 @@ const responseBuilderSimple = finalPayload => {
   };
 };
 
-const identifyPageResponseBuilder = (message, { Config }) => {
+const commonFieldResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
   const { appId, advertiserId, enableDeduplication, deduplicationKey } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
@@ -47,7 +47,7 @@ const identifyPageResponseBuilder = (message, { Config }) => {
     sent as "event_id". On it's absence it will fallback to "messageId".
   */
   if(isDefinedAndNotNull(enableDeduplication) && enableDeduplication === true) {
-    processedCommonPayload.event_id = get(message,`${Config.deduplicationKey}`) || message.messageId;
+    processedCommonPayload.event_id = get(message,`${deduplicationKey}`) || message.messageId;
   }
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
@@ -100,7 +100,7 @@ const trackResponseBuilder = (message, destination) => {
   const contentIds = [];
   const { properties } = message;
   let totalQuantity = 0;
-  const mandatoryPayload = identifyPageResponseBuilder(message, destination);
+  const mandatoryPayload = commonFieldResponseBuilder(message, destination);
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   let customPayload = constructPayload(message, CUSTOM_CONFIGS);
 
@@ -178,7 +178,7 @@ const process = event => {
     case EventType.IDENTIFY:
     case EventType.PAGE:
     case EventType.SCREEN:
-      response = identifyPageResponseBuilder(message, destination);
+      response = commonFieldResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);

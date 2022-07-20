@@ -10,7 +10,6 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
-  defaultBatchRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
   CustomError,
@@ -31,7 +30,8 @@ const {
   getPriceSum,
   getDataUseValue,
   getNormalizedPhoneNumber,
-  channelMapping, generateBatchedPayloadForArray
+  channelMapping,
+  generateBatchedPayloadForArray
 } = require("./util");
 const _ = require("lodash");
 
@@ -394,10 +394,10 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  let eventsChunk = []; // temporary variable to divide payload into chunks
+  const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map( event => {
       try {
         if (event.message.statusCode) {
           // already transformed event

@@ -122,7 +122,7 @@ const getHashFromArray = (
 
 /**
  * Format the destination.Config.dynamicMap arrays to hashMap
- * Convert an array map to hashmap(value as an array)
+ * where value is an array
  * @param  {} arrays [{"from":"prop1","to":"val1"},{"from":"prop1","to":"val2"},{"from":"prop2","to":"val2"}]
  * @param  {} fromKey="from"
  * @param  {} toKey="to"

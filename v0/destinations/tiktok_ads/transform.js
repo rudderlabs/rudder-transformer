@@ -100,7 +100,6 @@ const getTrackResponse = (message, Config, event) => {
   response.endpoint = TRACK_ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
-  // payload = removeUndefinedAndNullValues(payload);
   return response;
 };
 
@@ -119,7 +118,6 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   if (
     eventNameMapping[event] === undefined &&
-    standardEventsMap &&
     !standardEventsMap[trimmedEvent]
   ) {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
@@ -127,9 +125,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   if (standardEventsMap[trimmedEvent]) {
     returnValue = [];
-    // standardEventsMap[trimmedEvent].forEach(val => {
     Object.keys(standardEventsMap).forEach(key => {
-      // event = val;
       if (key === trimmedEvent) {
         standardEventsMap[trimmedEvent].forEach(val => {
           returnValue.push(getTrackResponse(message, Config, val));
@@ -142,70 +138,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   event = eventNameMapping[event];
 
-  let payload = constructPayload(message, trackMapping);
-
-  const externalId = getDestinationExternalID(message, "tiktokExternalId");
-  if (isDefinedAndNotNullAndNotEmpty(externalId)) {
-    set(payload, "context.user.external_id", externalId);
-  }
-
-  const traits = getFieldValueFromMessage(message, "traits");
-
-  // taking user properties like email and phone from traits
-  let email = get(payload, "context.user.email");
-  if (!isDefinedAndNotNullAndNotEmpty(email) && traits?.email) {
-    set(payload, "context.user.email", traits.email);
-  }
-
-  let phone_number = get(payload, "context.user.phone_number");
-  if (!isDefinedAndNotNullAndNotEmpty(phone_number) && traits?.phone) {
-    set(payload, "context.user.phone_number", traits.phone);
-  }
-
-  payload = { pixel_code, event, ...payload };
-
-  /*
-   * Hashing user related detail i.e external_id, email, phone_number
-   */
-
-  if (Config.hashUserProperties) {
-    const external_id = get(payload, "context.user.external_id");
-    if (isDefinedAndNotNullAndNotEmpty(external_id)) {
-      payload.context.user.external_id = SHA256(external_id.trim()).toString();
-    }
-
-    email = get(payload, "context.user.email");
-    if (isDefinedAndNotNullAndNotEmpty(email)) {
-      payload.context.user.email = SHA256(
-        email.trim().toLowerCase()
-      ).toString();
-    }
-
-    phone_number = get(payload, "context.user.phone_number");
-    if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
-      if (checkIfValidPhoneNumber(phone_number.trim())) {
-        payload.context.user.phone_number = SHA256(
-          phone_number.trim()
-        ).toString();
-      } else {
-        throw new CustomError(
-          "Invalid phone number. Include proper country code except +86. Aborting ",
-          400
-        );
-      }
-    }
-  }
-
-  response.headers = {
-    "Access-Token": Config.accessToken,
-    "Content-Type": "application/json"
-  };
-
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = TRACK_ENDPOINT;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-
-  return response;
+  return getTrackResponse(message, Config, event);
 };
 
 const process = async event => {

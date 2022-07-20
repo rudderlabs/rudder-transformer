@@ -38,7 +38,7 @@ const responseBuilderSimple = finalPayload => {
 
 const commonFieldResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
-  const { appId, advertiserId, enableDeduplication, deduplicationKey, hashed } = Config;
+  const { appId, advertiserId, enableDeduplication, deduplicationKey, sendingUnHashedData } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
   /* 
@@ -62,7 +62,7 @@ const commonFieldResponseBuilder = (message, { Config }) => {
    * User can configure hashed checkbox to true if they are sending already hashed data to Rudderstack
    * Otherwise we will hash data user data by default.
    */
-  if (hashed) {
+  if (sendingUnHashedData) {
     processedUserPayload = userPayload;
     // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
     // if hashed data is sent from the user, it is directly set over here

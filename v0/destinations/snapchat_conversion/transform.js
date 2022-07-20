@@ -34,6 +34,7 @@ const {
   channelMapping
 } = require("./util");
 
+// Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
   let payload = {};
   const event = mappedEvent.trim().replace(/\s+/g, "_");
@@ -292,6 +293,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   return response;
 }
 
+// Checks if there are any mapping events for the track event and returns them
 function eventMappingHandler(message, destination) {
   const event = get(message, "event");
   if (!event) {
@@ -435,7 +437,7 @@ const processRouterDest = async inputs => {
           }
         } else {
           // if not transformed
-          let response = await process(event);
+          let response = process(event);
           response = Array.isArray(response) ? response : [response];
           response.forEach(res => {
             getEventChunks(

@@ -2,7 +2,12 @@ const get = require("get-value");
 const sha256 = require("sha256");
 const { logger } = require("handlebars");
 
-const { isDefinedAndNotNull, getFieldValueFromMessage } = require("../../util");
+const {
+  isDefinedAndNotNull,
+  getFieldValueFromMessage,
+  defaultBatchRequestConfig
+} = require("../../util");
+const { ENDPOINT } = require("./config");
 
 const channelMapping = {
   web: "WEB",
@@ -101,6 +106,46 @@ function getPriceSum(message) {
   return String(priceSum);
 }
 
+/**
+ * Create Mailchimp Batch payload based on the passed events
+ * @param {*} events
+ * @returns
+ */
+const generateBatchedPayloadForArray = events => {
+  const batchResponseList = [];
+  const metadata = [];
+
+  // extracting destination
+  // from the first event in a batch
+  const { destination } = events[0];
+  const { apiKey } = destination.Config;
+
+  let batchEventResponse = defaultBatchRequestConfig();
+
+  // Batch event into dest batch structure
+  events.forEach(ev => {
+    batchResponseList.push(ev.message.body.JSON);
+    metadata.push(ev.metadata);
+  });
+
+  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+    batch: JSON.stringify(batchResponseList)
+  };
+
+  batchEventResponse.batchedRequest.endpoint = ENDPOINT;
+  batchEventResponse.batchedRequest.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${apiKey}`
+  };
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination
+  };
+
+  return batchEventResponse;
+};
+
 module.exports = {
   msUnixTimestamp,
   getItemIds,
@@ -108,5 +153,6 @@ module.exports = {
   getDataUseValue,
   getNormalizedPhoneNumber,
   getHashedValue,
-  channelMapping
+  channelMapping,
+  generateBatchedPayloadForArray
 };

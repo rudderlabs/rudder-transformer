@@ -31,8 +31,9 @@ const {
   getPriceSum,
   getDataUseValue,
   getNormalizedPhoneNumber,
-  channelMapping
+  channelMapping, generateBatchedPayloadForArray
 } = require("./util");
+const _ = require("lodash");
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -358,41 +359,17 @@ function process(event) {
   return response;
 }
 
-function batchEvents(arrayChunks) {
+function batchEvents(eventsChunk) {
   const batchedResponseList = [];
 
-  // list of chunks [ [..], [..] ]
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  const arrayChunks = _.chunk(
+    eventsChunk,
+    MAX_BATCH_SIZE
+  );
+
   arrayChunks.forEach(chunk => {
-    const batchResponseList = [];
-    const metadata = [];
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    // Batch event into dest batch structure
-    chunk.forEach(ev => {
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
-    });
-
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(batchResponseList)
-    };
-
-    batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-    batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    };
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
+    const batchEventResponse = generateBatchedPayloadForArray(chunk);
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
@@ -418,7 +395,6 @@ const processRouterDest = async inputs => {
   }
 
   let eventsChunk = []; // temporary variable to divide payload into chunks
-  const arrayChunks = []; // transformed payload of (2000) batch size
   const errorRespList = [];
   await Promise.all(
     inputs.map(async (event, index) => {
@@ -426,15 +402,6 @@ const processRouterDest = async inputs => {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, eventsChunk);
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         } else {
           // if not transformed
           let response = process(event);
@@ -449,16 +416,6 @@ const processRouterDest = async inputs => {
               eventsChunk
             );
           });
-
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         }
       } catch (error) {
         errorRespList.push(
@@ -473,8 +430,8 @@ const processRouterDest = async inputs => {
   );
 
   let batchedResponseList = [];
-  if (arrayChunks.length) {
-    batchedResponseList = batchEvents(arrayChunks);
+  if (eventsChunk.length) {
+    batchedResponseList = batchEvents(eventsChunk);
   }
   return [...batchedResponseList, ...errorRespList];
 };

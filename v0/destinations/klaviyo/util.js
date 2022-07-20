@@ -23,11 +23,11 @@ const {
 } = require("./config");
 
 /**
- * This function is used to check if the user/profile already exists or not, if already exists unique person_id 
+ * This function is used to check if the user/profile already exists or not, if already exists unique person_id
  * for that user is getting returned else false is returned.
  * Docs: https://developers.klaviyo.com/en/reference/get-profile-id
- * @param {*} message 
- * @param {*} Config 
+ * @param {*} message
+ * @param {*} Config
  * @returns
  */
 const isProfileExist = async (message, { Config }) => {
@@ -37,7 +37,7 @@ const isProfileExist = async (message, { Config }) => {
     external_id: getFieldValueFromMessage(message, "userId"),
     phone_number: getFieldValueFromMessage(message, "phone")
   };
-  
+
   for (const id in userIdentifiers) {
     if (isDefinedAndNotNull(userIdentifiers[id])) {
       const profileResponse = await httpGET(
@@ -60,19 +60,15 @@ const isProfileExist = async (message, { Config }) => {
   return false;
 };
 
-// A sigle func to handle the addition of user to a list
-// from an identify call.
-// DOCS: https://www.klaviyo.com/docs/api/v2/lists
-
+/**
+ * This function is used for creating response for adding members to a specific list 
+ * and subscribing members to a particular list depending on the condition passed.
+ * DOCS: https://www.klaviyo.com/docs/api/v2/lists
+ */
 const addUserToList = (message, traitsInfo, conf, destination) => {
-  // Check if list Id is present in message properties, if yes override
-  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${destination.Config.listId}`;
-  if (get(traitsInfo?.properties, "listId")) {
-    targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-      traitsInfo.properties,
-      "listId"
-    )}`;
-  }
+  // listId from message properties are preferred over Config listId
+  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${traitsInfo.properties
+    ?.listId || destination.Config.listId}`;
   let profile = {
     id: getFieldValueFromMessage(message, "userId"),
     email: getFieldValueFromMessage(message, "email"),
@@ -88,12 +84,10 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
   } else {
     // get consent statuses from message if availabe else from dest config
     targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent = get(traitsInfo.properties, "smsConsent")
-      ? get(traitsInfo.properties, "smsConsent")
-      : destination.Config.smsConsent;
-    profile.$consent = get(traitsInfo.properties, "consent")
-      ? get(traitsInfo.properties, "consent")
-      : destination.Config.consent;
+    profile.sms_consent =
+      traitsInfo.properties?.smsConsent || destination.Config.smsConsent;
+    profile.$consent =
+      traitsInfo.properties?.consent || destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
   const payload = {
@@ -115,10 +109,10 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
  * This function is used to check if the user needs to be added to list or needs to be subscribed or not.
  * Building and returning response array for both the members(for adding to the list) and subscribe
  * endpoints (for subscribing)
- * @param {*} message 
- * @param {*} traitsInfo 
- * @param {*} destination 
- * @returns 
+ * @param {*} message
+ * @param {*} traitsInfo
+ * @param {*} destination
+ * @returns
  */
 const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];

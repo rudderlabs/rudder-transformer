@@ -38,37 +38,41 @@ const {
   defaultPutRequestConfig
 } = require("../../util");
 
-// ---------------------
-// Main Identify request handler func
-// internally it uses axios if membership and(or)
-// subscription is enabled for that user to
-// specific List.
-// DOCS: https://www.klaviyo.com/docs/http-api
-// ---------------------
+/**
+ * Main Identify request handler func
+ * The function is used to create/update new users and also for adding/subscribing 
+ * members to the list depending on conditons.If listId is there member is added to that list & 
+ * if subscribe is true member is subscribed to that list else not.
+ * DOCS: https://www.klaviyo.com/docs/http-api
+ * @param {*} message 
+ * @param {*} category 
+ * @param {*} destination 
+ * @returns 
+ */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  if (!destination.Config.privateApiKey) {
-    throw new CustomError(
-      "Private API Key is a required field for identify events",
-      400
-    );
-  }
-  const traitsInfo = getFieldValueFromMessage(message, "traits");
-  const response = defaultRequestConfig();
-  const personId = await isProfileExist(message, destination);
-  if (!personId) {
+  if (!destination.Config.publicApiKey || !destination.Config.privateApiKey) {
     if (!destination.Config.publicApiKey) {
       throw new CustomError(
         "Public API Key is a required field for identify events",
         400
       );
+    } else {
+      throw new CustomError(
+        "Private API Key is a required field for identify events",
+        400
+      );
     }
-    const mappedToDestination = get(message, MappedToDestinationKey);
-    if (mappedToDestination) {
-      addExternalIdToTraits(message);
-      adduserIdFromExternalId(message);
-    }
-    // actual identify call
+  }
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    addExternalIdToTraits(message);
+    adduserIdFromExternalId(message);
+  }
+  const traitsInfo = getFieldValueFromMessage(message, "traits");
+  const response = defaultRequestConfig();
+  const personId = await isProfileExist(message, destination);
+  if (!personId) {
     let propertyPayload = constructPayload(
       message,
       MAPPING_CONFIG[category.name]

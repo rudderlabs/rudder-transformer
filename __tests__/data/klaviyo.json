@@ -1012,7 +1012,7 @@
           "Accept": "application/json"
         },
         "params": {
-          "$id": "utsabc",
+          "$id": "utsab@rudderstack.com",
           "$email": "utsab@rudderstack.com",
           "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
         },
@@ -1076,7 +1076,7 @@
       }
     },
     "output": {
-        "error": "Private API Key is a required field for identify events"
+      "error": "Private API Key is a required field for identify events"
     }
   },
   {
@@ -1152,7 +1152,7 @@
       }
     },
     "output": {
-        "error": "Public API Key is a required field for track events"
+      "error": "Public API Key is a required field for track events"
     }
   }
 ]

@@ -2069,5 +2069,43 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "dp": "%2Fcampaignmanager%2Fanswer%2F7554821",
+      "dl": "https://support.google.com/campaignmanager/answer/7554821?zippy=%2Cfields-in-event-snippets-for-counter-tags%2Cstep-add-the-global-snippet-to-every-page-of-your-site%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-lakjsdlkfjalsdkfjis-the-global-site-tag-placed-in-the-head-lakjsdlkfjalsdkfjis-the-global-site-tag-placed-in-the-head-lakjsdlkfjalsdkfjakljshdlfkjahsldkfjahlskdfjhaklsjdfhalksjdhflakjshdflakjsdhfklasjhdflaksjhdflaksjdfhlakjshdflakjsdhfklasjhdflaksjhdflaksjdfhlakjshdflakjsdhfklasjhdflaksjhdflaksjdfhljkkwoipqpweoirpoqiwerpoqi1111111111111",
+      "dh": "support.google.com",
+      "dt": "a",
+      "dr": "https://google.com/answer/7554821?zippy=%2Cfields-in-event-snippets-for-counter-tags%2Cstep-add-the-global-snippet-to-every-page-of-your-site%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cstep-add-the-event-snippet-to-pages-with-events-youre-tracking%2Cfields-in-the-global-snippet%2Cfields-in-the-event-snippet---overview%2Cfields-in-all-event-snippets%2Cexample-event-snippet-for-counter---standard-activities%2Cexample-event-snippet-for-counter---unique-activities%2Cexample-event-snippet-for-counter---per-session-activities%2Cfields-in-event-snippets-for-sales-tags%2Cexample-event-snippet-for-sales---transaction-activities%2Cexample-event-snippet-for-sales---items-sold-activities%2Ccustom-fields%2Cnoscript-section-of-event-snippets%2Cdo-i-need-to-set-up-cache-busting-with-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-tg%2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learns-more-about-the-global-site-tag%2Cwhy-is-the-globalthe-head-when-iframe-and-image-tags-were-placed-in-the-body-placed-of-my-site%2Cwhere-can-i-learn-g2Cwhy-is-the-global-site-tag-placed-in-the-head-when-iframe-and-and-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag%2Cwhy-n-the-head-when-iframe-and-image-tags-were-placed-in-the-body-of-my-site%2Cwhere-can-i-learn-more-about-the-global-site-tag",
+      "v": "1",
+      "t": "pageview",
+      "tid": "UA-165994240-1",
+      "ds": "web",
+      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+      "ul": "en-US",
+      "an": "RudderLabs JavaScript SDK",
+      "av": "1.0.0",
+      "aiid": "com.rudderlabs.javascript",
+      "cid": "00000000000000000000000000",
+      "uip": "0.0.0.0",
+      "qt": "8.6465591569e+10"
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "statusCode": 400,
+    "message": "The size of the payload is 8193 bytes. The payload data must be no longer than 8192 bytes."
   }
 ]

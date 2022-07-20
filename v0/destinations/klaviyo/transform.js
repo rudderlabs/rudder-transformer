@@ -278,13 +278,13 @@ const groupRequestHandler = (message, category, destination) => {
   )}/subscribe`;
   if (get(message.traits, "subscribe") === true) {
     // Adding Consent Info to Profiles
-    let subscribeProfile =JSON.parse(JSON.stringify(profile));
+    const subscribeProfile = JSON.parse(JSON.stringify(profile));
     subscribeProfile.sms_consent =
-      message?.context?.traits.smsConsent || destination.Config.smsConsent;
+      message.context?.traits.smsConsent || destination.Config.smsConsent;
     subscribeProfile.$consent =
-      message?.context?.traits.consent || destination.Config.consent;
+      message.context?.traits.consent || destination.Config.consent;
 
-    const payload = {
+    const subscribePayload = {
       profiles: [subscribeProfile]
     };
     const subscribeResponse = defaultRequestConfig();
@@ -292,7 +292,7 @@ const groupRequestHandler = (message, category, destination) => {
     subscribeResponse.headers = {
       "Content-Type": "application/json"
     };
-    subscribeResponse.body.JSON = payload;
+    subscribeResponse.body.JSON = subscribePayload;
     subscribeResponse.method = defaultPostRequestConfig.requestMethod;
     subscribeResponse.params = { api_key: destination.Config.privateApiKey };
     responseArray.push(subscribeResponse);

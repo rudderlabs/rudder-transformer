@@ -1,6 +1,5 @@
 const get = require("get-value");
 const { httpGET } = require("../../../adapters/network");
-const logger = require("../../../logger");
 
 const { WhiteListedTraits } = require("../../../constants");
 
@@ -62,9 +61,17 @@ const isProfileExist = async (message, { Config }) => {
         processedProfileResponse.response?.id
       ) {
         return processedProfileResponse.response.id;
-      } 
-      else if(!(processedProfileResponse.status === 404 && processedProfileResponse?.response.detail === "There is no profile matching the given parameters.")){
-        throw new CustomError("The call could not be completed",`${processedProfileResponse.status}`);
+      } else if (
+        !(
+          processedProfileResponse.status === 404 &&
+          processedProfileResponse?.response.detail ===
+            "There is no profile matching the given parameters."
+        )
+      ) {
+        throw new CustomError(
+          "The call could not be completed",
+          `${processedProfileResponse.status}`
+        );
       }
     }
   }

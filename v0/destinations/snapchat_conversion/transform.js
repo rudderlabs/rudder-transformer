@@ -14,7 +14,8 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   CustomError,
-  isAppleFamily
+  isAppleFamily,
+  getValidDynamicFormConfig
 } = require("../../util");
 const {
   ENDPOINT,
@@ -33,12 +34,8 @@ const {
   channelMapping
 } = require("./util");
 
-function trackResponseBuilder(message, { Config }) {
+function trackResponseBuilder(message, { Config }, event) {
   let payload = {};
-  let event = get(message, "event");
-  if (!event) {
-    throw new CustomError("[Snapchat] :: Event name is required", 400);
-  }
   event = event.trim().replace(/\s+/g, "_");
 
   const { apiKey, pixelId, snapAppId, appId } = Config;
@@ -278,10 +275,8 @@ function trackResponseBuilder(message, { Config }) {
 
   // adding for deduplication for more than one source
   if (Config.enableDeduplication) {
-    payload.client_dedup_id = get(
-      message,
-      `${Config.deduplicationKey || "messageId"}`
-    );
+    const dedupId = Config.deduplicationKey || "messageId";
+    payload.client_dedup_id = get(message, dedupId);
   }
   payload = removeUndefinedAndNullValues(payload);
 
@@ -295,6 +290,33 @@ function trackResponseBuilder(message, { Config }) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
+}
+
+function eventMappingHandler(message, destination) {
+  const event = get(message, "event");
+  if (!event) {
+    throw new CustomError("[Snapchat] :: Event name is required", 400);
+  }
+
+  let { rudderEventsToSnapEvents } = destination.Config;
+  const mappedEvents = new Set();
+
+  if (Array.isArray(rudderEventsToSnapEvents)) {
+    rudderEventsToSnapEvents = getValidDynamicFormConfig(
+      rudderEventsToSnapEvents,
+      "from",
+      "to",
+      "snapchat_conversion",
+      destination.ID
+    );
+    rudderEventsToSnapEvents.forEach(mapping => {
+      if (mapping["from"].toLowerCase() === event.toLowerCase()) {
+        mappedEvents.add(mapping["to"]);
+      }
+    });
+  }
+
+  return [...mappedEvents];
 }
 
 function process(event) {
@@ -311,7 +333,21 @@ function process(event) {
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      const mappedEvents = eventMappingHandler(message, destination);
+      if (mappedEvents.length > 0) {
+        response = [];
+        mappedEvents.forEach(event => {
+          const res = trackResponseBuilder(message, destination, event);
+          response.push(res);
+        });
+      }
+      else {
+        response = trackResponseBuilder(
+          message,
+          destination,
+          get(message, "event")
+        );
+      }
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
@@ -398,14 +434,19 @@ const processRouterDest = async inputs => {
           }
         } else {
           // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination
-            },
-            eventsChunk
-          );
+          let response = await process(event);
+          response = Array.isArray(response) ? response : [response];
+          response.forEach(res => {
+            getEventChunks(
+              {
+                message: res,
+                metadata: event.metadata,
+                destination: event.destination
+              },
+              eventsChunk
+            );
+          });
+
           // slice according to batch size
           if (
             eventsChunk.length &&

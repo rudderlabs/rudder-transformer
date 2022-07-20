@@ -125,8 +125,6 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
 
-  const response = defaultRequestConfig();
-
   if (standardEventsMap[trimmedEvent]) {
     returnValue = [];
     // standardEventsMap[trimmedEvent].forEach(val => {
@@ -140,6 +138,8 @@ const trackResponseBuilder = async (message, { Config }) => {
     });
     return returnValue;
   }
+
+  const response = defaultRequestConfig();
   event = eventNameMapping[event];
 
   let payload = constructPayload(message, trackMapping);

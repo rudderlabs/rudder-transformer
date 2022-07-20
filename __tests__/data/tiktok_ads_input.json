@@ -78,13 +78,7 @@
       "Config": {
         "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
-        "hashUserProperties": false,
-        "eventsToStandard": [
-          {
-            "from": "abc",
-            "to": "download"
-          }
-        ]
+        "hashUserProperties": false
       }
     }
   },

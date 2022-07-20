@@ -408,7 +408,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
         "headers": {
           "Content-Type": "application/json"
         },
@@ -435,7 +435,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
         "headers": {
           "Content-Type": "application/json"
         },
@@ -448,7 +448,9 @@
               {
                 "email": "utsab@rudderstack.com",
                 "phone_number": "+12 345 678 900",
-                "$id": "user123"
+                "$id": "user123",
+                "sms_consent": true,
+                "$consent": "email"
               }
             ]
           },
@@ -533,6 +535,7 @@
             "Residence": "Shibuya",
             "properties": {
               "addToList": true,
+              "listId": "XUepkK",
               "subscribe": true,
               "consent": "email",
               "smsConsent": false
@@ -583,6 +586,61 @@
               "Flagged": false,
               "Residence": "Shibuya"
             }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_key": "pk_a68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {
+            "profiles": [
+              {
+                "id": "batsu",
+                "email": "batsu@rudderstack.com",
+                "phone_number": "+12 345 578 900"
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {
+          "api_key": "pk_a68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {
+            "profiles": [
+              {
+                "id": "batsu",
+                "email": "batsu@rudderstack.com",
+                "phone_number": "+12 345 578 900",
+                "$consent": "email"
+              }
+            ]
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -953,7 +1011,7 @@
     }
   },
   {
-    "description": "Existing Profile updation call",
+    "description": "Throwing error if list Id is not in the payload",
     "input": {
       "destination": {
         "Config": {
@@ -1002,29 +1060,9 @@
         "originalTimestamp": "2021-01-03T17:02:53.193Z"
       }
     },
-    "output": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "PUT",
-        "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
-        "headers": {
-          "Accept": "application/json"
-        },
-        "params": {
-          "$id": "utsab@rudderstack.com",
-          "$email": "utsab@rudderstack.com",
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    ]
+    "output": {
+      "error": "Cannot process list operation as listId is not available, either in message or config"
+    }
   },
   {
     "description": "Existing Profile updation call",

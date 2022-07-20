@@ -40,14 +40,14 @@ const {
 
 /**
  * Main Identify request handler func
- * The function is used to create/update new users and also for adding/subscribing 
- * members to the list depending on conditons.If listId is there member is added to that list & 
+ * The function is used to create/update new users and also for adding/subscribing
+ * members to the list depending on conditons.If listId is there member is added to that list &
  * if subscribe is true member is subscribed to that list else not.
  * DOCS: https://www.klaviyo.com/docs/http-api
- * @param {*} message 
- * @param {*} category 
- * @param {*} destination 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
  */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
@@ -231,10 +231,6 @@ const trackRequestHandler = (message, category, destination) => {
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
-  const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-    message,
-    "groupId"
-  )}/subscribe`;
   if (!destination.Config.privateApiKey) {
     throw new CustomError(
       "Private API Key is a required field for group events",
@@ -259,30 +255,7 @@ const groupRequestHandler = (message, category, destination) => {
     profile._id = getFieldValueFromMessage(message, "userId");
   }
   const responseArray = [];
-  if (get(message.traits, "subscribe") === true) {
-    // If consent info not present draw it from dest config
-    if (!profile.sms_consent) {
-      profile.sms_consent = destination.Config.smsConsent;
-    }
-    if (!profile.$consent) {
-      profile.$consent = destination.Config.consent;
-    }
-    // send network request
-    const payload = {
-      profiles: [profile]
-    };
-    const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint = targetUrl;
-    subscribeResponse.headers = {
-      "Content-Type": "application/json"
-    };
-    subscribeResponse.body.JSON = payload;
-    subscribeResponse.method = defaultPostRequestConfig.requestMethod;
-    subscribeResponse.params = { api_key: destination.Config.privateApiKey };
-    responseArray.push(subscribeResponse);
-  }
-  delete profile.sms_consent;
-  delete profile.$consent;
+
   const payload = {
     profiles: [profile]
   };
@@ -298,6 +271,32 @@ const groupRequestHandler = (message, category, destination) => {
   membersResponse.method = defaultPostRequestConfig.requestMethod;
   membersResponse.params = { api_key: destination.Config.privateApiKey };
   responseArray.push(membersResponse);
+
+  const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
+    message,
+    "groupId"
+  )}/subscribe`;
+  if (get(message.traits, "subscribe") === true) {
+    // Adding Consent Info to Profiles
+    let subscribeProfile =JSON.parse(JSON.stringify(profile));
+    subscribeProfile.sms_consent =
+      message?.context?.traits.smsConsent || destination.Config.smsConsent;
+    subscribeProfile.$consent =
+      message?.context?.traits.consent || destination.Config.consent;
+
+    const payload = {
+      profiles: [subscribeProfile]
+    };
+    const subscribeResponse = defaultRequestConfig();
+    subscribeResponse.endpoint = targetUrl;
+    subscribeResponse.headers = {
+      "Content-Type": "application/json"
+    };
+    subscribeResponse.body.JSON = payload;
+    subscribeResponse.method = defaultPostRequestConfig.requestMethod;
+    subscribeResponse.params = { api_key: destination.Config.privateApiKey };
+    responseArray.push(subscribeResponse);
+  }
   return responseArray;
 };
 

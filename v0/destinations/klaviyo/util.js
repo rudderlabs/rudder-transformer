@@ -12,7 +12,8 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   extractCustomFields,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  CustomError
 } = require("../../util");
 
 const {
@@ -21,6 +22,9 @@ const {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES
 } = require("./config");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 
 /**
  * This function is used to check if the user/profile already exists or not, if already exists unique person_id
@@ -52,8 +56,15 @@ const isProfileExist = async (message, { Config }) => {
           }
         }
       );
-      if (profileResponse.success && profileResponse.response?.data?.id) {
-        return profileResponse.response.data.id;
+      const processedProfileResponse = processAxiosResponse(profileResponse);
+      if (
+        processedProfileResponse.status === 200 &&
+        processedProfileResponse.response?.id
+      ) {
+        return processedProfileResponse.response.id;
+      } 
+      else if(!(processedProfileResponse.status === 404 && processedProfileResponse?.response.detail === "There is no profile matching the given parameters.")){
+        throw new CustomError("The call could not be completed",`${processedProfileResponse.status}`);
       }
     }
   }
@@ -61,7 +72,7 @@ const isProfileExist = async (message, { Config }) => {
 };
 
 /**
- * This function is used for creating response for adding members to a specific list 
+ * This function is used for creating response for adding members to a specific list
  * and subscribing members to a particular list depending on the condition passed.
  * DOCS: https://www.klaviyo.com/docs/api/v2/lists
  */
@@ -137,8 +148,9 @@ const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
       responseArray.push(subscribeResponse);
     }
   } else {
-    logger.info(
-      `Cannot process list operation as listId is not available, either in message or config, or private key not present`
+    throw new CustomError(
+      "Cannot process list operation as listId is not available, either in message or config",
+      400
     );
   }
   return responseArray;

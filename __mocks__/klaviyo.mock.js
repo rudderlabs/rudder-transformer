@@ -11,7 +11,12 @@ const klaviyoGetRequestHandler = (url, payload) => {
       status: 200
     });
   } else {
-    return undefined;
+    return Promise.resolve({
+      data: {
+        detail: "There is no profile matching the given parameters."
+      },
+      status: 404
+    });
   }
 };
 

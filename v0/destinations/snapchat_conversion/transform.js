@@ -34,9 +34,9 @@ const {
   channelMapping
 } = require("./util");
 
-function trackResponseBuilder(message, { Config }, event) {
+function trackResponseBuilder(message, { Config }, mappedEvent) {
   let payload = {};
-  event = event.trim().replace(/\s+/g, "_");
+  const event = mappedEvent.trim().replace(/\s+/g, "_");
 
   const { apiKey, pixelId, snapAppId, appId } = Config;
   let channel = get(message, "channel");
@@ -310,8 +310,8 @@ function eventMappingHandler(message, destination) {
       destination.ID
     );
     rudderEventsToSnapEvents.forEach(mapping => {
-      if (mapping["from"].toLowerCase() === event.toLowerCase()) {
-        mappedEvents.add(mapping["to"]);
+      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+        mappedEvents.add(mapping.to);
       }
     });
   }
@@ -332,12 +332,12 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
-    case EventType.TRACK:
+    case EventType.TRACK: {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         response = [];
-        mappedEvents.forEach(event => {
-          const res = trackResponseBuilder(message, destination, event);
+        mappedEvents.forEach(mappedEvent => {
+          const res = trackResponseBuilder(message, destination, mappedEvent);
           response.push(res);
         });
       }
@@ -349,6 +349,7 @@ function process(event) {
         );
       }
       break;
+    }
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }

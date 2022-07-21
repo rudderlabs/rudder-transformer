@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
-const { even } = require("is");
-const { forEach } = require("lodash");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {

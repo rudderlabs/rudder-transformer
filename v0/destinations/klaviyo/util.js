@@ -70,7 +70,7 @@ const isProfileExist = async (message, { Config }) => {
       ) {
         throw new CustomError(
           "The lookup call could not be completed",
-          `${processedProfileResponse.status}`
+          `${JSON.stringify(processedProfileResponse.response)}`
         );
       }
     }
@@ -154,12 +154,8 @@ const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
       );
       responseArray.push(subscribeResponse);
     }
-  } else {
-    throw new CustomError(
-      "Cannot process list operation as listId is not available, either in message or config",
-      400
-    );
   }
+
   return responseArray;
 };
 

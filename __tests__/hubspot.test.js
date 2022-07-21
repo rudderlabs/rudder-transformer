@@ -29,6 +29,16 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+// Router Test files for rETL sources
+const inputRouterDataFilerETL = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input_rETL.json`)
+);
+const outputRouterDataFilerETL = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output_rETL.json`)
+);
+const inputRouterDatarETL = JSON.parse(inputRouterDataFilerETL);
+const expectedRouterDatarETL = JSON.parse(outputRouterDataFilerETL);
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {
@@ -47,6 +57,13 @@ describe(`${name} Tests`, () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
+    });
+  });
+
+  describe("Router Tests for rETL sources", () => {
+    it("Payload", async () => {
+      const routerOutputrETL = await transformer.processRouterDest(inputRouterDatarETL);
+      expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
   });
 });

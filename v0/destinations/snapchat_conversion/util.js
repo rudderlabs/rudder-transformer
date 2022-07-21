@@ -107,11 +107,11 @@ function getPriceSum(message) {
 }
 
 /**
- * Create Mailchimp Batch payload based on the passed events
+ * Create Snapchat Batch payload based on the passed events
  * @param {*} events
  * @returns
  */
-const generateBatchedPayloadForArray = events => {
+function generateBatchedPayloadForArray(events) {
   const batchResponseList = [];
   const metadata = [];
 
@@ -144,7 +144,7 @@ const generateBatchedPayloadForArray = events => {
   };
 
   return batchEventResponse;
-};
+}
 
 module.exports = {
   msUnixTimestamp,

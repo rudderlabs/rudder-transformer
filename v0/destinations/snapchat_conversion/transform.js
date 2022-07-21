@@ -1,6 +1,4 @@
 const get = require("get-value");
-const { logger } = require("handlebars");
-const { stringify } = require("uuid");
 const moment = require("moment");
 const { EventType } = require("../../../constants");
 

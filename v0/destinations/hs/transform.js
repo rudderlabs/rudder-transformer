@@ -56,8 +56,8 @@ async function getProperties(destination) {
       if (err.response) {
         throw new CustomError(
           JSON.stringify(err.response.data) ||
-          JSON.stringify(err.response.statusText) ||
-          "Failed to get hubspot properties",
+            JSON.stringify(err.response.statusText) ||
+            "Failed to get hubspot properties",
           err.response.status || 500
         );
       }
@@ -299,13 +299,13 @@ function batchEvents(destEvents) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      const { properties } = ev.message.body.JSON
-      if (properties && !(properties instanceof Array)) {
-        identifyResponseList.push({...ev.message.body.JSON})
+      const { properties } = ev.message.body.JSON;
+      if (properties && !Array.isArray(properties)) {
+        identifyResponseList.push({ ...ev.message.body.JSON });
         batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList
         };
-        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         metadata.push(ev.metadata);
       } else {
         const { email, updatedProperties } = getEmailAndUpdatedProps(
@@ -403,7 +403,6 @@ const processRouterDest = async inputs => {
     batchedResponseList = await batchEvents(successRespList);
   }
   return [...batchedResponseList, ...errorRespList];
-// }
 };
 
 module.exports = { process, processRouterDest };

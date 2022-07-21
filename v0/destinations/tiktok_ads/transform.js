@@ -232,7 +232,10 @@ function getEventChunks(eventArray, trackResponseList, eventsChunk) {
   delete eventTemplate.message;
   eventArray.message.forEach(element => {
     if (element.body.JSON.test_event_code) {
-      const { message, metadata, destination } = event;
+      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      newEvent.message = element;
+
+      const { message, metadata, destination } = newEvent;
       const endpoint = get(message, "endpoint");
       delete message.body.JSON.type;
 

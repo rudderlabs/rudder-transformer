@@ -69,8 +69,9 @@ const isProfileExist = async (message, { Config }) => {
         )
       ) {
         throw new CustomError(
-          "The lookup call could not be completed",
-          `${JSON.stringify(processedProfileResponse.response)}`
+          `The lookup call could not be completed
+          ${JSON.stringify(processedProfileResponse.response)}`,
+          processedProfileResponse.status
         );
       }
     }

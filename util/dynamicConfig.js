@@ -3,16 +3,21 @@ const get = require("get-value");
 const unset = require("unset-value");
 
 function getDynamicConfigValue(event, value) {
-  // this rgegex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
+  // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
   //  " {{message.traits.key  ||   \"email\" }} "
   //  " {{ message.traits.key || 1233 }} "
   const defFormat = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
   const matResult = value.match(defFormat);
   if (matResult) {
-    const pathVal = get(event, matResult.groups.path);
+    // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
+    const fieldPath = matResult.groups.path.replace(
+      /^event\.(.*)$/,
+      "message.$1"
+    );
+    const pathVal = get(event, fieldPath);
     if (pathVal) {
       value = pathVal;
-      unset(event, matResult.groups.path);
+      unset(event, fieldPath);
     } else {
       value = matResult.groups.defaultVal.replace(/"/g, "").trim();
     }

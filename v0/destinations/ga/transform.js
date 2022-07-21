@@ -26,6 +26,7 @@ const {
   getSuccessRespEvents,
   generateErrorObject
 } = require("../../util");
+const { validatePayloadSize } = require("./utils");
 
 const gaDisplayName = "Google Analytics";
 
@@ -367,6 +368,10 @@ function responseBuilderSimple(
     ? new Date(message.originalTimestamp)
     : new Date(message.timestamp);
   finalPayload.qt = Date.now() - timestamp.getTime();
+
+  // payload must be no longer than 8192 bytes.
+  // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#using-post
+  validatePayloadSize(finalPayload);
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

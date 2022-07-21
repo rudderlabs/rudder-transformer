@@ -9,8 +9,7 @@ const {
   getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
-  removeUndefinedAndNullValues,
-  getIntegrationsObj
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   processUserPayload,
@@ -20,12 +19,12 @@ const {
   checkUserPayloadValidity
 } = require("./utils");
 
-const { MAX_BATCH_SIZE, USER_CONFIGS, CUSTOM_CONFIGS } = require("./config");
+const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS, CUSTOM_CONFIGS } = require("./config");
 const { get } = require("lodash");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
-  response.endpoint = "https://ct.pinterest.com/events/v3";
+  response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(finalPayload);
   return {
@@ -41,9 +40,9 @@ const commonFieldResponseBuilder = (message, { Config }) => {
   const { appId, advertiserId, enableDeduplication, deduplicationKey, sendingUnHashedData } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
-  /* 
+  /*
     message deduplication facility is provided *only* for the users who are using the *new configuration*.
-    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be 
+    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
     sent as "event_id". On it's absence it will fallback to "messageId".
   */
   if(enableDeduplication) {
@@ -66,7 +65,7 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     processedUserPayload = userPayload;
     // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
     // if hashed data is sent from the user, it is directly set over here
-    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;  
+    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;
   } else {
     processedUserPayload = processUserPayload(userPayload);
   }
@@ -83,10 +82,10 @@ const commonFieldResponseBuilder = (message, { Config }) => {
 };
 
 /*
-    TODO: 
+    TODO:
 
-    Need to check if custom properties can be supported in cloud mode as well. 
-    There is no mention of it, in the documentation. In case, if we can send, 
+    Need to check if custom properties can be supported in cloud mode as well.
+    There is no mention of it, in the documentation. In case, if we can send,
     will add that.
  */
 const trackResponseBuilder = (message, mandatoryPayload) => {
@@ -114,16 +113,16 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
     });
 
     if (totalQuantity === 0) {
-      /* 
+      /*
       in case any of the products inside product array does not have quantity,
-       will map the quantity of root level 
+       will map the quantity of root level
       */
       totalQuantity = properties.quantity;
     }
   } else {
-    /* 
+    /*
     for the events where product array is not present, root level id, price and
-    quantity are taken into consideration 
+    quantity are taken into consideration
     */
     const prodParams = setIdPriceQuantity(message.properties, message);
     contentIds.push(prodParams.contentId);
@@ -151,6 +150,7 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
   };
   return finalTrackPayload;
 };
+
 const process = event => {
   let response = {};
   let mandatoryPayload = {};
@@ -181,6 +181,7 @@ const process = event => {
         400
       );
   }
+
   /**
    * Track payloads will need additional custom parameters
    */
@@ -191,6 +192,7 @@ const process = event => {
   }
   return responseBuilderSimple(response);
 };
+
 const generateBatchedPaylaodForArray = events => {
   let batchEventResponse = defaultBatchRequestConfig();
   const batchResponseList = [];
@@ -221,6 +223,7 @@ const generateBatchedPaylaodForArray = events => {
   };
   return batchEventResponse;
 };
+
 const batchEvents = successRespList => {
   const batchedResponseList = [];
 

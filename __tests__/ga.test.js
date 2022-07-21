@@ -28,6 +28,8 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+Date.now = jest.fn(() => new Date("2022-04-29T05:17:09Z"));
+
 inputData.forEach((input, index) => {
   test(`${name} Tests : payload: ${index}`, () => {
     let output, expected;
@@ -44,17 +46,10 @@ inputData.forEach((input, index) => {
 });
 
 describe(`${name} Tests`, () => {
-describe("Router Tests", () => {
-  it("Payload", async () => {
-    let singleRouterOutput, singleExpectedOutput;
-    const routerOutput = await transformer.processRouterDest(inputRouterData);
-    routerOutput.forEach((output, index) => {
-      singleRouterOutput = routerOutput[index];
-      singleExpectedOutput = expectedRouterData[index];
-      singleExpectedOutput.batchedRequest.params.qt = singleRouterOutput.batchedRequest.params.qt;
-    })
-    expect(routerOutput).toEqual(expectedRouterData);
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
   });
-});
-
 });

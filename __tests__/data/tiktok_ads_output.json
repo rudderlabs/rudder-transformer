@@ -1,5 +1,5 @@
 [
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -55,8 +55,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -112,8 +112,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -168,7 +168,7 @@
       "FORM": {}
     },
     "files": {}
-  },
+  }],
   {
     "statusCode": 400,
     "error": "Event name (product added to wishlist1) is not valid",
@@ -178,7 +178,7 @@
       "scope": "exception"
     }
   },
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -235,8 +235,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -293,7 +293,7 @@
       "FORM": {}
     },
     "files": {}
-  },
+  }],
   {
     "statusCode": 400,
     "error": "Invalid phone number. Include proper country code except +86. Aborting ",
@@ -303,7 +303,7 @@
       "scope": "exception"
     }
   },
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -359,7 +359,7 @@
       "FORM": {}
     },
     "files": {}
-  },
+  }],
   {
     "statusCode": 400,
     "error": "Event name is required",
@@ -378,7 +378,7 @@
       "scope": "exception"
     }
   },
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -433,8 +433,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -490,8 +490,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -529,8 +529,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -586,7 +586,7 @@
       "FORM": {}
     },
     "files": {}
-  },
+  }],
   {
     "statusCode": 400,
     "error": "Message type identify not supported",
@@ -596,7 +596,7 @@
       "scope": "exception"
     }
   },
-  {
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -652,8 +652,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -709,8 +709,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -767,8 +767,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -825,8 +825,8 @@
       "FORM": {}
     },
     "files": {}
-  },
-  {
+  }],
+  [{
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -882,7 +882,7 @@
       "FORM": {}
     },
     "files": {}
-  },
+  }],
   [
     {
       "version": "1",

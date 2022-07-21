@@ -14,7 +14,8 @@ const {
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull,
-  isHttpStatusSuccess
+  isHttpStatusSuccess,
+  isDefined
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -363,28 +364,32 @@ const responseHandler = (destinationResponse, dest) => {
     // for GA4 debug validation endpoint, status is always 200
   } else if (status === 200 && isDefinedAndNotNull(response)) {
     // validationMessages[] is empty, thus event is valid
-    if (response.validationMessages?.length === 0) {
-      status = 200;
+    if (isDefined(response.validationMessages)) {
+      if (response.validationMessages?.length === 0) {
+        status = 200;
+      } else {
+        const {
+          description,
+          validationCode,
+          fieldPath
+        } = response.validationMessages[0];
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage(
+            `[GA4] Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
+          )
+          .isTransformResponseFailure(true)
+          .setDestinationResponse(response?.validationMessages[0]?.description)
+          .setStatTags({
+            destination: dest,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+            meta: getDynamicMeta(status)
+          })
+          .build();
+      }
     } else {
-      const {
-        description,
-        validationCode,
-        fieldPath
-      } = response.validationMessages[0];
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `[GA4] Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
-        )
-        .isTransformResponseFailure(true)
-        .setDestinationResponse(response.validationMessages[0].description)
-        .setStatTags({
-          destination: dest,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: getDynamicMeta(status)
-        })
-        .build();
+      throw new CustomError ("Validation messages is not defined ", 400);
     }
   }
 

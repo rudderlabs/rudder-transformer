@@ -272,10 +272,6 @@ const groupRequestHandler = (message, category, destination) => {
   membersResponse.params = { api_key: destination.Config.privateApiKey };
   responseArray.push(membersResponse);
 
-  const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${get(
-    message,
-    "groupId"
-  )}/subscribe`;
   if (get(message.traits, "subscribe") === true) {
     // Adding Consent Info to Profiles
     const subscribeProfile = JSON.parse(JSON.stringify(profile));
@@ -288,7 +284,10 @@ const groupRequestHandler = (message, category, destination) => {
       profiles: [subscribeProfile]
     };
     const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint = targetUrl;
+    subscribeResponse.endpoint =  `${BASE_ENDPOINT}/api/v2/list/${get(
+      message,
+      "groupId"
+    )}/subscribe`;
     subscribeResponse.headers = {
       "Content-Type": "application/json"
     };

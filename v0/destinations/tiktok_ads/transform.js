@@ -105,30 +105,24 @@ const getTrackResponse = (message, Config, event) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const pixel_code = Config.pixelCode;
   const eventsToStandard = Config.eventsToStandard;
 
-  let event = get(message, "event");
-  event = event ? event.trim().toLowerCase() : event;
+  let event = message.event?.toLowerCase().trim();
   if (!event) {
     throw new CustomError("Event name is required", 400);
   }
 
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
-  const trimmedEvent = event.toLowerCase().trim();
 
-  if (
-    eventNameMapping[event] === undefined &&
-    !standardEventsMap[trimmedEvent]
-  ) {
+  if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
 
   const returnArray = [];
-  if (standardEventsMap[trimmedEvent]) {
+  if (standardEventsMap[event]) {
     Object.keys(standardEventsMap).forEach(key => {
-      if (key === trimmedEvent) {
-        standardEventsMap[trimmedEvent].forEach(val => {
+      if (key === event) {
+        standardEventsMap[event].forEach(val => {
           returnArray.push(getTrackResponse(message, Config, val));
         });
       }
@@ -136,7 +130,6 @@ const trackResponseBuilder = async (message, { Config }) => {
     return returnArray;
   }
 
-  const response = defaultRequestConfig();
   event = eventNameMapping[event];
   returnArray.push(getTrackResponse(message, Config, event));
   return returnArray;

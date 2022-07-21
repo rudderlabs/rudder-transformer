@@ -1,48 +1,59 @@
 [
   {
     "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.hubspot.com/crm/v3/objects/lead/batch/create",
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "params": {
-            "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
-        },
-        "body": {
-            "JSON": {
-                "inputs": [
-                    {
-                        "properties": {
-                            "email": "testhubspot2@email.com",
-                            "firstname": "Test Hubspot",
-                            "anonymousId": "12345",
-                            "country": "India"
-                        }
-                    }
-                ]
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubspot.com/crm/v3/objects/lead/batch/create",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "inputs": [
+            {
+              "properties": {
+                "email": "testhubspot2@email.com",
+                "firstname": "Test Hubspot",
+                "anonymousId": "12345",
+                "country": "India"
+              }
             },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
+            {
+              "properties": {
+                "firstname": "Test Hubspot 1",
+                "anonymousId": "123451",
+                "country": "India 1",
+                "email": "testhubspot2@email.com"
+              }
+            }
+          ]
         },
-        "files": {}
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
     },
     "metadata": [
       {
-          "jobId": 2
+        "jobId": 2
+      },
+      {
+        "jobId": 3
       }
-  ],
+    ],
     "batched": true,
     "statusCode": 200,
     "destination": {
-        "Config": {
-            "hubID": "6405167",
-            "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
-        },
-        "Enabled": true
+      "Config": {
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "Enabled": true
     }
-}
+  }
 ]

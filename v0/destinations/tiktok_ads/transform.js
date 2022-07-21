@@ -14,7 +14,8 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getHashFromArrayWithDuplicate
 } = require("../../util");
 const {
   trackMapping,
@@ -33,20 +34,8 @@ function checkIfValidPhoneNumber(str) {
   return regexExp.test(str);
 }
 
-const trackResponseBuilder = async (message, { Config }) => {
+const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
-
-  let event = get(message, "event");
-  event = event ? event.trim().toLowerCase() : event;
-  if (!event) {
-    throw new CustomError("Event name is required", 400);
-  }
-
-  if (eventNameMapping[event] === undefined) {
-    throw new CustomError(`Event name (${event}) is not valid`, 400);
-  }
-  event = eventNameMapping[event];
-
   let payload = constructPayload(message, trackMapping);
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");
@@ -100,7 +89,6 @@ const trackResponseBuilder = async (message, { Config }) => {
       }
     }
   }
-
   const response = defaultRequestConfig();
   response.headers = {
     "Access-Token": Config.accessToken,
@@ -110,7 +98,39 @@ const trackResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = TRACK_ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+
   return response;
+};
+
+const trackResponseBuilder = async (message, { Config }) => {
+  const eventsToStandard = Config.eventsToStandard;
+
+  let event = message.event?.toLowerCase().trim();
+  if (!event) {
+    throw new CustomError("Event name is required", 400);
+  }
+
+  const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
+
+  if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
+    throw new CustomError(`Event name (${event}) is not valid`, 400);
+  }
+
+  const returnArray = [];
+  if (standardEventsMap[event]) {
+    Object.keys(standardEventsMap).forEach(key => {
+      if (key === event) {
+        standardEventsMap[event].forEach(val => {
+          returnArray.push(getTrackResponse(message, Config, val));
+        });
+      }
+    });
+    return returnArray;
+  }
+
+  event = eventNameMapping[event];
+  returnArray.push(getTrackResponse(message, Config, event));
+  return returnArray;
 };
 
 const process = async event => {
@@ -196,35 +216,44 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, trackResponseList, eventsChunk) {
+function getEventChunks(eventArray, trackResponseList, eventsChunk) {
   // Do not apply batching if the payload contains test_event_code
   // which corresponds to track endpoint
-  if (event.message.body.JSON.test_event_code) {
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
-    delete message.body.JSON.type;
+  const eventTemplate = JSON.parse(JSON.stringify(eventArray));
+  delete eventTemplate.message;
+  eventArray.message.forEach(element => {
+    if (element.body.JSON.test_event_code) {
+      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      newEvent.message = element;
 
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
+      const { message, metadata, destination } = newEvent;
+      const endpoint = get(message, "endpoint");
+      delete message.body.JSON.type;
 
-    trackResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination
-      )
-    );
-  } else {
-    // build eventsChunk of MAX_BATCH_SIZE
-    eventsChunk.push(event);
-  }
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultPostRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else {
+      // build eventsChunk of MAX_BATCH_SIZE
+      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      newEvent.message = element;
+      eventsChunk.push(newEvent);
+    }
+  });
 }
 
 const processRouterDest = async inputs => {

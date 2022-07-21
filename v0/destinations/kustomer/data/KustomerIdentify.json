@@ -49,6 +49,10 @@
     "required": false
   },
   {
+    "destKey": "importedAt",
+    "sourceKeys": ["traits.importedAt", "context.traits.importedAt"]
+  },
+  {
     "destKey": "avatarUrl",
     "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
@@ -85,7 +89,45 @@
   },
   {
     "destKey": "birthdayAt",
-    "sourceKeys": ["traits.dob", "context.traits.dob", "traits.birthday", "context.traits.birthday"],
+    "sourceKeys": [
+      "traits.dob",
+      "context.traits.dob",
+      "traits.birthday",
+      "context.traits.birthday"
+    ],
     "required": false
+  },
+  {
+    "destKey": "custom",
+    "sourceKeys": ["traits.customObject", "context.traits.customObject"],
+    "required": false
+  },
+  {
+    "destKey": "sentiment",
+    "sourceKeys": ["traits.sentiment", "context.traits.sentiment"]
+  },
+  {
+    "destKey": "whatsapps",
+    "sourceKeys": ["traits.whatsapps", "context.traits.whatsapps"]
+  },
+  {
+    "destKey": "facebookIds",
+    "sourceKeys": ["traits.facebookIds", "context.traits.facebookIds"]
+  },
+  {
+    "destKey": "instagramIds",
+    "sourceKeys": ["traits.instagramIds", "context.traits.instagramIds"]
+  },
+  {
+    "destKey": "timeZone",
+    "sourceKeys": ["traits.timeZone", "context.traits.timeZone"]
+  },
+  {
+    "destKey": "defaultLang",
+    "sourceKeys": ["traits.defaultLanguage", "context.traits.defaultLanguage"]
+  },
+  {
+    "destKey": "rev",
+    "sourceKeys": ["traits.rev", "context.traits.rev"]
   }
 ]

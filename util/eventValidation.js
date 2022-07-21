@@ -165,7 +165,6 @@ async function validate(event) {
         const ajvCache = isDraft4 ? ajv4Cache : ajv19Cache;
         if (merged !== {}) {
             const configHash = hash(merged);
-            
             ajv = ajvCache.get(configHash);
             if (!ajv) {
                 ajv = getAjv(merged, isDraft4);
@@ -277,7 +276,10 @@ async function handleValidation(event) {
         }
 
         const violationsByType = new Set(validationErrors.map(err => err.type));
-        for (const [key, value] of Object.entries(mergedTpConfig)) {
+        for (const [key, val] of Object.entries(mergedTpConfig)) {
+            // To have compatibility for config-backend, spread-sheet plugin and postman collection
+            // We are making everything to lower string and doing string comparision.
+            const value = val?.toString()?.toLowerCase();
             switch (key) {
                 case "allowUnplannedEvents": {
                     const exists = violationsByType.has(violationTypes.UnplannedEvent);

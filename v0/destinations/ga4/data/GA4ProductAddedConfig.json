@@ -6,7 +6,23 @@
   },
   {
     "destKey": "value",
-    "sourceKeys": "properties.total",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue",
+      {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    ],
     "metadata": {
       "type": "toNumber"
     },

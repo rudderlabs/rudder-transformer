@@ -12,18 +12,26 @@
     "body": {
       "JSON": {
         "merge_fields": {
-          "FIRSTNAME": "Bob",
-          "LASTNAME": "Dole",
-          "anonymousI": "userId12345"
+          "ADDRESS": {
+            "addr1": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "123"
+          },
+          "FNAME": "Bob",
+          "LNAME": "Dole",
+          "ANONYMOUSI": "userId12345",
+          "BIRTHDAY": "05/06"
         },
-        "email_address": "bob.dole@initech.com"
+        "email_address": "bob.dole@initech.com",
+        "status": "subscribed"
       },
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
     "version": "1",
@@ -40,7 +48,7 @@
         "status": "subscribed",
         "email_address": "bob.dole@initech.com",
         "merge_fields": {
-          "anonymousI": "userId12345"
+          "ANONYMOUSI": "userId12345"
         }
       },
       "XML": {},
@@ -48,10 +56,10 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
-    "error": "User does not have access to the requested operation"
+    "error": "[Mailchimp]:: User does not have access to the requested operation"
   },
   {
     "error": "message type page is not supported"
@@ -79,14 +87,14 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
   },
   {
     "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   },
   {
     "statusCode": 400,
-    "error": "email is required for identify",
+    "error": "[Mailchimp] :: Email is required for identify",
     "statTags": {
       "destination": "mailchimp",
       "stage": "transform",
@@ -99,30 +107,7 @@
       "FORM": {},
       "JSON": {
         "status": "subscribed",
-        "merge_fields": {},
         "email_address": "jhon@gmail.com"
-      },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "userId12345",
-    "headers": {
-      "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
-    },
-    "version": "1",
-    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/ff21810eec/members"
-  },
-  {
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "merge_fields": {},
-        "email_address": "bob.dole@initech.com"
       },
       "JSON_ARRAY": {}
     },
@@ -130,7 +115,29 @@
     "files": {},
     "method": "PUT",
     "params": {},
-    "userId": "userId12345",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "audienceId": "ff21810eec",
+    "version": "1",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/ff21810eec/members/7f3863b197eeff650876bb89eca08e57"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email_address": "bob.dole@initech.com",
+        "status": "subscribed"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "audienceId": "df42a82d07",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
@@ -151,14 +158,25 @@
     "body": {
       "JSON": {
         "status": "subscribed",
-        "email_address": "bob.dole@initech.com",
-        "merge_fields": {}
+        "email_address": "bob.dole@initech.com"
       },
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "userId12345"
+    "audienceId": "df42a82d07"
+  },
+  {
+    "error": "API Key not found. Aborting"
+  },
+  {
+    "error": "Audience Id not found. Aborting"
+  },
+  {
+    "error": "DataCenter Id not found. Aborting"
+  },
+  {
+    "error": "message type track is not supported"
   }
 ]

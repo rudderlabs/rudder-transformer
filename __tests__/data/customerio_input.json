@@ -82,6 +82,77 @@
           "version": "1.0.0"
         },
         "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "user_properties": {
+        "prop1": "val1",
+        "prop2": "val2"
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "anon-id",
+        "email": "test@gmail.com",
+        "dot.name": "Arnab Pal",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
           "email": "sayan@gmail.com",
           "anonymousId": "12345"
         },
@@ -103,7 +174,7 @@
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
       "originalTimestamp": "2019-10-14T11:15:18.299Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "properties": {
         "path": "/test",
@@ -158,7 +229,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "event": "test track event",
       "properties": {
@@ -211,7 +282,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "",
       "event": "test track event",
       "properties": {
@@ -409,7 +480,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "event": "Application Uninstalled",
       "properties": {
@@ -469,7 +540,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Uninstalled",
       "properties": {
         "user_actual_role": "system_admin",
@@ -528,7 +599,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "properties": {
         "user_actual_role": "system_admin",
@@ -587,7 +658,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "userId": "12345",
       "properties": {
@@ -646,7 +717,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "userId": "12345",
       "properties": {
@@ -705,7 +776,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Opened",
       "userId": "12345",
       "properties": {
@@ -765,7 +836,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Opened",
       "userId": "12345",
       "properties": {
@@ -825,7 +896,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Uninstalled",
       "userId": "12345",
       "properties": {
@@ -949,7 +1020,7 @@
       "type": "page",
       "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
       "originalTimestamp": "2019-10-14T11:15:18.299Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "properties": {
         "path": "/test",
@@ -1004,7 +1075,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "event": "test track event",
       "properties": {
@@ -1057,7 +1128,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "",
       "event": "test track event",
       "properties": {
@@ -1255,7 +1326,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "userId": "12345",
       "event": "Application Uninstalled",
       "properties": {
@@ -1315,7 +1386,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Uninstalled",
       "properties": {
         "user_actual_role": "system_admin",
@@ -1374,7 +1445,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "properties": {
         "user_actual_role": "system_admin",
@@ -1433,7 +1504,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "userId": "12345",
       "properties": {
@@ -1492,7 +1563,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Installed",
       "userId": "12345",
       "properties": {
@@ -1551,7 +1622,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Opened",
       "userId": "12345",
       "properties": {
@@ -1611,7 +1682,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Opened",
       "userId": "12345",
       "properties": {
@@ -1671,7 +1742,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "Application Uninstalled",
       "userId": "12345",
       "properties": {
@@ -1724,7 +1795,7 @@
       "type": "track",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
       "properties": {
         "user_actual_role": "system_admin",
@@ -1776,7 +1847,7 @@
       "type": "screen",
       "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
       "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "event": "https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
       "properties": {
         "user_actual_role": "system_admin",
@@ -1972,21 +2043,11 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU"
-            ],
-            "web": [
-              "useNativeSDK"
-            ]
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
+            "web": ["useNativeSDK"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "apiKey",
-            "siteID",
-            "datacenterEU"
-          ],
+          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2063,21 +2124,11 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU"
-            ],
-            "web": [
-              "useNativeSDK"
-            ]
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
+            "web": ["useNativeSDK"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "apiKey",
-            "siteID",
-            "datacenterEU"
-          ],
+          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2200,11 +2251,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2216,12 +2263,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2341,11 +2383,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2357,12 +2395,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2482,11 +2515,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2498,12 +2527,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2623,11 +2647,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2639,12 +2659,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2761,11 +2776,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2777,12 +2788,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2903,11 +2909,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2919,12 +2921,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3044,11 +3041,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3060,12 +3053,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3185,11 +3173,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3201,12 +3185,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3326,11 +3305,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3342,12 +3317,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3464,11 +3434,7 @@
               "datacenterEU",
               "deviceTokenEventName"
             ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3480,12 +3446,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",

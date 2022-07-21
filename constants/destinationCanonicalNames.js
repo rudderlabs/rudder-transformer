@@ -27,7 +27,19 @@ const DestCanonicalNames = {
     "New_Relic",
     "NewRelic",
     "newrelic"
-  ]
+  ],
+  attentive_tag: [
+    "attentive tag",
+    "attentive_tag",
+    "Attentive Tag",
+    "Attentive_Tag",
+    "AttentiveTag",
+    "attentivetag"
+  ],
+  webhook: ["webhook", "Webhook", "WebHook", "WEBHOOK"],
+  mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
+  kafka: ["KAFKA", "kafka", "Kafka"],
+  vero: ["vero", "Vero", "VERO"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

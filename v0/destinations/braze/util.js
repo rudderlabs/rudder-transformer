@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { proxyRequest } = require("../../../adapters/network");
+const {
+  proxyRequest,
+  prepareProxyRequest
+} = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -61,6 +64,7 @@ const responseHandler = (destinationResponse, _dest) => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

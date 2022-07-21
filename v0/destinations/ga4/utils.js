@@ -363,7 +363,7 @@ const responseHandler = (destinationResponse, dest) => {
     status = 200;
     // for GA4 debug validation endpoint, status is always 200
   } else if (status === 200 && isNotNull(response)) {
-    if (response?.validationMessages.length === 0) {
+    if (response.validationMessages.length === 0) {
       // validationMessages[] is empty, thus event is valid
       status = 200;
     } else {
@@ -378,9 +378,7 @@ const responseHandler = (destinationResponse, dest) => {
           `[GA4] Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
         )
         .isTransformResponseFailure(true)
-        .setDestinationResponse(
-          destinationResponse.response.validationMessages[0].description
-        )
+        .setDestinationResponse(response.validationMessages[0].description)
         .setStatTags({
           destination: dest,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,

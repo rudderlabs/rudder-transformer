@@ -1,5 +1,4 @@
 const get = require("get-value");
-const { isNotNull } = require("rudder-transformer-cdk/build/utils");
 const {
   proxyRequest,
   prepareProxyRequest
@@ -362,9 +361,9 @@ const responseHandler = (destinationResponse, dest) => {
   if (status === 204) {
     status = 200;
     // for GA4 debug validation endpoint, status is always 200
-  } else if (status === 200 && isNotNull(response)) {
+  } else if (status === 200 && isDefinedAndNotNull(response)) {
+    // validationMessages[] is empty, thus event is valid
     if (response.validationMessages.length === 0) {
-      // validationMessages[] is empty, thus event is valid
       status = 200;
     } else {
       const {

@@ -196,9 +196,7 @@
           "value": 27.5,
           "order_id": "50314b8e9bcf000000000000",
           "num_items": 2,
-          "content_ids": [
-            "123"
-          ],
+          "content_ids": ["123"],
           "contents": [
             {
               "quantity": 2,
@@ -648,30 +646,45 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "headers": { "Content-Type": "application/json" },
     "params": {},
     "body": {
       "JSON": {
         "event_time": 1597383030,
-        "opt_out": true,
         "action_source": "web",
+        "opt_out": true,
         "event_name": "ViewCategory",
         "app_id": "429047995",
         "advertiser_id": "123456",
         "user_data": {
-          "ph": "Hashed phone",
-          "db": "Hashed DB",
-          "ln": "Hashed Lastname",
-          "fn": "Hashed FirstName",
-          "ct": "hashed city",
-          "st": "hashed state",
-          "zp": "Hashed Zip",
-          "country": "hashed country",
-          "hashed_maids": "Hashed maids",
-          "client_user_agent": "chrome",
-          "ge": "Hashed Gender"
+          "ph": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "db": [
+            "24b481ff33ca9440ffe98ca4fc3e852794cc95e912eb02095e18b78274e25bab"
+          ],
+          "ln": [
+            "67b8905974fe446c9e8bcadf9e72e7ffe8606ff4245c75c8d695ca8f110481f9"
+          ],
+          "fn": [
+            "55c0f80a53ebc5b3d49a9aa6599096c3d1d35d3b41ea1e78a01faada85f87e01"
+          ],
+          "ct": [
+            "21525cf6fe7e575bc47027976350fb9ca26517686e8c12c1a772e6cebde0d329"
+          ],
+          "st": [
+            "94d13dce081e1ac67038d0fce05ac84943115c5e62425a22b4ad7303f433f527"
+          ],
+          "zp": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          ],
+          "country": [
+            "486b1f2b13aa15793413d17416e046d0e03556c3781f488e200b4375e95f666d"
+          ],
+          "hashed_maids": [
+            "42ee6dc30b9bbd9e4be7597ed676ca459ce7853ccd4366a090a82a5bcfcdbcab"
+          ],
+          "client_user_agent": "chrome"
         }
       },
       "JSON_ARRAY": {},

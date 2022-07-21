@@ -363,7 +363,7 @@ const responseHandler = (destinationResponse, dest) => {
     // for GA4 debug validation endpoint, status is always 200
   } else if (status === 200 && isDefinedAndNotNull(response)) {
     // validationMessages[] is empty, thus event is valid
-    if (response.validationMessages.length === 0) {
+    if (response.validationMessages?.length === 0) {
       status = 200;
     } else {
       const {

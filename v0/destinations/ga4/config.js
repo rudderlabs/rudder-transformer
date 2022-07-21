@@ -1,7 +1,7 @@
 const { getMappingConfig } = require("../../util");
 
 const ENDPOINT = "https://www.google-analytics.com/mp/collect";
-const DEBUGENDPOINT = "https://www.google-analytics.com/debug/mp/collect";
+const DEBUG_ENDPOINT = "https://www.google-analytics.com/debug/mp/collect";
 
 /**
  * config for GA4 events
@@ -139,7 +139,7 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
   ENDPOINT,
-  DEBUGENDPOINT,
+  DEBUG_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name]

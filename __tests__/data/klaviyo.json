@@ -1060,9 +1060,29 @@
         "originalTimestamp": "2021-01-03T17:02:53.193Z"
       }
     },
-    "output": {
-      "error": "Cannot process list operation as listId is not available, either in message or config"
-    }
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "params": {
+          "$id": "utsab@rudderstack.com",
+          "$email": "utsab@rudderstack.com",
+          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        },
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   },
   {
     "description": "Existing Profile updation call",

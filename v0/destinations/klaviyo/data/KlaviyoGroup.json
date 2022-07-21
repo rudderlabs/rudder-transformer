@@ -12,16 +12,6 @@
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$consent",
-    "sourceKeys": "context.traits.consent",
-    "required": false
-  },
-  {
-    "destKey": "sms_consent",
-    "sourceKeys": "context.traits.smsConsent",
-    "required": false
-  },
-  {
     "destKey": "$id",
     "sourceKeys": "userId",
     "required": false,

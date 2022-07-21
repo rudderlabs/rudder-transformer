@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
+const { even } = require("is");
 const { forEach } = require("lodash");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
@@ -123,22 +124,22 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
 
+  const returnArray = [];
   if (standardEventsMap[trimmedEvent]) {
-    returnValue = [];
     Object.keys(standardEventsMap).forEach(key => {
       if (key === trimmedEvent) {
         standardEventsMap[trimmedEvent].forEach(val => {
-          returnValue.push(getTrackResponse(message, Config, val));
+          returnArray.push(getTrackResponse(message, Config, val));
         });
       }
     });
-    return returnValue;
+    return returnArray;
   }
 
   const response = defaultRequestConfig();
   event = eventNameMapping[event];
-
-  return getTrackResponse(message, Config, event);
+  returnArray.push(getTrackResponse(message, Config, event));
+  return returnArray;
 };
 
 const process = async event => {
@@ -224,35 +225,41 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, trackResponseList, eventsChunk) {
+function getEventChunks(eventArray, trackResponseList, eventsChunk) {
   // Do not apply batching if the payload contains test_event_code
   // which corresponds to track endpoint
-  if (event.message.body.JSON.test_event_code) {
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
-    delete message.body.JSON.type;
+  const eventTemplate = JSON.parse(JSON.stringify(eventArray));
+  delete eventTemplate.message;
+  eventArray.message.forEach(element => {
+    if (element.body.JSON.test_event_code) {
+      const { message, metadata, destination } = event;
+      const endpoint = get(message, "endpoint");
+      delete message.body.JSON.type;
 
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultPostRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
 
-    trackResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination
-      )
-    );
-  } else {
-    // build eventsChunk of MAX_BATCH_SIZE
-    eventsChunk.push(event);
-  }
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else {
+      // build eventsChunk of MAX_BATCH_SIZE
+      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      newEvent.message = element;
+      eventsChunk.push(newEvent);
+    }
+  });
 }
 
 const processRouterDest = async inputs => {

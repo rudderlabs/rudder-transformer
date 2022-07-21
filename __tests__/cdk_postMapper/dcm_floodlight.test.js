@@ -1,9 +1,10 @@
-const { trackPostMapper } = require("../../cdk/dcm_floodlight/transform");
+const { postMapper } = require("../../cdk/dcm_floodlight/transform");
 
-describe("Unit Test for track postMapper", () => {
+describe("Unit Test for postMapper", () => {
   it("should update the rudderContext with userAgent and valid endpoint", () => {
     const message = {
       event: "Checkout Started",
+      type: "track",
       properties: {
         orderId: 1234,
         quantity: 45,
@@ -99,7 +100,7 @@ describe("Unit Test for track postMapper", () => {
         "https://ad.doubleclick.net/ddm/activity/src=12649566;cat=check0;type=conv0000;dc_rdid=T0T0T072-5e28-45a1-9eda-ce22a3e36d1a;ord=111;qty=999999;cost=800;dc_lat=1"
     };
     const rudderContext = {};
-    trackPostMapper(event, payload, rudderContext);
+    postMapper(event, payload, rudderContext);
     expect(rudderContext).toEqual(expectedRudderContext);
   });
 });

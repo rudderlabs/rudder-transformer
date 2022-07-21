@@ -1,44 +1,83 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
+const _ = require("lodash");
 const {
-  getValueFromMessage,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
-const { CustomError, getIntegrationsObj, isEmpty } = require("../../v0/util");
+const {
+  CustomError,
+  getIntegrationsObj,
+  isEmpty,
+  isEmptyObject,
+  getValueFromPropertiesOrTraits,
+  getHashFromArray
+} = require("../../v0/util");
+const {
+  GENERIC_TRUE_VALUES,
+  GENERIC_FALSE_VALUES
+} = require("../../constants");
+const { BASE_URL, BLACKLISTED_CHARACTERS } = require("./config");
 
 // append properties to endpoint
-// eg: ${endpoint}key1=value1;key2=value2;....
-function appendProperties(endpoint, payload) {
-  Object.keys(payload).forEach(key => {
-    endpoint += `${key}=${payload[key]};`;
-  });
+// eg: ${BASE_URL}key1=value1;key2=value2;....
+const appendProperties = payload => {
+  let endpoint = "";
+  endpoint += Object.keys(payload)
+    .map(key => {
+      return `${key}=${payload[key]}`;
+    })
+    .join(";");
 
   return endpoint;
-}
+};
 
 // transform webapp dynamicForm custom floodlight variable
-// into {u1: value, u2: value, ...}
-function transformCustomVariable(customFloodlightVariable) {
+// into {property1: u1, property2: u2, ...}
+// Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
+const transformCustomVariable = (customFloodlightVariable, message) => {
   const customVariable = {};
-  customFloodlightVariable.forEach(item => {
-    if (item && !isEmpty(item.from) && !isEmpty(item.to)) {
-      // remove u if already there
+  const customMapping = getHashFromArray(
+    customFloodlightVariable,
+    "from",
+    "to",
+    false
+  );
+
+  Object.keys(customMapping).forEach(key => {
+    // it takes care of getting the value in the order.
+    // returns null if not present
+    const itemValue = getValueFromPropertiesOrTraits({
+      message,
+      key
+    });
+
+    if (
+      // the value is not null
+      !_.isNil(itemValue) &&
+      // the value is string and doesn't have any blacklisted characters
+      !(
+        typeof itemValue === "string" &&
+        BLACKLISTED_CHARACTERS.some(k => itemValue.includes(k))
+      ) &&
+      // boolean values are not supported
+      typeof itemValue !== "boolean"
+    ) {
       customVariable[
-        `u${item.from.trim().replace(/u/g, "")}`
-      ] = `[${item.to.trim()}]`;
+        `u${customMapping[key].replace(/u/g, "")}`
+      ] = encodeURIComponent(itemValue);
     }
   });
 
   return customVariable;
-}
+};
 
 // valid flag should be provided [1|true] or [0|false]
-function isValidFlag(key, value) {
-  if (["true", "1"].includes(value.toString())) {
+const mapFlagValue = (key, value) => {
+  if (GENERIC_TRUE_VALUES.includes(value.toString())) {
     return 1;
   }
-  if (["false", "0"].includes(value.toString())) {
+  if (GENERIC_FALSE_VALUES.includes(value.toString())) {
     return 0;
   }
 
@@ -46,21 +85,47 @@ function isValidFlag(key, value) {
     `[DCM Floodlight]:: ${key}: valid parameters are [1|true] or [0|false]`,
     400
   );
-}
+};
 
-function trackPostMapper(input, mappedPayload, rudderContext) {
+/**
+ * postMapper does the processing after we do the initial mapping
+ * defined in mapping/*.yaml
+ * @param {*} input
+ * @param {*} mappedPayload
+ * @param {*} rudderContext
+ * @returns
+ */
+const postMapper = (input, mappedPayload, rudderContext) => {
   const { message, destination } = input;
   const { advertiserId, conversionEvents } = destination.Config;
   let { activityTag, groupTag } = destination.Config;
   let customFloodlightVariable;
   let salesTag;
 
-  const baseEndpoint = "https://ad.doubleclick.net/ddm/activity/";
+  let event;
+  // for page() take event from name and category
+  if (message.type.toLowerCase() === "page") {
+    const { category } = message.properties;
+    const { name } = message || message.properties;
 
-  let event = getValueFromMessage(message, "event");
+    if (category && name) {
+      message.event = `Viewed ${category} ${name} Page`;
+    } else if (category) {
+      // categorized pages
+      message.event = `Viewed ${category} Page`;
+    } else if (name) {
+      // named pages
+      message.event = `Viewed ${name} Page`;
+    } else {
+      message.event = "Viewed Page";
+    }
+  }
+
+  event = message.event;
+
   if (!event) {
     throw new CustomError(
-      "[DCM Floodlight]:: event is required for track call",
+      `[DCM Floodlight] ${message.type}:: event is required`,
       400
     );
   }
@@ -68,7 +133,7 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   const userAgent = get(message, "context.userAgent");
   if (!userAgent) {
     throw new CustomError(
-      "[DCM Floodlight]:: userAgent is required for track call",
+      `[DCM Floodlight] ${message.type}:: userAgent is required`,
       400
     );
   }
@@ -98,10 +163,17 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   });
 
   if (!conversionEventFound) {
-    throw new CustomError("[DCM Floodlight]:: Conversion event not found", 400);
+    throw new CustomError(
+      `[DCM Floodlight] ${message.type}:: Conversion event not found`,
+      400
+    );
   }
 
-  customFloodlightVariable = transformCustomVariable(customFloodlightVariable);
+  // Ref - https://support.google.com/displayvideo/answer/6040012?hl=en
+  customFloodlightVariable = transformCustomVariable(
+    customFloodlightVariable,
+    message
+  );
   mappedPayload = {
     src: advertiserId,
     cat: activityTag,
@@ -135,23 +207,23 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
   const integrationsObj = getIntegrationsObj(message, "dcm_floodlight");
   if (integrationsObj) {
     if (isDefinedAndNotNull(integrationsObj.COPPA)) {
-      mappedPayload.tag_for_child_directed_treatment = isValidFlag(
+      mappedPayload.tag_for_child_directed_treatment = mapFlagValue(
         "COPPA",
         integrationsObj.COPPA
       );
     }
 
     if (isDefinedAndNotNull(integrationsObj.GDPR)) {
-      mappedPayload.tfua = isValidFlag("GDPR", integrationsObj.GDPR);
+      mappedPayload.tfua = mapFlagValue("GDPR", integrationsObj.GDPR);
     }
 
     if (isDefinedAndNotNull(integrationsObj.npa)) {
-      mappedPayload.npa = isValidFlag("npa", integrationsObj.npa);
+      mappedPayload.npa = mapFlagValue("npa", integrationsObj.npa);
     }
   }
 
   if (isDefinedAndNotNull(mappedPayload.dc_lat)) {
-    mappedPayload.dc_lat = isValidFlag("dc_lat", mappedPayload.dc_lat);
+    mappedPayload.dc_lat = mapFlagValue("dc_lat", mappedPayload.dc_lat);
   }
 
   mappedPayload = removeUndefinedAndNullValues(mappedPayload);
@@ -159,15 +231,16 @@ function trackPostMapper(input, mappedPayload, rudderContext) {
     customFloodlightVariable
   );
 
-  let dcmEndpoint = appendProperties(baseEndpoint, mappedPayload);
-  dcmEndpoint = appendProperties(dcmEndpoint, customFloodlightVariable).slice(
-    0,
-    -1
-  );
+  let dcmEndpoint = `${BASE_URL}${appendProperties(mappedPayload)}`;
+  if (!isEmptyObject(customFloodlightVariable)) {
+    dcmEndpoint = `${dcmEndpoint};${appendProperties(
+      customFloodlightVariable
+    )}`;
+  }
 
   rudderContext.endpoint = dcmEndpoint;
 
   return {};
-}
+};
 
-module.exports = { trackPostMapper };
+module.exports = { postMapper };

@@ -446,7 +446,6 @@ async function processTrack(message, destinationConfig, headers) {
 }
 
 async function processGroup(message, destinationConfig, headers) {
-  validateUserId(message);
   const category = ConfigCategory.GROUP;
   let payload;
   let url;
@@ -460,6 +459,7 @@ async function processGroup(message, destinationConfig, headers) {
     );
     url = endPoint + category.createEndpoint;
   } else {
+    validateUserId(message);
     const orgId = await createOrganization(
       message,
       category,

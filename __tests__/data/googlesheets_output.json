@@ -1,333 +1,343 @@
 [
   {
-    "message": {
-      "0": {
-        "attributeKey": "messageId",
-        "attributeValue": "84e26acc-56a5-4835-8233-591137fca468"
-      },
-      "1": {
-        "attributeKey": "First Name",
-        "attributeValue": "James"
-      },
-      "2": {
-        "attributeKey": "Last Name",
-        "attributeValue": "Doe"
-      },
-      "3": {
-        "attributeKey": "Birthday",
-        "attributeValue": "1614775793"
-      },
-      "4": {
-        "attributeKey": "City",
-        "attributeValue": "kolkata"
-      },
-      "5": {
-        "attributeKey": "Country",
-        "attributeValue": "India"
-      },
-      "6": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "7": {
-        "attributeKey": "Offer",
-        "attributeValue": ""
-      },
-      "8": {
-        "attributeKey": "Title Page",
-        "attributeValue": ""
-      },
-      "9": {
-        "attributeKey": "Cart Value",
-        "attributeValue": ""
-      },
-      "10": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "11": {
-        "attributeKey": "App Build",
-        "attributeValue": "1.0.0"
-      },
-      "12": {
-        "attributeKey": "App Name",
-        "attributeValue": "RudderLabs JavaScript SDK"
-      },
-      "13": {
-        "attributeKey": "Library Name",
-        "attributeValue": "RudderLabs JavaScript SDK"
-      },
-      "14": {
-        "attributeKey": "IP",
-        "attributeValue": "0.0.0.0"
+    "batch": {
+      "message": {
+        "0": {
+          "attributeKey": "messageId",
+          "attributeValue": "84e26acc-56a5-4835-8233-591137fca468"
+        },
+        "1": {
+          "attributeKey": "First Name",
+          "attributeValue": "James"
+        },
+        "2": {
+          "attributeKey": "Last Name",
+          "attributeValue": "Doe"
+        },
+        "3": {
+          "attributeKey": "Birthday",
+          "attributeValue": "1614775793"
+        },
+        "4": {
+          "attributeKey": "City",
+          "attributeValue": "kolkata"
+        },
+        "5": {
+          "attributeKey": "Country",
+          "attributeValue": "India"
+        },
+        "6": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "7": {
+          "attributeKey": "Offer",
+          "attributeValue": ""
+        },
+        "8": {
+          "attributeKey": "Title Page",
+          "attributeValue": ""
+        },
+        "9": {
+          "attributeKey": "Cart Value",
+          "attributeValue": ""
+        },
+        "10": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "11": {
+          "attributeKey": "App Build",
+          "attributeValue": "1.0.0"
+        },
+        "12": {
+          "attributeKey": "App Name",
+          "attributeValue": "RudderLabs JavaScript SDK"
+        },
+        "13": {
+          "attributeKey": "Library Name",
+          "attributeValue": "RudderLabs JavaScript SDK"
+        },
+        "14": {
+          "attributeKey": "IP",
+          "attributeValue": "0.0.0.0"
+        }
       }
     },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    "spreadSheet": "rudder_sheet",
+    "spreadSheetId": "rudder_sheet_id"
   },
   {
-    "message": {
-      "0": {
-        "attributeKey": "messageId",
-        "attributeValue": ""
-      },
-      "1": {
-        "attributeKey": "First Name",
-        "attributeValue": ""
-      },
-      "2": {
-        "attributeKey": "Last Name",
-        "attributeValue": ""
-      },
-      "3": {
-        "attributeKey": "Birthday",
-        "attributeValue": ""
-      },
-      "4": {
-        "attributeKey": "City",
-        "attributeValue": ""
-      },
-      "5": {
-        "attributeKey": "Country",
-        "attributeValue": ""
-      },
-      "6": {
-        "attributeKey": "Revenue",
-        "attributeValue": 5.99
-      },
-      "7": {
-        "attributeKey": "Offer",
-        "attributeValue": "Discount"
-      },
-      "8": {
-        "attributeKey": "Title Page",
-        "attributeValue": ""
-      },
-      "9": {
-        "attributeKey": "Cart Value",
-        "attributeValue": ""
-      },
-      "10": {
-        "attributeKey": "Revenue",
-        "attributeValue": 5.99
-      },
-      "11": {
-        "attributeKey": "App Build",
-        "attributeValue": "1"
-      },
-      "12": {
-        "attributeKey": "App Name",
-        "attributeValue": "RudderAndroidClient"
-      },
-      "13": {
-        "attributeKey": "Library Name",
-        "attributeValue": "com.rudderstack.android.sdk.core"
-      },
-      "14": {
-        "attributeKey": "IP",
-        "attributeValue": "14.5.67.21"
+    "batch": {
+      "message": {
+        "0": {
+          "attributeKey": "messageId",
+          "attributeValue": ""
+        },
+        "1": {
+          "attributeKey": "First Name",
+          "attributeValue": ""
+        },
+        "2": {
+          "attributeKey": "Last Name",
+          "attributeValue": ""
+        },
+        "3": {
+          "attributeKey": "Birthday",
+          "attributeValue": ""
+        },
+        "4": {
+          "attributeKey": "City",
+          "attributeValue": ""
+        },
+        "5": {
+          "attributeKey": "Country",
+          "attributeValue": ""
+        },
+        "6": {
+          "attributeKey": "Revenue",
+          "attributeValue": 5.99
+        },
+        "7": {
+          "attributeKey": "Offer",
+          "attributeValue": "Discount"
+        },
+        "8": {
+          "attributeKey": "Title Page",
+          "attributeValue": ""
+        },
+        "9": {
+          "attributeKey": "Cart Value",
+          "attributeValue": ""
+        },
+        "10": {
+          "attributeKey": "Revenue",
+          "attributeValue": 5.99
+        },
+        "11": {
+          "attributeKey": "App Build",
+          "attributeValue": "1"
+        },
+        "12": {
+          "attributeKey": "App Name",
+          "attributeValue": "RudderAndroidClient"
+        },
+        "13": {
+          "attributeKey": "Library Name",
+          "attributeValue": "com.rudderstack.android.sdk.core"
+        },
+        "14": {
+          "attributeKey": "IP",
+          "attributeValue": "14.5.67.21"
+        }
       }
     },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    "spreadSheet": "rudder_sheet",
+    "spreadSheetId": "rudder_sheet_id"
   },
   {
-    "message": {
-      "0": {
-        "attributeKey": "messageId",
-        "attributeValue": ""
-      },
-      "1": {
-        "attributeKey": "First Name",
-        "attributeValue": ""
-      },
-      "2": {
-        "attributeKey": "Last Name",
-        "attributeValue": ""
-      },
-      "3": {
-        "attributeKey": "Birthday",
-        "attributeValue": ""
-      },
-      "4": {
-        "attributeKey": "City",
-        "attributeValue": ""
-      },
-      "5": {
-        "attributeKey": "Country",
-        "attributeValue": ""
-      },
-      "6": {
-        "attributeKey": "Revenue",
-        "attributeValue": 7500
-      },
-      "7": {
-        "attributeKey": "Offer",
-        "attributeValue": ""
-      },
-      "8": {
-        "attributeKey": "Title Page",
-        "attributeValue": "Cart"
-      },
-      "9": {
-        "attributeKey": "Cart Value",
-        "attributeValue": 7800
-      },
-      "10": {
-        "attributeKey": "Revenue",
-        "attributeValue": 7500
-      },
-      "11": {
-        "attributeKey": "App Build",
-        "attributeValue": ""
-      },
-      "12": {
-        "attributeKey": "App Name",
-        "attributeValue": ""
-      },
-      "13": {
-        "attributeKey": "Library Name",
-        "attributeValue": "http"
-      },
-      "14": {
-        "attributeKey": "IP",
-        "attributeValue": "14.5.67.21"
+    "batch": {
+      "message": {
+        "0": {
+          "attributeKey": "messageId",
+          "attributeValue": ""
+        },
+        "1": {
+          "attributeKey": "First Name",
+          "attributeValue": ""
+        },
+        "2": {
+          "attributeKey": "Last Name",
+          "attributeValue": ""
+        },
+        "3": {
+          "attributeKey": "Birthday",
+          "attributeValue": ""
+        },
+        "4": {
+          "attributeKey": "City",
+          "attributeValue": ""
+        },
+        "5": {
+          "attributeKey": "Country",
+          "attributeValue": ""
+        },
+        "6": {
+          "attributeKey": "Revenue",
+          "attributeValue": 7500
+        },
+        "7": {
+          "attributeKey": "Offer",
+          "attributeValue": ""
+        },
+        "8": {
+          "attributeKey": "Title Page",
+          "attributeValue": "Cart"
+        },
+        "9": {
+          "attributeKey": "Cart Value",
+          "attributeValue": 7800
+        },
+        "10": {
+          "attributeKey": "Revenue",
+          "attributeValue": 7500
+        },
+        "11": {
+          "attributeKey": "App Build",
+          "attributeValue": ""
+        },
+        "12": {
+          "attributeKey": "App Name",
+          "attributeValue": ""
+        },
+        "13": {
+          "attributeKey": "Library Name",
+          "attributeValue": "http"
+        },
+        "14": {
+          "attributeKey": "IP",
+          "attributeValue": "14.5.67.21"
+        }
       }
     },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    "spreadSheet": "rudder_sheet",
+    "spreadSheetId": "rudder_sheet_id"
   },
   {
-    "message": {
-      "0": {
-        "attributeKey": "messageId",
-        "attributeValue": ""
-      },
-      "1": {
-        "attributeKey": "First Name",
-        "attributeValue": ""
-      },
-      "2": {
-        "attributeKey": "Last Name",
-        "attributeValue": ""
-      },
-      "3": {
-        "attributeKey": "Birthday",
-        "attributeValue": ""
-      },
-      "4": {
-        "attributeKey": "City",
-        "attributeValue": ""
-      },
-      "5": {
-        "attributeKey": "Country",
-        "attributeValue": ""
-      },
-      "6": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "7": {
-        "attributeKey": "Offer",
-        "attributeValue": ""
-      },
-      "8": {
-        "attributeKey": "Title Page",
-        "attributeValue": "Home"
-      },
-      "9": {
-        "attributeKey": "Cart Value",
-        "attributeValue": ""
-      },
-      "10": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "11": {
-        "attributeKey": "App Build",
-        "attributeValue": ""
-      },
-      "12": {
-        "attributeKey": "App Name",
-        "attributeValue": ""
-      },
-      "13": {
-        "attributeKey": "Library Name",
-        "attributeValue": "http"
-      },
-      "14": {
-        "attributeKey": "IP",
-        "attributeValue": "14.5.67.21"
+    "batch": {
+      "message": {
+        "0": {
+          "attributeKey": "messageId",
+          "attributeValue": ""
+        },
+        "1": {
+          "attributeKey": "First Name",
+          "attributeValue": ""
+        },
+        "2": {
+          "attributeKey": "Last Name",
+          "attributeValue": ""
+        },
+        "3": {
+          "attributeKey": "Birthday",
+          "attributeValue": ""
+        },
+        "4": {
+          "attributeKey": "City",
+          "attributeValue": ""
+        },
+        "5": {
+          "attributeKey": "Country",
+          "attributeValue": ""
+        },
+        "6": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "7": {
+          "attributeKey": "Offer",
+          "attributeValue": ""
+        },
+        "8": {
+          "attributeKey": "Title Page",
+          "attributeValue": "Home"
+        },
+        "9": {
+          "attributeKey": "Cart Value",
+          "attributeValue": ""
+        },
+        "10": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "11": {
+          "attributeKey": "App Build",
+          "attributeValue": ""
+        },
+        "12": {
+          "attributeKey": "App Name",
+          "attributeValue": ""
+        },
+        "13": {
+          "attributeKey": "Library Name",
+          "attributeValue": "http"
+        },
+        "14": {
+          "attributeKey": "IP",
+          "attributeValue": "14.5.67.21"
+        }
       }
     },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    "spreadSheet": "rudder_sheet",
+    "spreadSheetId": "rudder_sheet_id"
   },
   {
-    "message": {
-      "0": {
-        "attributeKey": "messageId",
-        "attributeValue": ""
-      },
-      "1": {
-        "attributeKey": "First Name",
-        "attributeValue": ""
-      },
-      "2": {
-        "attributeKey": "Last Name",
-        "attributeValue": ""
-      },
-      "3": {
-        "attributeKey": "Birthday",
-        "attributeValue": ""
-      },
-      "4": {
-        "attributeKey": "City",
-        "attributeValue": ""
-      },
-      "5": {
-        "attributeKey": "Country",
-        "attributeValue": ""
-      },
-      "6": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "7": {
-        "attributeKey": "Offer",
-        "attributeValue": ""
-      },
-      "8": {
-        "attributeKey": "Title Page",
-        "attributeValue": ""
-      },
-      "9": {
-        "attributeKey": "Cart Value",
-        "attributeValue": ""
-      },
-      "10": {
-        "attributeKey": "Revenue",
-        "attributeValue": ""
-      },
-      "11": {
-        "attributeKey": "App Build",
-        "attributeValue": ""
-      },
-      "12": {
-        "attributeKey": "App Name",
-        "attributeValue": ""
-      },
-      "13": {
-        "attributeKey": "Library Name",
-        "attributeValue": "http"
-      },
-      "14": {
-        "attributeKey": "IP",
-        "attributeValue": "14.5.67.21"
+    "batch": {
+      "message": {
+        "0": {
+          "attributeKey": "messageId",
+          "attributeValue": ""
+        },
+        "1": {
+          "attributeKey": "First Name",
+          "attributeValue": ""
+        },
+        "2": {
+          "attributeKey": "Last Name",
+          "attributeValue": ""
+        },
+        "3": {
+          "attributeKey": "Birthday",
+          "attributeValue": ""
+        },
+        "4": {
+          "attributeKey": "City",
+          "attributeValue": ""
+        },
+        "5": {
+          "attributeKey": "Country",
+          "attributeValue": ""
+        },
+        "6": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "7": {
+          "attributeKey": "Offer",
+          "attributeValue": ""
+        },
+        "8": {
+          "attributeKey": "Title Page",
+          "attributeValue": ""
+        },
+        "9": {
+          "attributeKey": "Cart Value",
+          "attributeValue": ""
+        },
+        "10": {
+          "attributeKey": "Revenue",
+          "attributeValue": ""
+        },
+        "11": {
+          "attributeKey": "App Build",
+          "attributeValue": ""
+        },
+        "12": {
+          "attributeKey": "App Name",
+          "attributeValue": ""
+        },
+        "13": {
+          "attributeKey": "Library Name",
+          "attributeValue": "http"
+        },
+        "14": {
+          "attributeKey": "IP",
+          "attributeValue": "14.5.67.21"
+        }
       }
     },
-    "spreadSheetId": "rudder_sheet_id",
-    "spreadSheet": "rudder_sheet"
+    "spreadSheet": "rudder_sheet",
+    "spreadSheetId": "rudder_sheet_id"
   },
   {
     "error": "No Spread Sheet set for this event"

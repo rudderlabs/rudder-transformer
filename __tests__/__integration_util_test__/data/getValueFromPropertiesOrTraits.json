@@ -1,0 +1,77 @@
+[
+  {
+    "description": "success case 1",
+    "input": {
+      "message": {
+        "properties": {
+          "price": 8.9,
+          "quantity": 10
+        },
+        "traits": {
+          "price": 9.9
+        },
+        "context": {
+          "traits": {
+            "price": 10.9
+          }
+        }
+      },
+      "key": "price"
+    },
+    "output": 8.9
+  },
+  {
+    "description": "success case 2",
+    "input": {
+      "message": {
+        "properties": {
+          "quantity": 10
+        },
+        "traits": {
+          "price": 9.9
+        },
+        "context": {
+          "traits": {
+            "price": 10.9
+          }
+        }
+      },
+      "key": "price"
+    },
+    "output": 9.9
+  },
+  {
+    "description": "success case 4",
+    "input": {
+      "message": {
+        "properties": {
+          "quantity": 10
+        },
+        "traits": {},
+        "context": {
+          "traits": {
+            "price": 10.9
+          }
+        }
+      },
+      "key": "price"
+    },
+    "output": 10.9
+  },
+  {
+    "description": "success case 5",
+    "input": {
+      "message": {
+        "properties": {
+          "quantity": 10
+        },
+        "traits": {},
+        "context": {
+          "traits": {}
+        }
+      },
+      "key": "price"
+    },
+    "output": null
+  }
+]

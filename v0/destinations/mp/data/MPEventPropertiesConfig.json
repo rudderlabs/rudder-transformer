@@ -1,6 +1,9 @@
 [
   {
-    "sourceKeys": ["context.ip", "request_ip"],
+    "sourceKeys": [
+      "context.ip",
+      "request_ip"
+    ],
     "destKey": "ip"
   },
   {
@@ -112,15 +115,24 @@
     "destKey": "mp_processing_time_ms"
   },
   {
-    "sourceKeys": "properties.appBuildNumber",
+    "sourceKeys": [
+      "properties.appBuildNumber",
+      "context.app.build"
+    ],
     "destKey": "$app_build_number"
   },
   {
-    "sourceKeys": "properties.appVersionString",
+    "sourceKeys": [
+      "properties.appVersionString",
+      "context.app.version"
+    ],
     "destKey": "$app_version_string"
   },
   {
-    "sourceKeys": "properties.brand",
+    "sourceKeys": [
+      "properties.brand",
+      "device.manufacturer"
+    ],
     "destKey": "$brand"
   },
   {
@@ -150,5 +162,9 @@
   {
     "sourceKeys": "properties.googlePlayServices",
     "destKey": "$google_play_services"
+  },
+  {
+    "sourceKeys": "messageId",
+    "destKey": "$insert_id"
   }
 ]

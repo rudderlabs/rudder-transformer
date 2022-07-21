@@ -144,9 +144,10 @@ const getHashFromArrayWithDuplicate = (
         : array[fromKey].trim();
 
       if (hashMap[key]) {
-        hashMap[key].push(array[toKey]);
+        hashMap[key].add(array[toKey]);
       } else {
-        hashMap[key] = [array[toKey]];
+        hashMap[key] = new Set();
+        hashMap[key].add(array[toKey]);
       }
     });
   }
@@ -1385,7 +1386,7 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform.toLowerCase());
+  return appleOsNames.includes(platform?.toLowerCase());
 }
 
 function removeHyphens(str) {

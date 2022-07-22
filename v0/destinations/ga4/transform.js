@@ -7,20 +7,18 @@ const {
   defaultRequestConfig,
   extractCustomFields,
   isEmptyObject,
-  flattenJson,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   ENDPOINT,
   trackCommonConfig,
-  eventNameMapping,
   mappingConfig,
   ConfigCategory
 } = require("./config");
 const {
-  msUnixTimestamp,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
   removeReservedParameterPrefixNames,
@@ -28,10 +26,13 @@ const {
   removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getDestinationItemProperties
+  getItemList,
+  getGA4ExclusionList,
+  getItem,
+  getGA4CustomParameters
 } = require("./utils");
 
-function trackResponseBuilder(message, { Config }) {
+const responseBuilder = (message, { Config }) => {
   let event = get(message, "event");
   if (!event) {
     throw new CustomError("Event name is required", 400);
@@ -50,23 +51,24 @@ function trackResponseBuilder(message, { Config }) {
 
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
-  if (rawPayload.timestamp_micros) {
-    rawPayload.timestamp_micros = msUnixTimestamp(rawPayload.timestamp_micros);
-  }
 
   switch (Config.typesOfClient) {
     case "gtag":
-      // gtag.js
+      // gtag.js uses client_id
+      // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id =
-        get(message, "context.client_id") || get(message, "messageId");
+        getDestinationExternalID(message, "ga4ClientId") ||
+        get(message, "anonymousId") ||
+        get(message, "messageId");
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
-          "context.client_id or messageId must be provided",
+          "ga4ClientId, anonymousId or messageId must be provided",
           400
         );
       }
       break;
     case "firebase":
+      // firebase uses app_instance_id
       rawPayload.app_instance_id = getDestinationExternalID(
         message,
         "ga4AppInstanceId"
@@ -83,234 +85,141 @@ function trackResponseBuilder(message, { Config }) {
   }
 
   let payload = {};
-  if (eventNameMapping[event.toLowerCase()]) {
+  const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
+  if (message.type === "track" && eventConfig) {
     // GA4 standard events
     // get event specific parameters
-    switch (event.toLowerCase()) {
-      /* Browsing Section */
-      case "products_searched":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]
-        );
-        break;
-      case "product_list_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      /* Promotions Section */
-      case "promotion_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "promotion_clicked":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, false);
-        break;
-      /* Ordering Section */
-      case "product_clicked":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_CLICKED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "product_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "product_added":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_ADDED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "product_removed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_REMOVED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "cart_viewed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CART_VIEWED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "checkout_started":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "payment_info_entered":
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name]
-        );
-        if (payload.params.shipping_tier) {
-          payload.name = "add_shipping_info";
-        } else {
-          payload.name = "add_payment_info";
-        }
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "order_completed":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.ORDER_COMPLETED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      case "order_refunded":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.ORDER_REFUNDED.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, false);
-        break;
-      /* Wishlist Section */
-      case "product_added_to_wishlist":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, true);
-        break;
-      /* Sharing Section */
-      case "product_shared":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.PRODUCT_SHARED.name]
-        );
-        break;
-      case "cart_shared":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.CART_SHARED.name]
-        );
-        break;
-      /* Group */
-      case "group":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.GROUP.name]
-        );
-        break;
-      /* GA4 Events */
-      case "earn_virtual_currency":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.EARN_VIRTUAL_CURRENCY.name]
-        );
-        break;
-      case "generate_lead":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.GENERATE_LEAD.name]
-        );
-        break;
-      case "level_up":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.LEVEL_UP.name]
-        );
-        break;
+
+    payload.name = eventConfig.event;
+    payload.params = constructPayload(message, mappingConfig[eventConfig.name]);
+
+    const { itemList, item } = eventConfig;
+    if (item) {
+      // item
+      payload.params.items = getItem(message, item === "YES");
+    } else if (itemList) {
+      // itemList
+      payload.params.items = getItemList(message, itemList === "YES");
+    }
+
+    // for select_item and view_item event we take custom properties from properties
+    // excluding items/product properties
+    if (payload.name === "select_item" || payload.name === "view_item") {
+      // exclude event properties
+      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
+        mappingConfig[eventConfig.name]
+      );
+      // exclude items/product properties
+      ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+        getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
+      );
+
+      payload.params = getGA4CustomParameters(
+        message,
+        ["properties"],
+        ITEM_EXCLUSION_LIST,
+        payload
+      );
+    } else {
+      payload.params = getGA4CustomParameters(
+        message,
+        ["properties"],
+        getGA4ExclusionList(mappingConfig[eventConfig.name]),
+        payload
+      );
+    }
+  } else if (message.type === "identify") {
+    payload.name = event;
+    const traits = getFieldValueFromMessage(message, "traits");
+
+    // exclusion list for login/signup and generate_lead
+    // identify has newOrExistingUserTrait, loginSignupMethod
+    // generateLeadValueTrait, generateLeadCurrencyTrait property
+    const GA4_IDENTIFY_EXCLUSION = [
+      `${Config.newOrExistingUserTrait}`,
+      `${Config.loginSignupMethod}`,
+      `${Config.generateLeadValueTrait}`,
+      `${Config.generateLeadCurrencyTrait}`
+    ];
+
+    switch (event) {
       case "login":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.LOGIN.name]
-        );
+      case "sign_up": {
+        // taking method property from traits
+        // depending on loginSignupMethod key defined in Config
+        const method = traits[`${Config.loginSignupMethod}`];
+
+        if (method) {
+          // params for login and sign_up event
+          payload.params = { method }; // method: "Google"
+        }
         break;
-      case "post_score":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.POST_SCORE.name]
-        );
+      }
+      case "generate_lead": {
+        let parameter = {};
+        // taking value parameter
+        // depending on generateLeadValueTrait key defined in Config
+        parameter.value = traits[`${Config.generateLeadValueTrait}`];
+        // taking currency paramter
+        // depending on generateLeadCurrencyTrait key defined in Config
+        parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
+        parameter = removeUndefinedAndNullValues(parameter);
+
+        if (!isDefinedAndNotNull(parameter.value)) {
+          throw new CustomError(
+            `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`,
+            400
+          );
+        }
+
+        if (!isDefinedAndNotNull(parameter.currency)) {
+          parameter.currency = "USD";
+        }
+
+        parameter.value = parseFloat(parameter.value);
+        payload.params = parameter;
         break;
-      case "select_content":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.SELECT_CONTENT.name]
-        );
-        break;
-      case "sign_up":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.SIGN_UP.name]
-        );
-        break;
-      case "spend_virtual_currency":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.SPEND_VIRTUAL_CURRENCY.name]
-        );
-        break;
-      case "tutorial_begin":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        break;
-      case "tutorial_complete":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        break;
-      case "unlock_achievement":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.UNLOCK_ACHIEVEMENT.name]
-        );
-        break;
-      case "view_search_results":
-        payload.name = eventNameMapping[event.toLowerCase()];
-        payload.params = constructPayload(
-          message,
-          mappingConfig[ConfigCategory.VIEW_SEARCH_RESULTS.name]
-        );
-        payload.params.items = getDestinationItemProperties(message, false);
-        break;
+      }
       default:
         break;
     }
+
+    payload.params = getGA4CustomParameters(
+      message,
+      ["traits", "context.traits"],
+      GA4_IDENTIFY_EXCLUSION,
+      payload
+    );
+  } else if (message.type === "page") {
+    // page event
+    payload.name = event;
+    payload.params = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.PAGE.name]
+    );
+
+    payload.params = getGA4CustomParameters(
+      message,
+      ["properties"],
+      GA4_RESERVED_PARAMETER_EXCLUSION,
+      payload
+    );
+  } else if (message.type === "group") {
+    // group event
+    payload.name = event;
+    payload.params = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.GROUP.name]
+    );
+
+    payload.params = getGA4CustomParameters(
+      message,
+      ["traits", "context.traits"],
+      getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
+      payload
+    );
   } else {
+    // track
     // custom events category
     // Event names are case sensitive
     if (isReservedWebCustomEventName(event)) {
@@ -330,20 +239,12 @@ function trackResponseBuilder(message, { Config }) {
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params
-    let customParameters = {};
-    customParameters = extractCustomFields(
+    payload.params = getGA4CustomParameters(
       message,
-      customParameters,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION
+      GA4_RESERVED_PARAMETER_EXCLUSION,
+      payload
     );
-    if (!isEmptyObject(customParameters)) {
-      customParameters = flattenJson(customParameters);
-      payload.params = {
-        ...payload.params,
-        ...customParameters
-      };
-    }
   }
 
   removeReservedParameterPrefixNames(payload.params);
@@ -365,7 +266,6 @@ function trackResponseBuilder(message, { Config }) {
     GA4_RESERVED_USER_PROPERTY_EXCLUSION
   );
   if (!isEmptyObject(userProperties)) {
-    userProperties = flattenJson(userProperties);
     rawPayload.user_properties = userProperties;
   }
 
@@ -400,9 +300,9 @@ function trackResponseBuilder(message, { Config }) {
 
   response.body.JSON = rawPayload;
   return response;
-}
+};
 
-function process(event) {
+const process = event => {
   const { message, destination } = event;
   const { Config } = destination;
 
@@ -429,18 +329,60 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
+    case EventType.IDENTIFY:
+      if (Config.enableServerSideIdentify) {
+        response = [];
+        // 1. send login/signup event based on config
+        // Convert identify event to Login or Signup event
+        const traits = getFieldValueFromMessage(message, "traits");
+        // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
+        const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
+        if (!isDefinedAndNotNull(firstLogin)) {
+          throw new CustomError(
+            `[GA4] Identify:: '${Config.newOrExistingUserTrait}' is a required field in traits`,
+            400
+          );
+        }
+
+        if (Config.sendLoginSignup) {
+          if (firstLogin) {
+            message.event = "sign_up";
+          } else {
+            message.event = "login";
+          }
+
+          response.push(responseBuilder(message, destination));
+        }
+
+        // 2. send generate_lead based on config
+        if (Config.generateLead && firstLogin === true) {
+          message.event = "generate_lead";
+          response.push(responseBuilder(message, destination));
+        }
+      } else {
+        throw new CustomError(
+          "[GA4] Identify:: Server side identify is not enabled",
+          400
+        );
+      }
+      break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      response = responseBuilder(message, destination);
       break;
     case EventType.PAGE:
-      // passing page_view custom event for page()
+      // GA4 custom event 'page_view' is fired for page
       message.event = "page_view";
-      response = trackResponseBuilder(message, destination);
+      response = responseBuilder(message, destination);
+      break;
+    case EventType.GROUP:
+      // GA4 standard event 'join_group' is fired for group
+      message.event = "join_group";
+      response = responseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
-}
+};
 
 module.exports = { process };

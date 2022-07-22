@@ -1,0 +1,10 @@
+{
+  "https://graph.facebook.com/v13.0/1234567891234567/events?access_token=my_access_token": {
+    "data": {
+      "events_received":1,
+      "fbtrace_id":"facebook_trace_id"
+    },
+    "status":200,
+    "statusText":"OK"
+  }
+}

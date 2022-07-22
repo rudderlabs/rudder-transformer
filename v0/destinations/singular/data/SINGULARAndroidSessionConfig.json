@@ -1,0 +1,138 @@
+[
+  {
+    "destKey": "p",
+    "sourceKeys": "context.os.name",
+    "required": true
+  },
+  {
+    "destKey": "i",
+    "sourceKeys": "context.app.namespace",
+    "required": true
+  },
+  {
+    "destKey": "app_v",
+    "sourceKeys": "context.app.version",
+    "required": true
+  },
+  {
+    "destKey": "ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": true
+  },
+  {
+    "destKey": "ve",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "mo",
+    "sourceKeys": "context.device.model",
+    "required": true
+  },
+  {
+    "destKey": "ma",
+    "sourceKeys": "context.device.manufacturer",
+    "required": true
+  },
+  {
+    "destKey": "lc",
+    "sourceKeys": "context.locale",
+    "required": true
+  },
+  {
+    "destKey": "install_source",
+    "sourceKeys": "properties.referring_application",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "asid",
+    "sourceKeys": "properties.asid",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "openuri",
+    "sourceKeys": "properties.url",
+    "required": true,
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "sessionNotificationName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "install_ref",
+    "sourceKeys": "properties.install_ref",
+    "required": false
+  },
+  {
+    "destKey": "custom_user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "n",
+    "sourceKeys": "context.app.name",
+    "required": false
+  },
+  {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "cn",
+    "sourceKeys": "context.network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "fcm",
+    "sourceKeys": "context.device.token",
+    "required": false
+  },
+  {
+    "destKey": "bd",
+    "sourceKeys": "context.app.build",
+    "required": true
+  },
+  {
+    "destKey": "install",
+    "sourceKeys": "properties.install",
+    "required": true
+  },
+  {
+    "destKey": "aifa",
+    "sourceKeys": "context.device.advertisingId",
+    "required": true
+  },
+  {
+    "destKey": "andi",
+    "sourceKeys": "context.device.id",
+    "required": true
+  },
+  {
+    "destKey": "install_time",
+    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
+    "required": true
+  },
+  {
+    "destKey": "update_time",
+    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
+    "required": true
+  },
+  {
+    "destKey": "ua",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  }
+]

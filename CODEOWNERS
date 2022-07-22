@@ -2,4 +2,4 @@
 v0/ @rudderlabs/integrations
 adapters/ @rudderlabs/integrations
 constants/ @rudderlabs/integrations
-warehouse/ @sivashanmukh @psrikanth88
+warehouse/ @rudderlabs/warehouse

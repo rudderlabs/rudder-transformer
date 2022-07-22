@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "page_referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  },
+  {
+    "destKey": "page_title",
+    "sourceKeys": "context.page.title",
+    "required": false
+  },
+  {
+    "destKey": "page_location",
+    "sourceKeys": "context.page.url",
+    "required": false
+  }
+]

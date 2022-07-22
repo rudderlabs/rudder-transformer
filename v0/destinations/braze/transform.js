@@ -371,10 +371,11 @@ function process(event) {
   // Init -- mostly for test cases
   destination.Config.endPoint = "https://rest.fra-01.braze.eu";
 
+  // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
   if (destination.Config.dataCenter) {
     const dataCenterArr = destination.Config.dataCenter.trim().split("-");
     if (dataCenterArr[0].toLowerCase() === "eu") {
-      destination.Config.endPoint = "https://rest.fra-01.braze.eu";
+      destination.Config.endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
     } else {
       destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
     }

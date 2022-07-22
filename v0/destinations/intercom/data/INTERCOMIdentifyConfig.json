@@ -42,7 +42,7 @@
     ],
     "required": false,
     "metadata": {
-      "type": "timestamp"
+      "type": "secondTimestamp"
     }
   },
   {

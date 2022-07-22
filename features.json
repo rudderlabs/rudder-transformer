@@ -25,6 +25,7 @@
     "ACTIVE_CAMPAIGN": true,
     "SNAPCHAT_CONVERSION": true,
     "MAILCHIMP": true,
-    "YAHOO_DSP": true
+    "YAHOO_DSP": true,
+    "KLAVIYO": true
   }
 }

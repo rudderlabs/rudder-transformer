@@ -14,6 +14,7 @@
     "GOOGLE_ADWORDS_REMARKETING_LISTS": true,
     "HS": true,
     "ITERABLE": true,
+    "KLAVIYO": true,
     "KUSTOMER": true,
     "MAILCHIMP": true,
     "MARKETO": true,

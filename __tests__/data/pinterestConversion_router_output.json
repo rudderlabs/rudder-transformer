@@ -206,6 +206,7 @@
                 "tagId": "123456789",
                 "advertiserId": "429047995",
                 "appId": "429047995",
+                "sendingUnHashedData": true,
                 "deduplicationKey": "messageId",
                 "enableDeduplication": true,
                 "enhancedMatch": true,

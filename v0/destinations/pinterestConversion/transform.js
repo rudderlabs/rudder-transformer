@@ -16,7 +16,8 @@ const {
   processCommonPayload,
   deduceEventName,
   setIdPriceQuantity,
-  checkUserPayloadValidity
+  checkUserPayloadValidity,
+  processHashedUserPayload
 } = require("./utils");
 
 const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS, CUSTOM_CONFIGS } = require("./config");
@@ -58,16 +59,14 @@ const commonFieldResponseBuilder = (message, { Config }) => {
   }
 
   /**
-   * User can configure hashed checkbox to true if they are sending already hashed data to Rudderstack
+   * User can configure hashed checkbox to false if they are sending already hashed data to Rudderstack
    * Otherwise we will hash data user data by default.
    */
   if (sendingUnHashedData) {
-    processedUserPayload = userPayload;
-    // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
-    // if hashed data is sent from the user, it is directly set over here
-    processedUserPayload.ge = message.traits?.gender || message.context?.traits?.gender;
-  } else {
     processedUserPayload = processUserPayload(userPayload);
+  } else {
+    // when user is sending already hashed data to Rudderstack
+    processedUserPayload = processHashedUserPayload(userPayload, message);
   }
   const deducedEventName = deduceEventName(message, Config);
 

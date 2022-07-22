@@ -27,6 +27,8 @@ const ecomEventMaps = [
   }
 ];
 
+const USER_NON_ARRAY_PROPERTIES = ["client_user_agent", "client_ip_address"]
+
 /**
  *
  * @param {*} userPayload Payload mapped from user fields
@@ -261,11 +263,37 @@ const checkUserPayloadValidity = userPayload => {
   return false;
 };
 
+/**
+ * 
+ * @param {*} userPayload 
+ * @param {*} message 
+ * @returns converts every single hashed user data property to array, except for
+ * "client_user_agent", "client_ip_address"
+ * 
+ */
+const processHashedUserPayload = (userPayload, message) => {
+
+  let processedHashedUserPayload = {};
+  for (const key of Object.keys(userPayload)) {
+    if (!USER_NON_ARRAY_PROPERTIES.includes(key)) {
+      processedHashedUserPayload[key] = [userPayload[key]];
+    } else {
+      processedHashedUserPayload[key] = userPayload[key];
+    }
+  }
+  // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
+  // if hashed data is sent from the user, it is directly set over here
+  processedHashedUserPayload.ge = [message.traits?.gender || message.context?.traits?.gender];
+  return processedHashedUserPayload;
+};
+
 module.exports = {
   processUserPayload,
   processCommonPayload,
   deduceEventName,
   setIdPriceQuantity,
   checkUserPayloadValidity,
+  processHashedUserPayload,
   VALID_ACTION_SOURCES
 };
+

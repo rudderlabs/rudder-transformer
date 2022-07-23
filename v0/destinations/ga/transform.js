@@ -371,7 +371,7 @@ function responseBuilderSimple(
 
   // payload must be no longer than 8192 bytes.
   // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#using-post
-  validatePayloadSize(finalPayload);
+  // validatePayloadSize(finalPayload);
 
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;

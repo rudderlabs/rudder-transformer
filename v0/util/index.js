@@ -120,6 +120,40 @@ const getHashFromArray = (
   return hashMap;
 };
 
+/**
+ * Format the destination.Config.dynamicMap arrays to hashMap
+ * where value is an array
+ * @param  {} arrays [{"from":"prop1","to":"val1"},{"from":"prop1","to":"val2"},{"from":"prop2","to":"val2"}]
+ * @param  {} fromKey="from"
+ * @param  {} toKey="to"
+ * @param  {} isLowerCase=true
+ * @param  {} return hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
+ */
+const getHashFromArrayWithDuplicate = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (!isNotEmpty(array[fromKey])) return;
+      const key = isLowerCase
+        ? array[fromKey].toLowerCase().trim()
+        : array[fromKey].trim();
+
+      if (hashMap[key]) {
+        hashMap[key].add(array[toKey]);
+      } else {
+        hashMap[key] = new Set();
+        hashMap[key].add(array[toKey]);
+      }
+    });
+  }
+  return hashMap;
+};
+
 // NEED to decouple value finding and `required` checking
 // NEED TO DEPRECATE
 const setValues = (payload, message, mappingJson) => {
@@ -1352,7 +1386,7 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform.toLowerCase());
+  return appleOsNames.includes(platform?.toLowerCase());
 }
 
 function removeHyphens(str) {
@@ -1455,6 +1489,7 @@ module.exports = {
   getFirstAndLastName,
   getFullName,
   getHashFromArray,
+  getHashFromArrayWithDuplicate,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,

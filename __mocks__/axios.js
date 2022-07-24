@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 const axios = jest.genMockFromModule("axios");
 const acPostRequestHandler = require("./active_campaign.mock");
-const klaviyoPostRequestHandler = require("./klaviyo.mock");
+const {klaviyoPostRequestHandler, klaviyoGetRequestHandler} = require("./klaviyo.mock");
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
@@ -72,6 +72,9 @@ function get(url, options) {
   }
   if (url.includes("https://api.aptrinsic.com")) {
     return gainsightPXGetRequestHandler(url, mockData);
+  }
+  if (url.includes("https://a.klaviyo.com/api/v2/people/search")) {
+    return klaviyoGetRequestHandler(getParamEncodedUrl(url,options));
   }
   if (url.includes("https://api.hubapi.com")) {
     return hsGetRequestHandler(url, mockData);

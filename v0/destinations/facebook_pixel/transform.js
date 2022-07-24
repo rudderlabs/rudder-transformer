@@ -491,6 +491,20 @@ const responseBuilderSimple = (
           commonData.event_name = "Purchase";
           break;
         case "products searched":
+          const query = message.properties?.query;
+          /**
+           * Facebook Pixel states "search_string" a string type
+           * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
+           * But it accepts "number" and "boolean" types. So, we are also doing the same by accepting "number" and "boolean"
+           * and throwing an error if "Object" or other types are being sent.
+           */
+          const validQueryType = ["string", "number", "boolean"];
+          if (query && !validQueryType.includes(typeof query)) {
+            throw new CustomError(
+              "'query' should be in string format only",
+              400
+            );
+          }
           customData = {
             ...customData,
             search_string: message.properties.query

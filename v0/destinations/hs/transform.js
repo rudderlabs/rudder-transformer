@@ -1,7 +1,6 @@
 const get = require("get-value");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
-  getDestinationExternalIDInfoForRetl,
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,

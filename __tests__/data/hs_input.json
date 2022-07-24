@@ -674,6 +674,7 @@
   },
   {
     "message": {
+      "description": "[HS] (legacyApi): use (API Key) - check external id i.e hubspotId",
       "channel": "web",
       "context": {
         "app": {
@@ -729,6 +730,7 @@
   },
   {
     "message": {
+      "description": "[HS] (legacyApi): use (API Key) - check HS common config mappings",
       "channel": "web",
       "context": {
         "app": {
@@ -1145,88 +1147,6 @@
         ],
         "hubID": "1",
         "lookupField": "lookupField",
-        "whitelistedEvents": [
-          {
-            "eventName": ""
-          }
-        ]
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "message": {
-      "description": "[HS] (newApi): identify - validate v3 association",
-      "channel": "web",
-      "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "testhubspot@email.com",
-          "firstname": "Test Hubspot",
-          "anonymousId": "12345",
-          "hubspot": {
-            "contactId": "751",
-            "qualifiedName": "p8603955_car",
-            "objects": [
-              {
-                "objectId": "32921360",
-                "objectType": "car"
-              }
-            ]
-          },
-          "lookupField": "email"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-GB",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        },
-        "page": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        }
-      },
-      "type": "identify",
-      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
-      "originalTimestamp": "2019-10-15T09:35:31.288Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "12345",
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    "destination": {
-      "Config": {
-        "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
-        "apiVersion": "newApi",
-        "lookupField": "lookupField",
-        "eventFilteringOption": "disable",
-        "blacklistedEvents": [
-          {
-            "eventName": ""
-          }
-        ],
         "whitelistedEvents": [
           {
             "eventName": ""

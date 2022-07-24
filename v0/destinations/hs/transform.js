@@ -1,5 +1,4 @@
 const get = require("get-value");
-const { isEmpty } = require("lodash");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   defaultGetRequestConfig,
@@ -14,7 +13,7 @@ const {
   removeUndefinedAndNullValues,
   getDestinationExternalID,
   constructPayload,
-  removeUndefinedAndNullAndEmptyValues
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -30,8 +29,7 @@ const {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   mappingConfig,
   ConfigCategory,
-  TRACK_CRM_ENDPOINT,
-  CRM_ASSOCIATION_V3
+  TRACK_CRM_ENDPOINT
 } = require("./config");
 const {
   getTraits,
@@ -44,7 +42,6 @@ const {
   getEventAndPropertiesFromConfig
 } = require("./util");
 
-// use legacy API
 /**
  * Using New API
  * Ref - https://developers.hubspot.com/docs/api/crm/contacts
@@ -190,78 +187,84 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 };
 
 /**
- * CRM Custom Objects
- * Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+ * CRM API
  * Associations v3
+ * here we are associating objectType to contact only
  * Ref - https://developers.hubspot.com/docs/api/crm/associations/v3
  * @param {*} message
  * @param {*} destination
  * @param {*} propertyMap
  */
-const processCRMCustomObjects = async (message, destination, traits) => {
-  const { Config } = destination;
-  let response = {};
+// const processCRMCustomObjects = async (message, destination, traits) => {
+//   const { Config } = destination;
+//   let response = {};
 
-  const { contactId, qualifiedName, objects } = traits.hubspot;
-  if (!contactId) {
-    throw new Error(
-      "HubSpot contactId is not provided. Aborting custom-object association",
-      400
-    );
-  }
+//   const { contactId, qualifiedName, objects } = traits.hubspot;
+//   if (!contactId) {
+//     throw new Error(
+//       "HubSpot contactId is not provided. Aborting custom-object association",
+//       400
+//     );
+//   }
 
-  if (!qualifiedName) {
-    throw new Error(
-      "HubSpot qualifiedName is not provided. Aborting custom-object association",
-      400
-    );
-  }
+//   if (!qualifiedName) {
+//     throw new Error(
+//       "HubSpot qualifiedName is not provided. Aborting custom-object association",
+//       400
+//     );
+//   }
 
-  if (!objects || !Array.isArray(objects) || objects.length === 0) {
-    throw new Error(
-      "HubSpot objects are not provided.  Aborting custom-object association",
-      400
-    );
-  }
+//   if (!objects || !Array.isArray(objects) || objects.length === 0) {
+//     throw new Error(
+//       "HubSpot objects are not provided.  Aborting custom-object association",
+//       400
+//     );
+//   }
 
-  const endpoint = CRM_ASSOCIATION_V3.replace(
-    ":fromObjectType",
-    qualifiedName
-  ).replace(":toObjectType", "contact");
+//   const endpoint = CRM_ASSOCIATION_V3.replace(
+//     ":fromObjectType",
+//     qualifiedName
+//   ).replace(":toObjectType", "contact");
 
-  const inputs = [];
-  objects.forEach(item => {
-    inputs.push({
-      from: { id: item.objectId },
-      to: { id: contactId },
-      type: `${item.objectType}_to_contact`
-    });
-  });
+//   const inputs = [];
+//   objects.forEach(item => {
+//     inputs.push({
+//       from: { id: item.objectId },
+//       to: { id: contactId },
+//       type: `${item.objectType}_to_contact`
+//     });
+//   });
 
-  // creating response
-  response = defaultRequestConfig();
-  response.endpoint = endpoint;
-  response.headers = {
-    "Content-Type": "application/json"
-  };
-  response.body.JSON = { inputs };
+//   // creating response
+//   response = defaultRequestConfig();
+//   response.endpoint = endpoint;
+//   response.headers = {
+//     "Content-Type": "application/json"
+//   };
+//   response.body.JSON = { inputs };
 
-  // choosing API Type
-  if (Config.authorizationType === "newPrivateAppApi") {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
+//   // choosing API Type
+//   if (Config.authorizationType === "newPrivateAppApi") {
+//     // Private Apps
+//     response.headers = {
+//       ...response.headers,
+//       Authorization: `Bearer ${Config.accessToken}`
+//     };
+//   } else {
+//     // use legacy API Key
+//     response.params = { hapikey: Config.apiKey };
+//   }
 
-  return response;
-};
+//   return response;
+// };
 
-// using new API
+/**
+ * using New API
+ * Ref - https://developers.hubspot.com/docs/api/analytics/events
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
 const processTrack = async (message, destination) => {
   const { Config } = destination;
 
@@ -383,12 +386,12 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       }
 
       // handle CRM custom-objects
-      const traits = getFieldValueFromMessage(message, "traits");
-      if (traits.hubspot) {
-        response.push(
-          await processCRMCustomObjects(message, destination, traits)
-        );
-      }
+      // const traits = getFieldValueFromMessage(message, "traits");
+      // if (traits.hubspot) {
+      //   response.push(
+      //     await processCRMCustomObjects(message, destination, traits)
+      //   );
+      // }
       break;
     }
     case EventType.TRACK:
@@ -447,7 +450,7 @@ const batchIdentify = (
             data.properties.email === ev.message.body.JSON.properties.email
           );
         });
-        if (!isEmpty(isDuplicate)) {
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
           // array is being shallow copied hence changes are affecting the original reference
           isDuplicate.properties = ev.message.body.JSON.properties;
         } else {
@@ -475,7 +478,7 @@ const batchIdentify = (
         const isDuplicate = identifyResponseList.find(data => {
           return data.id === id;
         });
-        if (!isEmpty(isDuplicate)) {
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
           isDuplicate.properties = ev.message.body.JSON.properties;
         } else {
           // appending unique events
@@ -527,7 +530,8 @@ const batchEvents = destEvents => {
   const arrayChunksIdentifyUpdateContact = [];
   destEvents.forEach((event, index) => {
     // handler for track call
-    if (event.message.method === "GET") {
+    // track call does not have batch endpoint
+    if (event.message.endpoint.includes("/events/v3/send")) {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
@@ -739,28 +743,25 @@ const processRouterDest = async inputs => {
           });
         } else {
           // event is not transformed
-          const receivedResponse = await processSingleMessage(
+          let receivedResponse = await processSingleMessage(
             input.message,
             destination,
             propertyMap
           );
-          if (Array.isArray(receivedResponse)) {
-            // received response is in array format [{}, {}, {}, ..., {}]
-            receivedResponse.forEach(element => {
-              successRespList.push({
-                message: element,
-                metadata: input.metadata,
-                destination
-              });
-            });
-          } else {
-            // received response is in JSON format {}
+
+          receivedResponse = Array.isArray(receivedResponse)
+            ? receivedResponse
+            : [receivedResponse];
+
+          // received response can be in array format [{}, {}, {}, ..., {}]
+          // if multiple response is being returned
+          receivedResponse.forEach(element => {
             successRespList.push({
-              message: receivedResponse,
+              message: element,
               metadata: input.metadata,
               destination
             });
-          }
+          });
         }
       } catch (error) {
         errorRespList.push(

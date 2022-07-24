@@ -2,7 +2,7 @@ const { getMappingConfig } = require("../../util");
 
 const BASE_ENDPOINT = "https://api.hubapi.com";
 
-const CONTACT_PROPERTIES = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
+const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
 
 /* Legacy API */
 // identify
@@ -50,7 +50,7 @@ const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 
 module.exports = {
   BASE_ENDPOINT,
-  CONTACT_PROPERTIES,
+  CONTACT_PROPERTY_MAP_ENDPOINT,
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,

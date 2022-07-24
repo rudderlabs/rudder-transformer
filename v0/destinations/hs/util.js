@@ -6,7 +6,10 @@ const {
   CustomError,
   isEmpty
 } = require("../../util");
-const { CONTACT_PROPERTIES, IDENTIFY_CRM_SEARCH_CONTACT } = require("./config");
+const {
+  CONTACT_PROPERTY_MAP_ENDPOINT,
+  IDENTIFY_CRM_SEARCH_CONTACT
+} = require("./config");
 
 const formatKey = key => {
   // lowercase and replace spaces and . with _
@@ -30,7 +33,7 @@ const getProperties = async destination => {
   let res;
   const { Config } = destination;
 
-  // choosing API Type
+  // select API authorization type
   if (Config.authorizationType === "newPrivateAppApi") {
     // Private Apps
     const requestOptions = {
@@ -39,10 +42,10 @@ const getProperties = async destination => {
         Authorization: `Bearer ${Config.accessToken}`
       }
     };
-    res = await httpGET(CONTACT_PROPERTIES, requestOptions);
+    res = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
   } else {
-    // API Key
-    const url = `${CONTACT_PROPERTIES}?hapikey=${Config.apiKey}`;
+    // API Key (hapikey)
+    const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
     res = await httpGET(url);
   }
 
@@ -90,8 +93,8 @@ const getTransformedJSON = async (
 
     rawPayload = constructPayload(message, mappingJson);
 
-    // if provided data in traits matches with the
-    // property created in HS then add those in final payload
+    // if there is any extra/custom property in hubspot, that has not already
+    // been mapped but exists in the traits, we will include those values to the final payload
     traitsKeys.forEach(traitsKey => {
       // lowercase and replace ' ' & '.' with '_'
       const hsSupportedKey = formatKey(traitsKey);
@@ -143,21 +146,37 @@ const getEmailAndUpdatedProps = properties => {
 const searchContacts = async (message, destination, lookupField = null) => {
   const { Config } = destination;
   let res;
-  let contactId = null;
+  let contactId;
   const traits = getFieldValueFromMessage(message, "traits");
   let propertyName;
 
+  // if propertyName (key name) is directly provided in this function
+  // eg: email
   if (lookupField) {
     propertyName = lookupField;
   } else {
+    // look for propertyName (key name) in traits
+    // Config.lookupField -> lookupField
+    // traits: { lookupField: email }
     propertyName = traits[`${Config.lookupField}`];
   }
 
-  const value = traits[`${propertyName}`];
+  if (!propertyName) {
+    throw new CustomError(
+      `[HS] Identify:: '${Config.lookupField}' key (provided in webapp) not found in traits for contact lookup`,
+      400
+    );
+  }
+
+  // extract its value from the known propertyName (key name)
+  // if not found in our structure then look for it in traits
+  const value =
+    getFieldValueFromMessage(message, propertyName) ||
+    traits[`${propertyName}`];
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${Config.lookupField}' key name i.e provided in config is required under traits for contact lookup`,
+      `[HS] Identify:: '${propertyName}' lookup field not found in traits for contact lookup`,
       400
     );
   }
@@ -204,10 +223,10 @@ const searchContacts = async (message, destination, lookupField = null) => {
     const error = res.response;
     if (error.response) {
       throw new CustomError(
-        JSON.stringify(error.response.data) ||
-          JSON.stringify(error.response.statusText) ||
+        JSON.stringify(error.response?.data) ||
+          JSON.stringify(error.response?.statusText) ||
           "Failed to get hubspot contacts",
-        error.response.status || 500
+        error.response?.status || 500
       );
     }
     throw new CustomError(
@@ -216,17 +235,20 @@ const searchContacts = async (message, destination, lookupField = null) => {
     );
   }
 
-  if (res.response.data.results.length > 1) {
+  // throw error if more than one contact is found as it's ambiguous
+  if (res.response?.data?.results?.length > 1) {
     throw new CustomError(
       "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
       400
     );
-  } else if (res.response.data.results.length === 1) {
-    // while updating contactId is a required
-    contactId = res.response.data.results[0].id;
+  } else if (res.response?.data?.results?.length === 1) {
+    // a single and unique contact found
+    contactId = res.response?.data?.results[0]?.id;
+  } else {
+    // contact not found
+    contactId = null;
   }
 
-  // contact not found
   return contactId;
 };
 

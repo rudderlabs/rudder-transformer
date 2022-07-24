@@ -172,7 +172,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/lead",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -181,20 +181,12 @@
       },
       "body": {
         "JSON": {
-          "properties": [
-            {
-              "property": "email",
-              "value": "testhubspot2@email.com"
-            },
-            {
-              "property": "firstname",
-              "value": "Test Hubspot"
-            },
-            {
-              "property": "country",
-              "value": "India"
-            }
-          ]
+          "properties": {
+            "firstname": "Test Hubspot",
+            "anonymousId": "12345",
+            "country": "India",
+            "email": "testhubspot2@email.com"
+          }
         },
         "XML": {},
         "FORM": {},

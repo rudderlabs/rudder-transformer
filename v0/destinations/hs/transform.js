@@ -13,7 +13,8 @@ const {
   removeUndefinedAndNullValues,
   getDestinationExternalID,
   constructPayload,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -29,7 +30,10 @@ const {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   mappingConfig,
   ConfigCategory,
-  TRACK_CRM_ENDPOINT
+  TRACK_CRM_ENDPOINT,
+  CRM_CREATE_CUSTOM_OBJECTS,
+  MAX_BATCH_SIZE_CRM_OBJECT,
+  BATCH_CREATE_CUSTOM_OBJECTS
 } = require("./config");
 const {
   getTraits,
@@ -57,6 +61,11 @@ const processIdentify = async (message, destination, propertyMap) => {
   // if mappedToDestination is set true, then add externalId to traits
   if (mappedToDestination) {
     addExternalIdToTraits(message);
+  } else if (!traits || !traits.email) {
+    throw new CustomError(
+      "[HS]:: Identify without email is not supported.",
+      400
+    );
   }
 
   // if (!traits || !traits.email) {
@@ -86,22 +95,35 @@ const processIdentify = async (message, destination, propertyMap) => {
     properties: formatPropertyValueForIdentify(userProperties)
   };
 
+  // build response
   let endpoint;
-  if (contactId) {
-    // update
-    endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(":contactId", contactId);
+  const response = defaultRequestConfig();
+
+  // for rETL source support for custom objects
+  // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+  if (mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+    endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
+    response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
   } else {
-    // create
-    endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
+    if (contactId) {
+      // update
+      endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(
+        ":contactId",
+        contactId
+      );
+    } else {
+      // create
+      endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
+    }
+    response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
-  const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.body.JSON = removeUndefinedAndNullValues(payload);
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -123,6 +145,9 @@ const processIdentify = async (message, destination, propertyMap) => {
  * Reference:
  * https://legacydocs.hubspot.com/docs/methods/contacts/create_contact
  * https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update
+ *
+ * for rETL support for custom objects
+ * Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
  * @param {*} message
  * @param {*} destination
  * @param {*} propertyMap
@@ -133,11 +158,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
+  // rETL source
   if (mappedToDestination) {
     addExternalIdToTraits(message);
-  }
-
-  if (!traits || !traits.email) {
+  } else if (!traits || !traits.email) {
     throw new CustomError(
       "[HS]:: Identify without email is not supported.",
       400
@@ -155,21 +179,34 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     properties: formatPropertyValueForIdentify(userProperties)
   };
 
+  // build response
   const { email } = traits;
   let endpoint;
-  if (email) {
-    endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(":contact_email", email);
+  const response = defaultRequestConfig();
+
+  // for rETL source support for custom objects
+  // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+  if (mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+    endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
+    response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
   } else {
-    endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+    if (email) {
+      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
+        ":contact_email",
+        email
+      );
+    } else {
+      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+    }
+    response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
-  const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
   };
-  response.body.JSON = removeUndefinedAndNullValues(payload);
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -452,6 +489,7 @@ const batchIdentify = (
         });
         if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
           // array is being shallow copied hence changes are affecting the original reference
+          // basically rewriting the same value to avoid duplicate entry
           isDuplicate.properties = ev.message.body.JSON.properties;
         } else {
           // appending unique events
@@ -461,14 +499,15 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
-    } else {
+    } else if (batchOperation === "update") {
       // update operation
       chunk.forEach(ev => {
         // eslint-disable-next-line no-param-reassign
         ev.message.body.JSON.properties = getCRMUpdatedProps(
           ev.message.body.JSON.properties
         );
-        // update has id and properties
+        // update has contactId and properties
+        // extract contactId from the end of the endpoint
         const id = ev.message.endpoint.split("/").pop();
 
         // duplicate contactId is not allowed in batch
@@ -479,6 +518,7 @@ const batchIdentify = (
           return data.id === id;
         });
         if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+          // rewriting the same value to avoid duplicate entry
           isDuplicate.properties = ev.message.body.JSON.properties;
         } else {
           // appending unique events
@@ -489,6 +529,29 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === "general") {
+      // general identify event
+
+      /* Note: */
+      // for now it is just HS CRM custom objects however later it can be
+      // refactored to accomodate upcoming endpoint and make necessary changes
+
+      chunk.forEach(ev => {
+        const { properties } = ev.message.body.JSON;
+        if (properties && !Array.isArray(properties)) {
+          identifyResponseList.push({ ...ev.message.body.JSON });
+          metadata.push(ev.metadata);
+        }
+      });
+
+      // CRM_CREATE_CUSTOM_OBJECTS has objectType value
+      // extract objectType from the end of the endpoint
+      const objectType = chunk[0].message.endpoint.split("/").pop();
+
+      batchEventResponse.batchedRequest.endpoint = BATCH_CREATE_CUSTOM_OBJECTS.replace(
+        ":objectType",
+        objectType
+      );
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -497,9 +560,10 @@ const batchIdentify = (
 
     if (batchOperation === "create") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else {
+    } else if (batchOperation === "update") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
     }
+
     batchEventResponse.batchedRequest.headers = message.headers;
     batchEventResponse.batchedRequest.params = message.params;
 
@@ -524,10 +588,15 @@ const batchIdentify = (
 const batchEvents = destEvents => {
   let batchedResponseList = [];
   const trackResponseList = [];
+  // create contact chunck
   let createContactEventsChunk = [];
+  // update contact chunk
   let updateContactEventsChunk = [];
+  // general indentify event chunk
+  let eventsChunk = [];
   const arrayChunksIdentifyCreateContact = [];
   const arrayChunksIdentifyUpdateContact = [];
+  const arrayChunksIdentify = [];
   destEvents.forEach((event, index) => {
     // handler for track call
     // track call does not have batch endpoint
@@ -558,9 +627,14 @@ const batchEvents = destEvents => {
     ) {
       // Identify: making chunks for CRM create contact endpoint
       createContactEventsChunk.push(event);
-    } else {
+    } else if (
+      event.message.endpoint ===
+      "https://api.hubapi.com/crm/v3/objects/contacts/"
+    ) {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
+    } else {
+      eventsChunk.push(event);
     }
 
     // CRM create contact endpoint chunks
@@ -582,6 +656,16 @@ const batchEvents = destEvents => {
       arrayChunksIdentifyUpdateContact.push(updateContactEventsChunk);
       updateContactEventsChunk = [];
     }
+
+    // general identify chunks
+    if (
+      eventsChunk.length &&
+      (eventsChunk.length === MAX_BATCH_SIZE_CRM_OBJECT ||
+        index === destEvents.length - 1)
+    ) {
+      arrayChunksIdentify.push(eventsChunk);
+      eventsChunk = [];
+    }
   });
 
   // batching up 'create' contact endpoint chunks
@@ -601,6 +685,13 @@ const batchEvents = destEvents => {
         batchedResponseList,
         "update"
       )
+    );
+  }
+
+  // batching up 'general' identify endpoint chunks
+  if (arrayChunksIdentify.length) {
+    batchedResponseList = batchedResponseList.concat(
+      batchIdentify(arrayChunksIdentify, batchedResponseList, "general")
     );
   }
 
@@ -661,23 +752,32 @@ const legacyBatchEvents = destEvents => {
     let batchEventResponse = defaultBatchRequestConfig();
 
     chunk.forEach(ev => {
-      const { email, updatedProperties } = getEmailAndUpdatedProps(
-        ev.message.body.JSON.properties
-      );
-      // eslint-disable-next-line no-param-reassign
-      ev.message.body.JSON.properties = updatedProperties;
-      identifyResponseList.push({
-        email,
-        properties: ev.message.body.JSON.properties
-      });
-      metadata.push(ev.metadata);
+      const { properties } = ev.message.body.JSON;
+      if (properties && !Array.isArray(properties)) {
+        identifyResponseList.push({ ...ev.message.body.JSON });
+        batchEventResponse.batchedRequest.body.JSON = {
+          inputs: identifyResponseList
+        };
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+        metadata.push(ev.metadata);
+      } else {
+        const { email, updatedProperties } = getEmailAndUpdatedProps(
+          ev.message.body.JSON.properties
+        );
+        // eslint-disable-next-line no-param-reassign
+        ev.message.body.JSON.properties = updatedProperties;
+        identifyResponseList.push({
+          email,
+          properties: ev.message.body.JSON.properties
+        });
+        metadata.push(ev.metadata);
+        batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+          batch: JSON.stringify(identifyResponseList)
+        };
+        batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
+      }
     });
 
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(identifyResponseList)
-    };
-
-    batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
       "Content-Type": "application/json"
     };

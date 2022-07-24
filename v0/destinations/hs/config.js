@@ -31,7 +31,16 @@ const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
 /* CRM Custom Objects */
+const CRM_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
+
+// Batch for custom Objects
+const BATCH_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/create`;
+
+/* CRM Association v3 */
 const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`;
+
+// Ref - https://developers.hubspot.com/docs/api/crm/understanding-the-crm
+const MAX_BATCH_SIZE_CRM_OBJECT = 100;
 
 const ConfigCategory = {
   COMMON: {
@@ -63,7 +72,10 @@ module.exports = {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT,
+  CRM_CREATE_CUSTOM_OBJECTS,
+  BATCH_CREATE_CUSTOM_OBJECTS,
   CRM_ASSOCIATION_V3,
+  MAX_BATCH_SIZE_CRM_OBJECT,
   ConfigCategory,
   mappingConfig,
   hsCommonConfigJson

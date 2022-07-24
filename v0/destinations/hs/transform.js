@@ -385,7 +385,7 @@ const processSingleMessage = async (message, destination, propertyMap) => {
         );
       }
 
-      // handle CRM custom-objects
+      // handle CRM Association v3
       // const traits = getFieldValueFromMessage(message, "traits");
       // if (traits.hubspot) {
       //   response.push(

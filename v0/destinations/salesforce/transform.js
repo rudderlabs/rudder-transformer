@@ -113,6 +113,7 @@ function responseBuilderSimple(
   return response;
 }
 
+// Look up to salesforce using details passed as external id through payload
 async function getSaleforceIdForRecord(
   authorizationData,
   objectType,
@@ -128,7 +129,7 @@ async function getSaleforceIdForRecord(
   );
   if (processedSalesforceSearchResponse.status !== 200) {
     throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${JSON.stringify(
+      `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedSalesforceSearchResponse.response
       )}`,
       processedSalesforceSearchResponse.status
@@ -283,7 +284,10 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError("Invalid traits for Salesforce request", 400);
+    throw new CustomError(
+      "PROCESS IDENTIFY: Invalid traits for Salesforce request",
+      400
+    );
   }
 
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
@@ -361,16 +365,7 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
       400,
-      "Authorisation failed"
-    );
-    return [respEvents];
-  }
-
-  if (!authorizationData) {
-    const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      400,
-      "Authorisation failed"
+      `Authorisation failed: ${error.message}`
     );
     return [respEvents];
   }

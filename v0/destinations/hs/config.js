@@ -4,30 +4,35 @@ const BASE_ENDPOINT = "https://api.hubapi.com";
 
 const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
 
-/* Legacy API */
-// identify
+/*
+ * Legacy API
+ */
+// Identify
 const IDENTIFY_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact`;
 const IDENTIFY_CREATE_UPDATE_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact/createOrUpdate/email/:contact_email`;
 
-// batch for identify
+// Identify Batch
 const BATCH_CONTACT_ENDPOINT = `${BASE_ENDPOINT}/contacts/v1/contact/batch/`;
 const MAX_BATCH_SIZE = 1000;
 
-// track
+// Track
 const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 
-/* NEW API */
+/*
+ * NEW API
+ */
+// Identify
 const IDENTIFY_CRM_SEARCH_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/search`;
 const IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts`;
 const IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:contactId`;
 
-// batch for identify
+// Identify Batch
 const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
 const BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 
-// track
+// Track
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
 /* CRM Custom Objects */

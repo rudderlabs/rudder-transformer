@@ -1,10 +1,14 @@
 const get = require("get-value");
 const { send, httpGET, httpPOST } = require("../../../adapters/network");
 const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const {
   getFieldValueFromMessage,
   constructPayload,
   CustomError,
-  isEmpty
+  isEmpty,
+  getHashFromArray
 } = require("../../util");
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -140,20 +144,21 @@ const getEmailAndUpdatedProps = properties => {
 
 /**
  * look for the contact in hubspot and extract its contactId for updation
+ * Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
  * @param {*} destination
  * @returns
  */
-const searchContacts = async (message, destination, lookupField = null) => {
+const searchContacts = async (message, destination) => {
   const { Config } = destination;
-  let res;
+  let searchContactsResponse;
   let contactId;
   const traits = getFieldValueFromMessage(message, "traits");
   let propertyName;
 
-  // if propertyName (key name) is directly provided in this function
-  // eg: email
-  if (lookupField) {
-    propertyName = lookupField;
+  // lookupField key provided in Config.lookupField not found in traits
+  // then default it to email
+  if (!traits[`${Config.lookupField}`]) {
+    propertyName = "email";
   } else {
     // look for propertyName (key name) in traits
     // Config.lookupField -> lookupField
@@ -161,15 +166,10 @@ const searchContacts = async (message, destination, lookupField = null) => {
     propertyName = traits[`${Config.lookupField}`];
   }
 
-  if (!propertyName) {
-    throw new CustomError(
-      `[HS] Identify:: '${Config.lookupField}' key (provided in webapp) not found in traits for contact lookup`,
-      400
-    );
-  }
-
   // extract its value from the known propertyName (key name)
   // if not found in our structure then look for it in traits
+  // Config.lookupField -> lookupField
+  // eg: traits: { lookupField: email, email: "test@test.com" }
   const value =
     getFieldValueFromMessage(message, propertyName) ||
     traits[`${propertyName}`];
@@ -207,26 +207,26 @@ const searchContacts = async (message, destination, lookupField = null) => {
         Authorization: `Bearer ${Config.accessToken}`
       }
     };
-    res = await httpPOST(
+    searchContactsResponse = await httpPOST(
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
       requestOptions
     );
+    searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    res = await httpPOST(url, requestData);
+    searchContactsResponse = await httpPOST(url, requestData);
+    searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
 
-  if (res.success === false) {
+  if (searchContactsResponse.status !== 200) {
     // check if exists err.response && err.response.status else 500
-    const error = res.response;
-    if (error.response) {
+    if (searchContactsResponse.response) {
       throw new CustomError(
-        JSON.stringify(error.response?.data) ||
-          JSON.stringify(error.response?.statusText) ||
+        JSON.stringify(searchContactsResponse.response) ||
           "Failed to get hubspot contacts",
-        error.response?.status || 500
+        searchContactsResponse.status
       );
     }
     throw new CustomError(
@@ -236,14 +236,14 @@ const searchContacts = async (message, destination, lookupField = null) => {
   }
 
   // throw error if more than one contact is found as it's ambiguous
-  if (res.response?.data?.results?.length > 1) {
+  if (searchContactsResponse.response?.results?.length > 1) {
     throw new CustomError(
       "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
       400
     );
-  } else if (res.response?.data?.results?.length === 1) {
+  } else if (searchContactsResponse.response?.results?.length === 1) {
     // a single and unique contact found
-    contactId = res.response?.data?.results[0]?.id;
+    contactId = searchContactsResponse.response?.results[0]?.id;
   } else {
     // contact not found
     contactId = null;
@@ -262,7 +262,7 @@ const getCRMUpdatedProps = properties => {
 };
 
 const getEventAndPropertiesFromConfig = (message, destination, payload) => {
-  const { eventProperties, customBehavioralEvents } = destination.Config;
+  const { hubspotEvents } = destination.Config;
 
   let event = get(message, "event");
   if (!event) {
@@ -270,36 +270,37 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   }
   event = event.trim().toLowerCase();
   let eventName;
+  let eventProperties;
   const properties = {};
 
   // 1. fetch event name from webapp config
-  const customBehavioralEventFound = customBehavioralEvents.some(
-    customBehavioralEvent => {
-      if (
-        customBehavioralEvent &&
-        customBehavioralEvent.from &&
-        customBehavioralEvent.from.trim().toLowerCase() === event
-      ) {
-        if (!isEmpty(customBehavioralEvent.to)) {
-          eventName = customBehavioralEvent.to.trim();
-          return true;
-        }
+  // some will traverse through all the indexes of the array and find the event
+  const hubspotEventFound = hubspotEvents.some(hubspotEvent => {
+    if (
+      hubspotEvent &&
+      hubspotEvent.rsEventName &&
+      hubspotEvent.rsEventName.trim().toLowerCase() === event
+    ) {
+      if (!isEmpty(hubspotEvent.hubspotEventName)) {
+        eventName = hubspotEvent.hubspotEventName.trim();
+        eventProperties = hubspotEvent.eventProperties;
+        return true;
       }
-      return false;
     }
-  );
+    return false;
+  });
 
-  if (!customBehavioralEventFound) {
+  if (!hubspotEventFound) {
     throw new CustomError(`[HS]:: '${event}' event not found`, 400);
   }
 
   // 2. fetch event properties from webapp config
-  eventProperties.forEach(eventProperty => {
-    if (eventProperty && eventProperty.from) {
-      const value = get(message, `properties.${eventProperty.from}`);
-      if (value && eventProperty.to) {
-        properties[`${eventProperty.to}`] = value;
-      }
+  eventProperties = getHashFromArray(eventProperties);
+
+  Object.keys(eventProperties).forEach(key => {
+    const value = get(message, `properties.${key}`);
+    if (value) {
+      properties[eventProperties[key]] = value;
     }
   });
 

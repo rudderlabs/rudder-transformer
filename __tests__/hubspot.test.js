@@ -85,7 +85,9 @@ describe(`${name} Tests`, () => {
 
   describe("Router Tests for rETL sources", () => {
     it("Payload", async () => {
-      const routerOutputrETL = await transformer.processRouterDest(inputRouterDatarETL);
+      const routerOutputrETL = await transformer.processRouterDest(
+        inputRouterDatarETL
+      );
       expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
   });

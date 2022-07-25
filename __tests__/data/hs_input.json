@@ -913,6 +913,7 @@
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
+        "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -985,6 +986,7 @@
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
+        "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1057,6 +1059,7 @@
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
+        "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -1111,42 +1114,54 @@
       "properties": {
         "user_actual_role": "system_admin, system_user",
         "user_actual_id": 12345,
-        "Revenue": 100
+        "revenue": 100
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
       "Config": {
-        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
-        "apiKey": "1",
-        "apiVersion": "newApi",
         "authorizationType": "newPrivateAppApi",
+        "hubID": "1",
+        "apiKey": "1",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
             "eventName": ""
           }
         ],
-        "customBehavioralEvents": [
-          {
-            "from": "Purchase",
-            "to": "pe22315509_rs_hub_test"
-          }
-        ],
-        "eventDelivery": false,
-        "eventDeliveryTS": 1658186615238,
-        "eventFilteringOption": "disable",
-        "eventProperties": [
-          {
-            "from": "Revenue",
-            "to": "value"
-          },
-          {
-            "from": "Price",
-            "to": "cost"
-          }
-        ],
-        "hubID": "1",
-        "lookupField": "lookupField",
         "whitelistedEvents": [
           {
             "eventName": ""
@@ -1207,30 +1222,48 @@
     "destination": {
       "Config": {
         "authorizationType": "legacyApiKey",
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "accessToken": "",
         "apiVersion": "legacyApi",
         "lookupField": "lookupField",
-        "customBehavioralEvents": [
+        "hubspotEvents": [
           {
-            "from": "Purchase",
-            "to": "pe22315509_rs_hub_test"
-          }
-        ],
-        "eventProperties": [
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
           {
-            "from": "Revenue",
-            "to": "value"
-          }
-        ],
-        "blacklistedEvents": [
-          {
-            "eventName": ""
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
           }
         ],
         "eventFilteringOption": "disable",
         "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "blacklistedEvents": [
           {
             "eventName": ""
           }
@@ -1284,30 +1317,48 @@
     "destination": {
       "Config": {
         "authorizationType": "legacyApiKey",
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "accessToken": "",
         "apiVersion": "legacyApi",
         "lookupField": "lookupField",
-        "customBehavioralEvents": [
+        "hubspotEvents": [
           {
-            "from": "Purchase",
-            "to": "pe22315509_rs_hub_test"
-          }
-        ],
-        "eventProperties": [
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
           {
-            "from": "Revenue",
-            "to": "value"
-          }
-        ],
-        "blacklistedEvents": [
-          {
-            "eventName": ""
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
           }
         ],
         "eventFilteringOption": "disable",
         "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "blacklistedEvents": [
           {
             "eventName": ""
           }

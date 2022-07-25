@@ -14,7 +14,7 @@
   },
   {
     "destKey": "hs_campaign_id",
-    "sourceKeys": ["properties.campaignId"],
+    "sourceKeys": "properties.campaignId",
     "required": false
   },
   {
@@ -37,7 +37,7 @@
   },
   {
     "destKey": "hs_device_name",
-    "sourceKeys": ["context.device.name"],
+    "sourceKeys": "context.device.name",
     "required": false
   },
   {

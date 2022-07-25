@@ -173,6 +173,7 @@
       "type": "REST",
       "method": "POST",
       "endpoint": "https://api.hubapi.com/crm/v3/objects/lead",
+      "source": "rETL",
       "headers": {
         "Content-Type": "application/json"
       },

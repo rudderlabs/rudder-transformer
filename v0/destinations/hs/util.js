@@ -1,5 +1,5 @@
 const get = require("get-value");
-const { send, httpGET, httpPOST } = require("../../../adapters/network");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -121,15 +121,6 @@ const formatPropertyValueForIdentify = propMap => {
   return Object.keys(propMap).map(key => {
     return { property: key, value: propMap[key] };
   });
-};
-
-const getAllContactProperties = async endpoint => {
-  const requestOptions = {
-    url: endpoint,
-    method: "get"
-  };
-  const res = await send(requestOptions);
-  return res;
 };
 
 const getEmailAndUpdatedProps = properties => {
@@ -315,7 +306,6 @@ module.exports = {
   getProperties,
   getTransformedJSON,
   formatPropertyValueForIdentify,
-  getAllContactProperties,
   getEmailAndUpdatedProps,
   getCRMUpdatedProps,
   getEventAndPropertiesFromConfig,

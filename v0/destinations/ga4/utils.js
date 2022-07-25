@@ -364,16 +364,16 @@ const responseHandler = (destinationResponse, dest) => {
     // validation endpoint.
     status = 200;
   } else if (
-    // for GA4 debug validation endpoint, status is always 200
     status === 200 &&
     isDefinedAndNotNull(response) &&
     isDefined(response.validationMessages)
   ) {
+    // for GA4 debug validation endpoint, status is always 200
     // validationMessages[] is empty, thus event is valid
     if (response.validationMessages?.length === 0) {
       status = 200;
     } else {
-    // Build the error in case the validationMessages[] is non-empty
+      // Build the error in case the validationMessages[] is non-empty
       const {
         description,
         validationCode,

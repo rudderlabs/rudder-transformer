@@ -41,22 +41,20 @@ async function getSFDCHeader(destination) {
   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  const salesforceAuthResponse = await httpPOST(authUrl, {});
-  const processedSalesforceAuthResponse = processAxiosResponse(
-    salesforceAuthResponse
-  );
-  if (processedSalesforceAuthResponse.status !== 200) {
+  const sfAuthResponse = await httpPOST(authUrl, {});
+  const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
+  if (processedsfAuthResponse.status !== 200) {
     throw new CustomError(
       `SALESFORCE AUTH FAILED: ${JSON.stringify(
-        processedSalesforceAuthResponse.response
+        processedsfAuthResponse.response
       )}`,
-      processedSalesforceAuthResponse.status
+      processedsfAuthResponse.status
     );
   }
 
   return {
-    token: `Bearer ${processedSalesforceAuthResponse.response.access_token}`,
-    instanceUrl: processedSalesforceAuthResponse.response.instance_url
+    token: `Bearer ${processedsfAuthResponse.response.access_token}`,
+    instanceUrl: processedsfAuthResponse.response.instance_url
   };
 }
 
@@ -121,21 +119,19 @@ async function getSaleforceIdForRecord(
   identifierValue
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-  const salesforceSearchResponse = await httpGET(objSearchUrl, {
+  const sfSearchResponse = await httpGET(objSearchUrl, {
     headers: { Authorization: authorizationData.token }
   });
-  const processedSalesforceSearchResponse = processAxiosResponse(
-    salesforceSearchResponse
-  );
-  if (processedSalesforceSearchResponse.status !== 200) {
+  const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
+  if (processedsfSearchResponse.status !== 200) {
     throw new CustomError(
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
-        processedSalesforceSearchResponse.response
+        processedsfSearchResponse.response
       )}`,
-      processedSalesforceSearchResponse.status
+      processedsfSearchResponse.status
     );
   }
-  return get(processedSalesforceSearchResponse.response, "searchRecords.0.Id");
+  return get(processedsfSearchResponse.response, "searchRecords.0.Id");
 }
 
 // Check for externalId field under context and look for probable Salesforce objects

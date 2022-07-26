@@ -1,0 +1,49 @@
+name: build rudder-transformer
+on:
+  push:
+    branches:
+      - feat-github-actions
+env:
+  TEST_IMAGE_TAG: rudder-transformer:test
+
+jobs:
+  build-transformer:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check out repository code
+        uses: actions/checkout@v3
+      -
+        name: Set Variables
+        id: vars
+        run: |
+          echo "::set-output name=version::$(head -1 .version)"
+      -
+        name: Build transformer
+        id: build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          tags: ${{ env.TEST_IMAGE_TAG }}
+      -
+        name: Run npm tests - testDestinations
+        run: |
+          docker run ${{ env.TEST_IMAGE_TAG }} npm run testDestinations
+      -
+        name: Run npm tests - testVersionedRouter
+        run: |
+          docker run ${{ env.TEST_IMAGE_TAG }} npm run testVersionedRouter
+      #-
+      #  name: Login to DockerHub
+      #  uses: docker/login-action@v2
+      #  with:
+      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #    password: ${{ secrets.DOCKERHUB_TOKEN }}
+      #-
+      #  name: Push transformer
+      #  uses: docker/build-push-action@v3
+      #  with:
+      #    context: .
+      #    push: true
+      #    tags: "rudder-transformer:${{ steps.vars.outputs.version }}"

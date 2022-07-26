@@ -1,0 +1,54 @@
+name: builds on rudder-transformer master
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REPO_NAME: "rudderlabs/rudder-transformer"
+
+jobs:
+  build-transformer:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check out repository code
+        uses: actions/checkout@v3
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: rudderstack/rudder-transformer
+      -
+        name: Extract Version
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=version::$(head -1 .version)"
+      - 
+        name: Build the image for tests
+        run: docker build . --file Dockerfile --tag ${{ env.REPO_NAME }}:${{ steps.vars.outputs.version }}
+      -
+        name: Run npm tests - testDestinations on Node.js
+        run: |
+          docker run ${{ env.REPO_NAME }}:${{ steps.vars.outputs.version }} npm run testDestinations
+      -
+        name: Run npm tests - testVersionedRouter on Node.js
+        run: |
+          docker run ${{ env.REPO_NAME }}:${{ steps.vars.outputs.version }} npm run testVersionedRouter
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Push transformer pr build
+        id: build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.REPO_NAME }}:${{ steps.vars.outputs.version }}

@@ -23,8 +23,10 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  isDefinedAndNotNull
 } = require("../../util");
+const { isDefined } = require("rudder-transformer-cdk/build/utils");
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue
@@ -93,45 +95,53 @@ const getContentType = (message, defaultValue, categoryToContent) => {
  *
  * Handles order completed and checkout started types of specific events
  */
-const handleOrder = (message, categoryToContent) => {
-  const { products } = message.properties;
-  const value = formatRevenue(message.properties.revenue);
+const handleOrder = (message, categoryToContent, categoryType) => {
+  const { products, revenue } = message.properties;
+  const value = isDefinedAndNotNull(revenue) ? formatRevenue(revenue) : null;
+
+  if((categoryType === 'order completed') && (!isDefinedAndNotNull(value))){
+    throw new CustomError("Mandatory property revenue is missing from payload. Purchase event could not be sent", 400);
+  }
+
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
   const contents = [];
   const { category } = message.properties;
-  if (products && products.length > 0 && Array.isArray(products)) {
-    for (let i = 0; i < products.length; i += 1) {
-      const pId =
-        products[i].product_id || products[i].sku || products[i].id || "";
-      contentIds.push(pId);
-      // required field for content
-      // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
-      const content = {
-        id: pId,
-        quantity: products[i].quantity || message.properties.quantity || 1,
-        item_price: products[i].price || message.properties.price
-      };
-      contents.push(content);
-    }
-    contents.forEach((content, index) => {
-      if (content.id === "") {
-        throw new CustomError(
-          `Product id is required for product ${index}. Event not sent`,
-          400
-        );
+  if(products) {
+    if (products.length > 0 && Array.isArray(products)) {
+      for (let i = 0; i < products.length; i += 1) {
+        const pId =
+          products[i].product_id || products[i].sku || products[i].id || "";
+        contentIds.push(pId);
+        // required field for content
+        // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+        const content = {
+          id: pId,
+          quantity: products[i].quantity || message.properties.quantity || 1,
+          item_price: products[i].price || message.properties.price
+        };
+        contents.push(content);
       }
-    });
-  } else {
-    throw new CustomError("Product is not an object. Event not sent", 400);
+      contents.forEach((content, index) => {
+        if (content.id === "") {
+          throw new CustomError(
+            `Product id is required for product ${index}. Event not sent`,
+            400
+          );
+        }
+      });
+    } else {
+      throw new CustomError("Product is not an object. Event not sent", 400);
+    }
   }
+ 
   return {
     content_category: category,
-    content_ids: contentIds,
+    content_ids: contentIds.length > 0 ? contentIds : undefined,
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents,
+    contents: contents.length > 0 ? contents : undefined,
     num_items: contentIds.length
   };
 };
@@ -178,10 +188,18 @@ const handleProductListViewed = (message, categoryToContent) => {
   }
   contents.forEach((content, index) => {
     if (content.id === "") {
-      throw new CustomError(
-        `Product id is required for product ${index}. Event not sent`,
-        400
-      );
+      if(contentType === "product") {
+        throw new CustomError(
+          `Product id is required for product ${index}. Event not sent`,
+          400
+        );
+      } else {
+        throw new CustomError(
+          "In order to send viewContent event for payload without products, category is a mandatory field. Event not sent",
+          400
+        );
+      }
+     
     }
   });
   return {
@@ -486,7 +504,7 @@ const responseBuilderSimple = (
         case "order completed":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent, category.type)
           };
           commonData.event_name = "Purchase";
           break;
@@ -514,7 +532,7 @@ const responseBuilderSimple = (
         case "checkout started":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent, category.type)
           };
           commonData.event_name = "InitiateCheckout";
           break;

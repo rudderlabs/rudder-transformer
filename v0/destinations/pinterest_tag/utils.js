@@ -235,7 +235,7 @@ const setIdPriceQuantity = (rootObject, message) => {
       rootObject.quantity || message.properties.quantity || 1,
       10
     ),
-    item_price:(rootObject.price || message.properties.price)? String(rootObject.price || message.properties.price) : undefined
+    item_price: String(rootObject.price || message.properties.price)
   };
   const prodParameters = {
     contentId: rootObject.product_id || rootObject.sku || rootObject.id,

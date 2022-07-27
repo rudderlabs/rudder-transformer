@@ -1,0 +1,94 @@
+[
+  {
+    "destKey": "em",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "ph",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "ge",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false,
+    "metadata": {
+      "multikeyMap": [
+        {
+          "sourceVal": ["f", "F", "Female", "female", "FEMALE"],
+          "destVal": "f"
+        },
+        {
+          "sourceVal": ["m", "M", "Male", "male", "MALE"],
+          "destVal": "m"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "db",
+    "sourceKeys": "birthday",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ln",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "fn",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ct",
+    "sourceKeys": ["traits.address.city", "context.traits.address.city"],
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
+  },
+  {
+    "destKey": "st",
+    "sourceKeys": ["traits.address.state", "context.traits.address.state"],
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
+  },
+  {
+    "destKey": "zp",
+    "sourceKeys": ["traits.address.zip", "context.traits.address.zip"],
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
+  },
+  {
+    "destKey": "hashed_maids",
+    "sourceKeys": ["context.device.advertisingId"],
+    "required": false
+  },
+  {
+    "destKey": "client_ip_address",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "client_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  }
+]
+

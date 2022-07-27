@@ -9,7 +9,7 @@ const {
   getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
   processUserPayload,
@@ -27,7 +27,7 @@ const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullAndEmptyValues(finalPayload);
+  response.body.JSON = removeUndefinedAndNullValues(finalPayload);
   return {
     ...response,
     headers: {
@@ -139,7 +139,7 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
   }
   customPayload = {
     ...customPayload,
-    content_ids: removeUndefinedAndNullAndEmptyValues(contentIds),
+    content_ids: contentIds,
     contents: contentArray
   };
 

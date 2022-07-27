@@ -339,70 +339,73 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     limit: 1,
     after: 0
   };
-  if (Config.authorizationType === "newPrivateAppApi") {
-    // Private Apps
-    const requestOptions = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Config.accessToken}`
-      }
-    };
-    let checkAfter = 1; // variable to keep checking if we have more results
-    while (checkAfter) {
-      const url = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
-        ":objectType",
-        objectType
-      );
-      searchContactsResponse = await httpPOST(url, requestData, requestOptions);
-      const after =
-        searchContactsResponse.response?.data?.paging?.next?.after | 0;
 
-      requestData.after = after; // assigning to the new value of after
-      checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
-      searchContactsResponse = processAxiosResponse(searchContactsResponse);
-      const results = searchContactsResponse.response?.results;
-
-      if (results) {
-        results.map(result => {
-          const propertyValue = result.properties[identifierType];
-          updateHubspotIds.push({ id: result.id, property: propertyValue });
-        });
-      }
+  const requestOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Config.accessToken}`
     }
-    const resultInput = [];
-    const i = 0;
-    inputs.map(input => {
-      const { message } = input;
-      const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
-        message,
-        "HS"
-      );
-     
-      let filteredInfo = updateHubspotIds.filter( update => update.property === destinationExternalId )
-    
-      if(filteredInfo.length){
-      input.message.context.externalId = setHsSearchId(input, filteredInfo[0].id)
-          input.message.context.hubspotOperation = "update";
-          resultInput.push(input);
-      }
-      else{
-        input.message.context.hubspotOperation = "insert";
-          resultInput.push(input);
-      }
-    });
+  };
+  let checkAfter = 1; // variable to keep checking if we have more results
+  while (checkAfter) {
+    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
+      ":objectType",
+      objectType
+    );
+    const url =
+      Config.authorizationType === "newPrivateAppApi"
+        ? endpoint
+        : `${endpoint}?hapikey=${Config.apiKey}`;
+    searchContactsResponse =
+      Config.authorizationType === "newPrivateAppApi"
+        ? await httpPOST(url, requestData, requestOptions)
+        : await httpPOST(url, requestData);
+    const after =
+      searchContactsResponse.response?.data?.paging?.next?.after | 0;
 
-    return resultInput;
-  } else {
-    // API Key
-    const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    searchContactsResponse = await httpPOST(url, requestData);
+    requestData.after = after; // assigning to the new value of after
+    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
+
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
+    const results = searchContactsResponse.response?.results;
+
+    if (results) {
+      results.map(result => {
+        const propertyValue = result.properties[identifierType];
+        updateHubspotIds.push({ id: result.id, property: propertyValue });
+      });
+    }
   }
+  const resultInput = [];
+  const i = 0;
+  inputs.map(input => {
+    const { message } = input;
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
+      message,
+      "HS"
+    );
+
+    let filteredInfo = updateHubspotIds.filter(
+      update => update.property === destinationExternalId
+    );
+
+    if (filteredInfo.length) {
+      input.message.context.externalId = setHsSearchId(
+        input,
+        filteredInfo[0].id
+      );
+      input.message.context.hubspotOperation = "update";
+      resultInput.push(input);
+    } else {
+      input.message.context.hubspotOperation = "insert";
+      resultInput.push(input);
+    }
+  });
+  return resultInput;
 };
 
 const setHsSearchId = (input, id) => {
-  const {message} = input;
+  const { message } = input;
   const resultExternalId = [];
   if (message.context && message.context.externalId) {
     externalIdArray = message.context.externalId;
@@ -417,7 +420,7 @@ const setHsSearchId = (input, id) => {
     });
   }
   return resultExternalId;
-}
+};
 
 module.exports = {
   formatKey,

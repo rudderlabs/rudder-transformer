@@ -371,26 +371,27 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
       }
     }
     const resultInput = [];
+    const i = 0;
     inputs.map(input => {
       const { message } = input;
       const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
         message,
         "HS"
       );
-
-      updateHubspotIds.map(update => {
-        console.log(update.property);
-        if (update.property === destinationExternalId) {
-          input.message.context.externalId = setHsSearchId(input, update.id)
+     
+      let filteredInfo = updateHubspotIds.filter( update => update.property === destinationExternalId )
+    
+      if(filteredInfo.length){
+      input.message.context.externalId = setHsSearchId(input, filteredInfo[0].id)
           input.message.context.hubspotOperation = "update";
-        } else {
-          input.message.context.hubspotOperation = "create";
-        }
-        resultInput.push(input);
-      });
+          resultInput.push(input);
+      }
+      else{
+        input.message.context.hubspotOperation = "insert";
+          resultInput.push(input);
+      }
     });
-    console.log(resultInput[0].message.context);
-    console.log(resultInput[1].message.context);
+
     return resultInput;
   } else {
     // API Key

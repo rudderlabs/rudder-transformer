@@ -7,8 +7,11 @@ const ConfigCategory = {
   IDENTIFY_CONTACT: {
     name: "SFIdentifyContactConfig"
   },
-  IGNORE: {
-    name: "SFIgnoreConfig"
+  IGNORE_LEAD: {
+    name: "SFIgnoreLeadConfig"
+  },
+  IGNORE_CONTACT: {
+    name: "SFIgnoreContactConfig"
   }
 };
 
@@ -26,5 +29,6 @@ module.exports = {
   SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyLeadMappingJson: mappingConfig[ConfigCategory.IDENTIFY_LEAD.name],
   identifyContactMappingJson: mappingConfig[ConfigCategory.IDENTIFY_CONTACT.name],
-  ignoredTraits: mappingConfig[ConfigCategory.IGNORE.name]
+  ignoredLeadTraits: mappingConfig[ConfigCategory.IGNORE_LEAD.name],
+  ignoredContactTraits: mappingConfig[ConfigCategory.IGNORE_CONTACT.name]
 };

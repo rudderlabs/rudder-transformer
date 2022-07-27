@@ -2,7 +2,7 @@
   { "destKey": "AccountId", "sourceKeys": "accountId" },
   { "destKey": "AssistantName", "sourceKeys": "assistantName" },
   { "destKey": "AssistantPhone", "sourceKeys": "assistantPhone" },
-  { "destKey": "Birthdate", "sourceKeys": "Birthdate" },
+  { "destKey": "Birthdate", "sourceKeys": "birthday" },
   { "destKey": "CanAllowPortalSelfReg", "sourceKeys": "canAllowPortalSelfReg" },
   { "destKey": "CleanStatus", "sourceKeys": "cleanStatus" },
   { "destKey": "Department", "sourceKeys": "department" },

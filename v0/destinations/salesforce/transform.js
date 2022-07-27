@@ -6,7 +6,9 @@ const {
   SF_TOKEN_REQUEST_URL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyLeadMappingJson,
-  ignoredTraits
+  identifyContactMappingJson,
+  ignoredLeadTraits,
+  ignoredContactTraits
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -90,7 +92,17 @@ function responseBuilderSimple(
       identifyLeadMappingJson
     );
     Object.keys(traits).forEach(key => {
-      if (ignoredTraits.indexOf(key) === -1 && traits[key]) {
+      if (ignoredLeadTraits.indexOf(key) === -1 && traits[key]) {
+        rawPayload[`${key}__c`] = traits[key];
+      }
+    });
+  } else if (salesforceType === "Contact" && mapProperty && !mappedToDestination) {
+    rawPayload = constructPayload(
+      { ...traits, ...getFirstAndLastName(traits, "n/a") },
+      identifyContactMappingJson
+    );
+    Object.keys(traits).forEach(key => {
+      if (ignoredContactTraits.indexOf(key) === -1 && traits[key]) {
         rawPayload[`${key}__c`] = traits[key];
       }
     });

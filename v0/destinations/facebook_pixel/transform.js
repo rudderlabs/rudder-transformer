@@ -99,7 +99,7 @@ const handleOrder = (message, categoryToContent, categoryType) => {
   const { products, revenue } = message.properties;
   const value = isDefinedAndNotNull(revenue) ? formatRevenue(revenue) : null;
 
-  if((categoryType === 'order completed') && (!isDefinedAndNotNull(value))){
+  if((categoryType === 'order completed') && !isDefinedAndNotNull(value)){
     throw new CustomError("Mandatory property revenue is missing from payload. Purchase event could not be sent", 400);
   }
 

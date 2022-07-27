@@ -95,13 +95,10 @@ const getContentType = (message, defaultValue, categoryToContent) => {
  *
  * Handles order completed and checkout started types of specific events
  */
-const handleOrder = (message, categoryToContent, categoryType) => {
+const handleOrder = (message, categoryToContent) => {
   const { products, revenue } = message.properties;
-  const value = isDefinedAndNotNull(revenue) ? formatRevenue(revenue) : null;
+  const value = formatRevenue(revenue);
 
-  if((categoryType === 'order completed') && !isDefinedAndNotNull(value)){
-    throw new CustomError("Mandatory property revenue is missing from payload. Purchase event could not be sent", 400);
-  }
 
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
@@ -504,7 +501,7 @@ const responseBuilderSimple = (
         case "order completed":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, category.type)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "Purchase";
           break;
@@ -532,7 +529,7 @@ const responseBuilderSimple = (
         case "checkout started":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, category.type)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "InitiateCheckout";
           break;

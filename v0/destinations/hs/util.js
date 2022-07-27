@@ -8,11 +8,13 @@ const {
   constructPayload,
   CustomError,
   isEmpty,
-  getHashFromArray
+  getHashFromArray,
+  getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
-  IDENTIFY_CRM_SEARCH_CONTACT
+  IDENTIFY_CRM_SEARCH_CONTACT,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS
 } = require("./config");
 
 const formatKey = key => {
@@ -300,6 +302,122 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   return payload;
 };
 
+const splitEventsForCreateUpdate = async (inputs, destination) => {
+  const { Config } = destination;
+  const values = [];
+  const updateHubspotIds = [];
+  const firstMessage = inputs[0].message;
+  let objectType = null;
+  let identifierType = null;
+  if (firstMessage) {
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+      .objectType;
+    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+      .identifierType;
+  }
+  inputs.map(async input => {
+    const { message } = input;
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
+      message,
+      "HS"
+    );
+    values.push(destinationExternalId);
+  });
+  let requestData = {
+    filterGroups: [
+      {
+        filters: [
+          {
+            propertyName: identifierType,
+            values,
+            operator: "IN"
+          }
+        ]
+      }
+    ],
+    properties: [identifierType],
+    limit: 1,
+    after: 0
+  };
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Config.accessToken}`
+      }
+    };
+    let checkAfter = 1; // variable to keep checking if we have more results
+    while (checkAfter) {
+      const url = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      );
+      searchContactsResponse = await httpPOST(url, requestData, requestOptions);
+      const after =
+        searchContactsResponse.response?.data?.paging?.next?.after | 0;
+
+      requestData.after = after; // assigning to the new value of after
+      checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
+
+      searchContactsResponse = processAxiosResponse(searchContactsResponse);
+      const results = searchContactsResponse.response?.results;
+
+      if (results) {
+        results.map(result => {
+          const propertyValue = result.properties[identifierType];
+          updateHubspotIds.push({ id: result.id, property: propertyValue });
+        });
+      }
+    }
+    const resultInput = [];
+    inputs.map(input => {
+      const { message } = input;
+      const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
+        message,
+        "HS"
+      );
+
+      updateHubspotIds.map(update => {
+        console.log(update.property);
+        if (update.property === destinationExternalId) {
+          input.message.context.externalId = setHsSearchId(input, update.id)
+          input.message.context.hubspotOperation = "update";
+        } else {
+          input.message.context.hubspotOperation = "create";
+        }
+        resultInput.push(input);
+      });
+    });
+    console.log(resultInput[0].message.context);
+    console.log(resultInput[1].message.context);
+    return resultInput;
+  } else {
+    // API Key
+    const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
+    searchContactsResponse = await httpPOST(url, requestData);
+    searchContactsResponse = processAxiosResponse(searchContactsResponse);
+  }
+};
+
+const setHsSearchId = (input, id) => {
+  const {message} = input;
+  const resultExternalId = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes("HS")) {
+        extIdObj.hsSearchId = id;
+      }
+      resultExternalId.push(extIdObj);
+    });
+  }
+  return resultExternalId;
+}
+
 module.exports = {
   formatKey,
   getTraits,
@@ -309,5 +427,6 @@ module.exports = {
   getEmailAndUpdatedProps,
   getCRMUpdatedProps,
   getEventAndPropertiesFromConfig,
-  searchContacts
+  searchContacts,
+  splitEventsForCreateUpdate
 };

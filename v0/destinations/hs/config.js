@@ -23,6 +23,7 @@ const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
  */
 // Identify
 const IDENTIFY_CRM_SEARCH_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/search`;
+const IDENTIFY_CRM_SEARCH_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/search`;
 const IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts`;
 const IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:contactId`;
 
@@ -71,6 +72,7 @@ module.exports = {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
   IDENTIFY_CRM_SEARCH_CONTACT,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,

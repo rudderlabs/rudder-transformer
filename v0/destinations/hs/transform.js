@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { getErrorRespEvents, CustomError } = require("../../util");
 const {
@@ -5,12 +7,17 @@ const {
   processLegacyTrack,
   legacyBatchEvents
 } = require("./HSTransform-v1");
+const { MappedToDestinationKey } = require("../../../constants");
 const {
   processIdentify,
   processTrack,
   batchEvents
 } = require("./HSTransform-v2");
-const { getTraits, getProperties } = require("./util");
+const {
+  getTraits,
+  getProperties,
+  splitEventsForCreateUpdate
+} = require("./util");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -69,18 +76,22 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-  // reduce the no. of calls for properties endpoint
   let propertyMap;
-  const traitsFound = inputs.some(input => {
-    return getTraits(input.message) !== undefined;
-  });
-  if (traitsFound) {
-    propertyMap = await getProperties(destination);
+  const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    inputs = await splitEventsForCreateUpdate(inputs, destination);
+  } else {
+    // reduce the no. of calls for properties endpoint
+    const traitsFound = inputs.some(input => {
+      return getTraits(input.message) !== undefined;
+    });
+    if (traitsFound) {
+      propertyMap = await getProperties(destination);
+    }
   }
   await Promise.all(
     inputs.map(async input => {

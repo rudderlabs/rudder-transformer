@@ -992,11 +992,12 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
-// Get id and object type from externalId for rETL
+// Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
 const getDestinationExternalIDInfoForRetl = (message, destination) => {
   let externalIdArray = [];
   let destinationExternalId = null;
+  let identifierType = null;
   let objectType = null;
   if (message.context && message.context.externalId) {
     externalIdArray = message.context.externalId;
@@ -1007,10 +1008,11 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
       if (type.includes(`${destination}-`)) {
         destinationExternalId = extIdObj.id;
         objectType = type.replace(`${destination}-`, "");
+        identifierType = extIdObj.identifierType
       }
     });
   }
-  return { destinationExternalId, objectType };
+  return { destinationExternalId, objectType, identifierType };
 };
 
 const isObject = value => {

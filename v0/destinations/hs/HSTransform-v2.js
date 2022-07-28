@@ -73,6 +73,7 @@ const processIdentify = async (message, destination, propertyMap) => {
     }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
+    response.checkLookup = checkLookup;
   } else {
     if (!traits || !traits.email) {
       throw new CustomError(
@@ -413,6 +414,9 @@ const batchEvents = destEvents => {
   const updateContactEventsChunk = [];
   // general indentify event chunk
   const eventsChunk = [];
+  const createAllObjectsEventChunk = [];
+  const updateAllObjectsEventChunk = [];
+  let maxBatchSize;
   destEvents.forEach(event => {
     // handler for track call
     // track call does not have batch endpoint
@@ -437,6 +441,19 @@ const batchEvents = destEvents => {
           batchedResponse.destination
         )
       );
+    } else if (event.message.source && event.message.source === "rETL") {
+      const { endpoint } = event.message;
+      maxBatchSize = endpoint.includes("contact")
+        ? MAX_BATCH_SIZE_CRM_OBJECT
+        : MAX_BATCH_SIZE_CRM_OBJECT;
+      const { checkLookup } = event.message;
+      if (checkLookup) {
+        if (checkLookup === "create") {
+          createAllObjectsEventChunk.push(event);
+        } else if (checkLookup === "update") {
+          updateAllObjectsEventChunk.push(event);
+        }
+      }
     } else if (
       event.message.endpoint ===
       "https://api.hubapi.com/crm/v3/objects/contacts"
@@ -454,6 +471,18 @@ const batchEvents = destEvents => {
     }
   });
 
+  const arrayChunksIdentifyCreateObjects = _.chunk(
+    createAllObjectsEventChunk,
+    maxBatchSize
+  );
+
+  const arrayChunksIdentifyUpdateObjects = _.chunk(
+    updateAllObjectsEventChunk,
+    maxBatchSize
+  );
+
+  console.log(maxBatchSize)
+
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // CRM create contact endpoint chunks
   const arrayChunksIdentifyCreateContact = _.chunk(
@@ -467,6 +496,23 @@ const batchEvents = destEvents => {
   );
   // general identify chunks
   const arrayChunksIdentify = _.chunk(eventsChunk, MAX_BATCH_SIZE_CRM_OBJECT);
+  // batching up 'create' all objects endpoint chunks
+  if (arrayChunksIdentifyCreateObjects.length) {
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyCreateObjects,
+      batchedResponseList,
+      "create"
+    );
+  }
+
+  // batching up 'update' all objects endpoint chunks
+  if (arrayChunksIdentifyUpdateObjects.length) {
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyUpdateObjects,
+      batchedResponseList,
+      "update"
+    );
+  }
 
   // batching up 'create' contact endpoint chunks
   if (arrayChunksIdentifyCreateContact.length) {

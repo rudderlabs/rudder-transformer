@@ -10,7 +10,7 @@ const {
   processTrack,
   batchEvents
 } = require("./HSTransform-v2");
-const { getTraits, getProperties } = require("./util");
+const { fetchFinalSetOfTraits, getProperties } = require("./util");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -77,7 +77,7 @@ const processRouterDest = async inputs => {
   // reduce the no. of calls for properties endpoint
   let propertyMap;
   const traitsFound = inputs.some(input => {
-    return getTraits(input.message) !== undefined;
+    return fetchFinalSetOfTraits(input.message) !== undefined;
   });
   if (traitsFound) {
     propertyMap = await getProperties(destination);

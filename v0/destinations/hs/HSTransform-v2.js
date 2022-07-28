@@ -17,7 +17,6 @@ const {
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
-  hsCommonConfigJson,
   IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
@@ -34,7 +33,7 @@ const {
   getTransformedJSON,
   formatPropertyValueForIdentify,
   searchContacts,
-  getCRMUpdatedProps,
+  formatPropertyValueForCRM,
   getEventAndPropertiesFromConfig
 } = require("./util");
 
@@ -75,7 +74,6 @@ const processIdentify = async (message, destination, propertyMap) => {
 
   const userProperties = await getTransformedJSON(
     message,
-    hsCommonConfigJson,
     destination,
     propertyMap
   );
@@ -282,7 +280,7 @@ const batchIdentify = (
       chunk.forEach(ev => {
         // format properties into batch structure
         // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = getCRMUpdatedProps(
+        ev.message.body.JSON.properties = formatPropertyValueForCRM(
           ev.message.body.JSON.properties
         );
 
@@ -311,7 +309,7 @@ const batchIdentify = (
       // update operation
       chunk.forEach(ev => {
         // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = getCRMUpdatedProps(
+        ev.message.body.JSON.properties = formatPropertyValueForCRM(
           ev.message.body.JSON.properties
         );
         // update has contactId and properties

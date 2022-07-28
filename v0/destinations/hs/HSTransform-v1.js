@@ -20,7 +20,6 @@ const {
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
-  hsCommonConfigJson,
   CRM_CREATE_CUSTOM_OBJECTS
 } = require("./config");
 const {
@@ -59,7 +58,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 
   const userProperties = await getTransformedJSON(
     message,
-    hsCommonConfigJson,
     destination,
     propertyMap
   );
@@ -195,17 +193,18 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
  */
 const processLegacyTrack = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  let parameters = {
+  const parameters = {
     _a: Config.hubID,
     _n: message.event,
-    _m: get(message, "properties.revenue") || get(message, "properties.value"),
+    _m:
+      get(message, "properties.revenue") ||
+      get(message, "properties.value") ||
+      get(message, "properties.total"),
     id: getDestinationExternalID(message, "hubspotId")
   };
 
-  parameters = removeUndefinedAndNullValues(parameters);
   const userProperties = await getTransformedJSON(
     message,
-    hsCommonConfigJson,
     destination,
     propertyMap
   );

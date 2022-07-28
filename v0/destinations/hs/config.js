@@ -8,20 +8,25 @@ const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/p
  * Legacy API
  */
 // Identify
+// Ref - https://legacydocs.hubspot.com/docs/methods/contacts/create_contact
 const IDENTIFY_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact`;
+// Ref - https://legacydocs.hubspot.com/docs/methods/contacts/create_or_update
 const IDENTIFY_CREATE_UPDATE_CONTACT = `${BASE_ENDPOINT}/contacts/v1/contact/createOrUpdate/email/:contact_email`;
 
 // Identify Batch
+// Ref - https://legacydocs.hubspot.com/docs/methods/contacts/batch_create_or_update
 const BATCH_CONTACT_ENDPOINT = `${BASE_ENDPOINT}/contacts/v1/contact/batch/`;
 const MAX_BATCH_SIZE = 1000;
 
 // Track
+// Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
 const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 
 /*
  * NEW API
  */
 // Identify
+// Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const IDENTIFY_CRM_SEARCH_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/search`;
 const IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts`;
 const IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:contactId`;
@@ -33,15 +38,19 @@ const BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/c
 const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 
 // Track
+// Ref - https://developers.hubspot.com/docs/api/analytics/events
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
 /* CRM Custom Objects */
+// Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
 const CRM_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
 
 // Batch for custom Objects
+// Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
 const BATCH_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/create`;
 
 /* CRM Association v3 */
+// Ref - https://developers.hubspot.com/docs/api/crm/associations
 const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType/:toObjectType/batch/create`;
 
 // Ref - https://developers.hubspot.com/docs/api/crm/understanding-the-crm

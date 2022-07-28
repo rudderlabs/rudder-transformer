@@ -36,8 +36,8 @@ const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 // Track
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
-/* CRM Custom Objects */
-const CRM_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
+/* CRM ALL Objects */
+const CRM_CREATE_UPDATE_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
 
 // Batch for custom Objects
 const BATCH_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/batch/create`;
@@ -79,7 +79,7 @@ module.exports = {
   BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT,
-  CRM_CREATE_CUSTOM_OBJECTS,
+  CRM_CREATE_UPDATE_ALL_OBJECTS,
   BATCH_CREATE_CUSTOM_OBJECTS,
   CRM_ASSOCIATION_V3,
   MAX_BATCH_SIZE_CRM_OBJECT,

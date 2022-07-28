@@ -26,7 +26,7 @@ const {
   mappingConfig,
   ConfigCategory,
   TRACK_CRM_ENDPOINT,
-  CRM_CREATE_CUSTOM_OBJECTS,
+  CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
   BATCH_CREATE_CUSTOM_OBJECTS
 } = require("./config");
@@ -35,7 +35,8 @@ const {
   formatPropertyValueForIdentify,
   searchContacts,
   getCRMUpdatedProps,
-  getEventAndPropertiesFromConfig
+  getEventAndPropertiesFromConfig,
+  getHsSearchId
 } = require("./util");
 
 /**
@@ -50,52 +51,63 @@ const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  // if mappedToDestination is set true, then add externalId to traits
-  if (mappedToDestination) {
-    addExternalIdToTraits(message);
-  } else if (!traits || !traits.email) {
-    throw new CustomError(
-      "[HS]:: Identify without email is not supported.",
-      400
-    );
-  }
-
-  if (!Config.lookupField) {
-    throw new CustomError(
-      "lookupField is a required field in webapp config",
-      400
-    );
-  }
-
-  let contactId = getDestinationExternalID(message, "hsContactId");
-
-  if (!contactId) {
-    contactId = await searchContacts(message, destination);
-  }
-
-  const userProperties = await getTransformedJSON(
-    message,
-    hsCommonConfigJson,
-    destination,
-    propertyMap
-  );
-
-  const payload = {
-    properties: formatPropertyValueForIdentify(userProperties)
-  };
-
+  const checkLookup = get(message, "context.hubspotOperation");
   // build response
   let endpoint;
   const response = defaultRequestConfig();
-
-  // for rETL source support for custom objects
-  // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (mappedToDestination) {
+  // if mappedToDestination is set true, then add externalId to traits
+  if (mappedToDestination && checkLookup) {
+    addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
+    if (checkLookup === "create") {
+      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      );
+    } else if (checkLookup === "update" && getHsSearchId(message)) {
+      const { hsSearchId } = getHsSearchId(message);
+      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      )}/${hsSearchId}`;
+    }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
   } else {
+    if (!traits || !traits.email) {
+      throw new CustomError(
+        "[HS]:: Identify without email is not supported.",
+        400
+      );
+    }
+
+    if (!Config.lookupField) {
+      throw new CustomError(
+        "lookupField is a required field in webapp config",
+        400
+      );
+    }
+
+    let contactId = getDestinationExternalID(message, "hsContactId");
+
+    if (!contactId) {
+      contactId = await searchContacts(message, destination);
+    }
+
+    const userProperties = await getTransformedJSON(
+      message,
+      hsCommonConfigJson,
+      destination,
+      propertyMap
+    );
+
+    const payload = {
+      properties: formatPropertyValueForIdentify(userProperties)
+    };
+
+    // for rETL source support for custom objects
+    // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+
     if (contactId) {
       // update
       endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(
@@ -126,7 +138,6 @@ const processIdentify = async (message, destination, propertyMap) => {
     // use legacy API Key
     response.params = { hapikey: Config.apiKey };
   }
-
   return response;
 };
 

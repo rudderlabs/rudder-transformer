@@ -397,11 +397,27 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
       input.message.context.hubspotOperation = "update";
       resultInput.push(input);
     } else {
-      input.message.context.hubspotOperation = "insert";
+      input.message.context.hubspotOperation = "create";
       resultInput.push(input);
     }
   });
   return resultInput;
+};
+
+const getHsSearchId = message => {
+  let externalIdArray = [];
+  let hsSearchId = null;
+  externalIdArray = message.context?.externalId;
+
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes("HS")) {
+        hsSearchId = extIdObj.hsSearchId;
+      }
+    });
+  }
+  return { hsSearchId };
 };
 
 const setHsSearchId = (input, id) => {
@@ -432,5 +448,6 @@ module.exports = {
   getCRMUpdatedProps,
   getEventAndPropertiesFromConfig,
   searchContacts,
-  splitEventsForCreateUpdate
+  splitEventsForCreateUpdate,
+  getHsSearchId
 };

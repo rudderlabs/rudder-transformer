@@ -21,7 +21,7 @@ const {
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
   hsCommonConfigJson,
-  CRM_CREATE_CUSTOM_OBJECTS
+  CRM_CREATE_UPDATE_ALL_OBJECTS
 } = require("./config");
 const {
   getTransformedJSON,
@@ -77,7 +77,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
   if (mappedToDestination) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
+    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(":objectType", objectType);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
   } else {

@@ -322,6 +322,11 @@ const defaultPutRequestConfig = {
   requestFormat: "JSON",
   requestMethod: "PUT"
 };
+// PATCH
+const defaultPatchRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PATCH"
+};
 
 // DEFAULT
 // TODO: add builder pattern to generate request and batchRequest
@@ -1470,6 +1475,7 @@ module.exports = {
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
+  defaultPatchRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,

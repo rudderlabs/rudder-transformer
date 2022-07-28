@@ -5,6 +5,7 @@ const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
   CustomError,
@@ -55,6 +56,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   // build response
   let endpoint;
   const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
   // if mappedToDestination is set true, then add externalId to traits
   if (mappedToDestination && checkLookup) {
     addExternalIdToTraits(message);
@@ -70,6 +72,7 @@ const processIdentify = async (message, destination, propertyMap) => {
         ":objectType",
         objectType
       )}/${hsSearchId}`;
+      response.method = defaultPatchRequestConfig.requestMethod;
     }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
@@ -123,7 +126,6 @@ const processIdentify = async (message, destination, propertyMap) => {
   }
 
   response.endpoint = endpoint;
-  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
   };
@@ -290,62 +292,86 @@ const batchIdentify = (
     let batchEventResponse = defaultBatchRequestConfig();
 
     if (batchOperation === "create") {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+    } else if (batchOperation === "update") {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
+    }
+
+    if (batchOperation === "create") {
       // create operation
       chunk.forEach(ev => {
-        // format properties into batch structure
-        // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = getCRMUpdatedProps(
-          ev.message.body.JSON.properties
-        );
-
-        // duplicate email can cause issue with create in batch
-        // updating the existing one to avoid duplicate
-        // as same event can fire in batch one of the reason
-        // can be due to network lag or processor being busy
-        const isDuplicate = identifyResponseList.find(data => {
-          return (
-            data.properties.email === ev.message.body.JSON.properties.email
-          );
-        });
-        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
-          // array is being shallow copied hence changes are affecting the original reference
-          // basically rewriting the same value to avoid duplicate entry
-          isDuplicate.properties = ev.message.body.JSON.properties;
+        // if source is of rETL
+        if (ev.message.source === "rETL") {
+          identifyResponseList.push({ ...ev.message.body.JSON });
+          batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         } else {
-          // appending unique events
-          identifyResponseList.push({
-            properties: ev.message.body.JSON.properties
+          // format properties into batch structure
+          // eslint-disable-next-line no-param-reassign
+          ev.message.body.JSON.properties = getCRMUpdatedProps(
+            ev.message.body.JSON.properties
+          );
+
+          // duplicate email can cause issue with create in batch
+          // updating the existing one to avoid duplicate
+          // as same event can fire in batch one of the reason
+          // can be due to network lag or processor being busy
+          const isDuplicate = identifyResponseList.find(data => {
+            return (
+              data.properties.email === ev.message.body.JSON.properties.email
+            );
           });
+          if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+            // array is being shallow copied hence changes are affecting the original reference
+            // basically rewriting the same value to avoid duplicate entry
+            isDuplicate.properties = ev.message.body.JSON.properties;
+          } else {
+            // appending unique events
+            identifyResponseList.push({
+              properties: ev.message.body.JSON.properties
+            });
+          }
         }
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === "update") {
       // update operation
       chunk.forEach(ev => {
-        // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = getCRMUpdatedProps(
-          ev.message.body.JSON.properties
-        );
-        // update has contactId and properties
-        // extract contactId from the end of the endpoint
-        const id = ev.message.endpoint.split("/").pop();
-
-        // duplicate contactId is not allowed in batch
-        // updating the existing one to avoid duplicate
-        // as same event can fire in batch one of the reason
-        // can be due to network lag or processor being busy
-        const isDuplicate = identifyResponseList.find(data => {
-          return data.id === id;
-        });
-        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
-          // rewriting the same value to avoid duplicate entry
-          isDuplicate.properties = ev.message.body.JSON.properties;
-        } else {
-          // appending unique events
+        if (ev.message.source === "rETL") {
+          const updateEndpoint = ev.message.endpoint;
           identifyResponseList.push({
-            id,
-            properties: ev.message.body.JSON.properties
+            ...ev.message.body.JSON,
+            id: updateEndpoint.split("/").pop()
           });
+          batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
+            0,
+            updateEndpoint.lastIndexOf("/")
+          )}/batch/update`;
+        } else {
+          // eslint-disable-next-line no-param-reassign
+          ev.message.body.JSON.properties = getCRMUpdatedProps(
+            ev.message.body.JSON.properties
+          );
+          // update has contactId and properties
+          // extract contactId from the end of the endpoint
+          const id = ev.message.endpoint.split("/").pop();
+
+          // duplicate contactId is not allowed in batch
+          // updating the existing one to avoid duplicate
+          // as same event can fire in batch one of the reason
+          // can be due to network lag or processor being busy
+          const isDuplicate = identifyResponseList.find(data => {
+            return data.id === id;
+          });
+          if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+            // rewriting the same value to avoid duplicate entry
+            isDuplicate.properties = ev.message.body.JSON.properties;
+          } else {
+            // appending unique events
+            identifyResponseList.push({
+              id,
+              properties: ev.message.body.JSON.properties
+            });
+          }
         }
         metadata.push(ev.metadata);
       });
@@ -378,12 +404,6 @@ const batchIdentify = (
       inputs: identifyResponseList
     };
 
-    if (batchOperation === "create") {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else if (batchOperation === "update") {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
-    }
-
     batchEventResponse.batchedRequest.headers = message.headers;
     batchEventResponse.batchedRequest.params = message.params;
 
@@ -401,7 +421,6 @@ const batchIdentify = (
       )
     );
   });
-
   return batchedResponseList;
 };
 
@@ -480,8 +499,6 @@ const batchEvents = destEvents => {
     updateAllObjectsEventChunk,
     maxBatchSize
   );
-
-  console.log(maxBatchSize)
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // CRM create contact endpoint chunks

@@ -123,33 +123,30 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (contentIds.length > 0) {
     contentType = "product";
   } else {
-    contentIds.push(message.properties.category || "");
+    //  for viewContent event content_ids and content arrays are not mandatory
+    if(message.properties?.category) {
+      contentIds.push(message.properties.category );
     contents.push({
-      id: message.properties.category || "",
+      id: message.properties.category,
       quantity: 1
     });
     contentType = "product_group";
+    }
   }
+
+  // content array only can have elements when products array is present
   contents.forEach((content, index) => {
     if (content.id === "") {
-      if(contentType === "product") {
         throw new CustomError(
           `Product id is required for product ${index}. Event not sent`,
           400
         );
-      } else {
-        throw new CustomError(
-          "In order to send viewContent event for payload without products, category is a mandatory field. Event not sent",
-          400
-        );
-      }
-     
     }
   });
   return {
-    content_ids: contentIds,
+    content_ids: contentIds.length > 0 ? contentIds : undefined,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents
+    contents : contents.length > 0 ? contents : undefined
   };
 };
 

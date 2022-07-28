@@ -623,10 +623,6 @@
     "files": {}
   },
   {
-    "statusCode": 400,
-    "error": "In order to send viewContent event for payload without products, category is a mandatory field. Event not sent"
-  },
-  {
     "version": "1",
     "type": "REST",
     "method": "POST",

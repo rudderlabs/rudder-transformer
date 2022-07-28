@@ -100,9 +100,11 @@ const processIdentify = async (message, destination, propertyMap) => {
         ":contactId",
         contactId
       );
+      response.operation = "updateContacts";
     } else {
       // create
       endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      response.operation = "createContacts";
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
@@ -242,6 +244,7 @@ const processTrack = async (message, destination) => {
     "Content-Type": "application/json"
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.messageType = "track";
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -275,7 +278,7 @@ const batchIdentify = (
 
     let batchEventResponse = defaultBatchRequestConfig();
 
-    if (batchOperation === "create") {
+    if (batchOperation === "createContacts") {
       // create operation
       chunk.forEach(ev => {
         // format properties into batch structure
@@ -305,7 +308,7 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
-    } else if (batchOperation === "update") {
+    } else if (batchOperation === "updateContacts") {
       // update operation
       chunk.forEach(ev => {
         // eslint-disable-next-line no-param-reassign
@@ -339,8 +342,9 @@ const batchIdentify = (
       // general identify event
 
       /* Note: */
-      // for now it is just HS CRM custom objects however later it can be
+      // 1. for now it is just HS CRM custom objects however later it can be
       // refactored to accomodate upcoming endpoint and make necessary changes
+      // 2. this operation for now is just being used by rETL.
 
       chunk.forEach(ev => {
         // if source is of rETL
@@ -364,9 +368,9 @@ const batchIdentify = (
       inputs: identifyResponseList
     };
 
-    if (batchOperation === "create") {
+    if (batchOperation === "createContacts") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else if (batchOperation === "update") {
+    } else if (batchOperation === "updateContacts") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
     }
 
@@ -403,7 +407,7 @@ const batchEvents = destEvents => {
   destEvents.forEach(event => {
     // handler for track call
     // track call does not have batch endpoint
-    if (event.message.endpoint.includes("/events/v3/send")) {
+    if (event.message.messageType === "track") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
@@ -424,16 +428,10 @@ const batchEvents = destEvents => {
           batchedResponse.destination
         )
       );
-    } else if (
-      event.message.endpoint ===
-      "https://api.hubapi.com/crm/v3/objects/contacts"
-    ) {
+    } else if (event.message.operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint
       createContactEventsChunk.push(event);
-    } else if (
-      event.message.endpoint ===
-      "https://api.hubapi.com/crm/v3/objects/contacts/"
-    ) {
+    } else if (event.message.operation === "updateContacts") {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
@@ -460,7 +458,7 @@ const batchEvents = destEvents => {
     batchedResponseList = batchIdentify(
       arrayChunksIdentifyCreateContact,
       batchedResponseList,
-      "create"
+      "createContacts"
     );
   }
 
@@ -470,7 +468,7 @@ const batchEvents = destEvents => {
       batchIdentify(
         arrayChunksIdentifyUpdateContact,
         batchedResponseList,
-        "update"
+        "updateContacts"
       )
     );
   }

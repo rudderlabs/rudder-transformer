@@ -218,6 +218,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
   response.headers = {
     "Content-Type": "application/json"
   };
+  response.messageType = "track";
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -239,7 +240,7 @@ const legacyBatchEvents = destEvents => {
   const eventsChunk = [];
   destEvents.forEach(event => {
     // handler for track call
-    if (event.message.method === "GET") {
+    if (event.message.messageType === "track") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 

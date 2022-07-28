@@ -1,0 +1,18 @@
+[
+  {
+    "sourceKeys": "created",
+    "destKeys": "timestamp"
+  },
+  {
+    "sourceKeys": "object",
+    "destKeys": "properties"
+  },
+  {
+    "sourceKeys": "objectType",
+    "destKeys": "properties.objectType"
+  },
+  {
+    "sourceKeys": "type",
+    "destKeys": "event"
+  }
+]

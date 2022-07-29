@@ -1,4 +1,4 @@
-const integration = "pinterestConversion";
+const integration = "pinterest_tag";
 const name = "Pinterest Conversion API";
 
 const fs = require("fs");

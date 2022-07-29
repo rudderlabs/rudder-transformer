@@ -15,7 +15,7 @@
   },
   {
     "destKey": "num_items",
-    "sourceKeys": ["properties.numOfItems"],
+    "sourceKeys": "properties.numOfItems",
     "metadata": {
       "type": "toInt"
     },
@@ -23,12 +23,12 @@
   },
   {
     "destKey": "order_id",
-    "sourceKeys": ["properties.order_id"],
+    "sourceKeys": "properties.order_id",
     "required": false
   },
   {
     "destKey": "search_string",
-    "sourceKeys": ["properties.query"],
+    "sourceKeys": "properties.query",
     "required": false
   }
 ]

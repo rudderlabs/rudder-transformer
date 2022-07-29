@@ -303,81 +303,11 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 };
 
 const splitEventsForCreateUpdate = async (inputs, destination) => {
-  const { Config } = destination;
-  const values = [];
-  const updateHubspotIds = [];
-  const firstMessage = inputs[0].message;
-  let objectType = null;
-  let identifierType = null;
-  if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
-      .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
-      .identifierType;
-  }
-  inputs.map(async input => {
-    const { message } = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
-      message,
-      "HS"
-    );
-    values.push(destinationExternalId);
-  });
-  let requestData = {
-    filterGroups: [
-      {
-        filters: [
-          {
-            propertyName: identifierType,
-            values,
-            operator: "IN"
-          }
-        ]
-      }
-    ],
-    properties: [identifierType],
-    limit: 1,
-    after: 0
-  };
-
-  const requestOptions = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${Config.accessToken}`
-    }
-  };
-  let checkAfter = 1; // variable to keep checking if we have more results
-  while (checkAfter) {
-    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
-      ":objectType",
-      objectType
-    );
-    const url =
-      Config.authorizationType === "newPrivateAppApi"
-        ? endpoint
-        : `${endpoint}?hapikey=${Config.apiKey}`;
-    searchContactsResponse =
-      Config.authorizationType === "newPrivateAppApi"
-        ? await httpPOST(url, requestData, requestOptions)
-        : await httpPOST(url, requestData);
-    const after =
-      searchContactsResponse.response?.data?.paging?.next?.after | 0;
-
-    requestData.after = after; // assigning to the new value of after
-    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
-    searchContactsResponse = processAxiosResponse(searchContactsResponse);
-    const results = searchContactsResponse.response?.results;
-
-    if (results) {
-      results.map(result => {
-        const propertyValue = result.properties[identifierType];
-        updateHubspotIds.push({ id: result.id, property: propertyValue });
-      });
-    }
-  }
+ 
+  const updateHubspotIds =  await getExistingData(inputs, destination);
+ console.log(updateHubspotIds)
   const resultInput = [];
-  const i = 0;
+  
   inputs.map(input => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
@@ -437,6 +367,85 @@ const setHsSearchId = (input, id) => {
   }
   return resultExternalId;
 };
+
+const getExistingData = async (inputs, destination) =>{
+  const { Config } = destination;
+  const values = [];
+  let searchResponse;
+  const updateHubspotIds = [];
+  const firstMessage = inputs[0].message;
+  let objectType = null;
+  let identifierType = null;
+
+  if (firstMessage) {
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+      .objectType;
+    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+      .identifierType;
+  }
+  inputs.map(async input => {
+    const { message } = input;
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
+      message,
+      "HS"
+    );
+    values.push(destinationExternalId);
+  });
+  let requestData = {
+    filterGroups: [
+      {
+        filters: [
+          {
+            propertyName: identifierType,
+            values,
+            operator: "IN"
+          }
+        ]
+      }
+    ],
+    properties: [identifierType],
+    limit: 100,
+    after: 0
+  };
+
+  const requestOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Config.accessToken}`
+    }
+  };
+  let checkAfter = 1; // variable to keep checking if we have more results
+  while (checkAfter) {
+    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
+      ":objectType",
+      objectType
+    );
+    const url =
+      Config.authorizationType === "newPrivateAppApi"
+        ? endpoint
+        : `${endpoint}?hapikey=${Config.apiKey}`;
+    searchResponse =
+      Config.authorizationType === "newPrivateAppApi"
+        ? await httpPOST(url, requestData, requestOptions)
+        : await httpPOST(url, requestData);
+    const after =
+      searchResponse.response?.data?.paging?.next?.after | 0;
+
+    requestData.after = after; // assigning to the new value of after
+    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
+
+    searchResponse = processAxiosResponse(searchResponse);
+    const results = searchResponse.response?.results;
+    if (results) {
+      results.map(result => {
+        const propertyValue = result.properties[identifierType];
+        updateHubspotIds.push({ id: result.id, property: propertyValue });
+      });
+    }
+  }
+
+  return updateHubspotIds;
+}
 
 module.exports = {
   formatKey,

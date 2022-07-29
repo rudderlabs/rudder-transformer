@@ -66,8 +66,15 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 };
 
 // has been deprecated - using routerTransform for both the versions
-const process = event => {
-  return processSingleMessage(event.message, event.destination);
+const process = async event => {
+  const { destination } = event;
+  const mappedToDestination = get(event.message, MappedToDestinationKey);
+  let events = [];
+  events = [event];
+  if (mappedToDestination) {
+    events = await splitEventsForCreateUpdate([event], destination);
+  }
+  return processSingleMessage(events[0].message, events[0].destination);
 };
 
 // we are batching by default at routerTransform

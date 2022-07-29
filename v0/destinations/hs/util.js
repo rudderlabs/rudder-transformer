@@ -305,7 +305,6 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 const splitEventsForCreateUpdate = async (inputs, destination) => {
  
   const updateHubspotIds =  await getExistingData(inputs, destination);
- console.log(updateHubspotIds)
   const resultInput = [];
   
   inputs.map(input => {

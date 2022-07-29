@@ -5,6 +5,7 @@ const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
   CustomError,
@@ -21,12 +22,14 @@ const {
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
   hsCommonConfigJson,
-  CRM_CREATE_UPDATE_ALL_OBJECTS
+  CRM_CREATE_UPDATE_ALL_OBJECTS,
+  MAX_BATCH_SIZE_CRM_OBJECT
 } = require("./config");
 const {
   getTransformedJSON,
   getEmailAndUpdatedProps,
-  formatPropertyValueForIdentify
+  formatPropertyValueForIdentify,
+  getHsSearchId
 } = require("./util");
 
 /**
@@ -46,50 +49,73 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
+  const checkLookup = get(message, "context.hubspotOperation");
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
-  if (mappedToDestination) {
-    addExternalIdToTraits(message);
-  } else if (!traits || !traits.email) {
-    throw new CustomError(
-      "[HS]:: Identify without email is not supported.",
-      400
-    );
-  }
-
-  const userProperties = await getTransformedJSON(
-    message,
-    hsCommonConfigJson,
-    destination,
-    propertyMap
-  );
-
-  const payload = {
-    properties: formatPropertyValueForIdentify(userProperties)
-  };
-
-  // build response
-  const { email } = traits;
   let endpoint;
   const response = defaultRequestConfig();
-
-  // for rETL source support for custom objects
-  // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (mappedToDestination) {
+  if (mappedToDestination && checkLookup) {
+    addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(":objectType", objectType);
+    if (checkLookup === "create") {
+      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      );
+    } else if (checkLookup === "update" && getHsSearchId(message)) {
+      const { hsSearchId } = getHsSearchId(message);
+      endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      )}/${hsSearchId}`;
+      response.method = defaultPatchRequestConfig.requestMethod;
+    }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
+    response.checkLookup = checkLookup;
   } else {
-    if (email) {
-      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
-        ":contact_email",
-        email
+    if (!traits || !traits.email) {
+      throw new CustomError(
+        "[HS]:: Identify without email is not supported.",
+        400
       );
-    } else {
-      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
     }
-    response.body.JSON = removeUndefinedAndNullValues(payload);
+
+    const userProperties = await getTransformedJSON(
+      message,
+      hsCommonConfigJson,
+      destination,
+      propertyMap
+    );
+
+    const payload = {
+      properties: formatPropertyValueForIdentify(userProperties)
+    };
+
+    // build response
+    const { email } = traits;
+
+    // for rETL source support for custom objects
+    // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
+    if (mappedToDestination) {
+      const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
+        ":objectType",
+        objectType
+      );
+      response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
+      response.source = "rETL";
+    } else {
+      if (email) {
+        endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
+          ":contact_email",
+          email
+        );
+      } else {
+        endpoint = IDENTIFY_CREATE_NEW_CONTACT;
+      }
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+    }
   }
 
   response.endpoint = endpoint;
@@ -233,11 +259,79 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
 
   return response;
 };
+const batchIdentifyForrETL = (
+  arrayChunksIdentify,
+  batchedResponseList,
+  batchOperation
+) => {
+  // list of chunks [ [..], [..] ]
+  arrayChunksIdentify.forEach(chunk => {
+    const identifyResponseList = [];
+    const metadata = [];
+
+    // extracting message, destination value
+    // from the first event in a batch
+    const { message, destination } = chunk[0];
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    if (batchOperation === "create") {
+      // create operation
+      chunk.forEach(ev => {
+        // if source is of rETL
+        identifyResponseList.push({ ...ev.message.body.JSON });
+        batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
+
+        metadata.push(ev.metadata);
+      });
+    } else if (batchOperation === "update") {
+      // update operation
+      chunk.forEach(ev => {
+        const updateEndpoint = ev.message.endpoint;
+        identifyResponseList.push({
+          ...ev.message.body.JSON,
+          id: updateEndpoint.split("/").pop()
+        });
+        batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
+          0,
+          updateEndpoint.lastIndexOf("/")
+        )}/batch/update`;
+
+        metadata.push(ev.metadata);
+      });
+    }
+
+    batchEventResponse.batchedRequest.body.JSON = {
+      inputs: identifyResponseList
+    };
+
+    batchEventResponse.batchedRequest.headers = message.headers;
+    batchEventResponse.batchedRequest.params = message.params;
+
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+  return batchedResponseList;
+};
 
 const legacyBatchEvents = destEvents => {
-  const batchedResponseList = [];
+  let batchedResponseList = [];
   const trackResponseList = [];
   const eventsChunk = [];
+  const createAllObjectsEventChunk = [];
+  const updateAllObjectsEventChunk = [];
+  let maxBatchSize;
   destEvents.forEach(event => {
     // handler for track call
     if (event.message.method === "GET") {
@@ -261,11 +355,50 @@ const legacyBatchEvents = destEvents => {
           batchedResponse.destination
         )
       );
+    } else if (event.message.source && event.message.source === "rETL") {
+      const { endpoint } = event.message;
+      maxBatchSize = endpoint.includes("contact")
+        ? MAX_BATCH_SIZE_CRM_OBJECT
+        : MAX_BATCH_SIZE_CRM_OBJECT;
+      const { checkLookup } = event.message;
+      if (checkLookup) {
+        if (checkLookup === "create") {
+          createAllObjectsEventChunk.push(event);
+        } else if (checkLookup === "update") {
+          updateAllObjectsEventChunk.push(event);
+        }
+      }
     } else {
       // making chunks for identify
       eventsChunk.push(event);
     }
   });
+  const arrayChunksIdentifyCreateObjects = _.chunk(
+    createAllObjectsEventChunk,
+    maxBatchSize
+  );
+
+  const arrayChunksIdentifyUpdateObjects = _.chunk(
+    updateAllObjectsEventChunk,
+    maxBatchSize
+  );
+  // batching up 'create' all objects endpoint chunks
+  if (arrayChunksIdentifyCreateObjects.length) {
+    batchedResponseList = batchIdentifyForrETL(
+      arrayChunksIdentifyCreateObjects,
+      batchedResponseList,
+      "create"
+    );
+  }
+
+  // batching up 'update' all objects endpoint chunks
+  if (arrayChunksIdentifyUpdateObjects.length) {
+    batchedResponseList = batchIdentifyForrETL(
+      arrayChunksIdentifyUpdateObjects,
+      batchedResponseList,
+      "update"
+    );
+  }
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   const arrayChunksIdentify = _.chunk(eventsChunk, MAX_BATCH_SIZE);

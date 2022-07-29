@@ -28,6 +28,12 @@ function process(event) {
       } else {
         message.anonymousId = sha256(event.object.voter?.email);
       }
+      message.context.externalId = [
+        {
+          type: "cannyUserId",
+          value: event.object?.voter?.id
+        }
+      ];
       break;
     default:
       if (event.object?.author?.userId) {
@@ -35,30 +41,12 @@ function process(event) {
       } else {
         message.anonymousId = sha256(event.object.author?.email);
       }
-  }
-
-  if (event.cannyId) {
-    message.context.externalId = [
-      {
-        type: "cannyId",
-        value: event.cannyId
-      }
-    ];
-  }
-  if (event.object?.author?.id || event.object?.post?.author?.id) {
-    if (message.context.externalId) {
-      message.context.externalId = message.context.externalId.push({
-        type: "authorId",
-        value: event.object?.author?.id || event.object?.post?.author?.id
-      });
-    } else {
       message.context.externalId = [
         {
-          type: "authorId",
-          value: event.object?.author?.id || event.object?.post?.author?.id
+          type: "cannyUserId",
+          value: event.object?.author?.id
         }
       ];
-    }
   }
 
   return message;

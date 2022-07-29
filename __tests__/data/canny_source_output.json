@@ -14,12 +14,13 @@
       },
       "externalId": [
         {
-          "type": "authorId",
+          "type": "cannyUserId",
           "value": "62d14c90fff7c80d0ec08375"
         }
       ]
     },
     "timestamp": "2022-07-28T10:52:46.294Z",
+    "originalTimestamp": "2022-07-28T10:52:46.294Z",
     "type": "track",
     "properties": {
       "author": {
@@ -76,12 +77,13 @@
       },
       "externalId": [
         {
-          "type": "authorId",
+          "type": "cannyUserId",
           "value": "62d14c90fff7c80d0ec08375"
         }
       ]
     },
     "timestamp": "2022-07-26T10:35:16.390Z",
+    "originalTimestamp": "2022-07-26T10:35:16.390Z",
     "type": "track",
     "properties": {
       "author": {

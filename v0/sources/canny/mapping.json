@@ -1,7 +1,7 @@
 [
   {
     "sourceKeys": "created",
-    "destKeys": "timestamp"
+    "destKeys": ["timestamp", "originalTimestamp"]
   },
   {
     "sourceKeys": "object",

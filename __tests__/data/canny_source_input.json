@@ -459,5 +459,206 @@
     },
     "objectType": "vote",
     "type": "vote.deleted"
+  },
+  {
+    "created": "2022-07-28T10:52:46.294Z",
+    "object": {
+      "author": {
+        "created": "2022-07-15T11:16:32.648Z",
+        "email": "rohithkaza@rudderstack.com",
+        "id": "62d14c90fff7c80d0ec08375",
+        "isAdmin": true,
+        "name": "Rohith Kumar Kaza",
+        "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+        "userID": "sampleuserId"
+      },
+      "board": {
+        "created": "2022-07-25T12:11:19.895Z",
+        "id": "62de88676bc28b44aaaf25cc",
+        "name": "features",
+        "postCount": 13,
+        "url": "https://rudder.canny.io/admin/board/features"
+      },
+      "by": null,
+      "category": null,
+      "commentCount": 0,
+      "created": "2022-07-28T10:52:46.172Z",
+      "customFields": [
+        { "id": "62e13820d7949d44b92d3876", "name": "abc", "value": "123" }
+      ],
+      "details": "Array of images",
+      "eta": null,
+      "id": "62e26a7e1d4ea13c124337bd",
+      "imageURLs": [
+        "https://canny.io/images/6371453a825c79351c52a6063c3af476.jpg",
+        "https://canny.io/images/47db6ee5035bfb45ea87a74f2eb17928.jpg"
+      ],
+      "owner": null,
+      "score": 1,
+      "status": "open",
+      "tags": [],
+      "title": "Custom Fields Testing",
+      "url": "https://rudder.canny.io/admin/board/features/p/custom-fields-testing"
+    },
+    "objectType": "post",
+    "type": "post.created"
+  },
+  {
+    "created": "2022-07-26T11:32:31.378Z",
+    "object": {
+      "board": {
+        "created": "2022-07-25T12:11:19.895Z",
+        "id": "62de88676bc28b44aaaf25cc",
+        "name": "features",
+        "postCount": 12,
+        "url": "https://rudder.canny.io/admin/board/features"
+      },
+      "by": null,
+      "created": "2022-07-26T11:32:31.263Z",
+      "id": "62dfd0cfb2870d468c9618f5",
+      "post": {
+        "author": {
+          "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
+          "created": "2022-07-15T11:16:32.648Z",
+          "email": "rohithkaza@rudderstack.com",
+          "id": "62d14c90fff7c80d0ec08375",
+          "isAdmin": true,
+          "name": "Rohith Kumar Kaza",
+          "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+          "userID": null
+        },
+        "by": null,
+        "category": null,
+        "commentCount": 0,
+        "details": "Array of images",
+        "eta": null,
+        "id": "62dfd0cfb2870d468c9618dd",
+        "imageURLs": [],
+        "owner": null,
+        "score": 1,
+        "status": "open",
+        "tags": [],
+        "title": "Images testing",
+        "url": "https://rudder.canny.io/admin/board/features/p/images-testing-2"
+      },
+      "score": 1,
+      "voter": {
+        "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
+        "created": "2022-07-15T11:16:32.648Z",
+        "email": "rohithkaza@rudderstack.com",
+        "id": "62d14c90fff7c80d0ec08375",
+        "isAdmin": true,
+        "name": "Rohith Kumar Kaza",
+        "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+        "userID": "123"
+      }
+    },
+    "objectType": "vote",
+    "type": "vote.created"
+  },
+  {
+    "created": "2022-07-26T18:09:27.358Z",
+    "object": {
+      "board": {
+        "created": "2022-07-25T12:11:19.895Z",
+        "id": "62de88676bc28b44aaaf25cc",
+        "name": "features",
+        "postCount": 12,
+        "url": "https://rudder.canny.io/admin/board/features"
+      },
+      "by": null,
+      "created": "2022-07-26T08:22:31.109Z",
+      "id": "62dfa4479950e9465532a338",
+      "post": {
+        "author": {
+          "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
+          "created": "2022-07-15T11:16:32.648Z",
+          "email": "rohithkaza@rudderstack.com",
+          "id": "62d14c90fff7c80d0ec08375",
+          "isAdmin": true,
+          "name": "Rohith Kumar Kaza",
+          "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+          "userID": null
+        },
+        "by": null,
+        "category": null,
+        "commentCount": 1,
+        "details": "This is the post's details",
+        "eta": null,
+        "id": "62dfa4479950e9465532a31e",
+        "imageURLs": [],
+        "owner": null,
+        "score": 1,
+        "status": "planned",
+        "tags": [
+          {
+            "id": "62e02db67ad24c46bc175f56",
+            "name": "abc-tag",
+            "postCount": 1,
+            "url": "https://rudder.canny.io/admin/board/features?tags=abc-tag"
+          }
+        ],
+        "title": "Post Title",
+        "url": "https://rudder.canny.io/admin/board/features/p/post-title-7"
+      },
+      "score": 0,
+      "voter": {
+        "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
+        "created": "2022-07-15T11:16:32.648Z",
+        "email": null,
+        "id": "62d14c90fff7c80d0ec08375",
+        "isAdmin": true,
+        "name": "Rohith Kumar Kaza",
+        "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+        "userID": null
+      }
+    },
+    "objectType": "vote",
+    "type": "vote.deleted"
+  },
+  {
+    "created": "2022-07-26T10:35:16.390Z",
+    "object": {
+      "author": {
+        "created": "2022-07-15T11:16:32.648Z",
+        "email": "rohithkaza@rudderstack.com",
+        "isAdmin": true,
+        "name": "Rohith Kumar Kaza",
+        "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+        "userID": null
+      },
+      "board": {
+        "created": "2022-07-25T12:11:19.895Z",
+        "id": "62de88676bc28b44aaaf25cc",
+        "name": "features",
+        "postCount": 10,
+        "url": "https://rudder.canny.io/admin/board/features"
+      },
+      "by": null,
+      "category": null,
+      "commentCount": 0,
+      "created": "2022-07-26T08:18:52.459Z",
+      "deletedBy": {
+        "created": "2022-07-15T11:16:32.648Z",
+        "email": "rohithkaza@rudderstack.com",
+        "id": "62d14c90fff7c80d0ec08375",
+        "isAdmin": true,
+        "name": "Rohith Kumar Kaza",
+        "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+        "userID": null
+      },
+      "details": "This is the post's details",
+      "eta": null,
+      "id": "62dfa36c9950e94655320fe7",
+      "imageURLs": [],
+      "owner": null,
+      "score": 1,
+      "status": "open",
+      "tags": [],
+      "title": "Post Title",
+      "url": "https://rudder.canny.io/admin/board/features/p/post-title-4"
+    },
+    "objectType": "post",
+    "type": "post.deleted"
   }
 ]

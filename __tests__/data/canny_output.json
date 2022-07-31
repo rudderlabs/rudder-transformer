@@ -1,0 +1,32 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://canny.io/api/v1/users/create_or_update",
+    "headers": {
+      "Authorization": "Basic FXLkLUEhGJyvmY4",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customFields": {
+          "city": "Pune",
+          "name": "First User",
+          "email": "firstUser@testmail.com",
+          "title": "VP",
+          "gender": "female"
+        },
+        "userId": "user123456001",
+        "email": "firstUser@testmail.com",
+        "name": "First User",
+        "created": "2022-01-20T13:39:21.032Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

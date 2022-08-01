@@ -53,16 +53,16 @@ const handleOrder = (message, categoryToContent) => {
   const { category } = message.properties;
   if(products) {
     if (products.length > 0 && Array.isArray(products)) {
-      for (let i = 0; i < products.length; i += 1) {
+      for (const singleProduct of products) {
         const pId =
-          products[i].product_id || products[i].sku || products[i].id || "";
+        singleProduct.product_id || singleProduct.sku || singleProduct.id || "";
         contentIds.push(pId);
         // required field for content
         // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
         const content = {
           id: pId,
-          quantity: products[i].quantity || message.properties.quantity || 1,
-          item_price: products[i].price || message.properties.price
+          quantity: singleProduct.quantity || message.properties.quantity || 1,
+          item_price: singleProduct.price || message.properties.price
         };
         contents.push(content);
       }
@@ -81,11 +81,11 @@ const handleOrder = (message, categoryToContent) => {
  
   return {
     content_category: category,
-    content_ids: contentIds.length > 0 ? contentIds : undefined,
+    content_ids: contentIds.length > 0 ? contentIds : [],
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents: contents.length > 0 ? contents : undefined,
+    contents: contents.length > 0 ? contents : [],
     num_items: contentIds.length
   };
 };

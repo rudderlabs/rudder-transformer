@@ -1,18 +1,23 @@
 [
   {
-    "sourceKeys": "context.device.deviceModel",
+    "sourceKeys": "context.device.model",
     "destKey": "device_model",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "sourceKeys": "context.os",
+    "sourceKeys": "context.os.version",
     "destKey": "device_os",
     "sourceFromGenericMap": true,
     "required": false
   },
   {
-    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
+    "sourceKeys": [
+        "traits.country",
+        "context.traits.country",
+        "traits.address.country",
+        "context.traits.address.country"
+      ],
     "destKey": "country",
     "sourceFromGenericMap": true,
     "required": false

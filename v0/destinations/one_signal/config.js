@@ -10,7 +10,7 @@ const ENDPOINTS = {
     endpoint: "/apps"
   },
   GROUP: {
-    endpoint: "/players"
+    endpoint: "/apps"
   }
 };
 

@@ -14,13 +14,11 @@ const {
   removeUndefinedAndNullValues,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  getDestinationExternalID,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const {
-  checkForPlayerId,
-  populateDeviceType,
-  populateTags
-} = require("./util");
+const { populateDeviceType, populateTags } = require("./util");
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
@@ -59,7 +57,8 @@ const identifyResponseBuilder = (message, { Config }) => {
   let { endpoint } = ENDPOINTS.IDENTIFY;
 
   // checking if playerId is present in the payload
-  const playerId = checkForPlayerId(message);
+  const playerId = getDestinationExternalID(message, "playerId");
+
   // Populating the tags
   const tags = populateTags(message);
 
@@ -84,13 +83,18 @@ const identifyResponseBuilder = (message, { Config }) => {
     const emailDevicePayload = { ...payload };
     emailDevicePayload.device_type = 11;
     emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
-    responseArray.push(responseBuilder(emailDevicePayload, endpoint));
+    if (isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
+      responseArray.push(responseBuilder(emailDevicePayload, endpoint));
+    }
   }
   // Creating a device with phone as asn identifier
   if (smsDeviceType) {
     const smsDevicePayload = { ...payload };
     smsDevicePayload.device_type = 14;
     smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
+    if (isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
+      responseArray.push(responseBuilder(smsDevicePayload, endpoint));
+    }
     responseArray.push(responseBuilder(smsDevicePayload, endpoint));
   }
   if (payload.device_type) {
@@ -117,6 +121,12 @@ const trackResponseBuilder = (message, { Config }) => {
   const event = get(message, "event");
   let { endpoint } = ENDPOINTS.TRACK;
   const externalUserId = getFieldValueFromMessage(message, "userId");
+  if (!event) {
+    throw new CustomError(
+      "[OneSignal]: event is not present in the input payloads",
+      400
+    );
+  }
   if (!externalUserId) {
     throw new CustomError(
       "[OneSignal]: userId is required for track events/updating a device",
@@ -126,21 +136,21 @@ const trackResponseBuilder = (message, { Config }) => {
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
   const tags = {};
-  /* If event is present, then populating event as true in tags.
+  /* Populating event as true in tags.
   eg. tags: {
     "event_name": true
   }
   */
-  if (event) {
-    tags[event] = true;
-  }
+  tags[event] = true;
   // Populating tags using allowed properties(from dashboard)
   const properties = get(message, "properties");
   allowedProperties.forEach(propertyName => {
-    if (properties[propertyName] && eventAsTags && event) {
-      tags[`${event}_${[propertyName]}`] = properties[propertyName];
-    } else if (properties[propertyName]) {
-      tags[propertyName] = properties[propertyName];
+    if (properties[propertyName]) {
+      if (eventAsTags && typeof properties[propertyName] === "string") {
+        tags[`${event}_${[propertyName]}`] = properties[propertyName];
+      } else if (typeof properties[propertyName] === "string") {
+        tags[propertyName] = properties[propertyName];
+      }
     }
   });
   payload.tags = tags;
@@ -154,55 +164,43 @@ const trackResponseBuilder = (message, { Config }) => {
  * @returns
  */
 const groupResponseBuilder = (message, { Config }) => {
-  const { appId, emailDeviceType, smsDeviceType } = Config;
-  let { endpoint } = ENDPOINTS.GROUP;
-
-  if (!appId) {
-    throw new CustomError(
-      "[OneSignal]: appId is required for creating/adding a device",
-      400
-    );
-  }
-  // checking if playerId is present in the payload
-  const playerId = checkForPlayerId(message);
-  // Populating tags
-  const tags = populateTags(message);
-
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.GROUP.name]
-  );
-  if (payload.groupId) {
+  const { appId, allowedProperties } = Config;
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
     throw new CustomError(
       "[OneSignal]: groupId is required for group events",
       400
     );
   }
-  if (playerId) {
-    endpoint = `${endpoint}/${playerId}`;
-    payload.tags = tags;
-    payload.app_id = appId;
-    return responseBuilder(payload, endpoint);
+  if (!appId) {
+    throw new CustomError(
+      "[OneSignal]: appId is required for group events",
+      400
+    );
   }
-  populateDeviceType(message, payload);
-  const responseArray = [];
+  let { endpoint } = ENDPOINTS.GROUP;
+  const externalUserId = getFieldValueFromMessage(message, "userId");
+
+  if (!externalUserId) {
+    throw new CustomError(
+      "[OneSignal]: userId is required for group events",
+      400
+    );
+  }
+  endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
+  const payload = {};
+  const tags = {};
+  tags.groupId = groupId;
+
+  // Populating tags using allowed properties(from dashboard)
+  const properties = getFieldValueFromMessage(message, "traits");
+  allowedProperties.forEach(propertyName => {
+    if (typeof properties[propertyName] === "string") {
+      tags[propertyName] = properties[propertyName];
+    }
+  });
   payload.tags = tags;
-  if (emailDeviceType) {
-    const emailDevicePayload = { ...payload };
-    emailDevicePayload.device_type = 11;
-    emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
-    responseArray.push(responseBuilder(emailDevicePayload, endpoint));
-  }
-  if (smsDeviceType) {
-    const smsDevicePayload = { ...payload };
-    smsDevicePayload.device_type = 14;
-    smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
-    responseArray.push(responseBuilder(smsDevicePayload, endpoint));
-  }
-  if (payload.device_type) {
-    responseArray.push(responseBuilder(payload, endpoint));
-  }
-  return responseArray;
+  return responseBuilder(payload, endpoint);
 };
 
 const processEvent = (message, destination) => {

@@ -81,11 +81,11 @@ const handleOrder = (message, categoryToContent) => {
  
   return {
     content_category: category,
-    content_ids: contentIds.length > 0 ? contentIds : [],
+    content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents: contents.length > 0 ? contents : [],
+    contents: contents ,
     num_items: contentIds.length
   };
 };
@@ -144,9 +144,9 @@ const handleProductListViewed = (message, categoryToContent) => {
     }
   });
   return {
-    content_ids: contentIds.length > 0 ? contentIds : [],
+    content_ids:  contentIds ,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents : contents.length > 0 ? contents : []
+    contents :  contents 
   };
 };
 

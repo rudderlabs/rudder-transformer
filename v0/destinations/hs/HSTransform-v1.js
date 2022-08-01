@@ -95,27 +95,15 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     // build response
     const { email } = traits;
 
-    // for rETL source support for custom objects
-    // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-    if (mappedToDestination) {
-      const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-      endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
-        ":objectType",
-        objectType
+    if (email) {
+      endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
+        ":contact_email",
+        email
       );
-      response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
-      response.source = "rETL";
     } else {
-      if (email) {
-        endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
-          ":contact_email",
-          email
-        );
-      } else {
-        endpoint = IDENTIFY_CREATE_NEW_CONTACT;
-      }
-      response.body.JSON = removeUndefinedAndNullValues(payload);
+      endpoint = IDENTIFY_CREATE_NEW_CONTACT;
     }
+    response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
   response.endpoint = endpoint;

@@ -12,12 +12,15 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  getIntegrationsObj,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents,
-  getDestinationExternalID
+  getSuccessRespEvents
 } = require("../../util");
+const {
+  checkForPlayerId,
+  populateDeviceType,
+  populateTags
+} = require("./util");
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
@@ -33,29 +36,16 @@ const responseBuilder = (payload, endpoint) => {
   }
 };
 
-const populateDevicetype = (message, payload) => {
-  const integrationsObj = getIntegrationsObj(message, "one_signal");
-  const devicePayload = payload;
-  if (integrationsObj && integrationsObj.deviceType) {
-    devicePayload.device_type = integrationsObj.deviceType;
-    devicePayload.identifier = integrationsObj.identifier;
-  }
-};
-const getExternalIdentifiersMapping = message => {
-  // Data Structure expected:
-  // context.externalId: [ {type: playerId, id: __id}]
-  const externalId = get(message, "context.externalId");
-  let playerId;
-  if (externalId && Array.isArray(externalId)) {
-    externalId.forEach(id => {
-      if (id.type === "playerId") {
-        playerId = getDestinationExternalID(message, id.type);
-      }
-    });
-  }
-  return playerId;
-};
-
+/**
+ * This function is used for creating response for identify call, to create a new device or update an existing device.
+ * If playerId is present in the input payload, a response for editing that device is being created.
+ * If playerId is not present, a responseArray for creating new device is being prepared.
+ * If the value of emailDeviceType/smsDeviceType(toggle in dashboard) is true, separate responses will also be created
+ * for new device with email/sms as identifier
+ * @param {*} message
+ * @param {*} param1
+ * @returns
+ */
 const identifyResponseBuilder = (message, { Config }) => {
   const { appId, emailDeviceType, smsDeviceType } = Config;
 
@@ -68,36 +58,35 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   let { endpoint } = ENDPOINTS.IDENTIFY;
 
-  const playerId = getExternalIdentifiersMapping(message);
-  const tags = {};
+  // checking if playerId is present in the payload
+  const playerId = checkForPlayerId(message);
+  // Populating the tags
+  const tags = populateTags(message);
 
-  const traits = getFieldValueFromMessage(message, "traits");
-  const traitsKey = Object.keys(traits);
-  traitsKey.forEach(key => {
-    tags[key] = traits[key];
-  });
-  if (message.anonymousId) {
-    tags.anonymousId = message.anonymousId;
-  }
   const payload = constructPayload(
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
+
+  // If playerId is present, creating Edit Device Response for Editing a devic using the playerId
   if (playerId) {
     endpoint = `${endpoint}/${playerId}`;
     payload.tags = tags;
     payload.app_id = appId;
     return responseBuilder(payload, endpoint);
   }
-  populateDevicetype(message, payload);
+  // Creating response for creation of new device or updation of an existing device
+  populateDeviceType(message, payload);
   const responseArray = [];
   payload.tags = tags;
+  // Creating a device with email as asn identifier
   if (emailDeviceType) {
     const emailDevicePayload = { ...payload };
     emailDevicePayload.device_type = 11;
     emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
     responseArray.push(responseBuilder(emailDevicePayload, endpoint));
   }
+  // Creating a device with phone as asn identifier
   if (smsDeviceType) {
     const smsDevicePayload = { ...payload };
     smsDevicePayload.device_type = 14;
@@ -110,6 +99,13 @@ const identifyResponseBuilder = (message, { Config }) => {
   return responseArray;
 };
 
+/**
+ * This function is used to build the response for track call.
+ * It is used to edit the OneSignal tags using external_user_id.
+ * @param {*} message
+ * @param {*} param1
+ * @returns
+ */
 const trackResponseBuilder = (message, { Config }) => {
   const { appId, eventAsTags, allowedProperties } = Config;
   if (!appId) {
@@ -130,9 +126,15 @@ const trackResponseBuilder = (message, { Config }) => {
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
   const tags = {};
+  /* If event is present, then populating event as true in tags.
+  eg. tags: {
+    "event_name": true
+  }
+  */
   if (event) {
     tags[event] = true;
   }
+  // Populating tags using allowed properties(from dashboard)
   const properties = get(message, "properties");
   allowedProperties.forEach(propertyName => {
     if (properties[propertyName] && eventAsTags && event) {
@@ -145,6 +147,12 @@ const trackResponseBuilder = (message, { Config }) => {
   return responseBuilder(payload, endpoint);
 };
 
+/**
+ * This function is used to build the response for group call.
+ * @param {*} message
+ * @param {*} param1
+ * @returns
+ */
 const groupResponseBuilder = (message, { Config }) => {
   const { appId, emailDeviceType, smsDeviceType } = Config;
   let { endpoint } = ENDPOINTS.GROUP;
@@ -155,18 +163,11 @@ const groupResponseBuilder = (message, { Config }) => {
       400
     );
   }
+  // checking if playerId is present in the payload
+  const playerId = checkForPlayerId(message);
+  // Populating tags
+  const tags = populateTags(message);
 
-  const playerId = getExternalIdentifiersMapping(message);
-  const tags = {};
-
-  const traits = getFieldValueFromMessage(message, "traits");
-  const traitsKey = Object.keys(traits);
-  traitsKey.forEach(key => {
-    tags[key] = traits[key];
-  });
-  if (message.anonymousId) {
-    tags.anonymousId = message.anonymousId;
-  }
   const payload = constructPayload(
     message,
     mappingConfig[ConfigCategory.GROUP.name]
@@ -183,7 +184,7 @@ const groupResponseBuilder = (message, { Config }) => {
     payload.app_id = appId;
     return responseBuilder(payload, endpoint);
   }
-  populateDevicetype(message, payload);
+  populateDeviceType(message, payload);
   const responseArray = [];
   payload.tags = tags;
   if (emailDeviceType) {

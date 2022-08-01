@@ -143,13 +143,10 @@ const handleProductListViewed = (message, categoryToContent) => {
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
+  let contentIds = [];
+  let contents = [];
   const useValue = valueFieldIdentifier === "properties.value";
-  const contentIds = [
-    message.properties.product_id ||
-    message.properties.id ||
-    message.properties.sku ||
-    ""
-  ];
+  const contentId = message.properties.product_id || message.properties.id || message.properties.sku;
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
     message.properties.product_name || message.properties.name || "";
@@ -158,25 +155,14 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
-  const contents = [
-    {
-      id:
-        message.properties.product_id ||
-        message.properties.id ||
-        message.properties.sku ||
-        "",
-      quantity: message.properties.quantity || 1,
-      item_price: message.properties.price
+    if(contentId) {
+      contentIds.push(contentId);
+      contents.push({
+        id:contentId,
+        quantity: message.properties.quantity || 1,
+        item_price: message.properties.price
+      });
     }
-  ];
-  contents.forEach((content, index) => {
-    if (content.id === "") {
-      throw new CustomError(
-        `Product id is required for product ${index}. Event not sent`,
-        400
-      );
-    }
-  });
   return {
     content_ids: contentIds,
     content_type: contentType,

@@ -224,8 +224,10 @@ const deduceFbcParam = (message) => {
   if (!url) {
     return undefined;
   }
-  const urlParts = new URL(url).search.split('&fbclid=');
-  const fbclid = urlParts.length === 2 ? new URL(url).search.split('&fbclid=').pop() : undefined;
+  let parseUrl = new URL(url)
+  let paramsList = new URLSearchParams(parseUrl.search);
+  const fbclid = paramsList.get('fbclid')
+
   if (!fbclid) {
     return undefined;
   }

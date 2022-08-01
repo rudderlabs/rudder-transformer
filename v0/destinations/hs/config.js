@@ -48,6 +48,8 @@ const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType
 // Ref - https://developers.hubspot.com/docs/api/crm/understanding-the-crm
 const MAX_BATCH_SIZE_CRM_OBJECT = 100;
 
+const SEARCH_LIMIT_VALUE = 100;
+
 const ConfigCategory = {
   COMMON: {
     name: "HSCommonConfig"
@@ -85,5 +87,6 @@ module.exports = {
   MAX_BATCH_SIZE_CRM_OBJECT,
   ConfigCategory,
   mappingConfig,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  SEARCH_LIMIT_VALUE
 };

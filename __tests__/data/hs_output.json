@@ -174,7 +174,7 @@
       "method": "POST",
       "endpoint": "https://api.hubapi.com/crm/v3/objects/lead",
       "source": "rETL",
-      "checkLookup": "create",
+      "hubspotOp": "create",
       "headers": {
         "Content-Type": "application/json"
       },

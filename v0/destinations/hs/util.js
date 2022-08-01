@@ -14,7 +14,8 @@ const {
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
-  IDENTIFY_CRM_SEARCH_ALL_OBJECTS
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
+  SEARCH_LIMIT_VALUE
 } = require("./config");
 
 const formatKey = key => {
@@ -403,7 +404,7 @@ const getExistingData = async (inputs, destination) =>{
       }
     ],
     properties: [identifierType],
-    limit: 100,
+    limit: SEARCH_LIMIT_VALUE,
     after: 0
   };
 

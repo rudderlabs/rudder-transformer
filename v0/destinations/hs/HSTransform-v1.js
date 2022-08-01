@@ -49,20 +49,20 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const checkLookup = get(message, "context.hubspotOperation");
+  const hubspotOp = get(message, "context.hubspotOperation");
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
   let endpoint;
   const response = defaultRequestConfig();
-  if (mappedToDestination && checkLookup) {
+  if (mappedToDestination && hubspotOp) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    if (checkLookup === "create") {
+    if (hubspotOp === "create") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
         objectType
       );
-    } else if (checkLookup === "update" && getHsSearchId(message)) {
+    } else if (hubspotOp === "update" && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
@@ -72,7 +72,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
-    response.checkLookup = checkLookup;
+    response.hubspotOp = hubspotOp;
   } else {
     if (!traits || !traits.email) {
       throw new CustomError(
@@ -360,11 +360,11 @@ const legacyBatchEvents = destEvents => {
       maxBatchSize = endpoint.includes("contact")
         ? MAX_BATCH_SIZE_CRM_OBJECT
         : MAX_BATCH_SIZE_CRM_OBJECT;
-      const { checkLookup } = event.message;
-      if (checkLookup) {
-        if (checkLookup === "create") {
+      const { hubspotOp } = event.message;
+      if (hubspotOp) {
+        if (hubspotOp === "create") {
           createAllObjectsEventChunk.push(event);
-        } else if (checkLookup === "update") {
+        } else if (hubspotOp === "update") {
           updateAllObjectsEventChunk.push(event);
         }
       }

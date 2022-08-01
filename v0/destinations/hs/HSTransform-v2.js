@@ -52,21 +52,21 @@ const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const checkLookup = get(message, "context.hubspotOperation");
+  const hubspotOp = get(message, "context.hubspotOperation");
   // build response
   let endpoint;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   // if mappedToDestination is set true, then add externalId to traits
-  if (mappedToDestination && checkLookup) {
+  if (mappedToDestination && hubspotOp) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    if (checkLookup === "create") {
+    if (hubspotOp === "create") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
         objectType
       );
-    } else if (checkLookup === "update" && getHsSearchId(message)) {
+    } else if (hubspotOp === "update" && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
@@ -76,7 +76,7 @@ const processIdentify = async (message, destination, propertyMap) => {
     }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
-    response.checkLookup = checkLookup;
+    response.hubspotOp = hubspotOp;
   } else {
     if (!traits || !traits.email) {
       throw new CustomError(
@@ -292,9 +292,18 @@ const batchIdentify = (
     let batchEventResponse = defaultBatchRequestConfig();
 
     if (batchOperation === "create") {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      batchEventResponse.batchedRequest.endpoint =
+        message.source === "rETL"
+          ? `${message.endpoint}/batch/create`
+          : BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
     } else if (batchOperation === "update") {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
+      batchEventResponse.batchedRequest.endpoint =
+        message.source === "rETL"
+          ? `${message.endpoint.substr(
+              0,
+              message.endpoint.lastIndexOf("/")
+            )}/batch/update`
+          : BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
     }
 
     if (batchOperation === "create") {
@@ -303,7 +312,6 @@ const batchIdentify = (
         // if source is of rETL
         if (ev.message.source === "rETL") {
           identifyResponseList.push({ ...ev.message.body.JSON });
-          batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         } else {
           // format properties into batch structure
           // eslint-disable-next-line no-param-reassign
@@ -342,10 +350,6 @@ const batchIdentify = (
             ...ev.message.body.JSON,
             id: updateEndpoint.split("/").pop()
           });
-          batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
-            0,
-            updateEndpoint.lastIndexOf("/")
-          )}/batch/update`;
         } else {
           // eslint-disable-next-line no-param-reassign
           ev.message.body.JSON.properties = getCRMUpdatedProps(
@@ -465,11 +469,11 @@ const batchEvents = destEvents => {
       maxBatchSize = endpoint.includes("contact")
         ? MAX_BATCH_SIZE_CRM_OBJECT
         : MAX_BATCH_SIZE_CRM_OBJECT;
-      const { checkLookup } = event.message;
-      if (checkLookup) {
-        if (checkLookup === "create") {
+      const { hubspotOp } = event.message;
+      if (hubspotOp) {
+        if (hubspotOp === "create") {
           createAllObjectsEventChunk.push(event);
-        } else if (checkLookup === "update") {
+        } else if (hubspotOp === "update") {
           updateAllObjectsEventChunk.push(event);
         }
       }

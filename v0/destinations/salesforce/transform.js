@@ -1,5 +1,4 @@
 const get = require("get-value");
-const axios = require("axios");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
@@ -20,7 +19,10 @@ const {
   CustomError,
   addExternalIdToTraits
 } = require("../../util");
-const logger = require("../../../logger");
+const { httpGET, httpPOST } = require("../../../adapters/network");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -39,20 +41,20 @@ async function getSFDCHeader(destination) {
   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
     destination.Config.consumerKey
   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  let response;
-  try {
-    response = await axios.post(authUrl, {});
-  } catch (error) {
-    logger.error(error);
+  const sfAuthResponse = await httpPOST(authUrl, {});
+  const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
+  if (processedsfAuthResponse.status !== 200) {
     throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${error.message}`,
-      error.status || 400
+      `SALESFORCE AUTH FAILED: ${JSON.stringify(
+        processedsfAuthResponse.response
+      )}`,
+      processedsfAuthResponse.status
     );
   }
 
   return {
-    token: `Bearer ${response.data.access_token}`,
-    instanceUrl: response.data.instance_url
+    token: `Bearer ${processedsfAuthResponse.response.access_token}`,
+    instanceUrl: processedsfAuthResponse.response.instance_url
   };
 }
 
@@ -109,6 +111,7 @@ function responseBuilderSimple(
   return response;
 }
 
+// Look up to salesforce using details passed as external id through payload
 async function getSaleforceIdForRecord(
   authorizationData,
   objectType,
@@ -116,12 +119,19 @@ async function getSaleforceIdForRecord(
   identifierValue
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-
-  const objSearchResponse = await axios.get(objSearchUrl, {
+  const sfSearchResponse = await httpGET(objSearchUrl, {
     headers: { Authorization: authorizationData.token }
   });
-
-  return get(objSearchResponse, "data.searchRecords.0.Id");
+  const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
+  if (processedsfSearchResponse.status !== 200) {
+    throw new CustomError(
+      `SALESFORCE SEARCH BY ID: ${JSON.stringify(
+        processedsfSearchResponse.response
+      )}`,
+      processedsfSearchResponse.status
+    );
+  }
+  return get(processedsfSearchResponse.response, "searchRecords.0.Id");
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -215,25 +225,24 @@ async function getSalesforceIdFromPayload(
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
     // request configuration will be conditional
-    let leadQueryResponse;
-    try {
-      leadQueryResponse = await axios.get(leadQueryUrl, {
-        headers: { Authorization: authorizationData.token }
-      });
-    } catch (err) {
+    const leadQueryResponse = await httpGET(leadQueryUrl, {
+      headers: { Authorization: authorizationData.token }
+    });
+    const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
+
+    if (processedLeadQueryResponse.status !== 200) {
       throw new CustomError(
-        JSON.stringify(err.response.data[0]) || err.message,
-        err.response.status || 500
-      ); // default 500
+        `During Lead Query: ${JSON.stringify(
+          processedLeadQueryResponse.response
+        )}`,
+        processedLeadQueryResponse.status
+      );
     }
 
-    if (
-      leadQueryResponse &&
-      leadQueryResponse.data?.searchRecords?.length > 0
-    ) {
+    if (processedLeadQueryResponse.response.searchRecords.length > 0) {
       // if count is greater than zero, it means that lead exists, then only update it
       // else the original endpoint, which is the one for creation - can be used
-      const record = leadQueryResponse.data.searchRecords[0];
+      const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
           throw new CustomError("The contact has been deleted.", 400);
@@ -271,7 +280,10 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError("Invalid traits for Salesforce request", 400);
+    throw new CustomError(
+      "PROCESS IDENTIFY: Invalid traits for Salesforce request",
+      400
+    );
   }
 
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
@@ -349,16 +361,7 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
       400,
-      "Authorisation failed"
-    );
-    return [respEvents];
-  }
-
-  if (!authorizationData) {
-    const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      400,
-      "Authorisation failed"
+      `Authorisation failed: ${error.message}`
     );
     return [respEvents];
   }

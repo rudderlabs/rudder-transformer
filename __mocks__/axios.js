@@ -140,7 +140,7 @@ function post(url, payload) {
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
-      resolve({ data: mockData });
+      resolve({ data: mockData, status: 200 });
     } else {
       resolve({ error: "Request failed" });
     }
@@ -163,7 +163,7 @@ function put(url, payload, options) {
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
-      resolve({ data: mockData });
+      resolve({ data: mockData, status: 200 });
     } else {
       resolve({ error: "Request failed" });
     }

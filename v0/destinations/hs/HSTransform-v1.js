@@ -59,16 +59,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     );
   }
 
-  const userProperties = await getTransformedJSON(
-    message,
-    destination,
-    propertyMap
-  );
-
-  const payload = {
-    properties: formatPropertyValueForIdentify(userProperties)
-  };
-
   // build response
   let endpoint;
   const response = defaultRequestConfig();
@@ -85,6 +75,17 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     response.source = "rETL";
   } else {
     const { email } = traits;
+
+    const userProperties = await getTransformedJSON(
+      message,
+      destination,
+      propertyMap
+    );
+
+    const payload = {
+      properties: formatPropertyValueForIdentify(userProperties)
+    };
+
     if (email) {
       endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
         ":contact_email",

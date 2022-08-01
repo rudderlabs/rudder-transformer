@@ -63,16 +63,6 @@ const processIdentify = async (message, destination, propertyMap) => {
     );
   }
 
-  const properties = await getTransformedJSON(
-    message,
-    destination,
-    propertyMap
-  );
-
-  const payload = {
-    properties
-  };
-
   // build response
   let endpoint;
   const response = defaultRequestConfig();
@@ -95,6 +85,16 @@ const processIdentify = async (message, destination, propertyMap) => {
     if (!contactId) {
       contactId = await searchContacts(message, destination);
     }
+
+    const properties = await getTransformedJSON(
+      message,
+      destination,
+      propertyMap
+    );
+
+    const payload = {
+      properties
+    };
 
     if (contactId) {
       // contact exists

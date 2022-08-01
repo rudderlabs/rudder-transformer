@@ -316,16 +316,10 @@
       "operation": "updateContacts",
       "body": {
         "JSON": {
-          "properties": [
-            {
-              "property": "email",
-              "value": "testhubspot@email.com"
-            },
-            {
-              "property": "firstname",
-              "value": "Test Hubspot"
-            }
-          ]
+          "properties": {
+            "email": "testhubspot@email.com",
+            "firstname": "Test Hubspot"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -348,16 +342,10 @@
       "operation": "createContacts",
       "body": {
         "JSON": {
-          "properties": [
-            {
-              "property": "email",
-              "value": "noname@email.com"
-            },
-            {
-              "property": "firstname",
-              "value": "Test Hubspot"
-            }
-          ]
+          "properties": {
+            "email": "noname@email.com",
+            "firstname": "Test Hubspot"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},

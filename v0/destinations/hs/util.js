@@ -226,6 +226,13 @@ const searchContacts = async (message, destination) => {
   // then default it to email
   if (!traits[`${Config.lookupField}`]) {
     propertyName = "email";
+
+    if (!traits.email) {
+      throw new CustomError(
+        "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+        400
+      );
+    }
   } else {
     // look for propertyName (key name) in traits
     // Config.lookupField -> lookupField
@@ -241,12 +248,7 @@ const searchContacts = async (message, destination) => {
     getFieldValueFromMessage(message, propertyName) ||
     traits[`${propertyName}`];
 
-  if (!value && !traits[`${Config.lookupField}`]) {
-    throw new CustomError(
-      "[HS] Identify:: email i.e a deafult lookup field for contact lookup is not found in traits",
-      400
-    );
-  } else if (!value) {
+  if (!value) {
     throw new CustomError(
       `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits `,
       400
@@ -319,36 +321,6 @@ const searchContacts = async (message, destination) => {
 };
 
 /**
- * transform the payload data into following structure.
- * Example:
- * Input
- *  {
- *    "property": "email",
- *    "value": "testhubspot2@email.com"
- *  },
- *  {
- *    "property": "firstname",
- *    "value": "Test Hubspot"
- *  }
- *
- * Output:
- *  {
- *    email: testhubspot2@email.com"
- *    firstname: "Test Hubspot"
- *  }
- * @param {*} properties
- * @returns
- */
-const formatPropertyValueForCRM = properties => {
-  const updatedProps = {};
-  properties.forEach(key => {
-    const { property, value } = key;
-    updatedProps[property] = value;
-  });
-  return updatedProps;
-};
-
-/**
  * get event name and properties mappings from config
  * and put in the final payload
  * @param {*} message
@@ -412,7 +384,6 @@ module.exports = {
   getTransformedJSON,
   formatPropertyValueForIdentify,
   getEmailAndUpdatedProps,
-  formatPropertyValueForCRM,
   getEventAndPropertiesFromConfig,
   searchContacts
 };

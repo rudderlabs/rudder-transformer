@@ -36,7 +36,6 @@ const {
   getTransformedJSON,
   formatPropertyValueForIdentify,
   searchContacts,
-  formatPropertyValueForCRM,
   getEventAndPropertiesFromConfig
 } = require("./util");
 
@@ -64,20 +63,14 @@ const processIdentify = async (message, destination, propertyMap) => {
     );
   }
 
-  let contactId = getDestinationExternalID(message, "hsContactId");
-
-  if (!contactId) {
-    contactId = await searchContacts(message, destination);
-  }
-
-  const userProperties = await getTransformedJSON(
+  const properties = await getTransformedJSON(
     message,
     destination,
     propertyMap
   );
 
   const payload = {
-    properties: formatPropertyValueForIdentify(userProperties)
+    properties
   };
 
   // build response
@@ -87,16 +80,29 @@ const processIdentify = async (message, destination, propertyMap) => {
   // for rETL source support for custom objects
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
   if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+    // rETL
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+    if (!objectType) {
+      throw new CustomError("objectType not found", 400);
+    }
     endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
   } else {
+    let contactId = getDestinationExternalID(message, "hsContactId");
+
+    // if contactId is not provided then search
+    if (!contactId) {
+      contactId = await searchContacts(message, destination);
+    }
+
     if (contactId) {
+      // contact exists
       // update
       endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(":contactId", contactId);
       response.operation = "updateContacts";
     } else {
+      // contact do not exist
       // create
       endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
       response.operation = "createContacts";
@@ -204,12 +210,6 @@ const batchIdentify = (
     if (batchOperation === "createContacts") {
       // create operation
       chunk.forEach(ev => {
-        // format properties into batch structure
-        // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = formatPropertyValueForCRM(
-          ev.message.body.JSON.properties
-        );
-
         // duplicate email can cause issue with create in batch
         // updating the existing one to avoid duplicate
         // as same event can fire in batch one of the reason
@@ -234,10 +234,6 @@ const batchIdentify = (
     } else if (batchOperation === "updateContacts") {
       // update operation
       chunk.forEach(ev => {
-        // eslint-disable-next-line no-param-reassign
-        ev.message.body.JSON.properties = formatPropertyValueForCRM(
-          ev.message.body.JSON.properties
-        );
         // update has contactId and properties
         // extract contactId from the end of the endpoint
         const id = ev.message.endpoint.split("/").pop();

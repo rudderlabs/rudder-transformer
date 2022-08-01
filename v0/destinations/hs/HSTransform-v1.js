@@ -70,7 +70,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   };
 
   // build response
-  const { email } = traits;
   let endpoint;
   const response = defaultRequestConfig();
 
@@ -78,10 +77,14 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
   if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+    if (!objectType) {
+      throw new CustomError("objectType not found", 400);
+    }
     endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
   } else {
+    const { email } = traits;
     if (email) {
       endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
         ":contact_email",

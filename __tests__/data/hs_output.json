@@ -438,5 +438,98 @@
       "JSON_ARRAY": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "noname@email.com"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "operation": "createContacts"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "osvaldocostaferreira98@gmail.com"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "source": "rETL"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "objectType not found",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.hubapi.com/events/v3/send",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "osvaldocostaferreira98@gmail.com",
+        "eventName": "pe22315509_rs_hub_test",
+        "properties": {
+          "value": "name1"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "messageType": "track"
   }
 ]

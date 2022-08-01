@@ -333,7 +333,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 
   let event = get(message, "event");
   if (!event) {
-    throw new CustomError("event is required for track call", 400);
+    throw new CustomError("event name is required for track call", 400);
   }
   event = event.trim().toLowerCase();
   let eventName;

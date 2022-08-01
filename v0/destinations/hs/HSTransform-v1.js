@@ -1,6 +1,9 @@
 const get = require("get-value");
 const _ = require("lodash");
-const { MappedToDestinationKey } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -47,7 +50,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
-  if (mappedToDestination) {
+  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     addExternalIdToTraits(message);
   } else if (!traits || !traits.email) {
     throw new CustomError(
@@ -73,7 +76,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 
   // for rETL source support for custom objects
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (mappedToDestination) {
+  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });

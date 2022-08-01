@@ -1,5 +1,6 @@
 const { EventType } = require("../../../constants");
 const { getErrorRespEvents, CustomError } = require("../../util");
+const { API_VERSION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
@@ -10,7 +11,11 @@ const {
   processTrack,
   batchEvents
 } = require("./HSTransform-v2");
-const { fetchFinalSetOfTraits, getProperties } = require("./util");
+const {
+  fetchFinalSetOfTraits,
+  getProperties,
+  validateDestinationConfig
+} = require("./util");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -20,13 +25,17 @@ const processSingleMessage = async (message, destination, propertyMap) => {
     );
   }
 
+  // Config Validation
+  validateDestinationConfig(destination);
+
   let response;
   switch (message.type) {
     case EventType.IDENTIFY: {
       response = [];
-      if (destination.Config.apiVersion === "newApi") {
+      if (destination.Config.apiVersion === API_VERSION.v2) {
         response.push(await processIdentify(message, destination, propertyMap));
       } else {
+        // Legacy API
         response.push(
           await processLegacyIdentify(message, destination, propertyMap)
         );
@@ -42,7 +51,7 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       break;
     }
     case EventType.TRACK:
-      if (destination.Config.apiVersion === "newApi") {
+      if (destination.Config.apiVersion === API_VERSION.v2) {
         response = await processTrack(message, destination, propertyMap);
       } else {
         response = await processLegacyTrack(message, destination, propertyMap);
@@ -129,7 +138,7 @@ const processRouterDest = async inputs => {
   // batch implementation
   let batchedResponseList = [];
   if (successRespList.length) {
-    if (destination.Config.apiVersion === "newApi") {
+    if (destination.Config.apiVersion === API_VERSION.v2) {
       batchedResponseList = batchEvents(successRespList);
     } else {
       batchedResponseList = legacyBatchEvents(successRespList);

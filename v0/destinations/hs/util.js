@@ -13,8 +13,30 @@ const {
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  API_VERSION
 } = require("./config");
+
+/**
+ * validate destination config and check for existence of data
+ * @param {*} param0
+ */
+const validateDestinationConfig = ({ Config }) => {
+  if (Config.apiVersion === API_VERSION.v2) {
+    // NEW API
+    if (!Config.accessToken) {
+      throw new CustomError("[HS]:: Access Token not found. Aborting", 400);
+    }
+  } else {
+    // Legacy API
+    if (!Config.hubID) {
+      throw new CustomError("[HS]:: Hub ID not found. Aborting", 400);
+    }
+    if (!Config.apiKey) {
+      throw new CustomError("[HS]:: API Key not found. Aborting", 400);
+    }
+  }
+};
 
 /**
  * modify the key inorder to suite with HS constraints
@@ -193,6 +215,13 @@ const searchContacts = async (message, destination) => {
   const traits = getFieldValueFromMessage(message, "traits");
   let propertyName;
 
+  if (!traits) {
+    throw new CustomError(
+      "[HS]:: Identify - Invalid traits value for lookup field",
+      400
+    );
+  }
+
   // lookupField key provided in Config.lookupField not found in traits
   // then default it to email
   if (!traits[`${Config.lookupField}`]) {
@@ -212,9 +241,14 @@ const searchContacts = async (message, destination) => {
     getFieldValueFromMessage(message, propertyName) ||
     traits[`${propertyName}`];
 
-  if (!value) {
+  if (!value && !traits[`${Config.lookupField}`]) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field not found in traits for contact lookup`,
+      "[HS] Identify:: email i.e a deafult lookup field for contact lookup is not found in traits",
+      400
+    );
+  } else if (!value) {
+    throw new CustomError(
+      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits `,
       400
     );
   }
@@ -371,6 +405,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 };
 
 module.exports = {
+  validateDestinationConfig,
   formatKey,
   fetchFinalSetOfTraits,
   getProperties,

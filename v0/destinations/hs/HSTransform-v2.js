@@ -1,6 +1,9 @@
 const get = require("get-value");
 const _ = require("lodash");
-const { MappedToDestinationKey } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -17,11 +20,11 @@ const {
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
-  IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
   mappingConfig,
   ConfigCategory,
   TRACK_CRM_ENDPOINT,
@@ -50,13 +53,8 @@ const processIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
-  if (mappedToDestination) {
+  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     addExternalIdToTraits(message);
-  } else if (!traits || !traits.email) {
-    throw new CustomError(
-      "[HS]:: Identify without email is not supported.",
-      400
-    );
   }
 
   if (!Config.lookupField) {
@@ -88,7 +86,7 @@ const processIdentify = async (message, destination, propertyMap) => {
 
   // for rETL source support for custom objects
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (mappedToDestination) {
+  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     endpoint = CRM_CREATE_CUSTOM_OBJECTS.replace(":objectType", objectType);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
@@ -96,10 +94,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   } else {
     if (contactId) {
       // update
-      endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(
-        ":contactId",
-        contactId
-      );
+      endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(":contactId", contactId);
       response.operation = "updateContacts";
     } else {
       // create
@@ -371,7 +366,7 @@ const batchIdentify = (
     if (batchOperation === "createContacts") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
     } else if (batchOperation === "updateContacts") {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
     }
 
     batchEventResponse.batchedRequest.headers = message.headers;

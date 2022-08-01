@@ -32,7 +32,7 @@ const processSingleMessage = async (message, destination, propertyMap) => {
   switch (message.type) {
     case EventType.IDENTIFY: {
       response = [];
-      if (destination.Config.apiVersion === API_VERSION.v2) {
+      if (destination.Config.apiVersion === API_VERSION.v3) {
         response.push(await processIdentify(message, destination, propertyMap));
       } else {
         // Legacy API
@@ -51,7 +51,7 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       break;
     }
     case EventType.TRACK:
-      if (destination.Config.apiVersion === API_VERSION.v2) {
+      if (destination.Config.apiVersion === API_VERSION.v3) {
         response = await processTrack(message, destination, propertyMap);
       } else {
         response = await processLegacyTrack(message, destination, propertyMap);
@@ -138,7 +138,7 @@ const processRouterDest = async inputs => {
   // batch implementation
   let batchedResponseList = [];
   if (successRespList.length) {
-    if (destination.Config.apiVersion === API_VERSION.v2) {
+    if (destination.Config.apiVersion === API_VERSION.v3) {
       batchedResponseList = batchEvents(successRespList);
     } else {
       batchedResponseList = legacyBatchEvents(successRespList);

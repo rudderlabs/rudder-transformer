@@ -22,7 +22,7 @@ const {
  * @param {*} param0
  */
 const validateDestinationConfig = ({ Config }) => {
-  if (Config.apiVersion === API_VERSION.v2) {
+  if (Config.apiVersion === API_VERSION.v3) {
     // NEW API
     if (!Config.accessToken) {
       throw new CustomError("[HS]:: Access Token not found. Aborting", 400);

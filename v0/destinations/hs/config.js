@@ -59,8 +59,8 @@ const MAX_BATCH_SIZE_CRM_OBJECT = 100;
 
 // API version (value) is taken from the webapp
 const API_VERSION = {
-  v2: "newApi",
-  v1: "legacyApi"
+  v1: "legacyApi",
+  v3: "newApi"
 };
 
 const ConfigCategory = {

@@ -18,7 +18,7 @@
           "title": "VP",
           "gender": "female"
         },
-        "userId": "user123456001",
+        "userID": "user123456001",
         "email": "firstUser@testmail.com",
         "name": "First User",
         "created": "2022-01-20T13:39:21.032Z"
@@ -26,6 +26,28 @@
       "JSON_ARRAY": {},
       "XML": {},
       "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://canny.io/api/v1/votes/create",
+    "headers": {
+      "Authorization": "Basic fb349439-789b-6b20-0c1c-726d3a90b148",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
+        "postID": "postid",
+        "voterID": "voterid"
+      }
     },
     "files": {}
   }

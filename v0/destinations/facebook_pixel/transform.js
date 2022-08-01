@@ -144,9 +144,9 @@ const handleProductListViewed = (message, categoryToContent) => {
     }
   });
   return {
-    content_ids: contentIds.length > 0 ? contentIds : undefined,
+    content_ids: contentIds.length > 0 ? contentIds : [],
     content_type: getContentType(message, contentType, categoryToContent),
-    contents : contents.length > 0 ? contents : undefined
+    contents : contents.length > 0 ? contents : []
   };
 };
 

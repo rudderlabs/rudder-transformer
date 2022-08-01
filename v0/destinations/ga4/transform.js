@@ -14,6 +14,7 @@ const {
 } = require("../../util");
 const {
   ENDPOINT,
+  DEBUG_ENDPOINT,
   trackCommonConfig,
   mappingConfig,
   ConfigCategory
@@ -277,7 +278,13 @@ const responseBuilder = (message, { Config }) => {
   // build response
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINT;
+  // if debug_mode is true, we need to send the event to debug validation server
+  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
+  if (Config.debugMode) {
+    response.endpoint = DEBUG_ENDPOINT;
+  } else {
+    response.endpoint = ENDPOINT;
+  }
   response.headers = {
     HOST: "www.google-analytics.com",
     "Content-Type": "application/json"
@@ -339,7 +346,7 @@ const process = event => {
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
-            `[GA4] Identify:: '${Config.newOrExistingUserTrait}' is a required field in traits`,
+            `[GA4] Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
             400
           );
         }

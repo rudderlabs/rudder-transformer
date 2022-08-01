@@ -40,14 +40,6 @@ const processSingleMessage = async (message, destination, propertyMap) => {
           await processLegacyIdentify(message, destination, propertyMap)
         );
       }
-
-      // handle CRM Association v3
-      // const traits = getFieldValueFromMessage(message, "traits");
-      // if (traits.hubspot) {
-      //   response.push(
-      //     await processCRMCustomObjects(message, destination, traits)
-      //   );
-      // }
       break;
     }
     case EventType.TRACK:

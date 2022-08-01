@@ -70,14 +70,13 @@ const commonFieldResponseBuilder = (message, { Config }) => {
   }
   const deducedEventName = deduceEventName(message, Config);
 
-  const finalPayload = {
+  return {
     ...processedCommonPayload,
     event_name: deducedEventName,
     app_id: appId,
     advertiser_id: advertiserId,
     user_data: processedUserPayload
-  };
-  return finalPayload;
+  }
 };
 
 /*
@@ -143,11 +142,10 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
     contents: contentArray
   };
 
-  const finalTrackPayload = {
+  return {
     ...mandatoryPayload,
     custom_data: { ...customPayload }
   };
-  return finalTrackPayload;
 };
 
 const process = event => {

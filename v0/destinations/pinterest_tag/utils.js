@@ -237,11 +237,10 @@ const setIdPriceQuantity = (rootObject, message) => {
     ),
     item_price: String(rootObject.price || message.properties.price)
   };
-  const prodParameters = {
+  return {
     contentId: rootObject.product_id || rootObject.sku || rootObject.id,
     content: contentObj
   };
-  return prodParameters;
 };
 
 /**
@@ -254,13 +253,10 @@ const checkUserPayloadValidity = userPayload => {
   if (userFields.includes("em") || userFields.includes("hashed_maids")) {
     return true;
   }
-  if (
+  return (
     userFields.includes("client_ip_address") &&
     userFields.includes("client_user_agent")
-  ) {
-    return true;
-  }
-  return false;
+  );
 };
 
 /**

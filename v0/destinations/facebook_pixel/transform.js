@@ -239,7 +239,7 @@ const responseBuilderSimple = (
         integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
     }
     delete userData.name;
-    userData.fbc = userData.fbc ? userData.fbc : deduceFbcParam(message);
+    userData.fbc = userData.fbc || deduceFbcParam(message);
   }
 
 

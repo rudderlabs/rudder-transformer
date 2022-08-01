@@ -63,16 +63,6 @@ const processIdentify = async (message, destination, propertyMap) => {
     );
   }
 
-  const properties = await getTransformedJSON(
-    message,
-    destination,
-    propertyMap
-  );
-
-  const payload = {
-    properties
-  };
-
   // build response
   let endpoint;
   const response = defaultRequestConfig();
@@ -95,6 +85,16 @@ const processIdentify = async (message, destination, propertyMap) => {
     if (!contactId) {
       contactId = await searchContacts(message, destination);
     }
+
+    const properties = await getTransformedJSON(
+      message,
+      destination,
+      propertyMap
+    );
+
+    const payload = {
+      properties
+    };
 
     if (contactId) {
       // contact exists
@@ -336,7 +336,7 @@ const batchEvents = destEvents => {
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params;
       batchedResponse.batchedRequest.method =
-        defaultGetRequestConfig.requestMethod;
+        defaultPostRequestConfig.requestMethod;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 

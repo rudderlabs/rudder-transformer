@@ -48,7 +48,7 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "metadata": {
-      "jobId": 5
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -58,6 +58,36 @@
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {
@@ -139,7 +169,7 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "metadata": {
-      "jobId": 6
+      "jobId": 2
     },
     "destination": {
       "Config": {
@@ -149,6 +179,127 @@
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "name": "Hubspot",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+      "deleted": false,
+      "createdAt": "2020-12-30T08:39:32.005Z",
+      "updatedAt": "2021-02-03T16:22:31.374Z",
+      "destinationDefinition": {
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "HS",
+        "displayName": "Hubspot",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ]
+      },
+      "event": "Purchase",
+      "properties": {
+        "revenue": "name1"
+      }
+    },
+    "metadata": {
+      "jobId": 3
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
+        "hubID": "22315509",
+        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
           {

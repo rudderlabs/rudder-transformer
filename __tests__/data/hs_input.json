@@ -1366,5 +1366,341 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) check for email in traits which is the deafult lookup field",
+    "message": {
+      "type": "identify",
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ],
+        "mappedToDestination": false
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) email is present in traits as a default lookup field",
+    "message": {
+      "type": "identify",
+      "traits": {
+        "email": "noname@email.com"
+      },
+      "context": {
+        "mappedToDestination": false
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) - rETL source - minimum config check",
+    "message": {
+      "type": "identify",
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ],
+        "mappedToDestination": "true"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) rETL - object type is not provided i.e externalId is empty",
+    "message": {
+      "type": "identify",
+      "traits": {},
+      "context": {
+        "mappedToDestination": "true"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) sample track call for property check",
+    "message": {
+      "type": "track",
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ]
+      },
+      "event": "Purchase",
+      "properties": {
+        "revenue": "name1"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

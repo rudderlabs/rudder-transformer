@@ -1,6 +1,9 @@
 const get = require("get-value");
 const _ = require("lodash");
-const { MappedToDestinationKey } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -18,12 +21,11 @@ const {
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
-  hsCommonConfigJson,
-  IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
-  BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT,
+  BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
   mappingConfig,
   ConfigCategory,
   TRACK_CRM_ENDPOINT,
@@ -35,7 +37,6 @@ const {
   getTransformedJSON,
   formatPropertyValueForIdentify,
   searchContacts,
-  getCRMUpdatedProps,
   getEventAndPropertiesFromConfig,
   getHsSearchId
 } = require("./util");
@@ -58,9 +59,15 @@ const processIdentify = async (message, destination, propertyMap) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   // if mappedToDestination is set true, then add externalId to traits
-  if (mappedToDestination && hubspotOp) {
+  if (
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
+    hubspotOp
+  ) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
+    if (!objectType) {
+      throw new CustomError("objectType not found", 400);
+    }
     if (hubspotOp === "create") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
@@ -74,17 +81,11 @@ const processIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
+
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
     response.hubspotOp = hubspotOp;
   } else {
-    if (!traits || !traits.email) {
-      throw new CustomError(
-        "[HS]:: Identify without email is not supported.",
-        400
-      );
-    }
-
     if (!Config.lookupField) {
       throw new CustomError(
         "lookupField is a required field in webapp config",
@@ -94,33 +95,31 @@ const processIdentify = async (message, destination, propertyMap) => {
 
     let contactId = getDestinationExternalID(message, "hsContactId");
 
+    // if contactId is not provided then search
     if (!contactId) {
       contactId = await searchContacts(message, destination);
     }
 
-    const userProperties = await getTransformedJSON(
+    const properties = await getTransformedJSON(
       message,
-      hsCommonConfigJson,
       destination,
       propertyMap
     );
 
     const payload = {
-      properties: formatPropertyValueForIdentify(userProperties)
+      properties
     };
 
-    // for rETL source support for custom objects
-    // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-
     if (contactId) {
+      // contact exists
       // update
-      endpoint = IDENTIFY_CRM_UPDATE_NEW_CONTACT.replace(
-        ":contactId",
-        contactId
-      );
+      endpoint = IDENTIFY_CRM_UPDATE_CONTACT.replace(":contactId", contactId);
+      response.operation = "updateContacts";
     } else {
+      // contact do not exist
       // create
       endpoint = IDENTIFY_CRM_CREATE_NEW_CONTACT;
+      response.operation = "createContacts";
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
@@ -143,78 +142,6 @@ const processIdentify = async (message, destination, propertyMap) => {
   }
   return response;
 };
-
-/**
- * CRM API
- * Associations v3
- * here we are associating objectType to contact only
- * Ref - https://developers.hubspot.com/docs/api/crm/associations/v3
- * @param {*} message
- * @param {*} destination
- * @param {*} propertyMap
- */
-// const processCRMCustomObjects = async (message, destination, traits) => {
-//   const { Config } = destination;
-//   let response = {};
-
-//   const { contactId, qualifiedName, objects } = traits.hubspot;
-//   if (!contactId) {
-//     throw new Error(
-//       "HubSpot contactId is not provided. Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   if (!qualifiedName) {
-//     throw new Error(
-//       "HubSpot qualifiedName is not provided. Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   if (!objects || !Array.isArray(objects) || objects.length === 0) {
-//     throw new Error(
-//       "HubSpot objects are not provided.  Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   const endpoint = CRM_ASSOCIATION_V3.replace(
-//     ":fromObjectType",
-//     qualifiedName
-//   ).replace(":toObjectType", "contact");
-
-//   const inputs = [];
-//   objects.forEach(item => {
-//     inputs.push({
-//       from: { id: item.objectId },
-//       to: { id: contactId },
-//       type: `${item.objectType}_to_contact`
-//     });
-//   });
-
-//   // creating response
-//   response = defaultRequestConfig();
-//   response.endpoint = endpoint;
-//   response.headers = {
-//     "Content-Type": "application/json"
-//   };
-//   response.body.JSON = { inputs };
-
-//   // choosing API Type
-//   if (Config.authorizationType === "newPrivateAppApi") {
-//     // Private Apps
-//     response.headers = {
-//       ...response.headers,
-//       Authorization: `Bearer ${Config.accessToken}`
-//     };
-//   } else {
-//     // use legacy API Key
-//     response.params = { hapikey: Config.apiKey };
-//   }
-
-//   return response;
-// };
 
 /**
  * using New API
@@ -258,6 +185,7 @@ const processTrack = async (message, destination) => {
     "Content-Type": "application/json"
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.messageType = "track";
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -280,6 +208,7 @@ const batchIdentify = (
   batchedResponseList,
   batchOperation
 ) => {
+  console.log(JSON.stringify(arrayChunksIdentify));
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach(chunk => {
     const identifyResponseList = [];
@@ -379,12 +308,63 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === "createContacts") {
+      // create operation
+      chunk.forEach(ev => {
+        // duplicate email can cause issue with create in batch
+        // updating the existing one to avoid duplicate
+        // as same event can fire in batch one of the reason
+        // can be due to network lag or processor being busy
+        const isDuplicate = identifyResponseList.find(data => {
+          return (
+            data.properties.email === ev.message.body.JSON.properties.email
+          );
+        });
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+          // array is being shallow copied hence changes are affecting the original reference
+          // basically rewriting the same value to avoid duplicate entry
+          isDuplicate.properties = ev.message.body.JSON.properties;
+        } else {
+          // appending unique events
+          identifyResponseList.push({
+            properties: ev.message.body.JSON.properties
+          });
+        }
+        metadata.push(ev.metadata);
+      });
+    } else if (batchOperation === "updateContacts") {
+      // update operation
+      chunk.forEach(ev => {
+        // update has contactId and properties
+        // extract contactId from the end of the endpoint
+        const id = ev.message.endpoint.split("/").pop();
+
+        // duplicate contactId is not allowed in batch
+        // updating the existing one to avoid duplicate
+        // as same event can fire in batch one of the reason
+        // can be due to network lag or processor being busy
+        const isDuplicate = identifyResponseList.find(data => {
+          return data.id === id;
+        });
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+          // rewriting the same value to avoid duplicate entry
+          isDuplicate.properties = ev.message.body.JSON.properties;
+        } else {
+          // appending unique events
+          identifyResponseList.push({
+            id,
+            properties: ev.message.body.JSON.properties
+          });
+        }
+        metadata.push(ev.metadata);
+      });
     } else if (batchOperation === "general") {
       // general identify event
 
       /* Note: */
-      // for now it is just HS CRM custom objects however later it can be
+      // 1. for now it is just HS CRM custom objects however later it can be
       // refactored to accomodate upcoming endpoint and make necessary changes
+      // 2. this operation for now is just being used by rETL.
 
       chunk.forEach(ev => {
         // if source is of rETL
@@ -408,6 +388,12 @@ const batchIdentify = (
       inputs: identifyResponseList
     };
 
+    if (batchOperation === "createContacts") {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
+    } else if (batchOperation === "updateContacts") {
+      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
+    }
+    
     batchEventResponse.batchedRequest.headers = message.headers;
     batchEventResponse.batchedRequest.params = message.params;
 
@@ -443,7 +429,7 @@ const batchEvents = destEvents => {
   destEvents.forEach(event => {
     // handler for track call
     // track call does not have batch endpoint
-    if (event.message.endpoint.includes("/events/v3/send")) {
+    if (event.message.messageType === "track") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 
@@ -477,16 +463,10 @@ const batchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       }
-    } else if (
-      event.message.endpoint ===
-      "https://api.hubapi.com/crm/v3/objects/contacts"
-    ) {
+    } else if (event.message.operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint
       createContactEventsChunk.push(event);
-    } else if (
-      event.message.endpoint ===
-      "https://api.hubapi.com/crm/v3/objects/contacts/"
-    ) {
+    } else if (event.message.operation === "updateContacts") {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
@@ -540,7 +520,7 @@ const batchEvents = destEvents => {
     batchedResponseList = batchIdentify(
       arrayChunksIdentifyCreateContact,
       batchedResponseList,
-      "create"
+      "createContacts"
     );
   }
 
@@ -550,7 +530,7 @@ const batchEvents = destEvents => {
       batchIdentify(
         arrayChunksIdentifyUpdateContact,
         batchedResponseList,
-        "update"
+        "updateContacts"
       )
     );
   }

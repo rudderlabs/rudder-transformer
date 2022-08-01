@@ -39,6 +39,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -97,6 +98,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -120,6 +122,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -140,15 +143,16 @@
     "files": {}
   },
   {
-    "error": "{\"status\":\"error\",\"message\":\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"INVALID_AUTHENTICATION\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
+    "error": "Failed to get hubspot properties: {\"status\":\"error\",\"message\":\"The API key provided is invalid. View or manage your API key here: https://app.hubspot.com/l/api-key/\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"INVALID_AUTHENTICATION\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
   },
   {
-    "error": "{\"status\":\"error\",\"message\":\"Request Rate Limit reached\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"RATE-LIMIT_REACHED\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
+    "error": "Failed to get hubspot properties: {\"status\":\"error\",\"message\":\"Request Rate Limit reached\",\"correlationId\":\"4d39ff11-e121-4514-bcd8-132a9dd1ff50\",\"category\":\"RATE-LIMIT_REACHED\",\"links\":{\"api key\":\"https://app.hubspot.com/l/api-key/\"}}"
   },
   {
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -201,6 +205,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -223,6 +228,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -246,6 +252,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -307,18 +314,13 @@
         "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
       },
       "params": {},
+      "operation": "updateContacts",
       "body": {
         "JSON": {
-          "properties": [
-            {
-              "property": "email",
-              "value": "testhubspot@email.com"
-            },
-            {
-              "property": "firstname",
-              "value": "Test Hubspot"
-            }
-          ]
+          "properties": {
+            "email": "testhubspot@email.com",
+            "firstname": "Test Hubspot"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -338,18 +340,13 @@
         "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
       },
       "params": {},
+      "operation": "createContacts",
       "body": {
         "JSON": {
-          "properties": [
-            {
-              "property": "email",
-              "value": "noname@email.com"
-            },
-            {
-              "property": "firstname",
-              "value": "Test Hubspot"
-            }
-          ]
+          "properties": {
+            "email": "noname@email.com",
+            "firstname": "Test Hubspot"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -366,6 +363,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
+    "messageType": "track",
     "endpoint": "https://api.hubapi.com/events/v3/send",
     "headers": {
       "Content-Type": "application/json",
@@ -423,6 +421,7 @@
     "version": "1",
     "type": "REST",
     "method": "GET",
+    "messageType": "track",
     "endpoint": "https://track.hubspot.com/v1/event",
     "headers": {
       "Content-Type": "application/json"
@@ -440,5 +439,99 @@
       "JSON_ARRAY": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "noname@email.com"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "operation": "createContacts"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "osvaldocostaferreira98@gmail.com"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "source": "rETL",
+      "hubspotOp": "create"
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "objectType not found",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.hubapi.com/events/v3/send",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "email": "osvaldocostaferreira98@gmail.com",
+        "eventName": "pe22315509_rs_hub_test",
+        "properties": {
+          "value": "name1"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "messageType": "track"
   }
 ]

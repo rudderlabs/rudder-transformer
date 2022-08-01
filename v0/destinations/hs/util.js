@@ -15,9 +15,37 @@ const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
-  SEARCH_LIMIT_VALUE
+  SEARCH_LIMIT_VALUE,
+  hsCommonConfigJson,
+  API_VERSION
 } = require("./config");
 
+/**
+ * validate destination config and check for existence of data
+ * @param {*} param0
+ */
+const validateDestinationConfig = ({ Config }) => {
+  if (Config.apiVersion === API_VERSION.v3) {
+    // NEW API
+    if (!Config.accessToken) {
+      throw new CustomError("[HS]:: Access Token not found. Aborting", 400);
+    }
+  } else {
+    // Legacy API
+    if (!Config.hubID) {
+      throw new CustomError("[HS]:: Hub ID not found. Aborting", 400);
+    }
+    if (!Config.apiKey) {
+      throw new CustomError("[HS]:: API Key not found. Aborting", 400);
+    }
+  }
+};
+
+/**
+ * modify the key inorder to suite with HS constraints
+ * @param {*} key
+ * @returns
+ */
 const formatKey = key => {
   // lowercase and replace spaces and . with _
   let modifiedKey = key.toLowerCase();
@@ -26,7 +54,12 @@ const formatKey = key => {
   return modifiedKey;
 };
 
-const getTraits = message => {
+/**
+ * get traits from traits or properties
+ * @param {*} message
+ * @returns
+ */
+const fetchFinalSetOfTraits = message => {
   // get from traits or properties
   let traits = getFieldValueFromMessage(message, "traits");
   if (!traits || !Object.keys(traits).length) {
@@ -35,9 +68,14 @@ const getTraits = message => {
   return traits;
 };
 
+/**
+ * get all the hubspot properties
+ * @param {*} destination
+ * @returns
+ */
 const getProperties = async destination => {
-  let hubSpotPropertyMap = {};
-  let res;
+  let hubspotPropertyMap = {};
+  let hubspotPropertyMapResponse;
   const { Config } = destination;
 
   // select API authorization type
@@ -49,46 +87,50 @@ const getProperties = async destination => {
         Authorization: `Bearer ${Config.accessToken}`
       }
     };
-    res = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
+    hubspotPropertyMapResponse = await httpGET(
+      CONTACT_PROPERTY_MAP_ENDPOINT,
+      requestOptions
+    );
+    hubspotPropertyMapResponse = processAxiosResponse(
+      hubspotPropertyMapResponse
+    );
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    res = await httpGET(url);
+    hubspotPropertyMapResponse = await httpGET(url);
+    hubspotPropertyMapResponse = processAxiosResponse(
+      hubspotPropertyMapResponse
+    );
   }
 
-  if (res.success === false) {
-    // check if exists err.response && err.response.status else 500
-    const error = res.response;
-    if (error.response) {
-      throw new CustomError(
-        JSON.stringify(error.response.data) ||
-          JSON.stringify(error.response.statusText) ||
-          "Failed to get hubspot properties",
-        error.response.status || 500
-      );
-    }
+  if (hubspotPropertyMapResponse.status !== 200) {
     throw new CustomError(
-      "Failed to get hubspot properties : invalid response",
-      500
+      `Failed to get hubspot properties: ${JSON.stringify(
+        hubspotPropertyMapResponse.response
+      )}`,
+      hubspotPropertyMapResponse.status
     );
   }
 
   const propertyMap = {};
-  res.response.data.forEach(element => {
+  hubspotPropertyMapResponse.response.forEach(element => {
     propertyMap[element.name] = element.type;
   });
-  hubSpotPropertyMap = propertyMap;
-  return hubSpotPropertyMap;
+  hubspotPropertyMap = propertyMap;
+  return hubspotPropertyMap;
 };
 
-const getTransformedJSON = async (
-  message,
-  mappingJson,
-  destination,
-  propertyMap
-) => {
+/**
+ * add addtional properties in the payload that is provided in traits
+ * only when it matches with HS properties (pre-defined/created from dashboard)
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propertyMap
+ * @returns
+ */
+const getTransformedJSON = async (message, destination, propertyMap) => {
   let rawPayload = {};
-  const traits = getTraits(message);
+  const traits = fetchFinalSetOfTraits(message);
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
@@ -98,7 +140,7 @@ const getTransformedJSON = async (
       propertyMap = await getProperties(destination);
     }
 
-    rawPayload = constructPayload(message, mappingJson);
+    rawPayload = constructPayload(message, hsCommonConfigJson);
 
     // if there is any extra/custom property in hubspot, that has not already
     // been mapped but exists in the traits, we will include those values to the final payload
@@ -120,12 +162,39 @@ const getTransformedJSON = async (
   return { ...rawPayload };
 };
 
+/**
+ * transform the payload data into following structure.
+ * Example:
+ * Input
+ *  {
+ *    email: testhubspot2@email.com"
+ *    firstname: "Test Hubspot"
+ *  }
+ *
+ * Output:
+ *  {
+ *    "property": "email",
+ *    "value": "testhubspot2@email.com"
+ *  },
+ *  {
+ *    "property": "firstname",
+ *    "value": "Test Hubspot"
+ *  }
+ * @param {*} propMap
+ * @returns
+ */
 const formatPropertyValueForIdentify = propMap => {
   return Object.keys(propMap).map(key => {
     return { property: key, value: propMap[key] };
   });
 };
 
+/**
+ * for batching -
+ * extract email and remove it from the final payload
+ * @param {*} properties
+ * @returns
+ */
 const getEmailAndUpdatedProps = properties => {
   const index = properties.findIndex(prop => prop.property === "email");
   return {
@@ -149,10 +218,24 @@ const searchContacts = async (message, destination) => {
   const traits = getFieldValueFromMessage(message, "traits");
   let propertyName;
 
+  if (!traits) {
+    throw new CustomError(
+      "[HS]:: Identify - Invalid traits value for lookup field",
+      400
+    );
+  }
+
   // lookupField key provided in Config.lookupField not found in traits
   // then default it to email
   if (!traits[`${Config.lookupField}`]) {
     propertyName = "email";
+
+    if (!traits.email) {
+      throw new CustomError(
+        "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+        400
+      );
+    }
   } else {
     // look for propertyName (key name) in traits
     // Config.lookupField -> lookupField
@@ -170,7 +253,7 @@ const searchContacts = async (message, destination) => {
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field not found in traits for contact lookup`,
+      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits `,
       400
     );
   }
@@ -215,17 +298,11 @@ const searchContacts = async (message, destination) => {
   }
 
   if (searchContactsResponse.status !== 200) {
-    // check if exists err.response && err.response.status else 500
-    if (searchContactsResponse.response) {
-      throw new CustomError(
-        JSON.stringify(searchContactsResponse.response) ||
-          "Failed to get hubspot contacts",
-        searchContactsResponse.status
-      );
-    }
     throw new CustomError(
-      "Failed to get hubspot contacts : invalid response",
-      500
+      `Failed to get hubspot contacts: ${JSON.stringify(
+        searchContactsResponse.response
+      )}`,
+      searchContactsResponse.status
     );
   }
 
@@ -246,21 +323,20 @@ const searchContacts = async (message, destination) => {
   return contactId;
 };
 
-const getCRMUpdatedProps = properties => {
-  const updatedProps = {};
-  properties.forEach(key => {
-    const { property, value } = key;
-    updatedProps[property] = value;
-  });
-  return updatedProps;
-};
-
+/**
+ * get event name and properties mappings from config
+ * and put in the final payload
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} payload
+ * @returns
+ */
 const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   const { hubspotEvents } = destination.Config;
 
   let event = get(message, "event");
   if (!event) {
-    throw new CustomError("event is required for track call", 400);
+    throw new CustomError("event name is required for track call", 400);
   }
   event = event.trim().toLowerCase();
   let eventName;
@@ -448,13 +524,13 @@ const getExistingData = async (inputs, destination) =>{
 }
 
 module.exports = {
+  validateDestinationConfig,
   formatKey,
-  getTraits,
+  fetchFinalSetOfTraits,
   getProperties,
   getTransformedJSON,
   formatPropertyValueForIdentify,
   getEmailAndUpdatedProps,
-  getCRMUpdatedProps,
   getEventAndPropertiesFromConfig,
   searchContacts,
   splitEventsForCreateUpdate,

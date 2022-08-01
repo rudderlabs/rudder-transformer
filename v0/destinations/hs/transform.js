@@ -2,6 +2,7 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { getErrorRespEvents, CustomError } = require("../../util");
+const { API_VERSION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
@@ -14,9 +15,10 @@ const {
   batchEvents
 } = require("./HSTransform-v2");
 const {
-  getTraits,
+  splitEventsForCreateUpdate,
+  fetchFinalSetOfTraits,
   getProperties,
-  splitEventsForCreateUpdate
+  validateDestinationConfig
 } = require("./util");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
@@ -27,29 +29,25 @@ const processSingleMessage = async (message, destination, propertyMap) => {
     );
   }
 
+  // Config Validation
+  validateDestinationConfig(destination);
+
   let response;
   switch (message.type) {
     case EventType.IDENTIFY: {
       response = [];
-      if (destination.Config.apiVersion === "newApi") {
+      if (destination.Config.apiVersion === API_VERSION.v3) {
         response.push(await processIdentify(message, destination, propertyMap));
       } else {
+        // Legacy API
         response.push(
           await processLegacyIdentify(message, destination, propertyMap)
         );
       }
-
-      // handle CRM Association v3
-      // const traits = getFieldValueFromMessage(message, "traits");
-      // if (traits.hubspot) {
-      //   response.push(
-      //     await processCRMCustomObjects(message, destination, traits)
-      //   );
-      // }
       break;
     }
     case EventType.TRACK:
-      if (destination.Config.apiVersion === "newApi") {
+      if (destination.Config.apiVersion === API_VERSION.v3) {
         response = await processTrack(message, destination, propertyMap);
       } else {
         response = await processLegacyTrack(message, destination, propertyMap);
@@ -94,7 +92,7 @@ const processRouterDest = async inputs => {
   } else {
     // reduce the no. of calls for properties endpoint
     const traitsFound = inputs.some(input => {
-      return getTraits(input.message) !== undefined;
+      return fetchFinalSetOfTraits(input.message) !== undefined;
     });
     if (traitsFound) {
       propertyMap = await getProperties(destination);
@@ -147,7 +145,7 @@ const processRouterDest = async inputs => {
   // batch implementation
   let batchedResponseList = [];
   if (successRespList.length) {
-    if (destination.Config.apiVersion === "newApi") {
+    if (destination.Config.apiVersion === API_VERSION.v3) {
       batchedResponseList = batchEvents(successRespList);
     } else {
       batchedResponseList = legacyBatchEvents(successRespList);

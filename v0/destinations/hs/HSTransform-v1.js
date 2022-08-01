@@ -1,6 +1,9 @@
 const get = require("get-value");
 const _ = require("lodash");
-const { MappedToDestinationKey } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   defaultGetRequestConfig,
   defaultPostRequestConfig,
@@ -21,7 +24,6 @@ const {
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
-  hsCommonConfigJson,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT
 } = require("./config");
@@ -54,7 +56,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   // rETL source
   let endpoint;
   const response = defaultRequestConfig();
-  if (mappedToDestination && hubspotOp) {
+  if (
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
+    hubspotOp
+  ) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (hubspotOp === "create") {
@@ -80,10 +85,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
         400
       );
     }
+    const { email } = traits;
 
     const userProperties = await getTransformedJSON(
       message,
-      hsCommonConfigJson,
       destination,
       propertyMap
     );
@@ -91,9 +96,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     const payload = {
       properties: formatPropertyValueForIdentify(userProperties)
     };
-
-    // build response
-    const { email } = traits;
 
     if (email) {
       endpoint = IDENTIFY_CREATE_UPDATE_CONTACT.replace(
@@ -128,78 +130,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 };
 
 /**
- * CRM API
- * Associations v3
- * here we are associating objectType to contact only
- * Ref - https://developers.hubspot.com/docs/api/crm/associations/v3
- * @param {*} message
- * @param {*} destination
- * @param {*} propertyMap
- */
-// const processCRMCustomObjects = async (message, destination, traits) => {
-//   const { Config } = destination;
-//   let response = {};
-
-//   const { contactId, qualifiedName, objects } = traits.hubspot;
-//   if (!contactId) {
-//     throw new Error(
-//       "HubSpot contactId is not provided. Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   if (!qualifiedName) {
-//     throw new Error(
-//       "HubSpot qualifiedName is not provided. Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   if (!objects || !Array.isArray(objects) || objects.length === 0) {
-//     throw new Error(
-//       "HubSpot objects are not provided.  Aborting custom-object association",
-//       400
-//     );
-//   }
-
-//   const endpoint = CRM_ASSOCIATION_V3.replace(
-//     ":fromObjectType",
-//     qualifiedName
-//   ).replace(":toObjectType", "contact");
-
-//   const inputs = [];
-//   objects.forEach(item => {
-//     inputs.push({
-//       from: { id: item.objectId },
-//       to: { id: contactId },
-//       type: `${item.objectType}_to_contact`
-//     });
-//   });
-
-//   // creating response
-//   response = defaultRequestConfig();
-//   response.endpoint = endpoint;
-//   response.headers = {
-//     "Content-Type": "application/json"
-//   };
-//   response.body.JSON = { inputs };
-
-//   // choosing API Type
-//   if (Config.authorizationType === "newPrivateAppApi") {
-//     // Private Apps
-//     response.headers = {
-//       ...response.headers,
-//       Authorization: `Bearer ${Config.accessToken}`
-//     };
-//   } else {
-//     // use legacy API Key
-//     response.params = { hapikey: Config.apiKey };
-//   }
-
-//   return response;
-// };
-
-/**
  * using legacy API
  * Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
  * @param {*} message
@@ -209,17 +139,18 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
  */
 const processLegacyTrack = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  let parameters = {
+  const parameters = {
     _a: Config.hubID,
     _n: message.event,
-    _m: get(message, "properties.revenue") || get(message, "properties.value"),
+    _m:
+      get(message, "properties.revenue") ||
+      get(message, "properties.value") ||
+      get(message, "properties.total"),
     id: getDestinationExternalID(message, "hubspotId")
   };
 
-  parameters = removeUndefinedAndNullValues(parameters);
   const userProperties = await getTransformedJSON(
     message,
-    hsCommonConfigJson,
     destination,
     propertyMap
   );
@@ -233,6 +164,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
   response.headers = {
     "Content-Type": "application/json"
   };
+  response.messageType = "track";
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
@@ -322,7 +254,7 @@ const legacyBatchEvents = destEvents => {
   let maxBatchSize;
   destEvents.forEach(event => {
     // handler for track call
-    if (event.message.method === "GET") {
+    if (event.message.messageType === "track") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
 

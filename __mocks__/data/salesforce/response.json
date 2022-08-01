@@ -29,5 +29,8 @@
     "issued_at": "1582343657644",
     "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o=",
     "abc": "123"
+  },
+  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons@initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted": {
+    "searchRecords": []
   }
 }

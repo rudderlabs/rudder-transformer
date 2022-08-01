@@ -8,11 +8,15 @@ const ENDPOINTS = {
   },
   TRACK: {
     endpoint: "/apps"
+  },
+  GROUP: {
+    endpoint: "/players"
   }
 };
 
 const ConfigCategory = {
-  IDENTIFY: { name: "OneSignalIdentifyConfig", endpoint: "/players" }
+  IDENTIFY: { name: "OneSignalIdentifyConfig", endpoint: "/players" },
+  GROUP: { name: "OneSignalGroupConfig", endpoint: "/players" }
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

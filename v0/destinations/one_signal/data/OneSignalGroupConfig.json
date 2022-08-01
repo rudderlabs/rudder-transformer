@@ -1,0 +1,38 @@
+[
+  {
+    "sourceKeys": "context.device.deviceModel",
+    "destKey": "device_model",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "context.os",
+    "destKey": "device_os",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
+    "destKey": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "context.timezone",
+    "destKey": "timezone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "groupId",
+    "destKey": "groupId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "userId",
+    "destKey": "external_user_id",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

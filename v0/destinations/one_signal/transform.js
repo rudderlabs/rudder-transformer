@@ -59,6 +59,13 @@ const getExternalIdentifiersMapping = message => {
 const identifyResponseBuilder = (message, { Config }) => {
   const { appId, emailDeviceType, smsDeviceType } = Config;
 
+  if (!appId) {
+    throw new CustomError(
+      "[OneSignal]: appId is required for creating/adding a device",
+      400
+    );
+  }
+
   let { endpoint } = ENDPOINTS.IDENTIFY;
 
   const playerId = getExternalIdentifiersMapping(message);
@@ -105,9 +112,21 @@ const identifyResponseBuilder = (message, { Config }) => {
 
 const trackResponseBuilder = (message, { Config }) => {
   const { appId, eventAsTags, allowedProperties } = Config;
+  if (!appId) {
+    throw new CustomError(
+      "[OneSignal]: appId is required for creating/adding a device",
+      400
+    );
+  }
   const event = get(message, "event");
   let { endpoint } = ENDPOINTS.TRACK;
   const externalUserId = getFieldValueFromMessage(message, "userId");
+  if (!externalUserId) {
+    throw new CustomError(
+      "[OneSignal]: userId is required for track events/updating a device",
+      400
+    );
+  }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
   const tags = {};
@@ -126,11 +145,64 @@ const trackResponseBuilder = (message, { Config }) => {
   return responseBuilder(payload, endpoint);
 };
 
-// const groupResponseBuilder = (message, { Config }) => {
-//   const { apiKey } = Config;
-//   let endpoint;
-//   return responseBuilder(payload, apiKey, endpoint);
-// };
+const groupResponseBuilder = (message, { Config }) => {
+  const { appId, emailDeviceType, smsDeviceType } = Config;
+  let { endpoint } = ENDPOINTS.GROUP;
+
+  if (!appId) {
+    throw new CustomError(
+      "[OneSignal]: appId is required for creating/adding a device",
+      400
+    );
+  }
+
+  const playerId = getExternalIdentifiersMapping(message);
+  const tags = {};
+
+  const traits = getFieldValueFromMessage(message, "traits");
+  const traitsKey = Object.keys(traits);
+  traitsKey.forEach(key => {
+    tags[key] = traits[key];
+  });
+  if (message.anonymousId) {
+    tags.anonymousId = message.anonymousId;
+  }
+  const payload = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.GROUP.name]
+  );
+  if (payload.groupId) {
+    throw new CustomError(
+      "[OneSignal]: groupId is required for group events",
+      400
+    );
+  }
+  if (playerId) {
+    endpoint = `${endpoint}/${playerId}`;
+    payload.tags = tags;
+    payload.app_id = appId;
+    return responseBuilder(payload, endpoint);
+  }
+  populateDevicetype(message, payload);
+  const responseArray = [];
+  payload.tags = tags;
+  if (emailDeviceType) {
+    const emailDevicePayload = { ...payload };
+    emailDevicePayload.device_type = 11;
+    emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
+    responseArray.push(responseBuilder(emailDevicePayload, endpoint));
+  }
+  if (smsDeviceType) {
+    const smsDevicePayload = { ...payload };
+    smsDevicePayload.device_type = 14;
+    smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
+    responseArray.push(responseBuilder(smsDevicePayload, endpoint));
+  }
+  if (payload.device_type) {
+    responseArray.push(responseBuilder(payload, endpoint));
+  }
+  return responseArray;
+};
 
 const processEvent = (message, destination) => {
   if (!message.type) {
@@ -148,9 +220,9 @@ const processEvent = (message, destination) => {
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
-    // case EventType.GROUP:
-    //   response = groupResponseBuilder(message, destination);
-    //   break;
+    case EventType.GROUP:
+      response = groupResponseBuilder(message, destination);
+      break;
     default:
       throw new CustomError("Message type not supported", 400);
   }

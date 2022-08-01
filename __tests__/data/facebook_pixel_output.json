@@ -597,10 +597,6 @@
   },
   {
     "statusCode": 400,
-    "error": "Product id is required for product 0. Event not sent"
-  },
-  {
-    "statusCode": 400,
     "error": "'query' should be in string format only"
   },
   {

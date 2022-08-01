@@ -51,41 +51,36 @@ const handleOrder = (message, categoryToContent) => {
   const contentIds = [];
   const contents = [];
   const { category } = message.properties;
-  if(products) {
+  if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       for (const singleProduct of products) {
         const pId =
-        singleProduct.product_id || singleProduct.sku || singleProduct.id || "";
-        contentIds.push(pId);
-        // required field for content
-        // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
-        const content = {
-          id: pId,
-          quantity: singleProduct.quantity || message.properties.quantity || 1,
-          item_price: singleProduct.price || message.properties.price
-        };
-        contents.push(content);
+          singleProduct.product_id || singleProduct.sku || singleProduct.id;
+          if (pId) {
+            contentIds.push(pId);
+            // required field for content
+            // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+            const content = {
+              id: pId,
+              quantity: singleProduct.quantity || message.properties.quantity || 1,
+              item_price: singleProduct.price || message.properties.price
+            };
+            contents.push(content);
+          }
+      
       }
-      contents.forEach((content, index) => {
-        if (content.id === "") {
-          throw new CustomError(
-            `Product id is required for product ${index}. Event not sent`,
-            400
-          );
-        }
-      });
     } else {
       throw new CustomError("Product is not an object. Event not sent", 400);
     }
   }
- 
+
   return {
     content_category: category,
     content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents: contents ,
+    contents: contents,
     num_items: contentIds.length
   };
 };
@@ -105,7 +100,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id || product.sku || product.id || "";
+        const productId = product.product_id || product.sku || product.id ;
         if (productId) {
           contentIds.push(productId);
           contents.push({
@@ -124,29 +119,20 @@ const handleProductListViewed = (message, categoryToContent) => {
     contentType = "product";
   } else {
     //  for viewContent event content_ids and content arrays are not mandatory
-    if(message.properties?.category) {
-      contentIds.push(message.properties.category );
-    contents.push({
-      id: message.properties.category,
-      quantity: 1
-    });
-    contentType = "product_group";
+    if (message.properties?.category) {
+      contentIds.push(message.properties.category);
+      contents.push({
+        id: message.properties.category,
+        quantity: 1
+      });
+      contentType = "product_group";
     }
   }
 
-  // content array only can have elements when products array is present
-  contents.forEach((content, index) => {
-    if (content.id === "") {
-        throw new CustomError(
-          `Product id is required for product ${index}. Event not sent`,
-          400
-        );
-    }
-  });
   return {
-    content_ids:  contentIds ,
+    content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents :  contents 
+    contents: contents
   };
 };
 
@@ -160,9 +146,9 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const useValue = valueFieldIdentifier === "properties.value";
   const contentIds = [
     message.properties.product_id ||
-      message.properties.id ||
-      message.properties.sku ||
-      ""
+    message.properties.id ||
+    message.properties.sku ||
+    ""
   ];
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
@@ -608,8 +594,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -619,3 +605,4 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
+

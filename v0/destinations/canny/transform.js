@@ -102,8 +102,8 @@ const trackResponseBuilder = async (message, { Config }) => {
           }
 
           payload.apiKey = apiKey;
-          payload.voterID = "voterid";
-          //   payload.voterID = await retrieveUserId(apiKey, message);
+          // payload.voterID = "voterid";
+          payload.voterID = await retrieveUserId(apiKey, message);
           endpoint = ConfigCategory.CREATE_VOTE.endpoint;
         } else if (val === "createPost") {
           contentType = "application/json";

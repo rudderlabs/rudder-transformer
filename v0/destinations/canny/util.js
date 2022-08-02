@@ -42,7 +42,7 @@ const retrieveUserId = async (apiKey, message) => {
         );
       }
 
-      return response?.data?.id || null;
+      return response?.response?.data?.id || null;
     } else {
       response = await httpPOST(
         url,

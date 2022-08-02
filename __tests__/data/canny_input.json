@@ -71,6 +71,10 @@
           {
             "from": "abc",
             "to": "createVote"
+          },
+          {
+            "from": "abc",
+            "to": "createPost"
           }
         ]
       }
@@ -84,8 +88,9 @@
       "channel": "web",
       "properties": {
         "postID": "postid",
+        "boardID": "boardid",
         "title": "title",
-        "details": "deatils"
+        "details": "details"
       },
       "context": {
         "os": {

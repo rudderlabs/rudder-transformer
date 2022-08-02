@@ -1,4 +1,3 @@
-const { logger } = require("handlebars");
 const { EventType } = require("../../../constants");
 const { ConfigCategory, mappingConfig, BASE_URL } = require("./config");
 const {
@@ -11,15 +10,15 @@ const {
 } = require("../../util");
 const { retrieveUserId } = require("./util");
 
-const responseBuilder = (
+const responseBuilder = async (
   payload,
   apiKey,
   endpoint,
   contentType,
   responseBody
 ) => {
+  const response = defaultRequestConfig();
   if (payload) {
-    const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       Authorization: `Basic ${apiKey}`,
@@ -27,11 +26,11 @@ const responseBuilder = (
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body[`${responseBody}`] = removeUndefinedAndNullValues(payload);
-    return response;
   }
+  return response;
 };
 
-const identifyResponseBuilder = (message, { Config }) => {
+const identifyResponseBuilder = async (message, { Config }) => {
   const { apiKey } = Config;
   const contentType = "application/json";
   const responseBody = "JSON";
@@ -54,7 +53,69 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
-  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
+  return await responseBuilder(
+    payload,
+    apiKey,
+    endpoint,
+    contentType,
+    responseBody
+  );
+};
+
+const getTrackResponse = async (apiKey, message, val) => {
+  let endpoint;
+  let responseBody;
+  let contentType;
+  let payload;
+  if (val === "createVote") {
+    responseBody = "FORM";
+    contentType = "application/x-www-form-urlencoded";
+
+    payload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.CREATE_VOTE.name]
+    );
+    if (!payload.postID) {
+      throw new CustomError("PostID is not present. Aborting message.", 400);
+    }
+
+    payload.apiKey = apiKey;
+    payload.voterID = "voterid";
+    // const voterID = await retrieveUserId(apiKey, message);
+    payload.voterID = voterID;
+    endpoint = ConfigCategory.CREATE_VOTE.endpoint;
+  } else if (val === "createPost") {
+    contentType = "application/json";
+    responseBody = "JSON";
+
+    payload = constructPayload(
+      message,
+      mappingConfig[ConfigCategory.CREATE_POST.name]
+    );
+
+    if (!payload.boardID) {
+      throw new CustomError("BoardID is not present. Aborting message.", 400);
+    }
+    if (!payload.title) {
+      throw new CustomError("Title is not present. Aborting message.", 400);
+    }
+    if (!payload.details) {
+      throw new CustomError("Details is not present. Aborting message.", 400);
+    }
+
+    payload.authorID = "authorid";
+    //   payload.authorID = await retrieveUserId(apiKey, message);
+
+    endpoint = ConfigCategory.CREATE_POST.endpoint;
+  }
+
+  return await responseBuilder(
+    payload,
+    apiKey,
+    endpoint,
+    contentType,
+    responseBody
+  );
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -66,7 +127,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("API Key is not present. Aborting message.", 400);
   }
 
-  let event = message.event?.toLowerCase().trim();
+  const event = message.event?.toLowerCase().trim();
   if (!event) {
     throw new CustomError("Event name is required", 400);
   }
@@ -78,71 +139,21 @@ const trackResponseBuilder = async (message, { Config }) => {
     );
   }
 
-  let endpoint;
-  let responseBody;
-  let contentType;
-  let payload;
-
-  Object.keys(eventsMap).forEach(async key => {
-    if (key === event) {
-      eventsMap[event].forEach(async val => {
-        if (val === "createVote") {
-          responseBody = "FORM";
-          contentType = "application/x-www-form-urlencoded";
-
-          payload = constructPayload(
-            message,
-            mappingConfig[ConfigCategory.CREATE_VOTE.name]
-          );
-          if (!payload.postID) {
-            throw new CustomError(
-              "PostID is not present. Aborting message.",
-              400
-            );
-          }
-
-          payload.apiKey = apiKey;
-          // payload.voterID = "voterid";
-          payload.voterID = await retrieveUserId(apiKey, message);
-          endpoint = ConfigCategory.CREATE_VOTE.endpoint;
-        } else if (val === "createPost") {
-          contentType = "application/json";
-          responseBody = "JSON";
-
-          payload = constructPayload(
-            message,
-            mappingConfig[ConfigCategory.CREATE_POST.name]
-          );
-
-          if (!payload.boardID) {
-            throw new CustomError(
-              "BoardID is not present. Aborting message.",
-              400
-            );
-          }
-          if (!payload.title) {
-            throw new CustomError(
-              "Title is not present. Aborting message.",
-              400
-            );
-          }
-          if (!payload.details) {
-            throw new CustomError(
-              "Details is not present. Aborting message.",
-              400
-            );
-          }
-
-          payload.authorID = "authorid";
-          //   payload.authorID = await retrieveUserId(apiKey, message);
-
-          endpoint = ConfigCategory.CREATE_POST.endpoint;
-        }
-      });
+  const returnArray = [];
+  const eventArray = Object.keys(eventsMap);
+  for (let x = 0; x < eventArray.length; x++) {
+    //   Object.keys(eventsMap).forEach(async key => {
+    if (eventArray[x] === event) {
+      const eventsMapArray = eventsMap[event];
+      for (let y = 0; y < eventsMapArray.length; y++) {
+        //   eventsMap[event].forEach(async val => {
+        const a = await getTrackResponse(apiKey, message, eventsMapArray[y]);
+        returnArray.push(a);
+      }
     }
-  });
+  }
 
-  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
+  return returnArray;
 };
 
 const processEvent = async (message, destination) => {
@@ -157,7 +168,7 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
       response = await trackResponseBuilder(message, destination);

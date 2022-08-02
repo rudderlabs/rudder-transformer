@@ -531,5 +531,58 @@
     },
     "files": {},
     "messageType": "track"
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: Access Token not found. Aborting",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: Hub ID not found. Aborting",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.hubapi.com/events/v3/send?hapikey=2de0b0dd-d30e-4828-90a2-3b952656c6ba",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "occurredAt": "2019-10-15T09:35:31.291Z",
+        "objectId": "5005",
+        "eventName": "pe22315509_rs_hub_test",
+        "properties": {
+          "hs_city": "kolkata",
+          "hs_country": "India"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "messageType": "track"
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: either of email, utk or objectId is required for custom behavioral events",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

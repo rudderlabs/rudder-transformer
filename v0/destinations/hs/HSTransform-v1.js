@@ -50,7 +50,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
-  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+  ) {
     addExternalIdToTraits(message);
   } else if (!traits || !traits.email) {
     throw new CustomError(
@@ -65,7 +68,10 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 
   // for rETL source support for custom objects
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+  ) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (!objectType) {
       throw new CustomError("objectType not found", 400);

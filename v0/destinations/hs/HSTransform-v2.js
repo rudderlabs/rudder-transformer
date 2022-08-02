@@ -5,7 +5,6 @@ const {
   GENERIC_TRUE_VALUES
 } = require("../../../constants");
 const {
-  defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -34,7 +33,6 @@ const {
 } = require("./config");
 const {
   getTransformedJSON,
-  formatPropertyValueForIdentify,
   searchContacts,
   getEventAndPropertiesFromConfig
 } = require("./util");
@@ -52,7 +50,10 @@ const processIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   // if mappedToDestination is set true, then add externalId to traits
-  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+  ) {
     addExternalIdToTraits(message);
   }
 
@@ -69,7 +70,10 @@ const processIdentify = async (message, destination, propertyMap) => {
 
   // for rETL source support for custom objects
   // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-  if (GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+  ) {
     // rETL
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (!objectType) {
@@ -158,10 +162,10 @@ const processTrack = async (message, destination) => {
     )
   };
 
-  // either of email or utk or contactId should be present
-  if (!payload.email && !payload.utk && !payload.contactId) {
+  // either of email or utk or objectId (Could be a 'contact id' or a 'visitor id') should be present
+  if (!payload.email && !payload.utk && !payload.objectId) {
     throw new CustomError(
-      "[HS]:: either of email, utk or contactId is required for custom behavioral events",
+      "[HS]:: either of email, utk or objectId is required for custom behavioral events",
       400
     );
   }
@@ -185,7 +189,7 @@ const processTrack = async (message, destination) => {
     };
   } else {
     // using legacyApiKey
-    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.hapikey}`;
+    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.apiKey}`;
   }
 
   return response;

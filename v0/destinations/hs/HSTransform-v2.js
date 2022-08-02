@@ -439,7 +439,7 @@ const batchEvents = destEvents => {
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params;
       batchedResponse.batchedRequest.method =
-        defaultGetRequestConfig.requestMethod;
+        defaultPostRequestConfig.requestMethod;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 

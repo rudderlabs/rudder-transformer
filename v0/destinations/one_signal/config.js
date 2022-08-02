@@ -15,8 +15,7 @@ const ENDPOINTS = {
 };
 
 const ConfigCategory = {
-  IDENTIFY: { name: "OneSignalIdentifyConfig", endpoint: "/players" },
-  GROUP: { name: "OneSignalGroupConfig", endpoint: "/players" }
+  IDENTIFY: { name: "OneSignalIdentifyConfig", endpoint: "/players" }
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

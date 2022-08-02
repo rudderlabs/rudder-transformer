@@ -16,7 +16,8 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   getDestinationExternalID,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  toUnixTimestamp
 } = require("../../util");
 const { populateDeviceType, populateTags } = require("./util");
 
@@ -66,6 +67,13 @@ const identifyResponseBuilder = (message, { Config }) => {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
+  // update the timestamp to unix timeStamp
+  if (payload.created_at) {
+    payload.created_at = toUnixTimestamp(payload.created_at);
+  }
+  if (payload.last_active) {
+    payload.last_active = toUnixTimestamp(payload.last_active);
+  }
 
   // If playerId is present, creating Edit Device Response for Editing a devic using the playerId
   if (playerId) {
@@ -83,17 +91,24 @@ const identifyResponseBuilder = (message, { Config }) => {
     const emailDevicePayload = { ...payload };
     emailDevicePayload.device_type = 11;
     emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
-    if (isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
-      responseArray.push(responseBuilder(emailDevicePayload, endpoint));
+    if (!isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
+      throw new CustomError(
+        "email is required for creating a device with email as identifier",
+        400
+      );
     }
+    responseArray.push(responseBuilder(emailDevicePayload, endpoint));
   }
   // Creating a device with phone as asn identifier
   if (smsDeviceType) {
     const smsDevicePayload = { ...payload };
     smsDevicePayload.device_type = 14;
     smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
-    if (isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
-      responseArray.push(responseBuilder(smsDevicePayload, endpoint));
+    if (!isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
+      throw new CustomError(
+        "phone_number is required for creating a device with phone_number as identifier",
+        400
+      );
     }
     responseArray.push(responseBuilder(smsDevicePayload, endpoint));
   }

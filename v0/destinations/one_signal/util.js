@@ -1,4 +1,30 @@
-const { getIntegrationsObj, getFieldValueFromMessage } = require("../../util");
+const {
+  getIntegrationsObj,
+  getFieldValueFromMessage,
+  CustomError
+} = require("../../util");
+
+// For mapping device_type value
+const deviceTypeMapping = {
+  android: 1,
+  ios: 0,
+  chrome: 5,
+  safari: 7,
+  firefox: 8
+};
+
+// This function is used to check for the valid device_type value. device_type value should be integer
+// and can be from [0 to 14] only.
+const validateDeviceType = deviceType => {
+  if (
+    Number.isNaN(deviceType) ||
+    deviceType < 0 ||
+    deviceType > 14
+  ) {
+    return false;
+  }
+  return true;
+};
 
 /**
  * This funnction is used to populate the tags using the traits
@@ -28,9 +54,30 @@ const populateDeviceType = (message, payload) => {
   const integrationsObj = getIntegrationsObj(message, "one_signal");
   const devicePayload = payload;
   if (integrationsObj && integrationsObj.deviceType) {
-    devicePayload.device_type = integrationsObj.deviceType;
+    devicePayload.device_type = parseInt(integrationsObj.deviceType);
     devicePayload.identifier = integrationsObj.identifier;
+    if (!validateDeviceType(devicePayload.device_type)) {
+      throw new CustomError(
+        `device_type ${devicePayload.device_type} is not a valid device_type`,
+        400
+      );
+    }
+  }
+  // Mapping device_type when it is not present in the integrationsObject
+  if (!devicePayload.device_type) {
+    // if channel is mobile, checking for device_type from `context.device.type`
+    if (message.channel === "mobile") {
+      devicePayload.device_type =
+        deviceTypeMapping[context.device?.type?.toLowerCase()];
+      devicePayload.identifier = context.device?.token;
+    }
+    // Parsing the UA to get the browser info to map the device_type
+    if (message.channel === "web" && message.context?.userAgent) {
+      const browser = getBrowserInfo(message.context.userAgent);
+      devicePayload.device_type =
+        deviceTypeMapping[browser.name?.toLowerCase()];
+    }
   }
 };
 
-module.exports = { populateDeviceType, populateTags };
+module.exports = { populateDeviceType, populateTags};

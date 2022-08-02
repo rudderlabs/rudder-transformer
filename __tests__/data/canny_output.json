@@ -50,5 +50,28 @@
       }
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://canny.io/api/v1/posts/create",
+    "headers": {
+      "Authorization": "Basic fb349439-789b-6b20-0c1c-726d3a90b148",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "FORM": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "JSON": {
+        "authorID": "authorid",
+        "boardID": "boardid",
+        "details": "details",
+        "title": "title"
+      }
+    },
+    "files": {}
   }
 ]

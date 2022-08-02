@@ -1,5 +1,6 @@
 const axios = require("axios");
 const qs = require("qs");
+const { httpPOST } = require("../../../adapters/network");
 
 const retrieveUserId = async (apiKey, message) => {
   try {

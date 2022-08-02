@@ -1,6 +1,5 @@
 const { logger } = require("handlebars");
 const { EventType } = require("../../../constants");
-const { httpPOST } = require("../../../adapters/network");
 const { ConfigCategory, mappingConfig, BASE_URL } = require("./config");
 const {
   defaultRequestConfig,
@@ -10,7 +9,7 @@ const {
   CustomError,
   getHashFromArrayWithDuplicate
 } = require("../../util");
-const {retrieveUserId}=require("./util");
+const { retrieveUserId } = require("./util");
 
 const responseBuilder = (
   payload,
@@ -80,37 +79,63 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
 
   let endpoint;
-  let payload = {};
   let responseBody;
   let contentType;
+  let payload;
 
   Object.keys(eventsMap).forEach(async key => {
     if (key === event) {
       eventsMap[event].forEach(async val => {
         if (val === "createVote") {
-          const postID =
-            message?.postID ||
-            message?.properties?.postID ||
-            message?.postId ||
-            message?.properties?.postId ||
-            message?.properties?.post?.id;
+          responseBody = "FORM";
+          contentType = "application/x-www-form-urlencoded";
 
-          if (!postID) {
+          payload = constructPayload(
+            message,
+            mappingConfig[ConfigCategory.CREATE_VOTE.name]
+          );
+          if (!payload.postID) {
             throw new CustomError(
-              "postID is not present. Aborting message.",
+              "PostID is not present. Aborting message.",
               400
             );
           }
 
           payload.apiKey = apiKey;
-          payload.postID = postID;
           payload.voterID = "voterid";
           //   payload.voterID = await retrieveUserId(apiKey, message);
           endpoint = ConfigCategory.CREATE_VOTE.endpoint;
-
-          responseBody = "FORM";
-          contentType = "application/x-www-form-urlencoded";
         } else if (val === "createPost") {
+          contentType = "application/json";
+          responseBody = "JSON";
+
+          payload = constructPayload(
+            message,
+            mappingConfig[ConfigCategory.CREATE_POST.name]
+          );
+
+          if (!payload.boardID) {
+            throw new CustomError(
+              "BoardID is not present. Aborting message.",
+              400
+            );
+          }
+          if (!payload.title) {
+            throw new CustomError(
+              "Title is not present. Aborting message.",
+              400
+            );
+          }
+          if (!payload.details) {
+            throw new CustomError(
+              "Details is not present. Aborting message.",
+              400
+            );
+          }
+
+          payload.authorID = "authorid";
+          //   payload.authorID = await retrieveUserId(apiKey, message);
+
           endpoint = ConfigCategory.CREATE_POST.endpoint;
         }
       });

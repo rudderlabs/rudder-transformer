@@ -1,14 +1,12 @@
 [
   {
-    "destKey": "userID",
-    "sourceKeys": "userId",
-    "sourceFromGenericMap": true,
+    "destKey": "postID",
+    "sourceKeys": [
+      "properties.postID",
+      "properties.postId",
+      "properties.post.id"
+    ],
+    "sourceFromGenericMap": false,
     "required": true
-  },
-  {
-    "destKey": "email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
-    "required": false
   }
 ]

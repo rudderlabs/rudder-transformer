@@ -1,6 +1,6 @@
 [
   {
-      "description": "No Message Event",
+      "description": "No Message type",
       "input": {
         "message":{
           "userId": "user 1",
@@ -91,7 +91,7 @@
         "message":{
           "userId": "user 1",
           "anonymousId": "anon-id-new",
-          "type":"NAN",
+          "type":"Track",
           "event": "event1",
           "properties": {
             "listData": {
@@ -850,7 +850,7 @@
     ]
   },
 {
-    "description": "Type Unknown ",
+    "description": "Hashing Disabaled and Type Unknown ",
     "input": {
       "message": {
         "userId": "user 1",

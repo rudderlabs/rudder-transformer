@@ -8,74 +8,59 @@ const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 
-function process(event) {
+// creates message for given type of user(i.e., voter or author)
+function createMessage(event, typeOfUser) {
   const message = new Message(`Canny`);
 
-  // event type is always track
-  const eventType = "track";
-
-  message.setEventType(eventType);
+  message.setEventType("track");
 
   message.setPropertiesV2(event, mapping);
 
   message.context.integration.version = "1.0.0";
   try {
-    switch (event.type) {
-      case "vote.created":
-      case "vote.deleted":
-        // setting up userId
-        if (event.object?.voter?.userID) {
-          message.userId = event.object.voter.userID;
-        } else {
-          // setting up anonymousId if userId is not present
-          message.anonymousId = sha256(event.object.voter?.email);
-        }
-
-        if (event.object?.voter?.id) {
-          message.context.externalId = [
-            {
-              type: "cannyUserId",
-              value: event.object.voter.id
-            }
-          ];
-        }
-
-        message.context.traits = event.object?.voter;
-
-        // deleting already mapped fields
-        delete message.properties?.voter;
-        delete message.context.traits?.userID;
-        delete message.context.traits?.id;
-        break;
-
-      default:
-        // setting up userId
-        if (event.object?.author?.userID) {
-          message.userId = event.object.author.userID;
-        } else {
-          // setting up anonymousId if userId is not present
-          message.anonymousId = sha256(event.object.author?.email);
-        }
-
-        if (event.object?.author?.id) {
-          message.context.externalId = [
-            {
-              type: "cannyUserId",
-              value: event.object.author.id
-            }
-          ];
-        }
-
-        message.context.traits = event.object?.author;
-
-        // deleting already mapped fields
-        delete message.properties?.author;
-        delete message.context.traits?.userID;
-        delete message.context.traits?.id;
+    if (event.object[`${typeOfUser}`]?.userID) {
+      message.userId = event.object[`${typeOfUser}`].userID;
+    } else {
+      // setting up anonymousId if userId is not present
+      message.anonymousId = sha256(event.object[`${typeOfUser}`]?.email);
     }
+
+    if (event.object[`${typeOfUser}`]?.id) {
+      message.context.externalId = [
+        {
+          type: "cannyUserId",
+          value: event.object[`${typeOfUser}`].id
+        }
+      ];
+    }
+
+    message.context.traits = event.object[`${typeOfUser}`];
+
+    // deleting already mapped fields
+    delete message.properties[`${typeOfUser}`];
+    delete message.context.traits?.userID;
+    delete message.context.traits?.id;
   } catch (e) {
     throw new Error(`Missing essential fields from Canny. Error: (${e})`);
   }
+
+  return message;
+}
+
+function process(event) {
+  let typeOfUser;
+
+  switch (event.type) {
+    case "vote.created":
+    case "vote.deleted":
+      typeOfUser = "voter";
+      break;
+
+    default:
+      typeOfUser = "author";
+  }
+
+  const message = createMessage(event, typeOfUser);
 
   return message;
 }

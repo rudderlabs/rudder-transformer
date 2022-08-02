@@ -10,7 +10,7 @@ const {
 } = require("../../util");
 const { retrieveUserId } = require("./util");
 
-const responseBuilder = async (
+const responseBuilder = (
   payload,
   apiKey,
   endpoint,
@@ -53,13 +53,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
-  return await responseBuilder(
-    payload,
-    apiKey,
-    endpoint,
-    contentType,
-    responseBody
-  );
+  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
 };
 
 const getTrackResponse = async (apiKey, message, val) => {
@@ -81,7 +75,7 @@ const getTrackResponse = async (apiKey, message, val) => {
 
     payload.apiKey = apiKey;
     payload.voterID = "voterid";
-    // const voterID = await retrieveUserId(apiKey, message);
+    const voterID = await retrieveUserId(apiKey, message);
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
   } else if (val === "createPost") {
@@ -109,13 +103,7 @@ const getTrackResponse = async (apiKey, message, val) => {
     endpoint = ConfigCategory.CREATE_POST.endpoint;
   }
 
-  return await responseBuilder(
-    payload,
-    apiKey,
-    endpoint,
-    contentType,
-    responseBody
-  );
+  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
@@ -145,9 +133,9 @@ const trackResponseBuilder = async (message, { Config }) => {
     //   Object.keys(eventsMap).forEach(async key => {
     if (eventArray[x] === event) {
       const eventsMapArray = eventsMap[event];
-      for (let y = 0; y < eventsMapArray.length; y++) {
+      for (const element of eventsMapArray) {
         //   eventsMap[event].forEach(async val => {
-        const a = await getTrackResponse(apiKey, message, eventsMapArray[y]);
+        const a = await getTrackResponse(apiKey, message, element);
         returnArray.push(a);
       }
     }
@@ -156,7 +144,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   return returnArray;
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -168,10 +156,10 @@ const processEvent = async (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError("Message type not supported", 400);

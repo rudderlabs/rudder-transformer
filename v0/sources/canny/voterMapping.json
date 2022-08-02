@@ -1,0 +1,28 @@
+[
+  {
+    "sourceKeys": "created",
+    "destKeys": ["timestamp", "originalTimestamp"]
+  },
+  {
+    "sourceKeys": "object",
+    "destKeys": "properties",
+    "metadata": {
+      "excludes": ["voter"]
+    }
+  },
+  {
+    "sourceKeys": "objectType",
+    "destKeys": "properties.objectType"
+  },
+  {
+    "sourceKeys": "type",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "object.voter",
+    "destKeys": "context.traits",
+    "metadata": {
+      "excludes": ["userID", "id"]
+    }
+  }
+]

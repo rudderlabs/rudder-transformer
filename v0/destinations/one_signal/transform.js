@@ -91,14 +91,11 @@ const identifyResponseBuilder = (message, { Config }) => {
     const emailDevicePayload = { ...payload };
     emailDevicePayload.device_type = 11;
     emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
-    if (!isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
+    if (isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
       responseArray.push(
         responseBuilder(emailDevicePayload, endpoint, message.type)
       );
     }
-    responseArray.push(
-      responseBuilder(emailDevicePayload, endpoint, message.type)
-    );
   }
   // Creating a device with phone as asn identifier
   if (smsDeviceType) {
@@ -115,7 +112,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (payload.device_type || payload.device_type === 0) {
     responseArray.push(responseBuilder(payload, endpoint, message.type));
   }
-  if (responseArray.length) {
+  if (!responseArray.length) {
     throw new CustomError(
       "Correct identifier is required for creating a device (identify call)",
       400

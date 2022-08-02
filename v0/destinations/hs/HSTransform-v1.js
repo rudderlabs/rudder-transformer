@@ -25,7 +25,8 @@ const {
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
-  MAX_BATCH_SIZE_CRM_OBJECT
+  MAX_BATCH_SIZE_CRM_OBJECT,
+  MAX_BATCH_SIZE_CRM_CONTACT
 } = require("./config");
 const {
   getTransformedJSON,
@@ -279,7 +280,7 @@ const legacyBatchEvents = destEvents => {
     } else if (event.message.source && event.message.source === "rETL") {
       const { endpoint } = event.message;
       maxBatchSize = endpoint.includes("contact")
-        ? MAX_BATCH_SIZE_CRM_OBJECT
+        ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
       const { hubspotOp } = event.message;
       if (hubspotOp) {

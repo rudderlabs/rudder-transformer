@@ -45,9 +45,9 @@
         "JSON_ARRAY": {},
         "XML": {},
         "FORM": {
-          "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
           "postID": "postid",
-          "voterID": "voterid"
+          "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
+          "voterID": "62d14c90fff7c80d0ec08375"
         }
       },
       "files": {}
@@ -63,15 +63,15 @@
       },
       "params": {},
       "body": {
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "XML": {},
         "JSON": {
-          "authorID": "authorid",
           "boardID": "boardid",
           "details": "details",
-          "title": "title"
-        }
+          "title": "title",
+          "authorID": "62d14c90fff7c80d0ec08375"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
       "files": {}
     }

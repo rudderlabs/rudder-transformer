@@ -1,5 +1,6 @@
 const qs = require("qs");
 const { httpPOST } = require("../../../adapters/network");
+const { CustomError } = require("../../util");
 
 const retrieveUserId = async (apiKey, message) => {
   try {

@@ -97,8 +97,8 @@ const getTrackResponse = async (apiKey, message, val) => {
       throw new CustomError("Details is not present. Aborting message.", 400);
     }
 
-    payload.authorID = "authorid";
-    //   payload.authorID = await retrieveUserId(apiKey, message);
+    // payload.authorID = "authorid";
+    payload.authorID = await retrieveUserId(apiKey, message);
 
     endpoint = ConfigCategory.CREATE_POST.endpoint;
   }

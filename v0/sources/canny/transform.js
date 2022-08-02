@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const Message = require("../message");
 const sha256 = require("sha256");
+const { CustomError } = require("../../util");
 
 // import mapping json using JSON.parse to preserve object key order
 const voterMapping = JSON.parse(
@@ -11,6 +12,22 @@ const authorMapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./authorMapping.json"), "utf-8")
 );
 
+/**
+ * This function throws an error if required fields are not present.
+ * @param {*} message
+ */
+function checkForRequiredFields(message) {
+  if (!message.event || !(message.userId || message.anonymousId)) {
+    throw new CustomError("Missing essential fields from Canny.", 400);
+  }
+}
+
+/**
+ * This function is used for setting up userId and anonymousId.
+ * @param {*} message
+ * @param {*} event
+ * @param {*} typeOfUser
+ */
 function settingIds(message, event, typeOfUser) {
   try {
     // setting up userId
@@ -25,7 +42,12 @@ function settingIds(message, event, typeOfUser) {
   }
 }
 
-// creates message for given type of user(i.e., voter or author)
+/**
+ * This function creates message for given type of user(i.e., voter or author).
+ * @param {*} message
+ * @param {*} typeOfUser
+ * @returns message
+ */
 function createMessage(event, typeOfUser) {
   const message = new Message(`Canny`);
 
@@ -37,6 +59,8 @@ function createMessage(event, typeOfUser) {
   message.context.integration.version = "1.0.0";
 
   settingIds(message, event, typeOfUser);
+
+  checkForRequiredFields(message);
 
   if (event.object[`${typeOfUser}`]?.id) {
     message.context.externalId = [

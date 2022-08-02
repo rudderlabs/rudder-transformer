@@ -16,7 +16,8 @@
   },
   {
     "sourceKeys": "type",
-    "destKeys": "event"
+    "destKeys": "event",
+    "required": true
   },
   {
     "sourceKeys": "object.author",

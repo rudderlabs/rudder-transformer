@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "utk",
+    "sourceKeys": ["traits.utk", "context.traits.utk", "properties.utk"],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "occurredAt",
+    "sourceKeys": ["properties.occurred_at", "originalTimestamp"],
+    "required": false
+  },
+  {
+    "destKey": "objectId",
+    "sourceKeys": [
+      "traits.objectId",
+      "context.traits.objectId",
+      "properties.objectId"
+    ],
+    "required": false
+  }
+]

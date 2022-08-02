@@ -1,0 +1,93 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "required": false
+  },
+  {
+    "destKey": "firstname",
+    "sourceKeys": [
+      "traits.firstName",
+      "traits.firstname",
+      "traits.first_name",
+      "context.traits.firstName",
+      "context.traits.firstname",
+      "context.traits.first_name",
+      "properties.firstname"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "lastname",
+    "sourceKeys": [
+      "traits.lastName",
+      "traits.lastname",
+      "traits.last_name",
+      "context.traits.lastName",
+      "context.traits.lastname",
+      "context.traits.last_name",
+      "properties.lastname"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": [
+      "traits.address.street",
+      "context.traits.address.street",
+      "properties.address.street"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.address.city",
+      "context.traits.address.city",
+      "properties.address.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "context.traits.address.country",
+      "properties.address.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+      "traits.address.state",
+      "context.traits.address.state",
+      "properties.address.state"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": [
+      "traits.address.postalcode",
+      "context.traits.address.postalcode",
+      "properties.address.postalcode"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "company",
+    "sourceKeys": [
+      "traits.company.name",
+      "context.traits.company.name",
+      "properties.company.name"
+    ],
+    "required": false
+  }
+]

@@ -17,11 +17,12 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
-  toUnixTimestamp
+  toUnixTimestamp,
+  defaultPutRequestConfig
 } = require("../../util");
 const { populateDeviceType, populateTags } = require("./util");
 
-const responseBuilder = (payload, endpoint) => {
+const responseBuilder = (payload, endpoint, eventType) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
@@ -29,7 +30,11 @@ const responseBuilder = (payload, endpoint) => {
       Accept: "application/json",
       "Content-Type": "application/json"
     };
-    response.method = defaultPostRequestConfig.requestMethod;
+    if (eventType.toLowerCase() === "identify") {
+      response.method = defaultPostRequestConfig.requestMethod;
+    } else {
+      response.method = defaultPutRequestConfig.requestMethod;
+    }
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
@@ -48,13 +53,6 @@ const responseBuilder = (payload, endpoint) => {
 const identifyResponseBuilder = (message, { Config }) => {
   const { appId, emailDeviceType, smsDeviceType } = Config;
 
-  if (!appId) {
-    throw new CustomError(
-      "[OneSignal]: appId is required for creating/adding a device",
-      400
-    );
-  }
-
   let { endpoint } = ENDPOINTS.IDENTIFY;
 
   // checking if playerId is present in the payload
@@ -67,6 +65,9 @@ const identifyResponseBuilder = (message, { Config }) => {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
+  // Mapping app_id
+  payload.app_id = appId;
+
   // update the timestamp to unix timeStamp
   if (payload.created_at) {
     payload.created_at = toUnixTimestamp(payload.created_at);
@@ -79,8 +80,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (playerId) {
     endpoint = `${endpoint}/${playerId}`;
     payload.tags = tags;
-    payload.app_id = appId;
-    return responseBuilder(payload, endpoint);
+    return responseBuilder(payload, endpoint, message.type);
   }
   // Creating response for creation of new device or updation of an existing device
   populateDeviceType(message, payload);
@@ -92,28 +92,34 @@ const identifyResponseBuilder = (message, { Config }) => {
     emailDevicePayload.device_type = 11;
     emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
     if (!isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
-      throw new CustomError(
-        "email is required for creating a device with email as identifier",
-        400
+      responseArray.push(
+        responseBuilder(emailDevicePayload, endpoint, message.type)
       );
     }
-    responseArray.push(responseBuilder(emailDevicePayload, endpoint));
+    responseArray.push(
+      responseBuilder(emailDevicePayload, endpoint, message.type)
+    );
   }
   // Creating a device with phone as asn identifier
   if (smsDeviceType) {
     const smsDevicePayload = { ...payload };
     smsDevicePayload.device_type = 14;
     smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
-    if (!isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
-      throw new CustomError(
-        "phone_number is required for creating a device with phone_number as identifier",
-        400
+    if (isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
+      responseArray.push(
+        responseBuilder(smsDevicePayload, endpoint, message.type)
       );
     }
-    responseArray.push(responseBuilder(smsDevicePayload, endpoint));
   }
-  if (payload.device_type) {
-    responseArray.push(responseBuilder(payload, endpoint));
+  // checking if device_type is defined or not and checking 0 for device_type iOS
+  if (payload.device_type || payload.device_type === 0) {
+    responseArray.push(responseBuilder(payload, endpoint, message.type));
+  }
+  if (responseArray.length) {
+    throw new CustomError(
+      "Correct identifier is required for creating a device (identify call)",
+      400
+    );
   }
   return responseArray;
 };
@@ -127,12 +133,6 @@ const identifyResponseBuilder = (message, { Config }) => {
  */
 const trackResponseBuilder = (message, { Config }) => {
   const { appId, eventAsTags, allowedProperties } = Config;
-  if (!appId) {
-    throw new CustomError(
-      "[OneSignal]: appId is required for creating/adding a device",
-      400
-    );
-  }
   const event = get(message, "event");
   let { endpoint } = ENDPOINTS.TRACK;
   const externalUserId = getFieldValueFromMessage(message, "userId");
@@ -159,17 +159,17 @@ const trackResponseBuilder = (message, { Config }) => {
   tags[event] = true;
   // Populating tags using allowed properties(from dashboard)
   const properties = get(message, "properties");
-  allowedProperties.forEach(propertyName => {
-    if (properties[propertyName]) {
-      if (eventAsTags && typeof properties[propertyName] === "string") {
-        tags[`${event}_${[propertyName]}`] = properties[propertyName];
-      } else if (typeof properties[propertyName] === "string") {
-        tags[propertyName] = properties[propertyName];
+  allowedProperties.forEach(item => {
+    if (properties[item.propertyName]) {
+      if (eventAsTags && typeof properties[item.propertyName] === "string") {
+        tags[`${event}_${[item.propertyName]}`] = properties[item.propertyName];
+      } else if (typeof properties[item.propertyName] === "string") {
+        tags[item.propertyName] = properties[item.propertyName];
       }
     }
   });
   payload.tags = tags;
-  return responseBuilder(payload, endpoint);
+  return responseBuilder(payload, endpoint, message.type);
 };
 
 /**
@@ -184,12 +184,6 @@ const groupResponseBuilder = (message, { Config }) => {
   if (!groupId) {
     throw new CustomError(
       "[OneSignal]: groupId is required for group events",
-      400
-    );
-  }
-  if (!appId) {
-    throw new CustomError(
-      "[OneSignal]: appId is required for group events",
       400
     );
   }
@@ -209,19 +203,25 @@ const groupResponseBuilder = (message, { Config }) => {
 
   // Populating tags using allowed properties(from dashboard)
   const properties = getFieldValueFromMessage(message, "traits");
-  allowedProperties.forEach(propertyName => {
-    if (typeof properties[propertyName] === "string") {
-      tags[propertyName] = properties[propertyName];
+  allowedProperties.forEach(item => {
+    if (typeof properties[item.propertyName] === "string") {
+      tags[item.propertyName] = properties[item.propertyName];
     }
   });
   payload.tags = tags;
-  return responseBuilder(payload, endpoint);
+  return responseBuilder(payload, endpoint, message.type);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
+      400
+    );
+  }
+  if (!destination.Config.appId) {
+    throw new CustomError(
+      "[OneSignal]: appId is required for creating/adding a device",
       400
     );
   }

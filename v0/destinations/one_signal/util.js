@@ -16,11 +16,7 @@ const deviceTypeMapping = {
 // This function is used to check for the valid device_type value. device_type value should be integer
 // and can be from [0 to 14] only.
 const validateDeviceType = deviceType => {
-  if (
-    Number.isNaN(deviceType) ||
-    deviceType < 0 ||
-    deviceType > 14
-  ) {
+  if (Number.isNaN(deviceType) || deviceType < 0 || deviceType > 14) {
     return false;
   }
   return true;
@@ -68,16 +64,19 @@ const populateDeviceType = (message, payload) => {
     // if channel is mobile, checking for device_type from `context.device.type`
     if (message.channel === "mobile") {
       devicePayload.device_type =
-        deviceTypeMapping[context.device?.type?.toLowerCase()];
-      devicePayload.identifier = context.device?.token;
+        deviceTypeMapping[message.context?.device?.type?.toLowerCase()];
+      devicePayload.identifier = message.context?.device?.token
+        ? message.context?.device?.token
+        : message.context?.device?.id;
     }
     // Parsing the UA to get the browser info to map the device_type
     if (message.channel === "web" && message.context?.userAgent) {
       const browser = getBrowserInfo(message.context.userAgent);
       devicePayload.device_type =
         deviceTypeMapping[browser.name?.toLowerCase()];
+      devicePayload.identifier = message.anonymousId;
     }
   }
 };
 
-module.exports = { populateDeviceType, populateTags};
+module.exports = { populateDeviceType, populateTags };

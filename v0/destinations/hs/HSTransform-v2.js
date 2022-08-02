@@ -5,7 +5,6 @@ const {
   GENERIC_TRUE_VALUES
 } = require("../../../constants");
 const {
-  defaultGetRequestConfig,
   defaultPostRequestConfig,
   defaultRequestConfig,
   defaultPatchRequestConfig,
@@ -35,7 +34,6 @@ const {
 } = require("./config");
 const {
   getTransformedJSON,
-  formatPropertyValueForIdentify,
   searchContacts,
   getEventAndPropertiesFromConfig,
   getHsSearchId
@@ -60,6 +58,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   response.method = defaultPostRequestConfig.requestMethod;
   // if mappedToDestination is set true, then add externalId to traits
   if (
+    mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
     hubspotOp
   ) {
@@ -170,10 +169,10 @@ const processTrack = async (message, destination) => {
     )
   };
 
-  // either of email or utk or contactId should be present
-  if (!payload.email && !payload.utk && !payload.contactId) {
+  // either of email or utk or objectId (Could be a 'contact id' or a 'visitor id') should be present
+  if (!payload.email && !payload.utk && !payload.objectId) {
     throw new CustomError(
-      "[HS]:: either of email, utk or contactId is required for custom behavioral events",
+      "[HS]:: either of email, utk or objectId is required for custom behavioral events",
       400
     );
   }
@@ -197,7 +196,7 @@ const processTrack = async (message, destination) => {
     };
   } else {
     // using legacyApiKey
-    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.hapikey}`;
+    response.endpoint = `${TRACK_CRM_ENDPOINT}?hapikey=${Config.apiKey}`;
   }
 
   return response;
@@ -393,7 +392,7 @@ const batchIdentify = (
     } else if (batchOperation === "updateContacts") {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
     }
-    
+
     batchEventResponse.batchedRequest.headers = message.headers;
     batchEventResponse.batchedRequest.params = message.params;
 

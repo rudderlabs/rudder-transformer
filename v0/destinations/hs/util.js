@@ -25,7 +25,7 @@ const {
  * @param {*} param0
  */
 const validateDestinationConfig = ({ Config }) => {
-  if (Config.apiVersion === API_VERSION.v3) {
+  if (Config.authorizationType === "newPrivateAppApi") {
     // NEW API
     if (!Config.accessToken) {
       throw new CustomError("[HS]:: Access Token not found. Aborting", 400);

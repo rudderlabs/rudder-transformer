@@ -2,7 +2,7 @@ const get = require("get-value");
 const _ = require("lodash");
 const {
   MappedToDestinationKey,
-  GENERIC_TRUE_VALUES,
+  GENERIC_TRUE_VALUES
 } = require("../../../constants");
 const {
   defaultGetRequestConfig,
@@ -16,7 +16,7 @@ const {
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
-  getDestinationExternalIDInfoForRetl,
+  getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -25,13 +25,13 @@ const {
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
-  MAX_BATCH_SIZE_CRM_OBJECT,
+  MAX_BATCH_SIZE_CRM_OBJECT
 } = require("./config");
 const {
   getTransformedJSON,
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
-  getHsSearchId,
+  getHsSearchId
 } = require("./util");
 
 /**
@@ -57,6 +57,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   let endpoint;
   const response = defaultRequestConfig();
   if (
+    mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
     hubspotOp
   ) {
@@ -94,7 +95,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     );
 
     const payload = {
-      properties: formatPropertyValueForIdentify(userProperties),
+      properties: formatPropertyValueForIdentify(userProperties)
     };
 
     if (email) {
@@ -111,7 +112,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   };
 
   // choosing API Type
@@ -119,7 +120,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     // Private Apps
     response.headers = {
       ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
+      Authorization: `Bearer ${Config.accessToken}`
     };
   } else {
     // use legacy API Key
@@ -146,7 +147,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
       get(message, "properties.revenue") ||
       get(message, "properties.value") ||
       get(message, "properties.total"),
-    id: getDestinationExternalID(message, "hubspotId"),
+    id: getDestinationExternalID(message, "hubspotId")
   };
 
   const userProperties = await getTransformedJSON(
@@ -162,7 +163,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
   response.endpoint = TRACK_ENDPOINT;
   response.method = defaultGetRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json"
   };
   response.messageType = "track";
 
@@ -172,7 +173,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
     delete params._a;
     response.headers = {
       ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
+      Authorization: `Bearer ${Config.accessToken}`
     };
   }
   response.params = params;
@@ -210,7 +211,7 @@ const batchIdentifyForrETL = (
         const updateEndpoint = ev.message.endpoint;
         identifyResponseList.push({
           ...ev.message.body.JSON,
-          id: updateEndpoint.split("/").pop(),
+          id: updateEndpoint.split("/").pop()
         });
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
           0,
@@ -222,7 +223,7 @@ const batchIdentifyForrETL = (
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
-      inputs: identifyResponseList,
+      inputs: identifyResponseList
     };
 
     batchEventResponse.batchedRequest.headers = message.headers;
@@ -231,7 +232,7 @@ const batchIdentifyForrETL = (
     batchEventResponse = {
       ...batchEventResponse,
       metadata,
-      destination,
+      destination
     };
     batchedResponseList.push(
       getSuccessRespEvents(
@@ -340,7 +341,7 @@ const legacyBatchEvents = destEvents => {
       if (ev.message.source === "rETL") {
         identifyResponseList.push({ ...ev.message.body.JSON });
         batchEventResponse.batchedRequest.body.JSON = {
-          inputs: identifyResponseList,
+          inputs: identifyResponseList
         };
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         metadata.push(ev.metadata);
@@ -352,18 +353,18 @@ const legacyBatchEvents = destEvents => {
         ev.message.body.JSON.properties = updatedProperties;
         identifyResponseList.push({
           email,
-          properties: ev.message.body.JSON.properties,
+          properties: ev.message.body.JSON.properties
         });
         metadata.push(ev.metadata);
         batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-          batch: JSON.stringify(identifyResponseList),
+          batch: JSON.stringify(identifyResponseList)
         };
         batchEventResponse.batchedRequest.endpoint = BATCH_CONTACT_ENDPOINT;
       }
     });
 
     batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     };
 
     // choosing API Type
@@ -371,7 +372,7 @@ const legacyBatchEvents = destEvents => {
       // Private Apps
       batchEventResponse.batchedRequest.headers = {
         ...batchEventResponse.batchedRequest.headers,
-        Authorization: `Bearer ${Config.accessToken}`,
+        Authorization: `Bearer ${Config.accessToken}`
       };
     } else {
       // API Key
@@ -381,7 +382,7 @@ const legacyBatchEvents = destEvents => {
     batchEventResponse = {
       ...batchEventResponse,
       metadata,
-      destination,
+      destination
     };
     batchedResponseList.push(
       getSuccessRespEvents(
@@ -399,5 +400,5 @@ const legacyBatchEvents = destEvents => {
 module.exports = {
   processLegacyIdentify,
   processLegacyTrack,
-  legacyBatchEvents,
+  legacyBatchEvents
 };

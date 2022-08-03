@@ -151,7 +151,7 @@ const trackResponseBuilder = (message, { Config }) => {
   tags[event] = true;
   // Populating tags using allowed properties(from dashboard)
   const properties = get(message, "properties");
-  if (properties) {
+  if (properties && allowedProperties && Array.isArray(allowedProperties)) {
     allowedProperties.forEach(item => {
       if (
         properties[item.propertyName] ||
@@ -201,7 +201,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   // Populating tags using allowed properties(from dashboard)
   const properties = getFieldValueFromMessage(message, "traits");
-  if (properties) {
+  if (properties && allowedProperties && Array.isArray(allowedProperties)) {
     allowedProperties.forEach(item => {
       if (
         properties[item.propertyName] ||

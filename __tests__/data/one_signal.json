@@ -1119,5 +1119,313 @@
     "output": {
       "error": "Message type page not supported"
     }
+  },
+  {
+    "description": "Validating deviceType",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "random-818c-4a28-b98e-6cd8a994eb22",
+          "emailDeviceType": false,
+          "smsDeviceType": false,
+          "eventAsTags": false,
+          "allowedProperties": []
+        }
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": "1.12.3"
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "brand": "John Players",
+            "price": "15000",
+            "firstName": "Ujjwal",
+            "email": "ujjwal@rudderstack.com",
+            "phone": "+917836362334",
+            "userId": "ujjwal27"
+          },
+          "locale": "en-US",
+          "device": {
+            "token": "token",
+            "id": "id",
+            "type": "ios"
+          },
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "integrations": {
+          "one_signal": {
+            "deviceType": "15",
+            "identifier": "random_id"
+          }
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+      "error": "device_type 15 is not a valid device_type"
+    }
+  },
+  {
+    "description": "check for Message type not present",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "random-818c-4a28-b98e-6cd8a994eb22",
+          "emailDeviceType": false,
+          "smsDeviceType": false,
+          "eventAsTags": false,
+          "allowedProperties": [
+            {
+              "propertyName": "brand"
+            },
+            {
+              "propertyName": "price"
+            }
+          ]
+        }
+      },
+      "message": {
+        "event": "add_to_Cart",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "properties": {
+          "brand": "Zara",
+          "price": "12000"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+        "error": "Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "Check for event name in the track call",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "random-818c-4a28-b98e-6cd8a994eb22",
+          "emailDeviceType": false,
+          "smsDeviceType": false,
+          "eventAsTags": false,
+          "allowedProperties": [
+            {
+              "propertyName": "brand"
+            },
+            {
+              "propertyName": "price"
+            }
+          ]
+        }
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "properties": {
+          "brand": "Zara",
+          "price": "12000"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+        "error": "[OneSignal]: event is not present in the input payloads"
+    }
+  },
+  {
+    "description": "Check for groupId ",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "random-818c-4a28-b98e-6cd8a994eb22",
+          "emailDeviceType": false,
+          "smsDeviceType": false,
+          "eventAsTags": true,
+          "allowedProperties": [
+            {
+              "propertyName": "brand"
+            },
+            {
+              "propertyName": "price"
+            }
+          ]
+        }
+      },
+      "message": {
+        "type": "group",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "brand": "",
+            "price": "10000"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+        "error": "[OneSignal]: groupId is required for group events"
+    }
+  },
+  {
+    "description": "Check for user Id (required field to update the device) for track call",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "random-818c-4a28-b98e-6cd8a994eb22",
+          "emailDeviceType": false,
+          "smsDeviceType": false,
+          "eventAsTags": false,
+          "allowedProperties": [
+            {
+              "propertyName": "brand"
+            },
+            {
+              "propertyName": "price"
+            }
+          ]
+        }
+      },
+      "message": {
+        "event": "add_to_Cart",
+        "type": "track",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "channel": "web",
+        "properties": {
+          "brand": "Zara",
+          "price": "12000"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+        "error": "[OneSignal]: userId is required for track events/updating a device"
+    }
   }
 ]

@@ -207,7 +207,6 @@ const batchIdentify = (
   batchedResponseList,
   batchOperation
 ) => {
-  console.log(JSON.stringify(arrayChunksIdentify));
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach(chunk => {
     const identifyResponseList = [];
@@ -452,7 +451,7 @@ const batchEvents = destEvents => {
     } else if (event.message.source && event.message.source === "rETL") {
       const { endpoint } = event.message;
       maxBatchSize = endpoint.includes("contact")
-        ? MAX_BATCH_SIZE_CRM_OBJECT
+        ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
       const { hubspotOp } = event.message;
       if (hubspotOp) {

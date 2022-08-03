@@ -1,0 +1,1018 @@
+[
+  {
+    "message": {
+      "type": "identify",
+      "sentAt": "2022-08-03T10:49:02.451+05:30",
+      "userId": "identified user id",
+      "context": {
+        "ip": "14.5.67.21",
+        "traits": {
+          "trait1": "new-val"
+        },
+        "library": {
+          "name": "http"
+        }
+      },
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "messageId": "4ef6d908-2969-4db0-8b73-de9369135c74",
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "anon-id-new",
+      "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 11,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "dc352217-77b2-426d-995a-cba05fea9d07",
+        "JobID": 11,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "type": "identify",
+          "sentAt": "2022-08-03T10:49:02.451+05:30",
+          "userId": "identified user id",
+          "context": {
+            "ip": "14.5.67.21",
+            "traits": {
+              "trait1": "new-val"
+            },
+            "library": {
+              "name": "http"
+            }
+          },
+          "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+          "messageId": "4ef6d908-2969-4db0-8b73-de9369135c74",
+          "timestamp": "2020-02-02T00:23:09.544Z",
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "anon-id-new",
+          "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+        },
+        "PayloadSize": 522,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "",
+          "event_type": "identify",
+          "message_id": "4ef6d908-2969-4db0-8b73-de9369135c74",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363146+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Product Purchased new",
+      "sentAt": "2022-08-03T10:49:02.451+05:30",
+      "userId": "identified user id",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "messageId": "269f2275-1a22-4da7-b83a-949d056c4de7",
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "properties": {
+        "name": "Shirt",
+        "revenue": 4.99
+      },
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "anon-id-new",
+      "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 12,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "9947ea67-832f-4931-b80b-22592b8649cb",
+        "JobID": 12,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "type": "track",
+          "event": "Product Purchased new",
+          "sentAt": "2022-08-03T10:49:02.451+05:30",
+          "userId": "identified user id",
+          "context": {
+            "ip": "14.5.67.21",
+            "library": {
+              "name": "http"
+            }
+          },
+          "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+          "messageId": "269f2275-1a22-4da7-b83a-949d056c4de7",
+          "timestamp": "2020-02-02T00:23:09.544Z",
+          "properties": {
+            "name": "Shirt",
+            "revenue": 4.99
+          },
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "anon-id-new",
+          "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+        },
+        "PayloadSize": 576,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "Product Purchased new",
+          "event_type": "track",
+          "message_id": "269f2275-1a22-4da7-b83a-949d056c4de7",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363151+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  },
+  {
+    "message": {
+      "name": "Page View",
+      "type": "page",
+      "sentAt": "2022-08-03T10:49:02.451+05:30",
+      "userId": "identified user id",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "messageId": "9c140098-7741-44eb-933f-3f79cdba0cfc",
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "properties": {
+        "path": "/",
+        "title": "Home"
+      },
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "anon-id-new",
+      "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 13,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "9f896e9c-41ef-40ce-8470-9be0caf7bccf",
+        "JobID": 13,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "name": "Page View",
+          "type": "page",
+          "sentAt": "2022-08-03T10:49:02.451+05:30",
+          "userId": "identified user id",
+          "context": {
+            "ip": "14.5.67.21",
+            "library": {
+              "name": "http"
+            }
+          },
+          "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+          "messageId": "9c140098-7741-44eb-933f-3f79cdba0cfc",
+          "timestamp": "2020-02-02T00:23:09.544Z",
+          "properties": {
+            "path": "/",
+            "title": "Home"
+          },
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "anon-id-new",
+          "originalTimestamp": "2022-08-03T10:49:02.451+05:30"
+        },
+        "PayloadSize": 548,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "",
+          "event_type": "page",
+          "message_id": "9c140098-7741-44eb-933f-3f79cdba0cfc",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363167+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  },
+  {
+    "message": {
+      "name": "Screen View",
+      "type": "screen",
+      "sentAt": "2022-08-03T10:49:02.452+05:30",
+      "userId": "identified user id",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "messageId": "10e84d00-2ad6-4e7d-be4a-446d1e606711",
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "properties": {
+        "prop1": "5"
+      },
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "anonymousId": "anon-id-new",
+      "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 14,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "4d2a3004-1ca0-42fc-a721-dc12fe75f10f",
+        "JobID": 14,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "name": "Screen View",
+          "type": "screen",
+          "sentAt": "2022-08-03T10:49:02.452+05:30",
+          "userId": "identified user id",
+          "context": {
+            "ip": "14.5.67.21",
+            "library": {
+              "name": "http"
+            }
+          },
+          "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+          "messageId": "10e84d00-2ad6-4e7d-be4a-446d1e606711",
+          "timestamp": "2020-02-02T00:23:09.544Z",
+          "properties": {
+            "prop1": "5"
+          },
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "anonymousId": "anon-id-new",
+          "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+        },
+        "PayloadSize": 536,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "",
+          "event_type": "screen",
+          "message_id": "10e84d00-2ad6-4e7d-be4a-446d1e606711",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363167+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  },
+  {
+    "message": {
+      "type": "group",
+      "sentAt": "2022-08-03T10:49:02.452+05:30",
+      "traits": {
+        "name": "Company",
+        "industry": "Industry",
+        "employees": 123
+      },
+      "userId": "user123",
+      "context": {
+        "ip": "14.5.67.21",
+        "traits": {
+          "trait1": "new-val"
+        },
+        "library": {
+          "name": "http"
+        }
+      },
+      "groupId": "group1",
+      "rudderId": "bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5",
+      "messageId": "a22f93c7-6c03-4791-9d28-6dea1970d852",
+      "timestamp": "2020-01-21T00:21:34.208Z",
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 15,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "a71a8a22-346e-429d-9dda-dce691854a12",
+        "JobID": 15,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "type": "group",
+          "sentAt": "2022-08-03T10:49:02.452+05:30",
+          "traits": {
+            "name": "Company",
+            "industry": "Industry",
+            "employees": 123
+          },
+          "userId": "user123",
+          "context": {
+            "ip": "14.5.67.21",
+            "traits": {
+              "trait1": "new-val"
+            },
+            "library": {
+              "name": "http"
+            }
+          },
+          "groupId": "group1",
+          "rudderId": "bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5",
+          "messageId": "a22f93c7-6c03-4791-9d28-6dea1970d852",
+          "timestamp": "2020-01-21T00:21:34.208Z",
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+        },
+        "PayloadSize": 589,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "",
+          "event_type": "group",
+          "message_id": "a22f93c7-6c03-4791-9d28-6dea1970d852",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363168+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  },
+  {
+    "message": {
+      "type": "alias",
+      "sentAt": "2022-08-03T10:49:02.452+05:30",
+      "userId": "user123",
+      "context": {
+        "ip": "14.5.67.21",
+        "traits": {
+          "trait1": "new-val"
+        },
+        "library": {
+          "name": "http"
+        }
+      },
+      "rudderId": "bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5",
+      "messageId": "d386a869-bcbb-4c11-b3d8-d080ef15f33e",
+      "timestamp": "2020-01-21T00:21:34.208Z",
+      "previousId": "previd1",
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "request_ip": "[::1]",
+      "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+    },
+    "metadata": {
+      "userId": "anon-id-new<<>>identified user id",
+      "jobId": 16,
+      "sourceId": "2CFEootdF2eQh0CGeD0jdVybP5A",
+      "destinationId": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "attemptNum": 0,
+      "receivedAt": "2022-08-03T10:49:01.227+05:30",
+      "createdAt": "2022-08-03T05:19:02.454Z",
+      "firstAttemptedAt": "",
+      "transformAt": "router",
+      "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+      "secret": null,
+      "jobsT": {
+        "UUID": "a7046783-9d3c-45e7-bb36-de7a1ecf16f6",
+        "JobID": 16,
+        "UserID": "anon-id-new<<>>identified user id",
+        "CreatedAt": "2022-08-03T05:19:02.454702Z",
+        "ExpireAt": "2022-08-03T05:19:02.454702Z",
+        "CustomVal": "LAMBDA",
+        "EventCount": 1,
+        "EventPayload": {
+          "type": "alias",
+          "sentAt": "2022-08-03T10:49:02.452+05:30",
+          "userId": "user123",
+          "context": {
+            "ip": "14.5.67.21",
+            "traits": {
+              "trait1": "new-val"
+            },
+            "library": {
+              "name": "http"
+            }
+          },
+          "rudderId": "bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5",
+          "messageId": "d386a869-bcbb-4c11-b3d8-d080ef15f33e",
+          "timestamp": "2020-01-21T00:21:34.208Z",
+          "previousId": "previd1",
+          "receivedAt": "2022-08-03T10:49:01.227+05:30",
+          "request_ip": "[::1]",
+          "originalTimestamp": "2022-08-03T10:49:02.452+05:30"
+        },
+        "PayloadSize": 506,
+        "LastJobStatus": {
+          "JobID": 0,
+          "JobState": "",
+          "AttemptNum": 0,
+          "ExecTime": "0001-01-01T00:00:00Z",
+          "RetryTime": "0001-01-01T00:00:00Z",
+          "ErrorCode": "",
+          "ErrorResponse": null,
+          "Parameters": null,
+          "WorkspaceId": ""
+        },
+        "Parameters": {
+          "record_id": null,
+          "source_id": "2CFEootdF2eQh0CGeD0jdVybP5A",
+          "event_name": "",
+          "event_type": "alias",
+          "message_id": "d386a869-bcbb-4c11-b3d8-d080ef15f33e",
+          "received_at": "2022-08-03T10:49:01.227+05:30",
+          "workspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7",
+          "transform_at": "router",
+          "source_job_id": "",
+          "destination_id": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+          "gateway_job_id": 11,
+          "source_task_id": "",
+          "source_batch_id": "",
+          "source_category": "",
+          "source_job_run_id": "",
+          "source_task_run_id": "",
+          "source_definition_id": "2CCxgViQJACgWABA6h83wlXnE1k",
+          "destination_definition_id": ""
+        },
+        "WorkspaceId": "2ANaDOTAzxboCOF86FkRGMEJ5F7"
+      },
+      "pickedAtTime": "2022-08-03T10:49:03.363168+05:30",
+      "resultSetID": 11
+    },
+    "destination": {
+      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
+      "Name": "Lambda test",
+      "DestinationDefinition": {
+        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
+        "Name": "LAMBDA",
+        "DisplayName": "AWS Lambda",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "region",
+              "accessKeyId",
+              "secretAccessKey",
+              "lambda",
+              "invocationType",
+              "enableBatchInput",
+              "clientContext"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track",
+            "alias",
+            "group"
+          ],
+          "supportedSourceTypes": [
+            "amp",
+            "android",
+            "cordova",
+            "cloud",
+            "flutter",
+            "ios",
+            "reactnative",
+            "unity",
+            "warehouse",
+            "web"
+          ],
+          "transformAt": "router",
+          "transformAtV1": "router"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true,
+      "RevisionID": "2CojwWiWjNghiGbfuRcwfs6Bt5q"
+    }
+  }
+]

@@ -387,19 +387,19 @@ const batchEvents = destEvents => {
 
   // batching up 'update' contact endpoint chunks
   if (arrayChunksIdentifyUpdateContact.length) {
-    batchedResponseList = batchedResponseList.concat(
-      batchIdentify(
-        arrayChunksIdentifyUpdateContact,
-        batchedResponseList,
-        "updateContacts"
-      )
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyUpdateContact,
+      batchedResponseList,
+      "updateContacts"
     );
   }
 
   // batching up 'general' identify endpoint chunks
   if (arrayChunksIdentify.length) {
-    batchedResponseList = batchedResponseList.concat(
-      batchIdentify(arrayChunksIdentify, batchedResponseList, "general")
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentify,
+      batchedResponseList,
+      "general"
     );
   }
 

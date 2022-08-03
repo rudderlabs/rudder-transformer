@@ -250,7 +250,7 @@ const searchContacts = async (message, destination) => {
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits `,
+      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
       400
     );
   }
@@ -358,7 +358,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new CustomError(`[HS]:: '${event}' event not found`, 400);
+    throw new CustomError(`[HS]:: '${event}' event name not found`, 400);
   }
 
   // 2. fetch event properties from webapp config

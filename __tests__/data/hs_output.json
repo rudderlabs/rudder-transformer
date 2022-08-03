@@ -554,7 +554,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.hubapi.com/events/v3/send?hapikey=2de0b0dd-d30e-4828-90a2-3b952656c6ba",
+    "endpoint": "https://api.hubapi.com/events/v3/send?hapikey=e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -584,5 +584,88 @@
       "stage": "transform",
       "scope": "exception"
     }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "operation": "createContacts",
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "noname@email.com",
+            "firstname": "Test Hubspot"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  {
+    "statusCode": 400,
+    "error": "Message type is not present. Aborting message."
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: API Key not found. Aborting"
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: Identify - Invalid traits value for lookup field"
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS] Identify:: 'firstname' lookup field for contact lookup not found in traits"
+  },
+  {
+    "statusCode": 400,
+    "error": "[HS]:: 'temp event' event name not found"
+  },
+  {
+    "statusCode": 400,
+    "error": "event name is required for track call"
+  },
+  {
+    "statusCode": 400,
+    "error": "objectType not found",
+    "statTags": {
+      "destination": "hs",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "GET",
+    "messageType": "track",
+    "endpoint": "https://track.hubspot.com/v1/event",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37"
+    },
+    "params": {
+      "_n": "test track event HS",
+      "email": "testhubspot2@email.com",
+      "firstname": "Test Hubspot"
+    },
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "FORM": {},
+      "JSON_ARRAY": {}
+    },
+    "files": {}
   }
 ]

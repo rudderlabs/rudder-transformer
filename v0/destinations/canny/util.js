@@ -1,6 +1,6 @@
 const qs = require("qs");
 const { httpPOST } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { CustomError, getDestinationExternalID } = require("../../util");
 
 /**
  * Function to retrieve userId from canny using axios
@@ -10,8 +10,8 @@ const { CustomError } = require("../../util");
  */
 const retrieveUserId = async (apiKey, message) => {
   try {
-    if (message?.context?.externalId?.type === "cannyUserId") {
-      const cannyId = message.context.externalId.value;
+    const cannyId = getDestinationExternalID(message, "cannyUserId");
+    if (cannyId) {
       return cannyId;
     }
 

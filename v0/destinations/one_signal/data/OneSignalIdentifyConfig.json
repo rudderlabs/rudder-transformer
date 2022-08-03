@@ -14,12 +14,18 @@
     "sourceKeys": "createdAt",
     "destKey": "created_at",
     "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
     "required": false
   },
   {
     "sourceKeys": "createdAt",
     "destKey": "last_active",
     "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
     "required": false
   },
   {
@@ -38,7 +44,7 @@
     "required": false
   },
   {
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
     "destKey": "external_user_id",
     "sourceFromGenericMap": true,
     "required": false

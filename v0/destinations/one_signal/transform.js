@@ -17,7 +17,6 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
-  toUnixTimestamp,
   defaultPutRequestConfig
 } = require("../../util");
 const { populateDeviceType, populateTags } = require("./util");
@@ -30,7 +29,7 @@ const responseBuilder = (payload, endpoint, eventType) => {
       Accept: "application/json",
       "Content-Type": "application/json"
     };
-    if (eventType.toLowerCase() === "identify") {
+    if (eventType.toLowerCase() === "identify" && endpoint === "/players") {
       response.method = defaultPostRequestConfig.requestMethod;
     } else {
       response.method = defaultPutRequestConfig.requestMethod;
@@ -38,6 +37,10 @@ const responseBuilder = (payload, endpoint, eventType) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
+  throw new CustomError(
+    "Payload could not be populated due to wrong input",
+    400
+  );
 };
 
 /**
@@ -67,14 +70,6 @@ const identifyResponseBuilder = (message, { Config }) => {
   );
   // Mapping app_id
   payload.app_id = appId;
-
-  // update the timestamp to unix timeStamp
-  if (payload.created_at) {
-    payload.created_at = toUnixTimestamp(payload.created_at);
-  }
-  if (payload.last_active) {
-    payload.last_active = toUnixTimestamp(payload.last_active);
-  }
 
   // If playerId is present, creating Edit Device Response for Editing a devic using the playerId
   if (playerId) {
@@ -132,7 +127,7 @@ const trackResponseBuilder = (message, { Config }) => {
   const { appId, eventAsTags, allowedProperties } = Config;
   const event = get(message, "event");
   let { endpoint } = ENDPOINTS.TRACK;
-  const externalUserId = getFieldValueFromMessage(message, "userId");
+  const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
   if (!event) {
     throw new CustomError(
       "[OneSignal]: event is not present in the input payloads",
@@ -156,15 +151,21 @@ const trackResponseBuilder = (message, { Config }) => {
   tags[event] = true;
   // Populating tags using allowed properties(from dashboard)
   const properties = get(message, "properties");
-  allowedProperties.forEach(item => {
-    if (properties[item.propertyName]) {
-      if (eventAsTags && typeof properties[item.propertyName] === "string") {
-        tags[`${event}_${[item.propertyName]}`] = properties[item.propertyName];
-      } else if (typeof properties[item.propertyName] === "string") {
-        tags[item.propertyName] = properties[item.propertyName];
+  if (properties) {
+    allowedProperties.forEach(item => {
+      if (
+        properties[item.propertyName] ||
+        properties[item.propertyName] === ""
+      ) {
+        if (eventAsTags && typeof properties[item.propertyName] === "string") {
+          tags[`${event}_${[item.propertyName]}`] =
+            properties[item.propertyName];
+        } else if (typeof properties[item.propertyName] === "string") {
+          tags[item.propertyName] = properties[item.propertyName];
+        }
       }
-    }
-  });
+    });
+  }
   payload.tags = tags;
   return responseBuilder(payload, endpoint, message.type);
 };
@@ -185,7 +186,7 @@ const groupResponseBuilder = (message, { Config }) => {
     );
   }
   let { endpoint } = ENDPOINTS.GROUP;
-  const externalUserId = getFieldValueFromMessage(message, "userId");
+  const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
 
   if (!externalUserId) {
     throw new CustomError(
@@ -200,11 +201,18 @@ const groupResponseBuilder = (message, { Config }) => {
 
   // Populating tags using allowed properties(from dashboard)
   const properties = getFieldValueFromMessage(message, "traits");
-  allowedProperties.forEach(item => {
-    if (typeof properties[item.propertyName] === "string") {
-      tags[item.propertyName] = properties[item.propertyName];
-    }
-  });
+  if (properties) {
+    allowedProperties.forEach(item => {
+      if (
+        properties[item.propertyName] ||
+        properties[item.propertyName] === ""
+      ) {
+        if (typeof properties[item.propertyName] === "string") {
+          tags[item.propertyName] = properties[item.propertyName];
+        }
+      }
+    });
+  }
   payload.tags = tags;
   return responseBuilder(payload, endpoint, message.type);
 };

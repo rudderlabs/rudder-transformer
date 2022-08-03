@@ -1,7 +1,8 @@
 const {
   getIntegrationsObj,
   getFieldValueFromMessage,
-  CustomError
+  CustomError,
+  getBrowserInfo
 } = require("../../util");
 
 // For mapping device_type value
@@ -29,16 +30,18 @@ const validateDeviceType = deviceType => {
 const populateTags = message => {
   const tags = {};
   const traits = getFieldValueFromMessage(message, "traits");
-  const traitsKey = Object.keys(traits);
-  traitsKey.forEach(key => {
-    if (typeof traits[key] === "string") {
-      tags[key] = traits[key];
+  if (traits) {
+    const traitsKey = Object.keys(traits);
+    traitsKey.forEach(key => {
+      if (typeof traits[key] === "string") {
+        tags[key] = traits[key];
+      }
+    });
+    if (message.anonymousId) {
+      tags.anonymousId = message.anonymousId;
     }
-  });
-  if (message.anonymousId) {
-    tags.anonymousId = message.anonymousId;
+    return tags;
   }
-  return tags;
 };
 
 /**
@@ -49,7 +52,11 @@ const populateTags = message => {
 const populateDeviceType = (message, payload) => {
   const integrationsObj = getIntegrationsObj(message, "one_signal");
   const devicePayload = payload;
-  if (integrationsObj && integrationsObj.deviceType) {
+  if (
+    integrationsObj &&
+    integrationsObj.deviceType &&
+    integrationsObj.identifier
+  ) {
     devicePayload.device_type = parseInt(integrationsObj.deviceType);
     devicePayload.identifier = integrationsObj.identifier;
     if (!validateDeviceType(devicePayload.device_type)) {

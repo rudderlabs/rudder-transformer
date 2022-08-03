@@ -52,7 +52,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const hubspotOp = get(message, "context.hubspotOperation");
+  const operation = get(message, "context.hubspotOperation");
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
   let endpoint;
@@ -60,16 +60,19 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   if (
     mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
-    hubspotOp
+    operation
   ) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
-    if (hubspotOp === "create") {
+    if (!objectType) {
+      throw new CustomError("objectType not found", 400);
+    }
+    if (operation === "createObject") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
         objectType
       );
-    } else if (hubspotOp === "update" && getHsSearchId(message)) {
+    } else if (operation === "updateObject" && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
@@ -79,7 +82,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     }
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
-    response.hubspotOp = hubspotOp;
+    response.operation = operation;
   } else {
     if (!traits || !traits.email) {
       throw new CustomError(
@@ -197,7 +200,7 @@ const batchIdentifyForrETL = (
 
     let batchEventResponse = defaultBatchRequestConfig();
 
-    if (batchOperation === "create") {
+    if (batchOperation === "createObject") {
       // create operation
       chunk.forEach(ev => {
         // if source is of rETL
@@ -206,7 +209,7 @@ const batchIdentifyForrETL = (
 
         metadata.push(ev.metadata);
       });
-    } else if (batchOperation === "update") {
+    } else if (batchOperation === "updateObject") {
       // update operation
       chunk.forEach(ev => {
         const updateEndpoint = ev.message.endpoint;
@@ -221,6 +224,8 @@ const batchIdentifyForrETL = (
 
         metadata.push(ev.metadata);
       });
+    } else {
+      throw new CustomError("[HS]:: Unknow hubpot operation", 400);
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -282,13 +287,15 @@ const legacyBatchEvents = destEvents => {
       maxBatchSize = endpoint.includes("contact")
         ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
-      const { hubspotOp } = event.message;
-      if (hubspotOp) {
-        if (hubspotOp === "create") {
+      const { operation } = event.message;
+      if (operation) {
+        if (operation === "createObject") {
           createAllObjectsEventChunk.push(event);
-        } else if (hubspotOp === "update") {
+        } else if (operation === "updateObject") {
           updateAllObjectsEventChunk.push(event);
         }
+      } else {
+        throw new CustomError("[HS]:: Error in getting operation", 400);
       }
     } else {
       // making chunks for identify
@@ -309,7 +316,7 @@ const legacyBatchEvents = destEvents => {
     batchedResponseList = batchIdentifyForrETL(
       arrayChunksIdentifyCreateObjects,
       batchedResponseList,
-      "create"
+      "createObject"
     );
   }
 
@@ -318,7 +325,7 @@ const legacyBatchEvents = destEvents => {
     batchedResponseList = batchIdentifyForrETL(
       arrayChunksIdentifyUpdateObjects,
       batchedResponseList,
-      "update"
+      "updateObject"
     );
   }
 

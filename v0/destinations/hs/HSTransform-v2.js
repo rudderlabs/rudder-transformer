@@ -51,7 +51,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const hubspotOp = get(message, "context.hubspotOperation");
+  const operation = get(message, "context.hubspotOperation");
   // build response
   let endpoint;
   const response = defaultRequestConfig();
@@ -60,19 +60,19 @@ const processIdentify = async (message, destination, propertyMap) => {
   if (
     mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
-    hubspotOp
+    operation
   ) {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (!objectType) {
       throw new CustomError("objectType not found", 400);
     }
-    if (hubspotOp === "create") {
+    if (operation === "createObject") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
         objectType
       );
-    } else if (hubspotOp === "update" && getHsSearchId(message)) {
+    } else if (operation === "updateObject" && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);
       endpoint = `${CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
         ":objectType",
@@ -83,7 +83,7 @@ const processIdentify = async (message, destination, propertyMap) => {
 
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = "rETL";
-    response.hubspotOp = hubspotOp;
+    response.operation = operation;
   } else {
     if (!Config.lookupField) {
       throw new CustomError(
@@ -218,12 +218,12 @@ const batchIdentify = (
 
     let batchEventResponse = defaultBatchRequestConfig();
 
-    if (batchOperation === "create") {
+    if (batchOperation === "createObject") {
       batchEventResponse.batchedRequest.endpoint =
         message.source === "rETL"
           ? `${message.endpoint}/batch/create`
           : BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else if (batchOperation === "update") {
+    } else if (batchOperation === "updateObject") {
       batchEventResponse.batchedRequest.endpoint =
         message.source === "rETL"
           ? `${message.endpoint.substr(
@@ -233,77 +233,21 @@ const batchIdentify = (
           : BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
     }
 
-    if (batchOperation === "create") {
+    if (batchOperation === "createObject") {
       // create operation
       chunk.forEach(ev => {
-        // if source is of rETL
-        if (ev.message.source === "rETL") {
-          identifyResponseList.push({ ...ev.message.body.JSON });
-        } else {
-          // format properties into batch structure
-          // eslint-disable-next-line no-param-reassign
-          ev.message.body.JSON.properties = getCRMUpdatedProps(
-            ev.message.body.JSON.properties
-          );
-
-          // duplicate email can cause issue with create in batch
-          // updating the existing one to avoid duplicate
-          // as same event can fire in batch one of the reason
-          // can be due to network lag or processor being busy
-          const isDuplicate = identifyResponseList.find(data => {
-            return (
-              data.properties.email === ev.message.body.JSON.properties.email
-            );
-          });
-          if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
-            // array is being shallow copied hence changes are affecting the original reference
-            // basically rewriting the same value to avoid duplicate entry
-            isDuplicate.properties = ev.message.body.JSON.properties;
-          } else {
-            // appending unique events
-            identifyResponseList.push({
-              properties: ev.message.body.JSON.properties
-            });
-          }
-        }
+        identifyResponseList.push({ ...ev.message.body.JSON });
         metadata.push(ev.metadata);
       });
-    } else if (batchOperation === "update") {
+    } else if (batchOperation === "updateObject") {
       // update operation
       chunk.forEach(ev => {
-        if (ev.message.source === "rETL") {
-          const updateEndpoint = ev.message.endpoint;
-          identifyResponseList.push({
-            ...ev.message.body.JSON,
-            id: updateEndpoint.split("/").pop()
-          });
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          ev.message.body.JSON.properties = getCRMUpdatedProps(
-            ev.message.body.JSON.properties
-          );
-          // update has contactId and properties
-          // extract contactId from the end of the endpoint
-          const id = ev.message.endpoint.split("/").pop();
+        const updateEndpoint = ev.message.endpoint;
+        identifyResponseList.push({
+          ...ev.message.body.JSON,
+          id: updateEndpoint.split("/").pop()
+        });
 
-          // duplicate contactId is not allowed in batch
-          // updating the existing one to avoid duplicate
-          // as same event can fire in batch one of the reason
-          // can be due to network lag or processor being busy
-          const isDuplicate = identifyResponseList.find(data => {
-            return data.id === id;
-          });
-          if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
-            // rewriting the same value to avoid duplicate entry
-            isDuplicate.properties = ev.message.body.JSON.properties;
-          } else {
-            // appending unique events
-            identifyResponseList.push({
-              id,
-              properties: ev.message.body.JSON.properties
-            });
-          }
-        }
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === "createContacts") {
@@ -356,30 +300,8 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
-    } else if (batchOperation === "general") {
-      // general identify event
-
-      /* Note: */
-      // 1. for now it is just HS CRM custom objects however later it can be
-      // refactored to accomodate upcoming endpoint and make necessary changes
-      // 2. this operation for now is just being used by rETL.
-
-      chunk.forEach(ev => {
-        // if source is of rETL
-        if (ev.message.source === "rETL") {
-          identifyResponseList.push({ ...ev.message.body.JSON });
-          metadata.push(ev.metadata);
-        }
-      });
-
-      // CRM_CREATE_CUSTOM_OBJECTS has objectType value
-      // extract objectType from the end of the endpoint
-      const objectType = chunk[0].message.endpoint.split("/").pop();
-
-      batchEventResponse.batchedRequest.endpoint = BATCH_CREATE_CUSTOM_OBJECTS.replace(
-        ":objectType",
-        objectType
-      );
+    } else {
+      throw new CustomError("[HS]:: Unknow hubspot operation", 400);
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -424,9 +346,11 @@ const batchEvents = destEvents => {
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
   let maxBatchSize;
+
   destEvents.forEach(event => {
     // handler for track call
     // track call does not have batch endpoint
+    const { operation } = event.message;
     if (event.message.messageType === "track") {
       const { message, metadata, destination } = event;
       const endpoint = get(message, "endpoint");
@@ -453,18 +377,19 @@ const batchEvents = destEvents => {
       maxBatchSize = endpoint.includes("contact")
         ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
-      const { hubspotOp } = event.message;
-      if (hubspotOp) {
-        if (hubspotOp === "create") {
+      if (operation) {
+        if (operation === "createObject") {
           createAllObjectsEventChunk.push(event);
-        } else if (hubspotOp === "update") {
+        } else if (operation === "updateObject") {
           updateAllObjectsEventChunk.push(event);
         }
+      } else {
+        throw new CustomError("[HS]:: Error in getting operation", 400);
       }
-    } else if (event.message.operation === "createContacts") {
+    } else if (operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint
       createContactEventsChunk.push(event);
-    } else if (event.message.operation === "updateContacts") {
+    } else if (operation === "updateContacts") {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
@@ -500,7 +425,7 @@ const batchEvents = destEvents => {
     batchedResponseList = batchIdentify(
       arrayChunksIdentifyCreateObjects,
       batchedResponseList,
-      "create"
+      "createObject"
     );
   }
 
@@ -509,7 +434,7 @@ const batchEvents = destEvents => {
     batchedResponseList = batchIdentify(
       arrayChunksIdentifyUpdateObjects,
       batchedResponseList,
-      "update"
+      "updateObject"
     );
   }
 

@@ -400,10 +400,10 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
         input,
         filteredInfo[0].id
       );
-      input.message.context.hubspotOperation = "update";
+      input.message.context.hubspotOperation = "updateObject";
       resultInput.push(input);
     } else {
-      input.message.context.hubspotOperation = "create";
+      input.message.context.hubspotOperation = "createObject";
       resultInput.push(input);
     }
   });

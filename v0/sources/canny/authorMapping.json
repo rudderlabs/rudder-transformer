@@ -5,10 +5,7 @@
   },
   {
     "sourceKeys": "object",
-    "destKeys": "properties",
-    "metadata": {
-      "excludes": ["author"]
-    }
+    "destKeys": "properties"
   },
   {
     "sourceKeys": "objectType",
@@ -21,9 +18,6 @@
   },
   {
     "sourceKeys": "object.author",
-    "destKeys": "context.traits",
-    "metadata": {
-      "excludes": ["userID", "id"]
-    }
+    "destKeys": "context.traits"
   }
 ]

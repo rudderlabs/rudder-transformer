@@ -53,8 +53,11 @@ function createMessage(event, typeOfUser) {
 
   message.setEventType("track");
 
-  if (typeOfUser === "voter") message.setPropertiesV2(event, voterMapping);
-  else message.setPropertiesV2(event, authorMapping);
+  if (typeOfUser === "voter") {
+    message.setPropertiesV2(event, voterMapping);
+  } else {
+    message.setPropertiesV2(event, authorMapping);
+  }
 
   message.context.integration.version = "1.0.0";
 
@@ -70,8 +73,6 @@ function createMessage(event, typeOfUser) {
       }
     ];
   }
-
-  message.context.traits = event.object[`${typeOfUser}`];
 
   // deleting already mapped fields
   delete message.properties[`${typeOfUser}`];

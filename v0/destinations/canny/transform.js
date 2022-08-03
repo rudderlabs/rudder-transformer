@@ -10,15 +10,22 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
-const { retrieveUserId } = require("./util");
+const {
+  retrieveUserId,
+  validateIdentifyFields,
+  validateCreatePostFields,
+  validateEventMapping
+} = require("./util");
 
-const responseBuilder = (
-  payload,
-  apiKey,
-  endpoint,
-  contentType,
-  responseBody
-) => {
+const responseBuilder = responseConfgs => {
+  const {
+    payload,
+    apiKey,
+    endpoint,
+    contentType,
+    responseBody
+  } = responseConfgs;
+
   const response = defaultRequestConfig();
   if (payload) {
     response.endpoint = `${BASE_URL}${endpoint}`;
@@ -43,24 +50,26 @@ const identifyResponseBuilder = (message, { Config }) => {
   );
   payload.apiKey = apiKey;
 
-  if (!payload.userID) {
-    throw new CustomError("UserId is not present. Aborting message.", 400);
-  }
-  if (!payload.name) {
-    throw new CustomError("Name is not present. Aborting message.", 400);
-  }
+  validateIdentifyFields(payload);
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
-  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
+  const responseConfgs = {
+    payload,
+    apiKey,
+    endpoint,
+    contentType,
+    responseBody
+  };
+  return responseBuilder(responseConfgs);
 };
 
-const getTrackResponse = async (apiKey, message, val) => {
+const getTrackResponse = async (apiKey, message, operationType) => {
   let endpoint;
   let responseBody;
   let contentType;
   let payload;
-  if (val === "createVote") {
+  if (operationType === "createVote") {
     responseBody = "FORM";
     contentType = "application/x-www-form-urlencoded";
 
@@ -76,7 +85,7 @@ const getTrackResponse = async (apiKey, message, val) => {
     const voterID = await retrieveUserId(apiKey, message);
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
-  } else if (val === "createPost") {
+  } else if (operationType === "createPost") {
     contentType = "application/json";
     responseBody = "JSON";
 
@@ -85,15 +94,7 @@ const getTrackResponse = async (apiKey, message, val) => {
       mappingConfig[ConfigCategory.CREATE_POST.name]
     );
 
-    if (!payload.boardID) {
-      throw new CustomError("BoardID is not present. Aborting message.", 400);
-    }
-    if (!payload.title) {
-      throw new CustomError("Title is not present. Aborting message.", 400);
-    }
-    if (!payload.details) {
-      throw new CustomError("Details is not present. Aborting message.", 400);
-    }
+    validateCreatePostFields(payload);
 
     payload.apiKey = apiKey;
     payload.authorID = await retrieveUserId(apiKey, message);
@@ -101,39 +102,40 @@ const getTrackResponse = async (apiKey, message, val) => {
     endpoint = ConfigCategory.CREATE_POST.endpoint;
   }
 
-  return responseBuilder(payload, apiKey, endpoint, contentType, responseBody);
+  const responseConfgs = {
+    payload,
+    apiKey,
+    endpoint,
+    contentType,
+    responseBody
+  };
+  return responseBuilder(responseConfgs);
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const { apiKey } = Config;
-  const eventsToEvents = Config.eventsToEvents;
-  const eventsMap = getHashFromArrayWithDuplicate(eventsToEvents);
+  const { apiKey, eventsToEvents } = Config;
+  const configuredEventsMap = getHashFromArrayWithDuplicate(eventsToEvents);
 
   const event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new CustomError("Event name is required", 400);
-  }
+  validateEventMapping(configuredEventsMap, event);
 
-  if (!eventsMap[event]) {
-    throw new CustomError(
-      `Event name (${event}) is not present in the mapping`,
-      400
-    );
-  }
-
-  const returnArray = [];
-  const eventArray = Object.keys(eventsMap);
-  for (const key of eventArray) {
-    if (key === event) {
-      const eventsMapArray = eventsMap[event];
-      for (const element of eventsMapArray) {
-        const response = await getTrackResponse(apiKey, message, element);
-        returnArray.push(response);
+  const responseArray = [];
+  const configuredSourceEvents = Object.keys(configuredEventsMap);
+  for (const configuredSourceEvent of configuredSourceEvents) {
+    if (configuredSourceEvent === event) {
+      const destinationEvents = configuredEventsMap[event];
+      for (const destinationEvent of destinationEvents) {
+        const response = await getTrackResponse(
+          apiKey,
+          message,
+          destinationEvent
+        );
+        responseArray.push(response);
       }
     }
   }
 
-  return returnArray;
+  return responseArray;
 };
 
 const processEvent = (message, destination) => {

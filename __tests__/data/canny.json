@@ -79,8 +79,6 @@
         "JSON": {
           "customFields": {
             "city": "Pune",
-            "name": "First User",
-            "email": "firstUser@testmail.com",
             "title": "VP",
             "gender": "female"
           },

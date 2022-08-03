@@ -69,7 +69,7 @@ function createMessage(event, typeOfUser) {
     message.context.externalId = [
       {
         type: "cannyUserId",
-        value: event.object[`${typeOfUser}`].id
+        id: event.object[`${typeOfUser}`].id
       }
     ];
   }

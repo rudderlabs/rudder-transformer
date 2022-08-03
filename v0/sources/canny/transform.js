@@ -1,26 +1,16 @@
-const path = require("path");
-const fs = require("fs");
 const Message = require("../message");
 const sha256 = require("sha256");
-const { CustomError } = require("../../util");
+const {
+  voterMapping,
+  authorMapping,
+  checkForRequiredFields
+} = require("./util");
+const { logger } = require("../../../logger");
 
-// import mapping json using JSON.parse to preserve object key order
-const voterMapping = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./voterMapping.json"), "utf-8")
-);
-const authorMapping = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./authorMapping.json"), "utf-8")
-);
-
-/**
- * This function throws an error if required fields are not present.
- * @param {*} message
- */
-function checkForRequiredFields(message) {
-  if (!message.event || !(message.userId || message.anonymousId)) {
-    throw new CustomError("Missing essential fields from Canny.", 400);
-  }
-}
+const CannyOperation = {
+  VOTE_CREATED: "vote.created",
+  VOTE_DELETED: "vote.deleted"
+};
 
 /**
  * This function is used for setting up userId and anonymousId.
@@ -37,7 +27,17 @@ function settingIds(message, event, typeOfUser) {
       // setting up anonymousId if userId is not present
       message.anonymousId = sha256(event.object[`${typeOfUser}`]?.email);
     }
+
+    if (event.object[`${typeOfUser}`]?.id) {
+      message.context.externalId = [
+        {
+          type: "cannyUserId",
+          id: event.object[`${typeOfUser}`].id
+        }
+      ];
+    }
   } catch (e) {
+    logger?.error(`Missing essential fields from Canny. Error: (${e})`);
     throw new Error(`Missing essential fields from Canny. Error: (${e})`);
   }
 }
@@ -65,15 +65,6 @@ function createMessage(event, typeOfUser) {
 
   checkForRequiredFields(message);
 
-  if (event.object[`${typeOfUser}`]?.id) {
-    message.context.externalId = [
-      {
-        type: "cannyUserId",
-        id: event.object[`${typeOfUser}`].id
-      }
-    ];
-  }
-
   // deleting already mapped fields
   delete message.properties[`${typeOfUser}`];
   delete message.context.traits?.userID;
@@ -86,8 +77,8 @@ function process(event) {
   let typeOfUser;
 
   switch (event.type) {
-    case "vote.created":
-    case "vote.deleted":
+    case CannyOperation?.VOTE_CREATED:
+    case CannyOperation?.VOTE_DELETED:
       typeOfUser = "voter";
       break;
 
@@ -95,8 +86,6 @@ function process(event) {
       typeOfUser = "author";
   }
 
-  const message = createMessage(event, typeOfUser);
-
-  return message;
+  return createMessage(event, typeOfUser);
 }
 module.exports = { process };

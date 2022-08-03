@@ -160,13 +160,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],
@@ -339,13 +339,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],
@@ -518,13 +518,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],
@@ -695,13 +695,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],
@@ -880,13 +880,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],
@@ -1055,13 +1055,13 @@
         "ResponseRules": {}
       },
       "Config": {
-        "accessKeyId": "AKIAWTVBJHCTBELTBKTS",
+        "accessKeyId": "",
         "clientContext": "",
         "enableBatchInput": false,
         "invocationType": "Event",
         "lambda": "testFunction",
         "region": "us-west-2",
-        "secretAccessKey": "gsDaSBqOXPrwFhJoV/d9taQNIeEIby9/isn0iP43"
+        "secretAccessKey": ""
       },
       "Enabled": true,
       "Transformations": [],

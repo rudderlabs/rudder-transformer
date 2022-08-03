@@ -1,0 +1,41 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "customer_id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": ["context.traits.email", "properties.email"],
+    "destKey": "email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "event",
+    "destKey": "action"
+  },
+  {
+    "sourceKeys": "context.traits.phone",
+    "destKey": "phone"
+  },
+  {
+    "sourceKeys": "originalTimestamp",
+    "destKey": "timestamp"
+  },
+
+  {
+    "sourceKeys": "properties.revenue",
+    "destKey": "revenue"
+  },
+  {
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
+    "destKey": "order_id"
+  },
+  {
+    "sourceKeys": "properties.in_store",
+    "destKey": "in_store"
+  },
+  {
+    "sourceKeys": "properties.salesforce",
+    "destKey": "salesforce"
+  }
+]

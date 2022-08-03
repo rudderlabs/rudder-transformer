@@ -41,7 +41,7 @@ const retrieveUserId = async (apiKey, message) => {
         );
       }
 
-      return response?.response?.data?.id || null;
+      return response?.response?.data?.data?.id || null;
     }
     response = await httpPOST(
       url,
@@ -60,7 +60,7 @@ const retrieveUserId = async (apiKey, message) => {
       );
     }
 
-    return response?.response?.data?.id || null;
+    return response?.response?.data?.data?.id || null;
   } catch (error) {
     throw new CustomError("Axios error", 400);
   }

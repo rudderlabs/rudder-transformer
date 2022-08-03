@@ -36,7 +36,7 @@
       "method": "POST",
       "endpoint": "https://canny.io/api/v1/votes/create",
       "headers": {
-        "Authorization": "Basic fb349439-789b-6b20-0c1c-726d3a90b148",
+        "Authorization": "Basic apikey123",
         "Content-Type": "application/x-www-form-urlencoded"
       },
       "params": {},
@@ -46,8 +46,8 @@
         "XML": {},
         "FORM": {
           "postID": "postid",
-          "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
-          "voterID": "62d14c90fff7c80d0ec08375"
+          "apiKey": "apikey123",
+          "voterID": "52d14c90fff7c80abcd12345"
         }
       },
       "files": {}
@@ -58,7 +58,7 @@
       "method": "POST",
       "endpoint": "https://canny.io/api/v1/posts/create",
       "headers": {
-        "Authorization": "Basic fb349439-789b-6b20-0c1c-726d3a90b148",
+        "Authorization": "Basic apikey123",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -67,7 +67,7 @@
           "boardID": "boardid",
           "details": "details",
           "title": "title",
-          "authorID": "62d14c90fff7c80d0ec08375"
+          "authorID": "52d14c90fff7c80abcd12345"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -83,7 +83,7 @@
       "method": "POST",
       "endpoint": "https://canny.io/api/v1/posts/create",
       "headers": {
-        "Authorization": "Basic fb349439-789b-6b20-0c1c-726d3a90b148",
+        "Authorization": "Basic apikey123",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -92,7 +92,7 @@
         "JSON_ARRAY": {},
         "XML": {},
         "JSON": {
-          "authorID": "authorid",
+          "authorID": "52d14c90fff7c80abcd12345",
           "boardID": "boardid",
           "details": "details",
           "title": "title"

@@ -66,7 +66,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
+        "apiKey": "apikey123",
         "eventsToEvents": [
           {
             "from": "abc",
@@ -148,7 +148,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "fb349439-789b-6b20-0c1c-726d3a90b148",
+        "apiKey": "apikey123",
         "eventsToEvents": [
           {
             "from": "abc",

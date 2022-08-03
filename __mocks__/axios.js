@@ -142,7 +142,7 @@ function post(url, payload) {
   if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {
     return dripPostRequestHandler(url, payload);
   }
-  if (url.includes("https://canny.io/api/v1")) {
+  if (url.includes("https://canny.io/api/v1/users/retrieve")) {
     return new Promise((resolve, reject) => {
       resolve(cannyPostRequestHandler(url));
     });

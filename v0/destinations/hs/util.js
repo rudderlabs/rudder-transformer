@@ -250,7 +250,7 @@ const searchContacts = async (message, destination) => {
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits `,
+      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
       400
     );
   }

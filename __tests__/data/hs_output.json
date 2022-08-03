@@ -630,7 +630,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: 'temp event' event not found"
+    "error": "[HS]:: 'temp event' event name not found"
   },
   {
     "statusCode": 400,

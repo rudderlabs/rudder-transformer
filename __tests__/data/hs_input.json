@@ -837,8 +837,8 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
         "apiVersion": "legacyApi",
         "lookupField": "",
@@ -909,8 +909,8 @@
       "Config": {
         "authorizationType": "newPrivateAppApi",
         "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
         "hubspotEvents": [],
@@ -982,8 +982,8 @@
       "Config": {
         "authorizationType": "newPrivateAppApi",
         "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
         "hubspotEvents": [],
@@ -1055,8 +1055,8 @@
       "Config": {
         "authorizationType": "newPrivateAppApi",
         "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
         "hubspotEvents": [],
@@ -1854,7 +1854,7 @@
     }
   },
   {
-    "description": "[HS] (New API v3) - (legacyApiKey) - track call",
+    "description": "[HS] (New API v3) - (legacyApiKey) - check basic track call",
     "message": {
       "channel": "web",
       "context": {
@@ -1899,8 +1899,103 @@
     "destination": {
       "Config": {
         "authorizationType": "legacyApiKey",
-        "hubID": "22315509",
-        "apiKey": "2de0b0dd-d30e-4828-90a2-3b952656c6ba",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "accessToken": "",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (legacyApiKey) - either of email, utk or objectId must be present",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Purchase",
+      "properties": {
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345,
+        "address": {
+          "city": "kolkata",
+          "country": "India"
+        }
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "legacyApiKey",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "accessToken": "",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
@@ -1951,6 +2046,7 @@
   },
   {
     "message": {
+      "description": "[HS] (newApi): check for legacyApiKey",
       "channel": "web",
       "context": {
         "app": {
@@ -1958,6 +2054,12 @@
           "name": "RudderLabs JavaScript SDK",
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
+        },
+        "traits": {
+          "email": "noname@email.com",
+          "firstname": "Test Hubspot",
+          "anonymousId": "12345",
+          "lookupField": "email"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1972,29 +2074,147 @@
         },
         "screen": {
           "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
         }
       },
-      "type": "track",
-      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
-      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "event": "Purchase",
-      "properties": {
-        "user_actual_role": "system_admin, system_user",
-        "user_actual_id": 12345,
-        "address": {
-          "city": "kolkata",
-          "country": "India"
-        }
+      "integrations": {
+        "All": true
       },
-      "sentAt": "2019-10-14T11:15:53.296Z"
+      "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
       "Config": {
         "authorizationType": "legacyApiKey",
-        "hubID": "22315509",
-        "apiKey": "2de0b0dd-d30e-4828-90a2-3b952656c6ba",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) message type not present",
+    "message": {
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ]
+      },
+      "event": "Purchase",
+      "properties": {
+        "revenue": "name1"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (legacyApiKey) - check for api key existence",
+    "message": {
+      "type": "identify",
+      "traits": {
+        "lookupField": "firstname",
+        "firstname": "Test"
+      },
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ]
+      },
+      "event": "Purchase",
+      "properties": {
+        "revenue": "name1"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "legacyApiKey",
+        "hubID": "6405167",
+        "apiKey": "",
         "accessToken": "",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
@@ -2039,6 +2259,438 @@
             "eventName": ""
           }
         ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) Identify: traits is not supplied",
+    "message": {
+      "type": "identify",
+      "context": {
+        "mappedToDestination": false
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) Identify: traits is not supplied",
+    "message": {
+      "type": "identify",
+      "traits": {
+        "email": "noname@email.com",
+        "lookupField": "firstname"
+      },
+      "context": {
+        "mappedToDestination": false
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (legacyApiKey) - event not found",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "Temp Event",
+      "properties": {
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345,
+        "address": {
+          "city": "kolkata",
+          "country": "India"
+        },
+        "objectId": "5005"
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "legacyApiKey",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "accessToken": "",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (New API v3) - (legacyApiKey) - event name is required",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345,
+        "address": {
+          "city": "kolkata",
+          "country": "India"
+        },
+        "objectId": "5005"
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "legacyApiKey",
+        "hubID": "6405167",
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "accessToken": "",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (Legacy API v1) - (newPrivateAppApi) rETL - object type is not provided i.e externalId is empty",
+    "message": {
+      "type": "identify",
+      "traits": {},
+      "context": {
+        "mappedToDestination": "true"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "legacyApi",
+        "lookupField": "lookupField",
+        "hubspotEvents": [
+          {
+            "rsEventName": "Purchase",
+            "hubspotEventName": "pe22315509_rs_hub_test",
+            "eventProperties": [
+              {
+                "from": "Revenue",
+                "to": "value"
+              },
+              {
+                "from": "Price",
+                "to": "cost"
+              }
+            ]
+          },
+          {
+            "rsEventName": "Order Complete",
+            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "eventProperties": [
+              {
+                "from": "firstName",
+                "to": "first_name"
+              },
+              {
+                "from": "lastName",
+                "to": "last_name"
+              }
+            ]
+          }
+        ],
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "description": "[HS] (Legacy API v1) - (newPrivateAppApi) - sample track call for legacy api with newPrivateAppApi",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "testhubspot2@email.com",
+          "firstname": "Test Hubspot"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "08829772-d991-427c-b976-b4c4f4430b4e",
+      "originalTimestamp": "2019-10-15T09:35:31.291Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "test track event HS",
+      "properties": {
+        "user_actual_role": "system_admin, system_user",
+        "user_actual_id": 12345
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
+        "hubID": "6405167",
+        "authorizationType": "newPrivateAppApi",
+        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
+        "apiVersion": "legacyApi"
       },
       "Enabled": true
     }

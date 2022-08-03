@@ -1,14 +1,14 @@
 [
   {
     "destKey": "userID",
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
     "sourceFromGenericMap": true,
     "required": true
   },
   {
     "destKey": "email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["context.traits.email", "traits.email", "properties.email"],
+    "sourceFromGenericMap": false,
     "required": false
   },
   {

@@ -1,11 +1,13 @@
 const { getErrorRespEvents, getSuccessRespEvents } = require("../../util");
 
+// Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
   return {
     payload: event.message
   };
 }
 
+// Returns a batched response list for a for list of inputs(successRespList)
 function batchEvents(successRespList, destination) {
   const batchedResponseList = [];
   const { enableBatchInput } = destination.Config;
@@ -34,12 +36,8 @@ function batchEvents(successRespList, destination) {
   return batchedResponseList;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
+// Router transform with batching by default
+const processRouterDest = inputs => {
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

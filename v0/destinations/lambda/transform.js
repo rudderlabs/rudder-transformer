@@ -43,23 +43,25 @@ const processRouterDest = async inputs => {
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];
-  const { destination } = inputs[0];
+  const batchMetadata = [];
 
+  inputs.forEach(input => {
+    successRespList.push({
+      payload: input.message,
+      metadata: input.metadata
+    });
+    batchMetadata.push(input.metadata);
+  });
+
+  const { destination } = inputs[0];
   if (!destination.Config) {
     const respEvents = getErrorRespEvents(
-      null,
+      batchMetadata,
       400,
       "destination.Config cannot be undefined"
     );
     return [respEvents];
   }
-
-  inputs.forEach(event => {
-    successRespList.push({
-      payload: event.message,
-      metadata: event.metadata
-    });
-  });
 
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList, destination);

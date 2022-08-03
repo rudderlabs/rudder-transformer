@@ -6,7 +6,9 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   CustomError,
-  getHashFromArrayWithDuplicate
+  getHashFromArrayWithDuplicate,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require("../../util");
 const { retrieveUserId } = require("./util");
 
@@ -30,14 +32,10 @@ const responseBuilder = (
   return response;
 };
 
-const identifyResponseBuilder = async (message, { Config }) => {
+const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   const contentType = "application/json";
   const responseBody = "JSON";
-
-  if (!apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
-  }
 
   const payload = constructPayload(
     message,
@@ -111,10 +109,6 @@ const trackResponseBuilder = async (message, { Config }) => {
   const eventsToEvents = Config.eventsToEvents;
   const eventsMap = getHashFromArrayWithDuplicate(eventsToEvents);
 
-  if (!apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
-  }
-
   const event = message.event?.toLowerCase().trim();
   if (!event) {
     throw new CustomError("Event name is required", 400);
@@ -129,14 +123,12 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   const returnArray = [];
   const eventArray = Object.keys(eventsMap);
-  for (let x = 0; x < eventArray.length; x++) {
-    //   Object.keys(eventsMap).forEach(async key => {
-    if (eventArray[x] === event) {
+  for (const key of eventArray) {
+    if (key === event) {
       const eventsMapArray = eventsMap[event];
       for (const element of eventsMapArray) {
-        //   eventsMap[event].forEach(async val => {
-        const a = await getTrackResponse(apiKey, message, element);
-        returnArray.push(a);
+        const response = await getTrackResponse(apiKey, message, element);
+        returnArray.push(response);
       }
     }
   }
@@ -145,6 +137,9 @@ const trackResponseBuilder = async (message, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
+  if (!destination.Config.apiKey) {
+    throw new CustomError("API Key is not present. Aborting message.", 400);
+  }
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -167,8 +162,47 @@ const processEvent = (message, destination) => {
   return response;
 };
 
-const process = async event => {
-  return await processEvent(event.message, event.destination);
+const process = event => {
+  return processEvent(event.message, event.destination);
 };
 
-module.exports = { process };
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

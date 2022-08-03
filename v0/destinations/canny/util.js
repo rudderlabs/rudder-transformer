@@ -2,6 +2,12 @@ const qs = require("qs");
 const { httpPOST } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
 
+/**
+ * Function to retrieve userId from canny using axios
+ * @param apiKey
+ * @param message
+ * @returns canny userId
+ */
 const retrieveUserId = async (apiKey, message) => {
   try {
     if (message?.context?.externalId?.type === "cannyUserId") {
@@ -68,7 +74,7 @@ const retrieveUserId = async (apiKey, message) => {
       response?.response?.data?.data?.id || response?.response?.data?.id || null
     );
   } catch (error) {
-    throw new CustomError("Axios error", 400);
+    throw new CustomError("Unable to retrieve userid from Canny", 400);
   }
 };
 

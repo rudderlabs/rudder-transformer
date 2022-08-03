@@ -232,7 +232,11 @@
             "to": "createPost"
           },
           {
-            "from": "sample2",
+            "from": "sample",
+            "to": "createPost"
+          },
+          {
+            "from": "sample",
             "to": "createPost"
           }
         ]
@@ -280,9 +284,7 @@
         "category": null,
         "commentCount": 0,
         "created": "2022-07-28T10:52:46.172Z",
-        "customFields": [
-          { "id": "62e138", "name": "abc", "value": "123" }
-        ],
+        "customFields": [{ "id": "62e138", "name": "abc", "value": "123" }],
         "details": "Array of images",
         "eta": null,
         "id": "62e26a",
@@ -358,9 +360,7 @@
         "category": null,
         "commentCount": 0,
         "created": "2022-07-28T10:52:46.172Z",
-        "customFields": [
-          { "id": "62e138", "name": "abc", "value": "123" }
-        ],
+        "customFields": [{ "id": "62e138", "name": "abc", "value": "123" }],
         "details": "Array of images",
         "eta": null,
         "id": "62e26a",

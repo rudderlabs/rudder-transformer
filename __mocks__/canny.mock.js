@@ -27,11 +27,10 @@ const cannyPostRequestHandler = url => {
   if (mockData) {
     //resolve with status 200
     return { data: mockData, status: 200 };
-  } else {
-    return new Promise((resolve, reject) => {
-      resolve({ error: "Request failed", status: 404 });
-    });
   }
+  return new Promise((resolve, reject) => {
+    resolve({ error: "Request failed", status: 404 });
+  });
 };
 
 module.exports = cannyPostRequestHandler;

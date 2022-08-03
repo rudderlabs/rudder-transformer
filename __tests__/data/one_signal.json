@@ -1056,7 +1056,7 @@
       }
     },
     "output": {
-      "error": "[OneSignal]: appId is required for creating/adding a device"
+      "error": "[OneSignal]: appId is a required field"
     }
   },
   {
@@ -1117,7 +1117,7 @@
       }
     },
     "output": {
-      "error": "Message type not supported"
+      "error": "Message type page not supported"
     }
   }
 ]

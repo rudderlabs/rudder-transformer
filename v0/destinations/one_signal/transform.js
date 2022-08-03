@@ -109,7 +109,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   if (!responseArray.length) {
     throw new CustomError(
-      "Correct identifier is required for creating a device (identify call)",
+      "[OneSignal]: Correct identifier is required for creating a device (identify call)",
       400
     );
   }
@@ -225,10 +225,7 @@ const processEvent = (message, destination) => {
     );
   }
   if (!destination.Config.appId) {
-    throw new CustomError(
-      "[OneSignal]: appId is required for creating/adding a device",
-      400
-    );
+    throw new CustomError("[OneSignal]: appId is a required field", 400);
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -243,7 +240,7 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
 };

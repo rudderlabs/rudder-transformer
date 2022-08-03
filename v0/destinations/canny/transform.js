@@ -43,6 +43,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
+  payload.apiKey = apiKey;
 
   if (!payload.userID) {
     throw new CustomError("UserId is not present. Aborting message.", 400);
@@ -74,7 +75,6 @@ const getTrackResponse = async (apiKey, message, val) => {
     }
 
     payload.apiKey = apiKey;
-    payload.voterID = "voterid";
     const voterID = await retrieveUserId(apiKey, message);
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
@@ -97,7 +97,7 @@ const getTrackResponse = async (apiKey, message, val) => {
       throw new CustomError("Details is not present. Aborting message.", 400);
     }
 
-    // payload.authorID = "authorid";
+    payload.apiKey = apiKey;
     payload.authorID = await retrieveUserId(apiKey, message);
 
     endpoint = ConfigCategory.CREATE_POST.endpoint;

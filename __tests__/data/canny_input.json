@@ -221,5 +221,161 @@
       },
       "originalTimestamp": "2022-01-20T13:39:21.032Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "apikey123",
+        "eventsToEvents": [
+          {
+            "from": "sample",
+            "to": "createPost"
+          },
+          {
+            "from": "sample2",
+            "to": "createPost"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "d6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6",
+      "event": "sample",
+      "integrations": { "Canny": false },
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "integration": {
+          "name": "Canny",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "created": "2022-07-15T11:16:32.648Z",
+          "email": "rohithkaza@abc.com",
+          "isAdmin": true,
+          "name": "Rohith Kumar Kaza",
+          "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1"
+        },
+        "externalId": [
+          {
+            "type": "cannyUserId",
+            "value": "62d1"
+          }
+        ]
+      },
+      "timestamp": "2022-07-28T10:52:46.294Z",
+      "originalTimestamp": "2022-07-28T10:52:46.294Z",
+      "type": "track",
+      "properties": {
+        "board": {
+          "created": "2022-07-25T12:11:19.895Z",
+          "id": "62de8",
+          "name": "features",
+          "postCount": 13,
+          "url": "https://rudder.canny.io/admin/board/features"
+        },
+        "by": null,
+        "category": null,
+        "commentCount": 0,
+        "created": "2022-07-28T10:52:46.172Z",
+        "customFields": [
+          { "id": "62e138", "name": "abc", "value": "123" }
+        ],
+        "details": "Array of images",
+        "eta": null,
+        "id": "62e26a",
+        "imageURLs": [
+          "https://canny.io/images/6371453a825c79351c52a6063c3af476.jpg",
+          "https://canny.io/images/47db6ee5035bfb45ea87a74f2eb17928.jpg"
+        ],
+        "objectType": "post",
+        "owner": null,
+        "score": 1,
+        "status": "open",
+        "tags": [],
+        "title": "Custom Fields Testing",
+        "url": "https://rudder.canny.io/admin/board/features/p/custom-fields-testing"
+      }
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "apikey123",
+        "eventsToEvents": [
+          {
+            "from": "sample",
+            "to": "createPost"
+          },
+          {
+            "from": "sample2",
+            "to": "createPost"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "d6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6",
+      "event": "sample3",
+      "integrations": { "Canny": false },
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "integration": {
+          "name": "Canny",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "created": "2022-07-15T11:16:32.648Z",
+          "email": "rohithkaza@abc.com",
+          "isAdmin": true,
+          "name": "Rohith Kumar Kaza",
+          "url": "https://rudder.canny.io/admin/users/rohith-kumar-kaza-1"
+        },
+        "externalId": [
+          {
+            "type": "cannyUserId",
+            "value": "62d1"
+          }
+        ]
+      },
+      "timestamp": "2022-07-28T10:52:46.294Z",
+      "originalTimestamp": "2022-07-28T10:52:46.294Z",
+      "type": "track",
+      "properties": {
+        "board": {
+          "created": "2022-07-25T12:11:19.895Z",
+          "id": "62de8",
+          "name": "features",
+          "postCount": 13,
+          "url": "https://rudder.canny.io/admin/board/features"
+        },
+        "by": null,
+        "category": null,
+        "commentCount": 0,
+        "created": "2022-07-28T10:52:46.172Z",
+        "customFields": [
+          { "id": "62e138", "name": "abc", "value": "123" }
+        ],
+        "details": "Array of images",
+        "eta": null,
+        "id": "62e26a",
+        "imageURLs": [
+          "https://canny.io/images/6371453a825c79351c52a6063c3af476.jpg",
+          "https://canny.io/images/47db6ee5035bfb45ea87a74f2eb17928.jpg"
+        ],
+        "objectType": "post",
+        "owner": null,
+        "score": 1,
+        "status": "open",
+        "tags": [],
+        "title": "Custom Fields Testing",
+        "url": "https://rudder.canny.io/admin/board/features/p/custom-fields-testing"
+      }
+    }
   }
 ]

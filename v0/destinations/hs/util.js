@@ -415,7 +415,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
       resultInput.push(input);
     }
   });
-  
+
   return resultInput;
 };
 
@@ -471,9 +471,15 @@ const getExistingData = async (inputs, destination) => {
       .objectType;
     identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
       .identifierType;
+    if (!objectType || !identifierType) {
+      throw new CustomError(
+        "[HS]:: objectType and identifier type not found.",
+        400
+      );
+    }
   } else {
     throw new CustomError(
-      "[HS]:: objectType ad identifier type not found. ",
+      "[HS]:: objectType and identifier type not found. ",
       400
     );
   }
@@ -514,6 +520,7 @@ const getExistingData = async (inputs, destination) => {
       ":objectType",
       objectType
     );
+
     const url =
       Config.authorizationType === "newPrivateAppApi"
         ? endpoint
@@ -528,7 +535,14 @@ const getExistingData = async (inputs, destination) => {
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
 
     searchResponse = processAxiosResponse(searchResponse);
+
     const results = searchResponse.response?.results;
+    if (searchResponse.status !== 200) {
+      throw new CustomError(
+        "[HS]:: Error during searching object record.",
+        400
+      );
+    }
     if (results) {
       results.map(result => {
         const propertyValue = result.properties[identifierType];

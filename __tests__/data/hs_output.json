@@ -176,6 +176,36 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/lead/103604",
+      "source": "rETL",
+      "operation": "updateObject",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+      },
+      "body": {
+        "JSON": {
+          "properties": {
+            "firstname": "Test Hubspot",
+            "anonymousId": "12345",
+            "country": "India",
+            "email": "testhubspot2@email.com"
+          }
+        },
+        "XML": {},
+        "FORM": {},
+        "JSON_ARRAY": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
       "endpoint": "https://api.hubapi.com/crm/v3/objects/lead",
       "source": "rETL",
       "operation": "createObject",
@@ -191,7 +221,7 @@
             "firstname": "Test Hubspot",
             "anonymousId": "12345",
             "country": "India",
-            "email": "testhubspot2@email.com"
+            "email": "testhubspot@email.com"
           }
         },
         "XML": {},
@@ -502,7 +532,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "objectType not found",
+    "error": "[HS]:: objectType and identifier type not found.",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -640,7 +670,7 @@
   },
   {
     "statusCode": 400,
-    "error": "objectType not found",
+    "error": "[HS]:: objectType and identifier type not found.",
     "statTags": {
       "destination": "hs",
       "stage": "transform",

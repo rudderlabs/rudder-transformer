@@ -393,5 +393,39 @@
         "archived": false
       }
     ]
+  },
+  "https://api.hubapi.com/crm/v3/objects/lead/search": {
+    "total": 1,
+    "results": [
+      {
+        "id": "103604",
+        "properties": {
+          "createdate": "2022-07-15T15:25:08.975Z",
+          "email": "testhubspot2@email.com",
+          "hs_object_id": "103604",
+          "lastmodifieddate": "2022-07-15T15:26:49.590Z"
+        },
+        "createdAt": "2022-07-15T15:25:08.975Z",
+        "updatedAt": "2022-07-15T15:26:49.590Z",
+        "archived": false
+      }
+    ]
+  },
+  "https://api.hubapi.com/crm/v3/objects/lead/search?hapikey=e7a09623-7a0a-4529-9158-3a7c7c96ffe3": {
+    "total": 1,
+    "results": [
+      {
+        "id": "103604",
+        "properties": {
+          "createdate": "2022-07-15T15:25:08.975Z",
+          "email": "testhubspot2@email.com",
+          "hs_object_id": "103604",
+          "lastmodifieddate": "2022-07-15T15:26:49.590Z"
+        },
+        "createdAt": "2022-07-15T15:25:08.975Z",
+        "updatedAt": "2022-07-15T15:26:49.590Z",
+        "archived": false
+      }
+    ]
   }
 }

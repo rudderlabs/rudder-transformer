@@ -41,6 +41,14 @@ const DestCanonicalNames = {
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
   canny: ["canny", "Canny", "CANNY"]
+  one_signal: [
+    "one signal",
+    "one_signal",
+    "One Signal",
+    "One_Signal",
+    "OneSignal",
+    "onesignal"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

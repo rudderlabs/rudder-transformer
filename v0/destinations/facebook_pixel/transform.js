@@ -23,68 +23,17 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  isDefinedAndNotNull
 } = require("../../util");
 
-/**  format revenue according to fb standards with max two decimal places.
- * @param revenue
- * @return number
- */
+const {
+  deduceFbcParam,
+  formatRevenue,
+  getContentType,
+  transformedPayloadData
+} = require("./utils");
 
-const formatRevenue = revenue => {
-  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
-  if (!isNaN(formattedRevenue)) {
-    return formattedRevenue;
-  }
-  throw new CustomError("Revenue could not be converted to number", 400);
-};
-/**
- *
- * @param {*} message Rudder Payload
- * @param {*} defaultValue product / product_group
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
- *
- * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
- * If category is clothing it will be set to ["product"]
- * @return Content Type array as defined in:
- * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
- */
-const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations } = message;
-  if (
-    integrations &&
-    integrations.FacebookPixel &&
-    isObject(integrations.FacebookPixel) &&
-    integrations.FacebookPixel.contentType
-  ) {
-    return integrations.FacebookPixel.contentType;
-  }
-
-  let { category } = message.properties;
-  if (!category) {
-    const { products } = message.properties;
-    if (products && products.length > 0 && Array.isArray(products)) {
-      if (isObject(products[0])) {
-        category = products[0].category;
-      }
-    }
-  } else {
-    if (categoryToContent === undefined) {
-      categoryToContent = [];
-    }
-    const mapped = categoryToContent;
-    const mappedTo = mapped.reduce((filtered, map) => {
-      if (map.from === category) {
-        filtered = map.to;
-      }
-      return filtered;
-    }, "");
-    if (mappedTo.length) {
-      return mappedTo;
-    }
-  }
-  return defaultValue;
-};
 
 /**
  *
@@ -94,44 +43,44 @@ const getContentType = (message, defaultValue, categoryToContent) => {
  * Handles order completed and checkout started types of specific events
  */
 const handleOrder = (message, categoryToContent) => {
-  const { products } = message.properties;
-  const value = formatRevenue(message.properties.revenue);
+  const { products, revenue } = message.properties;
+  const value = formatRevenue(revenue);
+
+
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
   const contents = [];
   const { category } = message.properties;
-  if (products && products.length > 0 && Array.isArray(products)) {
-    for (let i = 0; i < products.length; i += 1) {
-      const pId =
-        products[i].product_id || products[i].sku || products[i].id || "";
-      contentIds.push(pId);
-      // required field for content
-      // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
-      const content = {
-        id: pId,
-        quantity: products[i].quantity || message.properties.quantity || 1,
-        item_price: products[i].price || message.properties.price
-      };
-      contents.push(content);
-    }
-    contents.forEach((content, index) => {
-      if (content.id === "") {
-        throw new CustomError(
-          `Product id is required for product ${index}. Event not sent`,
-          400
-        );
+  if (products) {
+    if (products.length > 0 && Array.isArray(products)) {
+      for (const singleProduct of products) {
+        const pId =
+          singleProduct.product_id || singleProduct.sku || singleProduct.id;
+          if (pId) {
+            contentIds.push(pId);
+            // required field for content
+            // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+            const content = {
+              id: pId,
+              quantity: singleProduct.quantity || message.properties.quantity || 1,
+              item_price: singleProduct.price || message.properties.price
+            };
+            contents.push(content);
+          }
+      
       }
-    });
-  } else {
-    throw new CustomError("Product is not an object. Event not sent", 400);
+    } else {
+      throw new CustomError("Product is not an object. Event not sent", 400);
+    }
   }
+
   return {
     content_category: category,
     content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents,
+    contents: contents,
     num_items: contentIds.length
   };
 };
@@ -151,7 +100,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id || product.sku || product.id || "";
+        const productId = product.product_id || product.sku || product.id ;
         if (productId) {
           contentIds.push(productId);
           contents.push({
@@ -169,25 +118,21 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (contentIds.length > 0) {
     contentType = "product";
   } else {
-    contentIds.push(message.properties.category || "");
-    contents.push({
-      id: message.properties.category || "",
-      quantity: 1
-    });
-    contentType = "product_group";
-  }
-  contents.forEach((content, index) => {
-    if (content.id === "") {
-      throw new CustomError(
-        `Product id is required for product ${index}. Event not sent`,
-        400
-      );
+    //  for viewContent event content_ids and content arrays are not mandatory
+    if (message.properties?.category) {
+      contentIds.push(message.properties.category);
+      contents.push({
+        id: message.properties.category,
+        quantity: 1
+      });
+      contentType = "product_group";
     }
-  });
+  }
+
   return {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents
+    contents: contents
   };
 };
 
@@ -198,13 +143,10 @@ const handleProductListViewed = (message, categoryToContent) => {
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
+  let contentIds = [];
+  let contents = [];
   const useValue = valueFieldIdentifier === "properties.value";
-  const contentIds = [
-    message.properties.product_id ||
-      message.properties.id ||
-      message.properties.sku ||
-      ""
-  ];
+  const contentId = message.properties.product_id || message.properties.id || message.properties.sku;
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
     message.properties.product_name || message.properties.name || "";
@@ -213,25 +155,14 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
-  const contents = [
-    {
-      id:
-        message.properties.product_id ||
-        message.properties.id ||
-        message.properties.sku ||
-        "",
-      quantity: message.properties.quantity || 1,
-      item_price: message.properties.price
+    if(contentId) {
+      contentIds.push(contentId);
+      contents.push({
+        id:contentId,
+        quantity: message.properties.quantity || 1,
+        item_price: message.properties.price
+      });
     }
-  ];
-  contents.forEach((content, index) => {
-    if (content.id === "") {
-      throw new CustomError(
-        `Product id is required for product ${index}. Event not sent`,
-        400
-      );
-    }
-  });
   return {
     content_ids: contentIds,
     content_type: contentType,
@@ -243,140 +174,6 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   };
 };
 
-/** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
- Also checks if it is a standard event and sends properties only if it is mentioned in our configs.
- @param message --> the rudder payload
-
- {
-      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-      destination_props: { Fb: { app_id: 'RudderFbApp' } },
-      context: {
-        device: {
-          id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
-          manufacturer: 'Xiaomi',
-          model: 'Redmi 6',
-          name: 'xiaomi'
-        },
-        network: { carrier: 'Banglalink' },
-        os: { name: 'android', version: '8.1.0' },
-        screen: { height: '100', density: 50 },
-        traits: {
-          email: 'abc@gmail.com',
-          anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1'
-        }
-      },
-      event: 'spin_result',
-      integrations: {
-        All: true,
-        FacebookPixel: {
-          dataProcessingOptions: [Array],
-          fbc: 'fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890',
-          fbp: 'fb.1.1554763741205.234567890',
-          fb_login_id: 'fb_id',
-          lead_id: 'lead_id'
-        }
-      },
-      message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-      properties: { revenue: 400, additional_bet_index: 0 },
-      timestamp: '2019-09-01T15:46:51.693229+05:30',
-      type: 'track'
-    }
-
- @param customData --> properties
- { revenue: 400, additional_bet_index: 0 }
-
- @param blacklistPiiProperties -->
- [ { blacklistPiiProperties: 'phone', blacklistPiiHash: true } ] // hashes the phone property
-
- @param whitelistPiiProperties -->
- [ { whitelistPiiProperties: 'email' } ] // sets email
-
- @param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
- false
-
- @param eventCustomProperties -->
- [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
-
- */
-
-const transformedPayloadData = (
-  message,
-  customData,
-  blacklistPiiProperties,
-  whitelistPiiProperties,
-  isStandard,
-  eventCustomProperties,
-  integrationsObj
-) => {
-  const defaultPiiProperties = [
-    "email",
-    "firstName",
-    "lastName",
-    "firstname",
-    "lastname",
-    "first_name",
-    "last_name",
-    "gender",
-    "city",
-    "country",
-    "phone",
-    "state",
-    "zip",
-    "birthday"
-  ];
-  blacklistPiiProperties = blacklistPiiProperties || [];
-  whitelistPiiProperties = whitelistPiiProperties || [];
-  eventCustomProperties = eventCustomProperties || [];
-  const customBlackListedPiiProperties = {};
-  const customWhiteListedProperties = {};
-  const customEventProperties = {};
-  for (let i = 0; i < blacklistPiiProperties.length; i += 1) {
-    const singularConfigInstance = blacklistPiiProperties[i];
-    customBlackListedPiiProperties[
-      singularConfigInstance.blacklistPiiProperties
-    ] = singularConfigInstance.blacklistPiiHash;
-  }
-  for (let i = 0; i < whitelistPiiProperties.length; i += 1) {
-    const singularConfigInstance = whitelistPiiProperties[i];
-    customWhiteListedProperties[
-      singularConfigInstance.whitelistPiiProperties
-    ] = true;
-  }
-  for (let i = 0; i < eventCustomProperties.length; i += 1) {
-    const singularConfigInstance = eventCustomProperties[i];
-    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
-  }
-  Object.keys(customData).forEach(eventProp => {
-    const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
-    const isProperyWhiteListed =
-      customWhiteListedProperties[eventProp] || false;
-    if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete customData[eventProp];
-    }
-
-    if (
-      Object.prototype.hasOwnProperty.call(
-        customBlackListedPiiProperties,
-        eventProp
-      )
-    ) {
-      if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] =
-          integrationsObj && integrationsObj.hashed
-            ? String(message.properties[eventProp])
-            : sha256(String(message.properties[eventProp]));
-      } else {
-        delete customData[eventProp];
-      }
-    }
-    const isCustomProperty = customEventProperties[eventProp] || false;
-    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete customData[eventProp];
-    }
-  });
-
-  return customData;
-};
 
 const responseBuilderSimple = (
   message,
@@ -414,7 +211,9 @@ const responseBuilderSimple = (
         integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
     }
     delete userData.name;
+    userData.fbc = userData.fbc || deduceFbcParam(message);
   }
+
 
   let customData = {};
   let commonData = {};
@@ -486,7 +285,7 @@ const responseBuilderSimple = (
         case "order completed":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "Purchase";
           break;
@@ -514,7 +313,7 @@ const responseBuilderSimple = (
         case "checkout started":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "InitiateCheckout";
           break;
@@ -781,8 +580,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -792,3 +591,4 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
+

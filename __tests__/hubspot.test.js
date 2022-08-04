@@ -19,7 +19,17 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
-// Router Test files
+// Router Legacy Test files
+const inputLegacyRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input_legacy.json`)
+);
+const outputLegacyRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output_legacy.json`)
+);
+const inputLegacyRouterData = JSON.parse(inputLegacyRouterDataFile);
+const expectedLegacyRouterData = JSON.parse(outputLegacyRouterDataFile);
+
+// Router Test files (New API)
 const inputRouterDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_router_input.json`)
 );
@@ -53,7 +63,20 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  describe("Router Tests", () => {
+  // Legacy API
+  // It has different test cases as this (NEW API) destination config can
+  // change in the middle of legacy batching causing issue with the existing flow
+  describe("Router Tests (Legacy API)", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(
+        inputLegacyRouterData
+      );
+      expect(routerOutput).toEqual(expectedLegacyRouterData);
+    });
+  });
+
+  // New API
+  describe("Router Tests (New API)", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
@@ -62,8 +85,20 @@ describe(`${name} Tests`, () => {
 
   describe("Router Tests for rETL sources", () => {
     it("Payload", async () => {
-      const routerOutputrETL = await transformer.processRouterDest(inputRouterDatarETL);
+      const routerOutputrETL = await transformer.processRouterDest(
+        inputRouterDatarETL
+      );
       expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
+  });
+});
+
+// rETL Sources
+describe("Router Tests for rETL sources", () => {
+  it("Payload", async () => {
+    const routerOutputrETL = await transformer.processRouterDest(
+      inputRouterDatarETL
+    );
+    expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
   });
 });

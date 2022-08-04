@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.hubspot.com/crm/v3/objects/lead/batch/create",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/lead/batch/create",
       "headers": {
         "Content-Type": "application/json"
       },

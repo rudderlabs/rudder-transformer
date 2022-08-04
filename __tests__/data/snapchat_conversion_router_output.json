@@ -6,8 +6,8 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
       },
       "params": {},
       "body": {
@@ -39,5 +39,15 @@
         "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
       }
     }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "[Snapchat] :: Snap App Id is required for app events"
   }
 ]

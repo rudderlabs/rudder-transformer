@@ -184,6 +184,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
 
   return response;
 };
+// Seggregating update and create calls for retl sources
 const batchIdentifyForrETL = (
   arrayChunksIdentify,
   batchedResponseList,
@@ -225,7 +226,7 @@ const batchIdentifyForrETL = (
         metadata.push(ev.metadata);
       });
     } else {
-      throw new CustomError("[HS]:: Unknow hubpot operation", 400);
+      throw new CustomError("[HS]:: Unknow hubspot operation", 400);
     }
 
     batchEventResponse.batchedRequest.body.JSON = {

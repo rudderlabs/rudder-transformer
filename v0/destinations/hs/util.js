@@ -379,11 +379,19 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   return payload;
 };
 
+/**
+ *
+ * To reduce the number of calls for searching of already existing objects
+ * We do search for all the objects before router transform and assign the type (create/update)
+ * accordingly to context.hubspotOperation
+ *
+ * */
+
 const splitEventsForCreateUpdate = async (inputs, destination) => {
- 
-  const updateHubspotIds =  await getExistingData(inputs, destination);
+  // get all the id and properties of already existing objects needed for update.
+  const updateHubspotIds = await getExistingData(inputs, destination);
   const resultInput = [];
-  
+
   inputs.map(input => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
@@ -407,6 +415,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
       resultInput.push(input);
     }
   });
+  
   return resultInput;
 };
 
@@ -443,8 +452,12 @@ const setHsSearchId = (input, id) => {
   }
   return resultExternalId;
 };
-
-const getExistingData = async (inputs, destination) =>{
+/**
+ * DOC: https://developers.hubspot.com/docs/api/crm/search
+ * @param {*} inputs
+ * @param {*} destination
+ */
+const getExistingData = async (inputs, destination) => {
   const { Config } = destination;
   const values = [];
   let searchResponse;
@@ -458,6 +471,11 @@ const getExistingData = async (inputs, destination) =>{
       .objectType;
     identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
       .identifierType;
+  } else {
+    throw new CustomError(
+      "[HS]:: objectType ad identifier type not found. ",
+      400
+    );
   }
   inputs.map(async input => {
     const { message } = input;
@@ -504,8 +522,7 @@ const getExistingData = async (inputs, destination) =>{
       Config.authorizationType === "newPrivateAppApi"
         ? await httpPOST(url, requestData, requestOptions)
         : await httpPOST(url, requestData);
-    const after =
-      searchResponse.response?.data?.paging?.next?.after | 0;
+    const after = searchResponse.response?.data?.paging?.next?.after | 0;
 
     requestData.after = after; // assigning to the new value of after
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
@@ -521,7 +538,7 @@ const getExistingData = async (inputs, destination) =>{
   }
 
   return updateHubspotIds;
-}
+};
 
 module.exports = {
   validateDestinationConfig,

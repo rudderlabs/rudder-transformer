@@ -219,27 +219,18 @@ const batchIdentify = (
     let batchEventResponse = defaultBatchRequestConfig();
 
     if (batchOperation === "createObject") {
-      batchEventResponse.batchedRequest.endpoint =
-        message.source === "rETL"
-          ? `${message.endpoint}/batch/create`
-          : BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
-    } else if (batchOperation === "updateObject") {
-      batchEventResponse.batchedRequest.endpoint =
-        message.source === "rETL"
-          ? `${message.endpoint.substr(
-              0,
-              message.endpoint.lastIndexOf("/")
-            )}/batch/update`
-          : BATCH_IDENTIFY_CRM_UPDATE_NEW_CONTACT;
-    }
+      batchEventResponse.batchedRequest.endpoint = `${message.endpoint}/batch/create`;
 
-    if (batchOperation === "createObject") {
       // create operation
       chunk.forEach(ev => {
         identifyResponseList.push({ ...ev.message.body.JSON });
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === "updateObject") {
+      batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
+        0,
+        message.endpoint.lastIndexOf("/")
+      )}/batch/update`;
       // update operation
       chunk.forEach(ev => {
         const updateEndpoint = ev.message.endpoint;

@@ -70,6 +70,7 @@ const process = async event => {
   let events = [];
   events = [event];
   if (mappedToDestination) {
+    // get info about existing objects and splitting accordingly.
     events = await splitEventsForCreateUpdate([event], destination);
   }
   return processSingleMessage(events[0].message, events[0].destination);
@@ -88,6 +89,7 @@ const processRouterDest = async inputs => {
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
   if (mappedToDestination) {
+    // get info about existing objects and splitting accordingly.
     inputs = await splitEventsForCreateUpdate(inputs, destination);
   } else {
     // reduce the no. of calls for properties endpoint

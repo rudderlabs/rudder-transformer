@@ -1,0 +1,68 @@
+[
+  {
+    "destKey": "boardID",
+    "sourceKeys": [
+      "properties.boardID",
+      "properties.boardId",
+      "properties.board.id"
+    ],
+    "sourceFromGenericMap": false,
+    "required": true
+  },
+  {
+    "destKey": "byID",
+    "sourceKeys": [
+        "properties.byID",
+        "properties.byId",
+        "properties.by.id"
+      ],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "categoryID",
+    "sourceKeys": [
+        "properties.categoryID",
+        "properties.categoryId",
+        "properties.category.id"
+      ],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "customFields",
+    "sourceKeys": "properties.customFields",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "details",
+    "sourceKeys": "properties.details",
+    "sourceFromGenericMap": false,
+    "required": true
+  },
+  {
+    "destKey": "eta",
+    "sourceKeys": "properties.eta",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "etaPublic",
+    "sourceKeys": ["properties.etaPublic"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "properties.title",
+    "sourceFromGenericMap": false,
+    "required": true
+  },
+  {
+    "destKey": "imageURLs",
+    "sourceKeys": "properties.imageURLs",
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

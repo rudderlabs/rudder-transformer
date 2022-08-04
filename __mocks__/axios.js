@@ -10,7 +10,7 @@ const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
 const yahooDspPostRequestHandler = require("./yahoo_dsp.mock");
 const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
-const { hsGetRequestHandler } = require("./hs.mock");
+const { hsGetRequestHandler, hsPostRequestHandler } = require("./hs.mock");
 const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
@@ -138,9 +138,12 @@ function post(url, payload) {
   if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {
     return dripPostRequestHandler(url, payload);
   }
+  if (url.includes("https://api.hubapi.com")) {
+    return hsPostRequestHandler(payload, mockData);
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
-      resolve({ data: mockData });
+      resolve({ data: mockData, status: 200 });
     } else {
       resolve({ error: "Request failed" });
     }
@@ -163,7 +166,7 @@ function put(url, payload, options) {
   }
   return new Promise((resolve, reject) => {
     if (mockData) {
-      resolve({ data: mockData });
+      resolve({ data: mockData, status: 200 });
     } else {
       resolve({ error: "Request failed" });
     }

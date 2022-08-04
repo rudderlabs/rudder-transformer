@@ -89,10 +89,6 @@ const validateIdentifyFields = payload => {
   if (!payload.name) {
     throw new CustomError("Name is not present. Aborting message.", 400);
   }
-
-  // deleting already mapped fields
-  delete payload?.customFields?.email;
-  delete payload?.customFields?.name;
 };
 
 /**

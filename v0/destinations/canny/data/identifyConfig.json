@@ -21,7 +21,10 @@
     "destKey": "customFields",
     "sourceKeys": "traits",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "excludes": ["name", "email"]
+    }
   },
   {
     "destKey": "created",

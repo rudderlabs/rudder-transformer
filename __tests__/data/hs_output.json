@@ -176,7 +176,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.hubapi.com/crm/v3/objects/lead/103604",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/lead/103605",
       "source": "rETL",
       "operation": "updateObject",
       "headers": {

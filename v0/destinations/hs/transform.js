@@ -8,7 +8,7 @@ const {
   processLegacyTrack,
   legacyBatchEvents
 } = require("./HSTransform-v1");
-const { MappedToDestinationKey } = require("../../../constants");
+const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require("../../../constants");
 const {
   processIdentify,
   processTrack,
@@ -69,7 +69,10 @@ const process = async event => {
   const mappedToDestination = get(event.message, MappedToDestinationKey);
   let events = [];
   events = [event];
-  if (mappedToDestination) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+  ) {
     // get info about existing objects and splitting accordingly.
     events = await splitEventsForCreateUpdate([event], destination);
   }
@@ -88,7 +91,10 @@ const processRouterDest = async inputs => {
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  if (mappedToDestination) {
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+  ) {
     // get info about existing objects and splitting accordingly.
     inputs = await splitEventsForCreateUpdate(inputs, destination);
   } else {

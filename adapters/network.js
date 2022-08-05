@@ -112,9 +112,6 @@ const httpDELETE = async (url, options) => {
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
 const httpPOST = async (url, data, options) => {
-  console.log(data);
-  console.log(url);
-  console.log(options)
   let clientResponse;
   try {
     const response = await axios.post(url, data, options);

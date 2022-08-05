@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "userID",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email", "traits.email", "properties.email"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "customFields",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "excludes": ["name", "email"]
+    }
+  },
+  {
+    "destKey": "created",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "avatarURL",
+    "sourceKeys": ["context.traits.avatarURL", "traits.avatarURL"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "companies",
+    "sourceKeys": ["context.traits.companies", "traits.companies"],
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

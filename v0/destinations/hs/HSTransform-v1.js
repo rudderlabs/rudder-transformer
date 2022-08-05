@@ -57,6 +57,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   // rETL source
   let endpoint;
   const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
   if (
     mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
@@ -114,7 +115,6 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
   }
 
   response.endpoint = endpoint;
-  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "Content-Type": "application/json"
   };

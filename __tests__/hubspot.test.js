@@ -51,10 +51,10 @@ const expectedRouterDatarETL = JSON.parse(outputRouterDataFilerETL);
 
 // Router Test files for rETL sources (legacy)
 const inputRouterDataFilerETLLegacy = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_rETL_input_legacy.json`)
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_input.json`)
 );
 const outputRouterDataFilerETLLegacy = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_rETL_output_legacy.json`)
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_output.json`)
 );
 const inputRouterDatarETLLegacy = JSON.parse(inputRouterDataFilerETLLegacy);
 const expectedRouterDatarETLLegacy = JSON.parse(outputRouterDataFilerETLLegacy);

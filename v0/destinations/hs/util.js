@@ -473,13 +473,13 @@ const getExistingData = async (inputs, destination) => {
       .identifierType;
     if (!objectType || !identifierType) {
       throw new CustomError(
-        "[HS]:: objectType and identifier type not found.",
+        "[HS]:: external Id not found.",
         400
       );
     }
   } else {
     throw new CustomError(
-      "[HS]:: objectType and identifier type not found. ",
+      "[HS]:: objectType or identifier type not found. ",
       400
     );
   }

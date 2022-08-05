@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { getErrorRespEvents, CustomError } = require("../../util");

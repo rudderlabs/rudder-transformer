@@ -472,10 +472,7 @@ const getExistingData = async (inputs, destination) => {
     identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
       .identifierType;
     if (!objectType || !identifierType) {
-      throw new CustomError(
-        "[HS]:: external Id not found.",
-        400
-      );
+      throw new CustomError("[HS]:: external Id not found.", 400);
     }
   } else {
     throw new CustomError(
@@ -529,20 +526,21 @@ const getExistingData = async (inputs, destination) => {
       Config.authorizationType === "newPrivateAppApi"
         ? await httpPOST(url, requestData, requestOptions)
         : await httpPOST(url, requestData);
-    const after = searchResponse.response?.data?.paging?.next?.after | 0;
-
-    requestData.after = after; // assigning to the new value of after
-    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
     searchResponse = processAxiosResponse(searchResponse);
 
-    const results = searchResponse.response?.results;
     if (searchResponse.status !== 200) {
       throw new CustomError(
         "[HS]:: Error during searching object record.",
         400
       );
     }
+
+    const after = searchResponse.response?.paging?.next?.after | 0;
+
+    requestData.after = after; // assigning to the new value of after
+    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
+
+    const results = searchResponse.response?.results;
     if (results) {
       results.map(result => {
         const propertyValue = result.properties[identifierType];

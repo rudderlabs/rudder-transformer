@@ -106,6 +106,7 @@
       "admin_graphql_api_id": "gid://shopify/Order/4617255092480",
       "app_id": 1354745,
       "buyer_accepts_marketing": false,
+      "cart_token": "7ed2aa8c6e74666534b023e197fffd41",
       "checkout_id": 32397512573184,
       "checkout_token": "7ed2aa8c6e74666534b023e197fffd41",
       "client_details": {

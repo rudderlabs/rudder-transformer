@@ -99,7 +99,7 @@ const setAnonymousId = message => {
   switch (message.event) {
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      message.setProperty("anonymousId", message.propertes.id);
+      message.setProperty("anonymousId", message.properties.id);
       break;
     case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.orders_edited:
@@ -107,12 +107,11 @@ const setAnonymousId = message => {
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
     case SHOPIFY_TRACK_MAP.orders_paid:
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
-    case SHOPIFY_TRACK_MAP.orders_placed:
     case RUDDER_ECOM_MAP.checkouts_create:
     case RUDDER_ECOM_MAP.checkouts_update:
     case RUDDER_ECOM_MAP.orders_create:
-    case RUDDER_ECOM_MAP.orders_update:
-      message.setProperty("anonymousId", message.propertes.cart_token);
+    case RUDDER_ECOM_MAP.orders_updated:
+      message.setProperty("anonymousId", message.properties.cart_token);
       break;
     default:
       message.setProperty("anonymousId", generateUUID());

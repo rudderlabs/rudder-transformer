@@ -111,7 +111,10 @@ const setAnonymousId = message => {
     case RUDDER_ECOM_MAP.checkouts_update:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-      message.setProperty("anonymousId", message.properties.cart_token);
+      message.setProperty(
+        "anonymousId",
+        message.properties?.cart_token || generateUUID()
+      );
       break;
     default:
       message.setProperty("anonymousId", generateUUID());

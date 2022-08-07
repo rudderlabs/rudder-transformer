@@ -93,6 +93,9 @@ const extractEmailFromPayload = event => {
 
 // TODO: Hash the id and use it as anonymousId
 const setAnonymousId = message => {
+  logger.info(
+    `[Shopify] Setting anonymousId for message: ${JSON.stringify(message)}`
+  );
   switch (message.event) {
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
@@ -115,7 +118,6 @@ const setAnonymousId = message => {
       message.setProperty("anonymousId", generateUUID());
       break;
   }
-  return message;
 };
 
 module.exports = {

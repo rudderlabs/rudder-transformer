@@ -3,13 +3,17 @@ const {
   CustomError,
   constructPayload,
   extractCustomFields,
-  flattenJson
+  flattenJson,
+  generateUUID
 } = require("../../util");
+const logger = require("../../../logger");
 const {
   lineItemsMappingJSON,
   productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
-  PRODUCT_MAPPING_EXCLUSION_FIELDS
+  PRODUCT_MAPPING_EXCLUSION_FIELDS,
+  RUDDER_ECOM_MAP,
+  SHOPIFY_TRACK_MAP
 } = require("./config");
 
 /**
@@ -20,7 +24,9 @@ const {
  */
 const getShopifyTopic = event => {
   const { query_parameters: qParams } = event;
-  console.log("query_params", qParams);
+  logger.info(
+    `[Shopify] Input events: query_params: ${JSON.stringify(qParams)}`
+  );
   if (!qParams) {
     throw new CustomError("[Shopify Source] query_parameters is missing", 400);
   }
@@ -85,9 +91,37 @@ const extractEmailFromPayload = event => {
   return email;
 };
 
+// TODO: Hash the id and use it as anonymousId
+const setAnonymousId = message => {
+  switch (message.event) {
+    case SHOPIFY_TRACK_MAP.carts_create:
+    case SHOPIFY_TRACK_MAP.carts_update:
+      message.setProperty("anonymousId", message.propertes.id);
+      break;
+    case SHOPIFY_TRACK_MAP.orders_delete:
+    case SHOPIFY_TRACK_MAP.orders_edited:
+    case SHOPIFY_TRACK_MAP.orders_cancelled:
+    case SHOPIFY_TRACK_MAP.orders_fulfilled:
+    case SHOPIFY_TRACK_MAP.orders_paid:
+    case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
+    case SHOPIFY_TRACK_MAP.orders_placed:
+    case RUDDER_ECOM_MAP.checkouts_create:
+    case RUDDER_ECOM_MAP.checkouts_update:
+    case RUDDER_ECOM_MAP.orders_create:
+    case RUDDER_ECOM_MAP.orders_update:
+      message.setProperty("anonymousId", message.propertes.cart_token);
+      break;
+    default:
+      message.setProperty("anonymousId", generateUUID());
+      break;
+  }
+  return message;
+};
+
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
-  extractEmailFromPayload
+  extractEmailFromPayload,
+  setAnonymousId
 };

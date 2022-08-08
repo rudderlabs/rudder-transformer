@@ -40,7 +40,16 @@ const DestCanonicalNames = {
   mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
-  rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox"]
+  rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox"],
+  canny: ["canny", "Canny", "CANNY"],
+  one_signal: [
+    "one signal",
+    "one_signal",
+    "One Signal",
+    "One_Signal",
+    "OneSignal",
+    "onesignal"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

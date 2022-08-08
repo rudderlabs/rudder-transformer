@@ -64,10 +64,14 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
 
   if (eventConversionType === "MOBILE_APP" && !(appId && snapAppId)) {
     if (!appId) {
-      throw new CustomError("[Snapchat] :: App Id is required for app events");
+      throw new CustomError(
+        "[Snapchat] :: App Id is required for app events",
+        400
+      );
     } else {
       throw new CustomError(
-        "[Snapchat] :: Snap App Id is required for app events"
+        "[Snapchat] :: Snap App Id is required for app events",
+        400
       );
     }
   }
@@ -341,8 +345,7 @@ function process(event) {
           const res = trackResponseBuilder(message, destination, mappedEvent);
           response.push(res);
         });
-      }
-      else {
+      } else {
         response = trackResponseBuilder(
           message,
           destination,
@@ -361,10 +364,7 @@ function batchEvents(eventsChunk) {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunks = _.chunk(
-    eventsChunk,
-    MAX_BATCH_SIZE
-  );
+  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
 
   arrayChunks.forEach(chunk => {
     const batchEventResponse = generateBatchedPayloadForArray(chunk);
@@ -395,7 +395,7 @@ const processRouterDest = async inputs => {
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map( event => {
+    inputs.map(event => {
       try {
         if (event.message.statusCode) {
           // already transformed event

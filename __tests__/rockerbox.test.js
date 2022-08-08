@@ -1,5 +1,5 @@
-const integration = "Rockerbox";
-const name = "Rockerbox";
+const integration = "rockerbox";
+const name = "rockerbox";
 
 const fs = require("fs");
 const path = require("path");

@@ -13,14 +13,14 @@ const testDataFile = fs.readFileSync(
 const testData = JSON.parse(testDataFile);
 
 // Router Test Data
-// const inputRouterDataFile = fs.readFileSync(
-//   path.resolve(__dirname, `./data/${integration}_router_input.json`)
-// );
-// const outputRouterDataFile = fs.readFileSync(
-//   path.resolve(__dirname, `./data/${integration}_router_output.json`)
-// );
-// const inputRouterData = JSON.parse(inputRouterDataFile);
-// const expectedRouterData = JSON.parse(outputRouterDataFile);
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -36,10 +36,10 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  //   describe("Router Tests", () => {
-  //     it("Payload", async () => {
-  //       const routerOutput = await transformer.processRouterDest(inputRouterData);
-  //       expect(routerOutput).toEqual(expectedRouterData);
-  //     });
-  //   });
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
+  });
 });

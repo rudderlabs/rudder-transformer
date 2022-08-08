@@ -10,16 +10,15 @@
     "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": "event",
-    "destKey": "action"
-  },
-  {
     "sourceKeys": "context.traits.phone",
     "destKey": "phone"
   },
   {
     "sourceKeys": "originalTimestamp",
-    "destKey": "timestamp"
+    "destKey": "timestamp",
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
 
   {

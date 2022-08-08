@@ -1,12 +1,14 @@
 const get = require("get-value");
 
+const set = require("set-value");
 const {
   defaultRequestConfig,
   CustomError,
   removeUndefinedAndNullValues,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  getHashFromArray
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
@@ -16,7 +18,17 @@ const responseBuilderSimple = (message, category, destination) => {
   // conversion_source is explicitly set to RudderStack
   payload.conversion_source = "RudderStack";
 
-  const { advertiserId } = destination.Config;
+  const { advertiserId, eventsMap } = destination.Config;
+  const eventsHashMap = getHashFromArray(eventsMap);
+
+  if (!eventsHashMap[message.event.toLowerCase()]) {
+    throw new CustomError(
+      "The event is not associated to a RockerBox event. Aborting!",
+      400
+    );
+  } else {
+    set((payload.action = eventsHashMap[message.event.toLowerCase()]));
+  }
 
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
@@ -35,7 +47,7 @@ const trackResponseBuilder = (message, category, destination) => {
   return respList;
 };
 
-const process = async event => {
+const process = event => {
   const { message, destination } = event;
   if (!message.type) {
     throw new CustomError(

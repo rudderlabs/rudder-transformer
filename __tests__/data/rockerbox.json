@@ -211,28 +211,27 @@
       "requestIP": "[::1]",
       "receivedAt": "2022-08-08T01:32:19.369+05:30"
     },
-    "output": [
-      {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "action": "conv.add_to_cart",
-            "conversion_source": "RudderStack",
-            "customer_id": "userSampleX138",
-            "phone": "9878764736",
-            "timestamp": 1659902539
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "email": "userSampleX120@gmail.com",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "phone": "9878764736",
+          "timestamp": 1659902539
         },
-        "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
-        "files": {},
-        "headers": {},
-        "method": "POST",
-        "params": { "advertiser": "test id" },
-        "type": "REST",
-        "version": "1"
-      }
-    ]
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
+      "files": {},
+      "headers": {},
+      "method": "POST",
+      "params": { "advertiser": "test id" },
+      "type": "REST",
+      "version": "1"
+    }
   }
 ]

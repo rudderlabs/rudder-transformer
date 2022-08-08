@@ -5,24 +5,30 @@
     "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": ["context.traits.email", "properties.email"],
+    "sourceKeys": ["email"],
     "destKey": "email",
     "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": "context.traits.phone",
-    "destKey": "phone"
+    "sourceKeys": "phone",
+    "destKey": "phone",
+    "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": "timestamp",
     "destKey": "timestamp",
     "metadata": {
       "type": "secondTimestamp"
-    }
+    },
+    "sourceFromGenericMap": true
   },
-
   {
-    "sourceKeys": "properties.revenue",
+    "sourceKeys": [
+      "properties.revenue",
+      "properties.value",
+      "properties.price",
+      "properties.total"
+    ],
     "destKey": "revenue"
   },
   {

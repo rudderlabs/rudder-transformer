@@ -1,31 +1,30 @@
 [
   {
     "batched": false,
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
-        "headers": {},
-        "params": {
-          "advertiser": "test id"
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
+      "headers": {},
+      "params": {
+        "advertiser": "test id"
+      },
+      "body": {
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "email": "userSampleX120@gmail.com",
+          "phone": "9878764736",
+          "timestamp": 1659902539
         },
-        "body": {
-          "JSON": {
-            "action": "conv.add_to_cart",
-            "conversion_source": "RudderStack",
-            "customer_id": "userSampleX138",
-            "phone": "9878764736",
-            "timestamp": 1659902539
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    ],
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
     "destination": {
       "Config": {
         "advertiserId": "test id",
@@ -76,31 +75,30 @@
   },
   {
     "batched": false,
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
-        "headers": {},
-        "params": {
-          "advertiser": "test id"
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://webhooks.getrockerbox.com/webhook/data",
+      "headers": {},
+      "params": {
+        "advertiser": "test id"
+      },
+      "body": {
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "email": "userSampleX120@gmail.com",
+          "phone": "9878764736",
+          "timestamp": 1659902539
         },
-        "body": {
-          "JSON": {
-            "action": "conv.add_to_cart",
-            "conversion_source": "RudderStack",
-            "customer_id": "userSampleX138",
-            "phone": "9878764736",
-            "timestamp": 1659902539
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    ],
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
     "destination": {
       "Config": {
         "advertiserId": "test id",

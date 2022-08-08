@@ -1,6 +1,4 @@
 const get = require("get-value");
-
-const set = require("set-value");
 const {
   defaultRequestConfig,
   CustomError,
@@ -27,7 +25,7 @@ const responseBuilderSimple = (message, category, destination) => {
       400
     );
   } else {
-    set((payload.action = eventsHashMap[message.event.toLowerCase()]));
+    payload.action = eventsHashMap[message.event.toLowerCase()];
   }
 
   const response = defaultRequestConfig();
@@ -37,14 +35,6 @@ const responseBuilderSimple = (message, category, destination) => {
   response.method = category.method;
 
   return response;
-};
-
-const trackResponseBuilder = (message, category, destination) => {
-  const respList = [];
-  const response = responseBuilderSimple(message, category, destination);
-  respList.push(response);
-
-  return respList;
 };
 
 const process = event => {
@@ -65,7 +55,7 @@ const process = event => {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.TRACK:
-      response = trackResponseBuilder(
+      response = responseBuilderSimple(
         message,
         CONFIG_CATEGORIES.TRACK,
         destination

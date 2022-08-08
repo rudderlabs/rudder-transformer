@@ -40,7 +40,7 @@ const DestCanonicalNames = {
   mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
-  rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox"],
+  rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox", "rockerBox"],
   canny: ["canny", "Canny", "CANNY"],
   one_signal: [
     "one signal",

@@ -140,7 +140,7 @@ const processIdentify = ({ message, metadata }, destination, category) => {
       .setMessage("Without externalId, email is required")
       .setStatTags({
         destination: "pardot",
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE

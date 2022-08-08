@@ -41,10 +41,11 @@ const getAuthErrCategory = (code, response) => {
  * @param {*} method
  * @param {*} headers
  * @param {*} params
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  * @returns
  */
 
-const getConversionActionId = async (method, headers, params) => {
+const getConversionActionId = async (method, headers, params, reqOpts = {}) => {
   const conversionActionIdKey = sha256(
     params.event + params.customerId
   ).toString();
@@ -56,7 +57,8 @@ const getConversionActionId = async (method, headers, params) => {
       url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
       data,
       headers,
-      method
+      method,
+      ...reqOpts
     };
     const response = await httpSend(requestBody);
     if (
@@ -98,16 +100,23 @@ const getConversionActionId = async (method, headers, params) => {
  * and calling the enhanced conversion.
  * data to customer list.
  * @param {*} request
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  * @returns
  */
-const ProxyRequest = async request => {
+const ProxyRequest = async (request, reqOpts = {}) => {
   const { body, method, endpoint, params } = request;
   const { headers } = request;
+  // The reqOpts should be sent as an argument to the functions below
+  // but we might need to do a timeout/2 as there are 2 requests involved
+  const newReqOpts = {
+    timeout: reqOpts.timeout / 2
+  };
 
   const conversionActionId = await getConversionActionId(
     method,
     headers,
-    params
+    params,
+    newReqOpts
   );
 
   set(
@@ -115,7 +124,13 @@ const ProxyRequest = async request => {
     "conversionAdjustments[0].conversionAction",
     `customers/${params.customerId}/conversionActions/${conversionActionId}`
   );
-  const requestBody = { url: endpoint, data: body.JSON, headers, method };
+  const requestBody = {
+    url: endpoint,
+    data: body.JSON,
+    headers,
+    method,
+    ...newReqOpts
+  };
   const response = await httpSend(requestBody);
   return response;
 };

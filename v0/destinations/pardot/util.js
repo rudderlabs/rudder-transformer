@@ -129,9 +129,10 @@ const prepareProxyReq = request => {
  * depricating: handles proxying requests to destinations from server, expects requsts in "defaultRequestConfig"
  * note: needed for test api
  * @param {*} request
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  * @returns
  */
-const pardotProxyRequest = async request => {
+const pardotProxyRequest = async (request, reqOpts) => {
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
   const requestOptions = {
@@ -139,7 +140,8 @@ const pardotProxyRequest = async request => {
     data,
     params,
     headers,
-    method
+    method,
+    ...reqOpts
   };
   const response = await httpSend(requestOptions);
   return response;

@@ -18,9 +18,17 @@ const {
  * @param listId
  * @param headers
  * @param method
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  */
 
-const createJob = async (endpoint, customerId, listId, headers, method) => {
+const createJob = async (
+  endpoint,
+  customerId,
+  listId,
+  headers,
+  method,
+  reqOpts = {}
+) => {
   const jobCreatingUrl = `${endpoint}:create`;
   const jobCreatingRequest = {
     url: jobCreatingUrl,
@@ -33,7 +41,8 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
       }
     },
     headers,
-    method
+    method,
+    ...reqOpts
   };
   const response = await httpSend(jobCreatingRequest);
   return response;
@@ -45,15 +54,24 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
  * @param method
  * @param jobId
  * @param body
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  */
 
-const addUserToJob = async (endpoint, headers, method, jobId, body) => {
+const addUserToJob = async (
+  endpoint,
+  headers,
+  method,
+  jobId,
+  body,
+  reqOpts = {}
+) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
     data: body.JSON,
     headers,
-    method
+    method,
+    ...reqOpts
   };
   const response = await httpSend(secondRequest);
   return response;
@@ -65,13 +83,15 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
  * @param headers
  * @param method
  * @param jobId
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  */
-const runTheJob = async (endpoint, headers, method, jobId) => {
+const runTheJob = async (endpoint, headers, method, jobId, reqOpts = {}) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
     headers,
-    method
+    method,
+    ...reqOpts
   };
   const response = await httpSend(thirdRequest);
   return response;
@@ -81,12 +101,18 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * This function is responsible for making the three steps required for uploding
  * data to customer list.
  * @param {*} request
+ * @param { { timeout: number } } reqOpts extra options to be set on the http client
  * @returns
  */
-const gaAudienceProxyRequest = async request => {
+const gaAudienceProxyRequest = async (request, reqOpts = {}) => {
   const { body, method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
+  // The reqOpts should be sent as an argument to the functions below
+  // but we might need to do a timeout/3 as there are 3 requests involved
+  const newReqOpts = {
+    timeout: reqOpts.timeout / 3
+  };
 
   // step1: offlineUserDataJobs creation
 
@@ -95,7 +121,8 @@ const gaAudienceProxyRequest = async request => {
     customerId,
     listId,
     headers,
-    method
+    method,
+    newReqOpts
   );
   if (
     !firstResponse.success &&
@@ -114,7 +141,8 @@ const gaAudienceProxyRequest = async request => {
     headers,
     method,
     jobId,
-    body
+    body,
+    newReqOpts
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
@@ -125,7 +153,13 @@ const gaAudienceProxyRequest = async request => {
   }
 
   // step3: running the job
-  const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
+  const thirdResponse = await runTheJob(
+    endpoint,
+    headers,
+    method,
+    jobId,
+    newReqOpts
+  );
   return thirdResponse;
 };
 

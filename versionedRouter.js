@@ -601,8 +601,10 @@ if (startSourceTransformer) {
   });
 }
 
-async function handleProxyRequest(destination, ctx) {
+async function handleProxyRequest(destination, ctx, reqOpts={}) {
   const destinationRequest = ctx.request.body;
+  // The timeout for this request to complete
+  logger.debug(`[${destination}] The timeout for proxy request: ${reqOpts?.timeout || 0} ms`);
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
@@ -612,7 +614,7 @@ async function handleProxyRequest(destination, ctx) {
       destination
     });
     const startTime = new Date();
-    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest, reqOpts);
     stats.timing("transformer_proxy_time", startTime, {
       destination
     });
@@ -666,6 +668,9 @@ if (transformerProxy) {
         async ctx => {
           const startTime = new Date();
           ctx.set("apiVersion", API_VERSION);
+          const reqOpts = {
+            timeout: ctx.get('RdProxy-Timeout')
+          };
           await handleProxyRequest(destination, ctx);
           stats.timing("transformer_total_proxy_latency", startTime, {
             destination,

@@ -35,10 +35,10 @@
   {
     "destKey": "avatarURL",
     "sourceKeys": [
-      "context.traits.avatar",
       "traits.avatar",
-      "context.traits.avatarURL",
-      "traits.avatarURL"
+      "traits.avatarURL",
+      "context.traits.avatar",
+      "context.traits.avatarURL"
     ],
     "sourceFromGenericMap": false,
     "required": false

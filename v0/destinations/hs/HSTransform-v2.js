@@ -332,8 +332,7 @@ const batchEvents = destEvents => {
   const createContactEventsChunk = [];
   // update contact chunk
   const updateContactEventsChunk = [];
-  // general indentify event chunk
-  const eventsChunk = [];
+   // rETL specific chunk
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
   let maxBatchSize;
@@ -384,7 +383,7 @@ const batchEvents = destEvents => {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
-      eventsChunk.push(event);
+      throw new CustomError("[HS]:: Not a valid operation", 400);
     }
   });
 
@@ -409,8 +408,7 @@ const batchEvents = destEvents => {
     updateContactEventsChunk,
     MAX_BATCH_SIZE_CRM_CONTACT
   );
-  // general identify chunks
-  const arrayChunksIdentify = _.chunk(eventsChunk, MAX_BATCH_SIZE_CRM_OBJECT);
+
   // batching up 'create' all objects endpoint chunks
   if (arrayChunksIdentifyCreateObjects.length) {
     batchedResponseList = batchIdentify(
@@ -444,15 +442,6 @@ const batchEvents = destEvents => {
       arrayChunksIdentifyUpdateContact,
       batchedResponseList,
       "updateContacts"
-    );
-  }
-
-  // batching up 'general' identify endpoint chunks
-  if (arrayChunksIdentify.length) {
-    batchedResponseList = batchIdentify(
-      arrayChunksIdentify,
-      batchedResponseList,
-      "general"
     );
   }
 

@@ -420,9 +420,8 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
 };
 
 const getHsSearchId = message => {
-  let externalIdArray = [];
+  let externalIdArray = message.context?.externalId;
   let hsSearchId = null;
-  externalIdArray = message.context?.externalId;
 
   if (externalIdArray) {
     externalIdArray.forEach(extIdObj => {
@@ -438,6 +437,7 @@ const getHsSearchId = message => {
 const setHsSearchId = (input, id) => {
   const { message } = input;
   const resultExternalId = [];
+  let externalIdArray;
   if (message.context && message.context.externalId) {
     externalIdArray = message.context.externalId;
   }

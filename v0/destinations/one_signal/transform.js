@@ -153,16 +153,11 @@ const trackResponseBuilder = (message, { Config }) => {
   const properties = get(message, "properties");
   if (properties && allowedProperties && Array.isArray(allowedProperties)) {
     allowedProperties.forEach(item => {
-      if (
-        properties[item.propertyName] ||
-        properties[item.propertyName] === ""
-      ) {
-        if (typeof properties[item.propertyName] === "string") {
-          const tagName = eventAsTags
-            ? `${event}_${[item.propertyName]}`
-            : item.propertyName;
-          tags[tagName] = properties[item.propertyName];
-        }
+      if (typeof properties[item.propertyName] === "string") {
+        const tagName = eventAsTags
+          ? `${event}_${[item.propertyName]}`
+          : item.propertyName;
+        tags[tagName] = properties[item.propertyName];
       }
     });
   }

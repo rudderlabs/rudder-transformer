@@ -892,7 +892,7 @@ function processSingleMessage(message, destination) {
         category = ConfigCategory.IDENTIFY;
       } else {
         throw new ErrorBuilder()
-          .setStatus(400)
+          .setStatus(722)
           .setMessage("server side identify is not on")
           .setStatTags({
             destination: DESTINATION,

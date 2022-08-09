@@ -369,7 +369,7 @@ const process = event => {
       } else {
         throw new CustomError(
           "[GA4] Identify:: Server side identify is not enabled",
-          400
+          722
         );
       }
       break;

@@ -36,8 +36,8 @@
     "destKey": "avatarURL",
     "sourceKeys": [
       "traits.avatar",
-      "traits.avatarURL",
       "context.traits.avatar",
+      "traits.avatarURL",
       "context.traits.avatarURL"
     ],
     "sourceFromGenericMap": false,

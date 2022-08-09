@@ -226,7 +226,7 @@ const batchIdentifyForrETL = (
         metadata.push(ev.metadata);
       });
     } else {
-      throw new CustomError("[HS]:: Unknow hubspot operation", 400);
+      throw new CustomError("[HS]:: rETL -  Unknow hubspot operation", 400);
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -296,7 +296,7 @@ const legacyBatchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       } else {
-        throw new CustomError("[HS]:: Error in getting operation", 400);
+        throw new CustomError("[HS]::  rETL -  Error in getting operation", 400);
       }
     } else {
       // making chunks for identify

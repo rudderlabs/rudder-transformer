@@ -374,7 +374,7 @@ const batchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       } else {
-        throw new CustomError("[HS]:: Error in getting operation", 400);
+        throw new CustomError("[HS]:: rETL -  Error in getting operation", 400);
       }
     } else if (operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint
@@ -383,7 +383,7 @@ const batchEvents = destEvents => {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
-      throw new CustomError("[HS]:: Not a valid operation", 400);
+      throw new CustomError("[HS]:: rETL - Not a valid operation", 400);
     }
   });
 

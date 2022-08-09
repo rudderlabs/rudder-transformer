@@ -1,0 +1,20 @@
+[
+  {
+    "destKey": "origin_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAtOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "end_user.properties",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_surveyed",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "external_created_at",
+    "sourceKeys": "createdAtOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

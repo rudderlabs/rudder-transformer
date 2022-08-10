@@ -9887,7 +9887,7 @@
       }
     },
     "output": {
-      "statusCode": 400,
+      "statusCode": 722,
       "error": "[GA4] Identify:: Server side identify is not enabled",
       "statTags": {
         "destination": "ga4",

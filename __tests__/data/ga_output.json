@@ -1847,7 +1847,7 @@
     "userId": "00000000000000000000000000"
   },
   {
-    "statusCode": 400,
+    "statusCode": 722,
     "message": "server side identify is not on"
   },
   {

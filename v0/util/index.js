@@ -1331,6 +1331,11 @@ function generateErrorObject(error, destination, transformStage) {
   if (error.authErrorCategory) {
     response.authErrorCategory = error.authErrorCategory || "";
   }
+
+  if (error.response?.status === 722) {
+    response.status = error.response.status;
+  }
+
   return response;
 }
 /**

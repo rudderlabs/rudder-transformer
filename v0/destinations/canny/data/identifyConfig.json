@@ -7,7 +7,7 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": ["context.traits.email", "traits.email", "properties.email"],
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
     "sourceFromGenericMap": false,
     "required": false
   },
@@ -18,15 +18,6 @@
     "required": true
   },
   {
-    "destKey": "customFields",
-    "sourceKeys": "traits",
-    "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "excludes": ["name", "email"]
-    }
-  },
-  {
     "destKey": "created",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
@@ -34,14 +25,30 @@
   },
   {
     "destKey": "avatarURL",
-    "sourceKeys": ["context.traits.avatarURL", "traits.avatarURL"],
-    "sourceFromGenericMap": false,
+    "sourceKeys": "avatar",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "companies",
-    "sourceKeys": ["context.traits.companies", "traits.companies"],
+    "sourceKeys": ["traits.companies", "context.traits.companies"],
     "sourceFromGenericMap": false,
     "required": false
+  },
+  {
+    "destKey": "customFields",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "name",
+        "email",
+        "avatar",
+        "avatarURL",
+        "avatar_URL",
+        "companies"
+      ]
+    }
   }
 ]

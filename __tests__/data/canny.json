@@ -47,7 +47,8 @@
             "name": "First User",
             "email": "firstUser@testmail.com",
             "title": "VP",
-            "gender": "female"
+            "gender": "female",
+            "avatar": "https://i.pravatar.cc/300"
           },
           "library": {
             "name": "RudderLabs JavaScript SDK",
@@ -86,7 +87,8 @@
           "userID": "user123456001",
           "email": "firstUser@testmail.com",
           "name": "First User",
-          "created": "2022-01-20T13:39:21.032Z"
+          "created": "2022-01-20T13:39:21.032Z",
+          "avatarURL": "https://i.pravatar.cc/300"
         },
         "JSON_ARRAY": {},
         "XML": {},

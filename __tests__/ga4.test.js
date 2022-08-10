@@ -24,6 +24,9 @@ describe(`${name} Tests`, () => {
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);
+          if (error.response) {
+            expect(error.response.status).toEqual(dataPoint.output.statusCode);
+          }
         }
       });
     });

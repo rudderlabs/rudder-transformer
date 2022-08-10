@@ -17,8 +17,10 @@ const responseBuilderSimple = (message, category, destination) => {
   payload.conversion_source = "RudderStack";
 
   const { advertiserId, eventsMap } = destination.Config;
+  // we will map the events to their rockerbox counterparts from UI
   const eventsHashMap = getHashFromArray(eventsMap);
 
+  // Reject other unmapped events
   if (!eventsHashMap[message.event.toLowerCase()]) {
     throw new CustomError(
       "The event is not associated to a RockerBox event. Aborting!",
@@ -30,6 +32,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
+  // the endpoint has advertiser = ADVERTISER_ID in the query params
   response.params.advertiser = advertiserId;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = category.method;

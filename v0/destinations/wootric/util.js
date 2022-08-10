@@ -1,11 +1,19 @@
 const qs = require("qs");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const {
   BASE_ENDPOINT,
   VERSION,
   ACCESS_TOKEN_CACHE_TTL_SECONDS
 } = require("./config");
-const { CustomError } = require("../../util");
+const {
+  CustomError,
+  constructPayload,
+  isDefinedAndNotNullAndNotEmpty
+} = require("../../util");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const axios = require("axios");
 const Cache = require("../../util/cache");
 
@@ -34,24 +42,23 @@ const getAccessToken = async destination => {
       request.data,
       request.header
     );
+    const processedAuthRespone = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
-    if (wootricAuthResponse.success === false) {
+    if (processedAuthRespone.status !== 200) {
       throw new CustomError(
-        `[Wootric]:: access token could not be generated due to ${wootricAuthResponse.response.data.error}`,
-        400
+        `[Wootric]:: access token could not be generated due to ${JSON.stringify(
+          processedAuthRespone.response
+        )}`,
+        processedAuthRespone.status
       );
     }
-    return wootricAuthResponse.response?.data?.access_token;
+    return processedAuthRespone.response?.access_token;
   });
 };
 
 const retrieveUserId = async (userId, destination) => {
+  const accessToken = await getAccessToken(destination);
   try {
-    const accessToken = await getAccessToken(destination);
-    if (!accessToken) {
-      throw new CustomError(`[Wootric]:: access token is not available`, 400);
-    }
-
     const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
     const requestOptions = {
       headers: {
@@ -61,19 +68,109 @@ const retrieveUserId = async (userId, destination) => {
     };
 
     const userResponse = await httpGET(endpoint, requestOptions);
+    const processedUserResponse = processAxiosResponse(userResponse);
+
     // If the request fails, throwing error.
-    if (userResponse.success === false) {
+    if (processedUserResponse.status !== 200) {
       throw new CustomError(
-        `[Wootric]:: Unable to retrieve userid due to ${userResponse.response
-          ?.data?.error ?? "unkown error"}`,
-        400
+        `[Wootric]:: Unable to retrieve userid due to ${JSON.stringify(
+          processedUserResponse.response
+        )}`,
+        processedUserResponse.status
       );
     }
 
-    return userResponse.response?.data?.id;
+    return processedUserResponse.response?.id;
   } catch (error) {
     console.debug(`No user found with end user id : ${userId}`);
   }
 };
 
-module.exports = { getAccessToken, retrieveUserId };
+const flattenedPayload = (payload, destKey) => {
+  if (payload.properties) {
+    Object.entries(payload.properties).forEach(([key, value]) => {
+      payload[`${destKey}[${key}]`] = `${value}`;
+    });
+    delete payload.properties;
+  }
+};
+
+const validateIdentifyPayload = payload => {
+  if (
+    !isDefinedAndNotNullAndNotEmpty(payload.email) &&
+    !isDefinedAndNotNullAndNotEmpty(payload.phone_number)
+  ) {
+    throw new CustomError(
+      "email/phone number are missing. At least one parameter must be provided",
+      400
+    );
+  }
+};
+
+const formatIdentifyPayload = payload => {
+  if (payload.last_surveyed) {
+    payload.last_surveyed = `${payload.last_surveyed}`;
+  }
+  if (payload.external_created_at) {
+    payload.external_created_at = `${payload.external_created_at}`;
+  }
+};
+
+const formatTrackPayload = payload => {
+  if (payload.created_at) {
+    payload.created_at = `${payload.created_at}`;
+  }
+};
+
+const createUserPayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
+  const method = "POST";
+  return { payload, endpoint, method };
+};
+
+const updateUserPayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint;
+  const method = "PUT";
+  return { payload, endpoint, method };
+};
+
+const createResponsePayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
+  const method = "POST";
+  return { payload, endpoint, method };
+};
+
+const createDeclinePayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
+  const method = "POST";
+  return { payload, endpoint, method };
+};
+
+module.exports = {
+  getAccessToken,
+  retrieveUserId,
+  flattenedPayload,
+  validateIdentifyPayload,
+  formatIdentifyPayload,
+  formatTrackPayload,
+  createUserPayloadBuilder,
+  updateUserPayloadBuilder,
+  createResponsePayloadBuilder,
+  createDeclinePayloadBuilder
+};

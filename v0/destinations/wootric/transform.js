@@ -1,31 +1,34 @@
-const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  constructPayload,
   removeUndefinedAndNullValues,
   getIntegrationsObj,
   getErrorRespEvents,
   getSuccessRespEvents,
-  formatTimeStamp,
+  getFieldValueFromMessage,
   CustomError
 } = require("../../util");
-const { getAccessToken, retrieveUserId } = require("./util");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const { set } = require("lodash");
+const {
+  getAccessToken,
+  retrieveUserId,
+  flattenedPayload,
+  validateIdentifyPayload,
+  formatIdentifyPayload,
+  formatTrackPayload,
+  createUserPayloadBuilder,
+  updateUserPayloadBuilder,
+  createResponsePayloadBuilder,
+  createDeclinePayloadBuilder
+} = require("./util");
 
 const responseBuilder = async (payload, endpoint, method, destination) => {
   if (payload) {
     const response = defaultRequestConfig();
     const accessToken = await getAccessToken(destination);
-    if (!accessToken) {
-      throw new CustomError(`[Wootric]:: access token is not available`, 400);
-    }
     response.endpoint = endpoint;
     response.headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json"
+      Authorization: `Bearer ${accessToken}`
     };
     response.method = method;
     response.body.FORM = removeUndefinedAndNullValues(payload);
@@ -39,87 +42,69 @@ const identifyResponseBuilder = async (message, destination) => {
   let payload;
   let endpoint;
   let method;
+  let builder;
 
-  const userId =
-    message.userId ||
-    message.traits?.userId ||
-    message.traits?.id ||
-    message.context?.traits?.userId ||
-    message.context?.traits?.id ||
-    message.anonymousId;
-
+  const userId = getFieldValueFromMessage(message, "userId");
   const wootricEndUserId = await retrieveUserId(userId, destination);
   if (!wootricEndUserId) {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
-    );
-    endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
-    method = "POST";
-
-    if (!payload.properties.email && !payload.properties.phone_number) {
-      throw new CustomError(
-        "email/phone number are missing. At least one parameter must be provided",
-        400
-      );
-    }
+    builder = createUserPayloadBuilder(message);
+    payload = builder.payload;
+    endpoint = builder.endpoint;
+    method = builder.method;
+    validateIdentifyPayload(payload);
   } else {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
-    );
-    endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint.replace(
-      "<end_user_id>",
-      wootricEndUserId
-    );
-    method = "PUT";
+    builder = updateUserPayloadBuilder(message);
+    payload = builder.payload;
+    endpoint = builder.endpoint.replace("<end_user_id>", wootricEndUserId);
+    method = builder.method;
   }
 
-  if (payload.last_surveyed) {
-    set(
-      payload,
-      "last_surveyed",
-      Math.floor(formatTimeStamp(payload.last_surveyed) / 1000)
-    );
-  }
-
+  formatIdentifyPayload(payload);
+  flattenedPayload(payload, "properties");
   return responseBuilder(payload, endpoint, method, destination);
 };
 
 const trackResponseBuilder = async (message, destination) => {
   let payload;
   let endpoint;
+  let method;
+  let builder;
 
-  const userId =
-    message.userId ||
-    message.traits?.userId ||
-    message.traits?.id ||
-    message.context?.traits?.userId ||
-    message.context?.traits?.id ||
-    message.anonymousId;
-
+  const userId = getFieldValueFromMessage(message, "userId");
   const wootricEndUserId = await retrieveUserId(userId, destination);
   if (!wootricEndUserId) {
     throw new CustomError(`No user found with end user id : ${userId}`, 400);
   }
 
   const integrationsObj = getIntegrationsObj(message, "wootric");
-  const survey = get(integrationsObj, "survey");
-  if (survey === "create response") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
-    );
-    endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
-  } else if (survey === "create decline") {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
-    );
-    endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
+
+  if (!integrationsObj || !integrationsObj.eventType) {
+    throw new CustomError("Event Type is missing", 400);
   }
+
+  const eventType = integrationsObj.eventType.toLowerCase();
+  switch (eventType) {
+    case "create response":
+      builder = createResponsePayloadBuilder(message);
+      payload = builder.payload;
+      endpoint = builder.endpoint;
+      method = builder.method;
+      break;
+    case "create decline":
+      builder = createDeclinePayloadBuilder(message);
+      payload = builder.payload;
+      endpoint = builder.endpoint;
+      method = builder.method;
+      break;
+    default:
+      throw new CustomError("Event Type not supported", 400);
+  }
+
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
-  return responseBuilder(payload, endpoint, "POST", destination);
+
+  formatTrackPayload(payload);
+  flattenedPayload(payload, "end_user[properties]");
+  return responseBuilder(payload, endpoint, method, destination);
 };
 
 const processEvent = (message, destination) => {

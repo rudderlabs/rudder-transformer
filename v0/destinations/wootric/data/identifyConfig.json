@@ -6,16 +6,31 @@
     "required": false
   },
   {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
     "destKey": "last_surveyed",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "external_created_at",
     "sourceKeys": "createdAtOnly",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "external_id",
@@ -27,6 +42,9 @@
     "destKey": "properties",
     "sourceKeys": "traits",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "excludes": ["userId", "anonymousId", "id", "email", "phone", "createdAt"]
+    }
   }
 ]

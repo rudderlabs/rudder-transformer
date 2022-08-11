@@ -14,7 +14,6 @@ const {
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const axios = require("axios");
 const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);

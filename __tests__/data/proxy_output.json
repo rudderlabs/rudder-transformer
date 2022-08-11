@@ -28,7 +28,7 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "any",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -44,7 +44,7 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "any",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -60,7 +60,7 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "any",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -76,7 +76,7 @@
         "status": 500
       },
       "statTags": {
-        "destination": "any",
+        "destType": "any",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"
@@ -92,7 +92,7 @@
         "status": 500
       },
       "statTags": {
-        "destination": "any",
+        "destType": "any",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"

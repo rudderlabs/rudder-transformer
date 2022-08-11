@@ -39,7 +39,7 @@
         }
       },
       "statTags": {
-        "destination": "google_adwords_remarketing_lists",
+        "destType": "google_adwords_remarketing_lists",
         "stage": "responseTransform",
         "scope": "exception"
       }

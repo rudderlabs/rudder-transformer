@@ -31,7 +31,7 @@
         "status": 201
       },
       "statTags": {
-        "destination": "braze",
+        "destType": "braze",
         "scope": "api",
         "stage": "responseTransform",
         "meta": "abortable"
@@ -51,7 +51,7 @@
       "message": "[Braze Response Handler] Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
-        "destination": "braze",
+        "destType": "braze",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"
@@ -67,7 +67,7 @@
         "status": 400
       },
       "statTags": {
-        "destination": "braze",
+        "destType": "braze",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -80,7 +80,7 @@
       "message": "[Braze Response Handler] Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
-        "destination": "braze",
+        "destType": "braze",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"

@@ -13,7 +13,7 @@
         }
       ],
       "statTags": {
-        "destination": "google_adwords_enhanced_conversions",
+        "destType": "google_adwords_enhanced_conversions",
         "stage": "responseTransform",
         "scope": "exception"
       },

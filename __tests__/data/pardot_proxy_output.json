@@ -363,7 +363,7 @@
         "err": "access_token is invalid, unknown, or malformed: Inactive token"
       },
       "statTags": {
-        "destination": "PARDOT",
+        "destType": "PARDOT",
         "meta": "retryable",
         "scope": "api",
         "stage": "responseTransform"

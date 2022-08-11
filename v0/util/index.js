@@ -1316,7 +1316,7 @@ function generateErrorObject(error, destination, transformStage) {
   let { statTags } = error;
   if (!statTags) {
     statTags = {
-      destination,
+      destType: destination,
       stage: transformStage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };

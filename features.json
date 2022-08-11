@@ -27,6 +27,7 @@
     "MAILCHIMP": true,
     "YAHOO_DSP": true,
     "KLAVIYO": true,
-    "CANNY": true
+    "CANNY": true,
+    "GOOGLE_CLOUD_FUNCTION": true
   }
 }

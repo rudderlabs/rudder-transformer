@@ -1,155 +1,125 @@
 const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
+  defaultBatchRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError
-  
 } = require("../../util");
-const {
-  TRIGGERTYPE,
-  MAX_BATCH_SIZE
-} = require("./config");
-
-const {
-  generateBatchedPayloadForArray
-} = require("./util");
+const { TRIGGERTYPE } = require("./config");
 
 function process(event) {
-  const { message, destination } = event;
+  const { destination } = event;
 
-  const destConfig = destination.Config;
+  const {
+    googleCloudFunctionUrl,
+    TriggerType,
+    gcloudAuthorization
+  } = destination.Config;
 
-  const  url = destConfig.googleCloudFunctionUrl;
-  const triggerType  = destConfig.TriggerType;
-  const {apiKeyId , gcloudAuthorization} = destConfig;
-  const basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
-  if (!destConfig.googleCloudFunctionUrl) {
+  if (!googleCloudFunctionUrl) {
     throw new CustomError("Cloud Function Url not found. Aborting", 400);
   }
-  const response = defaultRequestConfig();
-  if(TRIGGERTYPE.HTTPS==triggerType)
-  {
-    response.headers = {
-      "content-type": "application/json",
-      Authorization: `Bearer ${gcloudAuthorization}`,
-      ApiKey: `Basic ${basicAuth}`
-    };
-  }
-  else {
-    response.headers = {
-      "content-type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-  }
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = message;
-  response.endpoint = url;
 
-return response;
+  if (TRIGGERTYPE.HTTPS === TriggerType && !gcloudAuthorization) {
+    throw new CustomError(
+      "For HTTPS requests, Google Cloud Authorization token is mandatory ",
+      400
+    );
+  }
+
+  return event;
 }
 
+const deduceResponseHeaders = (gcloudAuthorization, apiKeyId, TriggerType) => {
+  const basicAuth = apiKeyId
+    ? Buffer.from(`apiKey:${apiKeyId}`).toString("base64")
+    : undefined;
+  const headers = {
+    "content-type": "application/json"
+  };
+  if (basicAuth) {
+    headers.ApiKey = `Basic ${basicAuth}`;
+  }
+  if (TRIGGERTYPE.HTTPS === TriggerType) {
+    headers.Authorization = `Bearer ${gcloudAuthorization}`;
+  }
+  return headers;
+};
+
 // Returns a batched response list for a for list of inputs(successRespList)
-function batchEvents(eventsChunk , destination) {
+function batchEvents(successRespList, destination) {
+  const batchEventResponse = defaultBatchRequestConfig();
   const batchedResponseList = [];
-  const { enableBatchInput } = destination.Config;
-  if (!enableBatchInput) {
-    const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
+  const {
+    enableBatchInput,
+    googleCloudFunctionUrl,
+    apiKeyId,
+    gcloudAuthorization,
+    TriggerType
+  } = destination.Config;
+  batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
+  batchEventResponse.batchedRequest.headers = deduceResponseHeaders(
+    gcloudAuthorization,
+    apiKeyId,
+    TriggerType
+  );
 
-  arrayChunks.forEach(chunk => {
-    const batchEventResponse = generateBatchedPayloadForArray(chunk);
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true
-      )
-    );
-  });
-  } else {
-   
-    const batchPayload = [];
+  // if enable batching is true, then we club all the events together. There is no concept of batch size
+  if (enableBatchInput) {
+    const msgList = [];
     const batchMetadata = [];
-    eventsChunk.forEach(event => {
-      const batchEventResponse = generateBatchedPayloadForArray(chunk);
-      batchPayload.push(batchEventResponse.batchedRequest);
-      batchMetadata.push(batchEventResponse.metadata);
+    successRespList.forEach(event => {
+      msgList.push(event.payload.message);
+      batchMetadata.push(event.metadata);
     });
-
+    const batchPayload = { payload: msgList };
+    batchEventResponse.batchedRequest.body.JSON = batchPayload;
+    // batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
+    // batchEventResponse.batchedRequest.headers = deduceResponseHeaders(gcloudAuthorization, apiKeyId, TriggerType);
     batchedResponseList.push(
-      getSuccessRespEvents(batchPayload, batchMetadata, destination)
+      getSuccessRespEvents(batchEventResponse, batchMetadata, destination, true)
     );
-
-
-    
+  } else {
+    // otherwise the events are sent normally
+    successRespList.forEach(event => {
+      batchEventResponse.batchedRequest.body.JSON = event.payload.message;
+      batchedResponseList.push(
+        getSuccessRespEvents(batchEventResponse, [event.metadata], destination)
+      );
+    });
   }
   return batchedResponseList;
 }
 
-function getEventChunks(event, eventsChunk) {
-  // build eventsChunk of MAX_BATCH_SIZE
-  eventsChunk.push(event);
-}
-
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const eventsChunk = []; // temporary variable to divide payload into chunks
-  const errorRespList = [];
-  await Promise.all(
-    inputs.map(event => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(event, eventsChunk);
-        } else {
-          // if not transformed
-          let response = process(event);
-          response = Array.isArray(response) ? response : [response];
-          response.forEach(res => {
-            getEventChunks(
-              {
-                message: res,
-                metadata: event.metadata,
-                destination: event.destination
-              },
-              eventsChunk
-            );
-          });
-        }
-      } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
-        );
-      }
-    })
-  );
-
+// Router transform with batching by default
+const processRouterDest = inputs => {
   const { destination } = inputs[0];
-  if (!destination.Config) {
-    const respEvents = getErrorRespEvents(
-      batchMetadata,
-      400,
-      "destination.Config cannot be undefined"
-    );
-    return [respEvents];
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const successRespList = [];
+
+  inputs.forEach(input => {
+    //batchMetadata.push(input.metadata);
+    try {
+      successRespList.push({
+        payload: process(input),
+        metadata: input.metadata
+      });
+    } catch (error) {
+      batchErrorRespList.push(
+        getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response?.status : 400,
+          error.message || "Error occurred while processing payload."
+        )
+      );
+    }
+  });
+
+  if (successRespList.length > 0) {
+    batchResponseList = batchEvents(successRespList, destination);
   }
-  let batchedResponseList = [];
-  if (eventsChunk.length) {
-    batchedResponseList = batchEvents(eventsChunk ,destination);
-  }
-  return [...batchedResponseList, ...errorRespList];
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
-
-
 module.exports = { process, processRouterDest };
-

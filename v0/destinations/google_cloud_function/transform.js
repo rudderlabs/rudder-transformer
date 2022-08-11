@@ -50,7 +50,7 @@ return response;
 }
 
 // Returns a batched response list for a for list of inputs(successRespList)
-function batchEvents(eventsChunk) {
+function batchEvents(eventsChunk , destination) {
   const batchedResponseList = [];
   const { enableBatchInput } = destination.Config;
   if (!enableBatchInput) {
@@ -69,14 +69,13 @@ function batchEvents(eventsChunk) {
   });
   } else {
    
-    const msgList = [];
+    const batchPayload = [];
     const batchMetadata = [];
     eventsChunk.forEach(event => {
       const batchEventResponse = generateBatchedPayloadForArray(chunk);
-      msgList.push(batchEventResponse.batchedRequest);
+      batchPayload.push(batchEventResponse.batchedRequest);
       batchMetadata.push(batchEventResponse.metadata);
     });
-    const batchPayload = {msgList};
 
     batchedResponseList.push(
       getSuccessRespEvents(batchPayload, batchMetadata, destination)
@@ -134,9 +133,18 @@ const processRouterDest = async inputs => {
     })
   );
 
+  const { destination } = inputs[0];
+  if (!destination.Config) {
+    const respEvents = getErrorRespEvents(
+      batchMetadata,
+      400,
+      "destination.Config cannot be undefined"
+    );
+    return [respEvents];
+  }
   let batchedResponseList = [];
   if (eventsChunk.length) {
-    batchedResponseList = batchEvents(eventsChunk);
+    batchedResponseList = batchEvents(eventsChunk ,destination);
   }
   return [...batchedResponseList, ...errorRespList];
 };

@@ -11,7 +11,8 @@ const {
 } = require("./config");
 
 const {
-  generateBatchedPayloadForArray
+  generateBatchedPayloadForArray,
+  generateBatchedPayload
 } = require("./util");
 
 function process(event) {
@@ -59,24 +60,21 @@ function batchEvents(eventsChunk, destination) {
       enableBatchInput
   } = destination.Config;
   if (enableBatchInput) {
+      const batchEventResponse = generateBatchedPayloadForArray(eventsChunk);
+      batchEventResponseList.push(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true
+      );
+  } else {
       eventsChunk.forEach(chunk => {
-          const batchEventResponse = generateBatchedPayloadForArray(chunk);
+          const batchEventResponse = generateBatchedPayload(chunk);
           batchedResponseList.push(
               getSuccessRespEvents(
                   batchEventResponse.batchedRequest,
                   batchEventResponse.metadata,
                   batchEventResponse.destination,
-                  true
-              )
-          );
-      });
-  } else {
-      eventsChunk.forEach(event => {
-          batchedResponseList.push(
-              getSuccessRespEvents(
-                  event.message,
-                  [event.metadata],
-                  destination
               )
           );
       });

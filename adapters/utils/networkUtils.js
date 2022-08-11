@@ -87,7 +87,7 @@ const getDynamicMeta = statusCode => {
 
 const parseDestResponse = (destResponse, destination) => {
   const statTags = {
-    destination,
+    destType: destination,
     stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
   };

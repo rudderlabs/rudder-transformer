@@ -32,7 +32,7 @@ function ErrorBuilder() {
 
   this.setStatTags = arg => {
     this.err.statTags = {
-      destType: arg.destination || arg.destType,
+      destType: arg.destType || arg.destination,
       stage: arg.stage,
       scope: arg.scope,
       meta: arg.meta

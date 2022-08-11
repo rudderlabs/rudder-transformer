@@ -1,0 +1,104 @@
+[
+   
+    {
+      "sourceKeys": "email",
+      "destKey": "email",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "title",
+      "destKey": "title"
+    },
+    {
+      "sourceKeys": "context.traits.title",
+      "destKey": "title"
+    },
+    {
+      "sourceKeys": "originalTimestamp",
+      "destKey": "last_active",
+      "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"firstName",
+        "destKey":"firstname",
+        "sourceFromGenericMap": true
+
+    },
+    {
+        "sourceKeys":"lastName",
+        "destKey":"lastname",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"phone",
+        "destKey":"phone",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"city",
+        "destKey":"city",
+        "sourceFromGenericMap": true
+    },
+    
+    {
+        "sourceKeys":"employeeCount",
+        "destKey":"company_size",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"role",
+        "destKey":"role",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"website",
+        "destKey":"website",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"IP",
+        "destKey":"IP",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"timezone",
+        "destKey":"timezone",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"subscriptionStatus",
+        "destKey":"subscription_status",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"prospectOrCustomer",
+        "destKey":"prospect_or_customer",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"hasPurchased",
+        "destKey":"haspurchased",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"state",
+        "destKey":"state",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"zipcode",
+        "destKey":"zipcode",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"country",
+        "destKey":"country",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"website",
+        "destKey":"website",
+        "sourceFromGenericMap": true
+    }
+  ]
+  

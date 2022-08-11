@@ -6,6 +6,7 @@
     "timestamp",
     "originalTimestamp"
   ],
+  "timezone":["context.timezone"],
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
   "email": [
     "traits.email",
@@ -33,7 +34,9 @@
     "context.traits.userId",
     "context.traits.id"
   ],
+  "prospectOrCustomer":["traits.prospectOrCustomer", "context.traits.prospectOrCustomer"],
   "name": ["traits.name", "context.traits.name"],
+  "title":["traits.title", "context.traits.title"],
   "firstName": [
     "traits.firstName",
     "traits.firstname",
@@ -77,5 +80,15 @@
     "context.traits.dob",
     "traits.DOB",
     "context.traits.DOB"
-  ]
+  ],
+  "hasPurchased":["traits.hasPurchased", "context.traits.hasPurchased"],
+  "state":["traits.state", "context.traits.state"],
+  "zipcode":["traits.zipcode", "context.traits.zipcode", "traits.zip", "context.traits.zip"],
+  "country":["traits.country", "context.traits.country"],
+  "city":["traits.address.city"],
+  "employeeCount":["traits.company.employeeCount"],
+  "role":["traits.role", "context.traits.role"],
+"IP":["context.ip"],
+"subscriptionSprotatus":["traits.subscriptionStatus", "context.traits.subscriptionStatus"]
+
 }

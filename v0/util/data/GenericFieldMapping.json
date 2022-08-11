@@ -77,5 +77,13 @@
     "context.traits.dob",
     "traits.DOB",
     "context.traits.DOB"
+  ],
+  "avatar": [
+    "traits.avatar",
+    "context.traits.avatar",
+    "traits.avatarURL",
+    "context.traits.avatarURL",
+    "traits.avatar_URL",
+    "context.traits.avatar_URL"
   ]
 }

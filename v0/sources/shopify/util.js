@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const sha256 = require("sha256");
 const {
   CustomError,
   constructPayload,
@@ -93,9 +94,6 @@ const extractEmailFromPayload = event => {
 
 // TODO: Hash the id and use it as anonymousId
 const setAnonymousId = message => {
-  logger.info(
-    `[Shopify] Setting anonymousId for message: ${JSON.stringify(message)}`
-  );
   switch (message.event) {
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
@@ -113,7 +111,9 @@ const setAnonymousId = message => {
     case RUDDER_ECOM_MAP.orders_updated:
       message.setProperty(
         "anonymousId",
-        message.properties?.cart_token || generateUUID()
+        message.properties?.cart_token
+          ? sha256(message.properties.cart_token)
+          : generateUUID()
       );
       break;
     default:

@@ -2,33 +2,25 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
-
+  getErrorRespEvents
 } = require("../../util");
-const {
-  TRIGGERTYPE
-} = require("./config");
+const { TRIGGERTYPE } = require("./config");
 
 const {
   generateBatchedPayloadForArray,
-  generateBatchedPayload
+  generateBatchedPayload,
+  validateDestinationConfig
 } = require("./util");
 
 function process(event) {
-  const {
-    message,
-    destination
-  } = event;
-  const {
-    Config
-  } = destination;
+  const { message, destination } = event;
+
   const {
     googleCloudFunctionUrl,
     triggerType,
     apiKeyId,
     gcloudAuthorization
-  } = Config;
+  } = destination.Config;
 
   // Config Validation
   validateDestinationConfig(destination);
@@ -57,9 +49,7 @@ function process(event) {
 // Returns a batched response list for a for list of inputs(successRespList)
 function batchEvents(eventsChunk, destination) {
   const batchedResponseList = [];
-  const {
-    enableBatchInput
-  } = destination.Config;
+  const { enableBatchInput } = destination.Config;
   if (enableBatchInput) {
     const batchEventResponse = generateBatchedPayloadForArray(eventsChunk);
     batchEventResponseList.push(
@@ -77,7 +67,7 @@ function batchEvents(eventsChunk, destination) {
         getSuccessRespEvents(
           batchEventResponse.batchedRequest,
           batchEventResponse.metadata,
-          batchEventResponse.destination,
+          batchEventResponse.destination
         )
       );
     });
@@ -108,11 +98,12 @@ const processRouterDest = async inputs => {
           let response = process(event);
           response = Array.isArray(response) ? response : [response];
           response.forEach(res => {
-            getEventChunks({
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination
-            },
+            getEventChunks(
+              {
+                message: res,
+                metadata: event.metadata,
+                destination: event.destination
+              },
               eventsChunk
             );
           });
@@ -129,13 +120,12 @@ const processRouterDest = async inputs => {
     })
   );
   let batchedResponseList = [];
+  const { destination } = inputs[0];
   if (eventsChunk.length) {
     batchedResponseList = batchEvents(eventsChunk, destination);
   }
   return [...batchedResponseList, ...errorRespList];
 };
-
-
 
 module.exports = {
   process,

@@ -1,0 +1,1179 @@
+[
+  {
+    "description": "Identify call for creating or updating user",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.wootric.com/v1/end_users",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer 193e3fbc96b46fd9b2d34bd82ae6bdca0c28a0437272f07ba35f9fe000e0e0a1"
+        },
+        "params": {},
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {
+            "email": "dummyUser1@gmail.com",
+            "phone_number": "9123456789",
+            "last_surveyed": "1642685961",
+            "external_created_at": "1611149961",
+            "external_id": "dummyId1",
+            "properties[city]": "Mumbai",
+            "properties[name]": "Dummy User 1",
+            "properties[title]": "SDE",
+            "properties[gender]": "Male",
+            "properties[company]": "Rudderstack"
+          }
+        },
+        "files": {},
+        "userId": ""
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PUT",
+        "endpoint": "https://api.wootric.com/v1/end_users/486438462",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer 74ca019a95d9b8e2d35bab6473a89a7bea41ccde45445ef9d7aeb730505bbf12"
+        },
+        "params": {},
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {
+            "email": "dummyUser1@gmail.com",
+            "phone_number": "9123456789",
+            "last_surveyed": "1642685961",
+            "external_created_at": "1611149961",
+            "external_id": "dummyId1",
+            "properties[city]": "Mumbai",
+            "properties[name]": "Dummy User 1",
+            "properties[title]": "SDE",
+            "properties[gender]": "Male",
+            "properties[company]": "Rudderstack"
+          }
+        },
+        "files": {},
+        "userId": ""
+      }
+    ]
+  },
+  {
+    "description": "Identify call without sending userId",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.wootric.com/v1/end_users",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer 74ca019a95d9b8e2d35bab6473a89a7bea41ccde45445ef9d7aeb730505bbf12"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "email": "dummyUser1@gmail.com",
+          "phone_number": "9123456789",
+          "last_surveyed": "1642685961",
+          "external_created_at": "1611149961",
+          "external_id": "bf412108-0357-4330-b119-7305e767823c",
+          "properties[city]": "Mumbai",
+          "properties[name]": "Dummy User 1",
+          "properties[title]": "SDE",
+          "properties[gender]": "Male",
+          "properties[company]": "Rudderstack"
+        }
+      },
+      "files": {},
+      "userId": ""
+    }
+  },
+  {
+    "description": "Identify call without sending traits",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://api.wootric.com/v1/end_users/486438462",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer 74ca019a95d9b8e2d35bab6473a89a7bea41ccde45445ef9d7aeb730505bbf12"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "last_surveyed": "1642685961",
+          "external_id": "dummyId1"
+        }
+      },
+      "files": {},
+      "userId": ""
+    }
+  },
+  {
+    "description": "Identify call without sending email",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://api.wootric.com/v1/end_users/486438462",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer 74ca019a95d9b8e2d35bab6473a89a7bea41ccde45445ef9d7aeb730505bbf12"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "phone_number": "9123456789",
+          "last_surveyed": "1642685961",
+          "external_created_at": "1611149961",
+          "external_id": "dummyId1",
+          "properties[city]": "Mumbai",
+          "properties[name]": "Dummy User 1",
+          "properties[title]": "SDE",
+          "properties[gender]": "Male",
+          "properties[company]": "Rudderstack"
+        }
+      },
+      "files": {},
+      "userId": ""
+    }
+  },
+  {
+    "description": "Identify call without sending email and phone number",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId2",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "email/phone number are missing. At least one parameter must be provided",
+      "statTags": {
+        "destination": "wootric",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Identify call with null/blank email and phone number",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId2",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": null,
+            "phone": "",
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "email/phone number are missing. At least one parameter must be provided",
+      "statTags": {
+        "destination": "wootric",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Identify call with existing email/ phone",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId3",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 3",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.wootric.com/v1/end_users",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer daf57bb35db7db8ff76c866078f0bc418681d645e4a72bc3d9d6b3dbf9176e85"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "email": "dummyUser1@gmail.com",
+          "phone_number": "9123456789",
+          "last_surveyed": "1642685961",
+          "external_created_at": "1611149961",
+          "external_id": "dummyId3",
+          "properties[city]": "Mumbai",
+          "properties[name]": "Dummy User 3",
+          "properties[title]": "SDE",
+          "properties[gender]": "Male",
+          "properties[company]": "Rudderstack"
+        }
+      },
+      "files": {},
+      "userId": ""
+    }
+  },
+  {
+    "description": "Track call with non-existing userId",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId3",
+        "channel": "web",
+        "properties": {
+          "feedbackScore": 7,
+          "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 3",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true,
+          "Wootric": {
+            "eventType": "create response"
+          }
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "No user found with end user id : dummyId3",
+      "statTags": {
+        "destination": "wootric",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Track call with existing userId and event type as create response",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "properties": {
+          "feedbackScore": 7,
+          "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true,
+          "Wootric": {
+            "eventType": "create response"
+          }
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.wootric.com/v1/end_users/486438462/responses",
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer daf57bb35db7db8ff76c866078f0bc418681d645e4a72bc3d9d6b3dbf9176e85"
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {
+          "score": 7,
+          "ip_address": "0.0.0.0",
+          "origin_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+          "text": "Simple, Easy to use, Reliable, Affoardable Product",
+          "created_at": "1611149961",
+          "end_user[properties][city]": "Mumbai",
+          "end_user[properties][name]": "Dummy User 1",
+          "end_user[properties][title]": "SDE",
+          "end_user[properties][gender]": "Male",
+          "end_user[properties][company]": "Rudderstack"
+        }
+      },
+      "files": {},
+      "userId": ""
+    }
+  },
+  {
+    "description": "Track call with existing userId and event type as create decline",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "properties": {
+          "feedbackScore": 7,
+          "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true,
+          "Wootric": {
+            "eventType": "create decline"
+          }
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.wootric.com/v1/end_users/486438462/declines",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Bearer daf57bb35db7db8ff76c866078f0bc418681d645e4a72bc3d9d6b3dbf9176e85"
+        },
+        "params": {},
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {
+            "origin_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "created_at": "1611149961",
+            "end_user[properties][city]": "Mumbai",
+            "end_user[properties][name]": "Dummy User 1",
+            "end_user[properties][title]": "SDE",
+            "end_user[properties][gender]": "Male",
+            "end_user[properties][company]": "Rudderstack"
+          }
+        },
+        "files": {},
+        "userId": ""
+      },
+      "statusCode": 200
+    }
+  },
+  {
+    "description": "Track call with existing userId and event type other than create response or decline",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "properties": {
+          "feedbackScore": 7,
+          "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true,
+          "Wootric": {
+            "eventType": "random"
+          }
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Event Type not supported",
+      "statTags": {
+        "destination": "wootric",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Track call with existing userId and missing event type in integration object",
+    "input": {
+      "destination": {
+        "Config": {
+          "username": "gauravudia@rudderstack.com",
+          "password": "n5f5XH4Xxp&?3rEY",
+          "accountToken": "NPS-8fa152b7"
+        },
+        "ID": "wootric-1234"
+      },
+      "message": {
+        "type": "track",
+        "sentAt": "2022-01-20T13:39:21.033Z",
+        "userId": "dummyId1",
+        "channel": "web",
+        "properties": {
+          "feedbackScore": 7,
+          "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.2.20",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "page": {
+            "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "title": "Document",
+            "search": "",
+            "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
+            "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
+            "initial_referrer": "$direct",
+            "referring_domain": "127.0.0.1:7307",
+            "initial_referring_domain": ""
+          },
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 536,
+            "innerHeight": 689
+          },
+          "traits": {
+            "city": "Mumbai",
+            "name": "Dummy User 1",
+            "email": "dummyUser1@gmail.com",
+            "phone": 9123456789,
+            "title": "SDE",
+            "gender": "Male",
+            "company": "Rudderstack",
+            "createdAt": "2021-01-20T13:39:21.032Z"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.2.20"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Event Type is missing",
+      "statTags": {
+        "destination": "wootric",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  }
+]

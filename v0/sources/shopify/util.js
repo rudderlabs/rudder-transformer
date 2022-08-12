@@ -92,12 +92,17 @@ const extractEmailFromPayload = event => {
   return email;
 };
 
-// TODO: Hash the id and use it as anonymousId
+// Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
 const setAnonymousId = message => {
   switch (message.event) {
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      message.setProperty("anonymousId", message.properties.id);
+      message.setProperty(
+        "anonymousId",
+        message.properties?.id
+          ? sha256(message.properties.id).toString().substring(0, 36)
+          : generateUUID()
+      );
       break;
     case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.orders_edited:
@@ -112,7 +117,7 @@ const setAnonymousId = message => {
       message.setProperty(
         "anonymousId",
         message.properties?.cart_token
-          ? sha256(message.properties.cart_token)
+          ? sha256(message.properties.cart_token).toString().substring(0, 36)
           : generateUUID()
       );
       break;

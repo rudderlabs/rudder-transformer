@@ -73,8 +73,6 @@ function batchEvents(successRespList, destination) {
     });
     const batchPayload = { payload: msgList };
     batchEventResponse.batchedRequest.body.JSON = batchPayload;
-    // batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
-    // batchEventResponse.batchedRequest.headers = deduceResponseHeaders(gcloudAuthorization, apiKeyId, TriggerType);
     batchedResponseList.push(
       getSuccessRespEvents(batchEventResponse, batchMetadata, destination, true)
     );
@@ -98,7 +96,6 @@ const processRouterDest = inputs => {
   const successRespList = [];
 
   inputs.forEach(input => {
-    //batchMetadata.push(input.metadata);
     try {
       successRespList.push({
         payload: process(input),

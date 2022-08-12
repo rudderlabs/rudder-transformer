@@ -29,39 +29,15 @@ const retrieveUserId = async (apiKey, message) => {
       Accept: "application/json"
     };
 
+    const requestBody = {
+      apiKey: `${apiKey}`
+    };
     if (email) {
-      response = await httpPOST(
-        url,
-        qs.stringify({
-          apiKey: `${apiKey}`,
-          email: `${email}`
-        }),
-        header
-      );
-
-      // If the request fails, throwing error.
-      if (response.success === false) {
-        throw new CustomError(
-          `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
-          400
-        );
-      }
-
-      return (
-        response?.response?.data?.data?.id ||
-        response?.response?.data?.id ||
-        null
-      );
+      requestBody.email = `${email}`;
+    } else {
+      requestBody.userID = `${userId}`;
     }
-    response = await httpPOST(
-      url,
-      qs.stringify({
-        apiKey: `${apiKey}`,
-        userID: `${userId}`
-      }),
-      header
-    );
-
+    response = await httpPOST(url, qs.stringify(requestBody), header);
     // If the request fails, throwing error.
     if (response.success === false) {
       throw new CustomError(
@@ -69,7 +45,6 @@ const retrieveUserId = async (apiKey, message) => {
         400
       );
     }
-
     return (
       response?.response?.data?.data?.id || response?.response?.data?.id || null
     );

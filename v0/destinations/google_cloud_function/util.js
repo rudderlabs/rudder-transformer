@@ -21,13 +21,12 @@ function generateBatchedPayloadForArray(events) {
   // extracting destination
   // from the first event in a batch
   const { destination } = events[0];
-  const Config = destination.Config;
   const {
     googleCloudFunctionUrl,
     triggerType,
     apiKeyId,
     gcloudAuthorization
-  } = Config;
+  } = destination.Config;
   let batchEventResponse = defaultBatchRequestConfig();
 
   // Batch event into dest batch structure
@@ -36,13 +35,13 @@ function generateBatchedPayloadForArray(events) {
     metadata.push(ev.metadata);
   });
 
-  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-    batch: JSON.stringify(batchResponseList)
+  batchEventResponse.batchedRequest.body.JSON = {
+    batch: batchResponseList
   };
 
   batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
 
-  if (TRIGGERTYPE.HTTPS == triggerType) {
+  if (TRIGGERTYPE.HTTPS === triggerType) {
     batchEventResponse.batchedRequest.headers = {
       "content-type": "application/json",
       Authorization: `Bearer ${gcloudAuthorization}`,
@@ -66,20 +65,19 @@ function generateBatchedPayloadForArray(events) {
 function generateBatchedPayload(event) {
   // extracting destination
   const { destination, metadata } = event;
-  const Config = destination.Config;
   const {
     googleCloudFunctionUrl,
     triggerType,
     apiKeyId,
     gcloudAuthorization
-  } = Config;
+  } = destination.Config;
   let batchEventResponse = defaultBatchRequestConfig();
 
   batchEventResponse.batchedRequest.body.JSON = event.message.body.JSON;
 
   batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
 
-  if (TRIGGERTYPE.HTTPS == triggerType) {
+  if (TRIGGERTYPE.HTTPS === triggerType) {
     batchEventResponse.batchedRequest.headers = {
       "content-type": "application/json",
       Authorization: `Bearer ${gcloudAuthorization}`,

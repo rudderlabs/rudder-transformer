@@ -13,8 +13,8 @@ const {
 } = require("./util");
 
 function process(event) {
+  let basicAuth;
   const { message, destination } = event;
-
   const {
     googleCloudFunctionUrl,
     triggerType,
@@ -24,7 +24,9 @@ function process(event) {
 
   // Config Validation
   validateDestinationConfig(destination);
-  const basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
+  if (apiKeyId) {
+    basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
+  }
 
   const response = defaultRequestConfig();
   if (TRIGGERTYPE.HTTPS === triggerType) {
@@ -52,7 +54,7 @@ function batchEvents(eventsChunk, destination) {
   const { enableBatchInput } = destination.Config;
   if (enableBatchInput) {
     const batchEventResponse = generateBatchedPayloadForArray(eventsChunk);
-    batchEventResponseList.push(
+    batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
         batchEventResponse.metadata,

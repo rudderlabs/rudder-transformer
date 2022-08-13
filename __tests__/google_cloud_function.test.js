@@ -20,7 +20,6 @@ describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
-      console.log(JSON.stringify(routerOutput));
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });

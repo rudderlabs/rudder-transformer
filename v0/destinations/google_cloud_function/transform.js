@@ -74,7 +74,7 @@ function batchEvents(successRespList, destination) {
     const batchPayload = { payload: msgList };
     batchEventResponse.batchedRequest.body.JSON = batchPayload;
     batchedResponseList.push(
-      getSuccessRespEvents(batchEventResponse, batchMetadata, destination, true)
+      getSuccessRespEvents(batchEventResponse.batchedRequest, batchMetadata, destination, true)
     );
   } else {
     // otherwise the events are sent normally

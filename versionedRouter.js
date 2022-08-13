@@ -601,8 +601,7 @@ if (startSourceTransformer) {
   });
 }
 
-async function handleProxyRequest(destination, ctx, reqOpts={}) {
-  const destinationRequest = ctx.request.body;
+async function handleProxyRequest(destination, destinationRequest, reqOpts={}) {
   // The timeout for this request to complete
   logger.debug(`[${destination}] The timeout for proxy request: ${reqOpts?.timeout || 0} ms`);
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
@@ -652,11 +651,7 @@ async function handleProxyRequest(destination, ctx, reqOpts={}) {
       destination
     });
   }
-  ctx.body = { output: response };
-  // Sending `204` status(obtained from destination) is not working as expected
-  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
-  ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
-  return ctx.body;
+  return { output: response };
 }
 
 if (transformerProxy) {
@@ -671,11 +666,15 @@ if (transformerProxy) {
           const reqOpts = {
             timeout: ctx.get('RdProxy-Timeout')
           };
-          await handleProxyRequest(destination, ctx);
+          const response = await handleProxyRequest(destination, ctx.request.body, reqOpts);
           stats.timing("transformer_total_proxy_latency", startTime, {
             destination,
             version
           });
+          ctx.body = response;
+          // Sending `204` status(obtained from destination) is not working as expected
+          // Since this is success scenario, we'll be forcefully sending `200` status-code to server
+          ctx.status = isHttpStatusSuccess(response.output.status) ? 200 : response.output.status;
         }
       );
     });

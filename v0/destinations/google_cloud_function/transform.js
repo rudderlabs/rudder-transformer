@@ -115,7 +115,6 @@ const processRouterDest = inputs => {
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList, destination);
   }
-
   return [...batchResponseList, ...batchErrorRespList];
 };
 

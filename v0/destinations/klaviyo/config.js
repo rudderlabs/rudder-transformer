@@ -36,23 +36,20 @@ const ecomExclusionKeys = [
   "checkout_url"
 ];
 
-const ecomEvents = [
-  "product viewed",
-  "product clicked",
-  "product added",
-  "checkout started"
-];
-const eventNameMapping = {
+const EVENT_NAME_MAPPING = {
   "product viewed": "Viewed Product",
   "product clicked": "Viewed Product",
   "product added": "Added to Cart",
   "checkout started": "Started Checkout"
 };
-const jsonNameMapping = {
-  "Viewed Product": "VIEWED_PRODUCT",
-  "Added to Cart": "ADDED_TO_CART",
-  "Started Checkout": "STARTED_CHECKOUT"
+
+const ECOM_EVENT_MAPPING = {
+  "product viewed": "VIEWED_PRODUCT",
+  "product clicked": "VIEWED_PRODUCT",
+  "product added": "ADDED_TO_CART",
+  "checkout started": "STARTED_CHECKOUT"
 };
+
 const LIST_CONF = {
   SUBSCRIBE: "Subscribe",
   MEMBERSHIP: "Membership"
@@ -65,8 +62,7 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   LIST_CONF,
-  ecomExclusionKeys,
-  ecomEvents,
-  eventNameMapping,
-  jsonNameMapping
+  ECOM_EVENT_MAPPING,
+  EVENT_NAME_MAPPING,
+  ecomExclusionKeys
 };

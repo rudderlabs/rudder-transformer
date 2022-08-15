@@ -12,7 +12,8 @@ const {
   defaultPostRequestConfig,
   extractCustomFields,
   removeUndefinedAndNullValues,
-  CustomError
+  CustomError,
+  isEmptyObject
 } = require("../../util");
 
 const {
@@ -177,9 +178,31 @@ const createCustomerProperties = message => {
   return customerProperties;
 };
 
+const formatEcomPayload = (message, payload) => {
+  // products mapping using Items.json
+  if (message.properties.items && Array.isArray(message.properties.items)) {
+    const itemArr = [];
+    message.properties.items.forEach(item => {
+      let parsedItem = constructPayload(
+        item,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+      );
+      parsedItem = removeUndefinedAndNullValues(parsedItem);
+      if (!isEmptyObject(parsedItem)) {
+        itemArr.push(parsedItem);
+      }
+    });
+    if (!payload.properties) {
+      payload.properties = {};
+    }
+    payload.properties.items = itemArr;
+  }
+};
+
 module.exports = {
   isProfileExist,
   addUserToList,
   checkForMembersAndSubscribe,
-  createCustomerProperties
+  createCustomerProperties,
+  formatEcomPayload
 };

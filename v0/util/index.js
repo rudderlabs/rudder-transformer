@@ -692,6 +692,9 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           formatTimeStamp(formattedVal, typeFormat) / 1000
         );
         break;
+      case "unixTimestamp":
+        formattedVal = toUnixTimestamp(formattedVal);
+        break;
       case "microSecondTimestamp":
         formattedVal = moment.unix(moment(formattedVal).format("X"));
         formattedVal =

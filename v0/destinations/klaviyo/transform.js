@@ -12,14 +12,14 @@ const {
   BASE_ENDPOINT,
   MAPPING_CONFIG,
   ecomExclusionKeys,
-  ecomEvents,
-  eventNameMapping,
-  jsonNameMapping
+  ECOM_EVENT_MAPPING,
+  EVENT_NAME_MAPPING
 } = require("./config");
 const {
   isProfileExist,
   checkForMembersAndSubscribe,
-  createCustomerProperties
+  createCustomerProperties,
+  formatEcomPayload
 } = require("./util");
 const {
   defaultRequestConfig,
@@ -27,7 +27,6 @@ const {
   getFieldValueFromMessage,
   defaultPostRequestConfig,
   extractCustomFields,
-  toUnixTimestamp,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -85,7 +84,7 @@ const identifyRequestHandler = async (message, category, destination) => {
       WhiteListedTraits
     );
     propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-    if (destination.Config?.enforceEmailAsPrimary) {
+    if (destination.Config.enforceEmailAsPrimary) {
       delete propertyPayload.$id;
       propertyPayload._id = getFieldValueFromMessage(message, "userId");
     }
@@ -135,49 +134,21 @@ const trackRequestHandler = (message, category, destination) => {
       400
     );
   }
-  let event = get(message, "event");
-  event = event ? event.trim().toLowerCase() : event;
-  if (ecomEvents.includes(event) && message.properties) {
-    const eventName = eventNameMapping[event];
-    payload.event = eventName;
-    payload.token = destination.Config.publicApiKey;
-    const eventMap = jsonNameMapping[eventName];
-    // using identify to create customer properties
-    payload.customer_properties = createCustomerProperties(message);
-    if (
-      !payload.customer_properties.$email &&
-      !payload.customer_properties.$phone_number
-    ) {
-      throw new CustomError(
-        "email or phone is required for customer_properties",
-        400
-      );
-    }
-    const categ = CONFIG_CATEGORIES[eventMap];
+  if (!message.event) {
+    throw new CustomError(
+      "Event name is a required field for track events",
+      400
+    );
+  }
+  const event = message.event.toLowerCase();
+  if (Object.keys(ECOM_EVENT_MAPPING).includes(event)) {
+    payload.event = EVENT_NAME_MAPPING[event];
+    const ecomCategory = CONFIG_CATEGORIES[`${ECOM_EVENT_MAPPING[event]}`];
     payload.properties = constructPayload(
       message.properties,
-      MAPPING_CONFIG[categ.name]
+      MAPPING_CONFIG[ecomCategory.name]
     );
-
-    // products mapping using Items.json
-    if (message.properties.items && Array.isArray(message.properties.items)) {
-      const itemArr = [];
-      message.properties.items.forEach(key => {
-        let item = constructPayload(
-          key,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
-        );
-        item = removeUndefinedAndNullValues(item);
-        if (!isEmptyObject(item)) {
-          itemArr.push(item);
-        }
-      });
-      if (!payload.properties) {
-        payload.properties = {};
-      }
-      payload.properties.items = itemArr;
-    }
-
+    formatEcomPayload(message, payload);
     // all extra props passed is incorporated inside properties
     let customProperties = {};
     customProperties = extractCustomFields(
@@ -192,27 +163,20 @@ const trackRequestHandler = (message, category, destination) => {
         ...customProperties
       };
     }
-
-    if (isEmptyObject(payload.properties)) {
-      delete payload.properties;
-    }
   } else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    payload.token = destination.Config.publicApiKey;
-    if (message.properties && message.properties.revenue) {
-      payload.properties.$value = message.properties.revenue;
-      delete payload.properties.revenue;
-    }
-    const customerProperties = createCustomerProperties(message);
-    if (destination.Config.enforceEmailAsPrimary) {
-      delete customerProperties.$id;
-      customerProperties._id = getFieldValueFromMessage(message, "userId");
-    }
-    payload.customer_properties = customerProperties;
   }
-  if (message.timestamp) {
-    payload.time = toUnixTimestamp(message.timestamp);
+  const customerProperties = createCustomerProperties(message);
+  if (destination.Config.enforceEmailAsPrimary) {
+    delete customerProperties.$id;
+    customerProperties._id = getFieldValueFromMessage(message, "userId");
   }
+  if (message.properties.revenue) {
+    payload.properties.$value = message.properties.revenue;
+    delete payload.properties.revenue;
+  }
+  payload.customer_properties = customerProperties;
+  payload.token = destination.Config.publicApiKey;
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -284,7 +248,7 @@ const groupRequestHandler = (message, category, destination) => {
       profiles: [subscribeProfile]
     };
     const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint =  `${BASE_ENDPOINT}/api/v2/list/${get(
+    subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
       message,
       "groupId"
     )}/subscribe`;

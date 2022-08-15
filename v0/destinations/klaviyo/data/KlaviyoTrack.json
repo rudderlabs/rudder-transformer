@@ -10,5 +10,12 @@
     "metadata": {
       "excludes": ["email", "phone"]
     }
+  },
+  {
+    "destKey": "time",
+    "sourceKeys": "timestamp",
+    "metadata": {
+      "type": "unixTimestamp"
+    }
   }
 ]

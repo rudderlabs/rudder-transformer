@@ -36,7 +36,10 @@
     "destKey": "external_id",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "properties",

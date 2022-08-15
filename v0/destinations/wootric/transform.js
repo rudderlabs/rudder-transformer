@@ -11,14 +11,14 @@ const {
 const {
   getAccessToken,
   retrieveUserId,
-  flattenedPayload,
-  validateIdentifyPayload,
+  flattenPayload,
   formatIdentifyPayload,
   formatTrackPayload,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
-  createDeclinePayloadBuilder
+  createDeclinePayloadBuilder,
+  checkExistingEmailAndPhone
 } = require("./util");
 
 const responseBuilder = async (payload, endpoint, method, destination) => {
@@ -51,7 +51,6 @@ const identifyResponseBuilder = async (message, destination) => {
     payload = builder.payload;
     endpoint = builder.endpoint;
     method = builder.method;
-    validateIdentifyPayload(payload);
   } else {
     builder = updateUserPayloadBuilder(message);
     payload = builder.payload;
@@ -59,8 +58,15 @@ const identifyResponseBuilder = async (message, destination) => {
     method = builder.method;
   }
 
+  await checkExistingEmailAndPhone(
+    payload.email,
+    payload.phone_number,
+    userId,
+    destination
+  );
+
   formatIdentifyPayload(payload);
-  flattenedPayload(payload, "properties");
+  flattenPayload(payload, "properties");
   return responseBuilder(payload, endpoint, method, destination);
 };
 
@@ -103,7 +109,7 @@ const trackResponseBuilder = async (message, destination) => {
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
 
   formatTrackPayload(payload);
-  flattenedPayload(payload, "end_user[properties]");
+  flattenPayload(payload, "end_user[properties]");
   return responseBuilder(payload, endpoint, method, destination);
 };
 

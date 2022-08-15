@@ -57,52 +57,106 @@ const getAccessToken = async destination => {
 
 const retrieveUserId = async (userId, destination) => {
   const accessToken = await getAccessToken(destination);
-  try {
-    const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
-    const requestOptions = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`
-      }
-    };
-
-    const userResponse = await httpGET(endpoint, requestOptions);
-    const processedUserResponse = processAxiosResponse(userResponse);
-
-    // If the request fails, throwing error.
-    if (processedUserResponse.status !== 200) {
-      throw new CustomError(
-        `[Wootric]:: Unable to retrieve userid due to ${JSON.stringify(
-          processedUserResponse.response
-        )}`,
-        processedUserResponse.status
-      );
+  const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
+  const requestOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
     }
+  };
 
+  const userResponse = await httpGET(endpoint, requestOptions);
+  const processedUserResponse = processAxiosResponse(userResponse);
+
+  if (processedUserResponse.status === 200) {
     return processedUserResponse.response?.id;
-  } catch (error) {
-    console.debug(`No user found with end user id : ${userId}`);
+  }
+
+  if (processedUserResponse.status !== 404) {
+    throw new CustomError(
+      `[Wootric]:: Unable to retrieve userid due to ${JSON.stringify(
+        processedUserResponse.response
+      )}`,
+      processedUserResponse.status
+    );
   }
 };
 
-const flattenedPayload = (payload, destKey) => {
+const userLookupByEmail = async (email, destination) => {
+  if (isDefinedAndNotNullAndNotEmpty(email)) {
+    const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${email}?lookup_by_email=true`;
+    return await userLookupResponseBuilder(endpoint, destination);
+  }
+};
+
+const userLookupByPhone = async (phone, destination) => {
+  if (isDefinedAndNotNullAndNotEmpty(phone)) {
+    const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/phone_number/${phone}`;
+    return await userLookupResponseBuilder(endpoint, destination);
+  }
+};
+
+const userLookupResponseBuilder = async (endpoint, destination) => {
+  const accessToken = await getAccessToken(destination);
+  const requestOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`
+    }
+  };
+  const lookupResponse = await httpGET(endpoint, requestOptions);
+  return processAxiosResponse(lookupResponse);
+};
+
+const createUserPayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
+  const method = "POST";
+  validateEmailAndPhone(payload.email, payload.phone_number);
+  return { payload, endpoint, method };
+};
+
+const updateUserPayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint;
+  const method = "PUT";
+  delete payload.external_id;
+  return { payload, endpoint, method };
+};
+
+const createResponsePayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
+  const method = "POST";
+  validateScore(payload);
+  return { payload, endpoint, method };
+};
+
+const createDeclinePayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
+  );
+  const endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
+  const method = "POST";
+  return { payload, endpoint, method };
+};
+
+const flattenPayload = (payload, destKey) => {
   if (payload.properties) {
     Object.entries(payload.properties).forEach(([key, value]) => {
       payload[`${destKey}[${key}]`] = `${value}`;
     });
     delete payload.properties;
-  }
-};
-
-const validateIdentifyPayload = payload => {
-  if (
-    !isDefinedAndNotNullAndNotEmpty(payload.email) &&
-    !isDefinedAndNotNullAndNotEmpty(payload.phone_number)
-  ) {
-    throw new CustomError(
-      "email/phone number are missing. At least one parameter must be provided",
-      400
-    );
   }
 };
 
@@ -121,55 +175,57 @@ const formatTrackPayload = payload => {
   }
 };
 
-const createUserPayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
-  );
-  const endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
-  const method = "POST";
-  return { payload, endpoint, method };
+const validateEmailAndPhone = (email, phone) => {
+  if (
+    !isDefinedAndNotNullAndNotEmpty(email) &&
+    !isDefinedAndNotNullAndNotEmpty(phone)
+  ) {
+    throw new CustomError(
+      "email/phone number are missing. At least one parameter must be provided",
+      400
+    );
+  }
 };
 
-const updateUserPayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
-  );
-  const endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint;
-  const method = "PUT";
-  return { payload, endpoint, method };
+const checkExistingEmailAndPhone = async (
+  email,
+  phone,
+  external_id,
+  destination
+) => {
+  let lookupResponse;
+  lookupResponse = await userLookupByEmail(email, destination);
+  if (
+    lookupResponse?.status === 200 &&
+    lookupResponse?.response?.external_id !== external_id
+  ) {
+    throw new CustomError("Email has already been taken", 400);
+  }
+  lookupResponse = await userLookupByPhone(phone, destination);
+
+  if (
+    lookupResponse?.status === 200 &&
+    lookupResponse?.response?.external_id !== external_id
+  ) {
+    throw new CustomError("Phone number has already been taken", 400);
+  }
 };
 
-const createResponsePayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
-  );
-  const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
-  const method = "POST";
-  return { payload, endpoint, method };
-};
-
-const createDeclinePayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
-  );
-  const endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
-  const method = "POST";
-  return { payload, endpoint, method };
+const validateScore = payload => {
+  if (!(payload.score >= 0 && payload.score <= 10)) {
+    throw new CustomError("Invalid Score", 400);
+  }
 };
 
 module.exports = {
   getAccessToken,
   retrieveUserId,
-  flattenedPayload,
-  validateIdentifyPayload,
+  flattenPayload,
   formatIdentifyPayload,
   formatTrackPayload,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
-  createDeclinePayloadBuilder
+  createDeclinePayloadBuilder,
+  checkExistingEmailAndPhone
 };

@@ -3,7 +3,10 @@ const _ = require("lodash");
 const util = require("util");
 
 const { input, output } = require(`./data/warehouse/events.js`);
-const { opInput, opOutput } = require(`./data/warehouse/integration_options_events.js`);
+const {
+  opInput,
+  opOutput
+} = require(`./data/warehouse/integration_options_events.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const {
   largeNoOfColumnsevent

@@ -30,7 +30,7 @@ inputData.forEach((input, index) => {
     let output, expected;
     try {
       output = transformer.process(input);
-      expected = expectedData[index]
+      expected = expectedData[index];
     } catch (error) {
       output = error.message;
       expected = expectedData[index].message;
@@ -38,13 +38,12 @@ inputData.forEach((input, index) => {
     expect(output).toEqual(expected);
   });
 });
-  
-  describe(`${name} Tests`, () => {
+
+describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  
 });

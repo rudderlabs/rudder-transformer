@@ -22,7 +22,7 @@ function process(event) {
     getDataTypeOverride,
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
-    destJsonPaths 
+    destJsonPaths
   });
 }
 

@@ -52,8 +52,9 @@ function responseBuilderSimple(message, category, destination) {
       payload.partner_params = {};
       Object.keys(partnerParamsKeysMap).forEach(key => {
         if (message.properties[key]) {
-          payload.partner_params[partnerParamsKeysMap[key]] =
-            message.properties[key].toString();
+          payload.partner_params[
+            partnerParamsKeysMap[key]
+          ] = message.properties[key].toString();
         }
       });
     }

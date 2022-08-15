@@ -27,7 +27,6 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-
 inputData.forEach((input, index) => {
   it(`${name} Tests: payload: ${index}`, async () => {
     try {
@@ -40,11 +39,10 @@ inputData.forEach((input, index) => {
 });
 
 describe(`${name} Tests`, () => {
-describe("Router Tests", () => {
-  it("Payload", async () => {
-    const routerOutput = await transformer.processRouterDest(inputRouterData);
-    expect(routerOutput).toEqual(expectedRouterData);
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
   });
-});
-
 });

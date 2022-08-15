@@ -40,7 +40,7 @@ const batchOutputDataFile = fs.readFileSync(
 const batchInputData = JSON.parse(batchInputDataFile);
 const batchExpectedData = JSON.parse(batchOutputDataFile);
 
-test('Batching', async () => {
+test("Batching", async () => {
   const batchInputData = JSON.parse(batchInputDataFile);
   const batchExpectedData = JSON.parse(batchOutputDataFile);
   const output = await transformer.processRouterDest(batchInputData);

@@ -25,7 +25,7 @@ const {
   GEO_SOURCE_ALLOWED_VALUES
 } = require("./config");
 
-// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel 
+// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
   mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -160,8 +160,14 @@ function processTrack(message, destination) {
 
 function getTransformedJSON(message, mappingJson, useNewMapping) {
   let rawPayload = constructPayload(message, mappingJson);
-  if(isDefined(rawPayload.$geo_source) && (!GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source))) {
-    throw new CustomError ("$geo_source value must be either null or 'reverse_geocoding' ", 400);
+  if (
+    isDefined(rawPayload.$geo_source) &&
+    !GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source)
+  ) {
+    throw new CustomError(
+      "$geo_source value must be either null or 'reverse_geocoding' ",
+      400
+    );
   }
   const userName = get(rawPayload, "$name");
   if (!userName) {

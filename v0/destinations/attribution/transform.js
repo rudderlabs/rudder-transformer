@@ -38,7 +38,7 @@ function getTransformedJSON(message) {
   const transformedMessage = {
     ...message,
     traits,
-    timestamp: getFieldValueFromMessage(message, "timestamp"),
+    timestamp: getFieldValueFromMessage(message, "timestamp")
   };
 
   return removeUndefinedAndNullValues(transformedMessage);

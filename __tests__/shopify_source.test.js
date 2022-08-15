@@ -19,7 +19,7 @@ describe(`${name} Tests`, () => {
     it(`Payload: ${index}`, () => {
       try {
         const output = transformer.process(input);
-        // anonId is being set dynamically by the transformer. 
+        // anonId is being set dynamically by the transformer.
         // so removing it before json comparison.
         // Note: the anonymousId field is removed from the output json as well.
         delete output.anonymousId;

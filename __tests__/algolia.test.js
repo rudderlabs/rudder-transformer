@@ -20,7 +20,7 @@ inputData.forEach((input, index) => {
     let output, expected;
     try {
       output = transformer.process(input);
-      expected = expectedData[index]
+      expected = expectedData[index];
     } catch (error) {
       output = error.message;
       // console.log(output);
@@ -53,7 +53,7 @@ const batchOutputDataFile = fs.readFileSync(
 // });
 
 // Batching using routerTransform
-test('Batching', async () => {
+test("Batching", async () => {
   const batchInputData = JSON.parse(batchInputDataFile);
   const batchExpectedData = JSON.parse(batchOutputDataFile);
   const output = await transformer.processRouterDest(batchInputData);

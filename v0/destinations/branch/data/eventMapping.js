@@ -42,7 +42,7 @@ const CommerceEventConfig = {
     "Promotion Clicked": "CLICK_AD",
     "Checkout Started": "PURCHASE",
     "Order Completed": "PURCHASE",
-    "Reserve": "RESERVE"
+    Reserve: "RESERVE"
   },
   event_data: [
     "transaction_id",
@@ -76,10 +76,10 @@ const LifecycleEventConfig = {
     "Complete Tutorial": "COMPLETE_TUTORIAL",
     "Achieve Level": "ACHIEVE_LEVEL",
     "Unlock Achievement": "UNLOCK_ACHIEVEMENT",
-    "Invite": "INVITE",
-    "Login": "LOGIN",
+    Invite: "INVITE",
+    Login: "LOGIN",
     "Start Trial": "START_TRIAL",
-    "Subscribe": "SUBSCRIBE"
+    Subscribe: "SUBSCRIBE"
   },
   event_data: ["description"]
 };

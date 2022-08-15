@@ -284,7 +284,7 @@ const groupRequestHandler = (message, category, destination) => {
       profiles: [subscribeProfile]
     };
     const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint =  `${BASE_ENDPOINT}/api/v2/list/${get(
+    subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
       message,
       "groupId"
     )}/subscribe`;

@@ -33,7 +33,7 @@ describe(`${name} Tests`, () => {
   });
 
   describe("Router Tests", () => {
-    routerTestData.forEach(async (dataPoint) => {
+    routerTestData.forEach(async dataPoint => {
       it("Payload", async () => {
         const output = await transformer.processRouterDest(dataPoint.input);
         expect(output).toEqual(dataPoint.output);

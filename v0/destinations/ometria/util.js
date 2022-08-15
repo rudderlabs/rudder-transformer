@@ -49,7 +49,8 @@ const createLineItems = items => {
       if (
         itemPayload.product_id &&
         itemPayload.quantity &&
-        (isDefinedAndNotNull(itemPayload.unit_price) || isDefinedAndNotNull(itemPayload.subtotal))
+        (isDefinedAndNotNull(itemPayload.unit_price) ||
+          isDefinedAndNotNull(itemPayload.subtotal))
       ) {
         const variantList = item.variant_options;
         if (!variantList || !Array.isArray(variantList)) {

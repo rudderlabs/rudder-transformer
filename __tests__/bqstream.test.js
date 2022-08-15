@@ -9,16 +9,15 @@ const transformer = require(`../${version}/destinations/${integration}/transform
 
 //for router test
 const inputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
+  path.resolve(__dirname, `./data/${integration}_input.json`)
 );
 const outputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
+  path.resolve(__dirname, `./data/${integration}_output.json`)
 );
 const inputProcData = JSON.parse(inputRouterDataFile);
 const expectedProcData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
-  
   describe("Router Tests", () => {
     it("Payload", async () => {
       inputProcData.forEach(async (input, ind) => {
@@ -32,5 +31,4 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-  
 });

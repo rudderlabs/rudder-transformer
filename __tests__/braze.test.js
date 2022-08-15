@@ -38,8 +38,6 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-
-
 describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
     it("Payload", async () => {

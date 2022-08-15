@@ -3,7 +3,7 @@ const name = "Amplitude";
 
 const fs = require("fs");
 const path = require("path");
-const mockedEnv = require('mocked-env')
+const mockedEnv = require("mocked-env");
 
 const version = "v0";
 
@@ -45,7 +45,7 @@ inputData.forEach((input, index) => {
         expect(output).toEqual([expectedData[index]]);
       }
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].error)
+      expect(error.message).toEqual(expectedData[index].error);
     }
   });
 });
@@ -54,64 +54,71 @@ const batchInputData = JSON.parse(batchInputDataFile);
 const batchExpectedData = JSON.parse(batchOutputDataFile);
 
 batchInputData.forEach((input, index) => {
-  if(index < batchInputData.length - 2) {
+  if (index < batchInputData.length - 2) {
     test(`test batching ${index}`, () => {
       const output = transformer.batch(input);
-      expect(Array.isArray(output)).toEqual(true)
-      expect(output.length).toEqual(batchExpectedData[index].length)
+      expect(Array.isArray(output)).toEqual(true);
+      expect(output.length).toEqual(batchExpectedData[index].length);
       output.forEach((input, indexInner) => {
-        expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-      })
-      
+        expect(output[indexInner]).toEqual(
+          batchExpectedData[index][indexInner]
+        );
+      });
     });
   }
-  
 });
 
 let restore = mockedEnv({
-  BATCH_NOT_MET_CRITERIA_USER: 'true'
-})
+  BATCH_NOT_MET_CRITERIA_USER: "true"
+});
 
 test(`test batching ${batchInputData.length - 2}`, () => {
   // reset module and load in new transformer with added env
-  jest.resetModules()
-  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
+  jest.resetModules();
+  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true");
   const transformerNew = require(`../${version}/destinations/${integration}/transform`);
-  const output = transformerNew.batch(batchInputData[batchInputData.length - 2]);
-  expect(Array.isArray(output)).toEqual(true)
-  expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 2].length)
+  const output = transformerNew.batch(
+    batchInputData[batchInputData.length - 2]
+  );
+  expect(Array.isArray(output)).toEqual(true);
+  expect(output.length).toEqual(
+    batchExpectedData[batchExpectedData.length - 2].length
+  );
   output.forEach((input, indexInner) => {
-    expect(output[indexInner]).toEqual(batchExpectedData[batchExpectedData.length - 2][indexInner]);
-  })
-  
-});
-
-restore = mockedEnv({
-  BATCH_NOT_MET_CRITERIA_USER: 'true'
-})
-
-test(`test batching ${batchInputData.length - 1}`, () => {
-  // reset module and load in new transformer with added env
-  jest.resetModules()
-  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
-  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
-  const output = transformerNew.batch(batchInputData[batchInputData.length - 1]);
-  expect(Array.isArray(output)).toEqual(true)
-  expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 1].length)
-  output.forEach((input, indexInner) => {
-    expect(output[indexInner]).toEqual(batchExpectedData[batchExpectedData.length - 1][indexInner]);
-  })
-  
-});
-
-describe(`${name} Tests`, () => {
-
-describe("Router Tests", () => {
-  it("Payload", async () => {
-    const routerOutput = await transformer.processRouterDest(inputRouterData);
-    expect(routerOutput).toEqual(expectedRouterData);
+    expect(output[indexInner]).toEqual(
+      batchExpectedData[batchExpectedData.length - 2][indexInner]
+    );
   });
 });
 
+restore = mockedEnv({
+  BATCH_NOT_MET_CRITERIA_USER: "true"
 });
 
+test(`test batching ${batchInputData.length - 1}`, () => {
+  // reset module and load in new transformer with added env
+  jest.resetModules();
+  expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true");
+  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
+  const output = transformerNew.batch(
+    batchInputData[batchInputData.length - 1]
+  );
+  expect(Array.isArray(output)).toEqual(true);
+  expect(output.length).toEqual(
+    batchExpectedData[batchExpectedData.length - 1].length
+  );
+  output.forEach((input, indexInner) => {
+    expect(output[indexInner]).toEqual(
+      batchExpectedData[batchExpectedData.length - 1][indexInner]
+    );
+  });
+});
+
+describe(`${name} Tests`, () => {
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
+  });
+});

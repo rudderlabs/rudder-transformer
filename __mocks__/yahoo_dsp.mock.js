@@ -26,7 +26,7 @@ const getData = url => {
 
 const yahooDspPostRequestHandler = (url, payload) => {
   const mockData = getData(url);
-      //resolve with status 200 and response data contains value for contact created
-      return { data: mockData.data, status: 200 };
+  //resolve with status 200 and response data contains value for contact created
+  return { data: mockData.data, status: 200 };
 };
 module.exports = yahooDspPostRequestHandler;

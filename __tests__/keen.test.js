@@ -49,5 +49,4 @@ describe(`${name} Tests`, () => {
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  
-  });
+});

@@ -32,7 +32,7 @@ const mailchimpGetRequestHandler = url => {
       return { data: mockData, status: 200 };
     } else if (url === "https://us20.api.mailchimp.com/3.0/lists/ff21810eec") {
       return { data: mockData, status: 200 };
-    } else if (url === "https://us20.api.mailchimp.com/3.0/lists/1232yyqw22"){
+    } else if (url === "https://us20.api.mailchimp.com/3.0/lists/1232yyqw22") {
       return { data: mockData, status: 200 };
     } else {
       return new Promise((resolve, reject) => {

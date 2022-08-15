@@ -50,7 +50,10 @@ async function userTransformHandlerV1(
   Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
   */
   if (userTransformation.versionId) {
-    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+    const metaTags =
+      events.length && events[0].metadata
+        ? getMetadata(events[0].metadata)
+        : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
       version: 1,

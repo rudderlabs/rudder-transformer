@@ -68,6 +68,7 @@ function responseBuilderSimple(message, category, destination) {
         // nested attributes are not by moengage so it is falttened
         payload.attributes = flattenJson(payload.attributes);
 
+        // Ref - https://developers.moengage.com/hc/en-us/articles/4413167466260-Device-
         if (isAppleFamily(payload.attributes?.platform)) {
           payload.attributes.platform = "iOS";
         }
@@ -82,6 +83,7 @@ function responseBuilderSimple(message, category, destination) {
           )
         ];
 
+        // Ref - https://developers.moengage.com/hc/en-us/articles/4413167466260-Device-
         if (isAppleFamily(payload.actions?.platform)) {
           payload.actions.platform = "iOS";
         }

@@ -63,6 +63,7 @@ function getUserData(message) {
   // "Android" or "iOS" but it does not apply & is not valid in case of web events
   let os = get(message, "context.os.name");
 
+  // Ref - https://help.branch.io/developers-hub/docs/attribution-api#endpoint-specifications
   if (isAppleFamily(os)) {
     os = "iOS";
   }

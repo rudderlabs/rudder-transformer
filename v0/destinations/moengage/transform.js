@@ -15,7 +15,8 @@ const {
   flattenJson,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily
 } = require("../../util");
 
 function responseBuilderSimple(message, category, destination) {
@@ -66,6 +67,10 @@ function responseBuilderSimple(message, category, destination) {
         );
         // nested attributes are not by moengage so it is falttened
         payload.attributes = flattenJson(payload.attributes);
+
+        if (isAppleFamily(payload.attributes?.platform)) {
+          payload.attributes.platform = "iOS";
+        }
         break;
       case "track":
         // Ref: https://docs.moengage.com/docs/data-import-apis#event-api
@@ -76,6 +81,10 @@ function responseBuilderSimple(message, category, destination) {
             MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]
           )
         ];
+
+        if (isAppleFamily(payload.actions?.platform)) {
+          payload.actions.platform = "iOS";
+        }
         break;
       default:
         throw new CustomError("Call type is not valid", 400);

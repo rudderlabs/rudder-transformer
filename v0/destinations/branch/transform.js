@@ -61,7 +61,11 @@ function getCategoryAndName(rudderEventName) {
 function getUserData(message) {
   // os field is not mandatory as based on device type it can be one of
   // "Android" or "iOS" but it does not apply & is not valid in case of web events
-  const os = get(message, "context.os.name");
+  let os = get(message, "context.os.name");
+
+  if (isAppleFamily(os)) {
+    os = "iOS";
+  }
 
   let userData = {
     os,

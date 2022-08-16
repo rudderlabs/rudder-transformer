@@ -443,5 +443,68 @@
     },
     "files": {},
     "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
-  }
+  },
+  [
+    {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "type": "customer",
+          "attributes": {
+            "name": "Ruchira Moitra",
+            "plan": "Enterprise",
+            "email": "ruchira@gmail.com",
+            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+            "company.id": "abc123",
+            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
+          },
+          "customer_id": "ruchu123"
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+      "headers": {
+        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "Content-Type": "application/json",
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      },
+      "version": "1",
+      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+    },
+    {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "type": "device",
+          "device_id": "7e32188a4dab669f",
+          "attributes": {
+            "model": "AOSP on IA Emulator",
+            "push_id": "desuhere",
+            "platform": "iOS",
+            "app_version": "1.1.6"
+          },
+          "customer_id": "ruchu123"
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+      "headers": {
+        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "Content-Type": "application/json",
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      },
+      "version": "1",
+      "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
+    }
+  ]
 ]

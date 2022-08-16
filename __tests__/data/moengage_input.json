@@ -123,11 +123,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -216,11 +212,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -305,11 +297,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -406,11 +394,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -499,11 +483,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -592,11 +572,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -685,11 +661,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -777,11 +749,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -870,11 +838,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -1024,11 +988,7 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],
@@ -1179,11 +1139,104 @@
         "DisplayName": "MoEngage",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiId",
-              "apiKey",
-              "region"
-            ]
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
+        }
+      },
+      "Config": {
+        "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "eventDelivery": false,
+        "eventDeliveryTS": 1602757086384,
+        "region": "US"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.6"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "AOSP on IA Emulator",
+          "name": "generic_x86_arm",
+          "token": "desuhere",
+          "type": "ipados"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.6"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/testing/script-test.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:3243/testing/script-test.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "company": {
+            "id": "abc123"
+          },
+          "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+          "email": "ruchira@gmail.com",
+          "name": "Ruchira Moitra",
+          "plan": "Enterprise"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "531e3507-1ef5-4a06-b83c-cb521ff34f0c",
+      "originalTimestamp": "2020-10-16T08:53:29.386Z",
+      "receivedAt": "2020-10-16T14:23:29.402+05:30",
+      "request_ip": "[::1]",
+      "sentAt": "2020-10-16T08:53:29.387Z",
+      "timestamp": "2020-10-16T14:23:29.401+05:30",
+      "type": "identify",
+      "userId": "ruchu123"
+    },
+    "destination": {
+      "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
+      "Name": "MoEngage Testing",
+      "DestinationDefinition": {
+        "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
+        "Name": "MOENGAGE",
+        "DisplayName": "MoEngage",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
           },
           "excludeKeys": [],
           "includeKeys": [],

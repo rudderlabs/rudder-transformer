@@ -96,7 +96,7 @@
           }
         ],
         "user_data": {
-          "os": "watchos",
+          "os": "iOS",
           "app_version": "1.0.0",
           "screen_dpi": 2,
           "developer_identity": "sampath",
@@ -135,7 +135,7 @@
           }
         ],
         "user_data": {
-          "os": "ipados",
+          "os": "iOS",
           "app_version": "1.0.0",
           "screen_dpi": 2,
           "developer_identity": "sampath",
@@ -173,7 +173,7 @@
           }
         ],
         "user_data": {
-          "os": "tvos",
+          "os": "iOS",
           "app_version": "1.0.0",
           "screen_dpi": 2,
           "developer_identity": "sampath",

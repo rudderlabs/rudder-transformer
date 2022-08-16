@@ -1,51 +1,51 @@
-// const { config } = require("dotenv/types");
-const set = require("set-value");
-// const get = require("get-value");
 const {
   defaultRequestConfig,
   CustomError,
   constructPayload,
   // isDefinedAndNotNull,
   // getIntegrationsObj,
-  removeUndefinedAndNullValues
-  // isDefinedAndNotNullAndNotEmpty,
-  // getErrorRespEvents,
-  // getSuccessRespEvents
+  removeUndefinedAndNullValues,
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  getDestinationExternalID,
+  defaultPostRequestConfig,
+  defaultPutRequestConfig
 } = require("../../util");
 
-const titles = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
-const isDate = date => {
-  return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
-};
+const {
+  getEncodedAuth,
+  ValidateEmail,
+  deduceAddressFields,
+  validatePayload,
+  searchContactId
+} = require("./utils");
+
 // const POC=["Prospect","Customer"];
 
 const { EventType } = require("../../../constants");
 
-const { BASEURL, mappingConfig, ConfigCategories } = require("./config");
-
-function getEncodedAuth(destination) {
-  const { Config } = destination;
-  let tempString = `${Config.userName}:${Config.password}`;
-  console.log(tempString);
-  tempString = btoa(tempString);
-  console.log(tempString);
-  return tempString;
-}
+const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 
 // ReponseBuilderforIdentifyCall
 const responseBuilderIdentify = async (
   payload,
   endpoint,
   method,
+  messageType,
   destination
 ) => {
+  const { username, password } = destination.Config;
   if (payload) {
     const response = defaultRequestConfig();
-    response.body.FORM = removeUndefinedAndNullValues(payload);
+    if (messageType === EventType.IDENTIFY) {
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+    } else {
+      response.body.FORM = removeUndefinedAndNullValues(payload);
+    }
     response.endpoint = endpoint;
-    const authKey = await getEncodedAuth(destination);
+    const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
     response.headers = {
-      Authorization: `Basic ${authKey}`
+      Authorization: `Basic ${basicAuth}`
     };
     response.method = method;
     return response;
@@ -62,28 +62,6 @@ const responseBuilderGroup = async (endpoint, destination) => {
   response.method = "POST";
   return response;
 };
-
-let BASE_URL;
-
-// for validating email match function outdated
-function ValidateEmail(inputText) {
-  console.log(inputText);
-  return true;
-  // const mailformat = new RegExp"/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/";
-  // // console.log(inputText.value);
-  // if (inputText.value.Match(mailformat)) {
-  //   return true;
-  // }
-  // return false;
-}
-// for validating Phone match function outdated
-function validatePhone(inputText) {
-  const phoneno = /^\d{10}$/;
-  if (inputText.match(phoneno)) {
-    return true;
-  }
-  return false;
-}
 
 const groupResponseBuilder = (message, destination) => {
   console.log("Inside");
@@ -105,117 +83,73 @@ const groupResponseBuilder = (message, destination) => {
   return responseBuilderGroup(endpoint, destination);
 };
 const identifyResponseBuilder = (message, destination) => {
-  const { Config } = destination;
-  // checking for message details validations
-  if (
-    message.context.traits.email &&
-    !ValidateEmail(message.context.traits.email)
-  ) {
-    throw CustomError("Invalid Mail Provided", 400);
-  }
-  if (
-    message.context.traits.Phone &&
-    !validatePhone(message.context.traits.Phone)
-  ) {
-    throw CustomError("Invalid Phone No. Provided", 400);
-  }
-  if (message.context.traits.title && !titles.includes(message.title)) {
-    throw CustomError("This title is not supported", 400);
-  }
-  if (message.originalTimestamp && !isDate(message.originalTimestamp)) {
-    throw CustomError("Date is Invalid", 400);
-  }
+  let contactId;
+  let endpoint;
+  let method;
+  const { subDomainName } = destination.Config;
+  // constructing payload from mapping JSONs
   const payload = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  if (message.traits.address || message.context.traits.address) {
-    let add;
-    if (message.traits.address) {
-      add = message.traits.address;
-    } else {
-      add = message.context.traits.address;
-    }
-    const len = add.length;
-    if (len > 128) {
-      throw new CustomError(
-        "Please provide an Address with less than 128 char ",
-        400
-      );
-    }
-    set(payload, "address1", add.substr(0, len / 2));
-    set(payload, "address2", add.substr(len / 2 + 1, len - 1));
+
+  // if the payload is valid adding address fields if present
+  if (validatePayload(payload)) {
+    const { address1, address2 } = deduceAddressFields(message);
+    payload.address1 = address1;
+    payload.address2 = address2;
   }
-  console.log("Payload:", payload);
-  const endpoint = `${BASE_URL}/contacts/new`;
+  /* 
+     1. if contactId is present  inside externalID we will use that
+     2. Otherwise we will look for the lookup field from the web app 
+  */
+  contactId = getDestinationExternalID(message, "mauticContactId");
+  if (!contactId) {
+    contactId = searchContactId(message, destination);
+  }
+
+  if (contactId) {
+    // contact exists
+    // update
+    endpoint = `${BASE_URL.replace(
+      "subDomainName",
+      subDomainName
+    )}/contacts/${contactId}/edit`;
+    method = defaultPutRequestConfig.requestMethod;
+  } else {
+    // contact do not exist
+    // create
+    endpoint = `${BASE_URL.replace(
+      "subDomainName",
+      subDomainName
+    )}/contacts/new`;
+    method = defaultPostRequestConfig.requestMethod;
+  }
+
   return responseBuilderIdentify(
     payload,
     endpoint,
-    ConfigCategories.IDENTIFY.method,
+    method,
+    EventType.IDENTIFY,
     destination
   );
 };
-// Includes the fields that can be lookUpfields
-const Fields = [
-  "",
-  "id",
-  "title",
-  "role",
-  "firstname",
-  "nps__recommend",
-  "lastname",
-  "cart_status",
-  "company",
-  "sandbox",
-  "car_or_truck",
-  "position",
-  "email",
-  "company_size",
-  "mobile",
-  "prospect_or_customer",
-  "datetime",
-  "phone",
-  "points",
-  "subscription_status",
-  "fax",
-  "b2b_or_b2c",
-  "products",
-  "address1",
-  "address2",
-  "haspurchased",
-  "city",
-  "crm_id",
-  "state",
-  "zipcode",
-  "country",
-  "preferred_locale",
-  "timezone",
-  "last_active",
-  "attribution_date",
-  "attribution",
-  "website",
-  "facebook",
-  "foursquare",
-  "instagram",
-  "linkedin",
-  "skype",
-  "twitter"
-];
+
 const process = async event => {
-  // console.log(event);
   const { message, destination } = event;
-  const { Config } = destination;
-  // checking for the configurations validations
-  if (!Fields.includes(Config.lookUpField)) {
-    throw new CustomError("Invalid Lookup Field", 400);
-  }
-  if (!Config.password) {
+  const { lookUpField, password, subDomainName, userName } = destination.Config;
+
+  if (!password) {
     throw new CustomError("Password field can not be empty", 400);
   }
-  if (!Config.subDomainName) {
+  if (!subDomainName) {
     throw new CustomError("Sub-Domain Name field can not be empty", 400);
   }
-  if (!ValidateEmail(Config.userName)) {
+  if (!lookUpField) {
+    throw new CustomError("Lookup Field Name can not be empty", 400);
+  }
+  // TODO: check if username can only be an email, or a user can set up username as per choice
+  if (!ValidateEmail(userName)) {
     throw new CustomError("User Name is not Valid", 400);
   }
 
@@ -228,8 +162,6 @@ const process = async event => {
   }
   const messageType = message.type.toLowerCase();
   let response;
-  // Switching to particular Message Event
-  BASE_URL = BASEURL.replace("subDomainName", Config.subDomainName);
 
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -241,7 +173,47 @@ const process = async event => {
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
-  console.log("Response: ",response);
+  console.log("Response: ", response);
   return response;
 };
-module.exports = { process };
+
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
+        );
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
+      }
+    })
+  );
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

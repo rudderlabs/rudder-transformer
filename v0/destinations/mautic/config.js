@@ -1,14 +1,13 @@
 const { getMappingConfig } = require("../../util");
 
-const BASEURL = "https://subDomainName.mautic.net/api";
+const BASE_URL = "https://subDomainName.mautic.net/api";
 
 // const MAX_BATCH_SIZE = 200;
 
 const ConfigCategories = {
   IDENTIFY: {
     type: "identify",
-    name: "MauticIdentifyConfig",
-    method: "POST"
+    name: "MauticIdentifyConfig"
   }
   // GROUP: {
   //     type: "group",
@@ -18,7 +17,7 @@ const ConfigCategories = {
 };
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 module.exports = {
-  BASEURL,
+  BASE_URL,
   mappingConfig,
   ConfigCategories
 };

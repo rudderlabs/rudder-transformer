@@ -4,13 +4,15 @@ const {
   CustomError
 } = require("../../util");
 
+const DEFAULT_INVOCATION_TYPE = "Event";
+
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
   if (!event.destination.Config) {
     throw new CustomError("destination.Config cannot be undefined", 400);
   }
   return {
-    payload: event.message,
+    payload: JSON.stringify(event.message),
     destConfig: event.destination.Config
   };
 }
@@ -26,13 +28,19 @@ function batchEvents(successRespList, destination) {
       msgList.push(event.payload);
       batchMetadata.push(event.metadata);
     });
-    const batchPayload = { payload: msgList, destConfig: destination.Config };
+    const batchPayload = {
+      payload: JSON.stringify(msgList),
+      destConfig: destination.Config
+    };
     batchedResponseList.push(getSuccessRespEvents(batchPayload, batchMetadata));
   } else {
     successRespList.forEach(event => {
       batchedResponseList.push(
         getSuccessRespEvents(
-          { payload: event.payload, destConfig: destination.Config },
+          {
+            payload: JSON.stringify(event.payload),
+            destConfig: destination.Config
+          },
           [event.metadata]
         )
       );
@@ -65,7 +73,7 @@ const processRouterDest = inputs => {
     );
     return [respEvents];
   }
-  destination.Config.invocationType = "Event";
+  destination.Config.invocationType = DEFAULT_INVOCATION_TYPE;
 
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList, destination);

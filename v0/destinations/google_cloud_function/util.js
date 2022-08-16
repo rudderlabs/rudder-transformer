@@ -20,15 +20,10 @@ function addHeader(response, Config) {
   if (apiKeyId) {
     basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
   }
+
+  response.headers = { "content-type": "application/json" };
   if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {
-    response.headers = {
-      "content-type": "application/json",
-      Authorization: `Bearer ${gcloudAuthorization}`
-    };
-  } else {
-    response.headers = {
-      "content-type": "application/json"
-    };
+    response.headers.Authorization = `Basic ${gcloudAuthorization}`;
   }
   if (basicAuth) {
     if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {

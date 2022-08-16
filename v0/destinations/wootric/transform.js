@@ -21,10 +21,9 @@ const {
   checkExistingEmailAndPhone
 } = require("./util");
 
-const responseBuilder = async (payload, endpoint, method, destination) => {
+const responseBuilder = async (payload, endpoint, method, accessToken) => {
   if (payload) {
     const response = defaultRequestConfig();
-    const accessToken = await getAccessToken(destination);
     response.endpoint = endpoint;
     response.headers = {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -44,8 +43,9 @@ const identifyResponseBuilder = async (message, destination) => {
   let method;
   let builder;
 
+  const accessToken = await getAccessToken(destination);
   const userId = getFieldValueFromMessage(message, "userId");
-  const wootricEndUserId = await retrieveUserId(userId, destination);
+  const wootricEndUserId = await retrieveUserId(userId, accessToken);
   if (!wootricEndUserId) {
     builder = createUserPayloadBuilder(message);
     payload = builder.payload;
@@ -62,12 +62,12 @@ const identifyResponseBuilder = async (message, destination) => {
     payload.email,
     payload.phone_number,
     userId,
-    destination
+    accessToken
   );
 
   formatIdentifyPayload(payload);
   flattenPayload(payload, "properties");
-  return responseBuilder(payload, endpoint, method, destination);
+  return responseBuilder(payload, endpoint, method, accessToken);
 };
 
 const trackResponseBuilder = async (message, destination) => {
@@ -76,8 +76,9 @@ const trackResponseBuilder = async (message, destination) => {
   let method;
   let builder;
 
+  const accessToken = await getAccessToken(destination);
   const userId = getFieldValueFromMessage(message, "userId");
-  const wootricEndUserId = await retrieveUserId(userId, destination);
+  const wootricEndUserId = await retrieveUserId(userId, accessToken);
   if (!wootricEndUserId) {
     throw new CustomError(`No user found with end user id : ${userId}`, 400);
   }
@@ -110,7 +111,7 @@ const trackResponseBuilder = async (message, destination) => {
 
   formatTrackPayload(payload);
   flattenPayload(payload, "end_user[properties]");
-  return responseBuilder(payload, endpoint, method, destination);
+  return responseBuilder(payload, endpoint, method, accessToken);
 };
 
 const processEvent = (message, destination) => {

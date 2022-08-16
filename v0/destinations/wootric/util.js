@@ -55,8 +55,7 @@ const getAccessToken = async destination => {
   });
 };
 
-const retrieveUserId = async (userId, destination) => {
-  const accessToken = await getAccessToken(destination);
+const retrieveUserId = async (userId, accessToken) => {
   const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
   const requestOptions = {
     headers: {
@@ -82,22 +81,21 @@ const retrieveUserId = async (userId, destination) => {
   }
 };
 
-const userLookupByEmail = async (email, destination) => {
+const userLookupByEmail = async (email, accessToken) => {
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${email}?lookup_by_email=true`;
-    return await userLookupResponseBuilder(endpoint, destination);
+    return await userLookupResponseBuilder(endpoint, accessToken);
   }
 };
 
-const userLookupByPhone = async (phone, destination) => {
+const userLookupByPhone = async (phone, accessToken) => {
   if (isDefinedAndNotNullAndNotEmpty(phone)) {
     const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/phone_number/${phone}`;
-    return await userLookupResponseBuilder(endpoint, destination);
+    return await userLookupResponseBuilder(endpoint, accessToken);
   }
 };
 
-const userLookupResponseBuilder = async (endpoint, destination) => {
-  const accessToken = await getAccessToken(destination);
+const userLookupResponseBuilder = async (endpoint, accessToken) => {
   const requestOptions = {
     headers: {
       "Content-Type": "application/json",
@@ -137,7 +135,7 @@ const createResponsePayloadBuilder = message => {
   );
   const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
   const method = "POST";
-  validateScore(payload);
+  validateScore(payload.score);
   return { payload, endpoint, method };
 };
 
@@ -191,17 +189,17 @@ const checkExistingEmailAndPhone = async (
   email,
   phone,
   external_id,
-  destination
+  accessToken
 ) => {
   let lookupResponse;
-  lookupResponse = await userLookupByEmail(email, destination);
+  lookupResponse = await userLookupByEmail(email, accessToken);
   if (
     lookupResponse?.status === 200 &&
     lookupResponse?.response?.external_id !== external_id
   ) {
     throw new CustomError("Email has already been taken", 400);
   }
-  lookupResponse = await userLookupByPhone(phone, destination);
+  lookupResponse = await userLookupByPhone(phone, accessToken);
 
   if (
     lookupResponse?.status === 200 &&
@@ -211,8 +209,8 @@ const checkExistingEmailAndPhone = async (
   }
 };
 
-const validateScore = payload => {
-  if (!(payload.score >= 0 && payload.score <= 10)) {
+const validateScore = score => {
+  if (!(score >= 0 && score <= 10)) {
     throw new CustomError("Invalid Score", 400);
   }
 };

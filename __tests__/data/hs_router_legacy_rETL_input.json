@@ -40,7 +40,24 @@
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167"
       },
-      "Enabled": true
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "name": "Hubspot",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+      "deleted": false,
+      "createdAt": "2020-12-30T08:39:32.005Z",
+      "updatedAt": "2021-02-03T16:22:31.374Z",
+      "destinationDefinition": {
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "HS",
+        "displayName": "Hubspot",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
     },
     "metadata": {
       "jobId": 2
@@ -54,7 +71,7 @@
         "externalId": [
           {
             "identifierType": "email",
-            "id": "testhubspot2@email.com",
+            "id": "testhubspot@email.com",
             "type": "HS-lead"
           }
         ],
@@ -87,7 +104,24 @@
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "hubID": "6405167"
       },
-      "Enabled": true
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "name": "Hubspot",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+      "deleted": false,
+      "createdAt": "2020-12-30T08:39:32.005Z",
+      "updatedAt": "2021-02-03T16:22:31.374Z",
+      "destinationDefinition": {
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "HS",
+        "displayName": "Hubspot",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
     },
     "metadata": {
       "jobId": 3

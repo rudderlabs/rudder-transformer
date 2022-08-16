@@ -197,6 +197,15 @@
         "receivedAt": "2022-08-03T10:44:54.943+05:30",
         "request_ip": "[::1]",
         "originalTimestamp": "2022-08-03T10:44:55.382+05:30"
+      },
+      "destConfig": {
+        "accessKeyId": "",
+        "clientContext": "",
+        "enableBatchInput": false,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": ""
       }
     }
   }

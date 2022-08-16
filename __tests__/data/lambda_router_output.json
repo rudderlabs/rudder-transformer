@@ -138,7 +138,16 @@
           "request_ip": "[::1]",
           "originalTimestamp": "2022-08-03T19:47:06.495+05:30"
         }
-      ]
+      ],
+      "destConfig": {
+        "accessKeyId": "",
+        "clientContext": "",
+        "enableBatchInput": true,
+        "invocationType": "Event",
+        "lambda": "testFunction",
+        "region": "us-west-2",
+        "secretAccessKey": ""
+      }
     },
     "metadata": [
       {
@@ -621,71 +630,6 @@
       }
     ],
     "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "ID": "2CojwY2YqpiTqfBPrMAUN8orgHA",
-      "Name": "Lambda test",
-      "DestinationDefinition": {
-        "ID": "2CoiaHPaRb79wpSG3wZWfrG3B0n",
-        "Name": "LAMBDA",
-        "DisplayName": "AWS Lambda",
-        "Config": {
-          "destConfig": {
-            "defaultConfig": [
-              "region",
-              "accessKeyId",
-              "secretAccessKey",
-              "lambda",
-              "invocationType",
-              "enableBatchInput",
-              "clientContext"
-            ]
-          },
-          "excludeKeys": [],
-          "includeKeys": [],
-          "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
-          "supportedSourceTypes": [
-            "amp",
-            "android",
-            "cordova",
-            "cloud",
-            "flutter",
-            "ios",
-            "reactnative",
-            "unity",
-            "warehouse",
-            "web"
-          ],
-          "transformAt": "router",
-          "transformAtV1": "router"
-        },
-        "ResponseRules": {}
-      },
-      "Config": {
-        "accessKeyId": "",
-        "clientContext": "",
-        "enableBatchInput": true,
-        "invocationType": "Event",
-        "lambda": "testFunction",
-        "region": "us-west-2",
-        "secretAccessKey": ""
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true,
-      "RevisionID": "2CqJXqOGqDubVXHtUpWn5oFwydo"
-    }
+    "statusCode": 200
   }
 ]

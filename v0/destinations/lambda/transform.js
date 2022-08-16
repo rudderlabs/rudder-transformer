@@ -1,9 +1,17 @@
-const { getErrorRespEvents, getSuccessRespEvents } = require("../../util");
+const {
+  getErrorRespEvents,
+  getSuccessRespEvents,
+  CustomError
+} = require("../../util");
 
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
+  if (!event.destination.Config) {
+    throw new CustomError("destination.Config cannot be undefined", 400);
+  }
   return {
-    payload: event.message
+    payload: event.message,
+    destConfig: event.destination.Config
   };
 }
 
@@ -18,17 +26,14 @@ function batchEvents(successRespList, destination) {
       msgList.push(event.payload);
       batchMetadata.push(event.metadata);
     });
-    const batchPayload = { payload: msgList };
-    batchedResponseList.push(
-      getSuccessRespEvents(batchPayload, batchMetadata, destination)
-    );
+    const batchPayload = { payload: msgList, destConfig: destination.Config };
+    batchedResponseList.push(getSuccessRespEvents(batchPayload, batchMetadata));
   } else {
     successRespList.forEach(event => {
       batchedResponseList.push(
         getSuccessRespEvents(
-          { payload: event.payload },
-          [event.metadata],
-          destination
+          { payload: event.payload, destConfig: destination.Config },
+          [event.metadata]
         )
       );
     });
@@ -60,6 +65,7 @@ const processRouterDest = inputs => {
     );
     return [respEvents];
   }
+  destination.Config.invocationType = "Event";
 
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList, destination);

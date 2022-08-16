@@ -11,7 +11,6 @@ const ConfigCategories = {
   }
   // GROUP: {
   //     type: "group",
-  //     name: "MauticGroupConfig",
   //     method: "POST"
   //   }
 };

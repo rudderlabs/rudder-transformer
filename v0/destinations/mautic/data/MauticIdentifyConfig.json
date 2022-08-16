@@ -39,25 +39,9 @@
         "destKey":"city",
         "sourceFromGenericMap": true
     },
-    
-    {
-        "sourceKeys":"employeeCount",
-        "destKey":"company_size",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys":"role",
-        "destKey":"role",
-        "sourceFromGenericMap": true
-    },
     {
         "sourceKeys":"website",
         "destKey":"website",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys":"IP",
-        "destKey":"IP",
         "sourceFromGenericMap": true
     },
     {
@@ -65,21 +49,7 @@
         "destKey":"timezone",
         "sourceFromGenericMap": true
     },
-    {
-        "sourceKeys":"subscriptionStatus",
-        "destKey":"subscription_status",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys":"prospectOrCustomer",
-        "destKey":"prospect_or_customer",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys":"hasPurchased",
-        "destKey":"haspurchased",
-        "sourceFromGenericMap": true
-    },
+   
     {
         "sourceKeys":"state",
         "destKey":"state",
@@ -89,6 +59,14 @@
         "sourceKeys":"zipcode",
         "destKey":"zipcode",
         "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys":"context.ip",
+        "destKey":"ip"
+    },
+    {
+        "sourceKeys":"traits.company.employeeCount",
+        "destKey":"company_size"
     },
     {
         "sourceKeys":"country",

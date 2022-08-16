@@ -122,7 +122,7 @@ const sendGetRequest = async (url, options) => {
  * @returns { response, status }
  */
 const sendPostRequest = async (url, data, options) => {
-  const clientResponse = await httpPOST(url, options);
+  const clientResponse = await httpPOST(url, data, options);
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };

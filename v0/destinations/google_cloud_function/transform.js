@@ -4,43 +4,24 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents
 } = require("../../util");
-const { TRIGGERTYPE } = require("./config");
 
 const {
   generateBatchedPayloadForArray,
   generateBatchedPayload,
-  validateDestinationConfig
+  validateDestinationConfig,
+  addHeader
 } = require("./util");
 
 function process(event) {
-  let basicAuth;
   const { message, destination } = event;
-  const {
-    googleCloudFunctionUrl,
-    triggerType,
-    apiKeyId,
-    gcloudAuthorization
-  } = destination.Config;
+  const { googleCloudFunctionUrl } = destination.Config;
 
   // Config Validation
   validateDestinationConfig(destination);
-  if (apiKeyId) {
-    basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
-  }
 
   const response = defaultRequestConfig();
-  if (TRIGGERTYPE.HTTPS === triggerType) {
-    response.headers = {
-      "content-type": "application/json",
-      Authorization: `Bearer ${gcloudAuthorization}`,
-      ApiKey: `Basic ${basicAuth}`
-    };
-  } else {
-    response.headers = {
-      "content-type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-  }
+  // adding header
+  addHeader(response, destination.Config);
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = message;
   response.endpoint = googleCloudFunctionUrl;

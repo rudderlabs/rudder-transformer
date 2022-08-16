@@ -7,7 +7,7 @@
         "endpoint": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
         "headers": {
           "content-type": "application/json",
-          "Authorization": "Basic randomAPI"
+          "Authorization": "Basic YXBpS2V5OnJhbmRvbUFQSQ=="
         },
         "params": {},
         "body": {

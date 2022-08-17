@@ -30,7 +30,6 @@ const responseBuilderGroup = async (endpoint, destination) => {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-  console.log("basicAuth: ", basicAuth);
   response.headers = {
     "Content-Type": "application/json",
     Authorization: `Basic ${basicAuth}`
@@ -126,7 +125,7 @@ const identifyResponseBuilder = async (message, destination) => {
   if (!contactId) {
     contactId = searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
-  console.log("ContactID: ",contactId.Promise);
+  // console.log("ContactID: ",contactId.Promise);
   if (contactId.Promise) {
     // contact exists
     // update
@@ -178,7 +177,6 @@ const process = async event => {
       400
     );
   }
-  console.log(event);
   const messageType = message.type.toLowerCase();
   let response;
 
@@ -192,7 +190,7 @@ const process = async event => {
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
-  console.log("Response: ", response);
+  // console.log("Response: ", response);
   return response;
 };
 

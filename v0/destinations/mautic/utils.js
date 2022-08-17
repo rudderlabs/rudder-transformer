@@ -1,7 +1,12 @@
 const { CustomError } = require("../../util");
 const { BASE_URL } = require("./config");
 const { httpGET } = require("../../../adapters/network");
-
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const _ = require("lodash");
+const { getFieldValueFromMessage } = require("../../util");
+const { set } = require("lodash");
 
 // Includes the fields that can be lookUpfields
 const Fields = [
@@ -55,43 +60,111 @@ const titles = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 const isDate = date => {
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 };
+const poc = ["Prospect", "Customer"];
+
+const subscription_statuses = ["New", "Existing"];
+
+const roles = [
+  "Individual Contributor",
+  "Manager",
+  "Director",
+  "Executive",
+  "Consultant"
+];
 
 // for validating email match function outdated
-function ValidateEmail(inputText) {
-  console.log(inputText);
+function validateEmail(inputText) {
   return true;
-  // const mailformat = new RegExp"/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/";
-  // // console.log(inputText.value);
-  // if (inputText.value.Match(mailformat)) {
-  //   return true;
-  // }
-  // return false;
+  // console.log(inputText);
+  // const mailformat = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+  // return  mailformat.test(mailformat);
 }
-
 // for validating Phone match function outdated
 function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
-  if (inputText.match(phoneno)) {
+  if (phoneno.test(inputText)) {
     return true;
   }
   return false;
 }
-
+const addInPayload = (payload, message) => {
+  const { traits, context } = message;
+  if (
+    (traits && traits?.hasPurchased) ||
+    (context.traits && context.traits?.hasPurchased)
+  ) {
+    let purchased_status = traits?.hasPurchased || context.traits?.hasPurchased;
+    purchased_status = purchased_status.toLowerCase();
+    if (purchased_status === "yes" || purchased_status === "no") {
+      set(payload, "haspurchased", purchased_status);
+    } else {
+      throw new CustomError("Invalid Purchase Status", 400);
+    }
+  }
+  if ((traits && traits?.role) || (context && context.traits?.role)) {
+    const Role =
+      traits && traits?.role
+        ? message.traits?.role
+        : message.context.traits?.role;
+    if (!roles.includes(Role)) {
+      throw new CustomError("This Role is not supported", 400);
+    }
+    set(payload, "role", Role);
+  }
+  if (
+    (traits && traits?.subscriptionStatus) ||
+    (context.traits && context.traits?.subscriptionStatus)
+  ) {
+    const status =
+      traits && traits?.subscriptionStatus
+        ? message.traits?.subscriptionStatus
+        : message.context.traits?.subscriptionStatus;
+    if (!subscription_statuses.includes(status)) {
+      throw new CustomError("This Subscription status is not supported.", 400);
+    }
+    set(payload, "subscription_status", status);
+  }
+  if (
+    (traits && traits?.prospectOrCustomer) ||
+    context.traits?.prospectOrCustomer
+  ) {
+    const POC =
+      message.traits?.prospectOrCustomer ||
+      message.context.traits?.prospectOrCustomer;
+    if (!poc.includes(POC)) {
+      throw new CustomError(
+        "prospectOrCustomer can only be either prospect or customer or null ",
+        400
+      );
+    }
+    set(payload, "prospect_or_customer", POC);
+  }
+  return payload;
+};
 const deduceAddressFields = message => {
+  const { traits, context } = message;
   let address1;
   let address2;
-  if (message.traits.address || message.context.traits.address) {
-    const add = message.traits.address || message.context.traits.address;
-    const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
-    address1 = validLengthAddress.substring(0, 63);
-    address2 = validLengthAddress.substring(64, validLengthAddress.length);
+  if (
+    (traits !== undefined && traits?.address) ||
+    (context.traits && context.traits?.address)
+  ) {
+    const add =
+      traits && traits?.address
+        ? message.traits.address
+        : message.context.traits.address;
+    if (typeof add === "string") {
+      const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
+      address1 = validLengthAddress.substring(0, 63);
+      address2 = validLengthAddress.substring(64, validLengthAddress.length);
+    }
   }
   return { address1, address2 };
 };
 
 const validatePayload = payload => {
   // checking for message details validations
-  if (payload.email && !ValidateEmail(payload.email)) {
+  if (payload.email && !validateEmail(payload.email)) {
     throw new CustomError("Invalid Mail Provided", 400);
   }
   if (payload.phone && !validatePhone(payload.phone)) {
@@ -103,13 +176,16 @@ const validatePayload = payload => {
   if (payload.last_active && !isDate(payload.last_active)) {
     throw new CustomError("Date is Invalid", 400);
   }
+  if(payload.state && !payload.state[0]===payload.state[0].toUpperCase()){
+    throw new CustomError("State is Invalid", 400);
+  }
   return true;
 };
 
 /**
- * 
- * @param {*} message 
- * @param {*} destination 
+ *
+ * @param {*} message
+ * @param {*} destination
  * @returns contactId
  * If contactId is not provided via externalId, we look for the lookup key
  * inside webapp config.
@@ -117,8 +193,8 @@ const validatePayload = payload => {
  * If the lookup key is not found we fallback to email. If email is also not provided, we throw error.
  */
 
-const searchContactId = async (message, destination) => {
-  const { lookupField, username, password, subDomainName } = destination.Config;
+const searchContactId = async (message, destination,identifyFlag) => {
+  const { lookUpField, userName, password, subDomainName } = destination.Config;
   let searchContactsResponse;
   let contactId;
   const traits = getFieldValueFromMessage(message, "traits");
@@ -126,19 +202,23 @@ const searchContactId = async (message, destination) => {
 
   if (!traits) {
     throw new CustomError(
-      "[HS]:: Identify - Invalid traits value for lookup field",
+      "Invalid traits value for lookup field",
       400
     );
   }
 
   // lookupField key provided in Config.lookupField not found in traits
   // then default it to email
-  if (!traits[`${lookupField}`]) {
+  if (!traits[`${lookUpField}`]) {
     propertyName = "email";
 
-    if (!traits.email) {
+    if (!traits?.email) {
+      if(identifyFlag){
+        return null;
+      }
+      console.log
       throw new CustomError(
-        "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+        "email i.e a default lookup field for contact lookup not found in traits",
         400
       );
     }
@@ -146,7 +226,7 @@ const searchContactId = async (message, destination) => {
     // look for propertyName (key name) in traits
     // Config.lookupField -> lookupField
     // traits: { lookupField: email }
-    propertyName = traits[`${Config.lookupField}`];
+    propertyName = lookUpField;
   }
 
   // extract its value from the known propertyName (key name)
@@ -159,37 +239,41 @@ const searchContactId = async (message, destination) => {
 
   if (!value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
+      ` '${propertyName}' lookup field for contact lookup not found in traits`,
       400
     );
   }
-  const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
-
+  const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+  console.log(basicAuth, " basic");
   let requestParams = {};
   const colParam = `where[0][col]`;
   const expressionParam = `where[0][expr]`;
   const valParam = `[0][val]`;
   requestParams[colParam] = propertyName;
-  requestParams[expressionParam] =`in`;
-  requestParams [valParam] = value;
+  requestParams[expressionParam] = `in`;
+  requestParams[valParam] = value;
 
-    const requestOptions = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${basicAuth}`
-      }
-    };
-    searchContactsResponse = await httpGET(
-      BASE_URL.replace("subDomainName",subDomainName),
-      requestParams,
-      requestOptions
-    );
-    searchContactsResponse = processAxiosResponse(searchContactsResponse);
-  
-
+  const requestOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==`
+    }
+  };
+  console.log(`${BASE_URL.replace(
+    "subDomainName",
+    subDomainName
+  )}/contacts/`);
+  // console.log(requestParams);
+  // console.log(requestOptions);
+  searchContactsResponse = await httpGET(
+    "https://testapi3.mautic.net/api/contacts/",
+    requestOptions
+  );
+  searchContactsResponse = processAxiosResponse(searchContactsResponse);
+    console.log(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
-      `Failed to get hubspot contacts: ${JSON.stringify(
+      `Failed to get Mautic contacts: ${JSON.stringify(
         searchContactsResponse.response
       )}`,
       searchContactsResponse.status
@@ -198,9 +282,10 @@ const searchContactId = async (message, destination) => {
 
   // throw error if more than one contact is found as it's ambiguous
   //TODO: see the results structure
+  console.log(searchContactsResponse);
   if (searchContactsResponse.response?.total > 1) {
     throw new CustomError(
-      "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
+      "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
       400
     );
   } else if (searchContactsResponse.response?.total === 1) {
@@ -210,7 +295,6 @@ const searchContactId = async (message, destination) => {
     // contact not found
     contactId = null;
   }
-
   return contactId;
 };
 
@@ -218,11 +302,10 @@ module.exports = {
   Fields,
   titles,
   isDate,
-  getEncodedAuth,
-  ValidateEmail,
+  validateEmail,
   validatePhone,
   deduceAddressFields,
   validatePayload,
-  searchContacts
-  
+  searchContactId,
+  addInPayload
 };

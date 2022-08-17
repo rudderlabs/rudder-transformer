@@ -37,7 +37,8 @@
   },
   {
     "destKey": "$time",
-    "sourceKeys": ["originalTimestamp", "timestamp"]
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$device_id",

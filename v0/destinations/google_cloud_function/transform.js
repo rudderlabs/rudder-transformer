@@ -50,7 +50,8 @@ function batchEvents(eventsChunk, destination) {
         getSuccessRespEvents(
           batchEventResponse.batchedRequest,
           batchEventResponse.metadata,
-          batchEventResponse.destination
+          batchEventResponse.destination,
+          false
         )
       );
     });

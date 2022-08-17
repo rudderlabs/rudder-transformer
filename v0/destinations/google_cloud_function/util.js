@@ -69,8 +69,10 @@ function generateBatchedPayloadForArray(events) {
 
 function generateBatchedPayload(event) {
   // extracting destination
-  const { destination, metadata } = event;
+  const { destination } = event;
   const { googleCloudFunctionUrl } = destination.Config;
+  const metadata = [];
+  metadata.push(event.metadata);
   let batchEventResponse = defaultBatchRequestConfig();
 
   batchEventResponse.batchedRequest.body.JSON = event.message.body.JSON;

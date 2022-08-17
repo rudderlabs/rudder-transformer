@@ -9,10 +9,6 @@ const ConfigCategories = {
     type: "identify",
     name: "MauticIdentifyConfig"
   }
-  // GROUP: {
-  //     type: "group",
-  //     method: "POST"
-  //   }
 };
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 module.exports = {

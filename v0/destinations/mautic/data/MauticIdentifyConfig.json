@@ -7,16 +7,12 @@
     },
     {
       "sourceKeys": "title",
-      "destKey": "title"
-    },
-    {
-      "sourceKeys": "context.traits.title",
-      "destKey": "title"
-    },
-    {
-      "sourceKeys": "originalTimestamp",
-      "destKey": "last_active",
+      "destKey": "title",
       "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": ["originalTimestamp"],
+      "destKey": "last_active"
     },
     {
         "sourceKeys":"firstName",
@@ -63,10 +59,6 @@
     {
         "sourceKeys":"context.ip",
         "destKey":"ip"
-    },
-    {
-        "sourceKeys":"traits.company.employeeCount",
-        "destKey":"company_size"
     },
     {
         "sourceKeys":"country",

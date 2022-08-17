@@ -9,7 +9,7 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   defaultPostRequestConfig,
-  defaultPutRequestConfig
+  defaultPatchRequestConfig
 } = require("../../util");
 
 const {
@@ -20,23 +20,22 @@ const {
   addInPayload
 } = require("./utils");
 
-// const POC=["Prospect","Customer"];
-
 const { EventType } = require("../../../constants");
 
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 
 const responseBuilderGroup = async (endpoint, destination) => {
-  const { username, password } = destination.Config;
+  const { userName, password } = destination.Config;
   console.log("Inside Builder");
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
-  const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
+  const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
   console.log("basicAuth: ", basicAuth);
   response.headers = {
+    "Content-Type": "application/json",
     Authorization: `Basic ${basicAuth}`
   };
-  response.method = "POST";
+  response.method = defaultPostRequestConfig.requestMethod;
   return response;
 };
 
@@ -45,6 +44,7 @@ const groupResponseBuilder = async (message, destination) => {
   if (message.traits === undefined || message.traits.type === undefined) {
     throw new CustomError("Type of group not mentioned inside traits");
   }
+  const { subDomainName } = destination.Config;
   switch (message.traits.type.toLowerCase()) {
     case "segments":
       groupClass = "segments";
@@ -58,12 +58,15 @@ const groupResponseBuilder = async (message, destination) => {
     default:
       throw new CustomError("This grouping is not supported");
   }
-  let contactId = (message, "mauticContactId"); // throwing error
+  const identifyFlag=false;
+  let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
-    contactId = searchContactId(message, destination); // Getting the contact Id using Lookup field and then email
+    contactId = searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
-
-  const endpoint = `${BASE_URL}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
+  const endpoint = `${BASE_URL.replace(
+    "subDomainName",
+    subDomainName
+  )}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
   return responseBuilderGroup(endpoint, destination);
 };
 const responseBuilderIdentify = async (
@@ -73,7 +76,7 @@ const responseBuilderIdentify = async (
   messageType,
   destination
 ) => {
-  const { username, password } = destination.Config;
+  const { userName, password } = destination.Config;
   if (payload) {
     const response = defaultRequestConfig();
     if (messageType === EventType.IDENTIFY) {
@@ -82,11 +85,12 @@ const responseBuilderIdentify = async (
       response.body.FORM = removeUndefinedAndNullValues(payload);
     }
     response.endpoint = endpoint;
-    const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
-    console.log("basicAuth: ", basicAuth);
+    // console.log("username:password ", `${userName}:${password}`);
+    const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+    // console.log(`Authorization: Basic ${basicAuth}`);
     response.headers = {
       "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
+      Authorization: ` Basic ${basicAuth}`
     };
     response.method = method;
     return response;
@@ -104,7 +108,6 @@ const identifyResponseBuilder = async (message, destination) => {
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
   // Adding all the fields inpayload that needs validation and
-
   payload = addInPayload(payload, message);
   // if the payload is valid adding address fields if present
 
@@ -117,15 +120,21 @@ const identifyResponseBuilder = async (message, destination) => {
      1. if contactId is present  inside externalID we will use that
      2. Otherwise we will look for the lookup field from the web app 
   */
-  const contactId = getDestinationExternalID(message, "mauticContactId");
-  if (contactId) {
+  const identifyFlag=true;
+  let contactId = getDestinationExternalID(message, "mauticContactId");
+  console.log("CID", contactId);
+  if (!contactId) {
+    contactId = searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+  }
+  console.log("ContactID: ",contactId.Promise);
+  if (contactId.Promise) {
     // contact exists
     // update
     endpoint = `${BASE_URL.replace(
       "subDomainName",
       subDomainName
     )}/contacts/${contactId}/edit`;
-    method = defaultPutRequestConfig.requestMethod;
+    method = defaultPatchRequestConfig.requestMethod;
   } else {
     // contact do not exist
     // create
@@ -169,6 +178,7 @@ const process = async event => {
       400
     );
   }
+  console.log(event);
   const messageType = message.type.toLowerCase();
   let response;
 

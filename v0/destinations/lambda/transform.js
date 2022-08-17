@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const {
   getErrorRespEvents,
   getSuccessRespEvents,
@@ -5,6 +6,7 @@ const {
 } = require("../../util");
 
 const DEFAULT_INVOCATION_TYPE = "Event";
+const MAX_PAYLOAD_SIZE_IN_KB = 256;
 
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
@@ -17,31 +19,47 @@ function process(event) {
   };
 }
 
-// Returns a batched response list for a for list of inputs(successRespList)
-function batchEvents(successRespList, destination) {
+// Returns an array of payloads within the size limit
+function payloadSizeRegulator(payload) {
+  const size = Buffer.byteLength(JSON.stringify(payload));
+  const sizeInKB = size / 1024;
+  if (sizeInKB > MAX_PAYLOAD_SIZE_IN_KB) {
+    const chunkSize = sizeInKB / MAX_PAYLOAD_SIZE_IN_KB;
+    return _.chunk(payload, chunkSize);
+  }
+  return [payload];
+}
+
+// Returns a batched response list for list of inputs
+function batchEvents(inputs, destination) {
   const batchedResponseList = [];
   const { enableBatchInput } = destination.Config;
   if (enableBatchInput) {
     const msgList = [];
     const batchMetadata = [];
-    successRespList.forEach(event => {
-      msgList.push(event.payload);
-      batchMetadata.push(event.metadata);
+    inputs.forEach(input => {
+      msgList.push(input.message);
+      batchMetadata.push(input.metadata);
     });
-    const batchPayload = {
-      payload: JSON.stringify(msgList),
-      destConfig: destination.Config
-    };
-    batchedResponseList.push(getSuccessRespEvents(batchPayload, batchMetadata));
+    const payloadChunks = payloadSizeRegulator(msgList);
+    payloadChunks.forEach(chunk => {
+      const batchPayload = {
+        payload: JSON.stringify(chunk),
+        destConfig: destination.Config
+      };
+      batchedResponseList.push(
+        getSuccessRespEvents(batchPayload, batchMetadata)
+      );
+    });
   } else {
-    successRespList.forEach(event => {
+    inputs.forEach(input => {
       batchedResponseList.push(
         getSuccessRespEvents(
           {
-            payload: JSON.stringify(event.payload),
+            payload: JSON.stringify(input.message),
             destConfig: destination.Config
           },
-          [event.metadata]
+          [input.metadata]
         )
       );
     });
@@ -51,16 +69,8 @@ function batchEvents(successRespList, destination) {
 
 // Router transform with batching by default
 const processRouterDest = inputs => {
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const successRespList = [];
   const batchMetadata = [];
-
   inputs.forEach(input => {
-    successRespList.push({
-      payload: input.message,
-      metadata: input.metadata
-    });
     batchMetadata.push(input.metadata);
   });
 
@@ -75,11 +85,7 @@ const processRouterDest = inputs => {
   }
   destination.Config.invocationType = DEFAULT_INVOCATION_TYPE;
 
-  if (successRespList.length > 0) {
-    batchResponseList = batchEvents(successRespList, destination);
-  }
-
-  return [...batchResponseList, ...batchErrorRespList];
+  return batchEvents(inputs, destination);
 };
 
 module.exports = { process, processRouterDest };

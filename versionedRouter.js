@@ -54,8 +54,14 @@ router.use(profilingRouter);
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
+    logger.info(
+      `====getDestHandler endpoint: ./${version}/destinations/${DestHandlerMap[dest]}/transform ====`
+    );
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
+  logger.info(
+    `====getDestHandler endpoint: ./${version}/destinations/${dest}/transform ====`
+  );
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
@@ -77,7 +83,7 @@ const getDeletionUserHandler = (version, dest) => {
 
 const getSourceHandler = (version, source) => {
   logger.info(
-    `====getSourceHandler: ./${version}/sources/${source}/transform ====`
+    `====getSourceHandler endpoint: ./${version}/sources/${source}/transform ====`
   );
   return require(`./${version}/sources/${source}/transform`);
 };

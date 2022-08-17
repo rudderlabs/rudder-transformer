@@ -125,5 +125,25 @@
       "userId": "sampath"
     },
     "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "message type page not supported for heap",
+    "statTags": {
+      "stage": "cdk",
+      "scope": "transformation",
+      "meta": "badEvent",
+      "destType": "HEAP"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "invalid message type for heap",
+    "statTags": {
+      "stage": "cdk",
+      "scope": "transformation",
+      "meta": "badEvent",
+      "destType": "HEAP"
+    }
   }
 ]

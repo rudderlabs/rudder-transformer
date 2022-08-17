@@ -36,7 +36,7 @@
         "status": 200
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"
@@ -61,7 +61,7 @@
         "status": 200
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -81,7 +81,7 @@
         "status": 413
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"
@@ -97,7 +97,7 @@
         "status": 500
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"
@@ -113,7 +113,7 @@
         "status": 500
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "retryable"
@@ -129,7 +129,7 @@
         "status": 400
       },
       "statTags": {
-        "destType": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
         "meta": "abortable"

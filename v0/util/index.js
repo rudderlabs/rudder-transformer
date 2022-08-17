@@ -1306,12 +1306,16 @@ class CustomError extends Error {
  * @param {*} destination
  * @param {*} transformStage
  */
-function generateErrorObject(error, destination, transformStage) {
+function generateErrorObject(error, destination = "", transformStage) {
   // check err is object
   // filter to check if it is coming from cdk
-  if (error.fromCdk) {
-    return error;
-  }
+  // if (error.fromCdk) {
+  //   if (error.statTags && error.statTags.destination) {
+  //     error.statTags.destType = error.statTags.destination.toUpperCase();
+  //     delete error.statTags.destination;
+  //   }
+  //   return error;
+  // }
   const { status, message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {
@@ -1320,6 +1324,18 @@ function generateErrorObject(error, destination, transformStage) {
       stage: transformStage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };
+  }
+  // In previous versions of cdk, we had destination tag
+  // This block is mainly to support it and also for backward for non-cdk destinations
+  if (statTags.destination) {
+    const destType = statTags.destination
+    statTags = Object.keys(statTags).filter(k => k !== 'destination')
+      .reduce((prevMap, k) => ({ ...prevMap, [k]: statTags[k] }), {})
+    statTags.destType = destType;
+  }
+  if (statTags.destType) {
+    // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
+    statTags.destType = statTags.destType.toUpperCase();
   }
   const response = {
     status: status || 400,

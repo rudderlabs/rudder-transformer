@@ -90,5 +90,10 @@
   },
   "precommit": {
     "run": "lint, testDestinations, testVersioned, testTestRouter"
+  },
+  "//": "npm versions matched against node are here: https://nodejs.org/en/download/releases/",
+  "engines": {
+    "node": ">=14.15.0 <15",
+    "npm": ">=6.14.8"
   }
 }

@@ -131,11 +131,11 @@
   },
   {
     "destKey": "$viewport_height",
-    "sourceKeys": ["traits.viewport.height", "context.traits.viewport.height"]
+    "sourceKeys": "properties.viewport_height"
   },
   {
     "destKey": "$viewport_width",
-    "sourceKeys": ["traits.viewport.width", "context.traits.viewport.width"]
+    "sourceKeys": "properties.viewport_width"
   },
   {
     "destKey": "utm_source",

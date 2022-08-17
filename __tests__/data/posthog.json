@@ -1457,11 +1457,7 @@
             "category": "SampleIdentify",
             "email": "mihirb@rudderlabs.com",
             "plan": "Paid",
-            "logins": 5,
-            "viewport": {
-              "height": "173",
-              "width": "969"
-            }
+            "logins": 5
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
           "locale": "en-GB",
@@ -1485,7 +1481,9 @@
           "search": "search",
           "title": "title",
           "url": "url",
-          "total": 1009
+          "total": 1009,
+          "viewport_height": "173",
+          "viewport_width": "969"
         },
         "integrations": {
           "All": true
@@ -1529,7 +1527,9 @@
             "$browser_version": "86.0.4240.111",
             "$viewport_height": "173",
             "$anon_distinct_id": "a4753d-c7d3-40ca-88dc-a1bbe997e8",
-            "$performance_page_loaded": "40"
+            "$performance_page_loaded": "40",
+            "viewport_height": "173",
+            "viewport_width": "969"
           },
           "event": "card checkout",
           "timestamp": "2022-08-12T13:21:09.712Z",

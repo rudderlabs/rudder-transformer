@@ -25,12 +25,12 @@ const {
  */
 const getShopifyTopic = event => {
   const { query_parameters: qParams } = event;
-  logger.info(
-    `[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`
-  );
   if (!qParams) {
     throw new CustomError("[Shopify Source] query_parameters is missing", 400);
   }
+  logger.info(
+    `[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`
+  );
   const { topic } = qParams;
   if (!topic || !Array.isArray(topic)) {
     throw new CustomError(
@@ -100,7 +100,9 @@ const setAnonymousId = message => {
       message.setProperty(
         "anonymousId",
         message.properties?.id
-          ? sha256(message.properties.id).toString().substring(0, 36)
+          ? sha256(message.properties.id)
+              .toString()
+              .substring(0, 36)
           : generateUUID()
       );
       break;
@@ -117,7 +119,9 @@ const setAnonymousId = message => {
       message.setProperty(
         "anonymousId",
         message.properties?.cart_token
-          ? sha256(message.properties.cart_token).toString().substring(0, 36)
+          ? sha256(message.properties.cart_token)
+              .toString()
+              .substring(0, 36)
           : generateUUID()
       );
       break;

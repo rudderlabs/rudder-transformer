@@ -41,7 +41,8 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
+const proxyTestModeEnabled =
+  process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -109,6 +110,7 @@ async function handleDest(ctx, version, destination) {
   // Getting destination handler for non-cdk destination(s)
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
+    logger.info(`==========Destination: ${destination}================`);
   }
   await Promise.all(
     events.map(async event => {
@@ -152,6 +154,7 @@ async function handleDest(ctx, version, destination) {
             })
           );
         }
+        logger.info(`Payload transformed`);
       } catch (error) {
         logger.error(error);
         const errObj = generateErrorObject(
@@ -261,6 +264,7 @@ async function routerHandleDest(ctx) {
     ctx.body = `${destType} doesn't support router transform`;
     return null;
   }
+  logger.info(`==========Destination: ${destType}================`);
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
@@ -271,6 +275,7 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
+  logger.info(`Payload transformed`);
   return ctx.body;
 }
 

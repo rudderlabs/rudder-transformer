@@ -23,7 +23,7 @@ function addHeader(response, Config) {
 
   response.headers = { "content-type": "application/json" };
   if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {
-    response.headers.Authorization = `Basic ${gcloudAuthorization}`;
+    response.headers.Authorization = `bearer ${gcloudAuthorization}`;
   }
   if (basicAuth) {
     if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {
@@ -50,8 +50,8 @@ function generateBatchedPayloadForArray(events) {
     metadata.push(ev.metadata);
   });
 
-  batchEventResponse.batchedRequest.body.JSON = {
-    batch: batchResponseList
+  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+    batch: JSON.stringify(batchResponseList)
   };
 
   batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;

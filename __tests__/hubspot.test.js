@@ -41,13 +41,23 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 // Router Test files for rETL sources
 const inputRouterDataFilerETL = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input_rETL.json`)
+  path.resolve(__dirname, `./data/${integration}_router_rETL_input.json`)
 );
 const outputRouterDataFilerETL = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output_rETL.json`)
+  path.resolve(__dirname, `./data/${integration}_router_rETL_output.json`)
 );
 const inputRouterDatarETL = JSON.parse(inputRouterDataFilerETL);
 const expectedRouterDatarETL = JSON.parse(outputRouterDataFilerETL);
+
+// Router Test files for rETL sources (legacy)
+const inputRouterDataFilerETLLegacy = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_input.json`)
+);
+const outputRouterDataFilerETLLegacy = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_output.json`)
+);
+const inputRouterDatarETLLegacy = JSON.parse(inputRouterDataFilerETLLegacy);
+const expectedRouterDatarETLLegacy = JSON.parse(outputRouterDataFilerETLLegacy);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -91,14 +101,16 @@ describe(`${name} Tests`, () => {
       expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
   });
-});
-
-// rETL Sources
-describe("Router Tests for rETL sources", () => {
+  // rETL Sources
+describe("Router Tests for rETL sources (Legacy)", () => {
   it("Payload", async () => {
-    const routerOutputrETL = await transformer.processRouterDest(
-      inputRouterDatarETL
+    const routerOutputrETLLegacy = await transformer.processRouterDest(
+      inputRouterDatarETLLegacy
     );
-    expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
+    expect(routerOutputrETLLegacy).toEqual(expectedRouterDatarETLLegacy);
   });
 });
+});
+
+
+

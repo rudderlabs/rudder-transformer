@@ -1402,7 +1402,7 @@
             "$host": "docs.rudderstack.com",
             "$locale": "en-US",
             "$browser": "Chrome",
-            "utm_name": "some campaign",
+            "utm_campaign": "some campaign",
             "utm_term": "keyword",
             "$pathname": "/destinations/amplitude",
             "$group_key": "group@1234",
@@ -1457,7 +1457,11 @@
             "category": "SampleIdentify",
             "email": "mihirb@rudderlabs.com",
             "plan": "Paid",
-            "logins": 5
+            "logins": 5,
+            "viewport": {
+              "height": "173",
+              "width": "969"
+            }
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
           "locale": "en-GB",
@@ -1467,11 +1471,7 @@
             "url": "http://localhost:1112/Rectified.html",
             "loaded": "40"
           },
-          "userID": "user@2345",
-          "viewport": {
-            "height": "173",
-            "width": "969"
-          }
+          "userID": "user@2345"
         },
         "type": "track",
         "messageId": "07cde5-9ad9-4a79-af51-f71bc9ed71",

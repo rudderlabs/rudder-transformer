@@ -130,11 +130,11 @@
   },
   {
     "destKey": "$viewport_height",
-    "sourceKeys": "context.viewport.height"
+    "sourceKeys": ["traits.viewport.height", "context.traits.viewport.height"]
   },
   {
     "destKey": "$viewport_width",
-    "sourceKeys": "context.viewport.width"
+    "sourceKeys": ["traits.viewport.width", "context.traits.viewport.width"]
   },
   {
     "destKey": "utm_source",
@@ -146,7 +146,7 @@
   },
   {
     "destKey": "utm_campaign",
-    "sourceKeys": "context.campaign.campaign"
+    "sourceKeys": "context.campaign.name"
   },
   {
     "destKey": "utm_content",
@@ -155,10 +155,6 @@
   {
     "destKey": "utm_term",
     "sourceKeys": "context.campaign.term"
-  },
-  {
-    "destKey": "utm_name",
-    "sourceKeys": "context.campaign.name"
   },
   {
     "destKey": "$performance_page_loaded",

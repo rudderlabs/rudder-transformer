@@ -80,9 +80,19 @@
     "traits.DOB",
     "context.traits.DOB"
   ],
+
   "state":["traits.state", "context.traits.state"],
   "zipcode":["traits.zipcode", "context.traits.zipcode", "traits.zip", "context.traits.zip"],
   "country":["traits.country", "context.traits.country"],
-  "city":["traits.address.city"]
+  "city":["traits.address.city"],
+
+  "avatar": [
+    "traits.avatar",
+    "context.traits.avatar",
+    "traits.avatarURL",
+    "context.traits.avatarURL",
+    "traits.avatar_URL",
+    "context.traits.avatar_URL"
+  ]
 
 }

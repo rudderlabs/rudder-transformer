@@ -120,6 +120,40 @@ const getHashFromArray = (
   return hashMap;
 };
 
+/**
+ * Format the destination.Config.dynamicMap arrays to hashMap
+ * where value is an array
+ * @param  {} arrays [{"from":"prop1","to":"val1"},{"from":"prop1","to":"val2"},{"from":"prop2","to":"val2"}]
+ * @param  {} fromKey="from"
+ * @param  {} toKey="to"
+ * @param  {} isLowerCase=true
+ * @param  {} return hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
+ */
+const getHashFromArrayWithDuplicate = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (!isNotEmpty(array[fromKey])) return;
+      const key = isLowerCase
+        ? array[fromKey].toLowerCase().trim()
+        : array[fromKey].trim();
+
+      if (hashMap[key]) {
+        hashMap[key].add(array[toKey]);
+      } else {
+        hashMap[key] = new Set();
+        hashMap[key].add(array[toKey]);
+      }
+    });
+  }
+  return hashMap;
+};
+
 // NEED to decouple value finding and `required` checking
 // NEED TO DEPRECATE
 const setValues = (payload, message, mappingJson) => {
@@ -287,6 +321,11 @@ const defaultDeleteRequestConfig = {
 const defaultPutRequestConfig = {
   requestFormat: "JSON",
   requestMethod: "PUT"
+};
+// PATCH
+const defaultPatchRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PATCH"
 };
 
 // DEFAULT
@@ -958,11 +997,12 @@ function getDestinationExternalID(message, type) {
   return destinationExternalId;
 }
 
-// Get id and object type from externalId for rETL
+// Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
 const getDestinationExternalIDInfoForRetl = (message, destination) => {
   let externalIdArray = [];
   let destinationExternalId = null;
+  let identifierType = null;
   let objectType = null;
   if (message.context && message.context.externalId) {
     externalIdArray = message.context.externalId;
@@ -973,10 +1013,11 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
       if (type.includes(`${destination}-`)) {
         destinationExternalId = extIdObj.id;
         objectType = type.replace(`${destination}-`, "");
+        identifierType = extIdObj.identifierType
       }
     });
   }
-  return { destinationExternalId, objectType };
+  return { destinationExternalId, objectType, identifierType };
 };
 
 const isObject = value => {
@@ -1352,7 +1393,7 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform.toLowerCase());
+  return appleOsNames.includes(platform?.toLowerCase());
 }
 
 function removeHyphens(str) {
@@ -1434,6 +1475,7 @@ module.exports = {
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
+  defaultPatchRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
@@ -1455,6 +1497,7 @@ module.exports = {
   getFirstAndLastName,
   getFullName,
   getHashFromArray,
+  getHashFromArrayWithDuplicate,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,

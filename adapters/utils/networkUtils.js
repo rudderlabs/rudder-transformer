@@ -135,7 +135,7 @@ const parseDestResponse = (destResponse, destination) => {
   };
 };
 
-// Function to process wrapped axioss response from internal http client compatible for response handlers
+// Function to process wrapped axios response from internal http client compatible for response handlers
 const processAxiosResponse = clientResponse => {
   if (!clientResponse.success) {
     const { response, code } = clientResponse.response;

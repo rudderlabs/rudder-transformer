@@ -1,0 +1,25 @@
+[
+  {
+    "destKey": "engagement_time_msec",
+    "sourceKeys": [
+      "traits.engagementTimeMsec",
+      "context.traits.engagementTimeMsec",
+      "traits.engagement_time_msec",
+      "context.traits.engagement_time_msec"
+    ],
+    "metadata": {
+      "defaultValue": 1
+    },
+    "required": false
+  },
+  {
+    "destKey": "session_id",
+    "sourceKeys": [
+      "traits.sessionId",
+      "context.traits.sessionId",
+      "traits.session_id",
+      "context.traits.session_id"
+    ],
+    "required": false
+  }
+]

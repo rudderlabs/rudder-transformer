@@ -20,6 +20,16 @@ const ConfigCategory = {
   ITEM_LIST: { name: "GA4ItemListConfig" },
   ITEM: { name: "GA4ItemConfig" },
 
+  /**
+   * taking optional params paramerters depending on message type
+   * and any additional changes to the mapping here must be updated in
+   * GA4_PARAMETERS_EXCLUSION = [] list in utils.js
+   */
+  IdentifyGroupCommonParamsConfig: {
+    name: "GA4IdentifyGroupCommonParamsConfig"
+  },
+  TrackPageCommonParamsConfig: { name: "GA4TrackPageCommonParamsConfig" },
+
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
 

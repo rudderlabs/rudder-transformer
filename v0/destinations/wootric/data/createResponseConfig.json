@@ -2,13 +2,11 @@
   {
     "destKey": "score",
     "sourceKeys": "properties.feedbackScore",
-    "sourceFromGenericMap": false,
     "required": true
   },
   {
     "destKey": "ip_address",
     "sourceKeys": ["context.ip", "request_ip"],
-    "sourceFromGenericMap": false,
     "required": true
   },
   {
@@ -20,7 +18,6 @@
   {
     "destKey": "text",
     "sourceKeys": "properties.feedbackText",
-    "sourceFromGenericMap": false,
     "required": false
   },
   {

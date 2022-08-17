@@ -11,7 +11,7 @@ const {
 const {
   getAccessToken,
   retrieveUserId,
-  flattenPayload,
+  flattenProperties,
   formatIdentifyPayload,
   formatTrackPayload,
   createUserPayloadBuilder,
@@ -68,7 +68,9 @@ const identifyResponseBuilder = async (message, destination) => {
   );
 
   formatIdentifyPayload(payload);
-  flattenPayload(payload, "properties");
+  const flattenedProperties = flattenProperties(payload, "properties");
+  payload = { ...payload, ...flattenedProperties };
+  delete payload.properties;
   return responseBuilder(payload, endpoint, method, accessToken);
 };
 
@@ -118,7 +120,12 @@ const trackResponseBuilder = async (message, destination) => {
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
 
   formatTrackPayload(payload);
-  flattenPayload(payload, "end_user[properties]");
+  const flattenedProperties = flattenProperties(
+    payload,
+    "end_user[properties]"
+  );
+  payload = { ...payload, ...flattenedProperties };
+  delete payload.properties;
   return responseBuilder(payload, endpoint, method, accessToken);
 };
 

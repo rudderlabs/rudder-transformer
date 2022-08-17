@@ -210,20 +210,24 @@ const createDeclinePayloadBuilder = message => {
 /**
  * Flattens properties field in payload
  * e.g :- properties[name] = Demo User, end_user[properties][revenue_amount] = 5000
+ * ref: https://docs.wootric.com/api/#create-end-user
+ * ref: https://docs.wootric.com/api/#create-response
  * @param {*} payload
  * @param {*} destKey
  */
-const flattenPayload = (payload, destKey) => {
+const flattenProperties = (payload, destKey) => {
   if (payload.properties) {
+    let rawProperties = {};
     Object.entries(payload.properties).forEach(([key, value]) => {
-      payload[`${destKey}[${key}]`] = `${value}`;
+      rawProperties[`${destKey}[${key}]`] = `${value}`;
     });
-    delete payload.properties;
+    return { ...rawProperties };
   }
 };
 
 /**
  * Formats identify payload
+ * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-phone-number
  * @param {*} payload
  */
 const formatIdentifyPayload = payload => {
@@ -306,7 +310,7 @@ const validateScore = score => {
 module.exports = {
   getAccessToken,
   retrieveUserId,
-  flattenPayload,
+  flattenProperties,
   formatIdentifyPayload,
   formatTrackPayload,
   createUserPayloadBuilder,

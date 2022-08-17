@@ -216,7 +216,6 @@ const searchContactId = async (message, destination,identifyFlag) => {
       if(identifyFlag){
         return null;
       }
-      console.log
       throw new CustomError(
         "email i.e a default lookup field for contact lookup not found in traits",
         400
@@ -244,33 +243,18 @@ const searchContactId = async (message, destination,identifyFlag) => {
     );
   }
   const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-  console.log(basicAuth, " basic");
-  let requestParams = {};
-  const colParam = `where[0][col]`;
-  const expressionParam = `where[0][expr]`;
-  const valParam = `[0][val]`;
-  requestParams[colParam] = propertyName;
-  requestParams[expressionParam] = `in`;
-  requestParams[valParam] = value;
 
   const requestOptions = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==`
+      Authorization: `Basic ${basicAuth}`
     }
   };
-  console.log(`${BASE_URL.replace(
-    "subDomainName",
-    subDomainName
-  )}/contacts/`);
-  // console.log(requestParams);
-  // console.log(requestOptions);
   searchContactsResponse = await httpGET(
-    "https://testapi3.mautic.net/api/contacts/",
+    `https://${subDomainName}.mautic.net/api/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`,
     requestOptions
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
-    console.log(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
       `Failed to get Mautic contacts: ${JSON.stringify(
@@ -281,19 +265,18 @@ const searchContactId = async (message, destination,identifyFlag) => {
   }
 
   // throw error if more than one contact is found as it's ambiguous
-  //TODO: see the results structure
-  console.log(searchContactsResponse);
   if (searchContactsResponse.response?.total > 1) {
     throw new CustomError(
       "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
       400
     );
-  } else if (searchContactsResponse.response?.total === 1) {
-    // a single and unique contact found
-    contactId = Object.keys(searchContactsResponse.response?.contacts)[0];
-  } else {
+  } else if (searchContactsResponse.response?.total === 0) {
     // contact not found
-    contactId = null;
+    contactId = null; 
+  } else {
+    // a single and unique contact found
+    const { contacts } = searchContactsResponse?.response;
+    contactId =  Object.keys(contacts).length ===1 ? Object.keys(contacts)[0]: null;
   }
   return contactId;
 };

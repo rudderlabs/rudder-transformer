@@ -60,7 +60,7 @@ const groupResponseBuilder = async (message, destination) => {
   const identifyFlag=false;
   let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
-    contactId = searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
   const endpoint = `${BASE_URL.replace(
     "subDomainName",
@@ -123,10 +123,10 @@ const identifyResponseBuilder = async (message, destination) => {
   let contactId = getDestinationExternalID(message, "mauticContactId");
   console.log("CID", contactId);
   if (!contactId) {
-    contactId = searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
   // console.log("ContactID: ",contactId.Promise);
-  if (contactId.Promise) {
+  if (contactId) {
     // contact exists
     // update
     endpoint = `${BASE_URL.replace(

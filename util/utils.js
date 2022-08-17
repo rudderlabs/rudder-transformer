@@ -1,7 +1,7 @@
 class RespStatusError extends Error {
   constructor(message, statusCode) {
     super(message);
-    this.statusCode = statusCode;
+    this.statusCode = statusCode || 400;
   }
 }
 

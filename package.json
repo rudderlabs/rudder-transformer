@@ -42,7 +42,6 @@
     "flat": "^5.0.2",
     "get-value": "^3.0.1",
     "handlebars": "^4.7.7",
-    "heapdump": "^0.3.15",
     "http-graceful-shutdown": "^3.0.2",
     "https-proxy-agent": "^5.0.0",
     "is": "^3.1.0",

@@ -46,6 +46,7 @@ const identifyResponseBuilder = async (message, destination) => {
   const accessToken = await getAccessToken(destination);
   const userId = getFieldValueFromMessage(message, "userId");
   const wootricEndUserId = await retrieveUserId(userId, accessToken);
+  // If user already exist we will update it else creates a new user
   if (!wootricEndUserId) {
     builder = createUserPayloadBuilder(message);
     payload = builder.payload;
@@ -58,6 +59,7 @@ const identifyResponseBuilder = async (message, destination) => {
     method = builder.method;
   }
 
+  // Throw error if user already exist with given email/phone
   await checkExistingEmailAndPhone(
     payload.email,
     payload.phone_number,
@@ -88,6 +90,12 @@ const trackResponseBuilder = async (message, destination) => {
   if (!integrationsObj || !integrationsObj.eventType) {
     throw new CustomError("Event Type is missing", 400);
   }
+
+  // "integrations": {
+  //  "All": true,
+  //  "Wootric": {
+  //    "eventType": "create response"
+  //  }
 
   const eventType = integrationsObj.eventType.toLowerCase();
   switch (eventType) {

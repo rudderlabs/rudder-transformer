@@ -18,10 +18,21 @@ const Cache = require("../../util/cache");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
+/**
+ * Returns access token using axios call with paramaters (username, password, accountToken taken from destination.Config)
+ * ref: https://docs.wootric.com/api/#authentication
+ * @param {*} destination
+ * @returns
+ */
 const getAccessToken = async destination => {
   const { username, password, accountToken } = destination.Config;
   const accessTokenKey = destination.ID;
 
+  /**
+   * The access token expires around every 2 hour. Cache is used here to check if the access token is present in the cache
+   * it is taken from cache using {destination Id} else a post call is made to get the access token.
+   * ref: https://docs.wootric.com/api/#authentication
+   */
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
     const request = {
       header: {
@@ -55,6 +66,13 @@ const getAccessToken = async destination => {
   });
 };
 
+/**
+ * Returns wootric userId of existing user using Rudderstack userId
+ * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-external-id
+ * @param {*} userId
+ * @param {*} accessToken
+ * @returns
+ */
 const retrieveUserId = async (userId, accessToken) => {
   const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
   const requestOptions = {
@@ -81,6 +99,13 @@ const retrieveUserId = async (userId, accessToken) => {
   }
 };
 
+/**
+ * Returns wootric existing user using email
+ * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-email
+ * @param {*} email
+ * @param {*} accessToken
+ * @returns
+ */
 const userLookupByEmail = async (email, accessToken) => {
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${email}?lookup_by_email=true`;
@@ -88,6 +113,13 @@ const userLookupByEmail = async (email, accessToken) => {
   }
 };
 
+/**
+ * Returns wootric existing user using phone
+ * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-phone-number
+ * @param {*} phone
+ * @param {*} accessToken
+ * @returns
+ */
 const userLookupByPhone = async (phone, accessToken) => {
   if (isDefinedAndNotNullAndNotEmpty(phone)) {
     const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/phone_number/${phone}`;
@@ -95,6 +127,12 @@ const userLookupByPhone = async (phone, accessToken) => {
   }
 };
 
+/**
+ * Returns lookup response using endpoint and accessToken
+ * @param {*} endpoint
+ * @param {*} accessToken
+ * @returns
+ */
 const userLookupResponseBuilder = async (endpoint, accessToken) => {
   const requestOptions = {
     headers: {
@@ -106,6 +144,11 @@ const userLookupResponseBuilder = async (endpoint, accessToken) => {
   return processAxiosResponse(lookupResponse);
 };
 
+/**
+ * Returns 'Create User' payload
+ * @param {*} message
+ * @returns
+ */
 const createUserPayloadBuilder = message => {
   const payload = constructPayload(
     message,
@@ -117,6 +160,11 @@ const createUserPayloadBuilder = message => {
   return { payload, endpoint, method };
 };
 
+/**
+ * Returns 'Update User' payload
+ * @param {*} message
+ * @returns
+ */
 const updateUserPayloadBuilder = message => {
   const payload = constructPayload(
     message,
@@ -128,6 +176,11 @@ const updateUserPayloadBuilder = message => {
   return { payload, endpoint, method };
 };
 
+/**
+ * Returns 'Creates Response' payload
+ * @param {*} message
+ * @returns
+ */
 const createResponsePayloadBuilder = message => {
   const payload = constructPayload(
     message,
@@ -139,6 +192,11 @@ const createResponsePayloadBuilder = message => {
   return { payload, endpoint, method };
 };
 
+/**
+ * Returns 'Creates Decline' payload
+ * @param {*} message
+ * @returns
+ */
 const createDeclinePayloadBuilder = message => {
   const payload = constructPayload(
     message,
@@ -149,6 +207,12 @@ const createDeclinePayloadBuilder = message => {
   return { payload, endpoint, method };
 };
 
+/**
+ * Flattens properties field in payload
+ * e.g :- properties[name] = Demo User, end_user[properties][revenue_amount] = 5000
+ * @param {*} payload
+ * @param {*} destKey
+ */
 const flattenPayload = (payload, destKey) => {
   if (payload.properties) {
     Object.entries(payload.properties).forEach(([key, value]) => {
@@ -158,6 +222,10 @@ const flattenPayload = (payload, destKey) => {
   }
 };
 
+/**
+ * Formats identify payload
+ * @param {*} payload
+ */
 const formatIdentifyPayload = payload => {
   if (payload.last_surveyed) {
     payload.last_surveyed = `${payload.last_surveyed}`;
@@ -167,12 +235,21 @@ const formatIdentifyPayload = payload => {
   }
 };
 
+/**
+ * Formats track payload
+ * @param {*} payload
+ */
 const formatTrackPayload = payload => {
   if (payload.created_at) {
     payload.created_at = `${payload.created_at}`;
   }
 };
 
+/**
+ * Validates email and phone
+ * @param {*} email
+ * @param {*} phone
+ */
 const validateEmailAndPhone = (email, phone) => {
   if (
     !isDefinedAndNotNullAndNotEmpty(email) &&
@@ -185,6 +262,13 @@ const validateEmailAndPhone = (email, phone) => {
   }
 };
 
+/**
+ * Checking existing email and phone using userlookup axios calls
+ * @param {*} email
+ * @param {*} phone
+ * @param {*} external_id
+ * @param {*} accessToken
+ */
 const checkExistingEmailAndPhone = async (
   email,
   phone,
@@ -209,6 +293,10 @@ const checkExistingEmailAndPhone = async (
   }
 };
 
+/**
+ * Validates score
+ * @param {*} score
+ */
 const validateScore = score => {
   if (!(score >= 0 && score <= 10)) {
     throw new CustomError("Invalid Score", 400);

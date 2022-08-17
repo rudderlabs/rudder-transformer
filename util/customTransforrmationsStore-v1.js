@@ -1,7 +1,7 @@
 const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
-const { CustomError } = require("../v0/util");
+const { transformerStatusHandler } = require("./utils");
 
 const transformationCache = {};
 const libraryCache = {};
@@ -28,16 +28,12 @@ async function getTransformationCodeV1(versionId) {
       `${getTransformationURL}?versionId=${versionId}`
     );
 
-    if (response.status >= 500) {
-      throw new CustomError(
-        `Error occured while fetching transformation with version id ${versionId}`,
-        809
-      );
-    } else if (response.status !== 200) {
-      throw new Error(
-        `Transformation not found at ${getTransformationURL}?versionId=${versionId}`
-      );
-    }
+    transformerStatusHandler(
+      response.status,
+      "Transformation",
+      versionId,
+      getTransformationURL
+    );
     stats.increment("get_transformation_code.success", tags);
     stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
@@ -63,16 +59,12 @@ async function getLibraryCodeV1(versionId) {
       `${getLibrariesUrl}?versionId=${versionId}`
     );
 
-    if (response.status >= 500) {
-      throw new CustomError(
-        `Error occured while fetching transformation library with version id ${versionId}`,
-        809
-      );
-    } else if (response.status !== 200) {
-      throw new Error(
-        `Transformation library not found at ${getLibrariesUrl}?versionId=${versionId}`
-      );
-    }
+    transformerStatusHandler(
+      response.status,
+      "Transformation Library",
+      versionId,
+      getLibrariesUrl
+    );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);
     const myJson = await response.json();

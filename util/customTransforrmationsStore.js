@@ -2,7 +2,7 @@ const NodeCache = require("node-cache");
 const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
-const { CustomError } = require("../v0/util");
+const { transformerStatusHandler } = require("./utils");
 
 const myCache = new NodeCache();
 
@@ -23,16 +23,12 @@ async function getTransformationCode(versionId) {
       `${getTransformationURL}?versionId=${versionId}`
     );
 
-    if (response.status >= 500) {
-      throw new CustomError(
-        `Error occured while fetching transformation with version id ${versionId}`,
-        809
-      );
-    } else if (response.status !== 200) {
-      throw new Error(
-        `Transformation not found at ${getTransformationURL}?versionId=${versionId}`
-      );
-    }
+    transformerStatusHandler(
+      response.status,
+      "Transformation",
+      versionId,
+      getTransformationURL
+    );
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime, { versionId });
     const myJson = await response.json();

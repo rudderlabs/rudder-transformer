@@ -26,23 +26,21 @@ function getSizeInKB(data) {
 }
 
 // Returns an array of payloads within the size limit
-function getBatchedPayloads(inputs, maxBatchSize) {
+function getBatchedPayloads(inputs, maxBatchSize, sizesInKB) {
   const batchedPayloads = [];
   let payloadChunk = [];
+  let payloadChunkSizeInKB = getSizeInKB(payloadChunk);
   let chunkMetadata = [];
-  const errorMetadata = [];
   inputs.forEach(input => {
-    if (getSizeInKB([input.message]) > MAX_PAYLOAD_SIZE_IN_KB) {
-      errorMetadata.push(input.metadata);
-      return;
-    }
+    const inputSizeInKB = sizesInKB.get(input.metadata.jobId);
     if (
       payloadChunk.length.toString() === maxBatchSize ||
-      getSizeInKB([...payloadChunk, input.message]) > MAX_PAYLOAD_SIZE_IN_KB
+      payloadChunkSizeInKB + inputSizeInKB > MAX_PAYLOAD_SIZE_IN_KB
     ) {
       batchedPayloads.push({ payloadChunk, chunkMetadata });
       payloadChunk = [input.message];
       chunkMetadata = [input.metadata];
+      payloadChunkSizeInKB = inputSizeInKB;
     } else {
       payloadChunk.push(input.message);
       chunkMetadata.push(input.metadata);
@@ -51,53 +49,34 @@ function getBatchedPayloads(inputs, maxBatchSize) {
   if (payloadChunk.length > 0) {
     batchedPayloads.push({ payloadChunk, chunkMetadata });
   }
-  return { batchedPayloads, errorMetadata };
+  return batchedPayloads;
 }
 
 // Returns a batched response list for a list of inputs
-function batchEvents(inputs, destConfig) {
+function batchEvents(inputs, destConfig, sizesInKB) {
   const batchedResponseList = [];
-  const { enableBatchInput, maxBatchSize } = destConfig;
-  if (enableBatchInput) {
-    const { batchedPayloads, errorMetadata } = getBatchedPayloads(
-      inputs,
-      maxBatchSize
-    );
-    batchedPayloads.forEach(data => {
-      const batchPayload = {
-        payload: JSON.stringify(data.payloadChunk),
-        destConfig
-      };
-      batchedResponseList.push(
-        getSuccessRespEvents(batchPayload, data.chunkMetadata)
-      );
-    });
-    if (errorMetadata.length > 0) {
-      batchedResponseList.push(
-        getErrorRespEvents(errorMetadata, 400, "payload size limit exceeded")
-      );
-    }
-  } else {
-    inputs.forEach(input => {
-      if (getSizeInKB(input.message) < MAX_PAYLOAD_SIZE_IN_KB) {
-        const batchPayload = {
-          payload: JSON.stringify(input.message),
-          destConfig
-        };
-        batchedResponseList.push(
-          getSuccessRespEvents(batchPayload, [input.metadata])
-        );
-      } else {
-        batchedResponseList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            400,
-            "payload size limit exceeded"
-          )
-        );
-      }
-    });
-  }
+  const { maxBatchSize } = destConfig;
+  const batchedPayloads = getBatchedPayloads(inputs, maxBatchSize, sizesInKB);
+  batchedPayloads.forEach(data => {
+    const message = {
+      payload: JSON.stringify(data.payloadChunk),
+      destConfig
+    };
+    batchedResponseList.push(getSuccessRespEvents(message, data.chunkMetadata));
+  });
+
+  return batchedResponseList;
+}
+
+function responseBuilderSimple(inputs, destConfig) {
+  const batchedResponseList = [];
+  inputs.forEach(input => {
+    const message = {
+      payload: JSON.stringify(input.message),
+      destConfig
+    };
+    batchedResponseList.push(getSuccessRespEvents(message, [input.metadata]));
+  });
   return batchedResponseList;
 }
 
@@ -119,7 +98,36 @@ const processRouterDest = inputs => {
   const destConfig = _.cloneDeep(destination.Config);
   destConfig.invocationType = DEFAULT_INVOCATION_TYPE;
 
-  return batchEvents(inputs, destConfig);
+  const successEventsList = [];
+  const errorMetadata = [];
+  const errorResponseList = [];
+  const sizesInKB = new Map();
+
+  inputs.forEach(input => {
+    const sizeInKB = getSizeInKB([input.message]);
+    if (sizeInKB > MAX_PAYLOAD_SIZE_IN_KB) {
+      errorMetadata.push(input.metadata);
+    } else {
+      successEventsList.push(input);
+      sizesInKB.set(input.metadata.jobId, sizeInKB); // metadata.jobId is unique/mandatory for each event in a batch
+    }
+  });
+
+  if (errorMetadata.length > 0) {
+    errorResponseList.push(
+      getErrorRespEvents(errorMetadata, 400, "payload size limit exceeded")
+    );
+  }
+
+  let successResponseList;
+  const { enableBatchInput } = destConfig;
+  if (enableBatchInput) {
+    successResponseList = batchEvents(successEventsList, destConfig, sizesInKB);
+  } else {
+    successResponseList = responseBuilderSimple(successEventsList, destConfig);
+  }
+
+  return [...successResponseList, ...errorResponseList];
 };
 
 module.exports = { process, processRouterDest };

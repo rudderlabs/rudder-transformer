@@ -53,7 +53,6 @@ describe(`${name} Tests`, () => {
       const routerOutput = await transformer.processRouterDest(
         inputRouterData2
       );
-      console.log(JSON.stringify(routerOutput));
       expect(routerOutput).toEqual(expectedRouterData2);
     });
   });

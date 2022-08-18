@@ -6,65 +6,34 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const _ = require("lodash");
 const { getFieldValueFromMessage } = require("../../util");
-const { set } = require("lodash");
+const { set, values } = require("lodash");
 
 // Includes the fields that can be lookUpfields
-const Fields = [
+const FIELDS = [
   "",
-  "id",
   "title",
+  "firstName",
+  "lastName",
   "role",
-  "firstname",
-  "nps__recommend",
-  "lastname",
-  "cart_status",
-  "company",
-  "sandbox",
-  "car_or_truck",
-  "position",
   "email",
-  "company_size",
-  "mobile",
-  "prospect_or_customer",
-  "datetime",
   "phone",
-  "points",
-  "subscription_status",
-  "fax",
-  "b2b_or_b2c",
-  "products",
-  "address1",
-  "address2",
-  "haspurchased",
   "city",
-  "crm_id",
   "state",
   "zipcode",
   "country",
-  "preferred_locale",
-  "timezone",
-  "last_active",
-  "attribution_date",
-  "attribution",
-  "website",
-  "facebook",
-  "foursquare",
-  "instagram",
-  "linkedin",
-  "skype",
-  "twitter"
+  "address"
 ];
 
-const titles = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
+const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 
 const isDate = date => {
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 };
-const poc = ["Prospect", "Customer"];
+const ALLOWED_POC = ["Prospect", "Customer"];
 
-const subscription_statuses = ["New", "Existing"];
+const ALLOWED_SUBSCRIPTION_STATUS = ["New", "Existing"];
 
-const roles = [
+const ALLOWED_ROLE_VALUES = [
   "Individual Contributor",
   "Manager",
   "Director",
@@ -72,22 +41,24 @@ const roles = [
   "Consultant"
 ];
 
+function createAxiosUrl(subDomainName, propertyName, value) {
+  return `${BASE_URL.replace(
+    "subDomainName",
+    subDomainName
+  )}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
+}
 // for validating email match function outdated
 function validateEmail(inputText) {
-  return true;
-  // console.log(inputText);
-  // const mailformat = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-  // return  mailformat.test(mailformat);
+  // return true;
+  const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+  return mailformat.test(inputText);
 }
 // for validating Phone match function outdated
 function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
-  if (phoneno.test(inputText)) {
-    return true;
-  }
-  return false;
+  return phoneno.test(inputText);
 }
-const addInPayload = (payload, message) => {
+const refinePayloadFields = (payload, message) => {
   const { traits, context } = message;
   if (
     (traits && traits?.hasPurchased) ||
@@ -106,7 +77,7 @@ const addInPayload = (payload, message) => {
       traits && traits?.role
         ? message.traits?.role
         : message.context.traits?.role;
-    if (!roles.includes(Role)) {
+    if (!ALLOWED_ROLE_VALUES.includes(Role)) {
       throw new CustomError("This Role is not supported", 400);
     }
     set(payload, "role", Role);
@@ -119,7 +90,7 @@ const addInPayload = (payload, message) => {
       traits && traits?.subscriptionStatus
         ? message.traits?.subscriptionStatus
         : message.context.traits?.subscriptionStatus;
-    if (!subscription_statuses.includes(status)) {
+    if (!ALLOWED_SUBSCRIPTION_STATUS.includes(status)) {
       throw new CustomError("This Subscription status is not supported.", 400);
     }
     set(payload, "subscription_status", status);
@@ -131,7 +102,7 @@ const addInPayload = (payload, message) => {
     const POC =
       message.traits?.prospectOrCustomer ||
       message.context.traits?.prospectOrCustomer;
-    if (!poc.includes(POC)) {
+    if (!ALLOWED_POC.includes(POC)) {
       throw new CustomError(
         "prospectOrCustomer can only be either prospect or customer or null ",
         400
@@ -149,15 +120,18 @@ const deduceAddressFields = message => {
     (traits !== undefined && traits?.address) ||
     (context.traits && context.traits?.address)
   ) {
-    const add =
+    let add =
       traits && traits?.address
         ? message.traits.address
         : message.context.traits.address;
-    if (typeof add === "string") {
-      const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
-      address1 = validLengthAddress.substring(0, 63);
-      address2 = validLengthAddress.substring(64, validLengthAddress.length);
+    if (typeof add === "object") {
+      add = Object.keys(input).reduce(function(res, v) {
+        return res.concat(input[v], " ");
+      }, "");
     }
+    const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
+    address1 = validLengthAddress.substring(0, 63);
+    address2 = validLengthAddress.substring(64, validLengthAddress.length);
   }
   return { address1, address2 };
 };
@@ -165,19 +139,19 @@ const deduceAddressFields = message => {
 const validatePayload = payload => {
   // checking for message details validations
   if (payload.email && !validateEmail(payload.email)) {
-    throw new CustomError("Invalid Mail Provided", 400);
+    throw new CustomError("Invalid Mail Provided.", 400);
   }
   if (payload.phone && !validatePhone(payload.phone)) {
-    throw new CustomError("Invalid Phone No. Provided", 400);
+    throw new CustomError("Invalid Phone No. Provided.", 400);
   }
-  if (payload.title && !titles.includes(payload.title)) {
-    throw new CustomError("This title is not supported", 400);
+  if (payload.title && !ALLOWED_TITLES.includes(payload.title)) {
+    throw new CustomError("Invalid title provided.", 400);
   }
   if (payload.last_active && !isDate(payload.last_active)) {
-    throw new CustomError("Date is Invalid", 400);
+    throw new CustomError("Date is Invalid.", 400);
   }
-  if(payload.state && !payload.state[0]===payload.state[0].toUpperCase()){
-    throw new CustomError("State is Invalid", 400);
+  if (payload.state && !(payload.state[0] === payload.state[0].toUpperCase())) {
+    throw new CustomError("State is Invalid.", 400);
   }
   return true;
 };
@@ -193,7 +167,7 @@ const validatePayload = payload => {
  * If the lookup key is not found we fallback to email. If email is also not provided, we throw error.
  */
 
-const searchContactId = async (message, destination,identifyFlag) => {
+const searchContactId = async (message, destination, identifyFlag) => {
   const { lookUpField, userName, password, subDomainName } = destination.Config;
   let searchContactsResponse;
   let contactId;
@@ -201,10 +175,7 @@ const searchContactId = async (message, destination,identifyFlag) => {
   let propertyName;
 
   if (!traits) {
-    throw new CustomError(
-      "Invalid traits value for lookup field",
-      400
-    );
+    throw new CustomError("Invalid traits value for lookup field", 400);
   }
 
   // lookupField key provided in Config.lookupField not found in traits
@@ -213,7 +184,7 @@ const searchContactId = async (message, destination,identifyFlag) => {
     propertyName = "email";
 
     if (!traits?.email) {
-      if(identifyFlag){
+      if (identifyFlag) {
         return null;
       }
       throw new CustomError(
@@ -251,9 +222,10 @@ const searchContactId = async (message, destination,identifyFlag) => {
     }
   };
   searchContactsResponse = await httpGET(
-    `https://${subDomainName}.mautic.net/api/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`,
+    createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
   );
+
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
@@ -267,28 +239,33 @@ const searchContactId = async (message, destination,identifyFlag) => {
   // throw error if more than one contact is found as it's ambiguous
   if (searchContactsResponse.response?.total > 1) {
     throw new CustomError(
-      "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
+      "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupfield and lookupValue",
       400
     );
-  } else if (searchContactsResponse.response?.total === 0) {
-    // contact not found
-    contactId = null; 
-  } else {
+  } else if (searchContactsResponse.response.total == 1) {
     // a single and unique contact found
     const { contacts } = searchContactsResponse?.response;
-    contactId =  Object.keys(contacts).length ===1 ? Object.keys(contacts)[0]: null;
+    contactId =
+      Object.keys(contacts).length === 1 ? Object.keys(contacts)[0] : null;
+  } else {
+    // contact not found
+    if (!identifyFlag) {
+      throw new CustomError(
+        " No contacts found. Retry with unique lookupfield and lookupValue"
+      );
+    }
+    contactId = null;
   }
   return contactId;
 };
 
 module.exports = {
-  Fields,
-  titles,
+  FIELDS,
   isDate,
   validateEmail,
   validatePhone,
   deduceAddressFields,
   validatePayload,
   searchContactId,
-  addInPayload
+  refinePayloadFields
 };

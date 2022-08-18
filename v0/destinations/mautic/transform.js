@@ -13,11 +13,12 @@ const {
 } = require("../../util");
 
 const {
+  FIELDS,
   validateEmail,
   deduceAddressFields,
   validatePayload,
   searchContactId,
-  addInPayload
+  refinePayloadFields
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
@@ -26,7 +27,6 @@ const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 
 const responseBuilderGroup = async (endpoint, destination) => {
   const { userName, password } = destination.Config;
-  console.log("Inside Builder");
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
@@ -57,11 +57,12 @@ const groupResponseBuilder = async (message, destination) => {
     default:
       throw new CustomError("This grouping is not supported");
   }
-  const identifyFlag=false;
+  const identifyFlag = false;
   let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
     contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
+
   const endpoint = `${BASE_URL.replace(
     "subDomainName",
     subDomainName
@@ -84,12 +85,10 @@ const responseBuilderIdentify = async (
       response.body.FORM = removeUndefinedAndNullValues(payload);
     }
     response.endpoint = endpoint;
-    // console.log("username:password ", `${userName}:${password}`);
     const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-    // console.log(`Authorization: Basic ${basicAuth}`);
     response.headers = {
       "Content-Type": "application/json",
-      Authorization: ` Basic ${basicAuth}`
+      Authorization: `Basic ${basicAuth}`
     };
     response.method = method;
     return response;
@@ -107,7 +106,7 @@ const identifyResponseBuilder = async (message, destination) => {
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
   // Adding all the fields inpayload that needs validation and
-  payload = addInPayload(payload, message);
+  payload = refinePayloadFields(payload, message);
   // if the payload is valid adding address fields if present
 
   if (validatePayload(payload)) {
@@ -119,29 +118,37 @@ const identifyResponseBuilder = async (message, destination) => {
      1. if contactId is present  inside externalID we will use that
      2. Otherwise we will look for the lookup field from the web app 
   */
-  const identifyFlag=true;
+  const identifyFlag = true;
   let contactId = getDestinationExternalID(message, "mauticContactId");
-  console.log("CID", contactId);
-  if (!contactId) {
-    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
-  }
-  // console.log("ContactID: ",contactId.Promise);
   if (contactId) {
-    // contact exists
-    // update
+    //contact exist in externalId
+    //update
     endpoint = `${BASE_URL.replace(
       "subDomainName",
       subDomainName
     )}/contacts/${contactId}/edit`;
     method = defaultPatchRequestConfig.requestMethod;
   } else {
-    // contact do not exist
-    // create
-    endpoint = `${BASE_URL.replace(
-      "subDomainName",
-      subDomainName
-    )}/contacts/new`;
-    method = defaultPostRequestConfig.requestMethod;
+    if (!contactId) {
+      contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+    }
+    if (contactId && contactId?.Promise) {
+      // contact found through lookup Call
+      // update
+      endpoint = `${BASE_URL.replace(
+        "subDomainName",
+        subDomainName
+      )}/contacts/${contactId}/edit`;
+      method = defaultPatchRequestConfig.requestMethod;
+    } else {
+      // contact do not exist
+      // create
+      endpoint = `${BASE_URL.replace(
+        "subDomainName",
+        subDomainName
+      )}/contacts/new`;
+      method = defaultPostRequestConfig.requestMethod;
+    }
   }
 
   return responseBuilderIdentify(
@@ -157,17 +164,17 @@ const process = async event => {
   const { message, destination } = event;
   const { lookUpField, password, subDomainName, userName } = destination.Config;
   if (!password) {
-    throw new CustomError("Password field can not be empty", 400);
+    throw new CustomError("Password field can not be empty.", 400);
   }
   if (!subDomainName) {
-    throw new CustomError("Sub-Domain Name field can not be empty", 400);
+    throw new CustomError("Sub-Domain Name field can not be empty.", 400);
   }
-  if (!lookUpField) {
-    throw new CustomError("Lookup Field Name can not be empty", 400);
+  if (!FIELDS.includes(lookUpField)) {
+    throw new CustomError("Lookup Field Name not available.", 400);
   }
 
   if (!validateEmail(userName)) {
-    throw new CustomError("User Name is not Valid", 400);
+    throw new CustomError("User Name is not Valid.", 400);
   }
 
   // Validating if message type is even given or not
@@ -179,7 +186,6 @@ const process = async event => {
   }
   const messageType = message.type.toLowerCase();
   let response;
-
   switch (messageType) {
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, destination);
@@ -188,9 +194,8 @@ const process = async event => {
       response = await groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new CustomError(`Message type ${messageType} not supported.`, 400);
   }
-  // console.log("Response: ", response);
   return response;
 };
 

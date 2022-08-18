@@ -58,7 +58,7 @@
     },
     {
         "sourceKeys":"context.ip",
-        "destKey":"ip"
+        "destKey":"ipAddress"
     },
     {
         "sourceKeys":"country",

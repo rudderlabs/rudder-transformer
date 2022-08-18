@@ -104,14 +104,14 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  const respList = [];
+  // let respList = [];
   const executeStartTime = new Date();
   let destHandler;
   // Getting destination handler for non-cdk destination(s)
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
   }
-  await Promise.all(
+  const respList = await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
@@ -130,28 +130,26 @@ async function handleDest(ctx, version, destination) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          respList.push(
-            ...respEvents.map(ev => {
-              let { userId } = ev;
-              // Set the user ID to an empty string for
-              // all the falsy values (including 0 and false)
-              // Otherwise, server panics while un-marshalling the response
-              // while expecting only strings.
-              if (!userId) {
-                userId = "";
-              }
+          return respEvents.map(ev => {
+            let { userId } = ev;
+            // Set the user ID to an empty string for
+            // all the falsy values (including 0 and false)
+            // Otherwise, server panics while un-marshalling the response
+            // while expecting only strings.
+            if (!userId) {
+              userId = "";
+            }
 
-              if (ev.statusCode !== 400 && userId) {
-                userId = `${userId}`;
-              }
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
+            }
 
-              return {
-                output: { ...ev, userId },
-                metadata: event.metadata,
-                statusCode: 200
-              };
-            })
-          );
+            return {
+              output: { ...ev, userId },
+              metadata: event.metadata,
+              statusCode: 200
+            };
+          });
         }
       } catch (error) {
         logger.error(error);
@@ -160,12 +158,12 @@ async function handleDest(ctx, version, destination) {
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
-        respList.push({
+        return {
           metadata: event.metadata,
           statusCode: errObj.status,
           error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
-        });
+        }
       }
     })
   );
@@ -179,7 +177,7 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  ctx.body = respList;
+  ctx.body = respList.flat();
   return ctx.body;
 }
 

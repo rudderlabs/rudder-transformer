@@ -54,14 +54,8 @@ router.use(profilingRouter);
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
-    logger.info(
-      `====getDestHandler endpoint: ./${version}/destinations/${DestHandlerMap[dest]}/transform ====`
-    );
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
-  logger.info(
-    `====getDestHandler endpoint: ./${version}/destinations/${dest}/transform ====`
-  );
   return require(`./${version}/destinations/${dest}/transform`);
 };
 
@@ -82,9 +76,6 @@ const getDeletionUserHandler = (version, dest) => {
 };
 
 const getSourceHandler = (version, source) => {
-  logger.info(
-    `====getSourceHandler endpoint: ./${version}/sources/${source}/transform ====`
-  );
   return require(`./${version}/sources/${source}/transform`);
 };
 
@@ -119,7 +110,6 @@ async function handleDest(ctx, version, destination) {
   // Getting destination handler for non-cdk destination(s)
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
-    logger.info(`====Destination: ${destination}====`);
   }
   await Promise.all(
     events.map(async event => {
@@ -163,7 +153,6 @@ async function handleDest(ctx, version, destination) {
             })
           );
         }
-        logger.info(`====Payload is transformed====`);
       } catch (error) {
         logger.error(error);
         const errObj = generateErrorObject(
@@ -273,7 +262,6 @@ async function routerHandleDest(ctx) {
     ctx.body = `${destType} doesn't support router transform`;
     return null;
   }
-  logger.info(`====[router] Destination: ${destType}====`);
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
@@ -284,7 +272,6 @@ async function routerHandleDest(ctx) {
     })
   );
   ctx.body = { output: respEvents };
-  logger.info(`====[router] Payload is transformed====`);
   return ctx.body;
 }
 
@@ -319,8 +306,6 @@ if (startDestTransformer) {
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async ctx => {
-        logger.info("====transformed at Processor====");
-        logger.info(`====Endpoint: /${version}/${destination}====`);
         const startTime = new Date();
         await handleDest(ctx, version, destination);
         ctx.set("apiVersion", API_VERSION);
@@ -343,7 +328,6 @@ if (startDestTransformer) {
         });
       });
       router.post("/routerTransform", async ctx => {
-        logger.info("====routerTransform====");
         ctx.set("apiVersion", API_VERSION);
         await routerHandleDest(ctx);
       });
@@ -560,9 +544,7 @@ if (transformerTestModeEnabled) {
 }
 
 async function handleSource(ctx, version, source) {
-  logger.info("====HandleSource====");
   const sourceHandler = getSourceHandler(version, source);
-  logger.info(`====Source: ${source}====`);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
   stats.increment("source_transform_input_events", events.length, {
@@ -575,7 +557,6 @@ async function handleSource(ctx, version, source) {
       try {
         const respEvents = await sourceHandler.process(event);
 
-        logger.info("[source]: payload is transformed");
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -750,7 +731,6 @@ const batchHandler = ctx => {
   return ctx.body;
 };
 router.post("/batch", ctx => {
-  logger.info("====Endpoint: /batch====");
   ctx.set("apiVersion", API_VERSION);
   batchHandler(ctx);
 });

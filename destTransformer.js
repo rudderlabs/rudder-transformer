@@ -7,6 +7,7 @@ const { router } = require("./versionedRouter");
 const { testRouter } = require("./testRouter");
 const cluster = require("./util/cluster");
 const { addPrometheusMiddleware } = require("./middleware");
+const accesslogger = require("./middlewares/log");
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
 
@@ -19,6 +20,7 @@ app.use(
     jsonLimit: "200mb"
   })
 );
+app.use(accesslogger());
 
 app.use(router.routes()).use(router.allowedMethods());
 app.use(testRouter.routes()).use(testRouter.allowedMethods());

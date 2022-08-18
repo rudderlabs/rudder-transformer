@@ -3,7 +3,7 @@ const moment = require("moment");
 
 // process's pid, date, method, path, http version, status and length
 const LOG_FORMAT = '[pid-%s] - - [%s] "%s %s HTTP/%s" %d %s\n';
-const DATE_FORMAT = "dd/mm/yyyy:HH:mm:sssss";
+const DATE_FORMAT = "DD/MM/YYYY:HH:mm:sssss";
 
 module.exports = stream => {
   return async function accesslog(ctx, next) {

@@ -2,10 +2,11 @@
   {
     "destination": {
       "Config": {
-        "TriggerType": "Http",
+        "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1"
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "maxBatchSize": "2"
       }
     },
     "metadata": {
@@ -57,10 +58,11 @@
   {
     "destination": {
       "Config": {
-        "TriggerType": "Http",
+        "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": ""
+        "googleCloudFunctionUrl": "",
+        "maxBatchSize": "2"
       }
     },
     "metadata": {
@@ -112,10 +114,11 @@
   {
     "destination": {
       "Config": {
-        "TriggerType": "Http",
+        "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1"
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "maxBatchSize": "2"
       }
     },
     "metadata": {

@@ -7,7 +7,7 @@
       "endpoint": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
       "headers": {
         "content-type": "application/json",
-        "Authorization": "Basic YXBpS2V5OnJhbmRvbUFQSQ=="
+        "ApiKey": "Basic YXBpS2V5OnJhbmRvbUFQSQ=="
       },
       "params": {},
       "body": {
@@ -25,10 +25,11 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "TriggerType": "Http",
+        "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1"
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "maxBatchSize": "2"
       }
     }
   },

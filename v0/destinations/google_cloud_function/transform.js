@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -30,11 +31,13 @@ function process(event) {
 }
 
 // Returns a batched response list for a for list of inputs(successRespList)
-function batchEvents(eventsChunk, destination) {
+function batchEvents(successRespList, maxBatchSize = 10) {
   const batchedResponseList = [];
-  const { enableBatchInput } = destination.Config;
-  if (enableBatchInput) {
-    const batchEventResponse = generateBatchedPayload(eventsChunk);
+
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  const arrayChunks = _.chunk(successRespList, maxBatchSize);
+  arrayChunks.forEach(chunk => {
+    const batchEventResponse = generateBatchedPayload(chunk);
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
@@ -43,24 +46,9 @@ function batchEvents(eventsChunk, destination) {
         true
       )
     );
-  } else {
-    eventsChunk.forEach(chunk => {
-      const batchEventResponse = generateBatchedPayload(chunk);
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          batchEventResponse.batchedRequest,
-          batchEventResponse.metadata,
-          batchEventResponse.destination,
-          false
-        )
-      );
-    });
-  }
-  return batchedResponseList;
-}
+  });
 
-function getEventChunks(event, eventsChunk) {
-  eventsChunk.push(event);
+  return batchedResponseList;
 }
 
 // Router transform with batching by default
@@ -70,27 +58,26 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const eventsChunk = []; // temporary variable to divide payload into chunks
+  const successResponseList = [];
   const errorRespList = [];
+  const { destination } = inputs[0];
   await Promise.all(
     inputs.map(event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, eventsChunk);
+          successResponseList.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination
+          });
         } else {
           // if not transformed
-          let response = process(event);
-          response = Array.isArray(response) ? response : [response];
-          response.forEach(res => {
-            getEventChunks(
-              {
-                message: res,
-                metadata: event.metadata,
-                destination: event.destination
-              },
-              eventsChunk
-            );
+          const response = process(event);
+          successResponseList.push({
+            message: response,
+            metadata: event.metadata,
+            destination
           });
         }
       } catch (error) {
@@ -105,11 +92,14 @@ const processRouterDest = async inputs => {
     })
   );
   let batchedResponseList = [];
-  const { destination } = inputs[0];
-  if (eventsChunk.length) {
-    batchedResponseList = batchEvents(eventsChunk, destination);
+  if (successResponseList.length && destination.Config.enableBatchInput) {
+    batchedResponseList = batchEvents(
+      successResponseList,
+      destination.Config.maxBatchSize
+    );
+    return [...batchedResponseList, ...errorRespList];
   }
-  return [...batchedResponseList, ...errorRespList];
+  return [...successResponseList, ...errorRespList];
 };
 
 module.exports = {

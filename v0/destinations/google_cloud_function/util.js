@@ -25,23 +25,15 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} Config
  */
 function addHeader(response, Config) {
-  const { TriggerType, apiKeyId, gcloudAuthorization } = Config;
-  let basicAuth;
-  // API Key (apikey)
-  if (apiKeyId) {
-    basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
-  }
+  const { triggerType, apiKeyId, gcloudAuthorization } = Config;
 
   response.headers = { "content-type": "application/json" };
-  if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {
-    response.headers.Authorization = `bearer ${gcloudAuthorization}`;
+  if (apiKeyId) {
+    const basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString("base64");
+    response.headers.ApiKey = `Basic ${basicAuth}`;
   }
-  if (basicAuth) {
-    if (TRIGGERTYPE.HTTPS === TriggerType.toLowerCase()) {
-      response.headers.ApiKey = `Basic ${basicAuth}`;
-    } else {
-      response.headers.Authorization = `Basic ${basicAuth}`;
-    }
+  if (TRIGGERTYPE.HTTPS === triggerType.toLowerCase()) {
+    response.headers.Authorization = `bearer ${gcloudAuthorization}`;
   }
 }
 
@@ -53,42 +45,26 @@ function addHeader(response, Config) {
 function generateBatchedPayload(events) {
   const batchResponseList = [];
   const metadata = [];
-
-  let destination;
-  if (Array.isArray(events)) {
-    // extracting destination
-    // from the first event in a batch
-    destination = events[0].destination;
-  } else {
-    destination = events.destination;
-  }
-
-  // const { destination } = events[0];
-  const { googleCloudFunctionUrl, enableBatchInput } = destination.Config;
+  // extracting destination
+  // from the first event in a batch
+  const { destination } = events[0];
+  const { googleCloudFunctionUrl } = destination.Config;
   let batchEventResponse = defaultBatchRequestConfig();
-
+  // Batch event into dest batch structure
+  events.forEach(ev => {
+    batchResponseList.push(ev.message.body.JSON);
+    metadata.push(ev.metadata);
+  });
+  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+    batch: JSON.stringify(batchResponseList)
+  };
   batchEventResponse.batchedRequest.endpoint = googleCloudFunctionUrl;
   addHeader(batchEventResponse.batchedRequest, destination.Config);
-
-  if (enableBatchInput) {
-    // if enableBatchInput is true add Batch event into dest batch structure
-    events.forEach(ev => {
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
-    });
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(batchResponseList)
-    };
-  } else {
-    batchEventResponse.batchedRequest.body.JSON = events.message.body.JSON;
-    metadata.push(events.metadata);
-  }
   batchEventResponse = {
     ...batchEventResponse,
     metadata,
     destination
   };
-
   return batchEventResponse;
 }
 

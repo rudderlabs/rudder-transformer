@@ -43,6 +43,9 @@ const groupResponseBuilder = async (message, destination) => {
   if (message.traits === undefined || message.traits.type === undefined) {
     throw new CustomError("Type of group not mentioned inside traits");
   }
+  if(!message?.groupId){
+    throw new CustomError("Group Id is not provided.",400);
+  }
   const { subDomainName } = destination.Config;
   switch (message.traits.type.toLowerCase()) {
     case "segments":
@@ -120,35 +123,27 @@ const identifyResponseBuilder = async (message, destination) => {
   */
   const identifyFlag = true;
   let contactId = getDestinationExternalID(message, "mauticContactId");
+
+  // searching for contactID from filter options if contactID is not given
+  if (!contactId) {
+    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+  }
   if (contactId) {
-    //contact exist in externalId
-    //update
+    // contact exist in externalId
+    // update
     endpoint = `${BASE_URL.replace(
       "subDomainName",
       subDomainName
     )}/contacts/${contactId}/edit`;
     method = defaultPatchRequestConfig.requestMethod;
   } else {
-    if (!contactId) {
-      contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
-    }
-    if (contactId && contactId?.Promise) {
-      // contact found through lookup Call
-      // update
-      endpoint = `${BASE_URL.replace(
-        "subDomainName",
-        subDomainName
-      )}/contacts/${contactId}/edit`;
-      method = defaultPatchRequestConfig.requestMethod;
-    } else {
-      // contact do not exist
-      // create
-      endpoint = `${BASE_URL.replace(
-        "subDomainName",
-        subDomainName
-      )}/contacts/new`;
-      method = defaultPostRequestConfig.requestMethod;
-    }
+    // contact do not exist
+    // create
+    endpoint = `${BASE_URL.replace(
+      "subDomainName",
+      subDomainName
+    )}/contacts/new`;
+    method = defaultPostRequestConfig.requestMethod;
   }
 
   return responseBuilderIdentify(

@@ -31,9 +31,8 @@
         "sourceFromGenericMap": true
     },
     {
-        "sourceKeys":"city",
-        "destKey":"city",
-        "sourceFromGenericMap": true
+        "sourceKeys":"traits.address.city",
+        "destKey":"city"
     },
     {
         "sourceKeys":"website",

@@ -20,19 +20,23 @@ const FIELDS = [
   "city",
   "state",
   "zipcode",
-  "country",
-  "address"
+  "country"
 ];
-
+//All the titles that are allowed
 const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 
+//check if input is a date or not
 const isDate = date => {
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 };
+
+//Includes valid values for prospectOrCustomer
 const ALLOWED_POC = ["Prospect", "Customer"];
 
+//Includes valid Values for subscriptionStatus
 const ALLOWED_SUBSCRIPTION_STATUS = ["New", "Existing"];
 
+//Includes valid Values for role
 const ALLOWED_ROLE_VALUES = [
   "Individual Contributor",
   "Manager",
@@ -41,6 +45,19 @@ const ALLOWED_ROLE_VALUES = [
   "Consultant"
 ];
 
+// to get the Mautic field for the given Rudder Field for Filter axios call
+const fieldMap={"title":"title",
+"firstName":"firstname",
+"lastName":"lastname",
+"role":"role",
+"phone":"phone",
+"city":"city",
+"state":"state",
+"zipcode":"zipcode",
+"country":"country"}
+
+//creates the axios url using the subDomainName for basic url
+// and propertyName and Value for filters
 function createAxiosUrl(subDomainName, propertyName, value) {
   return `${BASE_URL.replace(
     "subDomainName",
@@ -58,6 +75,8 @@ function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
   return phoneno.test(inputText);
 }
+
+//Refines the payload by validating and adding some payload Fields
 const refinePayloadFields = (payload, message) => {
   const { traits, context } = message;
   if (
@@ -69,7 +88,7 @@ const refinePayloadFields = (payload, message) => {
     if (purchased_status === "yes" || purchased_status === "no") {
       set(payload, "haspurchased", purchased_status);
     } else {
-      throw new CustomError("Invalid Purchase Status", 400);
+      throw new CustomError("Invalid Purchase Status.", 400);
     }
   }
   if ((traits && traits?.role) || (context && context.traits?.role)) {
@@ -78,7 +97,7 @@ const refinePayloadFields = (payload, message) => {
         ? message.traits?.role
         : message.context.traits?.role;
     if (!ALLOWED_ROLE_VALUES.includes(Role)) {
-      throw new CustomError("This Role is not supported", 400);
+      throw new CustomError("This Role is not supported.", 400);
     }
     set(payload, "role", Role);
   }
@@ -91,7 +110,7 @@ const refinePayloadFields = (payload, message) => {
         ? message.traits?.subscriptionStatus
         : message.context.traits?.subscriptionStatus;
     if (!ALLOWED_SUBSCRIPTION_STATUS.includes(status)) {
-      throw new CustomError("This Subscription status is not supported.", 400);
+      throw new CustomError("Invalid subscriptionStatus Value.", 400);
     }
     set(payload, "subscription_status", status);
   }
@@ -104,7 +123,7 @@ const refinePayloadFields = (payload, message) => {
       message.context.traits?.prospectOrCustomer;
     if (!ALLOWED_POC.includes(POC)) {
       throw new CustomError(
-        "prospectOrCustomer can only be either prospect or customer or null ",
+        "prospectOrCustomer can only be either prospect or customer or null.",
         400
       );
     }
@@ -112,6 +131,9 @@ const refinePayloadFields = (payload, message) => {
   }
   return payload;
 };
+
+//Constructs the address1 and address2 field
+//if address is given as string or object
 const deduceAddressFields = message => {
   const { traits, context } = message;
   let address1;
@@ -125,8 +147,8 @@ const deduceAddressFields = message => {
         ? message.traits.address
         : message.context.traits.address;
     if (typeof add === "object") {
-      add = Object.keys(input).reduce(function(res, v) {
-        return res.concat(input[v], " ");
+      add = Object.keys(add).reduce(function(res, v) {
+        return res.concat(add[v], " ");
       }, "");
     }
     const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
@@ -136,6 +158,7 @@ const deduceAddressFields = message => {
   return { address1, address2 };
 };
 
+//Validates the generated payload fro specific fields
 const validatePayload = payload => {
   // checking for message details validations
   if (payload.email && !validateEmail(payload.email)) {
@@ -166,7 +189,6 @@ const validatePayload = payload => {
  * We have put two level dynamic mapping here.
  * If the lookup key is not found we fallback to email. If email is also not provided, we throw error.
  */
-
 const searchContactId = async (message, destination, identifyFlag) => {
   const { lookUpField, userName, password, subDomainName } = destination.Config;
   let searchContactsResponse;
@@ -184,6 +206,7 @@ const searchContactId = async (message, destination, identifyFlag) => {
     propertyName = "email";
 
     if (!traits?.email) {
+      //identifyFlag help us to determine the output depending on what is the request type
       if (identifyFlag) {
         return null;
       }
@@ -221,6 +244,8 @@ const searchContactId = async (message, destination, identifyFlag) => {
       Authorization: `Basic ${basicAuth}`
     }
   };
+  //axios call made to get contacts with filters
+  propertyName=fieldMap[propertyName];
   searchContactsResponse = await httpGET(
     createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
@@ -235,13 +260,15 @@ const searchContactId = async (message, destination, identifyFlag) => {
       searchContactsResponse.status
     );
   }
-
   // throw error if more than one contact is found as it's ambiguous
   if (searchContactsResponse.response?.total > 1) {
-    throw new CustomError(
-      "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupfield and lookupValue",
-      400
-    );
+    if (!identifyFlag) {
+      throw new CustomError(
+        "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupfield and lookupValue",
+        400
+      );
+    }
+    return null;
   } else if (searchContactsResponse.response.total == 1) {
     // a single and unique contact found
     const { contacts } = searchContactsResponse?.response;

@@ -12,8 +12,7 @@
   "email": [
     "traits.email",
     "context.traits.email",
-    "properties.email",
-    "context.externalId.0.id"
+    "properties.email"
   ],
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],

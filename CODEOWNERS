@@ -1,5 +1,8 @@
 * @sanpj2292 @saikumarrs @arnab-p @sivashanmukh @utsabc
+__tests__/ @rudderlabs/integrations
+__mocks__/ @rudderlabs/integrations
 v0/ @rudderlabs/integrations
+features.json/ @rudderlabs/integrations
 adapters/ @rudderlabs/integrations
 constants/ @rudderlabs/integrations
 warehouse/ @rudderlabs/warehouse

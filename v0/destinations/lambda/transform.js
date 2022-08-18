@@ -69,15 +69,15 @@ function batchEvents(inputs, destConfig, sizesInKB) {
 }
 
 function responseBuilderSimple(inputs, destConfig) {
-  const batchedResponseList = [];
+  const processedEventList = [];
   inputs.forEach(input => {
     const message = {
       payload: JSON.stringify(input.message),
       destConfig
     };
-    batchedResponseList.push(getSuccessRespEvents(message, [input.metadata]));
+    processedEventList.push(getSuccessRespEvents(message, [input.metadata]));
   });
-  return batchedResponseList;
+  return processedEventList;
 }
 
 // Router transform with batching by default

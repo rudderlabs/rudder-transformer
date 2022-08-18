@@ -6,12 +6,12 @@ const {
 } = require("../../util");
 
 const {
-  generateBatchedPayloadForArray,
   generateBatchedPayload,
   validateDestinationConfig,
   addHeader
 } = require("./util");
 
+// Main process Function to handle transformation
 function process(event) {
   const { message, destination } = event;
   const { googleCloudFunctionUrl } = destination.Config;
@@ -34,7 +34,7 @@ function batchEvents(eventsChunk, destination) {
   const batchedResponseList = [];
   const { enableBatchInput } = destination.Config;
   if (enableBatchInput) {
-    const batchEventResponse = generateBatchedPayloadForArray(eventsChunk);
+    const batchEventResponse = generateBatchedPayload(eventsChunk);
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
@@ -63,6 +63,7 @@ function getEventChunks(event, eventsChunk) {
   eventsChunk.push(event);
 }
 
+// Router transform with batching by default
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");

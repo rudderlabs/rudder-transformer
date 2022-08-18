@@ -1,4 +1,15 @@
-FROM node:10.16.0-alpine
+FROM node:14.19.0-alpine3.15
+
+RUN apk update
+RUN apk upgrade
+
+RUN apk add --no-cache tini python2
+
+# installing specific make version based on your previous configuration
+RUN apk add make=4.2.1-r2 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/main
+
+# installing specific gcc version based on your previous configuration
+RUN apk add g++=9.3.0-r0 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/main
 
 # Create app directory
 WORKDIR /app
@@ -6,8 +17,9 @@ WORKDIR /app
 COPY package*.json ./
 COPY build.js ./
 
-RUN npm install --unsafe-perm
+RUN npm install --unsafe-perm=true
 
 COPY . .
 
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "npm", "start" ]

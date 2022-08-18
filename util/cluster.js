@@ -24,7 +24,7 @@ function finalFunction() {
 // This function works only in master.
 // It sends SIGTERM to all the workers
 function shutdownWorkers() {
-  for (let id in cluster.workers) {
+  for (const id in cluster.workers) {
     process.kill(cluster.workers[id].process.pid);
     logger.info(`Sent kill signal to ${cluster.workers[id].process.pid}`);
   }
@@ -44,13 +44,17 @@ function start(port, app) {
       // To provide caching at pod-level
     });
     let isShuttingDown = false;
-    cluster.on("exit", worker => {
+    cluster.on("exit", (worker, code, signal) => {
       if (!isShuttingDown) {
         logger.error(`worker ${worker.process.pid} died`);
+        logger.error(
+          `worker dying with code:${code} and due to signal:${signal}`
+        );
         logger.error(
           `Killing Process to avoid any side effects of dead worker.\nProcess Info: `,
           util.inspect(processInfo(), false, null, true)
         );
+
         isShuttingDown = true;
         shutdownWorkers();
       }

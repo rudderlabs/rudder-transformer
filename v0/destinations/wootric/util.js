@@ -73,7 +73,11 @@ const getAccessToken = async destination => {
  * @param {*} accessToken
  * @returns
  */
-const retrieveUserId = async (userId, accessToken) => {
+const retrieveUserId = async (wootricEndUserId, userId, accessToken) => {
+  if (wootricEndUserId) {
+    return wootricEndUserId;
+  }
+
   const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
   const requestOptions = {
     headers: {

@@ -6,6 +6,7 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   getFieldValueFromMessage,
+  getDestinationExternalID,
   CustomError
 } = require("../../util");
 const {
@@ -20,6 +21,7 @@ const {
   createDeclinePayloadBuilder,
   checkExistingEmailAndPhone
 } = require("./util");
+const { PROPERTIES, END_USER_PROPERTIES } = require("./config");
 
 const responseBuilder = async (payload, endpoint, method, accessToken) => {
   if (payload) {
@@ -44,8 +46,17 @@ const identifyResponseBuilder = async (message, destination) => {
   let builder;
 
   const accessToken = await getAccessToken(destination);
+  if (!accessToken) {
+    throw new CustomError("Access token is missing", 400);
+  }
+
+  let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userId");
-  const wootricEndUserId = await retrieveUserId(userId, accessToken);
+  wootricEndUserId = await retrieveUserId(
+    wootricEndUserId,
+    userId,
+    accessToken
+  );
   // If user already exist we will update it else creates a new user
   if (!wootricEndUserId) {
     builder = createUserPayloadBuilder(message);
@@ -68,7 +79,7 @@ const identifyResponseBuilder = async (message, destination) => {
   );
 
   formatIdentifyPayload(payload);
-  const flattenedProperties = flattenProperties(payload, "properties");
+  const flattenedProperties = flattenProperties(payload, PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;
   return responseBuilder(payload, endpoint, method, accessToken);
@@ -81,16 +92,29 @@ const trackResponseBuilder = async (message, destination) => {
   let builder;
 
   const accessToken = await getAccessToken(destination);
+  if (!accessToken) {
+    throw new CustomError("Access token is missing", 400);
+  }
+
+  let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userId");
-  const wootricEndUserId = await retrieveUserId(userId, accessToken);
+  wootricEndUserId = await retrieveUserId(
+    wootricEndUserId,
+    userId,
+    accessToken
+  );
+
   if (!wootricEndUserId) {
-    throw new CustomError(`No user found with end user id : ${userId}`, 400);
+    throw new CustomError(
+      `No user found with wootric external_id : ${userId}`,
+      400
+    );
   }
 
   const integrationsObj = getIntegrationsObj(message, "wootric");
 
   if (!integrationsObj || !integrationsObj.eventType) {
-    throw new CustomError("Event Type is missing", 400);
+    throw new CustomError("Event Type is missing from Integration object", 400);
   }
 
   // "integrations": {
@@ -120,16 +144,13 @@ const trackResponseBuilder = async (message, destination) => {
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
 
   formatTrackPayload(payload);
-  const flattenedProperties = flattenProperties(
-    payload,
-    "end_user[properties]"
-  );
+  const flattenedProperties = flattenProperties(payload, END_USER_PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;
   return responseBuilder(payload, endpoint, method, accessToken);
 };
 
-const processEvent = (message, destination) => {
+const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -140,10 +161,10 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError("Message type not supported", 400);
@@ -151,7 +172,7 @@ const processEvent = (message, destination) => {
   return response;
 };
 
-const process = event => {
+const process = async event => {
   return processEvent(event.message, event.destination);
 };
 

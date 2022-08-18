@@ -413,7 +413,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "No user found with end user id : dummyId2"
+    "error": "No user found with wootric external_id : dummyId2"
   },
   {
     "metadata": [
@@ -470,7 +470,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "No user found with end user id : dummyId2"
+    "error": "No user found with wootric external_id : dummyId2"
   },
   {
     "metadata": [
@@ -490,6 +490,6 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "Event Type is missing"
+    "error": "Event Type is missing from Integration object"
   }
 ]

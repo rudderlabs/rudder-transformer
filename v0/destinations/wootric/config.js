@@ -1,6 +1,8 @@
 const BASE_ENDPOINT = "https://api.wootric.com";
 
 const VERSION = "v1";
+const PROPERTIES = "properties";
+const END_USER_PROPERTIES = "end_user[properties]";
 
 const { getMappingConfig } = require("../../util");
 
@@ -39,5 +41,7 @@ module.exports = {
   VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  ACCESS_TOKEN_CACHE_TTL_SECONDS
+  ACCESS_TOKEN_CACHE_TTL_SECONDS,
+  PROPERTIES,
+  END_USER_PROPERTIES
 };

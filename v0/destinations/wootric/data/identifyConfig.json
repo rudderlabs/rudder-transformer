@@ -1,8 +1,7 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
     "required": false
   },
   {

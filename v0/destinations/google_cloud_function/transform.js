@@ -61,6 +61,7 @@ const processRouterDest = async inputs => {
   const successResponseList = [];
   const errorRespList = [];
   const { destination } = inputs[0];
+
   await Promise.all(
     inputs.map(event => {
       try {
@@ -99,7 +100,10 @@ const processRouterDest = async inputs => {
     );
     return [...batchedResponseList, ...errorRespList];
   }
-  return [...successResponseList, ...errorRespList];
+  const processedSuccessRespList = successResponseList.map(e => {
+    return getSuccessRespEvents(e.message, [e.metadata], e.destination);
+  });
+  return [...processedSuccessRespList, ...errorRespList];
 };
 
 module.exports = {

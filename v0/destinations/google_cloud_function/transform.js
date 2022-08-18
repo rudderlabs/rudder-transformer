@@ -99,7 +99,10 @@ const processRouterDest = async inputs => {
     );
     return [...batchedResponseList, ...errorRespList];
   }
-  return [...successResponseList, ...errorRespList];
+  const processedSuccessRespList = successResponseList.map(e => {
+    return getSuccessRespEvents(e.message, [e.metadata], e.destination);
+  });
+  return [...processedSuccessRespList, ...errorRespList];
 };
 
 module.exports = {

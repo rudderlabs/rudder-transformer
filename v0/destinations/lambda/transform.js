@@ -5,8 +5,8 @@ const {
   CustomError
 } = require("../../util");
 
-const DEFAULT_INVOCATION_TYPE = "Event";
-const MAX_PAYLOAD_SIZE_IN_KB = 256;
+const DEFAULT_INVOCATION_TYPE = "Event"; // asynchronous invocation
+const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation
 
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
@@ -19,49 +19,83 @@ function process(event) {
   };
 }
 
-// Returns an array of payloads within the size limit
-function payloadSizeRegulator(payload) {
-  const size = Buffer.byteLength(JSON.stringify(payload));
-  const sizeInKB = size / 1024;
-  if (sizeInKB > MAX_PAYLOAD_SIZE_IN_KB) {
-    const chunkSize = sizeInKB / MAX_PAYLOAD_SIZE_IN_KB;
-    return _.chunk(payload, chunkSize);
-  }
-  return [payload];
+// Returns the size of the data in kilobytes
+function getSizeInKB(data) {
+  const size = Buffer.byteLength(JSON.stringify(data));
+  return size / 1024;
 }
 
-// Returns a batched response list for list of inputs
-function batchEvents(inputs, destination) {
+// Returns an array of payloads within the size limit
+function getBatchedPayloads(inputs, maxBatchSize) {
+  const batchedPayloads = [];
+  let payloadChunk = [];
+  let chunkMetadata = [];
+  const errorMetadata = [];
+  inputs.forEach(input => {
+    if (getSizeInKB([input.message]) > MAX_PAYLOAD_SIZE_IN_KB) {
+      errorMetadata.push(input.metadata);
+      return;
+    }
+    if (
+      payloadChunk.length.toString() === maxBatchSize ||
+      getSizeInKB([...payloadChunk, input.message]) > MAX_PAYLOAD_SIZE_IN_KB
+    ) {
+      batchedPayloads.push({ payloadChunk, chunkMetadata });
+      payloadChunk = [input.message];
+      chunkMetadata = [input.metadata];
+    } else {
+      payloadChunk.push(input.message);
+      chunkMetadata.push(input.metadata);
+    }
+  });
+  if (payloadChunk.length > 0) {
+    batchedPayloads.push({ payloadChunk, chunkMetadata });
+  }
+  return { batchedPayloads, errorMetadata };
+}
+
+// Returns a batched response list for a list of inputs
+function batchEvents(inputs, destConfig) {
   const batchedResponseList = [];
-  const { enableBatchInput } = destination.Config;
+  const { enableBatchInput, maxBatchSize } = destConfig;
   if (enableBatchInput) {
-    const msgList = [];
-    const batchMetadata = [];
-    inputs.forEach(input => {
-      msgList.push(input.message);
-      batchMetadata.push(input.metadata);
-    });
-    const payloadChunks = payloadSizeRegulator(msgList);
-    payloadChunks.forEach(chunk => {
+    const { batchedPayloads, errorMetadata } = getBatchedPayloads(
+      inputs,
+      maxBatchSize
+    );
+    batchedPayloads.forEach(data => {
       const batchPayload = {
-        payload: JSON.stringify(chunk),
-        destConfig: destination.Config
+        payload: JSON.stringify(data.payloadChunk),
+        destConfig
       };
       batchedResponseList.push(
-        getSuccessRespEvents(batchPayload, batchMetadata)
+        getSuccessRespEvents(batchPayload, data.chunkMetadata)
       );
     });
+    if (errorMetadata.length > 0) {
+      batchedResponseList.push(
+        getErrorRespEvents(errorMetadata, 400, "payload size limit exceeded")
+      );
+    }
   } else {
     inputs.forEach(input => {
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          {
-            payload: JSON.stringify(input.message),
-            destConfig: destination.Config
-          },
-          [input.metadata]
-        )
-      );
+      if (getSizeInKB(input.message) < MAX_PAYLOAD_SIZE_IN_KB) {
+        const batchPayload = {
+          payload: JSON.stringify(input.message),
+          destConfig
+        };
+        batchedResponseList.push(
+          getSuccessRespEvents(batchPayload, [input.metadata])
+        );
+      } else {
+        batchedResponseList.push(
+          getErrorRespEvents(
+            [input.metadata],
+            400,
+            "payload size limit exceeded"
+          )
+        );
+      }
     });
   }
   return batchedResponseList;
@@ -69,13 +103,12 @@ function batchEvents(inputs, destination) {
 
 // Router transform with batching by default
 const processRouterDest = inputs => {
-  const batchMetadata = [];
-  inputs.forEach(input => {
-    batchMetadata.push(input.metadata);
-  });
-
   const { destination } = inputs[0];
   if (!destination.Config) {
+    const batchMetadata = [];
+    inputs.forEach(input => {
+      batchMetadata.push(input.metadata);
+    });
     const respEvents = getErrorRespEvents(
       batchMetadata,
       400,
@@ -83,9 +116,10 @@ const processRouterDest = inputs => {
     );
     return [respEvents];
   }
-  destination.Config.invocationType = DEFAULT_INVOCATION_TYPE;
+  const destConfig = _.cloneDeep(destination.Config);
+  destConfig.invocationType = DEFAULT_INVOCATION_TYPE;
 
-  return batchEvents(inputs, destination);
+  return batchEvents(inputs, destConfig);
 };
 
 module.exports = { process, processRouterDest };

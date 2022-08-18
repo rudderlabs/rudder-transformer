@@ -11,8 +11,8 @@ const validateDestinationConfig = ({ Config }) => {
   if (!Config.googleCloudFunctionUrl) {
     throw new CustomError("[GCF]:: Url not found. Aborting", 400);
   }
-  if (Config.TriggerType === "https") {
-    // for TriggerType https gcloud Authorization is mandatory
+  if (Config.triggerType === "https") {
+    // for triggerType https gcloud Authorization is mandatory
     if (!Config.gcloudAuthorization) {
       throw new CustomError("[GCF]:: Access Token not found. Aborting", 400);
     }

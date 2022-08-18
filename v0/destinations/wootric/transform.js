@@ -52,11 +52,10 @@ const identifyResponseBuilder = async (message, destination) => {
 
   let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userId");
-  wootricEndUserId = await retrieveUserId(
-    wootricEndUserId,
-    userId,
-    accessToken
-  );
+  if (!wootricEndUserId) {
+    wootricEndUserId = await retrieveUserId(userId, accessToken);
+  }
+
   // If user already exist we will update it else creates a new user
   if (!wootricEndUserId) {
     builder = createUserPayloadBuilder(message);
@@ -98,11 +97,9 @@ const trackResponseBuilder = async (message, destination) => {
 
   let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userId");
-  wootricEndUserId = await retrieveUserId(
-    wootricEndUserId,
-    userId,
-    accessToken
-  );
+  if (!wootricEndUserId) {
+    wootricEndUserId = await retrieveUserId(userId, accessToken);
+  }
 
   if (!wootricEndUserId) {
     throw new CustomError(

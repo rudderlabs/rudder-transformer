@@ -45,18 +45,18 @@ function start(port, app) {
     });
     let isShuttingDown = false;
     cluster.on("exit", (worker, code, signal) => {
+      logger.error(`worker ${worker.process.pid} died`);
+      logger.error(
+        `worker dying with code:${code} and due to signal:${signal}`
+      );
+      logger.error(
+        `Killing Process to avoid any side effects of dead worker.\nProcess Info: `,
+        util.inspect(processInfo(), false, null, true)
+      );
       if (!isShuttingDown) {
-        logger.error(`worker ${worker.process.pid} died`);
-        logger.error(
-          `worker dying with code:${code} and due to signal:${signal}`
-        );
-        logger.error(
-          `Killing Process to avoid any side effects of dead worker.\nProcess Info: `,
-          util.inspect(processInfo(), false, null, true)
-        );
-
-        isShuttingDown = true;
-        shutdownWorkers();
+        // isShuttingDown = true;
+        // shutdownWorkers();
+        cluster.fork();
       }
     });
 

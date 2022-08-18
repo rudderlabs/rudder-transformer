@@ -61,7 +61,6 @@ const processRouterDest = async inputs => {
   const successResponseList = [];
   const errorRespList = [];
   const { destination } = inputs[0];
-
   await Promise.all(
     inputs.map(event => {
       try {

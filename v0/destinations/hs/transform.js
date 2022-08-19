@@ -92,23 +92,23 @@ const processRouterDest = async inputs => {
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
   const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, "HS");
   // skip splitting the batches to inserts and updates if object it is an association
-  if(!objectType.toLowerCase() === "association") {
-    if (
-      mappedToDestination &&
-      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-    ) {
-      // get info about existing objects and splitting accordingly.
-      inputs = await splitEventsForCreateUpdate(inputs, destination);
-    } else {
-      // reduce the no. of calls for properties endpoint
-      const traitsFound = inputs.some(input => {
-        return fetchFinalSetOfTraits(input.message) !== undefined;
-      });
-      if (traitsFound) {
-        propertyMap = await getProperties(destination);
-      }
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+    && !objectType.toLowerCase() === "association"
+  ) {
+    // get info about existing objects and splitting accordingly.
+    inputs = await splitEventsForCreateUpdate(inputs, destination);
+  } else {
+    // reduce the no. of calls for properties endpoint
+    const traitsFound = inputs.some(input => {
+      return fetchFinalSetOfTraits(input.message) !== undefined;
+    });
+    if (traitsFound) {
+      propertyMap = await getProperties(destination);
     }
   }
+  
   await Promise.all(
     inputs.map(async input => {
       try {

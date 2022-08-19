@@ -10,11 +10,10 @@ describe('Unit test cases for heap common post mapper', () => {
   
   it('should delete idempotency key from mappedPayload', async () => {
     const expectedOutput = { should: 'remain', app_id: 'app_id', properties: {} };
-    expect(await commonPostMapper(event, payload, rudderContext)).toEqual(expectedOutput);
+    await expect(commonPostMapper(event, payload, rudderContext)).resolves.toMatchObject(expectedOutput);
   })
   
   it('should mutate the mappedPayload on calling postMapper', async () => {
-    await commonPostMapper(event, payload, rudderContext);
-    expect(payload).toEqual({ should: 'remain', properties: {} });
+    await expect(commonPostMapper(event, payload, rudderContext)).resolves.toMatchObject({ should: 'remain', properties: {} });
   })
 })

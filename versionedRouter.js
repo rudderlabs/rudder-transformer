@@ -119,10 +119,8 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkDestination(parsedEvent)) {
-          respEvents = await Executor.execute(
-            parsedEvent,
-            ConfigFactory.getConfig(destination)
-          );
+          const baseConfig = await ConfigFactory.getConfig(destination);
+          respEvents = await Executor.execute(parsedEvent, baseConfig);
         } else {
           respEvents = await destHandler.process(parsedEvent);
         }

@@ -27,7 +27,7 @@
       "userId": "sampath"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "statusCode": 200
   },
@@ -91,7 +91,7 @@
       "userId": "sampath"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 3
     },
     "statusCode": 200
   },
@@ -128,20 +128,20 @@
   },
   {
     "statusCode": 400,
-    "error": "message type page not supported for heap",
+    "error": "message type \"page\" not supported for \"heap\"",
     "statTags": {
-      "stage": "cdk",
-      "scope": "transformation",
+      "stage": "transform",
+      "scope": "cdk",
       "meta": "badEvent",
       "destType": "HEAP"
     }
   },
   {
     "statusCode": 400,
-    "error": "invalid message type for heap",
+    "error": "\"type\" is a required field and it must be a string",
     "statTags": {
-      "stage": "cdk",
-      "scope": "transformation",
+      "stage": "transform",
+      "scope": "exception",
       "meta": "badEvent",
       "destType": "HEAP"
     }

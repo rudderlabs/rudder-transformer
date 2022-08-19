@@ -1,6 +1,6 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
-const { getErrorRespEvents, CustomError } = require("../../util");
+const { getErrorRespEvents, CustomError, getDestinationExternalIDObject, getDestinationExternalIDInfoForRetl } = require("../../util");
 const { API_VERSION } = require("./config");
 const {
   processLegacyIdentify,
@@ -90,19 +90,23 @@ const processRouterDest = async inputs => {
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-  ) {
-    // get info about existing objects and splitting accordingly.
-    inputs = await splitEventsForCreateUpdate(inputs, destination);
-  } else {
-    // reduce the no. of calls for properties endpoint
-    const traitsFound = inputs.some(input => {
-      return fetchFinalSetOfTraits(input.message) !== undefined;
-    });
-    if (traitsFound) {
-      propertyMap = await getProperties(destination);
+  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, "HS");
+  // skip splitting the batches to inserts and updates if object it is an association
+  if(!objectType.toLowerCase() === "association") {
+    if (
+      mappedToDestination &&
+      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+    ) {
+      // get info about existing objects and splitting accordingly.
+      inputs = await splitEventsForCreateUpdate(inputs, destination);
+    } else {
+      // reduce the no. of calls for properties endpoint
+      const traitsFound = inputs.some(input => {
+        return fetchFinalSetOfTraits(input.message) !== undefined;
+      });
+      if (traitsFound) {
+        propertyMap = await getProperties(destination);
+      }
     }
   }
   await Promise.all(

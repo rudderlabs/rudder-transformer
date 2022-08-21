@@ -49,7 +49,8 @@ const DestCanonicalNames = {
     "One_Signal",
     "OneSignal",
     "onesignal"
-  ]
+  ],
+  wootric: ["wootric", "Wootric", "WOOTRIC"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

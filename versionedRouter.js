@@ -5,13 +5,13 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const logger = require("./logger");
-const stats = require("./util/stats");
-const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 const jsonDiff = require("json-diff");
 const match = require("match-json");
 const axios = require("axios");
 const combineURLs = require("axios/lib/helpers/combineURLs");
+const logger = require("./logger");
+const stats = require("./util/stats");
+const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 
 const {
   isNonFuncObject,
@@ -67,7 +67,7 @@ const isRouteIncluded = routepath => {
 };
 
 const isRouteExcluded = routepath => {
-  const excludeRoutes = ["/v0/sources/webhook"];
+  const excludeRoutes = ["/v0/sources/webhook", "/proxy", "/proxyTest"];
   // eslint-disable-next-line no-restricted-syntax
   for (const route of excludeRoutes) {
     if (routepath.includes(route)) return false;
@@ -148,7 +148,7 @@ router.use(async (ctx, next) => {
 
   if (!isRouteIncluded(ctx.request.url) || !isRouteExcluded(ctx.request.url)) {
     logger.debug("url does not contain path v0 or customTransform. Omitting request");
-    await next();
+    // await next();
     return;
   }
 

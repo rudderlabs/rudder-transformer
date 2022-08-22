@@ -61,12 +61,7 @@ function getCategoryAndName(rudderEventName) {
 function getUserData(message) {
   // os field is not mandatory as based on device type it can be one of
   // "Android" or "iOS" but it does not apply & is not valid in case of web events
-  let os = get(message, "context.os.name");
-
-  // Ref - https://help.branch.io/developers-hub/docs/attribution-api#endpoint-specifications
-  if (isAppleFamily(os)) {
-    os = "iOS";
-  }
+  const os = get(message, "context.os.name");
 
   let userData = {
     os,

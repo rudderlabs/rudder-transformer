@@ -104,7 +104,6 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  // let respList = [];
   const executeStartTime = new Date();
   let destHandler;
   // Getting destination handler for non-cdk destination(s)

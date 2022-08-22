@@ -8,6 +8,10 @@ const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
+const jsonDiff = require("json-diff");
+const match = require("match-json");
+const axios = require("axios");
+const combineURLs = require("axios/lib/helpers/combineURLs");
 
 const {
   isNonFuncObject,
@@ -37,12 +41,13 @@ const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
 ConfigFactory.init({ basePath, loggingMode: "production" });
 
 const transformerMode = process.env.TRANSFORMER_MODE;
+const OLD_TRANSFORMER_URL = process.env["OLD_TRANSFORMER_URL"];
 
 const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
-const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
+const transformerProxy = false;
+const proxyTestModeEnabled = false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -51,6 +56,158 @@ const router = new Router();
 
 // Router for assistance in profiling
 router.use(profilingRouter);
+
+const isRouteIncluded = routepath => {
+  const includeRoutes = ["/v0/", "/customTransform"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of includeRoutes) {
+    if (routepath.includes(route)) return true;
+  }
+  return false;
+};
+
+const isRouteExcluded = routepath => {
+  const excludeRoutes = ["/v0/sources/webhook"];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const route of excludeRoutes) {
+    if (routepath.includes(route)) return false;
+  }
+  return true;
+};
+
+const formatResponsePayload = (payload, routepath) => {
+  if (routepath.includes("/v0/ga") || routepath.includes("/v0/ga360")) {
+    payload.forEach(res => {
+      if (res.output && res.output.params && res.output.params.hasOwnProperty("qt")) {
+        delete res.output.params.qt;
+      }
+    });
+  }
+
+  if (routepath.includes("/v0/facebook_pixel")) {
+    payload.forEach(res => {
+      if (res.output && res.output.body && res.output.body.FORM && res.output.body.FORM.hasOwnProperty("data")) {
+        delete res.output.body.FORM.data;
+      }
+    });
+  }
+
+  if (routepath.includes("/v0/snowflake")) {
+    payload.forEach(res => {
+      if (res.output && res.output.metadata && res.output.metadata.hasOwnProperty("receivedAt")) {
+        delete res.output.metadata.receivedAt;
+      }
+      if (res.output && res.output.data && res.output.data.hasOwnProperty("ID")) {
+        delete res.output.data.ID;
+      }
+      if (res.output && res.output.data && res.output.data.hasOwnProperty("RECEIVED_AT")) {
+        delete res.output.data.RECEIVED_AT;
+      }
+    });
+  }
+
+  if (routepath.includes("/v0/sfmc") || routepath.includes("/v0/salesforce")) {
+    payload.forEach(res => {
+      if (res.output && res.output.headers && res.output.headers.hasOwnProperty("Authorization")) {
+        delete res.output.headers.Authorization;
+      }
+    });
+  }
+
+  if (routepath.includes("/customTransform")) {
+    payload.forEach(res => {
+      if (res.output && res.output.header && res.output.header.hasOwnProperty("Authorization")) {
+        delete res.output.header.Authorization;
+      }
+      if (res.output && res.output.hasOwnProperty("userId")) {
+        delete res.output.userId;
+      }
+      if (res.output && res.output.hasOwnProperty("event_time")) {
+        delete res.output.event_time;
+      }
+    });
+  }
+
+  if (!routepath.includes("/v0/sources") && !routepath.includes("/v0/destinations")) {
+    payload.sort((a,b) => a.metadata.messageId > b.metadata.messageId ? 1 : (a.metadata.messageId < b.metadata.messageId ? -1 : 0));
+  }
+
+  if (routepath.includes("/customTransform")) {
+    payload.sort((a,b) => a.output.messageId > b.output.messageId ? 1 : (a.output.messageId < b.output.messageId ? -1 : 0));
+  }
+
+  return payload;
+};
+
+router.use(async (ctx, next) => {
+  if (!OLD_TRANSFORMER_URL) {
+    logger.error("OLD TRANSFORMER URL not configured.consider removing the comparison middleware");
+    await next();
+    return;
+  }
+
+  if (!isRouteIncluded(ctx.request.url) || !isRouteExcluded(ctx.request.url)) {
+    logger.debug("url does not contain path v0 or customTransform. Omitting request");
+    await next();
+    return;
+  }
+
+  const url = combineURLs(OLD_TRANSFORMER_URL, ctx.request.url);
+  let response;
+  try {
+    if (ctx.request.method.toLowerCase() === "get") {
+      response = await axios.get(url, {
+        headers: ctx.request.headers
+      });
+    } else {
+      response = await axios.post(url, ctx.request.body);
+    }
+  } catch (e) {
+    logger.error(`Failed to send request to node 10 - ${e.message}`);
+    await next();
+    return;
+  }
+
+  let oldTransformerResponse = JSON.parse(JSON.stringify(response.data));
+  // send req to current service
+  await next();
+  let currentTransformerResponse = JSON.parse(JSON.stringify( ctx.response.body ));
+
+  try {
+    oldTransformerResponse = formatResponsePayload(oldTransformerResponse, ctx.request.url);
+  } catch (err) {
+    logger.error(`Failed to sort metadata message id node 10: ${ctx.request.url}`);
+  }
+  try {
+    currentTransformerResponse = formatResponsePayload(currentTransformerResponse, ctx.request.url);
+  } catch (err) {
+    logger.error(`Failed to sort metadata message id node 14: ${ctx.request.url}`);
+  }
+
+  if (!match(oldTransformerResponse, currentTransformerResponse)) {
+    stats.counter("payload_fail_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
+    logger.error(`API comparison: payload mismatch `);
+    logger.error(`node img Url : ${url}`);
+    logger.error(`ubuntu img Params : ${ctx.request.url}`);
+    logger.error(`ubuntu img Method : ${ctx.request.method}`);
+    logger.error(`ubuntu img Body : ${JSON.stringify(ctx.request.body)}`);
+    logger.error(
+      `ubuntu img Payload: ${JSON.stringify(currentTransformerResponse)}`
+    );
+    logger.error(`node img Payload: ${JSON.stringify(oldTransformerResponse)} `);
+    logger.error(
+      `diff: ${jsonDiff.diffString(oldTransformerResponse, currentTransformerResponse)}`
+    );
+  } else {
+    stats.counter("payload_success_match", 1, {
+      path: ctx.request.path,
+      method: ctx.request.method.toLowerCase()
+    });
+  }
+});
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
@@ -414,6 +571,12 @@ if (startDestTransformer) {
               transformedEvents.push(
                 ...destTransformedEvents.map(ev => {
                   if (ev.error) {
+                    logger.error(`user_transform_errors: ${JSON.stringify(ev)}`);
+                    logger.error(`[CT] Input events: ${JSON.stringify(events)}`);
+                    stats.counter("user_transform_errors", 1, {
+                      transformationVersionId,
+                      ...metaTags
+                    });
                     return {
                       statusCode: 400,
                       error: ev.error,

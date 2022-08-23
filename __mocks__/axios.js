@@ -7,6 +7,7 @@ const {
   klaviyoPostRequestHandler,
   klaviyoGetRequestHandler
 } = require("./klaviyo.mock");
+
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
@@ -23,7 +24,7 @@ const {
   wootricPostRequestHandler,
   wootricPutRequestHandler
 } = require("./wootric.mock");
-
+const mauticGetRequestHandler=require("./mautic.mock");
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
@@ -36,6 +37,7 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
+const { reject } = require("lodash");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;
@@ -57,6 +59,7 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/response.json`)
     );
     const data = JSON.parse(dataFile);
+    console.log(data[url]);
     return data[url];
   }
   return {};
@@ -112,6 +115,9 @@ function get(url, options) {
     return new Promise((resolve, reject) => {
       resolve(wootricGetRequestHandler(url));
     });
+  }
+  if(url.includes("https://testapi5.mautic.net/api/contacts")){
+    return  new Promise((resolve,reject)=>resolve(mauticGetRequestHandler(url)));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

@@ -11,7 +11,7 @@
       "sourceFromGenericMap": true
     },
     {
-      "sourceKeys": ["originalTimestamp"],
+      "sourceKeys": "originalTimestamp",
       "destKey": "last_active"
     },
     {

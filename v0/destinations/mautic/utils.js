@@ -8,20 +8,6 @@ const _ = require("lodash");
 const { getFieldValueFromMessage } = require("../../util");
 const { set, values } = require("lodash");
 
-// Includes the fields that can be lookUpfields
-const FIELDS = [
-  "",
-  "title",
-  "firstName",
-  "lastName",
-  "role",
-  "email",
-  "phone",
-  "city",
-  "state",
-  "zipcode",
-  "country"
-];
 //All the titles that are allowed
 const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 
@@ -45,16 +31,18 @@ const ALLOWED_ROLE_VALUES = [
   "Consultant"
 ];
 
-// to get the Mautic field for the given Rudder Field for Filter axios call
-const fieldMap={"title":"title",
+// Map for Mapping the Rudder Event Fields to Mautic Event Fields (that can be used for lookup )
+const lookupFieldMap={"title":"title",
 "firstName":"firstname",
 "lastName":"lastname",
 "role":"role",
 "phone":"phone",
 "city":"city",
+"email":"email",
 "state":"state",
 "zipcode":"zipcode",
 "country":"country"}
+
 
 //creates the axios url using the subDomainName for basic url
 // and propertyName and Value for filters
@@ -161,9 +149,7 @@ const deduceAddressFields = message => {
 //Validates the generated payload fro specific fields
 const validatePayload = payload => {
   // checking for message details validations
-  if (payload.email && !validateEmail(payload.email)) {
-    throw new CustomError("Invalid Mail Provided.", 400);
-  }
+  
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
@@ -174,7 +160,10 @@ const validatePayload = payload => {
     throw new CustomError("Date is Invalid.", 400);
   }
   if (payload.state && !(payload.state[0] === payload.state[0].toUpperCase())) {
-    throw new CustomError("State is Invalid.", 400);
+    payload.state=payload.state[0].toUpperCase() + payload.state.substring(1);
+  }
+  if(payload.email && !validateEmail(payload.email)){
+    delete payload.email;
   }
   return true;
 };
@@ -183,13 +172,16 @@ const validatePayload = payload => {
  *
  * @param {*} message
  * @param {*} destination
+ * @param {*} identifyFlag
  * @returns contactId
  * If contactId is not provided via externalId, we look for the lookup key
  * inside webapp config.
  * We have put two level dynamic mapping here.
- * If the lookup key is not found we fallback to email. If email is also not provided, we throw error.
+ * If the lookup key is not found we fallback to email. If email is also not provided, we throw error if its group call
+ * For Identify call we are returning Null.
+ * 
  */
-const searchContactId = async (message, destination, identifyFlag) => {
+const searchContactId = async (message, destination, identifyFlag = true) => {
   const { lookUpField, userName, password, subDomainName } = destination.Config;
   let searchContactsResponse;
   let contactId;
@@ -245,7 +237,8 @@ const searchContactId = async (message, destination, identifyFlag) => {
     }
   };
   //axios call made to get contacts with filters
-  propertyName=fieldMap[propertyName];
+  console.log(createAxiosUrl(subDomainName, propertyName, value));
+  propertyName=lookupFieldMap[propertyName];
   searchContactsResponse = await httpGET(
     createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
@@ -287,7 +280,7 @@ const searchContactId = async (message, destination, identifyFlag) => {
 };
 
 module.exports = {
-  FIELDS,
+  lookupFieldMap,
   isDate,
   validateEmail,
   validatePhone,

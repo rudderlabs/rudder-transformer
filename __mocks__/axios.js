@@ -23,6 +23,7 @@ const {
   wootricPostRequestHandler,
   wootricPutRequestHandler
 } = require("./wootric.mock");
+const {mauticGetRequestHandler} = require("./mautic.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -31,7 +32,8 @@ const urlDirectoryMap = {
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
-  "api.profitwell.com": "profitwell"
+  "api.profitwell.com": "profitwell",
+  "ruddertest2.mautic.net":"mautic"
 };
 
 const fs = require("fs");
@@ -111,6 +113,11 @@ function get(url, options) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricGetRequestHandler(url));
+    });
+  }
+  if (url.includes("ruddertest2.mautic.net")) {
+    return new Promise((resolve, reject) => {
+      resolve(mauticGetRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

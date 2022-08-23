@@ -11,7 +11,7 @@ const {
 } = require("../../util");
 
 const {
-  lookupFieldMap,
+  FIELDS,
   validateEmail,
   deduceAddressFields,
   validatePayload,
@@ -22,36 +22,20 @@ const {
 const { EventType } = require("../../../constants");
 
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
-const { Context } = require("isolated-vm");
 
-const responseBuilder = async (
-  payload,
-  endpoint,
-  method,
-  messageType,
-  destination,
-  identifyFlag = true
-) => {
+const responseBuilderGroup = async (endpoint, destination) => {
   const { userName, password } = destination.Config;
-  if (identifyFlag && !payload) {
-    throw new CustomError("Payload could not be Constructed");
-  } else {
-    const response = defaultRequestConfig();
-    if (messageType === EventType.IDENTIFY) {
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-    } else {
-      response.body.FORM = removeUndefinedAndNullValues(payload);
-    }
-    response.endpoint = endpoint;
-    const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-    response.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-    response.method = method;
-    return response;
-  }
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+  response.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${basicAuth}`
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  return response;
 };
+
 const groupResponseBuilder = async (message, destination) => {
   let groupClass;
   if (message.traits === undefined || message.traits.type === undefined) {
@@ -84,27 +68,39 @@ const groupResponseBuilder = async (message, destination) => {
     "subDomainName",
     subDomainName
   )}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
-  return responseBuilder(
-    (payload = {}),
-    endpoint,
-    (method = defaultPostRequestConfig.requestMethod),
-    (messageType = EventType.GROUP),
-    destination,
-    identifyFlag
-  );
+  return responseBuilderGroup(endpoint, destination);
+};
+const responseBuilderIdentify = async (
+  payload,
+  endpoint,
+  method,
+  messageType,
+  destination
+) => {
+  const { userName, password } = destination.Config;
+  if (payload) {
+    const response = defaultRequestConfig();
+    if (messageType === EventType.IDENTIFY) {
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+    } else {
+      response.body.FORM = removeUndefinedAndNullValues(payload);
+    }
+    response.endpoint = endpoint;
+    const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+    response.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${basicAuth}`
+    };
+    response.method = method;
+    return response;
+  }
+  throw new CustomError("Payload could not be Constructed");
 };
 
 const identifyResponseBuilder = async (message, destination) => {
   let endpoint;
   let method;
-  const { traits, context } = message;
   const { subDomainName } = destination.Config;
-  if (traits?.email || context.traits?.email || message?.properties?.email) {
-    const email = traits?.email || context.traits.email || properties?.email;
-    if (!validateEmail(email)) {
-      throw new CustomError("Invalid Mail Provided.", 400);
-    }
-  }
   // constructing payload from mapping JSONs
   let payload = constructPayload(
     message,
@@ -123,11 +119,12 @@ const identifyResponseBuilder = async (message, destination) => {
      1. if contactId is present  inside externalID we will use that
      2. Otherwise we will look for the lookup field from the web app 
   */
+  const identifyFlag = true;
   let contactId = getDestinationExternalID(message, "mauticContactId");
 
   // searching for contactID from filter options if contactID is not given
   if (!contactId) {
-    contactId = await searchContactId(message, destination); // Getting the contact Id using Lookup field and then email
+    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
   }
   if (contactId) {
     // contact exist in externalId
@@ -147,7 +144,7 @@ const identifyResponseBuilder = async (message, destination) => {
     method = defaultPostRequestConfig.requestMethod;
   }
 
-  return responseBuilder(
+  return responseBuilderIdentify(
     payload,
     endpoint,
     method,
@@ -165,10 +162,6 @@ const process = async event => {
   if (!subDomainName) {
     throw new CustomError("Sub-Domain Name field can not be empty.", 400);
   }
-  if (!Object.keys(lookupFieldMap).includes(lookUpField)) {
-    throw new CustomError("Lookup Field Name not available.", 400);
-  }
-
   if (!validateEmail(userName)) {
     throw new CustomError("User Name is not Valid.", 400);
   }
@@ -192,7 +185,6 @@ const process = async event => {
     default:
       throw new CustomError(`Message type ${messageType} not supported.`, 400);
   }
-  
   return response;
 };
 
@@ -225,8 +217,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -236,3 +228,4 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
+

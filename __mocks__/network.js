@@ -16,7 +16,8 @@ const urlDirectoryMap = {
   "pi.pardot.com": "pardot",
   "googleads.googleapis.com": "google_adwords_remarketing_lists",
   "graph.facebook.com": "facebook_pixel",
-  "api.wootric.com": "wootric"
+  "api.wootric.com": "wootric",
+  "api.mautic.com": "mautic",
 };
 
 function getData(url) {

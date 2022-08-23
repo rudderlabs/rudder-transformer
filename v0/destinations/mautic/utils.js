@@ -1,11 +1,10 @@
-const { CustomError } = require("../../util");
+const { CustomError, getFieldValueFromMessage } = require("../../util");
 const { BASE_URL } = require("./config");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const _ = require("lodash");
-const { getFieldValueFromMessage } = require("../../util");
 const { set, values } = require("lodash");
 
 //All the titles that are allowed
@@ -32,16 +31,18 @@ const ALLOWED_ROLE_VALUES = [
 ];
 
 // Map for Mapping the Rudder Event Fields to Mautic Event Fields (that can be used for lookup )
-const lookupFieldMap={"title":"title",
-"firstName":"firstname",
-"lastName":"lastname",
-"role":"role",
-"phone":"phone",
-"city":"city",
-"email":"email",
-"state":"state",
-"zipcode":"zipcode",
-"country":"country"}
+const lookupFieldMap = {
+  "title": "title",
+  "firstName": "firstname",
+  "lastName": "lastname",
+  "role": "role",
+  "phone": "phone",
+  "city": "city",
+  "email": "email",
+  "state": "state",
+  "zipcode": "zipcode",
+  "country": "country"
+}
 
 
 //creates the axios url using the subDomainName for basic url
@@ -135,7 +136,7 @@ const deduceAddressFields = message => {
         ? message.traits.address
         : message.context.traits.address;
     if (typeof add === "object") {
-      add = Object.keys(add).reduce(function(res, v) {
+      add = Object.keys(add).reduce(function (res, v) {
         return res.concat(add[v], " ");
       }, "");
     }
@@ -149,7 +150,7 @@ const deduceAddressFields = message => {
 //Validates the generated payload fro specific fields
 const validatePayload = payload => {
   // checking for message details validations
-  
+
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
@@ -160,9 +161,9 @@ const validatePayload = payload => {
     throw new CustomError("Date is Invalid.", 400);
   }
   if (payload.state && !(payload.state[0] === payload.state[0].toUpperCase())) {
-    payload.state=payload.state[0].toUpperCase() + payload.state.substring(1);
+    payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
   }
-  if(payload.email && !validateEmail(payload.email)){
+  if (payload.email && !validateEmail(payload.email)) {
     delete payload.email;
   }
   return true;
@@ -197,7 +198,7 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
   if (!traits[`${lookUpField}`]) {
     propertyName = "email";
 
-    if (!traits?.email) {
+    if (!getFieldValueFromMessage(message, "email")) {
       //identifyFlag help us to determine the output depending on what is the request type
       if (identifyFlag) {
         return null;
@@ -238,13 +239,14 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
   };
   //axios call made to get contacts with filters
   console.log(createAxiosUrl(subDomainName, propertyName, value));
-  propertyName=lookupFieldMap[propertyName];
+  propertyName = lookupFieldMap[propertyName];
   searchContactsResponse = await httpGET(
     createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
   );
 
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
+  //console.log(JSON.stringify(searchContactsResponse));
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
       `Failed to get Mautic contacts: ${JSON.stringify(
@@ -262,7 +264,7 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
       );
     }
     return null;
-  } else if (searchContactsResponse.response.total == 1) {
+  } else if (searchContactsResponse.response.total === 1) {
     // a single and unique contact found
     const { contacts } = searchContactsResponse?.response;
     contactId =

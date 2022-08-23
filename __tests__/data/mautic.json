@@ -1,6 +1,6 @@
 [
   {
-    "description": "Create a new Conatct with address as String",
+    "description": "Create a new Contact with address as String",
     "input": {
       "message": {
         "anonymousId": "anon-id-new",
@@ -205,9 +205,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823"
+          "userName": "abcdef"
         }
       }
     },
@@ -216,7 +216,7 @@
     }
   },
   {
-    "description": "Empty password Field ",
+    "description": "Password Not Provided for Authentication",
     "input": {
       "message": {
         "anonymousId": "anon-id-new",
@@ -227,19 +227,7 @@
           },
           "traits": {
             "firstName": "Anant",
-            "lastName": "jain",
-            "role": "Manager",
-            "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
-            "hasPurchased": "yes",
-            "email": "abc@xyz.com",
-            "title": "Mr",
-            "phone": "9876543212",
-            "state": "Uttar Pradesh",
-            "zipcode": "243001",
-            "prospectOrCustomer": "Prospect",
-            "country": "India",
-            "website": "abc.com",
-            "subscriptionStatus": "New"
+            "lastName": "jain"
           }
         },
         "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
@@ -257,7 +245,7 @@
           "lookUpField": "email",
           "password": "",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -305,9 +293,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -343,7 +331,7 @@
           "lookUpField": "email",
           "password": "m3dG325C51C1RPq",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -415,9 +403,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -450,9 +438,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -487,9 +475,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -524,9 +512,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -646,7 +634,7 @@
     }
   },
   {
-    "description": " Address as object and city included in it ",
+    "description": " Address as object and city included in it and state Conversion ",
     "input": {
       "message": {
         "anonymousId": "anon-id-new",
@@ -673,9 +661,9 @@
       "destination": {
         "Config": {
           "lookUpField": "email",
-          "password": "m3dG325C51C1RPq",
+          "password": "abcdefghij1234",
           "subDomainName": "testapi3",
-          "userName": "anantjain45823@gmail.com"
+          "userName": "abcdef@gmail.com"
         }
       }
     },
@@ -686,7 +674,7 @@
       "endpoint": "https://testapi3.mautic.net/api/contacts/new",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
+        "Authorization": "Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA=="
       },
       "params": {},
       "body": {

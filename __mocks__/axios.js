@@ -7,6 +7,7 @@ const {
   klaviyoPostRequestHandler,
   klaviyoGetRequestHandler
 } = require("./klaviyo.mock");
+
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
@@ -38,6 +39,7 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
+const { reject } = require("lodash");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;
@@ -59,6 +61,7 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/response.json`)
     );
     const data = JSON.parse(dataFile);
+    console.log(data[url]);
     return data[url];
   }
   return {};

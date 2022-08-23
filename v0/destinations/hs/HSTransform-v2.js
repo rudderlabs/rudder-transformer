@@ -90,6 +90,9 @@ const processIdentify = async (message, destination, propertyMap) => {
       ...traits,
       type: associationTypeId
     };
+    response.headers = {
+      "Content-Type": "application/json"
+    };
     return addHsAuthentication(response, Config);
   }
 

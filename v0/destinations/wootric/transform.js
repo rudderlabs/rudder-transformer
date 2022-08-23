@@ -11,15 +11,14 @@ const {
 } = require("../../util");
 const {
   getAccessToken,
-  retrieveUserId,
+  retrieveUserDetails,
   flattenProperties,
   formatIdentifyPayload,
   formatTrackPayload,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
-  createDeclinePayloadBuilder,
-  checkExistingEmailAndPhone
+  createDeclinePayloadBuilder
 } = require("./util");
 const { PROPERTIES, END_USER_PROPERTIES } = require("./config");
 
@@ -50,11 +49,14 @@ const identifyResponseBuilder = async (message, destination) => {
     throw new CustomError("Access token is missing", 400);
   }
 
-  let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
-  const userId = getFieldValueFromMessage(message, "userId");
-  if (!wootricEndUserId) {
-    wootricEndUserId = await retrieveUserId(userId, accessToken);
-  }
+  const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userDetails = await retrieveUserDetails(
+    rawEndUserId,
+    userId,
+    accessToken
+  );
+  const wootricEndUserId = userDetails?.id;
 
   // If user already exist we will update it else creates a new user
   if (!wootricEndUserId) {
@@ -63,19 +65,11 @@ const identifyResponseBuilder = async (message, destination) => {
     endpoint = builder.endpoint;
     method = builder.method;
   } else {
-    builder = updateUserPayloadBuilder(message);
+    builder = updateUserPayloadBuilder(message, userDetails);
     payload = builder.payload;
     endpoint = builder.endpoint.replace("<end_user_id>", wootricEndUserId);
     method = builder.method;
   }
-
-  // Throw error if user already exist with given email/phone
-  await checkExistingEmailAndPhone(
-    payload.email,
-    payload.phone_number,
-    userId,
-    accessToken
-  );
 
   formatIdentifyPayload(payload);
   const flattenedProperties = flattenProperties(payload, PROPERTIES);
@@ -95,17 +89,24 @@ const trackResponseBuilder = async (message, destination) => {
     throw new CustomError("Access token is missing", 400);
   }
 
-  let wootricEndUserId = getDestinationExternalID(message, "wootricEndUserId");
-  const userId = getFieldValueFromMessage(message, "userId");
-  if (!wootricEndUserId) {
-    wootricEndUserId = await retrieveUserId(userId, accessToken);
-  }
+  const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userDetails = await retrieveUserDetails(
+    rawEndUserId,
+    userId,
+    accessToken
+  );
+  const wootricEndUserId = userDetails?.id;
 
   if (!wootricEndUserId) {
-    throw new CustomError(
-      `No user found with wootric external_id : ${userId}`,
-      400
-    );
+    if (rawEndUserId) {
+      throw new CustomError(
+        `No user found with wootric end user Id : ${rawEndUserId}`,
+        400
+      );
+    }
+
+    throw new CustomError(`No user found with userId : ${userId}`, 400);
   }
 
   const integrationsObj = getIntegrationsObj(message, "wootric");
@@ -123,13 +124,13 @@ const trackResponseBuilder = async (message, destination) => {
   const eventType = integrationsObj.eventType.toLowerCase();
   switch (eventType) {
     case "create response":
-      builder = createResponsePayloadBuilder(message);
+      builder = createResponsePayloadBuilder(message, userDetails);
       payload = builder.payload;
       endpoint = builder.endpoint;
       method = builder.method;
       break;
     case "create decline":
-      builder = createDeclinePayloadBuilder(message);
+      builder = createDeclinePayloadBuilder(message, userDetails);
       payload = builder.payload;
       endpoint = builder.endpoint;
       method = builder.method;
@@ -179,7 +180,7 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  return Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
@@ -199,17 +200,12 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }
     })
   );
-  return respList;
 };
 
 module.exports = { process, processRouterDest };

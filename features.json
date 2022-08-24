@@ -28,6 +28,8 @@
     "YAHOO_DSP": true,
     "KLAVIYO": true,
     "CANNY": true,
-    "WOOTRIC": true
+    "LAMBDA": true,
+    "WOOTRIC": true,
+    "GOOGLE_CLOUD_FUNCTION": true
   }
 }

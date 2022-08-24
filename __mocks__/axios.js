@@ -24,7 +24,6 @@ const {
   wootricPostRequestHandler,
   wootricPutRequestHandler
 } = require("./wootric.mock");
-const {mauticGetRequestHandler} = require("./mautic.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -61,7 +60,6 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/response.json`)
     );
     const data = JSON.parse(dataFile);
-    console.log(data[url]);
     return data[url];
   }
   return {};
@@ -116,11 +114,6 @@ function get(url, options) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricGetRequestHandler(url));
-    });
-  }
-  if (url.includes("ruddertest2.mautic.net")) {
-    return new Promise((resolve, reject) => {
-      resolve(mauticGetRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

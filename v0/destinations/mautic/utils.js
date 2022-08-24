@@ -1,27 +1,27 @@
+const { set } = require("lodash");
 const { CustomError, getFieldValueFromMessage } = require("../../util");
 const { BASE_URL } = require("./config");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const _ = require("lodash");
-const { set, values } = require("lodash");
 
-//All the titles that are allowed
+// All the titles that are allowed
 const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 
-//check if input is a date or not
+// check if input is a date or not
 const isDate = date => {
+  // eslint-disable-next-line no-restricted-globals
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 };
 
-//Includes valid values for prospectOrCustomer
+// Includes valid values for prospectOrCustomer
 const ALLOWED_POC = ["Prospect", "Customer"];
 
-//Includes valid Values for subscriptionStatus
+// Includes valid Values for subscriptionStatus
 const ALLOWED_SUBSCRIPTION_STATUS = ["New", "Existing"];
 
-//Includes valid Values for role
+// Includes valid Values for role
 const ALLOWED_ROLE_VALUES = [
   "Individual Contributor",
   "Manager",
@@ -32,20 +32,19 @@ const ALLOWED_ROLE_VALUES = [
 
 // Map for Mapping the Rudder Event Fields to Mautic Event Fields (that can be used for lookup )
 const lookupFieldMap = {
-  "title": "title",
-  "firstName": "firstname",
-  "lastName": "lastname",
-  "role": "role",
-  "phone": "phone",
-  "city": "city",
-  "email": "email",
-  "state": "state",
-  "zipcode": "zipcode",
-  "country": "country"
-}
+  title: "title",
+  firstName: "firstname",
+  lastName: "lastname",
+  role: "role",
+  phone: "phone",
+  city: "city",
+  email: "email",
+  state: "state",
+  zipcode: "zipcode",
+  country: "country"
+};
 
-
-//creates the axios url using the subDomainName for basic url
+// creates the axios url using the subDomainName for basic url
 // and propertyName and Value for filters
 function createAxiosUrl(subDomainName, propertyName, value) {
   return `${BASE_URL.replace(
@@ -65,17 +64,17 @@ function validatePhone(inputText) {
   return phoneno.test(inputText);
 }
 
-//Refines the payload by validating and adding some payload Fields
+// Refines the payload by validating and adding some payload Fields
 const refinePayloadFields = (payload, message) => {
   const { traits, context } = message;
   if (
     (traits && traits?.hasPurchased) ||
     (context.traits && context.traits?.hasPurchased)
   ) {
-    let purchased_status = traits?.hasPurchased || context.traits?.hasPurchased;
-    purchased_status = purchased_status.toLowerCase();
-    if (purchased_status === "yes" || purchased_status === "no") {
-      set(payload, "haspurchased", purchased_status);
+    let purchasedStatus = traits?.hasPurchased || context.traits?.hasPurchased;
+    purchasedStatus = purchasedStatus.toLowerCase();
+    if (purchasedStatus === "yes" || purchasedStatus === "no") {
+      set(payload, "haspurchased", purchasedStatus);
     } else {
       throw new CustomError("Invalid Purchase Status.", 400);
     }
@@ -121,8 +120,8 @@ const refinePayloadFields = (payload, message) => {
   return payload;
 };
 
-//Constructs the address1 and address2 field
-//if address is given as string or object
+// Constructs the address1 and address2 field
+// if address is given as string or object
 const deduceAddressFields = message => {
   const { traits, context } = message;
   let address1;
@@ -136,7 +135,7 @@ const deduceAddressFields = message => {
         ? message.traits.address
         : message.context.traits.address;
     if (typeof add === "object") {
-      add = Object.keys(add).reduce(function (res, v) {
+      add = Object.keys(add).reduce(function(res, v) {
         return res.concat(add[v], " ");
       }, "");
     }
@@ -147,7 +146,7 @@ const deduceAddressFields = message => {
   return { address1, address2 };
 };
 
-//Validates the generated payload fro specific fields
+// Validates the generated payload fro specific fields
 const validatePayload = payload => {
   // checking for message details validations
 
@@ -161,9 +160,11 @@ const validatePayload = payload => {
     throw new CustomError("Date is Invalid.", 400);
   }
   if (payload.state && !(payload.state[0] === payload.state[0].toUpperCase())) {
+    // eslint-disable-next-line no-param-reassign
     payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
   }
   if (payload.email && !validateEmail(payload.email)) {
+    // eslint-disable-next-line no-param-reassign
     delete payload.email;
   }
   return true;
@@ -180,7 +181,7 @@ const validatePayload = payload => {
  * We have put two level dynamic mapping here.
  * If the lookup key is not found we fallback to email. If email is also not provided, we throw error if its group call
  * For Identify call we are returning Null.
- * 
+ *
  */
 const searchContactId = async (message, destination, identifyFlag = true) => {
   const { lookUpField, userName, password, subDomainName } = destination.Config;
@@ -199,7 +200,7 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
     propertyName = "email";
 
     if (!getFieldValueFromMessage(message, "email")) {
-      //identifyFlag help us to determine the output depending on what is the request type
+      // identifyFlag help us to determine the output depending on what is the request type
       if (identifyFlag) {
         return null;
       }
@@ -237,16 +238,17 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
       Authorization: `Basic ${basicAuth}`
     }
   };
-  //axios call made to get contacts with filters
-  console.log(createAxiosUrl(subDomainName, propertyName, value));
+  // axios call made to get contacts with filters
+  // console.log(createAxiosUrl(subDomainName, propertyName, value));
   propertyName = lookupFieldMap[propertyName];
   searchContactsResponse = await httpGET(
     createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
   );
+  // console.log(searchContactsResponse);
 
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
-  //console.log(JSON.stringify(searchContactsResponse));
+  // console.log("Reposne:",searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
       `Failed to get Mautic contacts: ${JSON.stringify(
@@ -264,8 +266,10 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
       );
     }
     return null;
-  } else if (searchContactsResponse.response.total === 1) {
+  }
+  if (searchContactsResponse.response.total === 1) {
     // a single and unique contact found
+    // console.log("in for conatcts equal 1");
     const { contacts } = searchContactsResponse?.response;
     contactId =
       Object.keys(contacts).length === 1 ? Object.keys(contacts)[0] : null;

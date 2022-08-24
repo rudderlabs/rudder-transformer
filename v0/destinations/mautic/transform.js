@@ -11,7 +11,7 @@ const {
 } = require("../../util");
 
 const {
-  FIELDS,
+  lookupFieldMap,
   validateEmail,
   deduceAddressFields,
   validatePayload,
@@ -23,17 +23,33 @@ const { EventType } = require("../../../constants");
 
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 
-const responseBuilderGroup = async (endpoint, destination) => {
+const responseBuilder = async (
+  payload,
+  endpoint,
+  method,
+  messageType,
+  destination,
+  identifyFlag = true
+) => {
   const { userName, password } = destination.Config;
-  const response = defaultRequestConfig();
-  response.endpoint = endpoint;
-  const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-  response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${basicAuth}`
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  return response;
+  if (identifyFlag && !payload) {
+    throw new CustomError("Payload could not be constructed");
+  } else {
+    const response = defaultRequestConfig();
+    if (messageType === EventType.IDENTIFY) {
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+    } else {
+      response.body.FORM = removeUndefinedAndNullValues(payload);
+    }
+    response.endpoint = endpoint;
+    const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+    response.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${basicAuth}`
+    };
+    response.method = method;
+    return response;
+  }
 };
 
 const groupResponseBuilder = async (message, destination) => {
@@ -68,34 +84,17 @@ const groupResponseBuilder = async (message, destination) => {
     "subDomainName",
     subDomainName
   )}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
-  return responseBuilderGroup(endpoint, destination);
+  const payload = {};
+  return responseBuilder(
+    payload,
+    endpoint,
+    defaultPostRequestConfig.requestMethod,
+    EventType.GROUP,
+    destination,
+    identifyFlag
+  );
 };
-const responseBuilderIdentify = async (
-  payload,
-  endpoint,
-  method,
-  messageType,
-  destination
-) => {
-  const { userName, password } = destination.Config;
-  if (payload) {
-    const response = defaultRequestConfig();
-    if (messageType === EventType.IDENTIFY) {
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-    } else {
-      response.body.FORM = removeUndefinedAndNullValues(payload);
-    }
-    response.endpoint = endpoint;
-    const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-    response.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    };
-    response.method = method;
-    return response;
-  }
-  throw new CustomError("Payload could not be Constructed");
-};
+
 
 const identifyResponseBuilder = async (message, destination) => {
   let endpoint;
@@ -144,7 +143,7 @@ const identifyResponseBuilder = async (message, destination) => {
     method = defaultPostRequestConfig.requestMethod;
   }
 
-  return responseBuilderIdentify(
+  return responseBuilder(
     payload,
     endpoint,
     method,
@@ -159,6 +158,10 @@ const process = async event => {
   if (!password) {
     throw new CustomError("Password field can not be empty.", 400);
   }
+  if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
+    throw new CustomError("lookup Field isnot supported");
+  }
+
   if (!subDomainName) {
     throw new CustomError("Sub-Domain Name field can not be empty.", 400);
   }
@@ -194,7 +197,7 @@ const processRouterDest = async inputs => {
     return [respEvents];
   }
 
-  const respList = await Promise.all(
+  return Promise.all(
     inputs.map(async input => {
       try {
         if (input.message.statusCode) {
@@ -214,18 +217,12 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-              ? error.code
-              : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }
     })
   );
-  return respList;
 };
 
 module.exports = { process, processRouterDest };
-

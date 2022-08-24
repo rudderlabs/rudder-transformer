@@ -83,7 +83,7 @@
     }
   },
   {
-    "description": "Update a existing Conatct",
+    "description": "Update an existing Contact",
     "input": {
       "message": {
         "anonymousId": "anon-id-new",
@@ -827,6 +827,68 @@
       "files": {}
     }
   },
+  {
+    "description": " Group type not given  ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {},
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi5",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Type of group not mentioned inside traits"
+    }
+  },
+  {
+    "description": " Group type not supported  ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId":"17",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "type": "Alias"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi5",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "This grouping is not supported"
+    }
+  },
+
   {
     "description": "Group contact with segment without contactId inside externalId ",
     "input": {

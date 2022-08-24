@@ -71,7 +71,7 @@ const identifyResponseBuilder = async (message, destination) => {
     method = builder.method;
   }
 
-  formatIdentifyPayload(payload);
+  payload = formatIdentifyPayload(payload);
   const flattenedProperties = flattenProperties(payload, PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;
@@ -141,7 +141,7 @@ const trackResponseBuilder = async (message, destination) => {
 
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
 
-  formatTrackPayload(payload);
+  payload = formatTrackPayload(payload);
   const flattenedProperties = flattenProperties(payload, END_USER_PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;

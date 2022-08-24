@@ -67,14 +67,17 @@ const getAccessToken = async destination => {
 };
 
 /**
- * Returns wootric user details of existing user using Wootric endUserId/externalId
+ * Returns wootric user details of existing user using Wootric end user Id (context.externalId.0.id).
+ * If context.externalId.0.id is not present in request then Returns wootric user details using Wootric external_id (userId).
  * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-id
  * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-external-id
  * @param {*} endUserId
- * @param {*} externalId //userId
+ * @param {*} externalId
  * @param {*} accessToken
  * @returns
  */
+
+// eslint-disable-next-line consistent-return
 const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   let endpoint;
   if (isDefinedAndNotNullAndNotEmpty(endUserId)) {
@@ -113,122 +116,12 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 };
 
 /**
- * Returns 'Create User' payload
- * @param {*} message
- * @returns
- */
-const createUserPayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
-  );
-  const endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
-  const method = "POST";
-  validateCreateUserPayload(
-    payload.external_id,
-    payload.email,
-    payload.phone_number
-  );
-  return { payload, endpoint, method };
-};
-
-/**
- * Returns 'Update User' payload
- * @param {*} message
- * @returns
- */
-const updateUserPayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
-  );
-  payload.properties = buildPayloadProperties(payload, userDetails);
-  const endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint;
-  const method = "PUT";
-  delete payload.external_id;
-  return { payload, endpoint, method };
-};
-
-/**
- * Returns 'Creates Response' payload
- * @param {*} message
- * @returns
- */
-const createResponsePayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
-  );
-  payload.properties = buildPayloadProperties(payload, userDetails);
-  const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
-  const method = "POST";
-  validateScore(payload.score);
-  return { payload, endpoint, method };
-};
-
-/**
- * Returns 'Creates Decline' payload
- * @param {*} message
- * @returns
- */
-const createDeclinePayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
-  );
-  payload.properties = buildPayloadProperties(payload, userDetails);
-  const endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
-  const method = "POST";
-  return { payload, endpoint, method };
-};
-
-/**
- * Flattens properties field in payload
- * e.g :- properties[name] = Demo User, end_user[properties][revenue_amount] = 5000
- * ref: https://docs.wootric.com/api/#create-end-user
- * ref: https://docs.wootric.com/api/#create-response
- * @param {*} payload
- * @param {*} destKey
- */
-const flattenProperties = (payload, destKey) => {
-  if (isDefinedAndNotNullAndNotEmpty(payload.properties)) {
-    let rawProperties = {};
-    Object.entries(payload.properties).forEach(([key, value]) => {
-      rawProperties[`${destKey}[${key}]`] = `${value}`;
-    });
-    return rawProperties;
-  }
-};
-
-/**
- * Formats identify payload
- * @param {*} payload
- */
-const formatIdentifyPayload = payload => {
-  if (payload.last_surveyed) {
-    payload.last_surveyed = `${payload.last_surveyed}`;
-  }
-  if (payload.external_created_at) {
-    payload.external_created_at = `${payload.external_created_at}`;
-  }
-};
-
-/**
- * Formats track payload
- * @param {*} payload
- */
-const formatTrackPayload = payload => {
-  if (payload.created_at) {
-    payload.created_at = `${payload.created_at}`;
-  }
-};
-
-/**
  * Validates Create User Payload
  * @param {*} email
  * @param {*} phone
  */
 const validateCreateUserPayload = (userId, email, phone) => {
+  // for creating a user userId is mandatory.
   if (!isDefinedAndNotNullAndNotEmpty(userId)) {
     throw new CustomError("userId is missing", 400);
   }
@@ -245,6 +138,64 @@ const validateCreateUserPayload = (userId, email, phone) => {
 };
 
 /**
+ * Returns 'Create User' payload
+ * @param {*} message
+ * @returns
+ */
+const createUserPayloadBuilder = message => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
+  );
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
+  const method = "POST";
+  validateCreateUserPayload(
+    payload.external_id,
+    payload.email,
+    payload.phone_number
+  );
+  return { payload, endpoint, method };
+};
+
+/**
+ * Builds Payload properties
+ * @param {*} payload
+ * @param {*} userDetails
+ * @returns
+ */
+const buildPayloadProperties = (payload, userDetails) => {
+  // Appending existing user properties with payload properties
+  let payloadProperties = {};
+  if (
+    isDefinedAndNotNullAndNotEmpty(payload.properties) &&
+    isDefinedAndNotNullAndNotEmpty(userDetails.properties)
+  ) {
+    payloadProperties = {
+      ...userDetails.properties,
+      ...payload.properties
+    };
+  }
+  return payloadProperties;
+};
+
+/**
+ * Returns 'Update User' payload
+ * @param {*} message
+ * @returns
+ */
+const updateUserPayloadBuilder = (message, userDetails) => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
+  );
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
+  const method = "PUT";
+  delete payload.external_id;
+  return { payload, endpoint, method };
+};
+
+/**
  * Validates score
  * @param {*} score
  */
@@ -255,23 +206,81 @@ const validateScore = score => {
 };
 
 /**
- * Builds Payload properties
- * @param {*} payload
- * @param {*} userDetails
+ * Returns 'Creates Response' payload
+ * @param {*} message
  * @returns
  */
-const buildPayloadProperties = (payload, userDetails) => {
-  //Appending existing user properties with payload properties
-  if (
-    isDefinedAndNotNullAndNotEmpty(payload.properties) &&
-    isDefinedAndNotNullAndNotEmpty(userDetails.properties)
-  ) {
-    const payloadProperties = {
-      ...userDetails.properties,
-      ...payload.properties
-    };
-    return payloadProperties;
+const createResponsePayloadBuilder = (message, userDetails) => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
+  );
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_RESPONSE;
+  const method = "POST";
+  validateScore(payload.score);
+  return { payload, endpoint, method };
+};
+
+/**
+ * Returns 'Creates Decline' payload
+ * @param {*} message
+ * @returns
+ */
+const createDeclinePayloadBuilder = (message, userDetails) => {
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
+  );
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_DECLINE;
+  const method = "POST";
+  return { payload, endpoint, method };
+};
+
+/**
+ * Flattens properties field in payload
+ * e.g :- properties[name] = Demo User, end_user[properties][revenue_amount] = 5000
+ * ref: https://docs.wootric.com/api/#create-end-user
+ * ref: https://docs.wootric.com/api/#create-response
+ * @param {*} payload
+ * @param {*} destKey
+ */
+const flattenProperties = (payload, destKey) => {
+  const rawProperties = {};
+  if (isDefinedAndNotNullAndNotEmpty(payload.properties)) {
+    Object.entries(payload.properties).forEach(([key, value]) => {
+      rawProperties[`${destKey}[${key}]`] = `${value}`;
+    });
   }
+  return rawProperties;
+};
+
+/**
+ * Formats identify payload
+ * @param {*} payload
+ */
+const formatIdentifyPayload = payload => {
+  const rawPayload = { ...payload };
+  if (rawPayload.last_surveyed) {
+    rawPayload.last_surveyed = `${rawPayload.last_surveyed}`;
+  }
+  if (rawPayload.external_created_at) {
+    rawPayload.external_created_at = `${rawPayload.external_created_at}`;
+  }
+  return rawPayload;
+};
+
+/**
+ * Formats track payload
+ * @param {*} payload
+ */
+const formatTrackPayload = payload => {
+  const rawPayload = { ...payload };
+  if (rawPayload.created_at) {
+    rawPayload.created_at = `${payload.created_at}`;
+  }
+  return rawPayload;
 };
 
 module.exports = {

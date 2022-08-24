@@ -254,7 +254,7 @@
     }
   },
   {
-    "description": "Empty password Field ",
+    "description": "Empty Sub-Domain Field ",
     "input": {
       "message": {
         "anonymousId": "anon-id-new",
@@ -410,7 +410,7 @@
       }
     },
     "output": {
-      "error": "Invalid title provided."
+      "error": "Invalid entry for key title"
     }
   },
   {
@@ -519,7 +519,7 @@
       }
     },
     "output": {
-      "error": "Invalid Purchase Status."
+      "error": "Invalid entry for key haspurchased"
     }
   },
   {
@@ -556,7 +556,7 @@
       }
     },
     "output": {
-      "error": "This Role is not supported."
+      "error": "Invalid entry for key role"
     }
   },
   {
@@ -593,7 +593,7 @@
       }
     },
     "output": {
-      "error": "Invalid subscriptionStatus Value."
+      "error": "Invalid entry for key subscription_status"
     }
   },
   {
@@ -630,7 +630,7 @@
       }
     },
     "output": {
-      "error": "prospectOrCustomer can only be either prospect or customer or null."
+      "error": "Invalid entry for key prospect_or_customer"
     }
   },
   {

@@ -7,7 +7,7 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 
 // All the titles that are allowed
-const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
+//const ALLOWED_TITLES = ["Mr", "Mrs", "Miss", "Mr.", "Mrs.", "Miss."];
 
 // check if input is a date or not
 const isDate = date => {
@@ -15,20 +15,20 @@ const isDate = date => {
   return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
 };
 
-// Includes valid values for prospectOrCustomer
-const ALLOWED_POC = ["Prospect", "Customer"];
+// // Includes valid values for prospectOrCustomer
+// const ALLOWED_POC = ["Prospect", "Customer"];
 
-// Includes valid Values for subscriptionStatus
-const ALLOWED_SUBSCRIPTION_STATUS = ["New", "Existing"];
+// // Includes valid Values for subscriptionStatus
+// const ALLOWED_SUBSCRIPTION_STATUS = ["New", "Existing"];
 
-// Includes valid Values for role
-const ALLOWED_ROLE_VALUES = [
-  "Individual Contributor",
-  "Manager",
-  "Director",
-  "Executive",
-  "Consultant"
-];
+// // Includes valid Values for role
+// const ALLOWED_ROLE_VALUES = [
+//   "Individual Contributor",
+//   "Manager",
+//   "Director",
+//   "Executive",
+//   "Consultant"
+// ];
 
 // Map for Mapping the Rudder Event Fields to Mautic Event Fields (that can be used for lookup )
 const lookupFieldMap = {
@@ -64,61 +64,6 @@ function validatePhone(inputText) {
   return phoneno.test(inputText);
 }
 
-// Refines the payload by validating and adding some payload Fields
-const refinePayloadFields = (payload, message) => {
-  const { traits, context } = message;
-  if (
-    (traits && traits?.hasPurchased) ||
-    (context.traits && context.traits?.hasPurchased)
-  ) {
-    let purchasedStatus = traits?.hasPurchased || context.traits?.hasPurchased;
-    purchasedStatus = purchasedStatus.toLowerCase();
-    if (purchasedStatus === "yes" || purchasedStatus === "no") {
-      set(payload, "haspurchased", purchasedStatus);
-    } else {
-      throw new CustomError("Invalid Purchase Status.", 400);
-    }
-  }
-  if ((traits && traits?.role) || (context && context.traits?.role)) {
-    const Role =
-      traits && traits?.role
-        ? message.traits?.role
-        : message.context.traits?.role;
-    if (!ALLOWED_ROLE_VALUES.includes(Role)) {
-      throw new CustomError("This Role is not supported.", 400);
-    }
-    set(payload, "role", Role);
-  }
-  if (
-    (traits && traits?.subscriptionStatus) ||
-    (context.traits && context.traits?.subscriptionStatus)
-  ) {
-    const status =
-      traits && traits?.subscriptionStatus
-        ? message.traits?.subscriptionStatus
-        : message.context.traits?.subscriptionStatus;
-    if (!ALLOWED_SUBSCRIPTION_STATUS.includes(status)) {
-      throw new CustomError("Invalid subscriptionStatus Value.", 400);
-    }
-    set(payload, "subscription_status", status);
-  }
-  if (
-    (traits && traits?.prospectOrCustomer) ||
-    context.traits?.prospectOrCustomer
-  ) {
-    const POC =
-      message.traits?.prospectOrCustomer ||
-      message.context.traits?.prospectOrCustomer;
-    if (!ALLOWED_POC.includes(POC)) {
-      throw new CustomError(
-        "prospectOrCustomer can only be either prospect or customer or null.",
-        400
-      );
-    }
-    set(payload, "prospect_or_customer", POC);
-  }
-  return payload;
-};
 
 // Constructs the address1 and address2 field
 // if address is given as string or object
@@ -153,9 +98,9 @@ const validatePayload = payload => {
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
-  if (payload.title && !ALLOWED_TITLES.includes(payload.title)) {
-    throw new CustomError("Invalid title provided.", 400);
-  }
+  // if (payload.title && !ALLOWED_TITLES.includes(payload.title)) {
+  //   throw new CustomError("Invalid title provided.", 400);
+  // }
   if (payload.last_active && !isDate(payload.last_active)) {
     throw new CustomError("Date is Invalid.", 400);
   }
@@ -292,6 +237,5 @@ module.exports = {
   validatePhone,
   deduceAddressFields,
   validatePayload,
-  searchContactId,
-  refinePayloadFields
+  searchContactId
 };

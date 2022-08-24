@@ -15,8 +15,7 @@ const {
   validateEmail,
   deduceAddressFields,
   validatePayload,
-  searchContactId,
-  refinePayloadFields
+  searchContactId
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
@@ -105,8 +104,6 @@ const identifyResponseBuilder = async (message, destination) => {
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  // Adding all the fields inpayload that needs validation and
-  payload = refinePayloadFields(payload, message);
   // if the payload is valid adding address fields if present
 
   if (validatePayload(payload)) {

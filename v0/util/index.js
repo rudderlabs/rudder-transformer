@@ -590,7 +590,7 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
+const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null) => {
   if (!metadata) {
     return value;
   }
@@ -603,8 +603,9 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     defaultValue,
     excludes,
     multikeyMap,
-    allowedKeyCheck,
-    validateTimestamp
+    strictMultiMap,
+    validateTimestamp,
+    allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
@@ -818,10 +819,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   //     "destVal": "F"
   //   }
   // ]
-  if (multikeyMap) {
+  if (multikeyMap || strictMultiMap) {
+    const finalKeyMap = multikeyMap || strictMultiMap;
     let foundVal = false;
-    if (Array.isArray(multikeyMap)) {
-      multikeyMap.some(map => {
+    if (Array.isArray(finalKeyMap)) {
+      finalKeyMap.some(map => {
         if (
           !map.sourceVal ||
           !isDefinedAndNotNull(map.destVal) ||
@@ -843,7 +845,13 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
-    if (!foundVal) formattedVal = undefined;
+    if (!foundVal) {
+      if(strictMultiMap) {
+          throw new CustomError (`Invalid entry for key ${destKey}`,400); 
+      } else {
+        formattedVal = undefined
+      }
+    } 
   }
 
   if (allowedKeyCheck) {
@@ -943,6 +951,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
           ? getFieldValueFromMessage(message, sourceKeys)
           : getValueFromMessage(message, sourceKeys),
         metadata,
+        destKey,
         integrationsObj
       );
 

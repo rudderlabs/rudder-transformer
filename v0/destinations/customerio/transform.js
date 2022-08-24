@@ -30,6 +30,7 @@ const {
   MERGE_USER_ENDPOINT
 } = require("./config");
 const logger = require("../../../logger");
+const { isAppleFamily } = require("rudder-transformer-cdk/build/utils");
 
 const deviceRelatedEventNames = [
   "Application Installed",
@@ -194,7 +195,13 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       set(devProps, "id", get(message, "context.device.token"));
       const deviceType = get(message, "context.device.type");
       if (deviceType) {
-        set(devProps, "platform", deviceType.toLowerCase());
+        // Ref - https://www.customer.io/docs/api/#operation/add_device
+        // supported platform are "ios", "android"
+        if (isAppleFamily(deviceType)) {
+          set(devProps, "platform", "ios");
+        } else {
+          set(devProps, "platform", deviceType.toLowerCase());
+        }
       }
       set(
         devProps,

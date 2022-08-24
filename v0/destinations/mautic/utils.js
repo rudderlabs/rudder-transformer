@@ -219,7 +219,7 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
     // contact not found
     if (!identifyFlag) {
       throw new CustomError(
-        " No contacts found. Retry with unique lookupfield and lookupValue"
+        "No contacts found. Retry with unique lookupfield and lookupValue", 400
       );
     }
     contactId = null;

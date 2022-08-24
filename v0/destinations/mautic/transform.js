@@ -32,7 +32,7 @@ const responseBuilder = async (
 ) => {
   const { userName, password } = destination.Config;
   if (identifyFlag && !payload) {
-    throw new CustomError("Payload could not be constructed");
+    throw new CustomError("Payload could not be constructed", 400);
   } else {
     const response = defaultRequestConfig();
     if (messageType === EventType.IDENTIFY) {
@@ -54,7 +54,7 @@ const responseBuilder = async (
 const groupResponseBuilder = async (message, destination) => {
   let groupClass;
   if (message.traits === undefined || message.traits.type === undefined) {
-    throw new CustomError("Type of group not mentioned inside traits");
+    throw new CustomError("Type of group not mentioned inside traits", 400);
   }
   if (!message?.groupId) {
     throw new CustomError("Group Id is not provided.", 400);
@@ -71,7 +71,7 @@ const groupResponseBuilder = async (message, destination) => {
       groupClass = "companies";
       break;
     default:
-      throw new CustomError("This grouping is not supported");
+      throw new CustomError("This grouping is not supported", 400);
   }
   const identifyFlag = false;
   let contactId = getDestinationExternalID(message, "mauticContactId");
@@ -156,7 +156,7 @@ const process = async event => {
     throw new CustomError("Password field can not be empty.", 400);
   }
   if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
-    throw new CustomError("lookup Field isnot supported");
+    throw new CustomError("lookup Field isnot supported", 400);
   }
 
   if (!subDomainName) {

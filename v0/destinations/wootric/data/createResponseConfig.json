@@ -1,0 +1,41 @@
+[
+  {
+    "destKey": "score",
+    "sourceKeys": "properties.feedbackScore",
+    "required": true
+  },
+  {
+    "destKey": "ip_address",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": true
+  },
+  {
+    "destKey": "origin_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "text",
+    "sourceKeys": "properties.feedbackText",
+    "required": false
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAtOnly",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "excludes": ["userId", "anonymousId", "id", "email", "phone", "createdAt"]
+    }
+  }
+]

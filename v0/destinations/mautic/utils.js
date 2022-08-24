@@ -44,27 +44,47 @@ const lookupFieldMap = {
   country: "country"
 };
 
-// creates the axios url using the subDomainName for basic url
-// and propertyName and Value for filters
+/** @param {*} subDomainName
+ * @param {*} propertyName
+ * @param {*} value
+ * @returns  Axios call Url
+ * creates the axios url using the subDomainName for basic url
+ * and propertyName and Value for filters
+ */
 function createAxiosUrl(subDomainName, propertyName, value) {
   return `${BASE_URL.replace(
     "subDomainName",
     subDomainName
   )}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
 }
-// for validating email match function outdated
+/**
+ * @param {*} inputText
+ * @returns Boolean Value
+ * for validating email match function outdated
+ */
 function validateEmail(inputText) {
   // return true;
   const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
   return mailformat.test(inputText);
 }
-// for validating Phone match function outdated
+
+/**
+ * @param {*} inputText
+ * @returns Boolean Value
+ * for validating Phone match function outdated
+ * */
 function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
   return phoneno.test(inputText);
 }
 
-// Refines the payload by validating and adding some payload Fields
+/**
+ * @param {*} payload
+ * @param {*} message
+ * @returns refined Payload
+ * Refines and validates the additonalvfields for the payload by validating and adding some payload Fields
+ * Throws error if there is any Invalid Data
+ * */
 const refinePayloadFields = (payload, message) => {
   const { traits, context } = message;
   if (
@@ -120,8 +140,12 @@ const refinePayloadFields = (payload, message) => {
   return payload;
 };
 
-// Constructs the address1 and address2 field
-// if address is given as string or object
+/**
+ * @param {*} message
+ * @returns address! and address2 
+ * Constructs the address1 and address2 field
+ * if address is given as string or object
+ * */
 const deduceAddressFields = message => {
   const { traits, context } = message;
   let address1;
@@ -146,7 +170,12 @@ const deduceAddressFields = message => {
   return { address1, address2 };
 };
 
-// Validates the generated payload fro specific fields
+/**
+ * @param {*} payload
+ * @returns true if no error is there
+ * else, throws an error
+ * Validates the generated payload for specific fields
+ */
 const validatePayload = payload => {
   // checking for message details validations
 
@@ -179,8 +208,8 @@ const validatePayload = payload => {
  * If contactId is not provided via externalId, we look for the lookup key
  * inside webapp config.
  * We have put two level dynamic mapping here.
- * If the lookup key is not found we fallback to email. If email is also not provided, we throw error if its group call
- * For Identify call we are returning Null.
+ * If the lookup key is not found we fallback to email. If email is also not given, we throw error if its group call
+ * else return null.
  *
  */
 const searchContactId = async (message, destination, identifyFlag = true) => {
@@ -239,16 +268,14 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
     }
   };
   // axios call made to get contacts with filters
-  // console.log(createAxiosUrl(subDomainName, propertyName, value));
+  console.log(createAxiosUrl(subDomainName, propertyName, value));
   propertyName = lookupFieldMap[propertyName];
   searchContactsResponse = await httpGET(
     createAxiosUrl(subDomainName, propertyName, value),
     requestOptions
   );
-  // console.log(searchContactsResponse);
 
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
-  // console.log("Reposne:",searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
       `Failed to get Mautic contacts: ${JSON.stringify(
@@ -269,7 +296,6 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
   }
   if (searchContactsResponse.response.total === 1) {
     // a single and unique contact found
-    // console.log("in for conatcts equal 1");
     const { contacts } = searchContactsResponse?.response;
     contactId =
       Object.keys(contacts).length === 1 ? Object.keys(contacts)[0] : null;

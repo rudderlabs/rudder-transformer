@@ -1,94 +1,100 @@
 [
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://testapi5.mautic.net/api/contacts/new",
-        "headers":  {
-            "Content-Type": "application/json",
-            "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
-          },
-        "params": {},
-        "body": {
-            "JSON": {
-              "email": "abc@xyz.com",
-              "title": "Mr",
-              "firstname": "Anant",
-              "lastname": "jain",
-              "phone": "9876543212",
-              "website": "abc.com",
-              "state": "Uttar Pradesh",
-              "zipcode": "243001",
-              "ipAddress": "14.5.67.21",
-              "last_active": "2020-02-02T00:23:09.544Z",
-              "country": "India",
-              "haspurchased": "yes",
-              "role": "Manager",
-              "subscription_status": "New",
-              "prospect_or_customer": "Prospect",
-              "address1": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
-              "address2": ""
-            },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-        "files": {}
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi5.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
       },
-      "metadata": [{
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "abc@xyz.com",
+          "title": "Mr",
+          "firstname": "Anant",
+          "lastname": "jain",
+          "phone": "9876543212",
+          "website": "abc.com",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "ipAddress": "14.5.67.21",
+          "last_active": "2020-02-02T00:23:09.544Z",
+          "country": "India",
+          "haspurchased": "yes",
+          "role": "Manager",
+          "subscription_status": "New",
+          "prospect_or_customer": "Prospect",
+          "address1": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "address2": ""
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
         "jobId": 1
-      }],
-      "batched": false,
-      "statusCode": 200,
-      "destination": {
-        "Config": {
-          "lookUpField": "email",
-          "password": "zzlOylGKJRKVr87",
-        "subDomainName": "testapi5",
-         "userName": "anant45823jain@gmail.com"
-        }
       }
-    },
-    {
-      "metadata":[ {
-        "jobId": 2
-      }],
-      "batched": false,
-      "statusCode": 400,
-      "error": "User Name is not Valid."
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/add",
-        "headers":  {
-            "Content-Type": "application/json",
-            "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
-          },
-        "params": {},
-        "body": {
-            "JSON": {},
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-        "files": {}
-      },
-      "metadata":[{
-        "jobId": 3
-      }],
-      "batched": false,
-      "statusCode": 200,
-      "destination": {
-        "Config": {
-          "lookUpField": "lastName",
-          "password": "zzlOylGKJRKVr87",
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "zzlOylGKJRKVr87",
         "subDomainName": "testapi5",
-         "userName": "anant45823jain@gmail.com"
-        }
+        "userName": "anant45823jain@gmail.com"
       }
     }
-  ]
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "User Name is not Valid."
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/add",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "lookUpField": "lastName",
+        "password": "zzlOylGKJRKVr87",
+        "subDomainName": "testapi5",
+        "userName": "anant45823jain@gmail.com"
+      }
+    }
+  }
+]

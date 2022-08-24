@@ -30,6 +30,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
+const { RespStatusError } = require("./util/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -444,10 +445,14 @@ if (startDestTransformer) {
               );
             } catch (error) {
               logger.error(error);
+              let status = 400;
               const errorString = error.toString();
+              if (error instanceof RespStatusError) {
+                status = error.statusCode;
+              }
               destTransformedEvents = destEvents.map(e => {
                 return {
-                  statusCode: 400,
+                  statusCode: status,
                   metadata: e.metadata,
                   error: errorString
                 };

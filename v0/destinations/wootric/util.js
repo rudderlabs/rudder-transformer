@@ -77,7 +77,6 @@ const getAccessToken = async destination => {
  * @returns
  */
 
-// eslint-disable-next-line consistent-return
 const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   let endpoint;
   if (isDefinedAndNotNullAndNotEmpty(endUserId)) {
@@ -113,6 +112,9 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
       processedUserResponse.status
     );
   }
+
+  // for status code 404 (user not found)
+  return null;
 };
 
 /**
@@ -257,10 +259,10 @@ const flattenProperties = (payload, destKey) => {
 };
 
 /**
- * Formats identify payload
+ * Stringy the Identify payload last_surveyed and external_created_at properties.
  * @param {*} payload
  */
-const formatIdentifyPayload = payload => {
+const stringifyIdentifyPayloadTimeStamps = payload => {
   const rawPayload = { ...payload };
   if (rawPayload.last_surveyed) {
     rawPayload.last_surveyed = `${rawPayload.last_surveyed}`;
@@ -272,10 +274,10 @@ const formatIdentifyPayload = payload => {
 };
 
 /**
- * Formats track payload
+ * Stringy the Track payload created_at property.
  * @param {*} payload
  */
-const formatTrackPayload = payload => {
+const stringifyTrackPayloadTimeStamps = payload => {
   const rawPayload = { ...payload };
   if (rawPayload.created_at) {
     rawPayload.created_at = `${payload.created_at}`;
@@ -287,8 +289,8 @@ module.exports = {
   getAccessToken,
   retrieveUserDetails,
   flattenProperties,
-  formatIdentifyPayload,
-  formatTrackPayload,
+  stringifyIdentifyPayloadTimeStamps,
+  stringifyTrackPayloadTimeStamps,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,

@@ -13,8 +13,8 @@ const {
   getAccessToken,
   retrieveUserDetails,
   flattenProperties,
-  formatIdentifyPayload,
-  formatTrackPayload,
+  stringifyIdentifyPayloadTimeStamps,
+  stringifyTrackPayloadTimeStamps,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
@@ -71,7 +71,7 @@ const identifyResponseBuilder = async (message, destination) => {
     method = builder.method;
   }
 
-  payload = formatIdentifyPayload(payload);
+  payload = stringifyIdentifyPayloadTimeStamps(payload);
   const flattenedProperties = flattenProperties(payload, PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;
@@ -98,14 +98,16 @@ const trackResponseBuilder = async (message, destination) => {
   );
   const wootricEndUserId = userDetails?.id;
 
-  if (!wootricEndUserId) {
-    if (rawEndUserId) {
-      throw new CustomError(
-        `No user found with wootric end user Id : ${rawEndUserId}`,
-        400
-      );
-    }
+  if (!wootricEndUserId && rawEndUserId) {
+    // If user not found and context.externalId.0.id is present in request
+    throw new CustomError(
+      `No user found with wootric end user Id : ${rawEndUserId}`,
+      400
+    );
+  }
 
+  // If user not found and context.externalId.0.id is not present in request and userId is present in request
+  if (!wootricEndUserId) {
     throw new CustomError(`No user found with userId : ${userId}`, 400);
   }
 
@@ -141,7 +143,7 @@ const trackResponseBuilder = async (message, destination) => {
 
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
 
-  payload = formatTrackPayload(payload);
+  payload = stringifyTrackPayloadTimeStamps(payload);
   const flattenedProperties = flattenProperties(payload, END_USER_PROPERTIES);
   payload = { ...payload, ...flattenedProperties };
   delete payload.properties;

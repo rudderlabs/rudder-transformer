@@ -94,13 +94,12 @@ const groupResponseBuilder = async (message, destination) => {
   );
 };
 
-
 const identifyResponseBuilder = async (message, destination) => {
   let endpoint;
   let method;
   const { subDomainName } = destination.Config;
   // constructing payload from mapping JSONs
-  let payload = constructPayload(
+  const payload = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );

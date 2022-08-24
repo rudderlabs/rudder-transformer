@@ -1,4 +1,3 @@
-const { set } = require("lodash");
 const { CustomError, getFieldValueFromMessage } = require("../../util");
 const { BASE_URL } = require("./config");
 const { httpGET } = require("../../../adapters/network");
@@ -58,11 +57,9 @@ function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
   return phoneno.test(inputText);
 }
-
-
 /**
  * @param {*} message
- * @returns address! and address2 
+ * @returns address! and address2
  * Constructs the address1 and address2 field
  * if address is given as string or object
  * */
@@ -219,7 +216,8 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
     // contact not found
     if (!identifyFlag) {
       throw new CustomError(
-        "No contacts found. Retry with unique lookupfield and lookupValue", 400
+        "No contacts found. Retry with unique lookupfield and lookupValue",
+        400
       );
     }
     contactId = null;

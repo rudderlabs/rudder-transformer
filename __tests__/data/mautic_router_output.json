@@ -4,10 +4,10 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://testapi5.mautic.net/api/contacts/new",
+      "endpoint": "https://ruddertest2.mautic.net/api/contacts/new",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
       },
       "params": {},
       "body": {
@@ -46,9 +46,9 @@
     "destination": {
       "Config": {
         "lookUpField": "email",
-        "password": "zzlOylGKJRKVr87",
-        "subDomainName": "testapi5",
-        "userName": "anant45823jain@gmail.com"
+        "password": "m3dG325C51C1RPq",
+            "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
       }
     }
   },
@@ -67,10 +67,10 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/add",
+      "endpoint": "https://ruddertest2.mautic.net/api/segments/17/contact/246/add",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
       },
       "params": {},
       "body": {
@@ -91,9 +91,9 @@
     "destination": {
       "Config": {
         "lookUpField": "lastName",
-        "password": "zzlOylGKJRKVr87",
-        "subDomainName": "testapi5",
-        "userName": "anant45823jain@gmail.com"
+        "password": "m3dG325C51C1RPq",
+         "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
       }
     }
   }

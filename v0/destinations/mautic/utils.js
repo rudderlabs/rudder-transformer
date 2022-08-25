@@ -1,30 +1,10 @@
+const get = require("get-value");
 const { CustomError, getFieldValueFromMessage } = require("../../util");
-const { BASE_URL } = require("./config");
+const { lookupFieldMap } = require("./config");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-
-// check if input is a date or not
-const isDate = date => {
-  // eslint-disable-next-line no-restricted-globals
-  return new Date(date) !== "Invalid Date" && !isNaN(new Date(date));
-};
-
-// Map for Mapping the Rudder Event Fields to Mautic Event Fields (that can be used for lookup )
-const lookupFieldMap = {
-  title: "title",
-  firstName: "firstname",
-  lastName: "lastname",
-  role: "role",
-  phone: "phone",
-  city: "city",
-  email: "email",
-  state: "state",
-  zipcode: "zipcode",
-  country: "country"
-};
-
 /** @param {*} subDomainName
  * @param {*} propertyName
  * @param {*} value
@@ -32,11 +12,8 @@ const lookupFieldMap = {
  * creates the axios url using the subDomainName for basic url
  * and propertyName and Value for filters
  */
-function createAxiosUrl(subDomainName, propertyName, value) {
-  return `${BASE_URL.replace(
-    "subDomainName",
-    subDomainName
-  )}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
+function createAxiosUrl(subDomainName, propertyName, value, baseUrl) {
+  return `${baseUrl}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
 }
 /**
  * @param {*} inputText
@@ -47,6 +24,28 @@ function validateEmail(inputText) {
   const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
   return mailformat.test(inputText);
 }
+const getFieldForLookup = (message, lookUpField) => {
+  let field = null;
+  let fieldValue = null;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const fieldIterator of lookupFieldMap[lookUpField].sourceKeys) {
+    fieldValue = get(message, fieldIterator);
+    if (fieldValue) {
+      break;
+    }
+  }
+  if (fieldValue) {
+    field = lookupFieldMap[lookUpField].destKeys;
+  } else {
+    fieldValue = getFieldValueFromMessage(message, "email");
+    if (fieldValue) {
+      field = "email";
+    } else {
+      return { field, fieldValue };
+    }
+  }
+  return { field, fieldValue };
+};
 
 /**
  * @param {*} inputText
@@ -99,9 +98,6 @@ const validatePayload = payload => {
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
-  if (payload.last_active && !isDate(payload.last_active)) {
-    throw new CustomError("Date is Invalid.", 400);
-  }
   if (payload.state && payload.state[0] !== payload.state[0].toUpperCase()) {
     // eslint-disable-next-line no-param-reassign
     payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
@@ -117,77 +113,38 @@ const validatePayload = payload => {
  *
  * @param {*} message
  * @param {*} destination
- * @param {*} identifyFlag
  * @returns contactId
  * If contactId is not provided via externalId, we look for the lookup key
  * inside webapp config.
  * We have put two level dynamic mapping here.
- * If the lookup key is not found we fallback to email. If email is also not given, we throw error if its group call
- * else return null.
+ * If the lookup key is not found we fallback to email. If email is also not given,we will return undefined
  *
  */
-const searchContactId = async (message, destination, identifyFlag = true) => {
-  const { lookUpField, userName, password, subDomainName } = destination.Config;
-  let searchContactsResponse;
-  let contactId;
-  const traits = getFieldValueFromMessage(message, "traits");
-  let propertyName;
+const searchContactId = async (message, Config, baseUrl) => {
+  const { lookUpField, userName, password, subDomainName } = Config;
 
+  const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
     throw new CustomError("Invalid traits value for lookup field", 400);
   }
-
-  // lookupField key provided in Config.lookupField not found in traits
-  // then default it to email
-  if (!traits[`${lookUpField}`]) {
-    propertyName = "email";
-
-    if (!getFieldValueFromMessage(message, "email")) {
-      // identifyFlag help us to determine the output depending on what is the request type
-      if (identifyFlag) {
-        return null;
-      }
-      throw new CustomError(
-        "email i.e a default lookup field for contact lookup not found in traits",
-        400
-      );
-    }
-  } else {
-    // look for propertyName (key name) in traits
-    // Config.lookupField -> lookupField
-    // traits: { lookupField: email }
-    propertyName = lookUpField;
+  if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
+    throw new CustomError("lookup Field is not supported", 400);
   }
-
-  // extract its value from the known propertyName (key name)
-  // if not found in our structure then look for it in traits
-  // Config.lookupField -> lookupField
-  // eg: traits: { lookupField: email, email: "test@test.com" }
-  const value =
-    getFieldValueFromMessage(message, propertyName) ||
-    traits[`${propertyName}`];
-
-  if (!value) {
-    throw new CustomError(
-      ` '${propertyName}' lookup field for contact lookup not found in traits`,
-      400
-    );
+  const { field, fieldValue } = getFieldForLookup(message, lookUpField);
+  if (!field) {
+    return null;
   }
   const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
-
   const requestOptions = {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Basic ${basicAuth}`
     }
   };
-  // axios call made to get contacts with filters
-  propertyName = lookupFieldMap[propertyName];
-  searchContactsResponse = await httpGET(
-    createAxiosUrl(subDomainName, propertyName, value),
+  let searchContactsResponse = await httpGET(
+    createAxiosUrl(subDomainName, field, fieldValue, baseUrl),
     requestOptions
   );
-
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new CustomError(
@@ -197,37 +154,11 @@ const searchContactId = async (message, destination, identifyFlag = true) => {
       searchContactsResponse.status
     );
   }
-  // throw error if more than one contact is found as it's ambiguous
-  if (searchContactsResponse.response?.total > 1) {
-    if (!identifyFlag) {
-      throw new CustomError(
-        "Unable to get single Mautic contact. More than one contacts found. Retry with unique lookupfield and lookupValue",
-        400
-      );
-    }
-    return null;
-  }
-  if (searchContactsResponse.response.total === 1) {
-    // a single and unique contact found
-    const { contacts } = searchContactsResponse?.response;
-    contactId =
-      Object.keys(contacts).length === 1 ? Object.keys(contacts)[0] : null;
-  } else {
-    // contact not found
-    if (!identifyFlag) {
-      throw new CustomError(
-        "No contacts found. Retry with unique lookupfield and lookupValue",
-        400
-      );
-    }
-    contactId = null;
-  }
-  return contactId;
+  const { contacts } = searchContactsResponse?.response;
+  return Object.keys(contacts);
 };
 
 module.exports = {
-  lookupFieldMap,
-  isDate,
   validateEmail,
   validatePhone,
   deduceAddressFields,

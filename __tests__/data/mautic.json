@@ -885,7 +885,7 @@
       }
     },
     "output": {
-      "error": "This grouping is not supported"
+      "error": "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns."
     }
   },
   {
@@ -931,6 +931,31 @@
       },
       "files": {}
     }
+  },
+  {
+    "description": " Group contact with campaign with contactId found by lookUpField ",
+    "input":{
+    "message": {
+      "userId": "user123",
+      "groupId": "20",
+      "traits": {
+      "lastName":"kumar",
+      "type": "Campaigns"
+    },
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "lastName",
+        "password": "zzlOylGKJRKVr87",
+        "subDomainName": "ruddertest2",
+        "userName": "anant45823jain@gmail.com"
+      }
+    }
+  },
+  "output":{
+    "error":"Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
   }
+}
 ]
 

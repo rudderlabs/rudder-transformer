@@ -36,10 +36,10 @@
     },
     "destination": {
       "Config": {
-        "password": "zzlOylGKJRKVr87",
-        "userName": "anant45823jain@gmail.com",
         "lookUpField": "email",
-        "subDomainName": "testapi5"
+        "password": "m3dG325C51C1RPq",
+        "subDomainName": "ruddertest2",
+        "userName": "anantjain45823@gmail.com"
       }
     },
     "metadata": {
@@ -113,9 +113,9 @@
     "destination": {
       "Config": {
         "lookUpField": "lastName",
-        "password": "zzlOylGKJRKVr87",
-        "subDomainName": "testapi5",
-        "userName": "anant45823jain@gmail.com"
+        "password": "m3dG325C51C1RPq",
+ "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
       }
     },
     "metadata": {

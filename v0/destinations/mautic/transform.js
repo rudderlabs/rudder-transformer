@@ -7,11 +7,11 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   defaultPostRequestConfig,
-  defaultPatchRequestConfig
+  defaultPatchRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 
 const {
-  lookupFieldMap,
   validateEmail,
   deduceAddressFields,
   validatePayload,
@@ -27,11 +27,10 @@ const responseBuilder = async (
   endpoint,
   method,
   messageType,
-  destination,
-  identifyFlag = true
+  Config
 ) => {
-  const { userName, password } = destination.Config;
-  if (identifyFlag && !payload) {
+  const { userName, password } = Config;
+  if (messageType === EventType.IDENTIFY && !payload) {
     throw new CustomError("Payload could not be constructed", 400);
   } else {
     const response = defaultRequestConfig();
@@ -51,15 +50,15 @@ const responseBuilder = async (
   }
 };
 
-const groupResponseBuilder = async (message, destination) => {
+const groupResponseBuilder = async (message, Config, endPoint) => {
   let groupClass;
-  if (message.traits === undefined || message.traits.type === undefined) {
+  const type = getFieldValueFromMessage(message, "traits")?.type;
+  if (!type) {
     throw new CustomError("Type of group not mentioned inside traits", 400);
   }
   if (!message?.groupId) {
     throw new CustomError("Group Id is not provided.", 400);
   }
-  const { subDomainName } = destination.Config;
   switch (message.traits.type.toLowerCase()) {
     case "segments":
       groupClass = "segments";
@@ -71,33 +70,47 @@ const groupResponseBuilder = async (message, destination) => {
       groupClass = "companies";
       break;
     default:
-      throw new CustomError("This grouping is not supported", 400);
+      throw new CustomError(
+        "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns.",
+        400
+      );
   }
-  const identifyFlag = false;
   let contactId = getDestinationExternalID(message, "mauticContactId");
+  let contacts;
   if (!contactId) {
-    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
+    contacts = await searchContactId(message, Config, endPoint); // Getting the contact Id using Lookup field and then email
+    if (!contacts) {
+      throw new CustomError(
+        "Could not find any contact Id for the given lookup Field or email.",
+        400
+      );
+    }
+    if (contacts.length > 1) {
+      throw new CustomError(
+        "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue.",
+        400
+      );
+    }
+    if (contacts.length === 1) {
+      const [first] = contacts;
+      contactId = first;
+    }
   }
 
-  const endpoint = `${BASE_URL.replace(
-    "subDomainName",
-    subDomainName
-  )}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
+  const endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
   const payload = {};
   return responseBuilder(
     payload,
     endpoint,
     defaultPostRequestConfig.requestMethod,
     EventType.GROUP,
-    destination,
-    identifyFlag
+    Config
   );
 };
 
-const identifyResponseBuilder = async (message, destination) => {
-  let endpoint;
+const identifyResponseBuilder = async (message, destination, endpoint) => {
   let method;
-  const { subDomainName } = destination.Config;
+  let endPoint;
   // constructing payload from mapping JSONs
   const payload = constructPayload(
     message,
@@ -114,34 +127,28 @@ const identifyResponseBuilder = async (message, destination) => {
      1. if contactId is present  inside externalID we will use that
      2. Otherwise we will look for the lookup field from the web app 
   */
-  const identifyFlag = true;
   let contactId = getDestinationExternalID(message, "mauticContactId");
-
+  let contacts;
   // searching for contactID from filter options if contactID is not given
   if (!contactId) {
-    contactId = await searchContactId(message, destination, identifyFlag); // Getting the contact Id using Lookup field and then email
-  }
-  if (contactId) {
-    // contact exist in externalId
-    // update
-    endpoint = `${BASE_URL.replace(
-      "subDomainName",
-      subDomainName
-    )}/contacts/${contactId}/edit`;
-    method = defaultPatchRequestConfig.requestMethod;
+    contacts = await searchContactId(message, destination, endpoint); // Getting the contact Id using Lookup field and then email
+    if (contacts?.length === 1) {
+      const [first] = contacts;
+      contactId = first;
+      endPoint = `${endpoint}/contacts/${contactId}/edit`;
+      method = defaultPatchRequestConfig.requestMethod;
+    } else {
+      endPoint = `${endpoint}/contacts/new`;
+      method = defaultPostRequestConfig.requestMethod;
+    }
   } else {
-    // contact do not exist
-    // create
-    endpoint = `${BASE_URL.replace(
-      "subDomainName",
-      subDomainName
-    )}/contacts/new`;
-    method = defaultPostRequestConfig.requestMethod;
+    endPoint = `${endpoint}/contacts/${contactId}/edit`;
+    method = defaultPatchRequestConfig.requestMethod;
   }
 
   return responseBuilder(
     payload,
-    endpoint,
+    endPoint,
     method,
     EventType.IDENTIFY,
     destination
@@ -150,14 +157,11 @@ const identifyResponseBuilder = async (message, destination) => {
 
 const process = async event => {
   const { message, destination } = event;
-  const { lookUpField, password, subDomainName, userName } = destination.Config;
+  const { password, subDomainName, userName } = destination.Config;
+  const endpoint = `${BASE_URL.replace("subDomainName", subDomainName)}`;
   if (!password) {
     throw new CustomError("Password field can not be empty.", 400);
   }
-  if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
-    throw new CustomError("lookup Field isnot supported", 400);
-  }
-
   if (!subDomainName) {
     throw new CustomError("Sub-Domain Name field can not be empty.", 400);
   }
@@ -176,10 +180,18 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
+      response = await identifyResponseBuilder(
+        message,
+        destination.Config,
+        endpoint
+      );
       break;
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      response = await groupResponseBuilder(
+        message,
+        destination.Config,
+        endpoint
+      );
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported.`, 400);

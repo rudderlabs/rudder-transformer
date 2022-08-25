@@ -15,7 +15,7 @@ const {
   validateEmail,
   deduceAddressFields,
   validatePayload,
-  searchContactId
+  searchContactIds
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
@@ -78,7 +78,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   let contactId = getDestinationExternalID(message, "mauticContactId");
   let contacts;
   if (!contactId) {
-    contacts = await searchContactId(message, Config, endPoint); // Getting the contact Id using Lookup field and then email
+    contacts = await searchContactIds(message, Config, endPoint); // Getting the contact Id using Lookup field and then email
     if (!contacts) {
       throw new CustomError(
         "Could not find any contact Id for the given lookup Field or email.",
@@ -131,7 +131,7 @@ const identifyResponseBuilder = async (message, destination, endpoint) => {
   let contacts;
   // searching for contactID from filter options if contactID is not given
   if (!contactId) {
-    contacts = await searchContactId(message, destination, endpoint); // Getting the contact Id using Lookup field and then email
+    contacts = await searchContactIds(message, destination, endpoint); // Getting the contact Id using Lookup field and then email
     if (contacts?.length === 1) {
       const [first] = contacts;
       contactId = first;

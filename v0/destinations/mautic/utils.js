@@ -24,6 +24,13 @@ function validateEmail(inputText) {
   const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
   return mailformat.test(inputText);
 }
+/**
+ * @param {*} message
+ * @param {*} lookUpField
+ * @returns field and field value
+ * searches for lookup field firstly and then tries with the email field
+ * and if both are ot there then we return null for both field and fieldValue
+ */
 const getFieldForLookup = (message, lookUpField) => {
   let field = null;
   let fieldValue = null;
@@ -58,30 +65,34 @@ function validatePhone(inputText) {
 }
 /**
  * @param {*} message
- * @returns address! and address2
+ * @returns addres1 and address2
  * Constructs the address1 and address2 field
  * if address is given as string or object
  * */
 const deduceAddressFields = message => {
-  const { traits, context } = message;
+  let eAddress = getFieldValueFromMessage(message, "address");
   let address1;
   let address2;
-  if (
-    (traits !== undefined && traits?.address) ||
-    (context.traits && context.traits?.address)
-  ) {
-    let add =
-      traits && traits?.address
-        ? message.traits.address
-        : message.context.traits.address;
-    if (typeof add === "object") {
-      add = Object.keys(add).reduce(function(res, v) {
-        return res.concat(add[v], " ");
-      }, "");
+  if (eAddress) {
+    if (typeof eAddress === "object") {
+      if (
+        Object.keys(eAddress).includes("addressLine1") &&
+        Object.keys(eAddress).includes("addressLine2")
+      ) {
+        address1 = eAddress.addressLine1;
+        address2 = eAddress.addressLine2;
+      } else {
+        eAddress = Object.keys(eAddress).reduce((res, v) => {
+          return res.concat(eAddress[v], " ");
+        }, "");
+      }
     }
-    const validLengthAddress = add.length > 128 ? add.substring(0, 127) : add;
-    address1 = validLengthAddress.substring(0, 63);
-    address2 = validLengthAddress.substring(64, validLengthAddress.length);
+    if (typeof eAddress === "string") {
+      const validLengthAddress =
+        eAddress.length > 128 ? eAddress.substring(0, 127) : eAddress;
+      address1 = validLengthAddress.substring(0, 63);
+      address2 = validLengthAddress.substring(64, validLengthAddress.length);
+    }
   }
   return { address1, address2 };
 };
@@ -98,7 +109,11 @@ const validatePayload = payload => {
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
-  if (payload.state && payload.state[0] !== payload.state[0].toUpperCase()) {
+  if (
+    payload.state.length > 1 &&
+    payload.state &&
+    payload.state[0] !== payload.state[0].toUpperCase()
+  ) {
     // eslint-disable-next-line no-param-reassign
     payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
   }
@@ -113,14 +128,10 @@ const validatePayload = payload => {
  *
  * @param {*} message
  * @param {*} destination
- * @returns contactId
- * If contactId is not provided via externalId, we look for the lookup key
- * inside webapp config.
- * We have put two level dynamic mapping here.
- * If the lookup key is not found we fallback to email. If email is also not given,we will return undefined
- *
+ * @returns contacts
+ * It checks for lookUpfield Validation and make axios call ,if Valid, and returns the contactIDs received
  */
-const searchContactId = async (message, Config, baseUrl) => {
+const searchContactIds = async (message, Config, baseUrl) => {
   const { lookUpField, userName, password, subDomainName } = Config;
 
   const traits = getFieldValueFromMessage(message, "traits");
@@ -163,5 +174,5 @@ module.exports = {
   validatePhone,
   deduceAddressFields,
   validatePayload,
-  searchContactId
+  searchContactIds
 };

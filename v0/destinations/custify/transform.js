@@ -1,4 +1,3 @@
-const md5 = require("md5");
 const get = require("get-value");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
@@ -21,23 +20,9 @@ const {
 
 function getCompanyAttribute(company) {
   const companiesList = [];
-  if (company.name || company.id) {
-    const customAttributes = {};
-    Object.keys(company).forEach(key => {
-      // the key is not in ReservedCompanyProperties
-      if (!ReservedCompanyProperties.includes(key)) {
-        const val = company[key];
-        if (val) {
-          customAttributes[key] = val;
-        }
-      }
-    });
-
+  if (company.id) {
     companiesList.push({
-      company_id: company.id || md5(company.name),
-      custom_attributes: customAttributes,
-      name: company.name,
-      industry: company.industry
+      company_id: company.id
     });
   }
   return companiesList;
@@ -65,6 +50,21 @@ function validateIdentify(message, payload) {
 
     if (finalPayload.custom_attributes) {
       ReservedTraitsProperties.forEach(trait => {
+        delete finalPayload.custom_attributes[trait];
+      });
+    }
+
+    return finalPayload;
+  }
+  throw new CustomError("Email or userId is mandatory", 400);
+}
+
+function validateGroup(message, payload) {
+  const finalPayload = payload;
+
+  if (payload.company_id) {
+    if (finalPayload.custom_attributes) {
+      ReservedCompanyProperties.forEach(trait => {
         delete finalPayload.custom_attributes[trait];
       });
     }
@@ -103,6 +103,12 @@ function validateAndBuildResponse(message, payload, category, destination) {
     case EventType.TRACK:
       response.body.JSON = removeUndefinedAndNullValues(
         validateTrack(message, payload)
+      );
+      break;
+
+    case EventType.GROUP:
+      response.body.JSON = removeUndefinedAndNullValues(
+        validateGroup(message, payload)
       );
       break;
     default:

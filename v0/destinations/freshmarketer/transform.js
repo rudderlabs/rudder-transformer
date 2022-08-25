@@ -1,4 +1,3 @@
-const axios = require("axios");
 const { httpPOST, httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
@@ -12,11 +11,14 @@ const {
   defaultPostRequestConfig,
   extractCustomFields,
   getErrorRespEvents,
-  getSuccessRespEvents,
-  getFieldValueFromMessage
+  getSuccessRespEvents
 } = require("../../util");
 
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  FRESHMARKETER_IDENTIFY_EXCLUSION
+} = require("./config");
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const payload = constructPayload(
@@ -28,17 +30,13 @@ const identifyResponseBuilder = async (message, { Config }) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  let customPayload = {};
-  //   customPayload = extractCustomFields(
-  //     message,
-  //     customPayload,
-  //     ["context.traits", "traits"],
-  //     REVENUE_CAT_IDENTIFY_EXCLUSION
-  //   );
 
-  Object.entries(customPayload).forEach(([key, value]) => {
-    set(payload, `${key}.value`, value.toString());
-  });
+  payload = extractCustomFields(
+    message,
+    payload,
+    ["context.traits", "traits"],
+    FRESHMARKETER_IDENTIFY_EXCLUSION
+  );
 
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
@@ -57,6 +55,16 @@ const groupResponseBuilder = async (message, { Config }) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
   );
+  payload = extractCustomFields(
+    message,
+    payload,
+    ["context.traits", "traits"],
+    FRESHMARKETER_GROUP_EXCLUSION
+  );
+  if (!payload) {
+    // fail-safety for developer error
+    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  }
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload

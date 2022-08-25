@@ -89,14 +89,8 @@
   },
   {
     "destKey": "zipcode",
-    "sourceKeys": [
-      "traits.zip",
-      "traits.zipcode",
-      "traits.address.postalcode",
-      "context.traits.zip",
-      "context.traits.zipcode",
-      "context.traits.address.zipcode"
-    ],
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

@@ -506,5 +506,89 @@
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
     }
-  ]
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-01.moengage.com/v1/event/W0ZHNMPI2O4KHJ48ZILZACRA",
+    "headers": {
+      "Content-Type": "application/json",
+      "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "customer_id": "ruchu123",
+        "device_id": "7e32188a4dab669f",
+        "type": "event",
+        "actions": [
+          {
+            "action": "Order Completed",
+            "attributes": {
+              "checkout_id": "what is checkout id here??",
+              "coupon": "APPARELSALE",
+              "currency": "GBP",
+              "order_id": "transactionId",
+              "products[0].brand": "",
+              "products[0].category": "Merch",
+              "products[0].currency": "GBP",
+              "products[0].image_url": "https://www.example.com/product/bacon-jam.jpg",
+              "products[0].name": "Food/Drink",
+              "products[0].position": 1,
+              "products[0].price": 3,
+              "products[0].product_id": "product-bacon-jam",
+              "products[0].quantity": 2,
+              "products[0].sku": "sku-1",
+              "products[0].typeOfProduct": "Food",
+              "products[0].url": "https://www.example.com/product/bacon-jam",
+              "products[0].value": 6,
+              "products[0].variant": "Extra topped",
+              "products[1].brand": "Levis",
+              "products[1].category": "Merch",
+              "products[1].currency": "GBP",
+              "products[1].image_url": "https://www.example.com/product/t-shirt.jpg",
+              "products[1].name": "T-Shirt",
+              "products[1].position": 2,
+              "products[1].price": 12.99,
+              "products[1].product_id": "product-t-shirt",
+              "products[1].quantity": 1,
+              "products[1].sku": "sku-2",
+              "products[1].typeOfProduct": "Shirt",
+              "products[1].url": "https://www.example.com/product/t-shirt",
+              "products[1].value": 12.99,
+              "products[1].variant": "White",
+              "products[2].brand": "Levis",
+              "products[2].category": "Merch",
+              "products[2].coupon": "APPARELSALE",
+              "products[2].currency": "GBP",
+              "products[2].image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+              "products[2].name": "T-Shirt-on-offer",
+              "products[2].position": 1,
+              "products[2].price": 12.99,
+              "products[2].product_id": "offer-t-shirt",
+              "products[2].quantity": 1,
+              "products[2].sku": "sku-3",
+              "products[2].typeOfProduct": "Shirt",
+              "products[2].url": "https://www.example.com/product/offer-t-shirt",
+              "products[2].value": 12.99,
+              "products[2].variant": "Black",
+              "revenue": 31.98,
+              "shipping": 4,
+              "value": 31.98
+            },
+            "platform": "iOS",
+            "app_version": "1.1.6",
+            "current_time": "2020-10-16T13:40:12.791+05:30"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+  }
 ]

@@ -82,6 +82,11 @@ function responseBuilderSimple(message, category, destination) {
             MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_ATTR.name]
           )
         ];
+
+        // Ref - https://developers.moengage.com/hc/en-us/articles/4413174104852-Event-
+        if (isAppleFamily(payload.actions[0]?.platform)) {
+          payload.actions[0].platform = "iOS";
+        }
         break;
       default:
         throw new CustomError("Call type is not valid", 400);

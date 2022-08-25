@@ -3475,5 +3475,138 @@
       "Transformations": [],
       "IsProcessorEnabled": true
     }
+  },
+  {
+    "description": "check for ipados apple family and default it to ios",
+    "message": {
+      "anonymousId": "5d727a3e-a72b-4d00-8078-669c1494791d",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "zx_userid_missing",
+          "namespace": "org.reactjs.native.example.zx-userid-missing",
+          "version": "1.0"
+        },
+        "device": {
+          "attTrackingStatus": 0,
+          "id": "5d727a3e-a72b-4d00-8078-669c1494791d",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPhone 13",
+          "token": "deviceToken",
+          "type": "ipados"
+        },
+        "library": {
+          "name": "rudder-ios-library",
+          "version": "1.3.1"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "15.2"
+        },
+        "screen": {
+          "density": 3,
+          "height": 390,
+          "width": 844
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d727a3e-a72b-4d00-8078-669c1494791d",
+          "email": "sofia@gmail.com",
+          "login_status": "Authenticated",
+          "name": "Sofia",
+          "phone_verified": 1,
+          "selected_city": "",
+          "selected_lat": 0,
+          "selected_long": 0,
+          "selected_neighborhood": "",
+          "selected_number": "",
+          "selected_postal_code": "",
+          "selected_state": "",
+          "selected_street": "",
+          "signed_up_for_newsletters": 0
+        }
+      },
+      "event": "Application Opened",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1641808826-28d23237-f4f0-4f65-baa2-99141e422a8f",
+      "originalTimestamp": "2022-01-10T10:00:26.513Z",
+      "properties": {
+        "from_background": false
+      },
+      "receivedAt": "2022-01-10T20:41:30.970+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "423cdf83-0448-4a99-b14d-36fcc63e6ea0",
+      "sentAt": "2022-01-10T10:00:26.982Z",
+      "timestamp": "2022-01-10T20:41:30.501+05:30",
+      "type": "track",
+      "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "DESAU SAI",
+        "datacenterEU": false,
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "DESU SAI"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
   }
 ]

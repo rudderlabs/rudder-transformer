@@ -1027,17 +1027,18 @@ const getDestinationExternalIDObject = (message, destination) => {
   }
   let obj;
   if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
+    // some stops the execution when the element is found
+    externalIdArray.some(extIdObj => {
       const { type } = extIdObj;
       if (type.includes(`${destination}-`)) {
         obj = extIdObj;
-        return;
+        return true;
       }
+      return false;
     });
   }
-  
   return obj;
-}
+};
 
 const isObject = value => {
   const type = typeof value;

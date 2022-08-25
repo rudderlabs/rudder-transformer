@@ -1,7 +1,3 @@
-const { httpPOST, httpGET } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
@@ -9,20 +5,15 @@ const {
   constructPayload,
   ErrorMessage,
   defaultPostRequestConfig,
-  extractCustomFields,
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
 
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  FRESHMARKETER_IDENTIFY_EXCLUSION,
-  FRESHMARKETER_GROUP_EXCLUSION
-} = require("./config");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { getAccountDetails, getUserAccountDetails } = require("./utils");
 
 const identifyResponseBuilder = (message, { Config }) => {
-  let payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
   );
@@ -31,13 +22,6 @@ const identifyResponseBuilder = (message, { Config }) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-
-  payload = extractCustomFields(
-    message,
-    payload,
-    ["context.traits", "traits"],
-    FRESHMARKETER_IDENTIFY_EXCLUSION
-  );
 
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
@@ -52,7 +36,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 };
 
 const groupResponseBuilder = async (message, { Config }) => {
-  let payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
   );
@@ -61,34 +45,13 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
-  payload = extractCustomFields(
-    message,
-    payload,
-    ["context.traits", "traits"],
-    FRESHMARKETER_GROUP_EXCLUSION
-  );
-
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload
   };
-  const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
-  };
-  let endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
-  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
-  accountResponse = processAxiosResponse(accountResponse);
-  if (accountResponse.status !== 200) {
-    const errMessage = accountResponse.response.errors?.message || "",
-      errorStatus = accountResponse.response.errors?.code || "500";
-    throw new CustomError(
-      `failed to create/update group ${errMessage}`,
-      errorStatus
-    );
-  }
+
+  const accountResponse = await getAccountDetails(payloadBody, Config);
+
   const accountId = accountResponse.response.sales_account?.id;
   if (!accountId) {
     throw new CustomError("[Freshmarketer]: fails in fetching accountId.");
@@ -99,43 +62,10 @@ const groupResponseBuilder = async (message, { Config }) => {
       "[Freshmarketer]: Useremail is required for associating user details."
     );
   }
-  const userPayload = {
-    unique_identifier: {
-      emails: userEmail
-    },
-    contact: {
-      emails: userEmail
-    }
-  };
-
-  endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  let userResponse = await httpPOST(endPoint, userPayload, requestOptions);
-  userResponse = processAxiosResponse(userResponse);
-  if (userResponse.status !== 200) {
-    const errMessage = userResponse.response.errors?.message || "",
-      errorStatus = userResponse.response.errors?.code || "500";
-    throw new CustomError(
-      `failed to search/create user ${errMessage}`,
-      errorStatus
-    );
-  }
-
-  const userId = userResponse.response.contact?.id;
-  if (!userId) {
-    throw new CustomError("[Freshmarketer]: Fails in fetching userId.");
-  }
-  endPoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/contacts/${userId}?include=sales_accounts`;
-  let userSalesAccountResponse = await httpGET(endPoint, requestOptions);
-  userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
-  if (userSalesAccountResponse.status !== 200) {
-    const errMessage = userSalesAccountResponse.response.errors?.message || "",
-      errorStatus = userSalesAccountResponse.response.errors?.code || "500";
-    throw new CustomError(
-      `failed to fetch user accountDetails ${errMessage}`,
-      errorStatus
-    );
-  }
-
+  const userSalesAccountResponse = await getUserAccountDetails(
+    userEmail,
+    Config
+  );
   let accountDetails =
     userSalesAccountResponse.response.contact?.sales_accounts;
   if (!accountDetails) {

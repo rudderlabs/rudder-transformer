@@ -17,11 +17,12 @@ const {
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  FRESHMARKETER_IDENTIFY_EXCLUSION
+  FRESHMARKETER_IDENTIFY_EXCLUSION,
+  FRESHMARKETER_GROUP_EXCLUSION
 } = require("./config");
 
-const identifyResponseBuilder = async (message, { Config }) => {
-  const payload = constructPayload(
+const identifyResponseBuilder = (message, { Config }) => {
+  let payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
   );
@@ -51,20 +52,22 @@ const identifyResponseBuilder = async (message, { Config }) => {
 };
 
 const groupResponseBuilder = async (message, { Config }) => {
-  const payload = constructPayload(
+  let payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
   );
+  if (!payload) {
+    // fail-safety for developer error
+    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  }
+
   payload = extractCustomFields(
     message,
     payload,
     ["context.traits", "traits"],
     FRESHMARKETER_GROUP_EXCLUSION
   );
-  if (!payload) {
-    // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
-  }
+
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload

@@ -667,8 +667,8 @@
         },
         "traits": {
           "address": {
-            "addressLine1":"abcde",
-            "addressLine2":"fghjikld",
+            "addressLine1": "abcde",
+            "addressLine2": "fghjikld",
             "area": "Model Town",
             "city": "Bareilly"
           }
@@ -805,7 +805,57 @@
     }
   },
   {
-    "description": "Group contact with segment with contactId inside externalId ",
+    "description": "Remove contact with segment with ConatctId given inside externalId and operation given as remove",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "17",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "lastName": "garwal",
+          "type": "Segments",
+          "operation": "remove"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "testapi5",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/remove",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Group contact with segment with contactId inside externalId with operation givenn as add",
     "input": {
       "message": {
         "userId": "user123",
@@ -957,29 +1007,28 @@
     }
   },
   {
-    "description": " Group contact with campaign with contactId found by lookUpField ",
-    "input":{
-    "message": {
-      "userId": "user123",
-      "groupId": "20",
-      "traits": {
-      "lastName":"kumar",
-      "type": "Campaigns"
-    },
-      "type": "group"
-    },
-    "destination": {
-      "Config": {
-        "lookUpField": "lastName",
-        "password": "zzlOylGKJRKVr87",
-        "subDomainName": "ruddertest2",
-        "userName": "anant45823jain@gmail.com"
+    "description": " Group contact with campaign with contactId found by lookUpField with no operation field",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "20",
+        "traits": {
+          "lastName": "kumar",
+          "type": "Campaigns"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "ruddertest2",
+          "userName": "anant45823jain@gmail.com"
+        }
       }
+    },
+    "output": {
+      "error": "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
     }
-  },
-  "output":{
-    "error":"Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
   }
-}
 ]
-

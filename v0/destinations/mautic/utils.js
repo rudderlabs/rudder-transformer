@@ -70,26 +70,28 @@ function validatePhone(inputText) {
  * if address is given as string or object
  * */
 const deduceAddressFields = message => {
-  let eAddress = getFieldValueFromMessage(message, "address");
+  let extractedAddress = getFieldValueFromMessage(message, "address");
   let address1;
   let address2;
-  if (eAddress) {
-    if (typeof eAddress === "object") {
+  if (extractedAddress) {
+    if (typeof extractedAddress === "object") {
       if (
-        Object.keys(eAddress).includes("addressLine1") &&
-        Object.keys(eAddress).includes("addressLine2")
+        Object.keys(extractedAddress).includes("addressLine1") &&
+        Object.keys(extractedAddress).includes("addressLine2")
       ) {
-        address1 = eAddress.addressLine1;
-        address2 = eAddress.addressLine2;
+        address1 = extractedAddress.addressLine1;
+        address2 = extractedAddress.addressLine2;
       } else {
-        eAddress = Object.keys(eAddress).reduce((res, v) => {
-          return res.concat(eAddress[v], " ");
+        extractedAddress = Object.keys(extractedAddress).reduce((res, v) => {
+          return res.concat(extractedAddress[v], " ");
         }, "");
       }
     }
-    if (typeof eAddress === "string") {
+    if (typeof extractedAddress === "string") {
       const validLengthAddress =
-        eAddress.length > 128 ? eAddress.substring(0, 127) : eAddress;
+        extractedAddress.length > 128
+          ? extractedAddress.substring(0, 127)
+          : extractedAddress;
       address1 = validLengthAddress.substring(0, 63);
       address2 = validLengthAddress.substring(64, validLengthAddress.length);
     }
@@ -122,6 +124,20 @@ const validatePayload = payload => {
     delete payload.email;
   }
   return true;
+};
+
+/**
+ * @param {*} message
+ * checks if the mandatory fields for the group call are given or not
+ */
+const validateGroupCall = message => {
+  const type = getFieldValueFromMessage(message, "traits")?.type;
+  if (!type) {
+    throw new CustomError("Type of group not mentioned inside traits", 400);
+  }
+  if (!message?.groupId) {
+    throw new CustomError("Group Id is not provided.", 400);
+  }
 };
 
 /**
@@ -166,6 +182,9 @@ const searchContactIds = async (message, Config, baseUrl) => {
     );
   }
   const { contacts } = searchContactsResponse?.response;
+  if (!contacts) {
+    return null;
+  }
   return Object.keys(contacts);
 };
 
@@ -173,6 +192,7 @@ module.exports = {
   validateEmail,
   validatePhone,
   deduceAddressFields,
+  validateGroupCall,
   validatePayload,
   searchContactIds
 };

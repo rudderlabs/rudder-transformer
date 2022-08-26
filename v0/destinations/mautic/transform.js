@@ -7,15 +7,15 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   defaultPostRequestConfig,
-  defaultPatchRequestConfig,
-  getFieldValueFromMessage
+  defaultPatchRequestConfig
 } = require("../../util");
 
 const {
   validateEmail,
   deduceAddressFields,
   validatePayload,
-  searchContactIds
+  searchContactIds,
+  validateGroupCall
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
@@ -49,15 +49,7 @@ const responseBuilder = async (
     return response;
   }
 };
-const validateGroupCall = message => {
-  const type = getFieldValueFromMessage(message, "traits")?.type;
-  if (!type) {
-    throw new CustomError("Type of group not mentioned inside traits", 400);
-  }
-  if (!message?.groupId) {
-    throw new CustomError("Group Id is not provided.", 400);
-  }
-};
+
 /**
  *
  * @param {*} message
@@ -106,7 +98,10 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     }
   }
 
-  const endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
+  let endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
+  if (message.traits.operation === "remove") {
+    endpoint = endpoint.replace("add", "remove");
+  }
   const payload = {};
   return responseBuilder(
     payload,

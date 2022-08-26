@@ -40,6 +40,9 @@ const {
   getHsSearchId
 } = require("./util");
 
+const RETL_CREATE_ASSOCIATION_OP = "createAssociation";
+const RETL_SOURCE = "rETL";
+
 const addHsAuthentication = (response, destinationConfig) => {
   // choosing API Type
   if (destinationConfig.authorizationType === "newPrivateAppApi") {
@@ -75,7 +78,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
-  // Handle hubspot associations. Hubspo
+  // Handle hubspot association events sent from retl source
   if (
     objectType &&
     objectType.toLowerCase() === "association" &&
@@ -93,6 +96,8 @@ const processIdentify = async (message, destination, propertyMap) => {
     response.headers = {
       "Content-Type": "application/json"
     };
+    response.operation = RETL_CREATE_ASSOCIATION_OP;
+    response.source = RETL_SOURCE;
     return addHsAuthentication(response, Config);
   }
 
@@ -418,6 +423,9 @@ const batchEvents = destEvents => {
           createAllObjectsEventChunk.push(event);
         } else if (operation === "updateObject") {
           updateAllObjectsEventChunk.push(event);
+        } else if (operation === RETL_CREATE_ASSOCIATION_OP) {
+          // Identify: chunks for handling association events
+          associationObjectsEventChunk.push(event);
         }
       } else {
         throw new CustomError("[HS]:: rETL -  Error in getting operation", 400);
@@ -428,9 +436,6 @@ const batchEvents = destEvents => {
     } else if (operation === "updateContacts") {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
-    } else if (event.message.endpoint.includes("associations")) {
-      // Identify: chunks for handling association events
-      associationObjectsEventChunk.push(event);
     } else {
       throw new CustomError("[HS]:: rETL - Not a valid operation", 400);
     }

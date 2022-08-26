@@ -49,9 +49,7 @@ const responseBuilder = async (
     return response;
   }
 };
-
-const groupResponseBuilder = async (message, Config, endPoint) => {
-  let groupClass;
+const validateGroupCall = message => {
   const type = getFieldValueFromMessage(message, "traits")?.type;
   if (!type) {
     throw new CustomError("Type of group not mentioned inside traits", 400);
@@ -59,6 +57,17 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   if (!message?.groupId) {
     throw new CustomError("Group Id is not provided.", 400);
   }
+};
+/**
+ *
+ * @param {*} message
+ * @param {*} Config
+ * @param {*} endPoint
+ * @returns builded response from responseBuilder
+ */
+const groupResponseBuilder = async (message, Config, endPoint) => {
+  let groupClass;
+  validateGroupCall(message);
   switch (message.traits.type.toLowerCase()) {
     case "segments":
       groupClass = "segments";

@@ -110,8 +110,8 @@ const validatePayload = payload => {
     throw new CustomError("Invalid Phone No. Provided.", 400);
   }
   if (
-    payload.state.length > 1 &&
     payload.state &&
+    payload.state.length > 1 &&
     payload.state[0] !== payload.state[0].toUpperCase()
   ) {
     // eslint-disable-next-line no-param-reassign

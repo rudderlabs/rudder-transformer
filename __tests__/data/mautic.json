@@ -656,6 +656,65 @@
     }
   },
   {
+    "description": " Address as object with adress line 1, line 2 and city included in it  ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "library": {
+            "name": "http"
+          }
+        },
+        "traits": {
+          "address": {
+            "addressLine1":"abcde",
+            "addressLine2":"fghjikld",
+            "area": "Model Town",
+            "city": "Bareilly"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi3.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "city": "Bareilly",
+          "address1": "abcde",
+          "address2": "fghjikld"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
     "description": " Update contact with contactId inside externalId ",
     "input": {
       "message": {

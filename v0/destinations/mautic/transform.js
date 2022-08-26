@@ -101,6 +101,10 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   let endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
   if (message.traits.operation === "remove") {
     endpoint = endpoint.replace("add", "remove");
+  } else if (!message.traits.operation === "add") {
+    throw new CustomError(
+      `${message.traits.operation} is invalid for Operation field. Avaialbale are Add and Remove.`
+    );
   }
   const payload = {};
   return responseBuilder(

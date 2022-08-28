@@ -67,7 +67,7 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
-    throw CustomError("Unable to Create Contact", 400);
+    throw new CustomError("Unable to Create Contact", 400);
   }
   return createdContact.id;
 };

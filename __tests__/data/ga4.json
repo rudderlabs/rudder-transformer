@@ -98,7 +98,8 @@
             {
               "name": "search",
               "params": {
-                "search_term": "t-shirts"
+                "search_term": "t-shirts",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -258,7 +259,8 @@
                     "item_list_name": "Related Products",
                     "location_id": "L_12345"
                   }
-                ]
+                ],
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -415,6 +417,7 @@
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
                 "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -598,6 +601,7 @@
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
                 "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -753,7 +757,8 @@
                 "creative_slot": "featured_app_1",
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
-                "promotion_name": "Summer Sale"
+                "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -840,7 +845,9 @@
           "location_id": "L_12345",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -921,7 +928,9 @@
                     "location_id": "L_12345"
                   }
                 ],
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -1063,6 +1072,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -1239,6 +1249,7 @@
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
                 "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -1419,6 +1430,7 @@
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
                 "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -1592,6 +1604,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -1703,7 +1716,9 @@
               "item_list_name": "Related Products",
               "location_id": "L_12345"
             }
-          ]
+          ],
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -1783,7 +1798,9 @@
                     "item_list_name": "Related Products",
                     "location_id": "L_12345"
                   }
-                ]
+                ],
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -1930,6 +1947,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2101,6 +2119,7 @@
                 "currency": "USD",
                 "value": 7.77,
                 "coupon": "SUMMER_FUN",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2273,6 +2292,7 @@
                 "value": 7.77,
                 "coupon": "SUMMER_FUN",
                 "payment_type": "Credit Card",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2446,6 +2466,7 @@
                 "value": 7.77,
                 "coupon": "SUMMER_FUN",
                 "shipping_tier": "Ground",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2626,6 +2647,7 @@
                 "coupon": "SUMMER_FUN",
                 "shipping": 3.33,
                 "tax": 1.11,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2805,6 +2827,7 @@
                 "coupon": "SUMMER_FUN",
                 "shipping": 3.33,
                 "tax": 1.11,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -2960,7 +2983,8 @@
                 "affiliation": "Google Store",
                 "coupon": "SUMMER_FUN",
                 "shipping": 3.33,
-                "tax": 1.11
+                "tax": 1.11,
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -3107,6 +3131,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -3254,7 +3279,8 @@
               "params": {
                 "method": "Twitter",
                 "content_type": "image",
-                "item_id": "C_12345"
+                "item_id": "C_12345",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -3370,7 +3396,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "share"
+              "name": "share",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -3494,7 +3523,8 @@
               "params": {
                 "method": "Twitter",
                 "content_type": "image",
-                "item_id": "C_12345"
+                "item_id": "C_12345",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -3611,7 +3641,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "share"
+              "name": "share",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -3675,7 +3708,9 @@
         "type": "track",
         "event": "group",
         "properties": {
-          "group_id": "G_12345"
+          "group_id": "G_12345",
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -3731,7 +3766,9 @@
             {
               "name": "group",
               "params": {
-                "group_id": "G_12345"
+                "group_id": "G_12345",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -3847,7 +3884,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "group"
+              "name": "group",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -3969,7 +4009,8 @@
               "name": "earn_virtual_currency",
               "params": {
                 "virtual_currency_name": "Gems",
-                "value": 5
+                "value": 5,
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -4085,7 +4126,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "earn_virtual_currency"
+              "name": "earn_virtual_currency",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -4207,7 +4251,8 @@
               "name": "generate_lead",
               "params": {
                 "currency": "USD",
-                "value": 99.99
+                "value": 99.99,
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -4330,7 +4375,8 @@
               "name": "level_up",
               "params": {
                 "level": 5,
-                "character": "Player 1"
+                "character": "Player 1",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -4446,7 +4492,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "level_up"
+              "name": "level_up",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -4566,7 +4615,8 @@
             {
               "name": "login",
               "params": {
-                "method": "Google"
+                "method": "Google",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -4682,7 +4732,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "login"
+              "name": "login",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -4806,7 +4859,8 @@
               "params": {
                 "score": 10000,
                 "level": 5,
-                "character": "Player 1"
+                "character": "Player 1",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -4927,7 +4981,8 @@
             {
               "name": "post_score",
               "params": {
-                "score": 10000
+                "score": 10000,
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -5050,7 +5105,8 @@
               "name": "select_content",
               "params": {
                 "content_type": "product",
-                "item_id": "I_12345"
+                "item_id": "I_12345",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -5166,7 +5222,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "select_content"
+              "name": "select_content",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -5286,7 +5345,8 @@
             {
               "name": "sign_up",
               "params": {
-                "method": "Google"
+                "method": "Google",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -5402,7 +5462,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "sign_up"
+              "name": "sign_up",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -5526,7 +5589,8 @@
               "params": {
                 "value": 5,
                 "virtual_currency_name": "Gems",
-                "item_name": "Starter Boost"
+                "item_name": "Starter Boost",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -5649,7 +5713,8 @@
               "name": "spend_virtual_currency",
               "params": {
                 "value": 5,
-                "virtual_currency_name": "Gems"
+                "virtual_currency_name": "Gems",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -5765,7 +5830,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "tutorial_begin"
+              "name": "tutorial_begin",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -5880,7 +5948,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "tutorial_complete"
+              "name": "tutorial_complete",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -6000,7 +6071,8 @@
             {
               "name": "unlock_achievement",
               "params": {
-                "achievement_id": "A_12345"
+                "achievement_id": "A_12345",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -6145,6 +6217,7 @@
               "name": "view_search_results",
               "params": {
                 "search_term": "Clothing",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -6310,6 +6383,7 @@
             {
               "name": "view_search_results",
               "params": {
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -6400,7 +6474,9 @@
           "total": "10",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -6457,7 +6533,9 @@
               "name": "rudderstack_event",
               "params": {
                 "total": "10",
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -6584,7 +6662,8 @@
             {
               "name": "rudderstack_event",
               "params": {
-                "total": "10"
+                "total": "10",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -6805,7 +6884,8 @@
             {
               "name": "rudderstack_event",
               "params": {
-                "value": "10"
+                "value": "10",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -6938,7 +7018,8 @@
             {
               "name": "rudderstack_event",
               "params": {
-                "value": "10"
+                "value": "10",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -7292,6 +7373,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -7430,7 +7512,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "rudderstack_event"
+              "name": "rudderstack_event",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -8069,7 +8154,10 @@
           "client_id": "client_id",
           "events": [
             {
-              "name": "join_group"
+              "name": "join_group",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -8365,7 +8453,10 @@
           "client_id": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
           "events": [
             {
-              "name": "tutotial_complete"
+              "name": "tutotial_complete",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -8656,7 +8747,10 @@
           "non_personalized_ads": true,
           "events": [
             {
-              "name": "tutorial_complete"
+              "name": "tutorial_complete",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -8801,6 +8895,7 @@
               "params": {
                 "currency": "USD",
                 "value": 7.77,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": 0,
@@ -9054,7 +9149,10 @@
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
-              "name": "page_view"
+              "name": "page_view",
+              "params": {
+                "engagement_time_msec": 1
+              }
             }
           ]
         },
@@ -9166,7 +9264,8 @@
             {
               "name": "page_view",
               "params": {
-                "view": "login"
+                "view": "login",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -9511,6 +9610,7 @@
                 "discount": 1.5,
                 "coupon": "ImagePro",
                 "currency": "USD",
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "123",
@@ -9661,7 +9761,8 @@
                 "creative_slot": "featured_app_1",
                 "location_id": "L_12345",
                 "promotion_id": "P_12345",
-                "promotion_name": "Summer Sale"
+                "promotion_name": "Summer Sale",
+                "engagement_time_msec": 1
               }
             }
           ]
@@ -9729,7 +9830,9 @@
           "custom2": "custom2",
           "timezone": {
             "name": "Europe/Tallinn"
-          }
+          },
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -9787,7 +9890,9 @@
               "params": {
                 "custom1": 1234,
                 "custom2": "custom2",
-                "timezone_name": "Europe/Tallinn"
+                "timezone_name": "Europe/Tallinn",
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]
@@ -10113,7 +10218,8 @@
                 "params": {
                   "method": "Google",
                   "Cust1": 1234,
-                  "timezone_name": "Europe/Tallinn"
+                  "timezone_name": "Europe/Tallinn",
+                  "engagement_time_msec": 1
                 }
               }
             ]
@@ -10242,7 +10348,8 @@
                 "params": {
                   "value": 10,
                   "currency": "USD",
-                  "cust1": 1234
+                  "cust1": 1234,
+                  "engagement_time_msec": 1
                 }
               }
             ]
@@ -10310,7 +10417,9 @@
           "firstLogin": true,
           "method": "Google",
           "value": 10,
-          "cust1": 1234
+          "cust1": 1234,
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "integrations": {
           "All": true
@@ -10372,7 +10481,9 @@
                 "name": "sign_up",
                 "params": {
                   "method": "Google",
-                  "cust1": 1234
+                  "cust1": 1234,
+                  "engagement_time_msec": 100,
+                  "session_id": 655
                 }
               }
             ]
@@ -10407,7 +10518,9 @@
                 "params": {
                   "value": 10,
                   "currency": "USD",
-                  "cust1": 1234
+                  "cust1": 1234,
+                  "engagement_time_msec": 100,
+                  "session_id": 655
                 }
               }
             ]
@@ -10556,6 +10669,7 @@
               "params": {
                 "currency": "USD",
                 "value": 4.8,
+                "engagement_time_msec": 1,
                 "items": [
                   {
                     "item_id": "507f1f77bcf86cd799439011",
@@ -10649,7 +10763,9 @@
           "All": true
         },
         "properties": {
-          "cust1": 1234
+          "cust1": 1234,
+          "engagementTimeMsec": 100,
+          "sessionId": 655
         },
         "sentAt": "2022-04-20T15:20:57Z"
       },
@@ -10705,7 +10821,9 @@
                 "page_referrer": "morkey",
                 "page_title": "miphone",
                 "page_location": "http://morkey.in",
-                "cust1": 1234
+                "cust1": 1234,
+                "engagement_time_msec": 100,
+                "session_id": 655
               }
             }
           ]

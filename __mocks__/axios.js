@@ -18,6 +18,11 @@ const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
+const {
+  wootricGetRequestHandler,
+  wootricPostRequestHandler,
+  wootricPutRequestHandler
+} = require("./wootric.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -103,6 +108,11 @@ function get(url, options) {
   ) {
     return Promise.reject({ status: 404 });
   }
+  if (url.includes("https://api.wootric.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(wootricGetRequestHandler(url));
+    });
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -147,9 +157,13 @@ function post(url, payload) {
       resolve(cannyPostRequestHandler(url));
     });
   }
-
   if (url.includes("https://api.hubapi.com")) {
     return hsPostRequestHandler(payload, mockData);
+  }
+  if (url.includes("https://api.wootric.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(wootricPostRequestHandler(url, payload));
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

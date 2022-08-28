@@ -138,73 +138,7 @@
   {
     "metadata": [
       {
-        "jobId": 4
-      }
-    ],
-    "batched": false,
-    "statusCode": 400,
-    "error": "Email has already been taken"
-  },
-  {
-    "metadata": [
-      {
         "jobId": 5
-      }
-    ],
-    "batched": false,
-    "statusCode": 400,
-    "error": "Phone number has already been taken"
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.wootric.com/v1/end_users",
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Bearer 2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c"
-      },
-      "params": {},
-      "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {
-          "email": "dummyUser2@gmail.com",
-          "phone_number": "+19123456777",
-          "last_surveyed": "1642685961",
-          "external_created_at": "1611149961",
-          "external_id": "bf412108-0357-4330-b119-7305e767823c",
-          "properties[city]": "Bangalore",
-          "properties[name]": "Dummy User 2",
-          "properties[title]": "SDE",
-          "properties[gender]": "Male",
-          "properties[company]": "Rudderstack"
-        }
-      },
-      "files": {}
-    },
-    "metadata": [
-      {
-        "jobId": 6
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG",
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      }
-    }
-  },
-  {
-    "metadata": [
-      {
-        "jobId": 7
       }
     ],
     "batched": false,
@@ -214,7 +148,7 @@
   {
     "metadata": [
       {
-        "jobId": 8
+        "jobId": 6
       }
     ],
     "batched": false,
@@ -245,7 +179,7 @@
     },
     "metadata": [
       {
-        "jobId": 9
+        "jobId": 7
       }
     ],
     "batched": false,
@@ -258,16 +192,6 @@
         "accountToken": "NPS-1234567"
       }
     }
-  },
-  {
-    "metadata": [
-      {
-        "jobId": 10
-      }
-    ],
-    "batched": false,
-    "statusCode": 400,
-    "error": "Email has already been taken"
   },
   {
     "batchedRequest": {
@@ -293,7 +217,7 @@
     },
     "metadata": [
       {
-        "jobId": 11
+        "jobId": 8
       }
     ],
     "batched": false,
@@ -306,16 +230,6 @@
         "accountToken": "NPS-1234567"
       }
     }
-  },
-  {
-    "metadata": [
-      {
-        "jobId": 12
-      }
-    ],
-    "batched": false,
-    "statusCode": 400,
-    "error": "Phone number has already been taken"
   },
   {
     "batchedRequest": {
@@ -345,7 +259,7 @@
     },
     "metadata": [
       {
-        "jobId": 13
+        "jobId": 9
       }
     ],
     "batched": false,
@@ -378,7 +292,7 @@
           "score": 7,
           "ip_address": "0.0.0.0",
           "origin_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "text": "Simple, Easy to use, Reliable, Affoardable Product",
+          "text": "Simple, Easy to use, Reliable, Affordable Product",
           "created_at": "1611149961",
           "end_user[properties][city]": "Mumbai",
           "end_user[properties][name]": "Dummy User 1",
@@ -391,7 +305,7 @@
     },
     "metadata": [
       {
-        "jobId": 14
+        "jobId": 10
       }
     ],
     "batched": false,
@@ -408,17 +322,17 @@
   {
     "metadata": [
       {
-        "jobId": 15
+        "jobId": 11
       }
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "No user found with wootric external_id : dummyId2"
+    "error": "No user found with userId : dummyId2"
   },
   {
     "metadata": [
       {
-        "jobId": 16
+        "jobId": 12
       }
     ],
     "batched": false,
@@ -448,7 +362,7 @@
     },
     "metadata": [
       {
-        "jobId": 17
+        "jobId": 13
       }
     ],
     "batched": false,
@@ -465,17 +379,17 @@
   {
     "metadata": [
       {
-        "jobId": 18
+        "jobId": 14
       }
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "No user found with wootric external_id : dummyId2"
+    "error": "No user found with userId : dummyId2"
   },
   {
     "metadata": [
       {
-        "jobId": 19
+        "jobId": 15
       }
     ],
     "batched": false,
@@ -485,7 +399,7 @@
   {
     "metadata": [
       {
-        "jobId": 20
+        "jobId": 16
       }
     ],
     "batched": false,

@@ -1030,5 +1030,30 @@
     "output": {
       "error": "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
     }
+  },
+  {
+    "description": " No contact found for lookup field and email to group ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "20",
+        "traits": {
+          "lastName": "Singh",
+          "type": "Campaigns"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "ruddertest2",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Could not find any contact Id for the given lookup Field or email."
+    }
   }
 ]

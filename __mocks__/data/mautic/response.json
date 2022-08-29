@@ -2491,6 +2491,10 @@
                 "frequencyRules": []
             }
         }
+    },
+    "https://ruddertest2.mautic.net/api/contacts?where%5B0%5D%5Bcol%5D=lastname&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=Singh":{
+        "Total":0,
+        "Conatcts":{}
     }
 
 }

@@ -93,17 +93,11 @@ const deduceAddressFields = message => {
 };
 
 /**
- * @param {*} payload
- * @returns true if no error is there
- * else, throws an error
- * Validates the generated payload for specific fields
+ * 
+ * @param {*} payload 
+ * Works on the state field of Payload for its Conversion to Valid Case 
  */
-const validatePayload = payload => {
-  // checking for message details validations
-
-  if (payload.phone && !validatePhone(payload.phone)) {
-    throw new CustomError("Invalid Phone No. Provided.", 400);
-  }
+const deduceStateField = payload =>{
   if (
     payload.state &&
     payload.state.length > 1 &&
@@ -111,6 +105,20 @@ const validatePayload = payload => {
   ) {
     payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
   }
+}
+
+/**
+ * @param {*} payload
+ * @returns true if no error is there
+ * else, throws an error
+ * Validates the generated payload for specific fields
+ */
+const validatePayload = payload => {
+
+  if (payload.phone && !validatePhone(payload.phone)) {
+    throw new CustomError("Invalid Phone No. Provided.", 400);
+  }
+  
   if (payload.email && !validateEmail(payload.email)) {
     delete payload.email;
   }
@@ -181,6 +189,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
 };
 
 module.exports = {
+  deduceStateField,
   validateEmail,
   validatePhone,
   deduceAddressFields,

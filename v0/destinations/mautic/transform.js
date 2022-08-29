@@ -13,6 +13,7 @@ const {
 const {
   validateEmail,
   deduceAddressFields,
+  deduceStateField,
   validatePayload,
   searchContactIds,
   validateGroupCall
@@ -136,6 +137,7 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
   );
   if (validatePayload(payload)) {
     const { address1, address2 } = deduceAddressFields(message);
+    deduceStateField(payload);
     payload.address1 = address1;
     payload.address2 = address2;
   }

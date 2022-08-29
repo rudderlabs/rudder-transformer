@@ -5,6 +5,13 @@ const {
 const { CustomError } = require("../../util");
 const { CONFIG_CATEGORIES } = require("./config");
 
+/*
+ * This functions is used for getting Account details of contacts.
+ * @param {*} userEmail
+ * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#upsert_a_contact
+ */
 const getUserAccountDetails = async (userEmail, Config) => {
   const requestOptions = {
     headers: {
@@ -38,6 +45,14 @@ const getUserAccountDetails = async (userEmail, Config) => {
   return userSalesAccountResponse;
 };
 
+/*
+ * This functions is used for getting Account details.
+ * If account is not exists then it will create it otherwise it will update it.
+ * @param {*} payloadBody
+ * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
+ */
 const getAccountDetails = async (payloadBody, Config) => {
   const requestOptions = {
     headers: {

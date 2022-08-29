@@ -12,6 +12,12 @@ const {
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { getAccountDetails, getUserAccountDetails } = require("./utils");
 
+/*
+ * This functions is used for creating response for identify call, to create or update contacts.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
 const identifyResponseBuilder = (message, { Config }) => {
   const payload = constructPayload(
     message,
@@ -35,6 +41,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+/*
+ * This functions is used for associating contacts in account.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
 const groupResponseBuilder = async (message, { Config }) => {
   const payload = constructPayload(
     message,
@@ -56,7 +68,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   if (!accountId) {
     throw new CustomError("[Freshmarketer]: fails in fetching accountId.");
   }
-  const userEmail = message.context.traits?.email;
+  const userEmail = message.context.traits?.email || undefined;
   if (!userEmail) {
     throw new CustomError(
       "[Freshmarketer]: Useremail is required for associating user details."
@@ -67,7 +79,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     Config
   );
   let accountDetails =
-    userSalesAccountResponse.response.contact?.sales_accounts;
+    userSalesAccountResponse.response.contact?.sales_accounts || undefined;
   if (!accountDetails) {
     throw new CustomError(
       "[Freshmarketer]: Fails in fetching user accountDetails"

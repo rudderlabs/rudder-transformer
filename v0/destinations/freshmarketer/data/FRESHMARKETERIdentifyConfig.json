@@ -54,7 +54,8 @@
   },
   {
     "destKey": "address",
-    "sourceKeys": ["traits.address", "context.traits.address"],
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

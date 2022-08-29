@@ -8,7 +8,10 @@
   {
     "destKey": "industry_type_id",
     "sourceKeys": ["traits.industryTypeId", "context.traits.industryTypeId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "business_type_id",
@@ -18,7 +21,10 @@
       "context.traits.business_type_id",
       "context.traits.businessTypeId"
     ],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "phone",
@@ -91,7 +97,10 @@
   {
     "destKey": "territory_id",
     "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "parent_sales_account_id",
@@ -99,12 +108,18 @@
       "traits.parentSalesAccountId",
       "context.traits.parentSalesAccountId"
     ],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "owner_id",
     "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "facebook",

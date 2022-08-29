@@ -113,7 +113,7 @@ const deduceStateField = payload =>{
  * else, throws an error
  * Validates the generated payload for specific fields
  */
-const validatePayload = (payload,context) => {
+const validatePayload = (payload) => {
 
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new CustomError("Invalid Phone No. Provided.", 400);

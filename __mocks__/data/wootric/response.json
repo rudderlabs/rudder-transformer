@@ -64,135 +64,25 @@
       }
     ]
   },
-  "https://api.wootric.com/v1/end_users/testuser1@gmail.com?lookup_by_email=true": {
-    "id": 486251431,
-    "created_at": "2022-08-10 03:58:39 -0700",
-    "updated_at": "2022-08-10 06:20:37 -0700",
-    "email": "testuser1@gmail.com",
-    "last_surveyed": "2020-01-22 20:56:07 -0800",
-    "external_created_at": 0,
+  "https://api.wootric.com/v1/end_users/490635419": {
+    "id": 490635419,
+    "created_at": "2022-08-20 00:55:26 -0700",
+    "updated_at": "2022-08-22 11:17:05 -0700",
+    "email": "firstuser@gmail.com",
+    "last_surveyed": "2022-08-01 00:11:44 -0700",
+    "external_created_at": 1661002761,
     "last_seen_at": null,
     "properties": {
-      "createdAt": "2020-01-23T04:56:07.890Z"
+      "Department": "Marketing",
+      "product_plan": "Web",
+      "revenue amount": "5000"
     },
-    "phone_number": "+17777777778",
-    "external_id": "testUserId1",
+    "phone_number": "+8859133456781",
+    "external_id": "firstUserId123",
     "last_response": {
-      "id": 100416173,
-      "score": 10,
-      "text": "Simple, Easy to use, Reliable, Affoardable Product",
-      "survey": {
-        "channel": "web"
-      }
-    },
-    "settings": {
-      "email_nps": true,
-      "mobile_nps": true,
-      "web_nps": true,
-      "force_mobile_survey": null,
-      "force_web_survey": null,
-      "surveys_disabled_by_end_user": null
-    }
-  },
-  "https://api.wootric.com/v1/end_users/dummyuser1@gmail.com?lookup_by_email=true": {
-    "id": 486438462,
-    "created_at": "2022-08-10 11:39:50 -0700",
-    "updated_at": "2022-08-12 22:47:00 -0700",
-    "email": "dummyuser1@gmail.com",
-    "last_surveyed": "2022-01-20 05:39:21 -0800",
-    "external_created_at": 1611149961,
-    "last_seen_at": null,
-    "properties": {
-      "city": "Mumbai",
-      "name": "Dummy User 1",
-      "title": "SDE",
-      "gender": "Male",
-      "company": "Rudderstack"
-    },
-    "phone_number": "+19133456781",
-    "external_id": "dummyId1",
-    "last_response": null,
-    "settings": {
-      "email_nps": true,
-      "mobile_nps": true,
-      "web_nps": true,
-      "force_mobile_survey": null,
-      "force_web_survey": null,
-      "surveys_disabled_by_end_user": null
-    }
-  },
-  "https://api.wootric.com/v1/end_users/excludeUser@gmail.com?lookup_by_email=true": {
-    "id": 486336190,
-    "created_at": "2022-08-10 07:30:50 -0700",
-    "updated_at": "2022-08-10 10:12:46 -0700",
-    "email": "excludeUser@gmail.com",
-    "last_surveyed": "2022-01-20 05:39:21 -0800",
-    "external_created_at": 1579755367,
-    "last_seen_at": null,
-    "properties": {
-      "city": "Mumbai",
-      "name": "exclude test user",
-      "email": "excludeUser@gmail.com",
-      "title": "AD",
-      "gender": "Male",
-      "company": "Rockstar"
-    },
-    "phone_number": "+18324671283",
-    "external_id": "exclueFunTestId",
-    "last_response": null,
-    "settings": {
-      "email_nps": true,
-      "mobile_nps": true,
-      "web_nps": true,
-      "force_mobile_survey": null,
-      "force_web_survey": null,
-      "surveys_disabled_by_end_user": null
-    }
-  },
-  "https://api.wootric.com/v1/end_users/phone_number/+19133456781": {
-    "id": 486438462,
-    "created_at": "2022-08-10 11:39:50 -0700",
-    "updated_at": "2022-08-12 22:47:00 -0700",
-    "email": "dummyuser1@gmail.com",
-    "last_surveyed": "2022-01-20 05:39:21 -0800",
-    "external_created_at": 1611149961,
-    "last_seen_at": null,
-    "properties": {
-      "city": "Mumbai",
-      "name": "Dummy User 1",
-      "title": "SDE",
-      "gender": "Male",
-      "company": "Rudderstack"
-    },
-    "phone_number": "+19133456781",
-    "external_id": "dummyId1",
-    "last_response": null,
-    "settings": {
-      "email_nps": true,
-      "mobile_nps": true,
-      "web_nps": true,
-      "force_mobile_survey": null,
-      "force_web_survey": null,
-      "surveys_disabled_by_end_user": null
-    }
-  },
-  "https://api.wootric.com/v1/end_users/phone_number/+17777777778": {
-    "id": 486251431,
-    "created_at": "2022-08-10 03:58:39 -0700",
-    "updated_at": "2022-08-10 06:20:37 -0700",
-    "email": "testuser1@gmail.com",
-    "last_surveyed": "2020-01-22 20:56:07 -0800",
-    "external_created_at": 0,
-    "last_seen_at": null,
-    "properties": {
-      "createdAt": "2020-01-23T04:56:07.890Z"
-    },
-    "phone_number": "+17777777778",
-    "external_id": "testUserId1",
-    "last_response": {
-      "id": 100416173,
-      "score": 10,
-      "text": "Simple, Easy to use, Reliable, Affoardable Product",
+      "id": 101013218,
+      "score": 9,
+      "text": "Good !!!",
       "survey": {
         "channel": "web"
       }

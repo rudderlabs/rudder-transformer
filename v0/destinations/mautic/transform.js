@@ -78,10 +78,9 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
       );
   }
   let contactId = getDestinationExternalID(message, "mauticContactId");
-  let contacts;
   if (!contactId) {
-    contacts = await searchContactIds(message, Config, endPoint); // Getting the contact Id using Lookup field and then email
-    if (!contacts) {
+    const contacts = await searchContactIds(message, Config, endPoint); 
+    if (!contacts || contacts.length==0) {
       throw new CustomError(
         "Could not find any contact Id for the given lookup Field or email.",
         400
@@ -146,9 +145,9 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
      2. Otherwise we will look for the lookup field from the web app 
   */
   let contactId = getDestinationExternalID(message, "mauticContactId");
-  let contacts;
+
   if (!contactId) {
-    contacts = await searchContactIds(message, Config, endpoint);
+    const contacts = await searchContactIds(message, Config, endpoint);
     if (contacts?.length === 1) {
       const [first] = contacts;
       contactId = first;

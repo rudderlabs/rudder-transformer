@@ -10,7 +10,11 @@ const {
 } = require("../../util");
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const { getAccountDetails, getUserAccountDetails } = require("./utils");
+const {
+  getAccountDetails,
+  getUserAccountDetails,
+  checkNumberDataType
+} = require("./utils");
 
 /*
  * This functions is used for creating response for identify call, to create or update contacts.
@@ -28,7 +32,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-
+  checkNumberDataType(payload);
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -56,7 +60,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-
+  checkNumberDataType(payload);
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload

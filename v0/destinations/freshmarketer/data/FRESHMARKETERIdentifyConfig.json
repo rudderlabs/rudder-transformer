@@ -107,26 +107,17 @@
   {
     "destKey": "territory_id",
     "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   },
   {
     "destKey": "lead_source_id",
     "sourceKeys": ["traits.leadSourceId", "context.traits.leadSourceId"],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   },
   {
     "destKey": "owner_id",
     "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   },
   {
     "destKey": "subscription_types",
@@ -149,10 +140,7 @@
       "context.traits.campaignId",
       "context.traits.campaign_id"
     ],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   },
   {
     "destKey": "keyword",
@@ -194,10 +182,7 @@
   {
     "destKey": "contact_status_id",
     "sourceKeys": ["traits.contactStatusId", "context.traits.contactStatusId"],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   },
   {
     "destKey": "lifecycle_stage_id",
@@ -205,9 +190,6 @@
       "traits.lifecycleStageId",
       "context.traits.lifecycleStageId"
     ],
-    "required": false,
-    "metadata": {
-      "type": "toNumber"
-    }
+    "required": false
   }
 ]

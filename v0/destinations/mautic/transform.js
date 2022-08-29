@@ -134,7 +134,7 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  if (validatePayload(payload)) {
+  if (validatePayload(payload,message.context)) {
     const { address1, address2 } = deduceAddressFields(message);
     deduceStateField(payload);
     payload.address1 = address1;

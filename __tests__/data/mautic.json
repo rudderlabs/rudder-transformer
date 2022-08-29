@@ -561,6 +561,35 @@
       "error": "Invalid entry for key subscription_status"
     }
   },
+{
+  "description": " Invalid email",
+  "input": {
+    "message": {
+      "anonymousId": "anon-id-new",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        },
+        "traits" :  {
+          "email":"abc123"
+        }
+      },
+      "type": "identify"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "m3dG325C51C1RPq",
+        "subDomainName": "testapi3",
+        "userName": "anantjain45823@gmail.com"
+      }
+    }
+  },
+  "output": {
+    "error": "Invalid Email Provided."
+  }
+},
   {
     "description": " Invalid POC",
     "input": {
@@ -1006,6 +1035,7 @@
       "files": {}
     }
   },
+  
   {
     "description": " Group contact with campaign with contactId found by lookUpField with no operation field",
     "input": {

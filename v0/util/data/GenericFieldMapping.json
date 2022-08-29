@@ -7,7 +7,7 @@
     "timestamp",
     "originalTimestamp"
   ],
-  "timezone":["context.timezone"],
+  "timezone":"context.timezone",
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
   "email": [
     "traits.email",
@@ -85,7 +85,7 @@
   "state":["traits.state", "context.traits.state"],
   "zipcode":["traits.zipcode", "context.traits.zipcode", "traits.zip", "context.traits.zip"],
   "country":["traits.country", "context.traits.country"],
-  "city":["traits.address.city"],
+  "city":"traits.address.city",
 
   "avatar": [
     "traits.avatar",

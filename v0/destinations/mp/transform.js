@@ -16,7 +16,8 @@ const {
   CustomError,
   isAppleFamily,
   getFullName,
-  extractCustomFields
+  extractCustomFields,
+  isHttpStatusSuccess
 } = require("../../util");
 const {
   ConfigCategory,
@@ -25,7 +26,13 @@ const {
   GEO_SOURCE_ALLOWED_VALUES
 } = require("./config");
 
-// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel 
+const { httpPOST } = require("../../../adapters/network");
+
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+
+// ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
   mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -37,59 +44,71 @@ function getEventTime(message) {
   return new Date(message.timestamp).toISOString();
 }
 
-function responseBuilderSimple(parameters, message, eventType, destConfig) {
-  let headers = {};
-  let endpoint =
+async function createUser(response) {
+  const url = response.endpoint;
+  const { params } = response;
+  const axiosResponse = await httpPOST(url, {}, { params });
+  const processedResponse = processAxiosResponse(axiosResponse);
+  return processedResponse.status;
+}
+
+function setImportCredentials(destConfig) {
+  const endpoint =
     destConfig.dataResidency === "eu"
-      ? "https://api-eu.mixpanel.com/engage/"
-      : "https://api.mixpanel.com/engage/";
+      ? "https://api-eu.mixpanel.com/import/"
+      : "https://api.mixpanel.com/import/";
+  const headers = {
+    Authorization: `Basic ${Buffer.from(`${destConfig.apiSecret}:`).toString(
+      "base64"
+    )}`
+  };
+  return { endpoint, headers };
+}
 
-  if (
-    eventType !== EventType.IDENTIFY &&
-    eventType !== EventType.GROUP &&
-    eventType !== "revenue"
-  ) {
-    const duration = getTimeDifference(message.timestamp);
-    if (duration.days <= 5) {
-      endpoint =
-        destConfig.dataResidency === "eu"
-          ? "https://api-eu.mixpanel.com/track/"
-          : "https://api.mixpanel.com/track/";
-    } else if (duration.years > 5) {
-      throw new CustomError(
-        "Event timestamp should be within last 5 years",
-        400
-      );
-    } else {
-      endpoint =
-        destConfig.dataResidency === "eu"
-          ? "https://api-eu.mixpanel.com/import/"
-          : "https://api.mixpanel.com/import/";
-      if (destConfig.apiSecret) {
-        headers = {
-          Authorization: `Basic ${Buffer.from(
-            `${destConfig.apiSecret}:`
-          ).toString("base64")}`
-        };
-      } else {
-        throw new CustomError(
-          "Event timestamp is older than 5 days and no apisecret is provided in destination config.",
-          400
-        );
-      }
-    }
-  }
-
+function responseBuilderSimple(parameters, message, eventType, destConfig) {
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.userId = message.anonymousId || message.userId;
   const encodedData = Buffer.from(
     JSON.stringify(removeUndefinedValues(parameters))
   ).toString("base64");
-
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = endpoint;
-  response.headers = headers;
-  response.userId = message.anonymousId || message.userId;
   response.params = { data: encodedData };
+  const duration = getTimeDifference(message.timestamp);
+  switch (eventType) {
+    case EventType.ALIAS:
+    case EventType.TRACK:
+    case EventType.SCREEN:
+    case EventType.PAGE:
+      if (duration.days <= 5) {
+        response.endpoint =
+          destConfig.dataResidency === "eu"
+            ? "https://api-eu.mixpanel.com/track/"
+            : "https://api.mixpanel.com/track/";
+        response.headers = {};
+      } else if (duration.years > 5) {
+        throw new CustomError(
+          "Event timestamp should be within last 5 years",
+          400
+        );
+      } else {
+        const credentials = setImportCredentials(destConfig);
+        response.endpoint = credentials.endpoint;
+        response.headers = credentials.headers;
+      }
+      break;
+    case "merge":
+      // eslint-disable-next-line no-case-declarations
+      const credentials = setImportCredentials(destConfig);
+      response.endpoint = credentials.endpoint;
+      response.headers = credentials.headers;
+      break;
+    default:
+      response.endpoint =
+        destConfig.dataResidency === "eu"
+          ? "https://api-eu.mixpanel.com/engage/"
+          : "https://api.mixpanel.com/engage/";
+      response.headers = {};
+  }
 
   return response;
 }
@@ -160,8 +179,14 @@ function processTrack(message, destination) {
 
 function getTransformedJSON(message, mappingJson, useNewMapping) {
   let rawPayload = constructPayload(message, mappingJson);
-  if(isDefined(rawPayload.$geo_source) && (!GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source))) {
-    throw new CustomError ("$geo_source value must be either null or 'reverse_geocoding' ", 400);
+  if (
+    isDefined(rawPayload.$geo_source) &&
+    !GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source)
+  ) {
+    throw new CustomError(
+      "$geo_source value must be either null or 'reverse_geocoding' ",
+      400
+    );
   }
   const userName = get(rawPayload, "$name");
   if (!userName) {
@@ -194,8 +219,8 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
   return rawPayload;
 }
 
-function processIdentifyEvents(message, type, destination) {
-  const returnValue = [];
+async function processIdentifyEvents(message, type, destination) {
+  let returnValue;
   // this variable is used for supporting backward compatibility
   const { useNewMapping } = destination.Config;
   // user payload created
@@ -233,32 +258,18 @@ function processIdentifyEvents(message, type, destination) {
   if (message.context?.active === false) {
     parameters.$ignore_time = true;
   }
-  returnValue.push(
-    responseBuilderSimple(parameters, message, type, destination.Config)
+  returnValue = responseBuilderSimple(
+    parameters,
+    message,
+    type,
+    destination.Config
   );
 
   if (message.userId && message.anonymousId && destination.Config.apiSecret) {
-    // Use this block when our userids are changed to UUID V4.
-    // const trackParameters = {
-    //   event: "$identify",
-    //   properties: {
-    //     $identified_id: message.userId,
-    //     $anon_id: message.anonymousId,
-    //     token: destination.Config.token
-    //   }
-    // };
-    // const identifyTrackResponse = responseBuilderSimple(
-    //   trackParameters,
-    //   message,
-    //   type,
-    //   destination.Config
-    // );
-    // identifyTrackResponse.endpoint =
-    //   destination.Config.dataResidency === "eu"
-    //     ? "https://api-eu.mixpanel.com/track/"
-    //     : "https://api.mixpanel.com/track/";
-    // returnValue.push(identifyTrackResponse);
-
+    const responseStatus = await createUser(returnValue);
+    if (!isHttpStatusSuccess(responseStatus)) {
+      return new CustomError("Unable to create the user.", responseStatus);
+    }
     const trackParameters = {
       event: "$merge",
       properties: {
@@ -269,21 +280,10 @@ function processIdentifyEvents(message, type, destination) {
     const identifyTrackResponse = responseBuilderSimple(
       trackParameters,
       message,
-      type,
+      "merge",
       destination.Config
     );
-
-    identifyTrackResponse.endpoint =
-      destination.Config.dataResidency === "eu"
-        ? "https://api-eu.mixpanel.com/import/"
-        : "https://api.mixpanel.com/import/";
-
-    identifyTrackResponse.headers = {
-      Authorization: `Basic ${Buffer.from(
-        `${destination.Config.apiSecret}:`
-      ).toString("base64")}`
-    };
-    returnValue.push(identifyTrackResponse);
+    returnValue = identifyTrackResponse;
   }
 
   return returnValue;
@@ -401,7 +401,7 @@ function processGroupEvents(message, type, destination) {
   return returnValue;
 }
 
-function processSingleMessage(message, destination) {
+async function processSingleMessage(message, destination) {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -427,7 +427,7 @@ function processSingleMessage(message, destination) {
   }
 }
 
-function process(event) {
+async function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 

@@ -77,16 +77,29 @@ function validateGroup(message, payload) {
 function validateTrack(message, payload) {
   // pass only string, number, boolean properties
   if (payload.user_id || payload.email) {
+    const finalPayload = payload;
     const metadata = {};
     if (message.properties) {
+      if (message.properties.organization_id) {
+        finalPayload.company_id = message.properties.organization_id;
+      } else if (message.properties.company_id) {
+        finalPayload.company_id = message.properties.company_id;
+      }
+
       Object.keys(message.properties).forEach(key => {
         const val = message.properties[key];
         if (val && typeof val !== "object" && !Array.isArray(val)) {
           metadata[key] = val;
         }
       });
+
+      if (payload.user_id) {
+        if (!metadata.user_id && !metadata.userId) {
+          metadata.user_id = payload.user_id;
+        }
+      }
     }
-    return { ...payload, metadata };
+    return { ...finalPayload, metadata };
   }
   throw new CustomError("Email or userId is mandatory", 400);
 }

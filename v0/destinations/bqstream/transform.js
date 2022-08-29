@@ -1,6 +1,13 @@
 /* eslint-disable no-console */
+const _ = require("lodash");
 const { EventType } = require("../../../constants");
-const { CustomError } = require("../../util");
+const {
+  CustomError,
+  getErrorRespEvents,
+  defaultBatchRequestConfig,
+  getSuccessRespEvents
+} = require("../../util");
+const { MAX_ROWS_PER_REQUEST } = require("./config");
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -34,6 +41,7 @@ const process = async event => {
   if (propInsertId) {
     props.insertId = propInsertId;
   }
+
   return {
     datasetId,
     tableId,
@@ -42,4 +50,96 @@ const process = async event => {
   };
 };
 
-module.exports = { process };
+const batchEvents = eventsChunk => {
+  const batchedResponseList = [];
+
+  // arrayChunks = [[e1,e2, ..batchSize], [e1,e2, ..batchSize], ...]
+  const arrayChunks = _.chunk(eventsChunk, MAX_ROWS_PER_REQUEST);
+
+  // list of chunks [ [..], [..] ]
+  arrayChunks.forEach(chunk => {
+    const batchResponseList = [];
+    const metadata = [];
+
+    let batchEventResponse = defaultBatchRequestConfig();
+    const { message, destination } = chunk[0];
+
+    // Batch event into dest batch structure
+    chunk.forEach(ev => {
+      // Pixel code must be added above "batch": [..]
+      batchResponseList.push(ev.message.properties);
+      metadata.push(ev.metadata);
+    });
+
+    batchEventResponse.batchedRequest = {
+      datasetId: message.datasetId,
+      tableId: message.tableId,
+      projectId: message.projectId,
+      properties: batchResponseList
+    };
+
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata,
+      destination
+    };
+
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList;
+};
+
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+
+  const eventsChunk = []; // temporary variable to divide payload into chunks
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async event => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          eventsChunk.push(event);
+        } else {
+          // if not transformed
+          let response = await process(event);
+          response = Array.isArray(response) ? response : [response];
+          response.forEach(res => {
+            eventsChunk.push({
+              message: res,
+              metadata: event.metadata,
+              destination: event.destination
+            });
+          });
+        }
+      } catch (error) {
+        errorRespList.push(
+          getErrorRespEvents(
+            [event.metadata],
+            error.response ? error.response.status : 400,
+            error.message || "Error occurred while processing payload."
+          )
+        );
+      }
+    })
+  );
+
+  let batchedResponseList = [];
+  if (eventsChunk.length) {
+    batchedResponseList = batchEvents(eventsChunk);
+  }
+  return [...batchedResponseList, ...errorRespList];
+};
+
+module.exports = { process, processRouterDest };

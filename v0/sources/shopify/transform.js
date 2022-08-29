@@ -1,15 +1,13 @@
+const _ = require("lodash");
 const get = require("get-value");
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
-  extractEmailFromPayload
+  extractEmailFromPayload,
+  setAnonymousId
 } = require("./util");
-const {
-  generateUUID,
-  CustomError,
-  removeUndefinedAndNullValues
-} = require("../../util");
+const { CustomError, removeUndefinedAndNullValues } = require("../../util");
 const Message = require("../message");
 const { EventType } = require("../../../constants");
 const {
@@ -18,7 +16,8 @@ const {
   IDENTIFY_TOPICS,
   ECOM_TOPICS,
   RUDDER_ECOM_MAP,
-  SUPPORTED_TRACK_EVENTS
+  SUPPORTED_TRACK_EVENTS,
+  SHOPIFY_TRACK_MAP
 } = require("./config");
 
 const identifyPayloadBuilder = event => {
@@ -77,7 +76,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
-  message.setEventName(shopifyTopic);
+  message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
   Object.keys(event)
     .filter(
       key =>
@@ -114,11 +113,11 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = event => {
+const processEvent = inputEvent => {
   let message;
+  const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
-
   switch (shopifyTopic) {
     case IDENTIFY_TOPICS.CUSTOMERS_CREATE:
     case IDENTIFY_TOPICS.CUSTOMERS_UPDATE:
@@ -147,7 +146,9 @@ const processEvent = event => {
       message.setProperty("traits.email", email);
     }
   }
-  message.setProperty("anonymousId", generateUUID());
+  if (message.type !== EventType.IDENTIFY) {
+    setAnonymousId(message);
+  }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty("context.library", {
     name: "RudderStack Shopify Cloud",
@@ -158,8 +159,7 @@ const processEvent = event => {
 };
 
 const process = event => {
-  const response = processEvent(event);
-  return response;
+  return processEvent(event);
 };
 
 exports.process = process;

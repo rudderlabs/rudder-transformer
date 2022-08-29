@@ -177,17 +177,11 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
+        const message = input.message.statusCode
+          ? input.message
+          : process(input);
         return getSuccessRespEvents(
-          await process(input),
+          message,
           [input.metadata],
           input.destination
         );

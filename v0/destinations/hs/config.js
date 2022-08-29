@@ -29,6 +29,7 @@ const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
 // Identify
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const IDENTIFY_CRM_SEARCH_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/search`;
+const IDENTIFY_CRM_SEARCH_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType/search`;
 const IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts`;
 const IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:contactId`;
 
@@ -42,9 +43,8 @@ const MAX_BATCH_SIZE_CRM_CONTACT = 10;
 // Ref - https://developers.hubspot.com/docs/api/analytics/events
 const TRACK_CRM_ENDPOINT = `${BASE_ENDPOINT}/events/v3/send`;
 
-/* CRM Custom Objects */
-// Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
-const CRM_CREATE_CUSTOM_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
+/* CRM ALL Objects */
+const CRM_CREATE_UPDATE_ALL_OBJECTS = `${BASE_ENDPOINT}/crm/v3/objects/:objectType`;
 
 // Batch for custom Objects
 // Ref - https://developers.hubspot.com/docs/api/crm/crm-custom-objects
@@ -57,6 +57,7 @@ const CRM_ASSOCIATION_V3 = `${BASE_ENDPOINT}/crm/v3/associations/:fromObjectType
 // Ref - https://developers.hubspot.com/docs/api/crm/understanding-the-crm
 const MAX_BATCH_SIZE_CRM_OBJECT = 100;
 
+const SEARCH_LIMIT_VALUE = 100;
 // API version (value) is taken from the webapp
 const API_VERSION = {
   v1: "legacyApi",
@@ -87,18 +88,20 @@ module.exports = {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
   IDENTIFY_CRM_SEARCH_CONTACT,
+  IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   IDENTIFY_CRM_UPDATE_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT,
-  CRM_CREATE_CUSTOM_OBJECTS,
+  CRM_CREATE_UPDATE_ALL_OBJECTS,
   BATCH_CREATE_CUSTOM_OBJECTS,
   CRM_ASSOCIATION_V3,
   MAX_BATCH_SIZE_CRM_OBJECT,
   API_VERSION,
   ConfigCategory,
   mappingConfig,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  SEARCH_LIMIT_VALUE
 };

@@ -33,12 +33,9 @@
   },
   {
     "destKey": "external_id",
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
     "sourceFromGenericMap": true,
-    "required": true,
-    "metadata": {
-      "type": "toString"
-    }
+    "required": false
   },
   {
     "destKey": "properties",

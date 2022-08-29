@@ -99,9 +99,9 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   }
 
   if (
-    message.traits &&
-    (message.traits.operation !== "remove" ||
-      message.traits.operation !== "add")
+    message.traits.operation &&
+    message.traits.operation !== "remove" &&
+    message.traits.operation !== "add"
   ) {
     throw new CustomError(
       `${message.traits.operation} is invalid for Operation field. Available are add or remove.`

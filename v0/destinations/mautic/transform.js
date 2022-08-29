@@ -55,12 +55,12 @@ const responseBuilder = async (
  * @param {*} message
  * @param {*} Config
  * @param {*} endPoint
- * @returns builded response from responseBuilder
+ * @returns build response for group call
  */
 const groupResponseBuilder = async (message, Config, endPoint) => {
   let groupClass;
   validateGroupCall(message);
-  switch (message.traits.type.toLowerCase()) {
+  switch (message.traits?.type?.toLowerCase()) {
     case "segments":
       groupClass = "segments";
       break;
@@ -98,14 +98,17 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     }
   }
 
-  let endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/add`;
-  if (message.traits.operation === "remove") {
-    endpoint = endpoint.replace("add", "remove");
-  } else if (!message.traits.operation === "add") {
+  if (
+    message.traits &&
+    (message.traits.operation !== "remove" ||
+      message.traits.operation !== "add")
+  ) {
     throw new CustomError(
-      `${message.traits.operation} is invalid for Operation field. Avaialbale are Add and Remove.`
+      `${message.traits.operation} is invalid for Operation field. Available are add or remove.`
     );
   }
+  const operation = message.traits.operation || "add";
+  const endpoint = `${endPoint}/${groupClass}/${message.groupId}/contact/${contactId}/${operation}`;
   const payload = {};
   return responseBuilder(
     payload,
@@ -116,7 +119,14 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   );
 };
 
-const identifyResponseBuilder = async (message, destination, endpoint) => {
+/**
+ *
+ * @param {*} message
+ * @param {*} Config
+ * @param {*} endPoint
+ * @returns build response for identify call
+ */
+const identifyResponseBuilder = async (message, Config, endpoint) => {
   let method;
   let endPoint;
   // constructing payload from mapping JSONs
@@ -124,10 +134,8 @@ const identifyResponseBuilder = async (message, destination, endpoint) => {
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  // if the payload is valid adding address fields if present
-
   if (validatePayload(payload)) {
-    const { address1, address2 } = deduceAddressFields(message); // throws error if address greater than 128
+    const { address1, address2 } = deduceAddressFields(message);
     payload.address1 = address1;
     payload.address2 = address2;
   }
@@ -137,9 +145,8 @@ const identifyResponseBuilder = async (message, destination, endpoint) => {
   */
   let contactId = getDestinationExternalID(message, "mauticContactId");
   let contacts;
-  // searching for contactID from filter options if contactID is not given
   if (!contactId) {
-    contacts = await searchContactIds(message, destination, endpoint); // Getting the contact Id using Lookup field and then email
+    contacts = await searchContactIds(message, Config, endpoint);
     if (contacts?.length === 1) {
       const [first] = contacts;
       contactId = first;
@@ -154,13 +161,7 @@ const identifyResponseBuilder = async (message, destination, endpoint) => {
     method = defaultPatchRequestConfig.requestMethod;
   }
 
-  return responseBuilder(
-    payload,
-    endPoint,
-    method,
-    EventType.IDENTIFY,
-    destination
-  );
+  return responseBuilder(payload, endPoint, method, EventType.IDENTIFY, Config);
 };
 
 const process = async event => {

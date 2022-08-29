@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require("get-value");
 const { CustomError, getFieldValueFromMessage } = require("../../util");
 const { lookupFieldMap } = require("./config");
@@ -5,20 +6,19 @@ const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-/** @param {*} subDomainName
+/**
  * @param {*} propertyName
  * @param {*} value
  * @returns  Axios call Url
- * creates the axios url using the subDomainName for basic url
- * and propertyName and Value for filters
+ * creates the axios url using the propertyName and Value for filters
  */
-function createAxiosUrl(subDomainName, propertyName, value, baseUrl) {
+function createAxiosUrl(propertyName, value, baseUrl) {
   return `${baseUrl}/contacts?where%5B0%5D%5Bcol%5D=${propertyName}&where%5B0%5D%5Bexpr%5D=eq&where%5B0%5D%5Bval%5D=${value}`;
 }
 /**
  * @param {*} inputText
  * @returns Boolean Value
- * for validating email match function outdated
+ * for validating email match
  */
 function validateEmail(inputText) {
   const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
@@ -34,22 +34,16 @@ function validateEmail(inputText) {
 const getFieldForLookup = (message, lookUpField) => {
   let field = null;
   let fieldValue = null;
-  // eslint-disable-next-line no-restricted-syntax
   for (const fieldIterator of lookupFieldMap[lookUpField].sourceKeys) {
     fieldValue = get(message, fieldIterator);
     if (fieldValue) {
-      break;
-    }
-  }
-  if (fieldValue) {
-    field = lookupFieldMap[lookUpField].destKeys;
-  } else {
-    fieldValue = getFieldValueFromMessage(message, "email");
-    if (fieldValue) {
-      field = "email";
-    } else {
+      field = lookupFieldMap[lookUpField].destKeys;
       return { field, fieldValue };
     }
+  }
+  fieldValue = getFieldValueFromMessage(message, "email");
+  if (fieldValue) {
+    field = "email";
   }
   return { field, fieldValue };
 };
@@ -57,7 +51,7 @@ const getFieldForLookup = (message, lookUpField) => {
 /**
  * @param {*} inputText
  * @returns Boolean Value
- * for validating Phone match function outdated
+ * for validating Phone match
  * */
 function validatePhone(inputText) {
   const phoneno = /^\d{10}$/;
@@ -67,7 +61,8 @@ function validatePhone(inputText) {
  * @param {*} message
  * @returns addres1 and address2
  * Constructs the address1 and address2 field
- * if address is given as string or object
+ * if address is given as string or object and throws error if address string
+ * is greater than 128
  * */
 const deduceAddressFields = message => {
   let extractedAddress = getFieldValueFromMessage(message, "address");
@@ -81,20 +76,18 @@ const deduceAddressFields = message => {
       ) {
         address1 = extractedAddress.addressLine1;
         address2 = extractedAddress.addressLine2;
-      } else {
-        extractedAddress = Object.keys(extractedAddress).reduce((res, v) => {
-          return res.concat(extractedAddress[v], " ");
-        }, "");
+        return { address1, address2 };
       }
+      extractedAddress = Object.keys(extractedAddress).reduce((res, v) => {
+        return res.concat(extractedAddress[v], " ");
+      }, "");
     }
-    if (typeof extractedAddress === "string") {
-      const validLengthAddress =
-        extractedAddress.length > 128
-          ? extractedAddress.substring(0, 127)
-          : extractedAddress;
-      address1 = validLengthAddress.substring(0, 63);
-      address2 = validLengthAddress.substring(64, validLengthAddress.length);
-    }
+    const validLengthAddress =
+      extractedAddress.length > 128
+        ? extractedAddress.substring(0, 127)
+        : extractedAddress;
+    address1 = validLengthAddress.substring(0, 63);
+    address2 = validLengthAddress.substring(64, validLengthAddress.length);
   }
   return { address1, address2 };
 };
@@ -116,11 +109,9 @@ const validatePayload = payload => {
     payload.state.length > 1 &&
     payload.state[0] !== payload.state[0].toUpperCase()
   ) {
-    // eslint-disable-next-line no-param-reassign
     payload.state = payload.state[0].toUpperCase() + payload.state.substring(1);
   }
   if (payload.email && !validateEmail(payload.email)) {
-    // eslint-disable-next-line no-param-reassign
     delete payload.email;
   }
   return true;
@@ -145,10 +136,11 @@ const validateGroupCall = message => {
  * @param {*} message
  * @param {*} destination
  * @returns contacts
- * It checks for lookUpfield Validation and make axios call ,if Valid, and returns the contactIDs received
+ * It checks for lookUpfield Validation and make axios call ,if Valid, and returns the contactIDs received.
+ * It Gets the contact Id using Lookup field and then email, otherwise returns null
  */
 const searchContactIds = async (message, Config, baseUrl) => {
-  const { lookUpField, userName, password, subDomainName } = Config;
+  const { lookUpField, userName, password } = Config;
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
@@ -169,7 +161,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
     }
   };
   let searchContactsResponse = await httpGET(
-    createAxiosUrl(subDomainName, field, fieldValue, baseUrl),
+    createAxiosUrl(field, fieldValue, baseUrl),
     requestOptions
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);

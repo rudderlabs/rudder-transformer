@@ -37,7 +37,7 @@ const inputRouterData2 = JSON.parse(inputRouterDataFileBatchDisable);
 const expectedRouterData2 = JSON.parse(outputRouterDataFileBatchDisable);
 
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
+  describe("Router Tests if enableBatchInput is true", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(
         inputRouterData1
@@ -48,7 +48,7 @@ describe(`${name} Tests`, () => {
 });
 
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
+  describe("Router Tests if enableBatchInput is false", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(
         inputRouterData2

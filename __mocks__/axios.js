@@ -38,7 +38,6 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
-const { reject } = require("lodash");
 
 const getParamEncodedUrl = (url, options) => {
   const { params } = options;

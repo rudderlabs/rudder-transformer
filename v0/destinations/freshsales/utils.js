@@ -1,0 +1,76 @@
+const { httpPOST } = require("../../../adapters/network");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { CustomError } = require("../../util");
+const { CONFIG_CATEGORIES } = require("./config");
+
+const getUserAccountDetails = async (userEmail, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const userPayload = {
+    unique_identifier: {
+      emails: userEmail
+    },
+    contact: {
+      emails: userEmail
+    }
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}?include=sales_accounts`;
+  let userSalesAccountResponse = await httpPOST(
+    endPoint,
+    userPayload,
+    requestOptions
+  );
+  userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
+  if (userSalesAccountResponse.status !== 200) {
+    const errMessage =
+      userSalesAccountResponse.response.errors &&
+      userSalesAccountResponse.response.errors.message
+        ? userSalesAccountResponse.response.errors.message
+        : "";
+    const errorStatus =
+      userSalesAccountResponse.response.errors &&
+      userSalesAccountResponse.response.errors.code
+        ? userSalesAccountResponse.response.errors.code
+        : "500";
+    throw new CustomError(
+      `failed to fetch user accountDetails ${errMessage}`,
+      errorStatus
+    );
+  }
+  return userSalesAccountResponse;
+};
+
+const getAccountDetails = async (payloadBody, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.endpoint}`;
+  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
+  accountResponse = processAxiosResponse(accountResponse);
+  if (accountResponse.status !== 200) {
+    const errMessage =
+      accountResponse.response.errors && accountResponse.response.errors.message
+        ? accountResponse.response.errors.message
+        : "";
+    const errorStatus =
+      accountResponse.response.errors && accountResponse.response.errors.code
+        ? accountResponse.response.errors.code
+        : "500";
+    throw new CustomError(
+      `failed to create/update group ${errMessage}`,
+      errorStatus
+    );
+  }
+  return accountResponse;
+};
+
+module.exports = { getUserAccountDetails, getAccountDetails };

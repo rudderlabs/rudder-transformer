@@ -4,13 +4,22 @@ const {
   CustomError,
   constructPayload,
   ErrorMessage,
-  defaultPostRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const { getAccountDetails, getUserAccountDetails } = require("./utils");
+const {
+  getAccountDetails,
+  getUserAccountDetails,
+  checkNumberDataType
+} = require("./utils");
 
+/*
+ * This functions is used for creating response for identify call, to create or update contacts.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
 const identifyResponseBuilder = (message, { Config }) => {
   const payload = constructPayload(
     message,
@@ -22,6 +31,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
+  checkNumberDataType(payload);
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
@@ -36,6 +46,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+/*
+ * This functions is used for associating contacts in account.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
 const groupResponseBuilder = async (message, { Config }) => {
   const payload = constructPayload(
     message,
@@ -46,6 +62,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
+  checkNumberDataType(payload);
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload
@@ -91,7 +108,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   }
   const responseIdentify = defaultRequestConfig();
   responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}`;
-  responseIdentify.method = defaultPostRequestConfig.requestMethod;
+  responseIdentify.method = CONFIG_CATEGORIES.IDENTIFY.method;
   responseIdentify.headers = {
     Authorization: `Token token=${Config.apiKey}`,
     "Content-Type": "application/json"

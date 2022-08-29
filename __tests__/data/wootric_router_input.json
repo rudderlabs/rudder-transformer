@@ -226,79 +226,6 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 4
-    },
-    "message": {
-      "type": "identify",
-      "sentAt": "2022-01-20T13:39:21.033Z",
-      "userId": "dummyId2",
-      "channel": "web",
-      "context": {
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "app": {
-          "name": "RudderLabs JavaScript SDK",
-          "build": "1.0.0",
-          "version": "1.2.20",
-          "namespace": "com.rudderlabs.javascript"
-        },
-        "page": {
-          "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "title": "Document",
-          "search": "",
-          "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
-          "initial_referrer": "$direct",
-          "referring_domain": "127.0.0.1:7307",
-          "initial_referring_domain": ""
-        },
-        "locale": "en-US",
-        "screen": {
-          "width": 1440,
-          "height": 900,
-          "density": 2,
-          "innerWidth": 536,
-          "innerHeight": 689
-        },
-        "traits": {
-          "email": "testuser1@gmail.com",
-          "phone": "+19123456777",
-          "city": "Bangalore",
-          "name": "Dummy User 2",
-          "title": "SDE",
-          "gender": "Male",
-          "company": "Rudderstack",
-          "createdAt": "2021-01-20T13:39:21.032Z"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.2.20"
-        },
-        "campaign": {},
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "integrations": {
-        "All": true
-      },
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      },
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
-    },
-    "metadata": {
       "jobId": 5
     },
     "message": {
@@ -336,16 +263,6 @@
           "innerWidth": 536,
           "innerHeight": 689
         },
-        "traits": {
-          "email": "dummyuser2@gmail.com",
-          "phone": "+19133456781",
-          "city": "Bangalore",
-          "name": "Dummy User 2",
-          "title": "SDE",
-          "gender": "Male",
-          "company": "Rudderstack",
-          "createdAt": "2021-01-20T13:39:21.032Z"
-        },
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.2.20"
@@ -373,141 +290,6 @@
     },
     "metadata": {
       "jobId": 6
-    },
-    "message": {
-      "type": "identify",
-      "sentAt": "2022-01-20T13:39:21.033Z",
-      "channel": "web",
-      "context": {
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "app": {
-          "name": "RudderLabs JavaScript SDK",
-          "build": "1.0.0",
-          "version": "1.2.20",
-          "namespace": "com.rudderlabs.javascript"
-        },
-        "page": {
-          "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "title": "Document",
-          "search": "",
-          "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
-          "initial_referrer": "$direct",
-          "referring_domain": "127.0.0.1:7307",
-          "initial_referring_domain": ""
-        },
-        "locale": "en-US",
-        "screen": {
-          "width": 1440,
-          "height": 900,
-          "density": 2,
-          "innerWidth": 536,
-          "innerHeight": 689
-        },
-        "traits": {
-          "city": "Bangalore",
-          "name": "Dummy User 2",
-          "email": "dummyUser2@gmail.com",
-          "phone": "+19123456777",
-          "title": "SDE",
-          "gender": "Male",
-          "company": "Rudderstack",
-          "createdAt": "2021-01-20T13:39:21.032Z"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.2.20"
-        },
-        "campaign": {},
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "integrations": {
-        "All": true
-      },
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      },
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
-    },
-    "metadata": {
-      "jobId": 7
-    },
-    "message": {
-      "type": "identify",
-      "sentAt": "2022-01-20T13:39:21.033Z",
-      "userId": "dummyId2",
-      "channel": "web",
-      "context": {
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "app": {
-          "name": "RudderLabs JavaScript SDK",
-          "build": "1.0.0",
-          "version": "1.2.20",
-          "namespace": "com.rudderlabs.javascript"
-        },
-        "page": {
-          "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "title": "Document",
-          "search": "",
-          "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
-          "initial_referrer": "$direct",
-          "referring_domain": "127.0.0.1:7307",
-          "initial_referring_domain": ""
-        },
-        "locale": "en-US",
-        "screen": {
-          "width": 1440,
-          "height": 900,
-          "density": 2,
-          "innerWidth": 536,
-          "innerHeight": 689
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.2.20"
-        },
-        "campaign": {},
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "integrations": {
-        "All": true
-      },
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      },
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
-    },
-    "metadata": {
-      "jobId": 8
     },
     "message": {
       "type": "identify",
@@ -578,7 +360,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 9
+      "jobId": 7
     },
     "message": {
       "type": "identify",
@@ -644,73 +426,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 10
-    },
-    "message": {
-      "type": "identify",
-      "sentAt": "2022-01-20T13:39:21.033Z",
-      "userId": "dummyId1",
-      "channel": "web",
-      "context": {
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "app": {
-          "name": "RudderLabs JavaScript SDK",
-          "build": "1.0.0",
-          "version": "1.2.20",
-          "namespace": "com.rudderlabs.javascript"
-        },
-        "page": {
-          "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "title": "Document",
-          "search": "",
-          "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
-          "initial_referrer": "$direct",
-          "referring_domain": "127.0.0.1:7307",
-          "initial_referring_domain": ""
-        },
-        "locale": "en-US",
-        "screen": {
-          "width": 1440,
-          "height": 900,
-          "density": 2,
-          "innerWidth": 536,
-          "innerHeight": 689
-        },
-        "traits": {
-          "email": "testuser1@gmail.com"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.2.20"
-        },
-        "campaign": {},
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "integrations": {
-        "All": true
-      },
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      },
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
-    },
-    "metadata": {
-      "jobId": 11
+      "jobId": 8
     },
     "message": {
       "type": "identify",
@@ -776,73 +492,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 12
-    },
-    "message": {
-      "type": "identify",
-      "sentAt": "2022-01-20T13:39:21.033Z",
-      "userId": "dummyId1",
-      "channel": "web",
-      "context": {
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "app": {
-          "name": "RudderLabs JavaScript SDK",
-          "build": "1.0.0",
-          "version": "1.2.20",
-          "namespace": "com.rudderlabs.javascript"
-        },
-        "page": {
-          "url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "title": "Document",
-          "search": "",
-          "tab_url": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/ourSdk.html",
-          "referrer": "http://127.0.0.1:7307/Testing/App_for_LaunchDarkly/",
-          "initial_referrer": "$direct",
-          "referring_domain": "127.0.0.1:7307",
-          "initial_referring_domain": ""
-        },
-        "locale": "en-US",
-        "screen": {
-          "width": 1440,
-          "height": 900,
-          "density": 2,
-          "innerWidth": 536,
-          "innerHeight": 689
-        },
-        "traits": {
-          "phone": "+17777777778"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.2.20"
-        },
-        "campaign": {},
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "integrations": {
-        "All": true
-      },
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    }
-  },
-  {
-    "destination": {
-      "Config": {
-        "username": "wootricfakeuser@example.com",
-        "password": "password@123",
-        "accountToken": "NPS-1234567"
-      },
-      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
-    },
-    "metadata": {
-      "jobId": 13
+      "jobId": 9
     },
     "message": {
       "type": "identify",
@@ -912,7 +562,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 14
+      "jobId": 10
     },
     "message": {
       "type": "track",
@@ -921,7 +571,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 7,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -992,7 +642,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 15
+      "jobId": 11
     },
     "message": {
       "type": "track",
@@ -1001,7 +651,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 7,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -1063,7 +713,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 16
+      "jobId": 12
     },
     "message": {
       "type": "track",
@@ -1072,7 +722,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 12,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -1134,7 +784,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 17
+      "jobId": 13
     },
     "message": {
       "type": "track",
@@ -1143,7 +793,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 9,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -1204,7 +854,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 18
+      "jobId": 14
     },
     "message": {
       "type": "track",
@@ -1213,7 +863,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 9,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -1274,7 +924,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 19
+      "jobId": 15
     },
     "message": {
       "type": "track",
@@ -1283,7 +933,7 @@
       "channel": "web",
       "properties": {
         "feedbackScore": 7,
-        "feedbackText": "Simple, Easy to use, Reliable, Affoardable Product"
+        "feedbackText": "Simple, Easy to use, Reliable, Affordable Product"
       },
       "context": {
         "os": {
@@ -1355,7 +1005,7 @@
       "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
     },
     "metadata": {
-      "jobId": 20
+      "jobId": 16
     },
     "message": {
       "type": "track",

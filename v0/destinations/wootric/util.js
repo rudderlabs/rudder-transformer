@@ -19,7 +19,7 @@ const Cache = require("../../util/cache");
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
 /**
- * Returns access token using axios call with paramaters (username, password, accountToken taken from destination.Config)
+ * Returns access token using axios call with parameters (username, password, accountToken taken from destination.Config)
  * ref: https://docs.wootric.com/api/#authentication
  * @param {*} destination
  * @returns
@@ -52,29 +52,44 @@ const getAccessToken = async destination => {
       request.data,
       request.header
     );
-    const processedAuthRespone = processAxiosResponse(wootricAuthResponse);
+    const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
-    if (processedAuthRespone.status !== 200) {
+    if (processedAuthResponse.status !== 200) {
       throw new CustomError(
         `[Wootric]:: access token could not be generated due to ${JSON.stringify(
-          processedAuthRespone.response
+          processedAuthResponse.response
         )}`,
-        processedAuthRespone.status
+        processedAuthResponse.status
       );
     }
-    return processedAuthRespone.response?.access_token;
+    return processedAuthResponse.response?.access_token;
   });
 };
 
 /**
- * Returns wootric userId of existing user using Rudderstack userId
+ * Returns wootric user details of existing user using Wootric end user Id (context.externalId.0.id).
+ * If context.externalId.0.id is not present in request then Returns wootric user details using Wootric external_id (userId).
+ * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-id
  * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-external-id
- * @param {*} userId
+ * @param {*} endUserId
+ * @param {*} externalId
  * @param {*} accessToken
  * @returns
  */
-const retrieveUserId = async (userId, accessToken) => {
-  const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${userId}?lookup_by_external_id=true`;
+
+const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
+  let endpoint;
+  if (isDefinedAndNotNullAndNotEmpty(endUserId)) {
+    endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${endUserId}`;
+  } else if (isDefinedAndNotNullAndNotEmpty(externalId)) {
+    endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${externalId}?lookup_by_external_id=true`;
+  } else {
+    throw new CustomError(
+      "wootricEndUserId/userId are missing. At least one parameter must be provided",
+      400
+    );
+  }
+
   const requestOptions = {
     headers: {
       "Content-Type": "application/json",
@@ -86,62 +101,42 @@ const retrieveUserId = async (userId, accessToken) => {
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
-    return processedUserResponse.response?.id;
+    return processedUserResponse.response;
   }
 
   if (processedUserResponse.status !== 404) {
     throw new CustomError(
-      `[Wootric]:: Unable to retrieve userid due to ${JSON.stringify(
+      `[Wootric]:: Unable to retrieve userId due to ${JSON.stringify(
         processedUserResponse.response
       )}`,
       processedUserResponse.status
     );
   }
+
+  // for status code 404 (user not found)
+  return null;
 };
 
 /**
- * Returns wootric existing user using email
- * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-email
+ * Validates Create User Payload
  * @param {*} email
- * @param {*} accessToken
- * @returns
- */
-const userLookupByEmail = async (email, accessToken) => {
-  if (isDefinedAndNotNullAndNotEmpty(email)) {
-    const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${email}?lookup_by_email=true`;
-    return await userLookupResponseBuilder(endpoint, accessToken);
-  }
-};
-
-/**
- * Returns wootric existing user using phone
- * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-phone-number
  * @param {*} phone
- * @param {*} accessToken
- * @returns
  */
-const userLookupByPhone = async (phone, accessToken) => {
-  if (isDefinedAndNotNullAndNotEmpty(phone)) {
-    const endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/phone_number/${phone}`;
-    return await userLookupResponseBuilder(endpoint, accessToken);
+const validateCreateUserPayload = (userId, email, phone) => {
+  // for creating a user userId is mandatory.
+  if (!isDefinedAndNotNullAndNotEmpty(userId)) {
+    throw new CustomError("userId is missing", 400);
   }
-};
 
-/**
- * Returns lookup response using endpoint and accessToken
- * @param {*} endpoint
- * @param {*} accessToken
- * @returns
- */
-const userLookupResponseBuilder = async (endpoint, accessToken) => {
-  const requestOptions = {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`
-    }
-  };
-  const lookupResponse = await httpGET(endpoint, requestOptions);
-  return processAxiosResponse(lookupResponse);
+  if (
+    !isDefinedAndNotNullAndNotEmpty(email) &&
+    !isDefinedAndNotNullAndNotEmpty(phone)
+  ) {
+    throw new CustomError(
+      "email/phone number are missing. At least one parameter must be provided",
+      400
+    );
+  }
 };
 
 /**
@@ -154,10 +149,35 @@ const createUserPayloadBuilder = message => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
   );
-  const endpoint = CONFIG_CATEGORIES.CREATE_USER.endpoint;
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
   const method = "POST";
-  validateEmailAndPhone(payload.email, payload.phone_number);
+  validateCreateUserPayload(
+    payload.external_id,
+    payload.email,
+    payload.phone_number
+  );
   return { payload, endpoint, method };
+};
+
+/**
+ * Builds Payload properties
+ * @param {*} payload
+ * @param {*} userDetails
+ * @returns
+ */
+const buildPayloadProperties = (payload, userDetails) => {
+  // Appending existing user properties with payload properties
+  let payloadProperties = {};
+  if (
+    isDefinedAndNotNullAndNotEmpty(payload.properties) &&
+    isDefinedAndNotNullAndNotEmpty(userDetails.properties)
+  ) {
+    payloadProperties = {
+      ...userDetails.properties,
+      ...payload.properties
+    };
+  }
+  return payloadProperties;
 };
 
 /**
@@ -165,15 +185,26 @@ const createUserPayloadBuilder = message => {
  * @param {*} message
  * @returns
  */
-const updateUserPayloadBuilder = message => {
+const updateUserPayloadBuilder = (message, userDetails) => {
   const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
   );
-  const endpoint = CONFIG_CATEGORIES.UPDATE_USER.endpoint;
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
   const method = "PUT";
   delete payload.external_id;
   return { payload, endpoint, method };
+};
+
+/**
+ * Validates score
+ * @param {*} score
+ */
+const validateScore = score => {
+  if (!(score >= 0 && score <= 10)) {
+    throw new CustomError("Invalid Score", 400);
+  }
 };
 
 /**
@@ -181,12 +212,13 @@ const updateUserPayloadBuilder = message => {
  * @param {*} message
  * @returns
  */
-const createResponsePayloadBuilder = message => {
+const createResponsePayloadBuilder = (message, userDetails) => {
   const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
   );
-  const endpoint = CONFIG_CATEGORIES.CREATE_RESPONSE.endpoint;
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_RESPONSE;
   const method = "POST";
   validateScore(payload.score);
   return { payload, endpoint, method };
@@ -197,12 +229,13 @@ const createResponsePayloadBuilder = message => {
  * @param {*} message
  * @returns
  */
-const createDeclinePayloadBuilder = message => {
+const createDeclinePayloadBuilder = (message, userDetails) => {
   const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
   );
-  const endpoint = CONFIG_CATEGORIES.CREATE_DECLINE.endpoint;
+  payload.properties = buildPayloadProperties(payload, userDetails);
+  const { endpoint } = CONFIG_CATEGORIES.CREATE_DECLINE;
   const method = "POST";
   return { payload, endpoint, method };
 };
@@ -216,106 +249,50 @@ const createDeclinePayloadBuilder = message => {
  * @param {*} destKey
  */
 const flattenProperties = (payload, destKey) => {
-  if (payload.properties) {
-    let rawProperties = {};
+  const rawProperties = {};
+  if (isDefinedAndNotNullAndNotEmpty(payload.properties)) {
     Object.entries(payload.properties).forEach(([key, value]) => {
       rawProperties[`${destKey}[${key}]`] = `${value}`;
     });
-    return { ...rawProperties };
   }
+  return rawProperties;
 };
 
 /**
- * Formats identify payload
- * ref: https://docs.wootric.com/api/#get-a-specific-end-user-by-phone-number
+ * Stringy the Identify payload last_surveyed and external_created_at properties.
  * @param {*} payload
  */
-const formatIdentifyPayload = payload => {
-  if (payload.last_surveyed) {
-    payload.last_surveyed = `${payload.last_surveyed}`;
+const stringifyIdentifyPayloadTimeStamps = payload => {
+  const rawPayload = { ...payload };
+  if (rawPayload.last_surveyed) {
+    rawPayload.last_surveyed = `${rawPayload.last_surveyed}`;
   }
-  if (payload.external_created_at) {
-    payload.external_created_at = `${payload.external_created_at}`;
+  if (rawPayload.external_created_at) {
+    rawPayload.external_created_at = `${rawPayload.external_created_at}`;
   }
+  return rawPayload;
 };
 
 /**
- * Formats track payload
+ * Stringy the Track payload created_at property.
  * @param {*} payload
  */
-const formatTrackPayload = payload => {
-  if (payload.created_at) {
-    payload.created_at = `${payload.created_at}`;
+const stringifyTrackPayloadTimeStamps = payload => {
+  const rawPayload = { ...payload };
+  if (rawPayload.created_at) {
+    rawPayload.created_at = `${payload.created_at}`;
   }
-};
-
-/**
- * Validates email and phone
- * @param {*} email
- * @param {*} phone
- */
-const validateEmailAndPhone = (email, phone) => {
-  if (
-    !isDefinedAndNotNullAndNotEmpty(email) &&
-    !isDefinedAndNotNullAndNotEmpty(phone)
-  ) {
-    throw new CustomError(
-      "email/phone number are missing. At least one parameter must be provided",
-      400
-    );
-  }
-};
-
-/**
- * Checking existing email and phone using userlookup axios calls
- * @param {*} email
- * @param {*} phone
- * @param {*} external_id
- * @param {*} accessToken
- */
-const checkExistingEmailAndPhone = async (
-  email,
-  phone,
-  external_id,
-  accessToken
-) => {
-  let lookupResponse;
-  lookupResponse = await userLookupByEmail(email, accessToken);
-  if (
-    lookupResponse?.status === 200 &&
-    lookupResponse?.response?.external_id !== external_id
-  ) {
-    throw new CustomError("Email has already been taken", 400);
-  }
-  lookupResponse = await userLookupByPhone(phone, accessToken);
-
-  if (
-    lookupResponse?.status === 200 &&
-    lookupResponse?.response?.external_id !== external_id
-  ) {
-    throw new CustomError("Phone number has already been taken", 400);
-  }
-};
-
-/**
- * Validates score
- * @param {*} score
- */
-const validateScore = score => {
-  if (!(score >= 0 && score <= 10)) {
-    throw new CustomError("Invalid Score", 400);
-  }
+  return rawPayload;
 };
 
 module.exports = {
   getAccessToken,
-  retrieveUserId,
+  retrieveUserDetails,
   flattenProperties,
-  formatIdentifyPayload,
-  formatTrackPayload,
+  stringifyIdentifyPayloadTimeStamps,
+  stringifyTrackPayloadTimeStamps,
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
-  createDeclinePayloadBuilder,
-  checkExistingEmailAndPhone
+  createDeclinePayloadBuilder
 };

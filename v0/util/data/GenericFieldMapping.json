@@ -7,7 +7,6 @@
     "timestamp",
     "originalTimestamp"
   ],
-  "timezone":"context.timezone",
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
   "email": [
     "traits.email",

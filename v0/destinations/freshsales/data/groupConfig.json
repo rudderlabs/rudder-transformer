@@ -1,0 +1,136 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "industry_type_id",
+    "sourceKeys": ["traits.industryTypeId", "context.traits.industryTypeId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "business_type_id",
+    "sourceKeys": [
+      "traits.business_type_id",
+      "traits.businessTypeId",
+      "context.traits.business_type_id",
+      "context.traits.businessTypeId"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "number_of_employees",
+    "sourceKeys": [
+      "traits.numberOfEmployees",
+      "context.traits.numberOfEmployees"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "annual_revenue",
+    "sourceKeys": ["traits.annualRevenue", "context.traits.annualRevenue"],
+    "metadata": {
+      "type": "toFloat"
+    }
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city"
+    ]
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+      "traits.state",
+      "traits.address.state",
+      "context.traits.state",
+      "context.traits.address.state"
+    ]
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "traits.country",
+      "context.traits.address.country",
+      "context.traits.country"
+    ]
+  },
+  {
+    "destKey": "zipcode",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "website",
+    "sourceKeys": ["traits.website", "context.traits.website"]
+  },
+  {
+    "destKey": "territory_id",
+    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "parent_sales_account_id",
+    "sourceKeys": [
+      "traits.parentSalesAccountId",
+      "context.traits.parentSalesAccountId"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "facebook",
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"]
+  },
+  {
+    "destKey": "twitter",
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"]
+  },
+  {
+    "destKey": "linkedin",
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"]
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAt",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "updated_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
+  }
+]

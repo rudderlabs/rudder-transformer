@@ -2103,9 +2103,5 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
-  },
-  {
-    "statusCode": 400,
-    "message": "The size of the payload is 8193 bytes. The payload data must be no longer than 8192 bytes."
   }
 ]

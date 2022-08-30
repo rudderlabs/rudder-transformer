@@ -39,8 +39,12 @@ If you want to run the RudderStack Transformer (without the user functions) insi
 
 ### Native Installation
 
+On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Command Line Tools` using `xcode-select --install`.
+
+On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
+
 1. Clone this repository
-2. Run `ENABLE_FUNCTIONS=false npm install`
+2. Run `npm install`
 3. Start the server with `ENABLE_FUNCTIONS=false npm start`
 
 ## Contact Us

@@ -25,6 +25,11 @@
     "ACTIVE_CAMPAIGN": true,
     "SNAPCHAT_CONVERSION": true,
     "MAILCHIMP": true,
-    "YAHOO_DSP": true
+    "YAHOO_DSP": true,
+    "KLAVIYO": true,
+    "CANNY": true,
+    "LAMBDA": true,
+    "WOOTRIC": true,
+    "GOOGLE_CLOUD_FUNCTION": true
   }
 }

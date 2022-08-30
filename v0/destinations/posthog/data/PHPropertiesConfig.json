@@ -37,10 +37,8 @@
   },
   {
     "destKey": "$time",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ]
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$device_id",
@@ -48,19 +46,12 @@
   },
   {
     "destKey": "$ip",
-    "sourceKeys": [
-      "context.ip",
-      "request_ip"
-      
-    ],
+    "sourceKeys": ["context.ip", "request_ip"],
     "all": true
   },
   {
     "destKey": "$timestamp",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "all": true
   },
   {
@@ -70,10 +61,7 @@
   },
   {
     "destKey": "distinct_id",
-    "sourceKeys": [
-      "userId",
-      "anonymousId"
-    ],
+    "sourceKeys": ["userId", "anonymousId"],
     "all": true
   },
   {
@@ -102,7 +90,7 @@
     "isMobile": true
   },
   {
-    "destKey": "$user_agent",
+    "destKey": "$useragent",
     "sourceKeys": "context.userAgent",
     "isMobile": true
   },
@@ -140,5 +128,37 @@
     "destKey": "$app_build",
     "sourceKeys": "context.app.build",
     "isMobile": true
+  },
+  {
+    "destKey": "$viewport_height",
+    "sourceKeys": "properties.viewport_height"
+  },
+  {
+    "destKey": "$viewport_width",
+    "sourceKeys": "properties.viewport_width"
+  },
+  {
+    "destKey": "utm_source",
+    "sourceKeys": "context.campaign.source"
+  },
+  {
+    "destKey": "utm_medium",
+    "sourceKeys": "context.campaign.medium"
+  },
+  {
+    "destKey": "utm_campaign",
+    "sourceKeys": "context.campaign.name"
+  },
+  {
+    "destKey": "utm_content",
+    "sourceKeys": "context.campaign.content"
+  },
+  {
+    "destKey": "utm_term",
+    "sourceKeys": "context.campaign.term"
+  },
+  {
+    "destKey": "$performance_page_loaded",
+    "sourceKeys": "context.page.loaded"
   }
 ]

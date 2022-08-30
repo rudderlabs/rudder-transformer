@@ -1,3 +1,4 @@
+
 {
   "address": ["traits.address", "context.traits.address"],
   "createdAt": [
@@ -34,6 +35,7 @@
     "context.traits.id"
   ],
   "name": ["traits.name", "context.traits.name"],
+  "title":["traits.title", "context.traits.title"],
   "firstName": [
     "traits.firstName",
     "traits.firstname",
@@ -78,6 +80,12 @@
     "traits.DOB",
     "context.traits.DOB"
   ],
+
+  "state":["traits.state", "context.traits.state"],
+  "zipcode":["traits.zipcode", "context.traits.zipcode", "traits.zip", "context.traits.zip"],
+  "country":["traits.country", "context.traits.country"],
+  "city":"traits.address.city",
+
   "avatar": [
     "traits.avatar",
     "context.traits.avatar",
@@ -85,5 +93,16 @@
     "context.traits.avatarURL",
     "traits.avatar_URL",
     "context.traits.avatar_URL"
+  ],
+  "zipcode": [
+    "traits.zip",
+    "traits.zipcode",
+    "traits.address.zipcode",
+    "traits.address.postalcode",
+    "context.traits.zip",
+    "context.traits.zipcode",
+    "context.traits.address.zipcode",
+    "context.traits.address.postalcode"
   ]
+
 }

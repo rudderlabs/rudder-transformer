@@ -93,15 +93,24 @@
   },
   {
     "destKey": "territory_id",
-    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"]
+    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "lead_source_id",
-    "sourceKeys": ["traits.leadSourceId", "context.traits.leadSourceId"]
+    "sourceKeys": ["traits.leadSourceId", "context.traits.leadSourceId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "owner_id",
-    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"]
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "subscription_types",
@@ -120,28 +129,32 @@
       "traits.campaignId",
       "traits.campaign_id",
       "context.traits.campaignId",
-      "context.traits.campaign_id"
-    ]
+      "context.traits.campaign_id",
+      "context.campaign.name"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "keyword",
-    "sourceKeys": ["traits.keyword", "context.traits.keyword"]
+    "sourceKeys": ["traits.keyword", "context.traits.keyword", "context.campaign.term"]
   },
   {
     "destKey": "time_zone",
-    "sourceKeys": ["traits.timeZone", "context.traits.timeZone"]
+    "sourceKeys": ["traits.timeZone", "context.traits.timeZone", "context.timeZone"]
   },
   {
     "destKey": "facebook",
-    "sourceKeys": ["traits.facebook", "context.traits.facebook"]
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"]
   },
   {
     "destKey": "twitter",
-    "sourceKeys": ["traits.twitter", "context.traits.twitter"]
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"]
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": ["traits.linkedin", "context.traits.linkedin"]
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"]
   },
   {
     "destKey": "created_at",
@@ -155,13 +168,19 @@
   },
   {
     "destKey": "contact_status_id",
-    "sourceKeys": ["traits.contactStatusId", "context.traits.contactStatusId"]
+    "sourceKeys": ["traits.contactStatusId", "context.traits.contactStatusId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "lifecycle_stage_id",
     "sourceKeys": [
       "traits.lifecycleStageId",
       "context.traits.lifecycleStageId"
-    ]
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
   }
 ]

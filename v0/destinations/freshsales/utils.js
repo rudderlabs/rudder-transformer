@@ -36,16 +36,9 @@ const getUserAccountDetails = async (userEmail, Config) => {
   );
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200) {
-    const errMessage =
-      userSalesAccountResponse.response.errors &&
-      userSalesAccountResponse.response.errors.message
-        ? userSalesAccountResponse.response.errors.message
-        : "";
+    const errMessage = userSalesAccountResponse.response?.errors?.message || "";
     const errorStatus =
-      userSalesAccountResponse.response.errors &&
-      userSalesAccountResponse.response.errors.code
-        ? userSalesAccountResponse.response.errors.code
-        : "500";
+      userSalesAccountResponse.response?.errors?.code || "500";
     throw new CustomError(
       `failed to fetch user accountDetails ${errMessage}`,
       errorStatus
@@ -62,7 +55,7 @@ const getUserAccountDetails = async (userEmail, Config) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
  */
-const getAccountDetails = async (payloadBody, Config) => {
+const createUpdateAccount = async (payloadBody, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
@@ -73,14 +66,8 @@ const getAccountDetails = async (payloadBody, Config) => {
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200) {
-    const errMessage =
-      accountResponse.response.errors && accountResponse.response.errors.message
-        ? accountResponse.response.errors.message
-        : "";
-    const errorStatus =
-      accountResponse.response.errors && accountResponse.response.errors.code
-        ? accountResponse.response.errors.code
-        : "500";
+    const errMessage = accountResponse.response?.errors?.message || "";
+    const errorStatus = accountResponse.response?.errors?.code || 500;
     throw new CustomError(
       `failed to create/update group ${errMessage}`,
       errorStatus
@@ -124,8 +111,18 @@ const checkNumberDataType = payload => {
   }
 };
 
+const flattenAddress = address => {
+  let result = "";
+  if (address && typeof address === "object") {
+    result = `${address.street || ""} ${address.city || ""} ${address.state ||
+      ""} ${address.country || ""} ${address.postalCode || ""}`;
+  }
+  return result;
+};
+
 module.exports = {
   getUserAccountDetails,
-  getAccountDetails,
-  checkNumberDataType
+  createUpdateAccount,
+  checkNumberDataType,
+  flattenAddress
 };

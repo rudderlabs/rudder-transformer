@@ -7,7 +7,10 @@
   },
   {
     "destKey": "industry_type_id",
-    "sourceKeys": ["traits.industryTypeId", "context.traits.industryTypeId"]
+    "sourceKeys": ["traits.industryTypeId", "context.traits.industryTypeId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "business_type_id",
@@ -16,7 +19,10 @@
       "traits.businessTypeId",
       "context.traits.business_type_id",
       "context.traits.businessTypeId"
-    ]
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "phone",
@@ -35,11 +41,15 @@
   },
   {
     "destKey": "annual_revenue",
-    "sourceKeys": ["traits.annualRevenue", "context.traits.annualRevenue"]
+    "sourceKeys": ["traits.annualRevenue", "context.traits.annualRevenue"],
+    "metadata": {
+      "type": "toFloat"
+    }
   },
   {
     "destKey": "address",
-    "sourceKeys": ["traits.address", "context.traits.address"]
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "city",
@@ -79,30 +89,39 @@
   },
   {
     "destKey": "territory_id",
-    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"]
+    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "parent_sales_account_id",
     "sourceKeys": [
       "traits.parentSalesAccountId",
       "context.traits.parentSalesAccountId"
-    ]
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "owner_id",
-    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"]
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "destKey": "facebook",
-    "sourceKeys": ["traits.facebook", "context.traits.facebook"]
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"]
   },
   {
     "destKey": "twitter",
-    "sourceKeys": ["traits.twitter", "context.traits.twitter"]
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"]
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": ["traits.linkedin", "context.traits.linkedin"]
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"]
   },
   {
     "destKey": "created_at",

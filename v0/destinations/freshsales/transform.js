@@ -5,13 +5,15 @@ const {
   constructPayload,
   ErrorMessage,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  getFieldValueFromMessage
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  getAccountDetails,
+  createUpdateAccount,
   getUserAccountDetails,
-  checkNumberDataType
+  checkNumberDataType,
+  flattenAddress
 } = require("./utils");
 
 /*
@@ -31,6 +33,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
+  if (payload.address) payload.address = flattenAddress(payload.address);
   checkNumberDataType(payload);
   const response = defaultRequestConfig();
   response.headers = {
@@ -62,49 +65,37 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
 
+  if (payload.address) payload.address = flattenAddress(payload.address);
   checkNumberDataType(payload);
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload
   };
 
-  const accountResponse = await getAccountDetails(payloadBody, Config);
+  const account = await createUpdateAccount(payloadBody, Config);
 
-  const accountId = accountResponse.response.sales_account
-    ? accountResponse.response.sales_account.id
-    : undefined;
+  const accountId = account.response?.sales_account?.id;
   if (!accountId) {
     throw new CustomError("Error while fetching accountId");
   }
-  const userEmail = message.context.traits
-    ? message.context.traits.email
-    : undefined;
+  const userEmail = getFieldValueFromMessage("email");
   if (!userEmail) {
-    throw new CustomError("Invalid userEmail");
+    throw new CustomError("User Email not fount, abort group call");
   }
-  const userSalesAccountResponse = await getUserAccountDetails(
-    userEmail,
-    Config
-  );
-  let accountDetails = userSalesAccountResponse.response.contact
-    ? userSalesAccountResponse.response.contact.sales_accounts
-    : undefined;
+  const userSalesAccount = await getUserAccountDetails(userEmail, Config);
+  let accountDetails = userSalesAccount?.response?.contact?.sales_accounts;
   if (!accountDetails) {
     throw new CustomError("Error while fetching user accountDetails");
   }
+  const accountDetail = {
+    id: accountId,
+    is_primary: false
+  };
   if (accountDetails.length > 0) {
-    accountDetails = [
-      ...accountDetails,
-      {
-        id: accountId,
-        is_primary: false
-      }
-    ];
+    accountDetails = [...accountDetails, accountDetail];
   } else {
-    accountDetails = {
-      id: accountId,
-      is_primary: true
-    };
+    accountDetail.is_primary = true;
+    accountDetails = accountDetail;
   }
   const responseIdentify = defaultRequestConfig();
   responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}`;

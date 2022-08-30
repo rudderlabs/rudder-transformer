@@ -7,6 +7,7 @@ const {
   klaviyoPostRequestHandler,
   klaviyoGetRequestHandler
 } = require("./klaviyo.mock");
+
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
@@ -31,7 +32,8 @@ const urlDirectoryMap = {
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
-  "api.profitwell.com": "profitwell"
+  "api.profitwell.com": "profitwell",
+  "ruddertest2.mautic.net":"mautic"
 };
 
 const fs = require("fs");

@@ -1,0 +1,52 @@
+[
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "device_model",
+    "required": false
+  },
+  {
+    "sourceKeys": "context.os.version",
+    "destKey": "device_os",
+    "required": false
+  },
+  { "sourceKeys": "context.locale", "destKey": "laguage", "required": false },
+  {
+    "sourceKeys": "createdAt",
+    "destKey": "created_at",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "sourceKeys": "createdAt",
+    "destKey": "last_active",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "required": false
+  },
+  {
+    "sourceKeys": [
+      "traits.country",
+      "context.traits.country",
+      "traits.address.country",
+      "context.traits.address.country"
+    ],
+    "destKey": "country",
+    "required": false
+  },
+  {
+    "sourceKeys": "context.timezone",
+    "destKey": "timezone",
+    "required": false
+  },
+  {
+    "sourceKeys": "userIdOnly",
+    "destKey": "external_user_id",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

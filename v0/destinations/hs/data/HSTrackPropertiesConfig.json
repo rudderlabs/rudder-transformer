@@ -1,0 +1,53 @@
+[
+  {
+    "destKey": "hs_asset_description",
+    "sourceKeys": [
+      "properties.assetDescription",
+      "properties.hsAssetDescription"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "hs_asset_type",
+    "sourceKeys": ["properties.assetType", "properties.hsAssetType"],
+    "required": false
+  },
+  {
+    "destKey": "hs_campaign_id",
+    "sourceKeys": "properties.campaignId",
+    "required": false
+  },
+  {
+    "destKey": "hs_city",
+    "sourceKeys": [
+      "traits.address.city",
+      "context.traits.address.city",
+      "properties.address.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "hs_country",
+    "sourceKeys": [
+      "traits.address.country",
+      "context.traits.address.country",
+      "properties.address.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "hs_device_name",
+    "sourceKeys": "context.device.name",
+    "required": false
+  },
+  {
+    "destKey": "hs_element_class",
+    "sourceKeys": ["properties.elementClass", "properties.hsElementClass"],
+    "required": false
+  },
+  {
+    "destKey": "hs_element_id",
+    "sourceKeys": ["properties.elementId", "properties.hsElementId"],
+    "required": false
+  }
+]

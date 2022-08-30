@@ -1,0 +1,100 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ruddertest2.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "abc@xyz.com",
+          "title": "Mr",
+          "firstname": "Anant",
+          "lastname": "jain",
+          "phone": "9876543212",
+          "website": "abc.com",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "ipAddress": "14.5.67.21",
+          "last_active": "2020-02-02T00:23:09.544Z",
+          "country": "India",
+          "haspurchased": "yes",
+          "role": "Manager",
+          "subscription_status": "New",
+          "prospect_or_customer": "Prospect",
+          "address1": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "address2": ""
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "m3dG325C51C1RPq",
+            "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
+      }
+    }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "User Name is not Valid."
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ruddertest2.mautic.net/api/segments/17/contact/246/add",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "lookUpField": "lastName",
+        "password": "m3dG325C51C1RPq",
+         "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
+      }
+    }
+  }
+]

@@ -14,7 +14,8 @@ const {
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull,
-  isHttpStatusSuccess
+  isHttpStatusSuccess,
+  isDefined
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
@@ -65,6 +66,11 @@ const GA4_RESERVED_PARAMETER_EXCLUSION = [
   "firebase_conversion",
   "user_properties"
 ];
+
+/**
+ * GA4 parameters names exclusion list that is passed for a message type
+ */
+const GA4_PARAMETERS_EXCLUSION = ["engagementTimeMsec", "sessionId"];
 
 /**
  * event parameter names cannot start with reserved prefixes
@@ -320,7 +326,9 @@ const getGA4ExclusionList = mappingJson => {
 
   // We are mapping "products" to "items", so to remove redundancy we should not send products again
   ga4ExclusionList.push("products");
-  ga4ExclusionList = ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
+  ga4ExclusionList = ga4ExclusionList
+    .concat(GA4_RESERVED_PARAMETER_EXCLUSION)
+    .concat(GA4_PARAMETERS_EXCLUSION);
 
   return ga4ExclusionList;
 };
@@ -357,8 +365,42 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
   let { status } = destinationResponse;
+  const { response } = destinationResponse;
   if (status === 204) {
+    // GA4 always returns a 204 response, other than in case of
+    // validation endpoint.
     status = 200;
+  } else if (
+    status === 200 &&
+    isDefinedAndNotNull(response) &&
+    isDefined(response.validationMessages)
+  ) {
+    // for GA4 debug validation endpoint, status is always 200
+    // validationMessages[] is empty, thus event is valid
+    if (response.validationMessages?.length === 0) {
+      status = 200;
+    } else {
+      // Build the error in case the validationMessages[] is non-empty
+      const {
+        description,
+        validationCode,
+        fieldPath
+      } = response.validationMessages[0];
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(
+          `[GA4] Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
+        )
+        .isTransformResponseFailure(true)
+        .setDestinationResponse(response?.validationMessages[0]?.description)
+        .setStatTags({
+          destination: dest,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: getDynamicMeta(status)
+        })
+        .build();
+    }
   }
 
   // if the response from destination is not a success case build an explicit error
@@ -397,6 +439,7 @@ module.exports = {
   networkHandler,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
+  GA4_PARAMETERS_EXCLUSION,
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,

@@ -54,7 +54,7 @@ const getUserAccountDetails = async (userEmail, Config) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
  */
-const getAccountDetails = async (payloadBody, Config) => {
+const createUpdateAccount = async (payloadBody, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
@@ -96,11 +96,7 @@ const checkNumberDataType = payload => {
   ];
   const errorAttributes = [];
   numberAttributes.forEach(element => {
-    const payloadElement = Object.prototype.hasOwnProperty.call(
-      payload,
-      element
-    );
-    if (payloadElement) {
+    if (payload[element]) {
       const value = payload[element];
       if (!isNaN(Number(value))) {
         payload[element] = Number(value);
@@ -116,6 +112,6 @@ const checkNumberDataType = payload => {
 
 module.exports = {
   getUserAccountDetails,
-  getAccountDetails,
+  createUpdateAccount,
   checkNumberDataType
 };

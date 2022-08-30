@@ -105,17 +105,23 @@
   },
   {
     "destKey": "facebook",
-    "sourceKeys": ["traits.facebook", "context.traits.facebook"],
+    "sourceKeys": [
+      "traits.facebookUserName",
+      "context.traits.facebookUserName"
+    ],
     "required": false
   },
   {
     "destKey": "twitter",
-    "sourceKeys": ["traits.twitter", "context.traits.twitter"],
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"],
     "required": false
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": ["traits.linkedin", "context.traits.linkedin"],
+    "sourceKeys": [
+      "traits.linkedinUserName",
+      "context.traits.linkedinUserName"
+    ],
     "required": false
   },
   {

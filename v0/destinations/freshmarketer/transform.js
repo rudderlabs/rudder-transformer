@@ -6,12 +6,13 @@ const {
   ErrorMessage,
   defaultPostRequestConfig,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  getFieldValueFromMessage
 } = require("../../util");
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  getAccountDetails,
+  createUpdateAccount,
   getUserAccountDetails,
   checkNumberDataType
 } = require("./utils");
@@ -66,42 +67,35 @@ const groupResponseBuilder = async (message, { Config }) => {
     sales_account: payload
   };
 
-  const accountResponse = await getAccountDetails(payloadBody, Config);
+  const account = await createUpdateAccount(payloadBody, Config);
 
-  const accountId = accountResponse.response.sales_account?.id;
+  const accountId = account.response.sales_account?.id;
   if (!accountId) {
     throw new CustomError("[Freshmarketer]: fails in fetching accountId.");
   }
-  const userEmail = message.context.traits?.email || undefined;
+  const userEmail = getFieldValueFromMessage(message, "email");
   if (!userEmail) {
-    throw new CustomError(
-      "[Freshmarketer]: Useremail is required for associating user details."
-    );
+    throw new CustomError("User Email not found, abort group call");
   }
   const userSalesAccountResponse = await getUserAccountDetails(
     userEmail,
     Config
   );
   let accountDetails =
-    userSalesAccountResponse.response.contact?.sales_accounts || undefined;
+    userSalesAccountResponse.response.contact?.sales_accounts;
   if (!accountDetails) {
     throw new CustomError(
       "[Freshmarketer]: Fails in fetching user accountDetails"
     );
   }
+  const accountDetail = {
+    id: accountId,
+    is_primary: false
+  };
   if (accountDetails.length > 0) {
-    accountDetails = [
-      ...accountDetails,
-      {
-        id: accountId,
-        is_primary: false
-      }
-    ];
+    accountDetails = [...accountDetails, accountDetail];
   } else {
-    accountDetails = {
-      id: accountId,
-      is_primary: true
-    };
+    accountDetails = [accountDetail];
   }
   const responseIdentify = defaultRequestConfig();
   responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;

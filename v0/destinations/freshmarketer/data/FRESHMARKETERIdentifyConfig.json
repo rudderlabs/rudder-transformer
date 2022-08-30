@@ -138,33 +138,44 @@
       "traits.campaignId",
       "traits.campaign_id",
       "context.traits.campaignId",
-      "context.traits.campaign_id"
+      "context.traits.campaign_id",
+      "context.campaign.name"
     ],
     "required": false
   },
   {
     "destKey": "keyword",
-    "sourceKeys": ["traits.keyword", "context.traits.keyword"],
+    "sourceKeys": [
+      "traits.keyword",
+      "context.traits.keyword",
+      "context.campaign.term"
+    ],
     "required": false
   },
   {
     "destKey": "time_zone",
-    "sourceKeys": ["traits.timeZone", "context.traits.timeZone"],
+    "sourceKeys": "context.timeZone",
     "required": false
   },
   {
     "destKey": "facebook",
-    "sourceKeys": ["traits.facebook", "context.traits.facebook"],
+    "sourceKeys": [
+      "traits.facebookUserName",
+      "context.traits.facebookUserName"
+    ],
     "required": false
   },
   {
     "destKey": "twitter",
-    "sourceKeys": ["traits.twitter", "context.traits.twitter"],
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"],
     "required": false
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": ["traits.linkedin", "context.traits.linkedin"],
+    "sourceKeys": [
+      "traits.linkedinUserName",
+      "context.traits.linkedinUserName"
+    ],
     "required": false
   },
   {

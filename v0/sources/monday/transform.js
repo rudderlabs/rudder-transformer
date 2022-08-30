@@ -1,6 +1,6 @@
 const sha256 = require("sha256");
 const Message = require("../message");
-const { mapping } = require("./util");
+const { mapping, formEventName } = require("./util");
 
 const {
   removeUndefinedAndNullValues,
@@ -12,7 +12,7 @@ function processEvent(event) {
   const message = new Message(`MONDAY`);
   // we are setting event type as track always
   message.setEventType("track");
-  message.setEventName(event.event.type);
+  message.setEventName(formEventName(event.event.type));
   if (event?.event?.userId) {
     const stringifiedUserId = event.event.userId.toString();
     message.setProperty(

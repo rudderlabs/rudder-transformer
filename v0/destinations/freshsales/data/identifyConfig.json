@@ -1,0 +1,186 @@
+[
+  {
+    "destKey": "emails",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "subscription_status",
+    "sourceKeys": [
+      "traits.subscriptionStatus",
+      "context.traits.subscriptionStatus"
+    ]
+  },
+  {
+    "destKey": "job_title",
+    "sourceKeys": [
+      "traits.job_title",
+      "traits.jobTitle",
+      "context.traits.job_title",
+      "context.traits.jobTitle"
+    ]
+  },
+  {
+    "destKey": "work_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "mobile_number",
+    "sourceKeys": ["traits.mobileNumber", "context.traits.mobileNumber"]
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city"
+    ]
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+      "traits.state",
+      "traits.address.state",
+      "context.traits.state",
+      "context.traits.address.state"
+    ]
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "traits.country",
+      "context.traits.address.country",
+      "context.traits.country"
+    ]
+  },
+  {
+    "destKey": "zipcode",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "sales_accounts",
+    "sourceKeys": [
+      "traits.salesAccounts",
+      "traits.sales_accounts",
+      "context.traits.salesAccounts",
+      "context.traits.sales_accounts"
+    ]
+  },
+  {
+    "destKey": "territory_id",
+    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "lead_source_id",
+    "sourceKeys": ["traits.leadSourceId", "context.traits.leadSourceId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "subscription_types",
+    "sourceKeys": [
+      "traits.subscriptionTypes",
+      "context.traits.subscriptionTypes"
+    ]
+  },
+  {
+    "destKey": "medium",
+    "sourceKeys": ["traits.medium", "context.traits.medium"]
+  },
+  {
+    "destKey": "campaign_id",
+    "sourceKeys": [
+      "traits.campaignId",
+      "traits.campaign_id",
+      "context.traits.campaignId",
+      "context.traits.campaign_id",
+      "context.campaign.name"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "keyword",
+    "sourceKeys": ["traits.keyword", "context.traits.keyword", "context.campaign.term"]
+  },
+  {
+    "destKey": "time_zone",
+    "sourceKeys": ["traits.timeZone", "context.traits.timeZone", "context.timeZone"]
+  },
+  {
+    "destKey": "facebook",
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"]
+  },
+  {
+    "destKey": "twitter",
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"]
+  },
+  {
+    "destKey": "linkedin",
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"]
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAt",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "updated_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "contact_status_id",
+    "sourceKeys": ["traits.contactStatusId", "context.traits.contactStatusId"],
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "lifecycle_stage_id",
+    "sourceKeys": [
+      "traits.lifecycleStageId",
+      "context.traits.lifecycleStageId"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    }
+  }
+]

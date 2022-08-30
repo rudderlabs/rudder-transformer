@@ -12,7 +12,6 @@ const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   createUpdateAccount,
   getUserAccountDetails,
-  checkNumberDataType,
   flattenAddress
 } = require("./utils");
 
@@ -34,7 +33,6 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
-  checkNumberDataType(payload);
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
@@ -66,7 +64,6 @@ const groupResponseBuilder = async (message, { Config }) => {
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
-  checkNumberDataType(payload);
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload
@@ -161,11 +158,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error?.response?.status || error?.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

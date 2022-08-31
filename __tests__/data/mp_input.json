@@ -2493,6 +2493,101 @@
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
+        "useNewMapping": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    },
+    "message": {
+      "type": "track",
+      "event": "FirstTrackCall12",
+      "sentAt": "2021-09-30T07:15:23.523Z",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.18",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:7307/Testing/App_for_testingTool/",
+          "path": "/Testing/App_for_testingTool/",
+          "title": "Document",
+          "search": "",
+          "tab_url": "http://127.0.0.1:7307/Testing/App_for_testingTool/",
+          "referrer": "http://127.0.0.1:7307/Testing/",
+          "initial_referrer": "http://127.0.0.1:7307/Testing/",
+          "referring_domain": "127.0.0.1:7307",
+          "initial_referring_domain": "127.0.0.1:7307"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1440,
+          "height": 900,
+          "density": 2,
+          "innerWidth": 590,
+          "innerHeight": 665
+        },
+        "traits": {
+          "anonymousId": "ea776ad0-3136-44fb-9216-5b1578609a2b",
+          "userId": "as09sufa09usaf09as0f9uasf",
+          "id": "as09sufa09usaf09as0f9uasf",
+          "firstName": "Bob",
+          "lastName": "Marley",
+          "name": "Bob Marley",
+          "age": 43,
+          "email": "bob@marleymail.com",
+          "phone": "+447748544123",
+          "birthday": "1987-01-01T20:08:59+0000",
+          "createdAt": "2022-01-21T14:10:12+0000",
+          "address": "51,B.L.T road, Kolkata-700060",
+          "description": "I am great",
+          "gender": "male",
+          "title": "Founder",
+          "username": "bobm",
+          "website": "https://bobm.com",
+          "randomProperty": "randomValue"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.18"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+      },
+      "rudderId": "294702c7-8732-4fb3-b39f-f3bdffe1aa88",
+      "messageId": "0d5c1a4a-27e4-41da-a246-4d01f44e74bd",
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "properties": {
+        "foo": "bar",
+        "$deviceId": "nkasdnkasd"
+      },
+      "anonymousId": "1dbb5784-b8e2-4074-8644-9920145b7ae5",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-09-30T07:15:23.523Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
         "useNewMapping": true
       },
       "DestinationDefinition": {

@@ -1375,6 +1375,10 @@
   },
   {
     "statusCode": 400,
+    "message": "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config."
+  },
+  {
+    "statusCode": 400,
     "message": "Event timestamp should be within last 5 years"
   },
   [

@@ -57,12 +57,30 @@ function setImportCredentials(destConfig) {
     destConfig.dataResidency === "eu"
       ? "https://api-eu.mixpanel.com/import/"
       : "https://api.mixpanel.com/import/";
-  const headers = {
-    Authorization: `Basic ${Buffer.from(`${destConfig.apiSecret}:`).toString(
+  const headers = {};
+  const params = {};
+  const {
+    apiSecret,
+    serviceAccountUserName,
+    serviceAccountSecret,
+    projectId
+  } = destConfig;
+  if (apiSecret) {
+    headers.Authorization = `Basic ${Buffer.from(`${apiSecret}:`).toString(
       "base64"
-    )}`
-  };
-  return { endpoint, headers };
+    )}`;
+  } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
+    headers.Authorization = `Basic ${Buffer.from(
+      `${serviceAccountUserName}:${serviceAccountSecret}`
+    ).toString("base64")}`;
+    params.projectId = projectId;
+  } else {
+    throw new CustomError(
+      "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config.",
+      400
+    );
+  }
+  return { endpoint, headers, params };
 }
 
 function responseBuilderSimple(parameters, message, eventType, destConfig) {
@@ -94,6 +112,8 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
         const credentials = setImportCredentials(destConfig);
         response.endpoint = credentials.endpoint;
         response.headers = credentials.headers;
+        response.params.project_id = credentials.params?.projectId;
+        break;
       }
       break;
     case "merge":
@@ -101,6 +121,7 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
       const credentials = setImportCredentials(destConfig);
       response.endpoint = credentials.endpoint;
       response.headers = credentials.headers;
+      response.params.project_id = credentials.params?.projectId;
       break;
     default:
       response.endpoint =
@@ -109,12 +130,11 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
           : "https://api.mixpanel.com/engage/";
       response.headers = {};
   }
-
   return response;
 }
 
 function processRevenueEvents(message, destination) {
-  const revenueValue = get(message, "properties.revenue");
+  const revenueValue = message.properties.revenue;
   const transactions = {
     $time: getEventTime(message),
     $amount: revenueValue
@@ -139,7 +159,6 @@ function getEventValueForTrackEvent(message, destination) {
     mPEventPropertiesConfigJson
   );
   const unixTimestamp = toUnixTimestamp(message.timestamp);
-  // ??
   const properties = {
     ...message.properties,
     ...get(message, "context.traits"),

@@ -86,7 +86,6 @@ describe(`${name} Tests`, () => {
           eachPayload.batchedRequest.params.data = decodedPayload;
         }
       });
-      console.log(JSON.stringify(routerOutput));
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });

@@ -49,8 +49,7 @@ function processEvent(event) {
 // this will be sent when the webhook is added to an item in monday.
 
 function isChallengeEvent(event) {
-  if (event?.challenge) return true;
-  return false;
+  return !!event?.challenge;
 }
 
 // sending challenge event object back to Monday

@@ -8,7 +8,7 @@ const {
   generateUUID
 } = require("../../util");
 
-function processEvent(event) {
+function processNormalEvent(event) {
   const message = new Message(`MONDAY`);
   // we are setting event type as track always
   message.setEventType("track");
@@ -71,7 +71,7 @@ function processChallengeEvent(event) {
 function process(event) {
   const response = isChallengeEvent(event)
     ? processChallengeEvent(event)
-    : processEvent(event);
+    : processNormalEvent(event);
   return removeUndefinedAndNullValues(response);
 }
 

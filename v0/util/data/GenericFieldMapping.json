@@ -93,6 +93,16 @@
     "context.traits.avatarURL",
     "traits.avatar_URL",
     "context.traits.avatar_URL"
+  ],
+  "zipcode": [
+    "traits.zip",
+    "traits.zipcode",
+    "traits.address.zipcode",
+    "traits.address.postalcode",
+    "context.traits.zip",
+    "context.traits.zipcode",
+    "context.traits.address.zipcode",
+    "context.traits.address.postalcode"
   ]
 
 }

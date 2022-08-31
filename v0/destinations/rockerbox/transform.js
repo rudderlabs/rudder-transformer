@@ -31,7 +31,9 @@ const responseBuilderSimple = (message, category, destination) => {
   }
 
   const response = defaultRequestConfig();
-  response.endpoint = `${category.endpoint}/${advertiserId}`;
+  response.endpoint = category.endpoint;
+  // the endpoint has advertiser = ADVERTISER_ID in the query params
+  response.params.advertiser = advertiserId;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = category.method;
 

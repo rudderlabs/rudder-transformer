@@ -5,9 +5,11 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://webhooks.getrockerbox.com/webhook/rudderstack/test id",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
       "headers": {},
-      "params": {},
+      "params": {
+        "advertiser": "test id"
+      },
       "body": {
         "JSON": {
           "action": "conv.add_to_cart",
@@ -77,9 +79,11 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://webhooks.getrockerbox.com/webhook/rudderstack/test id",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
       "headers": {},
-      "params": {},
+      "params": {
+        "advertiser": "test id"
+      },
       "body": {
         "JSON": {
           "action": "conv.add_to_cart",

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const BASE_ENDPOINT = "https://webhooks.getrockerbox.com/webhook/rudderstack";
+const BASE_ENDPOINT = "https://webhooks.getrockerbox.com/rudderstack";
 
 const CONFIG_CATEGORIES = {
   TRACK: {

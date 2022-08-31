@@ -225,11 +225,13 @@
         "JSON_ARRAY": {},
         "XML": {}
       },
-      "endpoint": "https://webhooks.getrockerbox.com/webhook/rudderstack/test id",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
       "files": {},
       "headers": {},
       "method": "POST",
-      "params": {},
+      "params": {
+        "advertiser": "test id"
+      },
       "type": "REST",
       "version": "1"
     }

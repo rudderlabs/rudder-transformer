@@ -12,6 +12,6 @@
   {
     "destKey": "location",
     "sourceKeys": "context.page.url",
-    "required": false
+    "required": true
   }
 ]

@@ -18,12 +18,10 @@ function buildResponse(payload, endpoint) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return {
-    ...response,
-    headers: {
-      "Content-Type": "application/json"
-    }
+  response.headers = {
+    "Content-Type": "application/json"
   };
+  return response;
 }
 
 // process page call
@@ -34,7 +32,7 @@ function processPage(message, shynetServiceUrl) {
   );
 
   // generating UUID
-  requestJson.idempotency = generateUUID();
+  requestJson.idempotency = message.anonymousId || generateUUID();
   return buildResponse(requestJson, shynetServiceUrl);
 }
 
@@ -53,7 +51,6 @@ function process(event) {
 
   switch (messageType) {
     case EventType.PAGE:
-      message.event = message.event || "Visited a Page";
       return processPage(message, shynetServiceUrl);
     default:
       throw new CustomError("Message type is not supported", 400);

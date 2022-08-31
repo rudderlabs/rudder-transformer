@@ -27,7 +27,7 @@ const ecomEventMaps = [
   }
 ];
 
-const USER_NON_ARRAY_PROPERTIES = ["client_user_agent", "client_ip_address"]
+const USER_NON_ARRAY_PROPERTIES = ["client_user_agent", "client_ip_address"];
 
 /**
  *
@@ -81,23 +81,23 @@ const processUserPayload = userPayload => {
 const deduceOptOutStatus = message => {
   const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
   const attStatus = message.context?.device?.attStatus;
-  let opt_out;
+  let optOut;
 
   // for android
   if (isDefinedAndNotNull(adTrackingEnabled)) {
     if (adTrackingEnabled === true) {
-      opt_out = false;
+      optOut = false;
     } else if (adTrackingEnabled === false) {
-      opt_out = true;
+      optOut = true;
     }
   }
 
   // for ios
   if (isDefinedAndNotNull(attStatus)) {
-    opt_out = attStatus === 3 ? true : false;
+    optOut = attStatus === 3 ? true : false;
   }
 
-  return opt_out;
+  return optOut;
 };
 
 /**
@@ -150,35 +150,43 @@ const processCommonPayload = message => {
  * will be labled as "custom" events.
  */
 const deduceTrackScreenEventName = (message, Config) => {
+  let eventName;
   const { event, name } = message;
-  let trackEventOrScreenName = event || name;
-  let eventName = "";
-
-  /*
-  Step 1: To find if the particular event is amongst the list of standard
-          Rudderstack ecommerce events, used specifically for Pinterest Conversion API
-          mappings.
-  */
-  const eventMapInfo = ecomEventMaps.find(eventMap => {
-    if (eventMap.src.includes(trackEventOrScreenName.toLowerCase())) {
-      return eventMap;
-    }
-    return false;
-  });
-
-  if (isDefinedAndNotNull(eventMapInfo)) {
-    return eventMapInfo.dest;
+  const trackEventOrScreenName = event || name;
+  if (!trackEventOrScreenName) {
+    throw new CustomError(
+      "[Pinterest Conversion]:: event_name could not be mapped. Aborting.",
+      400
+    );
   }
 
   /*
-  Step 2: If the event is not amongst the above list of ecommerce events, will look for
+  Step 1: If the event is not amongst the above list of ecommerce events, will look for
           the event mapping in the UI. In case it is similar, will map to that.
    */
-  if (!eventMapInfo && Config.eventsMapping.length > 0) {
+  if (Config.eventsMapping.length > 0) {
     const keyMap = getHashFromArray(Config.eventsMapping, "from", "to", false);
     eventName = keyMap[trackEventOrScreenName];
-    if (isDefined(eventName)) {
-      return eventName;
+  }
+  if (isDefined(eventName)) {
+    return eventName;
+  }
+
+  /*
+  Step 2: To find if the particular event is amongst the list of standard
+          Rudderstack ecommerce events, used specifically for Pinterest Conversion API
+          mappings.
+  */
+  if (!eventName) {
+    const eventMapInfo = ecomEventMaps.find(eventMap => {
+      if (eventMap.src.includes(trackEventOrScreenName.toLowerCase())) {
+        return eventMap;
+      }
+      return false;
+    });
+
+    if (isDefinedAndNotNull(eventMapInfo)) {
+      return eventMapInfo.dest;
     }
   }
 
@@ -202,9 +210,6 @@ const deduceEventName = (message, Config) => {
   const { type } = message;
   let eventName = "";
   switch (type) {
-    case EventType.IDENTIFY:
-      eventName = "identify";
-      break;
     case EventType.PAGE:
       eventName = isDefinedAndNotNull(message.category)
         ? "ViewCategory"
@@ -260,16 +265,15 @@ const checkUserPayloadValidity = userPayload => {
 };
 
 /**
- * 
- * @param {*} userPayload 
- * @param {*} message 
+ *
+ * @param {*} userPayload
+ * @param {*} message
  * @returns converts every single hashed user data property to array, except for
  * "client_user_agent", "client_ip_address"
- * 
+ *
  */
 const processHashedUserPayload = (userPayload, message) => {
-
-  let processedHashedUserPayload = {};
+  const processedHashedUserPayload = {};
   for (const key of Object.keys(userPayload)) {
     if (!USER_NON_ARRAY_PROPERTIES.includes(key)) {
       processedHashedUserPayload[key] = [userPayload[key]];
@@ -279,7 +283,9 @@ const processHashedUserPayload = (userPayload, message) => {
   }
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
-  processedHashedUserPayload.ge = [message.traits?.gender || message.context?.traits?.gender];
+  processedHashedUserPayload.ge = [
+    message.traits?.gender || message.context?.traits?.gender
+  ];
   return processedHashedUserPayload;
 };
 
@@ -292,4 +298,3 @@ module.exports = {
   processHashedUserPayload,
   VALID_ACTION_SOURCES
 };
-

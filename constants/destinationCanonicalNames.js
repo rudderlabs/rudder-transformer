@@ -41,7 +41,7 @@ const DestCanonicalNames = {
   mautic: ["MAUTIC", "mautic", "Mautic"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
-  pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"]
+  pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],
   canny: ["canny", "Canny", "CANNY"],
   one_signal: [
     "one signal",

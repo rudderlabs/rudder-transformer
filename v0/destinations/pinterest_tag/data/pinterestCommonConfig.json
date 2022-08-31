@@ -1,8 +1,7 @@
 [
   {
     "destKey": "event_name",
-    "sourceKeys": "event",
-    "required": false
+    "sourceKeys": "event"
   },
   {
     "destKey": "event_time",
@@ -28,7 +27,8 @@
       "properties.action_source",
       "properties.actionSource",
       "channel"
-    ]
+    ],
+    "required": true
   },
   {
     "destKey": "app_name",
@@ -52,7 +52,7 @@
   },
   {
     "destKey": "os_version",
-    "sourceKeys": ["context.os.version"]
+    "sourceKeys": "context.os.version"
   },
   {
     "destKey": "language",

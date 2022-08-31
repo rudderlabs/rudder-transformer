@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const { get } = require("lodash");
 const { defaultPostRequestConfig } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
@@ -20,8 +21,12 @@ const {
   processHashedUserPayload
 } = require("./utils");
 
-const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS, CUSTOM_CONFIGS } = require("./config");
-const { get } = require("lodash");
+const {
+  ENDPOINT,
+  MAX_BATCH_SIZE,
+  USER_CONFIGS,
+  CUSTOM_CONFIGS
+} = require("./config");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
@@ -38,7 +43,13 @@ const responseBuilderSimple = finalPayload => {
 
 const commonFieldResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
-  const { appId, advertiserId, enableDeduplication, deduplicationKey, sendingUnHashedData } = Config;
+  const {
+    appId,
+    advertiserId,
+    enableDeduplication,
+    deduplicationKey,
+    sendingUnHashedData
+  } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
   /*
@@ -46,8 +57,9 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
     sent as "event_id". On it's absence it will fallback to "messageId".
   */
-  if(enableDeduplication) {
-    processedCommonPayload.event_id = get(message,`${deduplicationKey}`) || message.messageId;
+  if (enableDeduplication) {
+    processedCommonPayload.event_id =
+      get(message, `${deduplicationKey}`) || message.messageId;
   }
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
@@ -76,7 +88,7 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     app_id: appId,
     advertiser_id: advertiserId,
     user_data: processedUserPayload
-  }
+  };
 };
 
 /*
@@ -87,10 +99,11 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     will add that.
  */
 const trackResponseBuilder = (message, mandatoryPayload) => {
+  let totalQuantity = 0;
+  let quantityInconsistent = false;
   const contentArray = [];
   const contentIds = [];
   const { properties } = message;
-  let totalQuantity = 0;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   let customPayload = constructPayload(message, CUSTOM_CONFIGS);
 
@@ -105,6 +118,9 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
       const prodParams = setIdPriceQuantity(product, message);
       contentIds.push(prodParams.contentId);
       contentArray.push(prodParams.content);
+      if (!product.quantity) {
+        quantityInconsistent = true;
+      }
       totalQuantity = product.quantity
         ? totalQuantity + product.quantity
         : totalQuantity;
@@ -133,7 +149,10 @@ const trackResponseBuilder = (message, mandatoryPayload) => {
     if properties.numOfItems is not provided by the user, the total quantity of the products
     will be sent as num_items
   */
-  if (!isDefinedAndNotNull(customPayload.num_items)) {
+  if (
+    !isDefinedAndNotNull(customPayload.num_items) &&
+    quantityInconsistent === false
+  ) {
     customPayload.num_items = parseInt(totalQuantity, 10);
   }
   customPayload = {
@@ -152,7 +171,7 @@ const process = event => {
   let response = {};
   let mandatoryPayload = {};
   const { message, destination } = event;
-   const messageType = message.type?.toLowerCase();
+  const messageType = message.type?.toLowerCase();
 
   if (!destination.Config?.advertiserId) {
     throw new CustomError("Advertiser Id not found. Aborting", 400);
@@ -166,11 +185,10 @@ const process = event => {
   }
 
   switch (messageType) {
-    case EventType.IDENTIFY:
     case EventType.PAGE:
     case EventType.SCREEN:
     case EventType.TRACK:
-       mandatoryPayload = commonFieldResponseBuilder(message, destination);
+      mandatoryPayload = commonFieldResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(
@@ -182,7 +200,7 @@ const process = event => {
   /**
    * Track payloads will need additional custom parameters
    */
-  if(messageType === EventType.TRACK) {
+  if (messageType === EventType.TRACK) {
     response = trackResponseBuilder(message, mandatoryPayload);
   } else {
     response = mandatoryPayload;

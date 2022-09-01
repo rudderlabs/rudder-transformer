@@ -18,9 +18,13 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  isAppleFamily
+  isAppleFamily,
+  generateErrorObject,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const logger = require("../../../logger");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
@@ -429,9 +433,9 @@ function getEventChunks(
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   let identifyEventChunks = []; // list containing identify events in batched format
@@ -500,13 +504,12 @@ const processRouterDest = async inputs => {
           }
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "ITERABLE"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

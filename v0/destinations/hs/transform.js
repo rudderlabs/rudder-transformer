@@ -1,13 +1,22 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
-const { getErrorRespEvents, CustomError } = require("../../util");
+const {
+  getErrorRespEvents,
+  CustomError,
+  generateErrorObject,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
+} = require("../../util");
 const { API_VERSION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
   legacyBatchEvents
 } = require("./HSTransform-v1");
-const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   processIdentify,
   processTrack,
@@ -19,6 +28,7 @@ const {
   getProperties,
   validateDestinationConfig
 } = require("./util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
@@ -80,9 +90,9 @@ const process = async event => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "OMETRIA");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   const successRespList = [];
   const errorRespList = [];
@@ -138,13 +148,12 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          "OMETRIA"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

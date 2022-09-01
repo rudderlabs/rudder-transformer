@@ -6,7 +6,8 @@ const {
   ErrorMessage,
   getErrorRespEvents,
   getSuccessRespEvents,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  defaultPostRequestConfig
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
@@ -75,9 +76,17 @@ const groupResponseBuilder = async (message, { Config }) => {
   if (!accountId) {
     throw new CustomError("Error while fetching accountId", 400);
   }
-  const userEmail = getFieldValueFromMessage("email");
+  const userEmail = getFieldValueFromMessage(message, "email");
   if (!userEmail) {
-    throw new CustomError("User Email not fount, abort group call", 400);
+    const response = defaultRequestConfig();
+    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = payloadBody;
+    response.headers = {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    };
+    return response;
   }
   const userSalesAccount = await getUserAccountDetails(userEmail, Config);
   let accountDetails = userSalesAccount?.response?.contact?.sales_accounts;
@@ -92,7 +101,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     accountDetails = [...accountDetails, accountDetail];
   } else {
     accountDetail.is_primary = true;
-    accountDetails = accountDetail;
+    accountDetails = [accountDetail];
   }
   const responseIdentify = defaultRequestConfig();
   responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}`;

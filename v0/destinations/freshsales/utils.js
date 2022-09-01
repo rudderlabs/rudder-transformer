@@ -35,7 +35,10 @@ const getUserAccountDetails = async (userEmail, Config) => {
     requestOptions
   );
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
-  if (userSalesAccountResponse.status !== 200) {
+  if (
+    userSalesAccountResponse.status !== 200 ||
+    userSalesAccountResponse.status !== 201
+  ) {
     const errMessage = userSalesAccountResponse.response?.errors?.message || "";
     const errorStatus =
       userSalesAccountResponse.response?.errors?.code || "500";
@@ -65,7 +68,7 @@ const createUpdateAccount = async (payloadBody, Config) => {
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.endpoint}`;
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
   accountResponse = processAxiosResponse(accountResponse);
-  if (accountResponse.status !== 200) {
+  if (accountResponse.status !== 200 || accountResponse.status !== 201) {
     const errMessage = accountResponse.response?.errors?.message || "";
     const errorStatus = accountResponse.response?.errors?.code || 500;
     throw new CustomError(

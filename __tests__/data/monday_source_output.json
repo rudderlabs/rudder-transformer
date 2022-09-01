@@ -1,0 +1,251 @@
+[
+  {
+    "type": "track",
+    "event": "Create Pulse",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T09:02:39.191Z",
+    "properties": {
+      "app": "monday",
+      "type": "create_pulse",
+      "boardId": 3139815405,
+      "groupId": "topics",
+      "pulseId": 3160188786,
+      "groupName": "Group Title",
+      "pulseName": "New Sprint Item",
+      "groupColor": "#579bfc",
+      "isTopGroup": true,
+      "triggerUuid": "049869226bf6711705c62e301a2c3eee",
+      "columnValues": {},
+      "subscriptionId": 150881106,
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T09:02:39.191Z"
+  },
+  {
+    "type": "track",
+    "event": "Delete Pulse",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T09:06:09.176Z",
+    "properties": {
+      "app": "monday",
+      "type": "delete_pulse",
+      "itemId": 3160188786,
+      "boardId": 3139815405,
+      "itemName": "New Sprint Item",
+      "triggerUuid": "4e4f87c8255c4ba4ba2f5e9934cb6d40",
+      "subscriptionId": 150882006,
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T09:06:09.176Z"
+  },
+  {
+    "type": "track",
+    "event": "Update Column Value",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T11:36:47.406Z",
+    "properties": {
+      "app": "monday",
+      "type": "update_column_value",
+      "value": {
+        "label": {
+          "text": "Done",
+          "index": 1,
+          "style": {
+            "color": "#00c875",
+            "border": "#00B461",
+            "var_name": "green-shadow"
+          },
+          "is_done": true
+        },
+        "post_id": null
+      },
+      "boardId": 3139815405,
+      "groupId": "topics",
+      "pulseId": 3160181387,
+      "columnId": "status",
+      "changedAt": 1661859406.8970098,
+      "pulseName": "New Sprint Item",
+      "columnType": "color",
+      "isTopGroup": true,
+      "columnTitle": "Status",
+      "triggerUuid": "51730730740a9d00ec45203bd392a9bd",
+      "previousValue": null,
+      "subscriptionId": 150894742,
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T11:36:47.406Z"
+  },
+  {
+    "type": "track",
+    "event": "Update Name",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T11:40:17.351Z",
+    "properties": {
+      "app": "monday",
+      "type": "update_name",
+      "value": {
+        "name": "New Sprint Item renamed"
+      },
+      "boardId": 3139815405,
+      "groupId": "topics",
+      "pulseId": 3160181387,
+      "triggerUuid": "05ce13d32d0256c4fb7dd5de25b1a1ba",
+      "previousValue": {
+        "name": "New Sprint Item"
+      },
+      "subscriptionId": 150910867,
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T11:40:17.351Z"
+  },
+  {
+    "type": "track",
+    "event": "Create Pulse",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T12:56:27.281Z",
+    "properties": {
+      "app": "monday",
+      "type": "create_pulse",
+      "itemId": 3161163765,
+      "boardId": 3160805239,
+      "groupId": "topics",
+      "pulseId": 3161163765,
+      "groupName": "Subitems",
+      "pulseName": "new subitem",
+      "groupColor": "#579bfc",
+      "isTopGroup": true,
+      "triggerUuid": "70a2219427804e47a508a91b5c244543",
+      "columnValues": {},
+      "parentItemId": "3160181387",
+      "subscriptionId": 150911592,
+      "parentItemBoardId": "3139815405",
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T12:56:27.281Z"
+  },
+  {
+    "type": "track",
+    "event": "Archive Pulse",
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "externalId": [
+        {
+          "id": 33556506,
+          "type": "mondayUserId"
+        }
+      ],
+      "integration": {
+        "name": "MONDAY"
+      }
+    },
+    "timestamp": "2022-08-30T12:58:15.844Z",
+    "properties": {
+      "app": "monday",
+      "type": "archive_pulse",
+      "itemId": 3160181387,
+      "boardId": 3139815405,
+      "itemName": "New Sprint Item renamed",
+      "triggerUuid": "aa8bd5dbb6fd592aedd57322dd776379",
+      "subscriptionId": 150925947,
+      "originalTriggerUuid": null
+    },
+    "anonymousId": "6f0a3dc76a335860e17fa1d8ab779742e2ca",
+    "integrations": {
+      "MONDAY": false
+    },
+    "originalTimestamp": "2022-08-30T12:58:15.844Z"
+  }
+]

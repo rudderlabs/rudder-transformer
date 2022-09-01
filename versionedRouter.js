@@ -42,7 +42,8 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
+const proxyTestModeEnabled =
+  process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -560,6 +561,15 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
+        // We send response back to the source
+        // through outputToSource. This is not sent to gateway
+        if (
+          Object.prototype.hasOwnProperty.call(respEvents, "outputToSource")
+        ) {
+          respList.push(respEvents);
+          return;
+        }
 
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });

@@ -89,7 +89,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   const accountId = account.response.sales_account?.id;
   if (!accountId) {
-    throw new CustomError("[Freshmarketer]: fails in fetching accountId.");
+    throw new CustomError("[Freshmarketer]: fails in fetching accountId.", 400);
   }
 
   const userSalesAccountResponse = await getUserAccountDetails(
@@ -100,7 +100,8 @@ const groupResponseBuilder = async (message, { Config }) => {
     userSalesAccountResponse.response.contact?.sales_accounts;
   if (!accountDetails) {
     throw new CustomError(
-      "[Freshmarketer]: Fails in fetching user accountDetails"
+      "[Freshmarketer]: Fails in fetching user accountDetails",
+      400
     );
   }
 

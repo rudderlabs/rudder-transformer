@@ -106,7 +106,7 @@ const checkNumberDataType = payload => {
     }
   });
   if (errorAttributes.length > 0) {
-    throw new CustomError(`${errorAttributes}: invalid number format`);
+    throw new CustomError(`${errorAttributes}: invalid number format`, 400);
   }
 };
 

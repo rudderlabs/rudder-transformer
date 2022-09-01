@@ -73,16 +73,16 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   const accountId = account.response?.sales_account?.id;
   if (!accountId) {
-    throw new CustomError("Error while fetching accountId");
+    throw new CustomError("Error while fetching accountId", 400);
   }
   const userEmail = getFieldValueFromMessage("email");
   if (!userEmail) {
-    throw new CustomError("User Email not fount, abort group call");
+    throw new CustomError("User Email not fount, abort group call", 400);
   }
   const userSalesAccount = await getUserAccountDetails(userEmail, Config);
   let accountDetails = userSalesAccount?.response?.contact?.sales_accounts;
   if (!accountDetails) {
-    throw new CustomError("Error while fetching user accountDetails");
+    throw new CustomError("Error while fetching user accountDetails", 400);
   }
   const accountDetail = {
     id: accountId,

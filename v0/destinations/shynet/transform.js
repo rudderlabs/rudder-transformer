@@ -32,7 +32,7 @@ function processPage(message, shynetServiceUrl) {
   );
 
   // generating UUID
-  requestJson.idempotency = message.anonymousId || generateUUID();
+  requestJson.idempotency = message.messageId || generateUUID();
   return buildResponse(requestJson, shynetServiceUrl);
 }
 

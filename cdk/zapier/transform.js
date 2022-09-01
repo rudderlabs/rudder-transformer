@@ -14,24 +14,22 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
 
   // track event
   if (message?.type === "track") {
+    const eventName = message?.event;
     // checking if the event is present track events mapping
-    Object.keys(trackEventsMap).forEach(key => {
-      if (key === message?.event) {
-        // if present, we are updating the zapUrl(with one specified in the mapping)
-        rudderContext.zapUrl = trackEventsMap[key];
-      }
-    });
+    if (trackEventsMap[eventName]) {
+      // if present, we are updating the zapUrl(with one specified in the mapping)
+      rudderContext.zapUrl = trackEventsMap[eventName];
+    }
   }
 
   // page/screen event
   if (message?.type === "page" || message?.type === "screen") {
+    const pageScreenName = message?.name;
     // checking if the event is present page/screen events mapping
-    Object.keys(pageScreenEventsMap).forEach(key => {
-      if (key === message?.name) {
-        // if present, we are updating the zapUrl(with the one specified in the mapping)
-        rudderContext.zapUrl = pageScreenEventsMap[key];
-      }
-    });
+    if (pageScreenEventsMap[pageScreenName]) {
+      // if present, we are updating the zapUrl(with the one specified in the mapping)
+      rudderContext.zapUrl = pageScreenEventsMap[pageScreenName];
+    }
   }
 
   const responseBody = {

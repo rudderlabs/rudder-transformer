@@ -23,6 +23,7 @@ const {
   wootricPostRequestHandler,
   wootricPutRequestHandler
 } = require("./wootric.mock");
+const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -163,6 +164,14 @@ function post(url, payload) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricPostRequestHandler(url, payload));
+    });
+  }
+  if (
+    url.includes("https://api.mixpanel.com/engage/") ||
+    url.includes("https://api-eu.mixpanel.com/engage/")
+  ) {
+    return new Promise(resolve => {
+      resolve(mixpanelPostRequestHandler(url, payload));
     });
   }
   return new Promise((resolve, reject) => {

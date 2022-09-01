@@ -49,7 +49,10 @@ async function createUser(response) {
   const { params } = response;
   const axiosResponse = await httpPOST(url, {}, { params });
   const processedResponse = processAxiosResponse(axiosResponse);
-  return processedResponse.status;
+  if (processedResponse.response === 1) {
+    return processedResponse.status;
+  }
+  return 400;
 }
 
 function setImportCredentials(destConfig) {
@@ -284,10 +287,17 @@ async function processIdentifyEvents(message, type, destination) {
     destination.Config
   );
 
-  if (message.userId && message.anonymousId && destination.Config.apiSecret) {
+  if (
+    message.userId &&
+    message.anonymousId &&
+    (destination.Config.apiSecret ||
+      (destination.Config.serviceAccountSecret &&
+        destination.Config.serviceAccountUserName &&
+        destination.Config.projectId))
+  ) {
     const responseStatus = await createUser(returnValue);
     if (!isHttpStatusSuccess(responseStatus)) {
-      return new CustomError("Unable to create the user.", responseStatus);
+      throw new CustomError("Unable to create the user.", responseStatus);
     }
     const trackParameters = {
       event: "$merge",

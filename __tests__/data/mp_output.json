@@ -1516,5 +1516,9 @@
   {
     "statusCode": 400,
     "message": "$geo_source value must be either null or 'reverse_geocoding' "
+  },
+  {
+    "statusCode": 400,
+    "message": "Unable to create the user."
   }
 ]

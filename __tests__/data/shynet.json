@@ -28,8 +28,7 @@
             "referrer": "http://127.0.0.1:7307/Testing/test/",
             "initial_referrer": "$direct",
             "referring_domain": "127.0.0.1:7307",
-            "initial_referring_domain": "",
-            "loadTime": 45
+            "initial_referring_domain": ""
           },
           "locale": "en-US",
           "screen": {
@@ -66,7 +65,6 @@
         "FORM": {
         },
         "JSON": {
-          "loadTime": 45,
           "location": "http://127.0.0.1:7307/Testing/test/ourSdk.html",
           "referrer": "http://127.0.0.1:7307/Testing/test/"
         },
@@ -136,6 +134,9 @@
           },
           "campaign": {},
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"
+        },
+        "properties": {
+          "loadTime": 45
         },
         "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
         "anonymousId": "675467tfhjgjhfcghjc",

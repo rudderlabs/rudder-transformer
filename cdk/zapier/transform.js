@@ -4,23 +4,35 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;
   const destConfig = destination.Config;
 
-  const { eventsToZap } = destConfig;
+  const { trackEventsToZap, pageScreenEventsToZap } = destConfig;
 
-  const eventsMap = getHashFromArray(eventsToZap);
+  const trackEventsMap = getHashFromArray(trackEventsToZap);
+  const pageScreenEventsMap = getHashFromArray(pageScreenEventsToZap);
 
   // default Zap URL
   rudderContext.zapUrl = destConfig.zapUrl;
 
-  // if mapping(event to ZapUrl) is present in the dashboard
-  Object.keys(eventsMap).forEach(key => {
-    if (
-      (message?.type === "track" && key === message?.event) ||
-      ((message?.type === "page" || message?.type === "screen") &&
-        key === message?.name)
-    ) {
-      rudderContext.zapUrl = eventsMap[key];
-    }
-  });
+  // track event
+  if (message?.type === "track") {
+    // checking if the event is present track events mapping
+    Object.keys(trackEventsMap).forEach(key => {
+      if (key === message?.event) {
+        // if present, we are updating the zapUrl(with one specified in the mapping)
+        rudderContext.zapUrl = trackEventsMap[key];
+      }
+    });
+  }
+
+  // page/screen event
+  if (message?.type === "page" || message?.type === "screen") {
+    // checking if the event is present page/screen events mapping
+    Object.keys(pageScreenEventsMap).forEach(key => {
+      if (key === message?.name) {
+        // if present, we are updating the zapUrl(with the one specified in the mapping)
+        rudderContext.zapUrl = pageScreenEventsMap[key];
+      }
+    });
+  }
 
   const responseBody = {
     ...mappedPayload

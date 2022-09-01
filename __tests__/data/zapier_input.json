@@ -38,7 +38,8 @@
       },
       "Config": {
         "zapUrl": "abcd.zap-hook",
-        "eventsToZap": {}
+        "trackEventsToZap": {},
+        "pageScreenEventsToZap": {}
       },
       "Enabled": true,
       "Transformations": [],
@@ -84,16 +85,17 @@
       },
       "Config": {
         "zapUrl": "abcd.zap-hook",
-        "eventsToZap":  [
-            {
-              "from": "def",
-              "to": "def.zap-hook"
-            },
-            {
-              "from": "ghi",
-              "to": "ghi.zap-hook"
-            }
-          ]
+        "trackEventsToZap": [
+          {
+            "from": "def",
+            "to": "def.zap-hook"
+          },
+          {
+            "from": "ghi",
+            "to": "ghi.zap-hook"
+          }
+        ],
+        "pageScreenEventsToZap": {}
       },
       "Enabled": true,
       "Transformations": [],

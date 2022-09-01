@@ -44,7 +44,9 @@ const {
   CustomError,
   removeUndefinedValues,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 
@@ -201,9 +203,9 @@ const process = event => {
 };
 
 const processRouterDest = async events => {
-  if (!Array.isArray(events) || events.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(events, "PARDOT");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const responseList = Promise.all(
@@ -215,16 +217,11 @@ const processRouterDest = async events => {
           event.destination
         );
       } catch (error) {
-        return getErrorRespEvents(
-          [event.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : error.status || 400,
-          error.message || "Error occurred while processing payload."
-        );
+        // In this destination, error is present in `error.status`
+        if (!error.code) {
+          error.code = error.status || 400;
+        }
+        return handleRtTfSingleEventError(event, error, "PARDOT");
       }
     })
   );

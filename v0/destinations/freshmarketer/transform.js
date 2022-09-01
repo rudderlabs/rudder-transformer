@@ -17,6 +17,17 @@ const {
   checkNumberDataType
 } = require("./utils");
 
+const identifyResponseConfig = Config => {
+  const response = defaultRequestConfig();
+  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
+  };
+  return response;
+};
+
 /*
  * This functions is used for creating response for identify call, to create or update contacts.
  * @param {*} message
@@ -34,13 +45,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
   checkNumberDataType(payload);
-  const response = defaultRequestConfig();
-  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    "Content-Type": "application/json"
-  };
+  const response = identifyResponseConfig(Config);
   response.body.JSON.contact = payload;
   response.body.JSON.unique_identifier = { emails: payload.emails };
   return response;
@@ -88,22 +93,24 @@ const groupResponseBuilder = async (message, { Config }) => {
       "[Freshmarketer]: Fails in fetching user accountDetails"
     );
   }
-  const accountDetail = {
-    id: accountId,
-    is_primary: false
-  };
+
   if (accountDetails.length > 0) {
-    accountDetails = [...accountDetails, accountDetail];
+    accountDetails = [
+      ...accountDetails,
+      {
+        id: accountId,
+        is_primary: false
+      }
+    ];
   } else {
-    accountDetails = [accountDetail];
+    accountDetails = [
+      {
+        id: accountId,
+        is_primary: true
+      }
+    ];
   }
-  const responseIdentify = defaultRequestConfig();
-  responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  responseIdentify.method = defaultPostRequestConfig.requestMethod;
-  responseIdentify.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    "Content-Type": "application/json"
-  };
+  const responseIdentify = identifyResponseConfig(Config);
   responseIdentify.body.JSON.contact = { sales_accounts: accountDetails };
   responseIdentify.body.JSON.unique_identifier = { emails: userEmail };
   return responseIdentify;

@@ -707,5 +707,68 @@
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_accounts/upsert"
     }
+  },
+  {
+    "description": "Identify call: Email is not present",
+    "input": {
+      "message": {
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-06-22T10:57:58Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99099",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "traits": {
+          "first_name": "Rk",
+          "last_name": "Narayan",
+          "mobileNumber": "1-926-555-9504",
+          "phone": "9988776655"
+        },
+        "type": "identify",
+        "sentAt": "2022-04-22T10:57:58Z"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "domain": "domain-rudder"
+        }
+      }
+    },
+    "output": {
+      "error": "Missing required value from \"email\"",
+      "stage": "dest_transformer",
+      "record_id": null,
+      "source_id": "2DnU7R3Ksf0O1IypvleCHNp4X7m",
+      "status_code": 400,
+      "destination_id": "2DnUEc7Ka4thYmPsPCdigkwaGkn",
+      "source_job_run_id": "",
+      "source_task_run_id": ""
+    }
   }
 ]

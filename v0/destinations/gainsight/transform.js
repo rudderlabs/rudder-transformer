@@ -20,7 +20,10 @@ const {
   getHashFromArray,
   getDestinationExternalID,
   getSuccessRespEvents,
-  getErrorRespEvents
+  getErrorRespEvents,
+  generateErrorObject,
+  handleRtTfSingleEventError,
+  simpleProcessRouterDest
 } = require("../../util/index");
 const {
   searchGroup,
@@ -30,6 +33,7 @@ const {
   getConfigOrThrowError,
   CustomError
 } = require("./util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases
@@ -242,32 +246,7 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+  const respList = await simpleProcessRouterDest(inputs, "GAINSIGHT", process);
   return respList;
 };
 

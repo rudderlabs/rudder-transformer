@@ -24,7 +24,9 @@ const {
   getDestinationExternalID,
   getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject
+  generateErrorObject,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const { validatePayloadSize } = require("./utils");
 
@@ -1039,9 +1041,9 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const respList = inputs.map(input => {
@@ -1061,17 +1063,7 @@ const processRouterDest = inputs => {
         input.destination
       );
     } catch (error) {
-      const errObj = generateErrorObject(
-        error,
-        DESTINATION,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
-      return getErrorRespEvents(
-        [input.metadata],
-        error.status || 400,
-        error.message || "Error occurred while processing payload.",
-        errObj.statTags
-      );
+      return handleRtTfSingleEventError(input, error, DESTINATION);
     }
   });
   return respList;

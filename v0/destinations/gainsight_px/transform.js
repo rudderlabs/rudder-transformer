@@ -13,7 +13,9 @@ const {
   getHashFromArray,
   getFieldValueFromMessage,
   getValueFromMessage,
-  CustomError
+  CustomError,
+  generateErrorObject,
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   renameCustomFields,
@@ -30,6 +32,7 @@ const {
   groupMapping,
   identifyMapping
 } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  * Create/Update a User with user attributes
@@ -273,31 +276,10 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "GAINSIGHT_PX",
+    process
   );
   return respList;
 };

@@ -1,7 +1,7 @@
 [
   {
     "destKey": "loadTime",
-    "sourceKeys": "context.page.loadTime",
+    "sourceKeys": "properties.loadTime"
     "required": false
   },
   {

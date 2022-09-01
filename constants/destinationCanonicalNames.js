@@ -51,6 +51,7 @@ const DestCanonicalNames = {
     "onesignal"
   ],
   wootric: ["wootric", "Wootric", "WOOTRIC"],
+  zapier: ["zapier", "Zapier", "ZAPIER"],
   shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"]
 };
 

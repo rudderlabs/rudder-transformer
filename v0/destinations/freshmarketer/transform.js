@@ -52,7 +52,8 @@ const identifyResponseBuilder = (message, { Config }) => {
 };
 
 /*
- * This functions is used for associating contacts in account.
+ * This functions allow you to link identified contacts within a accounts.
+ * It also helps in updating or creating accounts.
  * @param {*} message
  * @param {*} Config
  * @returns
@@ -71,6 +72,18 @@ const groupResponseBuilder = async (message, { Config }) => {
     unique_identifier: { name: payload.name },
     sales_account: payload
   };
+  const userEmail = getFieldValueFromMessage(message, "email");
+  if (!userEmail) {
+    const response = defaultRequestConfig();
+    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.body.JSON = payloadBody;
+    response.headers = {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    };
+    return response;
+  }
 
   const account = await createUpdateAccount(payloadBody, Config);
 
@@ -78,10 +91,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   if (!accountId) {
     throw new CustomError("[Freshmarketer]: fails in fetching accountId.");
   }
-  const userEmail = getFieldValueFromMessage(message, "email");
-  if (!userEmail) {
-    throw new CustomError("User Email not found, abort group call");
-  }
+
   const userSalesAccountResponse = await getUserAccountDetails(
     userEmail,
     Config

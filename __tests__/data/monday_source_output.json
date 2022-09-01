@@ -1,7 +1,7 @@
 [
   {
     "type": "track",
-    "event": "createPulse",
+    "event": "Create Pulse",
     "context": {
       "library": {
         "name": "unknown",
@@ -41,7 +41,7 @@
   },
   {
     "type": "track",
-    "event": "deletePulse",
+    "event": "Delete Pulse",
     "context": {
       "library": {
         "name": "unknown",
@@ -76,7 +76,7 @@
   },
   {
     "type": "track",
-    "event": "updateColumnValue",
+    "event": "Update Column Value",
     "context": {
       "library": {
         "name": "unknown",
@@ -131,7 +131,7 @@
   },
   {
     "type": "track",
-    "event": "updateName",
+    "event": "Update Name",
     "context": {
       "library": {
         "name": "unknown",
@@ -172,7 +172,7 @@
   },
   {
     "type": "track",
-    "event": "createPulse",
+    "event": "Create Pulse",
     "context": {
       "library": {
         "name": "unknown",
@@ -215,7 +215,7 @@
   },
   {
     "type": "track",
-    "event": "archivePulse",
+    "event": "Archive Pulse",
     "context": {
       "library": {
         "name": "unknown",

@@ -8,13 +8,13 @@ const {
   generateUUID
 } = require("../../util");
 
-function processNormalEvent(event) {
+function processNormalEvent(mondayPayload) {
   const message = new Message(`MONDAY`);
   // we are setting event type as track always
   message.setEventType("track");
-  message.setEventName(formEventName(event.event.type));
-  if (event?.event?.userId) {
-    const stringifiedUserId = event.event.userId.toString();
+  message.setEventName(formEventName(mondayPayload.event.type));
+  if (mondayPayload.event?.userId) {
+    const stringifiedUserId = mondayPayload.event.userId.toString();
     message.setProperty(
       "anonymousId",
       stringifiedUserId
@@ -27,14 +27,14 @@ function processNormalEvent(event) {
     message.context.externalId = [
       {
         type: "mondayUserId",
-        id: event.event.userId
+        id: mondayPayload.event.userId
       }
     ];
   } else {
-    throw new CustomError("Invalid Payload Structure", 400);
+    throw new CustomError("UserId not found", 400);
   }
 
-  message.setPropertiesV2(event, mapping);
+  message.setPropertiesV2(mondayPayload, mapping);
   /* deleting properties already mapped in
   the payload's root */
   delete message.properties.triggerTime;

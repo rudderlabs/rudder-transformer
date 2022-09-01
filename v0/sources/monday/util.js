@@ -8,21 +8,10 @@ const mapping = JSON.parse(
 
 // turning underscore-seperated Monday events into Rudder format
 function formEventName(evtName) {
-  let rudderEvtName = "";
-  if (evtName) {
-    const wordArr = evtName.split(/[-_]/g);
-    for (const i in wordArr) {
-      if (i > 0) {
-        rudderEvtName +=
-          wordArr[i].charAt(0).toUpperCase() + wordArr[i].slice(1);
-      } else {
-        rudderEvtName += wordArr[i];
-      }
-    }
-  } else {
-    return rudderEvtName;
-  }
-  return rudderEvtName;
+  return evtName
+    .split("_")
+    .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(" ");
 }
 
 module.exports = { mapping, formEventName };

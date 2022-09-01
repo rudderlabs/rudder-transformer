@@ -75,6 +75,11 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
+    "statTags": {
+      "destType": "MAILCHIMP",
+      "scope": "exception",
+      "stage": "transform"
+    }
   }
 ]

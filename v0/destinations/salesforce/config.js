@@ -1,11 +1,17 @@
 const { getMappingConfig } = require("../../util");
 
 const ConfigCategory = {
-  IDENTIFY: {
-    name: "SFIdentifyConfig"
+  IDENTIFY_LEAD: {
+    name: "SFIdentifyLeadConfig"
   },
-  IGNORE: {
-    name: "SFIgnoreConfig"
+  IDENTIFY_CONTACT: {
+    name: "SFIdentifyContactConfig"
+  },
+  IGNORE_LEAD: {
+    name: "SFIgnoreLeadConfig"
+  },
+  IGNORE_CONTACT: {
+    name: "SFIgnoreContactConfig"
   }
 };
 
@@ -21,6 +27,8 @@ module.exports = {
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
-  identifyMappingJson: mappingConfig[ConfigCategory.IDENTIFY.name],
-  ignoredTraits: mappingConfig[ConfigCategory.IGNORE.name]
+  identifyLeadMappingJson: mappingConfig[ConfigCategory.IDENTIFY_LEAD.name],
+  identifyContactMappingJson: mappingConfig[ConfigCategory.IDENTIFY_CONTACT.name],
+  ignoredLeadTraits: mappingConfig[ConfigCategory.IGNORE_LEAD.name],
+  ignoredContactTraits: mappingConfig[ConfigCategory.IGNORE_CONTACT.name]
 };

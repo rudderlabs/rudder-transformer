@@ -5,6 +5,14 @@
     "required": false
   },
   {
+    "destKey": "accountId",
+    "sourceKeys": ["traits.accountId", "context.traits.accountId"],
+    "required": false,
+    "metadata":{
+      "type": "toString"
+    }
+  },
+  {
     "destKey": "firstName",
     "sourceKeys": "firstName",
     "required": false,

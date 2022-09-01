@@ -7,6 +7,7 @@ const {
   klaviyoPostRequestHandler,
   klaviyoGetRequestHandler
 } = require("./klaviyo.mock");
+
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
 const gainsightRequestHandler = require("./gainsight.mock");
@@ -23,6 +24,7 @@ const {
   wootricPostRequestHandler,
   wootricPutRequestHandler
 } = require("./wootric.mock");
+const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -31,7 +33,8 @@ const urlDirectoryMap = {
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
-  "api.profitwell.com": "profitwell"
+  "api.profitwell.com": "profitwell",
+  "ruddertest2.mautic.net":"mautic"
 };
 
 const fs = require("fs");
@@ -163,6 +166,11 @@ function post(url, payload) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricPostRequestHandler(url, payload));
+    });
+  }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return new Promise((resolve, reject) => {
+      resolve(freshmarketerPostRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

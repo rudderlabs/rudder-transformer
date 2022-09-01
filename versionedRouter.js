@@ -160,7 +160,7 @@ async function handleDest(ctx, version, destination) {
           statusCode: errObj.status,
           error: errObj.message || "Error occurred while processing payload.",
           statTags: errObj.statTags
-        }
+        };
       }
     })
   );

@@ -12,7 +12,8 @@ const cdkEnabledDestinations = {
   "lytics": true,
   "kochava": true,
   "statsig": true,
-  "new_relic": true
+  "new_relic": true,
+  "zapier": true
 }
 
 function getDestFromTestFile(filePath) {

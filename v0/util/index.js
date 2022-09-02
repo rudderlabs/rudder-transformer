@@ -1480,6 +1480,36 @@ function getValidDynamicFormConfig(
 }
 
 /**
+ * These are keys where the status-code can be present in the error object
+ */
+const errorStatusCodeKeys = ["response.status", "code", "status"];
+/**
+ * The status-code is expected to be present in one of the following properties
+ * - response.status
+ * - code
+ * - status
+ * The first matched status-code will be returned
+ * If not the defaultStatusCode will be returned
+ * If the value of defaultStatusCode is not set or is not a number then 400 will be returned by default
+ *
+ * Note: The not a number check is performed using lodash's isNumber function
+ *
+ * @param {object} error error object when an error is thrown
+ * @param {Number} defaultStatusCode default status code that has to be set
+ * @returns {Number}
+ */
+const getErrorStatusCode = (error, defaultStatusCode = 400) => {
+  let defaultStCode = defaultStatusCode;
+  if (!_.isNumber(defaultStatusCode)) {
+    defaultStCode = 400;
+  }
+  const errStCode = errorStatusCodeKeys
+    .map(statusKey => get(error, statusKey))
+    .find(stCode => _.isNumber(stCode));
+  return errStCode || defaultStCode;
+};
+
+/**
  * error handler during transformation of a single rudder event for rt transform destinaiton
  *
  * This function is to be used only when we have a simple error handling scenario
@@ -1499,11 +1529,7 @@ const handleRtTfSingleEventError = (input, error, destType) => {
   return getErrorRespEvents(
     [input.metadata],
     // eslint-disable-next-line no-nested-ternary
-    error.response
-      ? error.response.status
-      : error.code
-      ? error.code
-      : error.status || 400,
+    getErrorStatusCode(error),
     error.message || "Error occurred while processing the payload.",
     errObj.statTags
   );
@@ -1656,5 +1682,6 @@ module.exports = {
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  getErrorStatusCode
 };

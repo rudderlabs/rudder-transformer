@@ -217,10 +217,6 @@ const processRouterDest = async events => {
           event.destination
         );
       } catch (error) {
-        // In this destination, error is present in `error.status`
-        if (!error.code) {
-          error.code = error.status || 400;
-        }
         return handleRtTfSingleEventError(event, error, "PARDOT");
       }
     })

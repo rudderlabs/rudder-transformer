@@ -1504,7 +1504,7 @@ const handleRtTfSingleEventError = (input, error, destType) => {
       : error.code
       ? error.code
       : error.status || 400,
-    error.message || "Error occurred while processing payload.",
+    error.message || "Error occurred while processing the payload.",
     errObj.statTags
   );
 };

@@ -1529,7 +1529,7 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
   if (!destTyp) {
     destTyp = "";
   }
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array", {
       destType: destTyp.toUpperCase(),
       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
@@ -1561,20 +1561,13 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await singleTfFunc(input);
         }
-        // if not transformed
-        return getSuccessRespEvents(
-          await singleTfFunc(input),
-          [input.metadata],
-          input.destination
-        );
+
+        return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
         return handleRtTfSingleEventError(input, error, destType);
       }

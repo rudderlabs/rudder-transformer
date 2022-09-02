@@ -119,8 +119,8 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkDestination(parsedEvent)) {
-          const baseConfig = await ConfigFactory.getConfig(destination);
-          respEvents = await Executor.execute(parsedEvent, baseConfig);
+          const tfConfig = await ConfigFactory.getConfig(destination);
+          respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
           respEvents = await destHandler.process(parsedEvent);
         }
@@ -159,9 +159,9 @@ async function handleDest(ctx, version, destination) {
         return {
           metadata: event.metadata,
           statusCode: errObj.status,
-          error: errObj.message || "Error occurred while processing payload.",
+          error: errObj.message || "Error occurred while processing the payload.",
           statTags: errObj.statTags
-        }
+        };
       }
     })
   );

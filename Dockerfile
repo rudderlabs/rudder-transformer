@@ -1,19 +1,18 @@
-FROM node:14.19.0-alpine3.15
+FROM ubuntu:20.04
 
-RUN apk update
-RUN apk upgrade
+RUN apt-get update \
+  && apt-get install -y curl make g++ \
+  && curl -sL https://deb.nodesource.com/setup_14.x | bash \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists.d/* \
+  && apt-get autoremove \
+  && apt-get clean \
+  && apt-get autoclean
 
-# installing specific python version based on your previous configuration
-RUN apk add --no-cache tini python2
+RUN adduser --disabled-password --gecos "" --uid 1000 node
 
-# installing specific make version based on your previous configuration
-RUN apk add make=4.2.1-r2 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/main
-
-# installing specific gcc version based on your previous configuration
-RUN apk add g++=9.3.0-r0 --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/main
-
-# RUN apk add --no-cache tini python make g++
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app && mkdir -p /home/node/.npm &&  chown -R node:node /home/node/.npm
 
 # Create app directory
 WORKDIR /home/node/app
@@ -26,8 +25,6 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "npm", "start" ]
-
 
 EXPOSE 9090/tcp

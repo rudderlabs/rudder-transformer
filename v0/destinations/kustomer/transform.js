@@ -14,9 +14,6 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  generateErrorObject,
   simpleProcessRouterDest
 } = require("../../util");
 const {
@@ -24,7 +21,6 @@ const {
   handleAdvancedtransformations,
   CustomError
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.

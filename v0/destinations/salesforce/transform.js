@@ -20,7 +20,6 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  generateErrorObject,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");

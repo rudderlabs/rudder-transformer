@@ -12,18 +12,13 @@ const {
   flattenJson,
   toTitleCase,
   getHashFromArray,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   isEmpty,
-  generateErrorObject,
-  checkInvalidRtTfEvents,
   simpleProcessRouterDest
 } = require("../../util");
 const {
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 

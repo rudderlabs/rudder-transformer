@@ -9,11 +9,8 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getErrorRespEvents,
-  getSuccessRespEvents,
   getValueFromMessage,
   isObject,
-  generateErrorObject,
   simpleProcessRouterDest
 } = require("../../util");
 const logger = require("../../../logger");

@@ -15,16 +15,13 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
   isAppleFamily,
-  generateErrorObject,
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents
 } = require("../../util");
 const logger = require("../../../logger");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {

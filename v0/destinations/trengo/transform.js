@@ -8,21 +8,15 @@ const { EndPoints, BASE_URL } = require("./config");
 const {
   getHashFromArray,
   removeUndefinedAndNullValues,
-  generateErrorObject,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
+  simpleProcessRouterDest,
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getSuccessRespEvents,
   getStringValueOfJSON,
-  getErrorRespEvents,
   CustomError
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  *

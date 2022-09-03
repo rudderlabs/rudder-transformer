@@ -1,6 +1,5 @@
 const set = require("set-value");
 const { EventType } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   CustomError,
   getValueFromMessage,
@@ -9,9 +8,7 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
-  getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util/index");

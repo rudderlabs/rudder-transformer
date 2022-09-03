@@ -22,13 +22,10 @@ const {
   formatValue,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
-const { validatePayloadSize } = require("./utils");
 
 const gaDisplayName = "Google Analytics";
 

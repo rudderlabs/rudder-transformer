@@ -5,14 +5,11 @@ const {
   defaultRequestConfig,
   extractCustomFields,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
   constructPayload,
-  getSuccessRespEvents,
   getDestinationExternalID,
   isEmptyObject,
   defaultPostRequestConfig,
   getValueFromMessage,
-  generateErrorObject,
   simpleProcessRouterDest
 } = require("../../util");
 const logger = require("../../../logger");

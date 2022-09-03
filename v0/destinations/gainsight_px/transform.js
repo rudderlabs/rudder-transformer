@@ -8,13 +8,10 @@ const {
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   getHashFromArray,
   getFieldValueFromMessage,
   getValueFromMessage,
   CustomError,
-  generateErrorObject,
   simpleProcessRouterDest
 } = require("../../util");
 const {
@@ -32,7 +29,6 @@ const {
   groupMapping,
   identifyMapping
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  * Create/Update a User with user attributes

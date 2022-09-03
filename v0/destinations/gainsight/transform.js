@@ -19,10 +19,6 @@ const {
   defaultPostRequestConfig,
   getHashFromArray,
   getDestinationExternalID,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  generateErrorObject,
-  handleRtTfSingleEventError,
   simpleProcessRouterDest
 } = require("../../util/index");
 const {
@@ -33,7 +29,6 @@ const {
   getConfigOrThrowError,
   CustomError
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases

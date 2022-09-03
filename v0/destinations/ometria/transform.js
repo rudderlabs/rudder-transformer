@@ -1,7 +1,6 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
 const { EventType } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   constructPayload,
   extractCustomFields,
@@ -14,9 +13,7 @@ const {
   isEmptyObject,
   getFieldValueFromMessage,
   getIntegrationsObj,
-  getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util/index");

@@ -1,9 +1,7 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  getErrorRespEvents,
   CustomError,
-  generateErrorObject,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
@@ -28,7 +26,6 @@ const {
   getProperties,
   validateDestinationConfig
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {

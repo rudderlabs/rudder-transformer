@@ -59,7 +59,7 @@
           "bundleIdentifier": "com.rudderlabs.javascript",
           "customer_user_id": "12345",
           "eventValue": "{\"user_actual_role\":\"system_admin, system_user\",\"user_actual_id\":12345}",
-          "eventName": "test track event hs",
+          "eventName": "test track event HS",
           "appsflyer_id": "afUid",
           "os": "",
           "ip": "0.0.0.0"

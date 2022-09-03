@@ -168,7 +168,6 @@ function processEventTypeTrack(message) {
   let isUnIdentifiedEvent = false;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
-  const eventName = evType.toLowerCase();
 
   switch (evType) {
     case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
@@ -196,7 +195,7 @@ function processEventTypeTrack(message) {
       isMultiSupport
     );
   }
-  payload.eventName = eventName;
+  payload.eventName = message.event;
 
   return payload;
 }

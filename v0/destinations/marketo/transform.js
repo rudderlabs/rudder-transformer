@@ -262,7 +262,7 @@ const getLeadId = async (message, formattedDestination, token) => {
         .setStatus(400)
         .setMessage("Lead creation is turned off on the dashboard")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -286,7 +286,7 @@ const getLeadId = async (message, formattedDestination, token) => {
         "lookup failure - either anonymousId or userId or both fields are not created in marketo"
       )
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -320,7 +320,7 @@ const processIdentify = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Invalid traits value for Marketo")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -416,7 +416,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Anonymous event tracking is turned off and invalid userId")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -431,7 +431,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Event is not mapped to Custom Activity")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -450,7 +450,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Primary Key value is invalid for the event")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -511,7 +511,7 @@ const processEvent = async (message, destination, token) => {
       .setStatus(400)
       .setMessage("Message Type is not present. Aborting message.")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -534,7 +534,7 @@ const processEvent = async (message, destination, token) => {
         .setStatus(400)
         .setMessage("Message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -554,7 +554,7 @@ const process = async event => {
       .setStatus(400)
       .setMessage("Authorisation failed")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       })
@@ -596,7 +596,7 @@ const processRouterDest = async inputs => {
       message: "Authorisation failed",
       responseTransformFailure: true,
       statTags: {
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       }

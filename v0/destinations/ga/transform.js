@@ -150,7 +150,7 @@ function processPageViews(message, destination) {
           .setStatus(400)
           .setMessage(`Invalid Url: ${documentUrl}`)
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -593,7 +593,7 @@ function processProductListEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductListEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -693,7 +693,7 @@ function processProductEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -750,7 +750,7 @@ function processTransactionEvent(message, destination) {
         .setMessage("unknown TransactionEvent type")
         .isExplicit(true)
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -793,7 +793,7 @@ function processTransactionEvent(message, destination) {
       .setStatus(400)
       .setMessage("No product information supplied for transaction event")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
@@ -840,7 +840,7 @@ function processEComGenericEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown TransactionEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -873,7 +873,7 @@ function processSingleMessage(message, destination) {
       .setStatus(400)
       .setMessage("Message type is not present")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -895,7 +895,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("server side identify is not on")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -920,7 +920,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("Event name is not present/is not a string")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -1016,7 +1016,7 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:

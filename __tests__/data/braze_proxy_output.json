@@ -34,7 +34,8 @@
         "destType": "BRAZE",
         "scope": "api",
         "stage": "responseTransform",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -54,7 +55,8 @@
         "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -70,7 +72,8 @@
         "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -83,7 +86,8 @@
         "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   }

@@ -366,7 +366,8 @@
         "destType": "PARDOT",
         "meta": "retryable",
         "scope": "api",
-        "stage": "responseTransform"
+        "stage": "responseTransform",
+        "errorAt": "proxy"
       },
       "authErrorCategory": "REFRESH_TOKEN"
     }

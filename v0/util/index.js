@@ -590,7 +590,12 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null) => {
+const handleMetadataForValue = (
+  value,
+  metadata,
+  destKey,
+  integrationsObj = null
+) => {
   if (!metadata) {
     return value;
   }
@@ -846,12 +851,12 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
     if (!foundVal) {
-      if(strictMultiMap) {
-          throw new CustomError (`Invalid entry for key ${destKey}`,400); 
+      if (strictMultiMap) {
+        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
       } else {
-        formattedVal = undefined
+        formattedVal = undefined;
       }
-    } 
+    }
   }
 
   if (allowedKeyCheck) {
@@ -1022,7 +1027,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
       if (type.includes(`${destination}-`)) {
         destinationExternalId = extIdObj.id;
         objectType = type.replace(`${destination}-`, "");
-        identifierType = extIdObj.identifierType
+        identifierType = extIdObj.identifierType;
       }
     });
   }
@@ -1309,6 +1314,37 @@ const adduserIdFromExternalId = message => {
     message.userId = externalId;
   }
 };
+
+/**
+ * These are keys where the status-code can be present in the error object
+ */
+const errorStatusCodeKeys = ["response.status", "code", "status"];
+/**
+ * The status-code is expected to be present in one of the following properties
+ * - response.status
+ * - code
+ * - status
+ * The first matched status-code will be returned
+ * If not the defaultStatusCode will be returned
+ * If the value of defaultStatusCode is not set or is not a number then 400 will be returned by default
+ *
+ * Note: The not a number check is performed using lodash's isNumber function
+ *
+ * @param {object} error error object when an error is thrown
+ * @param {Number} defaultStatusCode default status code that has to be set
+ * @returns {Number}
+ */
+const getErrorStatusCode = (error, defaultStatusCode = 400) => {
+  let defaultStCode = defaultStatusCode;
+  if (!_.isNumber(defaultStatusCode)) {
+    defaultStCode = 400;
+  }
+  const errStCode = errorStatusCodeKeys
+    .map(statusKey => get(error, statusKey))
+    .find(stCode => _.isNumber(stCode));
+  return errStCode || defaultStCode;
+};
+
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1323,7 +1359,7 @@ class CustomError extends Error {
  * @param {*} transformStage
  */
 function generateErrorObject(error, destination = "", transformStage) {
-  const { status, message, destinationResponse } = error;
+  const { message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {
     statTags = {
@@ -1336,15 +1372,15 @@ function generateErrorObject(error, destination = "", transformStage) {
   // This block is mainly to support it and also for backward for non-cdk destinations
   if (statTags.destination) {
     statTags.destType = statTags.destination;
-    delete statTags.destination
+    delete statTags.destination;
   }
   if (statTags.destType) {
     // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
     statTags.destType = statTags.destType.toUpperCase();
   }
   const response = {
-    status: status || 400,
-    message,
+    status: getErrorStatusCode(error),
+    message: message || "Error occurred while processing the payload.",
     destinationResponse,
     statTags
   };
@@ -1474,6 +1510,98 @@ function getValidDynamicFormConfig(
   return res;
 }
 
+/**
+ * error handler during transformation of a single rudder event for rt transform destinaiton
+ *
+ * This function is to be used only when we have a simple error handling scenario
+ * If some customisation wrt error handling is required, we recommend to not use this function
+ *
+ * @param {object} input - single rudder event
+ * @param {*} error - error occurred during transformation of a single rudder event
+ * @param {string} destType - destination name
+ * @returns
+ */
+const handleRtTfSingleEventError = (input, error, destType) => {
+  const errObj = generateErrorObject(
+    error,
+    destType, // Preference is destination definition name
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+  );
+  return getErrorRespEvents(
+    [input.metadata],
+    errObj.status,
+    errObj.message,
+    errObj.statTags
+  );
+};
+
+/**
+ * This method is used to check if the input events sent to router transformation are valid
+ * It is to be used only for router transform destinations
+ *
+ * Example:
+ * ```
+ * const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+ * if (errorRespEvents.length > 0) {
+ *  return errorRespEvents;
+ * }
+ * ```
+ * @param {Array<object>} inputs - list of rudder events to be transformed
+ * @param {String} destType - destination name
+ * @returns {Array<object> | []}
+ */
+const checkInvalidRtTfEvents = (inputs, destType) => {
+  let destTyp = destType;
+  if (!destTyp) {
+    destTyp = "";
+  }
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array", {
+      destType: destTyp.toUpperCase(),
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    });
+    return [respEvents];
+  }
+  return [];
+};
+
+/**
+ * This function serves as a simple implementation of router transformation destinations
+ *
+ * <strong>Note</strong>:
+ * Don't use this method when the following are the scenarios
+ *  - When a specific router transformation logic is involved
+ *  - When batching is involved
+ * @param {Array<object>} inputs - List of rudder events to be transformed
+ * @param {String} destType - destination definition name
+ * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
+ * @returns
+ */
+const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await singleTfFunc(input);
+        }
+
+        return getSuccessRespEvents(resp, [input.metadata], input.destination);
+      } catch (error) {
+        return handleRtTfSingleEventError(input, error, destType);
+      }
+    })
+  );
+  return respList;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1551,5 +1679,9 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
-  updatePayload
+  updatePayload,
+  checkInvalidRtTfEvents,
+  simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  getErrorStatusCode
 };

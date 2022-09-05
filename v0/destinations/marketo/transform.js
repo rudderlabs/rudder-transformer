@@ -25,7 +25,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   isDefinedAndNotNull,
-  generateErrorObject
+  generateErrorObject,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const Cache = require("../../util/cache");
@@ -567,9 +568,9 @@ const process = async event => {
 const processRouterDest = async inputs => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   let token;
   try {

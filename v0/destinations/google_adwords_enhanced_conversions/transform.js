@@ -3,12 +3,11 @@
 const get = require("get-value");
 const { cloneDeep } = require("lodash");
 const {
-  getSuccessRespEvents,
-  getErrorRespEvents,
   constructPayload,
   defaultRequestConfig,
   getValueFromMessage,
-  removeHyphens
+  removeHyphens,
+  simpleProcessRouterDest
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 
@@ -47,7 +46,8 @@ const updateMappingJson = mapping => {
 const getAccessToken = metadata => {
   // OAuth for this destination
   const { secret } = metadata;
-  if (!secret) {
+  // we would need to verify if secret is present and also if the access token field is present in secret
+  if (!secret || !secret.access_token) {
     throw new ErrorBuilder()
       .setMessage("Empty/Invalid access token")
       .setStatus(500)
@@ -163,32 +163,10 @@ const process = async event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : error.status || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "Google_adwords_enhanced_conversions",
+    process
   );
   return respList;
 };

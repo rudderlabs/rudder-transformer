@@ -43,24 +43,17 @@ const responseBuilderSimple = finalPayload => {
 
 const commonFieldResponseBuilder = (message, { Config }) => {
   let processedUserPayload;
-  const {
-    appId,
-    advertiserId,
-    enableDeduplication,
-    deduplicationKey,
-    sendingUnHashedData
-  } = Config;
+  const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
   /*
     message deduplication facility is provided *only* for the users who are using the *new configuration*.
     if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
     sent as "event_id". On it's absence it will fallback to "messageId".
+    And if "enableDeduplication" is set to false, it will fallback to "messageId"
   */
-  if (enableDeduplication) {
-    processedCommonPayload.event_id =
-      get(message, `${deduplicationKey}`) || message.messageId;
-  }
+  processedCommonPayload.event_id =
+    get(message, `${deduplicationKey}`) || message.messageId;
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {

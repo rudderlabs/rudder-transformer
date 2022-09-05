@@ -80,21 +80,15 @@ const processUserPayload = userPayload => {
 
 const deduceOptOutStatus = message => {
   const adTrackingEnabled = message.context?.device?.adTrackingEnabled;
-  const attStatus = message.context?.device?.attStatus;
   let optOut;
 
-  // for android
+  // for ios
   if (isDefinedAndNotNull(adTrackingEnabled)) {
     if (adTrackingEnabled === true) {
       optOut = false;
     } else if (adTrackingEnabled === false) {
       optOut = true;
     }
-  }
-
-  // for ios
-  if (isDefinedAndNotNull(attStatus)) {
-    optOut = attStatus === 3 ? true : false;
   }
 
   return optOut;

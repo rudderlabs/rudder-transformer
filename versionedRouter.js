@@ -30,6 +30,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
+const { RespStatusError } = require("./util/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -41,7 +42,8 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
+const proxyTestModeEnabled =
+  process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -443,10 +445,14 @@ if (startDestTransformer) {
               );
             } catch (error) {
               logger.error(error);
+              let status = 400;
               const errorString = error.toString();
+              if (error instanceof RespStatusError) {
+                status = error.statusCode;
+              }
               destTransformedEvents = destEvents.map(e => {
                 return {
-                  statusCode: 400,
+                  statusCode: status,
                   metadata: e.metadata,
                   error: errorString
                 };
@@ -555,6 +561,15 @@ async function handleSource(ctx, version, source) {
     events.map(async event => {
       try {
         const respEvents = await sourceHandler.process(event);
+
+        // We send response back to the source
+        // through outputToSource. This is not sent to gateway
+        if (
+          Object.prototype.hasOwnProperty.call(respEvents, "outputToSource")
+        ) {
+          respList.push(respEvents);
+          return;
+        }
 
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });

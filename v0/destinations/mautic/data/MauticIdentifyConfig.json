@@ -1,0 +1,244 @@
+[
+    {
+      "sourceKeys": [
+        "traits.email",
+        "context.traits.email",
+        "properties.email"
+      ],
+      "destKey": "email"
+    },
+    {
+      "sourceKeys": "title",
+      "destKey": "title",
+      "sourceFromGenericMap": true,
+      "metadata": {
+        "strictMultiMap": [
+          {
+            "sourceVal": [
+              "Mr",
+              "Mr.",
+              "mr",
+              "MR"
+            ],
+            "destVal": "Mr"
+          },
+          {
+            "sourceVal": [
+              "Mrs",
+              "Mrs.",
+              "mrs",
+              "MRS"
+            ],
+            "destVal": "Mrs"
+          },
+          {
+            "sourceVal": [
+              "Miss",
+              "Miss.",
+              "miss",
+              "MISS"
+            ],
+            "destVal": "Miss"
+          }
+        ]
+      }
+    },
+    {
+      "sourceKeys": "originalTimestamp",
+      "destKey": "last_active"
+    },
+    {
+      "sourceKeys": "firstName",
+      "destKey": "firstname",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "lastName",
+      "destKey": "lastname",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "phone",
+      "destKey": "phone",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "city",
+      "destKey": "city",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "website",
+      "destKey": "website",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "timezone",
+      "destKey": "timezone",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "state",
+      "destKey": "state",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "zipcode",
+      "destKey": "zipcode",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "context.ip",
+      "destKey": "ipAddress"
+    },
+    {
+      "sourceKeys": "country",
+      "destKey": "country",
+      "sourceFromGenericMap": true
+    },
+    {
+      "sourceKeys": "website",
+      "destKey": "website",
+      "sourceFromGenericMap": true
+    },
+    {
+      "destKey": "haspurchased",
+      "sourceKeys": [
+        "traits.hasPurchased",
+        "context.traits.hasPurchased"
+      ],
+      "required": false,
+      "metadata": {
+        "strictMultiMap": [
+          {
+            "sourceVal": [
+              "yes",
+              "Yes",
+              "YES",
+              "Y",
+              "y"
+            ],
+            "destVal": "yes"
+          },
+          {
+            "sourceVal": [
+              "no",
+              "No",
+              "NO",
+              "N",
+              "n"
+            ],
+            "destVal": "no"
+          }
+        ]
+      }
+    },
+    {
+      "destKey": "role",
+      "sourceKeys": [
+        "traits.role",
+        "context.traits.role"
+      ],
+      "required": false,
+      "metadata": {
+        "strictMultiMap": [
+          {
+            "sourceVal": [
+              "Individual Contributor",
+              "individual contributor",
+              "INDIVIDUAL CONTRIBUTOR"
+            ],
+            "destVal": "Individual Contributor"
+          },
+          {
+            "sourceVal": [
+              "Manager",
+              "manager",
+              "MANAGER"
+            ],
+            "destVal": "Manager"
+          },
+          {
+            "sourceVal": [
+              "Director",
+              "director",
+              "DIRECTOR"
+            ],
+            "destVal": "Director"
+          },
+          {
+            "sourceVal": [
+              "Executive",
+              "executive",
+              "EXECUTIVE"
+            ],
+            "destVal": "Executive"
+          },
+          {
+            "sourceVal": [
+              "Consultant",
+              "consultant",
+              "CONSULTANT"
+            ],
+            "destVal": "Consultant"
+          }
+        ]
+      }
+    },
+    {
+      "destKey": "subscription_status",
+      "sourceKeys": [
+        "traits.subscriptionStatus",
+        "context.traits.subscriptionStatus"
+      ],
+      "required": false,
+      "metadata": {
+        "strictMultiMap": [
+          {
+            "sourceVal": [
+              "New",
+              "new",
+              "NEW"
+            ],
+            "destVal": "New"
+          },
+          {
+            "sourceVal": [
+              "Existing",
+              "existing",
+              "EXISTING"
+            ],
+            "destVal": "Existing"
+          }
+        ]
+      }
+    },
+    {
+      "destKey": "prospect_or_customer",
+      "sourceKeys": [
+        "traits.prospectOrCustomer",
+        "context.traits.prospectOrCustomer"
+      ],
+      "required": false,
+      "metadata": {
+        "strictMultiMap": [
+          {
+            "sourceVal": [
+              "prospect",
+              "Prospect",
+              "PROSPECT"
+            ],
+            "destVal": "Prospect"
+          },
+          {
+            "sourceVal": [
+              "customer",
+              "Customer",
+              "CUSTOMER"
+            ],
+            "destVal": "Customer"
+          }
+        ]
+      }
+    }
+  ]

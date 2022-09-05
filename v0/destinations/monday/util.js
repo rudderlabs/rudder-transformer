@@ -5,6 +5,9 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { CustomError } = require("../../util");
 
+// regex to validate latitude and longitude
+const regexExp = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/gi;
+
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
  * and returning the groupId.
@@ -62,7 +65,7 @@ const getColumnValue = (properties, columnName, key, board) => {
   const { columns } = board?.boards[0];
   let columnValue;
   columns.forEach(column => {
-    if (column.title === columnName) {
+    if (column.title === columnName && properties[key]) {
       switch (column.type) {
         case "color":
           columnValue = { label: properties[key] };
@@ -71,32 +74,50 @@ const getColumnValue = (properties, columnName, key, board) => {
           columnValue = { checked: true };
           break;
         case "numeric":
-          columnValue = properties[key]; // add check
+          if (isNumber(parseInt(properties[key], 10))) {
+            columnValue = properties[key];
+          }
           break;
         case "text":
           columnValue = properties[key];
+
           break;
         case "country":
-          columnValue = {
-            countryName: properties[key],
-            countryCode: properties.countryCode
-          };
+          if (properties.countryCode) {
+            columnValue = {
+              countryName: properties[key],
+              countryCode: properties.countryCode
+            };
+          }
           break;
         case "email":
-          columnValue = { email: properties[key], text: properties.emailText };
+          if (properties.emailText) {
+            columnValue = {
+              email: properties[key],
+              text: properties.emailText
+            };
+          }
           break;
         case "location":
-          columnValue = {
-            address: properties[key],
-            lat: properties.latitude,
-            lng: properties.longitude
-          };
+          if (
+            properties.lat &&
+            properties.lng &&
+            regexExp.test(properties.latitude) &&
+            regexExp.test(properties.longitude)
+          )
+            columnValue = {
+              address: properties[key],
+              lat: properties.latitude,
+              lng: properties.longitude
+            };
           break;
         case "phone":
-          columnValue = {
-            phone: properties[key],
-            countryShortName: properties.countryShortName
-          };
+          if (properties[key] && properties?.countryShortName) {
+            columnValue = {
+              phone: properties[key],
+              countryShortName: properties.countryShortName
+            };
+          }
           break;
         case "rating":
           if (isNumber(parseInt(properties[key], 10))) {
@@ -154,7 +175,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
   const clientResponse = await httpPOST(
     url,
     {
-      query: `query { boards (ids: ${boardID}) { name, columns {id title type description settings_str}, groups {id title} }}`
+      query: `query { boards (ids: ${boardID}) { name, columns {id title type settings_str}, groups {id title} }}`
     },
     {
       headers: {
@@ -163,39 +184,48 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       }
     }
   );
-  const processedResponse = processAxiosResponse(clientResponse);
-  return processedResponse;
+  const boardDeatailsResponse = processAxiosResponse(clientResponse);
+  if (boardDeatailsResponse.status !== 200) {
+    throw new CustomError(
+      `The lookup call could not be completed with the error:
+      ${JSON.stringify(boardDeatailsResponse.response)}`, // Recheck this
+      boardDeatailsResponse.status
+    );
+  }
+  return boardDeatailsResponse;
 };
 
 /**
  * This function is used to populate the final payload to be sent to the destination.
  * @param {*} message
  * @param {*} Config
- * @param {*} processedResponse
+ * @param {*} boardDeatailsResponse
  * @returns
  */
-const populatePayload = (message, Config, processedResponse) => {
+const populatePayload = (message, Config, boardDeatailsResponse) => {
   const { boardId, groupTitle, columnToPropertyMapping } = Config;
   const payload = {};
-  if (processedResponse.status === 200) {
-    const columnValues = mapColumnValues(
-      message.properties,
-      columnToPropertyMapping,
-      processedResponse.response?.data
-    );
-    if (groupTitle) {
-      if (!message.properties?.name) {
-        throw new CustomError(`Item name is required to create an item`, 400);
-      }
-      const groupId = getGroupId(groupTitle, processedResponse.response?.data);
-      payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${
-        message.properties?.name
-      }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
-    } else {
-      payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${
-        message.properties?.name
-      }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+
+  const columnValues = mapColumnValues(
+    message.properties,
+    columnToPropertyMapping,
+    boardDeatailsResponse.response?.data
+  );
+  if (groupTitle) {
+    if (!message.properties?.name) {
+      throw new CustomError(`Item name is required to create an item`, 400);
     }
+    const groupId = getGroupId(
+      groupTitle,
+      boardDeatailsResponse.response?.data
+    );
+    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${
+      message.properties?.name
+    }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+  } else {
+    payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${
+      message.properties?.name
+    }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   }
   return payload;
 };

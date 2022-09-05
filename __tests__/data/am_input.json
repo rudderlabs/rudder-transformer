@@ -682,7 +682,9 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": ["Comapny-ABC"]
+        "value_trait": [
+          "Comapny-ABC"
+        ]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -3211,7 +3213,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 3 }
+        "Amplitude": {
+          "event_id": 3
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3277,7 +3281,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 0 }
+        "Amplitude": {
+          "event_id": 0
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3343,7 +3349,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": "0" }
+        "Amplitude": {
+          "event_id": "0"
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3432,7 +3440,9 @@
       "userId": "123456",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 6 }
+        "Amplitude": {
+          "event_id": 6
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3524,7 +3534,9 @@
       "userId": "123456",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 6 }
+        "Amplitude": {
+          "event_id": 6
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3596,7 +3608,9 @@
       "userId": "sampleusrRudder3",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 3 }
+        "Amplitude": {
+          "event_id": 3
+        }
       },
       "groupId": "Sample_groupId23",
       "traits": {
@@ -3637,7 +3651,12 @@
           "name": "http"
         }
       },
-      "integrations": { "All": true, "Amplitude": { "event_id": 7 } },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 7
+        }
+      },
       "timestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
@@ -3703,7 +3722,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 2 }
+        "Amplitude": {
+          "event_id": 2
+        }
       },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
@@ -3771,7 +3792,9 @@
       "userId": "newUserIdAlias",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 67 }
+        "Amplitude": {
+          "event_id": 67
+        }
       },
       "previousId": "sampleusrRudder3",
       "sentAt": "2020-10-20T08:14:28.778Z"
@@ -3779,6 +3802,74 @@
     "destination": {
       "Config": {
         "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Application Installed",
+      "sentAt": "2022-09-05T07:46:26.322Z",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "12"
+        },
+        "app": {
+          "name": "Sample Kotlin",
+          "build": "4",
+          "version": "1.0",
+          "namespace": "com.example.testapp1mg"
+        },
+        "device": {
+          "id": "39da706ec83d0e90",
+          "name": "emu64a",
+          "type": "Android",
+          "model": "sdk_gphone64_arm64",
+          "manufacturer": "Google"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1440,
+          "height": 2984,
+          "density": 560
+        },
+        "traits": {
+          "anonymousId": "39da706ec83d0e90"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "T-Mobile",
+          "cellular": true,
+          "bluetooth": true
+        },
+        "timezone": "Asia/Kolkata",
+        "sessionId": "1662363980",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+        "sessionStart": true
+      },
+      "rudderId": "3ef1dec3-d729-4830-a394-7b8be6819765",
+      "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+      "properties": {
+        "build": 4,
+        "version": "1.0"
+      },
+      "anonymousId": "39da706ec83d0e90",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2022-09-05T07:46:20.290Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
       }
     }
   }

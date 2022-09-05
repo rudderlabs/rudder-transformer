@@ -42,5 +42,10 @@
   "properties.category": "event_type",
   "session_id": "session_id",
   "request_ip": "ip",
-  "messageId": "insert_id"
+  "messageId": "insert_id",
+  "context.sessionId": {
+    "isFunc": true,
+    "funcName": "toNumber",
+    "outKey": "session_id"
+  }
 }

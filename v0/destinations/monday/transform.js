@@ -1,6 +1,7 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { ENDPOINT } = require("./config");
+const { populatePayload, getBoardDetails } = require("./util");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -9,10 +10,6 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { httpPOST } = require("../../../adapters/network");
 
 const responseBuilder = (payload, endpoint, apiToken) => {
   if (payload) {
@@ -32,50 +29,6 @@ const responseBuilder = (payload, endpoint, apiToken) => {
   );
 };
 
-const getGroupId = (groupTitle, board) => {
-  const { groups } = board?.boards[0];
-  let groupId;
-  groups.forEach(group => {
-    if (group.title === groupTitle) {
-      groupId = group.id;
-    }
-  });
-  if (groupId) {
-    return groupId;
-  }
-  throw new CustomError(`Group ${groupTitle} doesn't exist in the board`, 400);
-};
-
-const getColumnId = (columnTitle, board) => {
-  const { columns } = board?.boards[0];
-  let columnId;
-  columns.forEach(column => {
-    if (column.title === columnTitle) {
-      columnId = column.id;
-    }
-  });
-  if (columnId) {
-    return columnId;
-  }
-  throw new CustomError(
-    `Column ${columnTitle} doesn't exist in the board`,
-    400
-  );
-};
-
-//   const columnValues = JSON.stringify({
-//     status: { index: 1 },
-//     date4: { date: "2021-01-01" },
-//     person: { personsAndTeams: [{ id: 9603417, kind: "person" }] }
-//   });
-const mapColumnValues = (properties, columnToPropertyMapping, board) => {
-  const columnValues = {};
-  columnToPropertyMapping.forEach(mapping => {
-    columnValues[getColumnId(mapping.from, board)] = properties[mapping.to];
-  });
-  return JSON.stringify(columnValues);
-};
-
 /**
  * This function is used to build the response for track call.
  * @param {*} message
@@ -83,7 +36,7 @@ const mapColumnValues = (properties, columnToPropertyMapping, board) => {
  * @returns
  */
 const trackResponseBuilder = async (message, { Config }) => {
-  const { apiToken, boardId, groupTitle, columnToPropertyMapping } = Config;
+  const { apiToken, boardId } = Config;
   const event = get(message, "event");
   const endpoint = ENDPOINT;
   if (!event) {
@@ -92,42 +45,12 @@ const trackResponseBuilder = async (message, { Config }) => {
       400
     );
   }
-  const payload = {};
-  const getBoardDetails = async (url, boardID) => {
-    const clientResponse = await httpPOST(
-      url,
-      {
-        query: `query { boards (ids: ${boardID}) { name, columns {id title type description settings_str}, groups {id title} }}`
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${apiToken}`
-        }
-      }
-    );
-    const processedResponse = processAxiosResponse(clientResponse);
-    return processedResponse;
-  };
-  const processedResponse = await getBoardDetails(endpoint, boardId);
-  if (processedResponse.status === 200) {
-    const columnValues = mapColumnValues(
-      message.properties,
-      columnToPropertyMapping,
-      processedResponse.response?.data
-    );
-    if (groupTitle) {
-      const groupId = getGroupId(groupTitle, processedResponse.response?.data);
-      payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: "default", column_values: ${JSON.stringify(
-        columnValues
-      )}) {id}}`;
-    } else {
-      payload.query = `mutation { create_item (board_id: ${boardId},  item_name: "default", column_values: ${JSON.stringify(
-        columnValues
-      )}) {id}}`;
-    }
-    return responseBuilder(payload, endpoint, apiToken);
-  }
+
+  const processedResponse = await getBoardDetails(endpoint, boardId, apiToken);
+
+  const payload = populatePayload(message, Config, processedResponse);
+
+  return responseBuilder(payload, endpoint, apiToken);
 };
 
 const processEvent = async (message, destination) => {

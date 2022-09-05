@@ -3,7 +3,12 @@ const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { isEmpty, getHashFromArray, CustomError } = require("../../util");
+const {
+  isEmpty,
+  getHashFromArray,
+  formatTimeStamp,
+  CustomError
+} = require("../../util");
 const { getCustomFieldsEndPoint } = require("./config");
 
 /**
@@ -98,7 +103,7 @@ const validateRating = (customField, rating) => {
  * @param {*} customField
  * @param {*} value
  */
-const validateCustomField = (customField, value) => {
+const validateUserSentCustomFieldValues = (customField, value) => {
   switch (customField?.type) {
     case "location":
       validateLocation(value);
@@ -204,7 +209,7 @@ const getHashFromArrayWithValueAsObject = (
  * @param {*} type clickUpAssigneeId
  * @returns [61205104, 61217234, 61228575]
  */
-const getDestinationExternalIDArray = (message, type) => {
+const getListOfAssignees = (message, type) => {
   let externalIdArray = null;
   const destinationExternalId = [];
   if (message.context && message.context.externalId) {
@@ -259,7 +264,7 @@ const retrieveCustomFields = async (listId, apiToken) => {
  * @param {*} value
  * @returns
  */
-const findCustomFieldValue = (customField, value) => {
+const populateCustomFieldValue = (customField, value) => {
   switch (customField?.type) {
     case "drop_down":
       return getDropDown(customField, value);
@@ -267,6 +272,8 @@ const findCustomFieldValue = (customField, value) => {
       return getLabels(customField, value);
     case "location":
       return getLocation(value);
+    case "date":
+      return formatTimeStamp(value);
     default:
       return value;
   }
@@ -309,12 +316,15 @@ const customFieldsBuilder = async (
     let fieldValue = properties[propertiesKey];
     if (fieldValue) {
       const fieldName = configCustomFieldsMap[propertiesKey];
-      const customField = availableCustomFieldsMap[fieldName];
-      validateCustomField(customField, fieldValue);
-      fieldValue = findCustomFieldValue(customField, fieldValue);
-      if (fieldValue && customField) {
+      const customFieldDetailsObject = availableCustomFieldsMap[fieldName];
+      validateUserSentCustomFieldValues(customFieldDetailsObject, fieldValue);
+      fieldValue = populateCustomFieldValue(
+        customFieldDetailsObject,
+        fieldValue
+      );
+      if (fieldValue && customFieldDetailsObject) {
         responseArray.push({
-          id: customField.id,
+          id: customFieldDetailsObject.id,
           value: fieldValue
         });
       }
@@ -343,7 +353,7 @@ const eventFiltering = (message, destination) => {
     );
     if (!allowEvent) {
       throw new CustomError(
-        "Event Discarded. To allow this event, add this in Allowlist",
+        "[ CLICKUP ]:: Event Discarded. To allow this event, add this in Allowlist",
         400
       );
     }
@@ -366,7 +376,7 @@ const removeUndefinedAndNullAndEmptyValues = obj =>
 module.exports = {
   validatePriority,
   customFieldsBuilder,
-  getDestinationExternalIDArray,
+  getListOfAssignees,
   eventFiltering,
   removeUndefinedAndNullAndEmptyValues
 };

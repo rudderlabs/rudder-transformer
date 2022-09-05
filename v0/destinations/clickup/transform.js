@@ -5,12 +5,13 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   constructPayload,
+  defaultPostRequestConfig,
   CustomError
 } = require("../../util");
 const {
   validatePriority,
   customFieldsBuilder,
-  getDestinationExternalIDArray,
+  getListOfAssignees,
   eventFiltering,
   removeUndefinedAndNullAndEmptyValues
 } = require("./util");
@@ -28,20 +29,20 @@ const responseBuilder = async (payload, listId, apiToken) => {
       "Content-Type": "application/json",
       Authorization: apiToken
     };
-    response.method = "POST";
+    response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new CustomError("[ CLICKUP ]:: Payload could not be constructed", 400);
 };
 
 const trackResponseBuilder = async (message, destination) => {
   const { apiToken, keyToCustomFieldName } = destination.Config;
   const { properties } = message;
   const externalListId = getDestinationExternalID(message, "clickUpListId");
-  const listId = externalListId ?? destination.Config.listId;
-  const assignees = getDestinationExternalIDArray(message, "clickUpAssigneeId");
+  const listId = externalListId || destination.Config.listId;
+  const assignees = getListOfAssignees(message, "clickUpAssigneeId");
 
   const customFields = await customFieldsBuilder(
     keyToCustomFieldName,

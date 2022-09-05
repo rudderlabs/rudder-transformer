@@ -10834,5 +10834,127 @@
       },
       "files": {}
     }
+  },
+  {
+    "description": "check if context.sessionId passed from the input event is correctly set to the params",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "Application Installed",
+        "sentAt": "2022-09-05T07:46:26.322Z",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "12"
+          },
+          "app": {
+            "name": "Sample Kotlin",
+            "build": "4",
+            "version": "1.0",
+            "namespace": "com.example.testapp1mg"
+          },
+          "device": {
+            "id": "39da706ec83d0e90",
+            "name": "emu64a",
+            "type": "Android",
+            "model": "sdk_gphone64_arm64",
+            "manufacturer": "Google"
+          },
+          "locale": "en-US",
+          "screen": {
+            "width": 1440,
+            "height": 2984,
+            "density": 560
+          },
+          "traits": {
+            "anonymousId": "39da706ec83d0e90"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.7.0"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "T-Mobile",
+            "cellular": true,
+            "bluetooth": true
+          },
+          "timezone": "Asia/Kolkata",
+          "sessionId": "1662363980",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+          "sessionStart": true
+        },
+        "rudderId": "3ef1dec3-d729-4830-a394-7b8be6819765",
+        "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+        "properties": {
+          "build": 4,
+          "version": "1.0"
+        },
+        "anonymousId": "39da706ec83d0e90",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-09-05T07:46:20.290Z"
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://www.google-analytics.com/mp/collect",
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "body": {
+        "JSON": {
+          "timestamp_micros": 1662363980000000,
+          "client_id": "39da706ec83d0e90",
+          "events": [
+            {
+              "name": "Application_Installed",
+              "params": {
+                "build": 4,
+                "version": "1.0",
+                "engagement_time_msec": 1,
+                "session_id": "1662363980"
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": ""
+    }
   }
 ]

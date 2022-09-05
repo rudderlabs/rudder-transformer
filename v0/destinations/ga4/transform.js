@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { set } = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -298,6 +299,11 @@ const responseBuilder = (message, { Config }) => {
 
   if (payload.params) {
     payload.params = removeUndefinedAndNullValues(payload.params);
+  }
+
+  const sessionId = get(message, "context.sessionId");
+  if (sessionId) {
+    set(payload.params, "session_id", sessionId);
   }
 
   if (isEmptyObject(payload.params)) {

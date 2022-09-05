@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
@@ -77,6 +78,21 @@ const validateLocation = location => {
 };
 
 /**
+ * Validates Rating
+ * @param {*} customField
+ * @param {*} rating
+ */
+const validateRating = (customField, rating) => {
+  const count = customField?.type_config?.count;
+  if (rating && !(rating >= 0 && rating <= count)) {
+    throw new CustomError(
+      `Invalid Rating. Value must be in range [0,${count}]`,
+      400
+    );
+  }
+};
+
+/**
  * Validates custom field as per clickup api doc
  * ref: https://clickup.com/api
  * @param {*} customField
@@ -95,6 +111,9 @@ const validateCustomField = (customField, value) => {
       break;
     case "url":
       validateUrl(value);
+      break;
+    case "emoji":
+      validateRating(customField, value);
       break;
     default:
       break;
@@ -306,15 +325,19 @@ const customFieldsBuilder = async (
 };
 
 /**
- * Function to discard any event that is not a part of destination.Config.whiteListedEvents
+ * Function to discard any event that is not a part of destination.Config.whitelistedEvents
  * @param {*} message
  * @param {*} destination
  */
 const eventFiltering = (message, destination) => {
-  const { whiteListedEvents } = destination.Config;
+  const { whitelistedEvents } = destination.Config;
   const { event } = message;
-  if (whiteListedEvents) {
-    const allowEvent = whiteListedEvents.some(
+  const nonEmptyWhitelistedEvents = whitelistedEvents?.filter(
+    whiteListedEvent => whiteListedEvent.eventName
+  );
+
+  if (nonEmptyWhitelistedEvents && nonEmptyWhitelistedEvents.length > 0) {
+    const allowEvent = nonEmptyWhitelistedEvents.some(
       whiteListedEvent =>
         whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
     );
@@ -327,9 +350,23 @@ const eventFiltering = (message, destination) => {
   }
 };
 
+const isDefinedAndNotNullAndNotEmpty = value => {
+  return !(
+    value === undefined ||
+    value === null ||
+    Number.isNaN(value) ||
+    (typeof value === "object" && Object.keys(value).length === 0) ||
+    (typeof value === "string" && value.trim().length === 0)
+  );
+};
+
+const removeUndefinedAndNullAndEmptyValues = obj =>
+  _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+
 module.exports = {
   validatePriority,
   customFieldsBuilder,
   getDestinationExternalIDArray,
-  eventFiltering
+  eventFiltering,
+  removeUndefinedAndNullAndEmptyValues
 };

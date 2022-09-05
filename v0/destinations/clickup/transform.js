@@ -1,7 +1,6 @@
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  removeUndefinedAndNullValues,
   getErrorRespEvents,
   getSuccessRespEvents,
   getDestinationExternalID,
@@ -12,7 +11,8 @@ const {
   validatePriority,
   customFieldsBuilder,
   getDestinationExternalIDArray,
-  eventFiltering
+  eventFiltering,
+  removeUndefinedAndNullAndEmptyValues
 } = require("./util");
 const {
   CONFIG_CATEGORIES,
@@ -29,7 +29,7 @@ const responseBuilder = async (payload, listId, apiToken) => {
       Authorization: apiToken
     };
     response.method = "POST";
-    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
     return response;
   }
   // fail-safety for developer error

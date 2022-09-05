@@ -1638,5 +1638,25 @@
   {
     "statusCode": 400,
     "message": "$geo_source value must be either null or 'reverse_geocoding' "
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/import/",
+    "headers": {
+      "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
+    },
+    "params": {
+      "data": "eyJldmVudCI6IkFwcGxpY2F0aW9uIEluc3RhbGxlZCIsInByb3BlcnRpZXMiOnsiYnVpbGQiOjQsInZlcnNpb24iOiIxLjAiLCJhbm9ueW1vdXNJZCI6IjM5ZGE3MDZlYzgzZDBlOTAiLCIkb3MiOiJBbmRyb2lkIiwiJHNjcmVlbl9oZWlnaHQiOjI5ODQsIiRzY3JlZW5fd2lkdGgiOjE0NDAsIiRzY3JlZW5fZHBpIjo1NjAsIiRjYXJyaWVyIjoiVC1Nb2JpbGUiLCIkb3NfdmVyc2lvbiI6IjEyIiwiJGRldmljZSI6ImVtdTY0YSIsIiRtYW51ZmFjdHVyZXIiOiJHb29nbGUiLCIkbW9kZWwiOiJzZGtfZ3Bob25lNjRfYXJtNjQiLCJtcF9kZXZpY2VfbW9kZWwiOiJzZGtfZ3Bob25lNjRfYXJtNjQiLCIkd2lmaSI6dHJ1ZSwiJGJsdWV0b290aF9lbmFibGVkIjp0cnVlLCJtcF9saWIiOiJjb20ucnVkZGVyc3RhY2suYW5kcm9pZC5zZGsuY29yZSIsIiRhcHBfYnVpbGRfbnVtYmVyIjoiNCIsIiRhcHBfdmVyc2lvbl9zdHJpbmciOiIxLjAiLCIkaW5zZXJ0X2lkIjoiMTY2MjM2Mzk4MDI4Ny0xNjhjZjcyMC02MjI3LTRiNTYtYTk4ZS1jNDliZGM3Mjc5ZTkiLCIkc2Vzc2lvbl9pZCI6MTY2MjM2Mzk4MCwidG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiZGlzdGluY3RfaWQiOiIzOWRhNzA2ZWM4M2QwZTkwIiwidGltZSI6bnVsbH19"
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "39da706ec83d0e90"
   }
 ]

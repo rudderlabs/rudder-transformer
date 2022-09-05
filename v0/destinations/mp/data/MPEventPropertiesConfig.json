@@ -166,5 +166,13 @@
   {
     "sourceKeys": "messageId",
     "destKey": "$insert_id"
+  },
+  {
+    "sourceKeys": "context.sessionId",
+    "destKey": "$session_id",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
   }
 ]

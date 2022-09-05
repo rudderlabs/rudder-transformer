@@ -6510,5 +6510,74 @@
         "trackingID": "UA-165994240-1"
       }
     }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Application Installed",
+      "sentAt": "2022-09-05T07:46:26.322Z",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "12"
+        },
+        "app": {
+          "name": "Sample Kotlin",
+          "build": "4",
+          "version": "1.0",
+          "namespace": "com.example.testapp1mg"
+        },
+        "device": {
+          "id": "39da706ec83d0e90",
+          "name": "emu64a",
+          "type": "Android",
+          "model": "sdk_gphone64_arm64",
+          "manufacturer": "Google"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1440,
+          "height": 2984,
+          "density": 560
+        },
+        "traits": {
+          "anonymousId": "39da706ec83d0e90"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "T-Mobile",
+          "cellular": true,
+          "bluetooth": true
+        },
+        "timezone": "Asia/Kolkata",
+        "sessionId": "1662363980",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+        "sessionStart": true
+      },
+      "rudderId": "3ef1dec3-d729-4830-a394-7b8be6819765",
+      "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+      "properties": {
+        "build": 4,
+        "version": "1.0"
+      },
+      "anonymousId": "39da706ec83d0e90",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2022-09-05T07:46:20.290Z"
+    },
+    "destination": {
+      "Config": {
+        "anonymizeIp": false,
+        "eventDeliveryTS": 1657516676962,
+        "eventFilteringOption": "disable",
+        "trackingID": "UA-165994240-1"
+      }
+    }
   }
 ]

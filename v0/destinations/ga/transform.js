@@ -27,6 +27,7 @@ const {
   generateErrorObject
 } = require("../../util");
 const { validatePayloadSize } = require("./utils");
+const { set } = require("lodash");
 
 const gaDisplayName = "Google Analytics";
 
@@ -341,6 +342,13 @@ function responseBuilderSimple(
   if (message.userId && message.userId.length > 0 && sendUserId) {
     finalPayload.uid = message.userId;
   }
+
+  // check if session start exists and then populate it
+  const sessionStart = get(message, "context.sessionStart");
+  if (sessionStart) {
+    set(finalPayload, "sc", "start");
+  }
+
   const integrationsClientId = message.integrations
     ? message.integrations[gaDisplayName]
       ? message.integrations[gaDisplayName].clientId

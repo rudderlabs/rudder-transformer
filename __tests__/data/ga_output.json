@@ -2103,5 +2103,39 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://www.google-analytics.com/collect",
+    "headers": {},
+    "params": {
+      "ea": "Application Installed",
+      "ec": "All",
+      "ni": 0,
+      "el": "event",
+      "v": "1",
+      "t": "event",
+      "tid": "UA-165994240-1",
+      "ds": "mobile",
+      "ua": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+      "ul": "en-US",
+      "an": "Sample Kotlin",
+      "av": "1.0",
+      "aiid": "com.example.testapp1mg",
+      "sr": "1440x2984",
+      "sc": "start",
+      "cid": "39da706ec83d0e90",
+      "qt": 18783451
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "39da706ec83d0e90"
   }
 ]

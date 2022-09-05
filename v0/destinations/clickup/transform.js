@@ -12,7 +12,7 @@ const {
   validatePriority,
   customFieldsBuilder,
   getListOfAssignees,
-  eventFiltering,
+  checkEventIfUIMapped,
   removeUndefinedAndNullAndEmptyValues
 } = require("./util");
 const {
@@ -65,18 +65,18 @@ const trackResponseBuilder = async (message, destination) => {
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
-      "Message Type is not present. Aborting message.",
+      "[ CLICKUP ]:: Message Type is not present. Aborting message.",
       400
     );
   }
 
-  eventFiltering(message, destination);
+  checkEventIfUIMapped(message, destination);
 
   const messageType = message.type.toLowerCase();
   if (messageType === EventType.TRACK) {
     return trackResponseBuilder(message, destination);
   }
-  throw new CustomError("Message type not supported", 400);
+  throw new CustomError("[ CLICKUP ]:: Message type not supported", 400);
 };
 
 const process = async event => {

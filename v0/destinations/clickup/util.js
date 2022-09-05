@@ -22,7 +22,7 @@ const validatePriority = priority => {
     priority === 0
   ) {
     throw new CustomError(
-      "Invalid Priority. Value must be Integer and in range [1,4]",
+      "[ CLICKUP ]:: Invalid Priority. Value must be Integer and in range [1,4]",
       400
     );
   }
@@ -35,7 +35,7 @@ const validatePriority = priority => {
 const validatePhoneWithCountryCode = phone => {
   const regex = /^\+(?:[{0-9] ?){6,14}[0-9]$/;
   if (!regex.test(phone)) {
-    throw new CustomError("Invalid Phone Number", 400);
+    throw new CustomError("[ CLICKUP ]:: Invalid Phone Number", 400);
   }
 };
 
@@ -46,7 +46,7 @@ const validatePhoneWithCountryCode = phone => {
 const validateEmail = email => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!regex.test(email)) {
-    throw new CustomError("Invalid Email", 400);
+    throw new CustomError("[ CLICKUP ]:: Invalid Email", 400);
   }
 };
 
@@ -57,7 +57,7 @@ const validateEmail = email => {
 const validateUrl = url => {
   const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   if (!regex.test(url)) {
-    throw new CustomError("Invalid URL", 400);
+    throw new CustomError("[ CLICKUP ]:: Invalid URL", 400);
   }
 };
 
@@ -70,13 +70,13 @@ const validateLocation = location => {
   const lng = location?.lng;
   if (lat && !(lat >= -90 && lat <= 90)) {
     throw new CustomError(
-      "Invalid Latitude. Latitude must be in range [-90, 90]",
+      "[ CLICKUP ]:: Invalid Latitude. Latitude must be in range [-90, 90]",
       400
     );
   }
   if (lng && !(lng >= -180 && lng <= 180)) {
     throw new CustomError(
-      "Invalid Longitude. Longitude must be in range [-180, 180]",
+      "[ CLICKUP ]:: Invalid Longitude. Longitude must be in range [-180, 180]",
       400
     );
   }
@@ -91,7 +91,7 @@ const validateRating = (customField, rating) => {
   const count = customField?.type_config?.count;
   if (rating && !(rating >= 0 && rating <= count)) {
     throw new CustomError(
-      `Invalid Rating. Value must be in range [0,${count}]`,
+      `[ CLICKUP ]:: Invalid Rating. Value must be in range [0,${count}]`,
       400
     );
   }
@@ -295,42 +295,43 @@ const customFieldsBuilder = async (
   apiToken
 ) => {
   const responseArray = [];
-  // retrieve available clickup custom field for the given list
-  const availableCustomFields = await retrieveCustomFields(listId, apiToken);
-  // convert array to hashMap with key as field name and value as custom field object
-  const availableCustomFieldsMap = getHashFromArrayWithValueAsObject(
-    availableCustomFields,
-    "name",
-    false
-  );
+  if (properties && keyToCustomFieldName) {
+    // retrieve available clickup custom field for the given list
+    const availableCustomFields = await retrieveCustomFields(listId, apiToken);
+    // convert array to hashMap with key as field name and value as custom field object
+    const availableCustomFieldsMap = getHashFromArrayWithValueAsObject(
+      availableCustomFields,
+      "name",
+      false
+    );
 
-  // convert destination.Config.keyToCustomFieldName to hashMap
-  const configCustomFieldsMap = getHashFromArray(
-    keyToCustomFieldName,
-    "from",
-    "to",
-    false
-  );
+    // convert destination.Config.keyToCustomFieldName to hashMap
+    const configCustomFieldsMap = getHashFromArray(
+      keyToCustomFieldName,
+      "from",
+      "to",
+      false
+    );
 
-  Object.keys(configCustomFieldsMap).forEach(propertiesKey => {
-    let fieldValue = properties[propertiesKey];
-    if (fieldValue) {
-      const fieldName = configCustomFieldsMap[propertiesKey];
-      const customFieldDetailsObject = availableCustomFieldsMap[fieldName];
-      validateUserSentCustomFieldValues(customFieldDetailsObject, fieldValue);
-      fieldValue = populateCustomFieldValue(
-        customFieldDetailsObject,
-        fieldValue
-      );
-      if (fieldValue && customFieldDetailsObject) {
-        responseArray.push({
-          id: customFieldDetailsObject.id,
-          value: fieldValue
-        });
+    Object.keys(configCustomFieldsMap).forEach(propertiesKey => {
+      let fieldValue = properties[propertiesKey];
+      if (fieldValue) {
+        const fieldName = configCustomFieldsMap[propertiesKey];
+        const customFieldDetailsObject = availableCustomFieldsMap[fieldName];
+        validateUserSentCustomFieldValues(customFieldDetailsObject, fieldValue);
+        fieldValue = populateCustomFieldValue(
+          customFieldDetailsObject,
+          fieldValue
+        );
+        if (fieldValue && customFieldDetailsObject) {
+          responseArray.push({
+            id: customFieldDetailsObject.id,
+            value: fieldValue
+          });
+        }
       }
-    }
-  });
-
+    });
+  }
   return responseArray;
 };
 
@@ -339,7 +340,7 @@ const customFieldsBuilder = async (
  * @param {*} message
  * @param {*} destination
  */
-const eventFiltering = (message, destination) => {
+const checkEventIfUIMapped = (message, destination) => {
   const { whitelistedEvents } = destination.Config;
   const { event } = message;
   const nonEmptyWhitelistedEvents = whitelistedEvents?.filter(
@@ -377,6 +378,6 @@ module.exports = {
   validatePriority,
   customFieldsBuilder,
   getListOfAssignees,
-  eventFiltering,
+  checkEventIfUIMapped,
   removeUndefinedAndNullAndEmptyValues
 };

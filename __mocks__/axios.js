@@ -21,9 +21,9 @@ const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
 const {
   wootricGetRequestHandler,
-  wootricPostRequestHandler,
-  wootricPutRequestHandler
+  wootricPostRequestHandler
 } = require("./wootric.mock");
+const { clickUpGetRequestHandler } = require("./clickup.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -33,7 +33,7 @@ const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
-  "ruddertest2.mautic.net":"mautic"
+  "ruddertest2.mautic.net": "mautic"
 };
 
 const fs = require("fs");
@@ -114,6 +114,9 @@ function get(url, options) {
     return new Promise((resolve, reject) => {
       resolve(wootricGetRequestHandler(url));
     });
+  }
+  if (url.includes("https://api.clickup.com")) {
+    return Promise.resolve(clickUpGetRequestHandler(url));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

@@ -1,0 +1,16 @@
+message:
+  supportedMessageTypes:
+    - track
+    - page
+    - screen
+  default:
+    transformation:
+      spreadMessage: true
+      postMapper:
+        name: "commonPostMapper"
+      response:
+        format: JSON
+        method: POST
+        endpoint: "{{ rudderContext.zapUrl }}"
+        headers:
+          content-type: "application/json"

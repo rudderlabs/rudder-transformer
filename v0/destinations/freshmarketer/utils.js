@@ -28,7 +28,7 @@ const getUserAccountDetails = async (userEmail, Config) => {
       emails: userEmail
     }
   };
-  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}?include=sales_accounts`;
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}?include=sales_accounts`;
   let userSalesAccountResponse = await httpPOST(
     endPoint,
     userPayload,
@@ -39,9 +39,8 @@ const getUserAccountDetails = async (userEmail, Config) => {
     userSalesAccountResponse.status !== 200 &&
     userSalesAccountResponse.status !== 201
   ) {
-    const errMessage = userSalesAccountResponse.response?.errors?.message || "";
-    const errorStatus =
-      userSalesAccountResponse.response?.errors?.code || "500";
+    const errMessage = userSalesAccountResponse.response.errors?.message || "";
+    const errorStatus = userSalesAccountResponse.response.errors?.code || "500";
     throw new CustomError(
       `failed to fetch user accountDetails ${errMessage}`,
       errorStatus
@@ -65,12 +64,12 @@ const createUpdateAccount = async (payloadBody, Config) => {
       "Content-Type": "application/json"
     }
   };
-  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.endpoint}`;
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
-    const errMessage = accountResponse.response?.errors?.message || "";
-    const errorStatus = accountResponse.response?.errors?.code || 500;
+    const errMessage = accountResponse.response.errors?.message || "";
+    const errorStatus = accountResponse.response.errors?.code || "500";
     throw new CustomError(
       `failed to create/update group ${errMessage}`,
       errorStatus
@@ -79,17 +78,43 @@ const createUpdateAccount = async (payloadBody, Config) => {
   return accountResponse;
 };
 
-const flattenAddress = address => {
-  let result = "";
-  if (address && typeof address === "object") {
-    result = `${address.street || ""} ${address.city || ""} ${address.state ||
-      ""} ${address.country || ""} ${address.postalCode || ""}`;
+/*
+ * This functions is used for checking Number Data Types of payload.
+ * If the specified key is defined and it is not number then it throws error.
+ * @param {*} payload
+ * @returns
+ */
+const checkNumberDataType = payload => {
+  const numberAttributes = [
+    "territory_id",
+    "lead_source_id",
+    "owner_id",
+    "campaign_id",
+    "contact_status_id",
+    "lifecycle_stage_id",
+    "industry_type_id",
+    "business_type_id",
+    "number_of_employees",
+    "parent_sales_account_id"
+  ];
+  const errorAttributes = [];
+  numberAttributes.forEach(element => {
+    if (payload[element]) {
+      const value = payload[element];
+      if (!isNaN(Number(value))) {
+        payload[element] = Number(value);
+      } else {
+        errorAttributes.push(element);
+      }
+    }
+  });
+  if (errorAttributes.length > 0) {
+    throw new CustomError(`${errorAttributes}: invalid number format`, 400);
   }
-  return result;
 };
 
 module.exports = {
   getUserAccountDetails,
   createUpdateAccount,
-  flattenAddress
+  checkNumberDataType
 };

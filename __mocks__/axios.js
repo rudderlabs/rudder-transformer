@@ -24,6 +24,7 @@ const {
   wootricPostRequestHandler
 } = require("./wootric.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
+const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -168,6 +169,11 @@ function post(url, payload) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricPostRequestHandler(url, payload));
+    });
+  }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return new Promise((resolve, reject) => {
+      resolve(freshmarketerPostRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

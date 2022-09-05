@@ -3593,5 +3593,55 @@
     },
     "files": {},
     "userId": "my-anonymous-id-new"
-  }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+        "JSON": {
+            "api_key": "abcde",
+            "events": [
+                {
+                    "os_name": "Android",
+                    "os_version": "12",
+                    "device_model": "sdk_gphone64_arm64",
+                    "device_manufacturer": "Google",
+                    "platform": "Android",
+                    "device_id": "39da706ec83d0e90",
+                    "carrier": "T-Mobile",
+                    "app_name": "Sample Kotlin",
+                    "app_version": "1.0",
+                    "language": "en-US",
+                    "insert_id": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+                    "session_id": 1662363980,
+                    "user_properties": {
+                        "anonymousId": "39da706ec83d0e90"
+                    },
+                    "event_properties": {
+                        "build": 4,
+                        "version": "1.0"
+                    },
+                    "event_type": "Application Installed",
+                    "device_brand": "Google",
+                    "time": 1662363980290,
+                    "library": "rudderstack"
+                }
+            ],
+            "options": {
+                "min_id_length": 1
+            }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+    },
+    "files": {},
+    "userId": "39da706ec83d0e90"
+}
 ]

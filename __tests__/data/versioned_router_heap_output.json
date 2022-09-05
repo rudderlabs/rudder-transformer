@@ -108,7 +108,12 @@
       ],
       "batched": false,
       "statusCode": 400,
-      "error": "invalid message type for heap"
+      "error": "invalid message type for heap",
+      "statTags": {
+        "destType": "HEAP",
+        "scope": "exception",
+        "stage": "transform"
+      }
     },
     {
       "metadata": [
@@ -118,7 +123,12 @@
       ],
       "batched": false,
       "statusCode": 400,
-      "error": "message type page not supported for heap"
+      "error": "message type page not supported for heap",
+      "statTags": {
+        "destType": "HEAP",
+        "scope": "exception",
+        "stage": "transform"
+      }
     }
   ]
 }

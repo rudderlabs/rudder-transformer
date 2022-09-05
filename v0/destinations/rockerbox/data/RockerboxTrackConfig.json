@@ -2,11 +2,13 @@
   {
     "sourceKeys": "userId",
     "destKey": "customer_id",
+    "required": true,
     "sourceFromGenericMap": true
   },
   {
     "sourceKeys": "email",
     "destKey": "email",
+    "required": true,
     "sourceFromGenericMap": true
   },
   {
@@ -17,6 +19,7 @@
   {
     "sourceKeys": "timestamp",
     "destKey": "timestamp",
+    "required": true,
     "metadata": {
       "type": "secondTimestamp"
     },

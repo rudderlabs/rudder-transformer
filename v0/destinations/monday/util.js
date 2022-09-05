@@ -75,14 +75,17 @@ const populatePayload = (message, Config, processedResponse) => {
       processedResponse.response?.data
     );
     if (groupTitle) {
+      if (!message.properties?.name) {
+        throw new CustomError(`Item name is required to create an item`, 400);
+      }
       const groupId = getGroupId(groupTitle, processedResponse.response?.data);
-      payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: "default", column_values: ${JSON.stringify(
-        columnValues
-      )}) {id}}`;
+      payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${
+        message.properties?.name
+      }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
     } else {
-      payload.query = `mutation { create_item (board_id: ${boardId},  item_name: "default", column_values: ${JSON.stringify(
-        columnValues
-      )}) {id}}`;
+      payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${
+        message.properties?.name
+      }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
     }
   }
   return payload;

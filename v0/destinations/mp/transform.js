@@ -94,13 +94,23 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
     JSON.stringify(removeUndefinedValues(parameters))
   ).toString("base64");
   response.params = { data: encodedData };
+  const {
+    apiSecret,
+    serviceAccountUserName,
+    serviceAccountSecret,
+    projectId
+  } = destConfig;
   const duration = getTimeDifference(message.timestamp);
   switch (eventType) {
     case EventType.ALIAS:
     case EventType.TRACK:
     case EventType.SCREEN:
     case EventType.PAGE:
-      if (duration.days <= 5) {
+      if (
+        !apiSecret &&
+        !(serviceAccountUserName && serviceAccountSecret && projectId) &&
+        duration.years <= 5
+      ) {
         response.endpoint =
           destConfig.dataResidency === "eu"
             ? "https://api-eu.mixpanel.com/track/"

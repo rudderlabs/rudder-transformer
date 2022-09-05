@@ -1,0 +1,49 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "customer_id",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "email",
+    "destKey": "email",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "phone",
+    "destKey": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "timestamp",
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    },
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": [
+      "properties.revenue",
+      "properties.value",
+      "properties.price",
+      "properties.total"
+    ],
+    "destKey": "revenue"
+  },
+  {
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
+    "destKey": "order_id"
+  },
+  {
+    "sourceKeys": "properties.in_store",
+    "destKey": "in_store"
+  },
+  {
+    "sourceKeys": "properties.salesforce",
+    "destKey": "salesforce"
+  }
+]

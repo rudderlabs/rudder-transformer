@@ -5,6 +5,13 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { CustomError } = require("../../util");
 
+/**
+ * This function is taking the board(received from the lookup call) and groupTitle as parameter
+ * and returning the groupId.
+ * @param {*} groupTitle
+ * @param {*} board
+ * @returns
+ */
 const getGroupId = (groupTitle, board) => {
   const { groups } = board?.boards[0];
   let groupId;
@@ -19,6 +26,13 @@ const getGroupId = (groupTitle, board) => {
   throw new CustomError(`Group ${groupTitle} doesn't exist in the board`, 400);
 };
 
+/**
+ * This function is taking the board(received from the lookup call) and columnTitle as parameter
+ * and returning the columnId.
+ * @param {*} columnTitle
+ * @param {*} board
+ * @returns
+ */
 const getColumnId = (columnTitle, board) => {
   const { columns } = board?.boards[0];
   let columnId;
@@ -36,6 +50,14 @@ const getColumnId = (columnTitle, board) => {
   );
 };
 
+/**
+ * This function is used to get the ColumnValue for a particular columnId
+ * @param {*} properties - this is {message.properties} of the input payload
+ * @param {*} columnName - The columnName from the web-app mapping that needs to be updated
+ * @param {*} key - key from the web-app the user has mapped the columnName to.
+ * @param {*} board - boardData from the lookup call
+ * @returns
+ */
 const getColumnValue = (properties, columnName, key, board) => {
   const { columns } = board?.boards[0];
   let columnValue;
@@ -97,11 +119,17 @@ const getColumnValue = (properties, columnName, key, board) => {
   return columnValue;
 };
 
-//   const columnValues = JSON.stringify({
-//     status: { index: 1 },
-//     date4: { date: "2021-01-01" },
-//     person: { personsAndTeams: [{ id: 9603417, kind: "person" }] }
-//   });
+/**
+ * This function is used to map all the columnValues that in the item to be created.
+ * eg. output - columnValues = {
+ *   status: { label: Done },
+ *   checkbox: { checked: "true" }
+ * }
+ * @param {*} properties
+ * @param {*} columnToPropertyMapping
+ * @param {*} board
+ * @returns
+ */
 const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   const columnValues = {};
   columnToPropertyMapping.forEach(mapping => {
@@ -115,6 +143,13 @@ const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   return JSON.stringify(columnValues);
 };
 
+/**
+ * This function is used to do the lookup call to get the board Details using the board Id.
+ * @param {*} url
+ * @param {*} boardID
+ * @param {*} apiToken
+ * @returns
+ */
 const getBoardDetails = async (url, boardID, apiToken) => {
   const clientResponse = await httpPOST(
     url,
@@ -132,6 +167,13 @@ const getBoardDetails = async (url, boardID, apiToken) => {
   return processedResponse;
 };
 
+/**
+ * This function is used to populate the final payload to be sent to the destination.
+ * @param {*} message
+ * @param {*} Config
+ * @param {*} processedResponse
+ * @returns
+ */
 const populatePayload = (message, Config, processedResponse) => {
   const { boardId, groupTitle, columnToPropertyMapping } = Config;
   const payload = {};

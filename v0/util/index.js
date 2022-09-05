@@ -138,7 +138,7 @@ const getHashFromArrayWithDuplicate = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      if (!isNotEmpty(array[fromKey])) return;
+      if (isEmpty(array[fromKey])) return;
       const key = isLowerCase
         ? array[fromKey].toLowerCase().trim()
         : array[fromKey].trim();
@@ -590,7 +590,12 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null) => {
+const handleMetadataForValue = (
+  value,
+  metadata,
+  destKey,
+  integrationsObj = null
+) => {
   if (!metadata) {
     return value;
   }
@@ -846,12 +851,12 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
     if (!foundVal) {
-      if(strictMultiMap) {
-          throw new CustomError (`Invalid entry for key ${destKey}`,400); 
+      if (strictMultiMap) {
+        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
       } else {
-        formattedVal = undefined
+        formattedVal = undefined;
       }
-    } 
+    }
   }
 
   if (allowedKeyCheck) {
@@ -1022,7 +1027,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
       if (type.includes(`${destination}-`)) {
         destinationExternalId = extIdObj.id;
         objectType = type.replace(`${destination}-`, "");
-        identifierType = extIdObj.identifierType
+        identifierType = extIdObj.identifierType;
       }
     });
   }

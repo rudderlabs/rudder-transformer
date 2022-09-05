@@ -1,3 +1,4 @@
+const { isNumber } = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
@@ -35,6 +36,67 @@ const getColumnId = (columnTitle, board) => {
   );
 };
 
+const getColumnValue = (properties, columnName, key, board) => {
+  const { columns } = board?.boards[0];
+  let columnValue;
+  columns.forEach(column => {
+    if (column.title === columnName) {
+      switch (column.type) {
+        case "color":
+          columnValue = { label: properties[key] };
+          break;
+        case "boolean":
+          columnValue = { checked: true };
+          break;
+        case "numeric":
+          columnValue = properties[key]; // add check
+          break;
+        case "text":
+          columnValue = properties[key];
+          break;
+        case "country":
+          columnValue = {
+            countryName: properties[key],
+            countryCode: properties.countryCode
+          };
+          break;
+        case "email":
+          columnValue = { email: properties[key], text: properties.emailText };
+          break;
+        case "location":
+          columnValue = {
+            address: properties[key],
+            lat: properties.latitude,
+            lng: properties.longitude
+          };
+          break;
+        case "phone":
+          columnValue = {
+            phone: properties[key],
+            countryShortName: properties.countryShortName
+          };
+          break;
+        case "rating":
+          if (isNumber(parseInt(properties[key], 10))) {
+            columnValue = parseInt(properties[key], 10);
+          }
+          break;
+        case "link":
+          columnValue = { url: properties[key], text: properties.linkText };
+          break;
+        case "long-text":
+          columnValue = { text: properties[key] };
+          break;
+        case "timezone":
+          columnValue = { timezone: properties[key] };
+          break;
+        default:
+      }
+    }
+  });
+  return columnValue;
+};
+
 //   const columnValues = JSON.stringify({
 //     status: { index: 1 },
 //     date4: { date: "2021-01-01" },
@@ -43,7 +105,12 @@ const getColumnId = (columnTitle, board) => {
 const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   const columnValues = {};
   columnToPropertyMapping.forEach(mapping => {
-    columnValues[getColumnId(mapping.from, board)] = properties[mapping.to];
+    columnValues[getColumnId(mapping.from, board)] = getColumnValue(
+      properties,
+      mapping.from,
+      mapping.to,
+      board
+    );
   });
   return JSON.stringify(columnValues);
 };

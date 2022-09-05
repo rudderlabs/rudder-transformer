@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const _ = require("lodash");
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
 const set = require("set-value");
@@ -164,10 +165,12 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(arrayChunks) {
+function batchEvents(eventsChunk) {
   const batchedResponseList = [];
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // transformed payload of (n) batch size
+  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
 
-  // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
     const batchResponseList = [];
     const metadata = [];
@@ -216,14 +219,14 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(eventArray, trackResponseList, eventsChunk) {
+function getEventChunks(event, trackResponseList, eventsChunk) {
   // Do not apply batching if the payload contains test_event_code
   // which corresponds to track endpoint
-  const eventTemplate = JSON.parse(JSON.stringify(eventArray));
+  const eventTemplate = _.cloneDeep(event);
   delete eventTemplate.message;
-  eventArray.message.forEach(element => {
+  event.message.forEach(element => {
     if (element.body.JSON.test_event_code) {
-      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      const newEvent = eventTemplate;
       newEvent.message = element;
 
       const { message, metadata, destination } = newEvent;
@@ -249,7 +252,7 @@ function getEventChunks(eventArray, trackResponseList, eventsChunk) {
       );
     } else {
       // build eventsChunk of MAX_BATCH_SIZE
-      const newEvent = JSON.parse(JSON.stringify(eventTemplate));
+      const newEvent = _.cloneDeep(eventTemplate);
       newEvent.message = element;
       eventsChunk.push(newEvent);
     }
@@ -263,24 +266,14 @@ const processRouterDest = async inputs => {
   }
 
   const trackResponseList = []; // list containing single track event in batched format
-  let eventsChunk = []; // temporary variable to divide payload into chunks
-  const arrayChunks = []; // transformed payload of (n) batch size
+  const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, trackResponseList, eventsChunk);
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         } else {
           // if not transformed
           getEventChunks(
@@ -292,15 +285,6 @@ const processRouterDest = async inputs => {
             trackResponseList,
             eventsChunk
           );
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         }
       } catch (error) {
         errorRespList.push(
@@ -315,8 +299,8 @@ const processRouterDest = async inputs => {
   );
 
   let batchedResponseList = [];
-  if (arrayChunks.length) {
-    batchedResponseList = await batchEvents(arrayChunks);
+  if (eventsChunk.length) {
+    batchedResponseList = await batchEvents(eventsChunk);
   }
   return [...batchedResponseList.concat(trackResponseList), ...errorRespList];
 };

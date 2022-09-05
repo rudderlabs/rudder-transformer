@@ -112,7 +112,8 @@
       "statTags": {
         "destType": "HEAP",
         "scope": "exception",
-        "stage": "transform"
+        "stage": "transform",
+        "errorAt": "rt"
       }
     },
     {
@@ -127,7 +128,8 @@
       "statTags": {
         "destType": "HEAP",
         "scope": "exception",
-        "stage": "transform"
+        "stage": "transform",
+        "errorAt": "rt"
       }
     }
   ]

@@ -133,7 +133,8 @@
       "stage": "transform",
       "scope": "cdk",
       "meta": "badEvent",
-      "destType": "HEAP"
+      "destType": "HEAP",
+      "errorAt": "proc"
     }
   },
   {
@@ -143,7 +144,8 @@
       "stage": "transform",
       "scope": "exception",
       "meta": "badEvent",
-      "destType": "HEAP"
+      "destType": "HEAP",
+      "errorAt": "proc"
     }
   }
 ]

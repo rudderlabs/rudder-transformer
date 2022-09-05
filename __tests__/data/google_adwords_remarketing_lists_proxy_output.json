@@ -41,7 +41,8 @@
       "statTags": {
         "destType": "GOOGLE_ADWORDS_REMARKETING_LISTS",
         "stage": "responseTransform",
-        "scope": "exception"
+        "scope": "exception",
+        "errorAt": "proxy"
       }
     }
   },

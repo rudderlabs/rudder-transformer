@@ -31,7 +31,8 @@
         "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -47,7 +48,8 @@
         "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -63,7 +65,8 @@
         "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -79,7 +82,8 @@
         "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -95,7 +99,8 @@
         "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },

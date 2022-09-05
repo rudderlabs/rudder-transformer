@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
@@ -14,7 +15,8 @@ const {
   getMetadata,
   generateErrorObject,
   CustomError,
-  isHttpStatusSuccess
+  isHttpStatusSuccess,
+  getErrorRespEvents
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -161,7 +163,10 @@ async function handleDest(ctx, version, destination) {
           statusCode: errObj.status,
           error:
             errObj.message || "Error occurred while processing the payload.",
-          statTags: errObj.statTags
+          statTags: {
+            errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
+            ...errObj.statTags
+          }
         };
       }
     })
@@ -268,6 +273,16 @@ async function routerHandleDest(ctx) {
       respEvents.push(...listOutput);
     })
   );
+  respEvents
+    .filter(
+      resp =>
+        "error" in resp &&
+        _.isObject(resp.statTags) &&
+        !_.isEmpty(resp.statTags)
+    )
+    .forEach(resp => {
+      set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+    });
   ctx.body = { output: respEvents };
   return ctx.body;
 }
@@ -653,7 +668,10 @@ async function handleProxyRequest(destination, ctx) {
       destination,
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
     );
-    response = { ...response };
+    response.statTags = {
+      errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
+      ...response.statTags
+    };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
@@ -727,9 +745,18 @@ const batchHandler = ctx => {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
-      response.errors.push(
-        error.message || "Error occurred while processing payload."
+      const errorObj = generateErrorObject(
+        error,
+        destType,
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
       );
+      const errResp = getErrorRespEvents(
+        destEvents.map(d => d.metadata),
+        500,
+        error.message || "Error occurred while processing payload.",
+        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+      );
+      response.errors.push(errResp);
     }
   });
   if (response.errors.length > 0) {

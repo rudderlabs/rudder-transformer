@@ -84,14 +84,13 @@ const commonFieldResponseBuilder = (message, { Config }) => {
   };
 };
 
-/*
-    TODO:
-
-    Need to check if custom properties can be supported in cloud mode as well.
-    There is no mention of it, in the documentation. In case, if we can send,
-    will add that.
+/**
+ * This function will process the ecommerce fields and return the final payload
+ * @param {*} message
+ * @param {*} mandatoryPayload
+ * @returns
  */
-const trackResponseBuilder = (message, mandatoryPayload) => {
+const processEcomFields = (message, mandatoryPayload) => {
   let totalQuantity = 0;
   let quantityInconsistent = false;
   const contentArray = [];
@@ -194,7 +193,7 @@ const process = event => {
    * Track payloads will need additional custom parameters
    */
   if (messageType === EventType.TRACK) {
-    response = trackResponseBuilder(message, mandatoryPayload);
+    response = processEcomFields(message, mandatoryPayload);
   } else {
     response = mandatoryPayload;
   }

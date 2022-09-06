@@ -40,20 +40,20 @@ const {
   getHsSearchId
 } = require("./util");
 
-const RETL_CREATE_ASSOCIATION_OP = "createAssociation";
+const RETL_CREATE_ASSOCIATION_OPERATION = "createAssociation";
 const RETL_SOURCE = "rETL";
 
-const addHsAuthentication = (response, destinationConfig) => {
+const addHsAuthentication = (response, Config) => {
   // choosing API Type
-  if (destinationConfig.authorizationType === "newPrivateAppApi") {
+  if (Config.authorizationType === "newPrivateAppApi") {
     // Private Apps
     response.headers = {
       ...response.headers,
-      Authorization: `Bearer ${destinationConfig.accessToken}`
+      Authorization: `Bearer ${Config.accessToken}`
     };
   } else {
     // use legacy API Key
-    response.params = { hapikey: destinationConfig.apiKey };
+    response.params = { hapikey: Config.apiKey };
   }
   return response;
 };
@@ -82,7 +82,8 @@ const processIdentify = async (message, destination, propertyMap) => {
   if (
     objectType &&
     objectType.toLowerCase() === "association" &&
-    mappedToDestination
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
   ) {
     const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
     response.endpoint = CRM_ASSOCIATION_V3.replace(
@@ -96,7 +97,7 @@ const processIdentify = async (message, destination, propertyMap) => {
     response.headers = {
       "Content-Type": "application/json"
     };
-    response.operation = RETL_CREATE_ASSOCIATION_OP;
+    response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
     response.source = RETL_SOURCE;
     return addHsAuthentication(response, Config);
   }
@@ -423,7 +424,7 @@ const batchEvents = destEvents => {
           createAllObjectsEventChunk.push(event);
         } else if (operation === "updateObject") {
           updateAllObjectsEventChunk.push(event);
-        } else if (operation === RETL_CREATE_ASSOCIATION_OP) {
+        } else if (operation === RETL_CREATE_ASSOCIATION_OPERATION) {
           // Identify: chunks for handling association events
           associationObjectsEventChunk.push(event);
         }

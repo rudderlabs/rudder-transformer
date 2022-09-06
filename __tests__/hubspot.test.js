@@ -3,7 +3,6 @@ jest.mock("axios");
 const integration = "hs";
 const name = "Hubspot";
 
-const exp = require("constants");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";

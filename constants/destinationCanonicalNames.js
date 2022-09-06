@@ -41,6 +41,8 @@ const DestCanonicalNames = {
   mautic: ["MAUTIC", "mautic", "Mautic"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
+  pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],
+  rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox", "rockerBox"],
   canny: ["canny", "Canny", "CANNY"],
   one_signal: [
     "one signal",
@@ -51,8 +53,10 @@ const DestCanonicalNames = {
     "onesignal"
   ],
   wootric: ["wootric", "Wootric", "WOOTRIC"],
+  clickup: ["ClickUp", "clickup", "CLICKUP", "clickUp", "Clickup"],
   zapier: ["zapier", "Zapier", "ZAPIER"],
-  shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"]
+  shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"],
+  monday: ["monday", "MONDAY", "monDay", "MonDay"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

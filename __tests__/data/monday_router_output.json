@@ -4,7 +4,7 @@
       "body": {
         "FORM": {},
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933,  item_name: Task 1, column_values: \"{}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933,  item_name: \"Task 1\", column_values: \"{}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {}
@@ -32,7 +32,8 @@
         "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
         "boardId": "339283933",
         "groupTitle": "",
-        "columnToPropertyMapping": []
+        "columnToPropertyMapping": [],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
       }
     }
   },
@@ -49,7 +50,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: Task 1, column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: \"Task 1\", column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -75,7 +76,8 @@
             "to": "status"
           },
           { "from": "Email", "to": "emailId" }
-        ]
+        ],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
       }
     }
   }

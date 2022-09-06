@@ -1,7 +1,11 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { ENDPOINT } = require("./config");
-const { populatePayload, getBoardDetails } = require("./util");
+const {
+  populatePayload,
+  getBoardDetails,
+  checkAllowedEventNameFromUI
+} = require("./util");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -46,13 +50,21 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Monday]: boardId is a required field", 400);
   }
   const event = get(message, "event");
-  const endpoint = ENDPOINT;
+
   if (!event) {
     throw new CustomError(
       "[Monday]: event is not present in the input payloads",
       400
     );
   }
+
+  if (!checkAllowedEventNameFromUI(event, Config)) {
+    throw new CustomError(
+      "[Monday]:: Event Discarded. To allow this event, add this in Allowlist",
+      400
+    );
+  }
+  const endpoint = ENDPOINT;
 
   const processedResponse = await getBoardDetails(endpoint, boardId, apiToken);
 

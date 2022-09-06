@@ -5,7 +5,8 @@
         "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
         "boardId": "339283933",
         "groupTitle": "",
-        "columnToPropertyMapping": []
+        "columnToPropertyMapping": [],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
       }
     },
     "metadata": {
@@ -60,7 +61,8 @@
             "to": "status"
           },
           { "from": "Email", "to": "emailId" }
-        ]
+        ],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
       }
     },
     "metadata": {

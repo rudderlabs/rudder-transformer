@@ -5,9 +5,6 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { CustomError, getDestinationExternalID } = require("../../util");
 
-// regex to validate latitude and longitude
-const regexExp = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/gi;
-
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
  * and returning the groupId.
@@ -91,11 +88,12 @@ const getColumnValue = (properties, columnName, key, board) => {
           }
           break;
         case "email":
-          if (properties.emailText) {
-            columnValue = {
-              email: properties[key],
-              text: properties.emailText
-            };
+          columnValue = {
+            email: properties[key],
+            text: properties.emailText
+          };
+          if (!columnValue.text) {
+            columnValue.text = "email";
           }
           break;
         case "location":
@@ -128,6 +126,9 @@ const getColumnValue = (properties, columnName, key, board) => {
           break;
         case "link":
           columnValue = { url: properties[key], text: properties.linkText };
+          if (!columnValue.text) {
+            columnValue.text = "link";
+          }
           break;
         case "long-text":
           columnValue = { text: properties[key] };
@@ -225,18 +226,31 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
       groupTitle,
       boardDeatailsResponse.response?.data
     );
-    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${
+    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${JSON.stringify(
       message.properties?.name
-    }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   } else {
-    payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${
+    payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${JSON.stringify(
       message.properties?.name
-    }, column_values: ${JSON.stringify(columnValues)}) {id}}`;
+    )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   }
   return payload;
 };
 
+const checkAllowedEventNameFromUI = (event, Config) => {
+  const { whitelistedEvents } = Config;
+  let allowEvent;
+  if (whitelistedEvents && whitelistedEvents.length > 0) {
+    allowEvent = whitelistedEvents.some(
+      whiteListedEvent =>
+        whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
+    );
+  }
+  return !!allowEvent;
+};
+
 module.exports = {
   getBoardDetails,
-  populatePayload
+  populatePayload,
+  checkAllowedEventNameFromUI
 };

@@ -7,7 +7,8 @@
           "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
           "boardId": "339283933",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -51,7 +52,7 @@
       "body": {
         "FORM": {},
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933,  item_name: Task 1, column_values: \"{}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933,  item_name: \"Task 1\", column_values: \"{}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {}
@@ -76,7 +77,8 @@
           "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
           "boardId": "339283933",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -128,7 +130,8 @@
           "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
           "boardId": "339283933",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -180,7 +183,8 @@
           "apiToken": "",
           "boardId": "339283933",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -232,7 +236,8 @@
           "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
           "boardId": "",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -284,7 +289,8 @@
           "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
           "boardId": "339283933",
           "groupTitle": "",
-          "columnToPropertyMapping": []
+          "columnToPropertyMapping": [],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -342,7 +348,8 @@
               "to": "status"
             },
             { "from": "Email", "to": "emailId" }
-          ]
+          ],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -397,7 +404,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933,  item_name: Task 1, column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933,  item_name: \"Task 1\", column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -420,7 +427,8 @@
               "to": "status"
             },
             { "from": "Email", "to": "emailId" }
-          ]
+          ],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -475,7 +483,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: Task 1, column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: \"Task 1\", column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -498,7 +506,8 @@
               "to": "status"
             },
             { "from": "Email", "to": "emailId" }
-          ]
+          ],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -559,7 +568,8 @@
               "to": "status"
             },
             { "from": "Email", "to": "emailId" }
-          ]
+          ],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -660,7 +670,8 @@
               "from": "World Clock",
               "to": "timezone"
             }
-          ]
+          ],
+          "whitelistedEvents": [{ "eventName": "create an item" }]
         }
       },
       "message": {
@@ -730,7 +741,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: Task 1, column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"},\\\"checkbox\\\":{\\\"checked\\\":true},\\\"numbers\\\":\\\"45\\\",\\\"text\\\":\\\"texting\\\",\\\"country\\\":{\\\"countryName\\\":\\\"Unites States\\\",\\\"countryCode\\\":\\\"US\\\"},\\\"location\\\":{\\\"address\\\":\\\"New York\\\",\\\"lat\\\":\\\"51.23\\\",\\\"lng\\\":\\\"35.3\\\"},\\\"phone\\\":{\\\"phone\\\":\\\"2626277272\\\",\\\"countryShortName\\\":\\\"US\\\"},\\\"rating\\\":3,\\\"link\\\":{\\\"url\\\":\\\"demo.com\\\",\\\"text\\\":\\\"websiteLink\\\"},\\\"long_text\\\":{\\\"text\\\":\\\"property description\\\"},\\\"world_clock\\\":{\\\"timezone\\\":\\\"America/New_York\\\"}}\") {id}}"
+          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: \"Task 1\", column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"},\\\"checkbox\\\":{\\\"checked\\\":true},\\\"numbers\\\":\\\"45\\\",\\\"text\\\":\\\"texting\\\",\\\"country\\\":{\\\"countryName\\\":\\\"Unites States\\\",\\\"countryCode\\\":\\\"US\\\"},\\\"location\\\":{\\\"address\\\":\\\"New York\\\",\\\"lat\\\":\\\"51.23\\\",\\\"lng\\\":\\\"35.3\\\"},\\\"phone\\\":{\\\"phone\\\":\\\"2626277272\\\",\\\"countryShortName\\\":\\\"US\\\"},\\\"rating\\\":3,\\\"link\\\":{\\\"url\\\":\\\"demo.com\\\",\\\"text\\\":\\\"websiteLink\\\"},\\\"long_text\\\":{\\\"text\\\":\\\"property description\\\"},\\\"world_clock\\\":{\\\"timezone\\\":\\\"America/New_York\\\"}}\") {id}}"
         },
         "JSON_ARRAY": {},
         "XML": {},

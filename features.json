@@ -32,6 +32,7 @@
     "LAMBDA": true,
     "WOOTRIC": true,
     "GOOGLE_CLOUD_FUNCTION": true,
+    "CLICKUP": true,
     "FRESHMARKETER": true,
     "FRESHSALES": true
   }

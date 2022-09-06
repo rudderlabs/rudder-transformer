@@ -21,10 +21,11 @@ const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
 const {
   wootricGetRequestHandler,
-  wootricPostRequestHandler,
-  wootricPutRequestHandler
+  wootricPostRequestHandler
 } = require("./wootric.mock");
+const { clickUpGetRequestHandler } = require("./clickup.mock");
 const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
+const { mondayPostRequestHandler } = require("./monday.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -34,7 +35,7 @@ const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
-  "ruddertest2.mautic.net":"mautic"
+  "ruddertest2.mautic.net": "mautic"
 };
 
 const fs = require("fs");
@@ -116,6 +117,9 @@ function get(url, options) {
       resolve(wootricGetRequestHandler(url));
     });
   }
+  if (url.includes("https://api.clickup.com")) {
+    return Promise.resolve(clickUpGetRequestHandler(url));
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -171,6 +175,14 @@ function post(url, payload) {
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
     return new Promise((resolve, reject) => {
       resolve(freshmarketerPostRequestHandler(url));
+    });
+  }
+  if (
+    url.includes("https://api.monday.com") &&
+    payload.query.includes("query")
+  ) {
+    return new Promise((resolve, reject) => {
+      resolve(mondayPostRequestHandler(url));
     });
   }
   return new Promise((resolve, reject) => {

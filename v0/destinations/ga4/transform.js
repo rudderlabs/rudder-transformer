@@ -1,5 +1,4 @@
 const get = require("get-value");
-const { set } = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
@@ -301,11 +300,6 @@ const responseBuilder = (message, { Config }) => {
     payload.params = removeUndefinedAndNullValues(payload.params);
   }
 
-  const sessionId = get(message, "context.sessionId");
-  if (sessionId) {
-    set(payload.params, "session_id", sessionId);
-  }
-
   if (isEmptyObject(payload.params)) {
     delete payload.params;
   }
@@ -361,6 +355,15 @@ const responseBuilder = (message, { Config }) => {
   return response;
 };
 
+const getSessionStartEvent = (message, destination) => {
+  const cloneEvent = JSON.parse(JSON.stringify(message));
+  cloneEvent.event = "session_start";
+  if (cloneEvent.properties) {
+    delete cloneEvent.properties;
+  }
+  return responseBuilder(cloneEvent, destination);
+};
+
 const process = event => {
   const { message, destination } = event;
   const { Config } = destination;
@@ -385,8 +388,14 @@ const process = event => {
     );
   }
 
+  let response = [];
+
+  const sessionStart = get(message, "context.sessionStart");
+  if (sessionStart) {
+    response.push(getSessionStartEvent(message, destination));
+  }
+
   const messageType = message.type.toLowerCase();
-  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (Config.enableServerSideIdentify) {
@@ -426,17 +435,17 @@ const process = event => {
       }
       break;
     case EventType.TRACK:
-      response = responseBuilder(message, destination);
+      response.push(responseBuilder(message, destination));
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
       message.event = "page_view";
-      response = responseBuilder(message, destination);
+      response.push(responseBuilder(message, destination));
       break;
     case EventType.GROUP:
       // GA4 standard event 'join_group' is fired for group
       message.event = "join_group";
-      response = responseBuilder(message, destination);
+      response.push(responseBuilder(message, destination));
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);

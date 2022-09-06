@@ -49,7 +49,7 @@ const isReservedEventName = event => {
     "notification_receive",
     "os_update",
     "screen_view",
-    "session_start",
+    // "session_start",
     "user_engagement"
   ];
 
@@ -158,7 +158,7 @@ const isReservedWebCustomEventName = event => {
     "first_open",
     "first_visit",
     "in_app_purchase",
-    "session_start",
+    // "session_start",
     "user_engagement"
   ];
 

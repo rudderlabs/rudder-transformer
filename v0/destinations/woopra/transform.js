@@ -17,7 +17,7 @@ const { refinePayload } = require("./utils");
 
 const responseBuilder = async (payload, endpoint, method, projectName) => {
   if (!payload) {
-    throw new CustomError("Parameters could not be found", 400);
+    throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
   }
   if (!get(payload, "project")) {
     set(payload, "Project", projectName);
@@ -49,7 +49,7 @@ const identifyResponseBuilder = async (message, projectName) => {
 const trackResponseBuilder = async (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
   if (!message.event) {
-    throw new CustomError("Event Name can not be empty.", 400);
+    throw new CustomError("[ WOOPRA ]:: Event Name can not be empty.", 400);
   }
   const payload = constructPayload(
     message,
@@ -68,7 +68,7 @@ const trackResponseBuilder = async (message, projectName) => {
 const pageResponseBuilder = async (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
   if (!message.name) {
-    throw new CustomError("Page Name can not be empty.", 400);
+    throw new CustomError("[ WOOPRA ]:: Page Name can not be empty.", 400);
   }
   const payload = constructPayload(
     message,
@@ -88,11 +88,11 @@ const process = async event => {
   const { message, destination } = event;
   const { projectName } = destination.Config;
   if (!projectName) {
-    throw new CustomError("Project Name field can not be empty.", 400);
+    throw new CustomError("[ WOOPRA ]:: Project Name field can not be empty.", 400);
   }
   if (!message.type) {
     throw new CustomError(
-      "Message Type is not present. Aborting message.",
+      "[ WOOPRA ]:: Message Type is not present. Aborting message.",
       400
     );
   }
@@ -109,7 +109,7 @@ const process = async event => {
       response = await pageResponseBuilder(message, projectName);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported.`, 400);
+      throw new CustomError(`[ WOOPRA ]:: Message type ${messageType} not supported.`, 400);
   }
   return response;
 };

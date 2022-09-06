@@ -7,9 +7,13 @@ const { getBrowserInfo } = require("../../util");
  * @returns the concatenated string
  */
 const mergeObjectValues = object => {
-  Object.keys(object).reduce((res, v) => {
-    return res.concat(object[v], " ");
+  let res;
+  Object.keys(object).forEach(v => {
+    if (object[v]) {
+      res.concat(object[v], " ");
+    }
   });
+  return res;
 };
 
 /**

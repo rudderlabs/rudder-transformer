@@ -85,6 +85,6 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "Message type group not supported."
+    "error": "[ WOOPRA ]:: Message type group not supported."
   }
 ]

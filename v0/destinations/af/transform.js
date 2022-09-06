@@ -165,7 +165,6 @@ function processNonTrackEvents(message, eventName) {
 
 function processEventTypeTrack(message) {
   let isMultiSupport = true;
-  let isUnIdentifiedEvent = false;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
 
@@ -181,7 +180,6 @@ function processEventTypeTrack(message) {
       break;
     default: {
       isMultiSupport = false;
-      isUnIdentifiedEvent = true;
       break;
     }
   }

@@ -1,0 +1,35 @@
+[
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.value",
+      "properties.total",
+      "properties.revenue"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "num_items",
+    "sourceKeys": "properties.numOfItems",
+    "metadata": {
+      "type": "toInt"
+    },
+    "required": false
+  },
+  {
+    "destKey": "order_id",
+    "sourceKeys": "properties.order_id",
+    "required": false
+  },
+  {
+    "destKey": "search_string",
+    "sourceKeys": "properties.query",
+    "required": false
+  }
+]
+

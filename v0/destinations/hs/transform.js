@@ -1,13 +1,20 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
-const { getErrorRespEvents, CustomError, getDestinationExternalIDObject, getDestinationExternalIDInfoForRetl } = require("../../util");
+const {
+  getErrorRespEvents,
+  CustomError,
+  getDestinationExternalIDInfoForRetl
+} = require("../../util");
 const { API_VERSION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
   legacyBatchEvents
 } = require("./HSTransform-v1");
-const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require("../../../constants");
+const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
 const {
   processIdentify,
   processTrack,
@@ -96,7 +103,7 @@ const processRouterDest = async inputs => {
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
   ) {
     // skip splitting the batches to inserts and updates if object it is an association
-    if (objectType.toLowerCase() != "association")  {
+    if (objectType.toLowerCase() !== "association") {
       // get info about existing objects and splitting accordingly.
       inputs = await splitEventsForCreateUpdate(inputs, destination);
     }

@@ -1,0 +1,62 @@
+[
+  {
+    "destKey": "event_name",
+    "sourceKeys": "event"
+  },
+  {
+    "destKey": "event_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "event_source_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "action_source",
+    "sourceKeys": [
+      "traits.action_source",
+      "context.traits.action_source",
+      "traits.actionSource",
+      "context.traits.actionSource",
+      "properties.action_source",
+      "properties.actionSource",
+      "channel"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "app_name",
+    "sourceKeys": ["properties.appName", "context.app.name"]
+  },
+  {
+    "destKey": "app_version",
+    "sourceKeys": ["properties.appVersion", "context.app.version"]
+  },
+  {
+    "destKey": "device_brand",
+    "sourceKeys": ["properties.manufacturer", "context.device.manufacturer"]
+  },
+  {
+    "destKey": "device_model",
+    "sourceKeys": ["properties.deviceModel", "context.device.model"]
+  },
+  {
+    "destKey": "device_type",
+    "sourceKeys": ["properties.deviceType", "context.device.type"]
+  },
+  {
+    "destKey": "os_version",
+    "sourceKeys": "context.os.version"
+  },
+  {
+    "destKey": "language",
+    "sourceKeys": ["properties.language", "context.traits.language", "context.locale"]
+  }
+]
+

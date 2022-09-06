@@ -32,6 +32,7 @@
     "WOOTRIC": true,
     "GOOGLE_CLOUD_FUNCTION": true,
     "FRESHMARKETER": true,
-    "FRESHSALES": true
+    "FRESHSALES": true,
+    "MONDAY": true
   }
 }

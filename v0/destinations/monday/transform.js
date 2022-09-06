@@ -8,7 +8,8 @@ const {
   removeUndefinedAndNullValues,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  getDestinationExternalID
 } = require("../../util");
 
 const responseBuilder = (payload, endpoint, apiToken) => {
@@ -24,7 +25,7 @@ const responseBuilder = (payload, endpoint, apiToken) => {
     return response;
   }
   throw new CustomError(
-    "Payload could not be populated due to wrong input",
+    "Monday]: Payload could not be populated due to wrong input",
     400
   );
 };
@@ -36,7 +37,14 @@ const responseBuilder = (payload, endpoint, apiToken) => {
  * @returns
  */
 const trackResponseBuilder = async (message, { Config }) => {
-  const { apiToken, boardId } = Config;
+  const { apiToken } = Config;
+  let boardId = getDestinationExternalID(message, "boardId");
+  if (!boardId) {
+    boardId = Config.boardId;
+  }
+  if (!boardId) {
+    throw new CustomError("Monday]: boardId is a required field", 400);
+  }
   const event = get(message, "event");
   const endpoint = ENDPOINT;
   if (!event) {
@@ -63,9 +71,6 @@ const processEvent = async (message, destination) => {
   if (!destination.Config.apiToken) {
     throw new CustomError("[Monday]: apiToken is a required field", 400);
   }
-  if (!destination.Config.boardId) {
-    throw new CustomError("[Monday]: boardId is a required field", 400);
-  }
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
@@ -78,41 +83,42 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = event => {
+const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length === 0) {
+const processRouterDest = async inputs => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const respList = Promise.all(
+  return Promise.all(
     inputs.map(async input => {
       try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
+        if (input.message.statusCode) {
+          // already transformed event
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
+          );
+        }
+        // if not transformed
         return getSuccessRespEvents(
-          message,
+          await process(input),
           [input.metadata],
           input.destination
         );
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }
     })
   );
-  return respList;
 };
 
 module.exports = { process, processRouterDest };

@@ -3,7 +3,7 @@ const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError } = require("../../util");
+const { CustomError, getDestinationExternalID } = require("../../util");
 
 // regex to validate latitude and longitude
 const regexExp = /^((\-?|\+?)?\d+(\.\d+)?),\s*((\-?|\+?)?\d+(\.\d+)?)$/gi;
@@ -203,8 +203,12 @@ const getBoardDetails = async (url, boardID, apiToken) => {
  * @returns
  */
 const populatePayload = (message, Config, boardDeatailsResponse) => {
-  const { boardId, groupTitle, columnToPropertyMapping } = Config;
+  const { groupTitle, columnToPropertyMapping } = Config;
   const payload = {};
+  let boardId = getDestinationExternalID(message, "boardId");
+  if (!boardId) {
+    boardId = Config.boardId;
+  }
 
   const columnValues = mapColumnValues(
     message.properties,

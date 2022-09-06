@@ -111,7 +111,7 @@ describe(`${name} Tests`, () => {
       const actualOutput = await transformer.processRouterDest(assocInput);
 
       expect(actualOutput).toEqual(assocExpectedOutput);
-    })
+    });
   });
   // rETL Sources
   describe("Router Tests for rETL sources (Legacy)", () => {

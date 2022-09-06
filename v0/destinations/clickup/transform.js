@@ -6,6 +6,7 @@ const {
   getDestinationExternalID,
   constructPayload,
   defaultPostRequestConfig,
+  removeUndefinedNullEmptyExclBoolInt,
   CustomError
 } = require("../../util");
 const {
@@ -30,7 +31,7 @@ const responseBuilder = async (payload, listId, apiToken) => {
       Authorization: apiToken
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
+    response.body.JSON = removeUndefinedNullEmptyExclBoolInt(payload);
     return response;
   }
   // fail-safety for developer error

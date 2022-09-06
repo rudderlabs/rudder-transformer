@@ -1,11 +1,10 @@
-const _ = require("lodash");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const {
-  isEmpty,
   getHashFromArray,
+  getHashFromArrayWithValueAsObject,
   formatTimeStamp,
   CustomError
 } = require("../../util");
@@ -179,31 +178,6 @@ const getLocation = value => {
 };
 
 /**
- * Format the available clickup custom field arrays to hashMap
- * where key is custom field name and value is custom field
- * @param {*} arrays [{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}]
- * @param {*} fromKey
- * @param {*} isLowerCase
- * @returns // {"Email":{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}}
- */
-const getHashFromArrayWithValueAsObject = (
-  arrays,
-  fromKey = "from",
-  isLowerCase = true
-) => {
-  const hashMap = {};
-  if (Array.isArray(arrays)) {
-    arrays.forEach(array => {
-      if (isEmpty(array[fromKey])) return;
-      hashMap[
-        isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]
-      ] = array;
-    });
-  }
-  return hashMap;
-};
-
-/**
  * Function to get the the externalId array with the given type
  * @param {*} message {"context":{"externalId":[{"type":"clickUpAssigneeId","id":61205104},{"type":"clickUpAssigneeId","id":61217234},{"type":"clickUpAssigneeId","id":61228575}]}}
  * @param {*} type clickUpAssigneeId
@@ -279,6 +253,15 @@ const populateCustomFieldValue = (customField, value) => {
   }
 };
 
+const extractUIMappedCustomFieldDetails = (
+  availableCustomFieldsMap,
+  configCustomFieldsMap,
+  propertiesKey
+) => {
+  const fieldName = configCustomFieldsMap[propertiesKey];
+  return availableCustomFieldsMap[fieldName];
+};
+
 /**
  * Function to to build the custom field.
  * returns the array of custom field with each object contains id,value
@@ -316,16 +299,19 @@ const customFieldsBuilder = async (
     Object.keys(configCustomFieldsMap).forEach(propertiesKey => {
       let fieldValue = properties[propertiesKey];
       if (fieldValue) {
-        const fieldName = configCustomFieldsMap[propertiesKey];
-        const customFieldDetailsObject = availableCustomFieldsMap[fieldName];
-        validateUserSentCustomFieldValues(customFieldDetailsObject, fieldValue);
+        const customFieldDetailedInfo = extractUIMappedCustomFieldDetails(
+          availableCustomFieldsMap,
+          configCustomFieldsMap,
+          propertiesKey
+        );
+        validateUserSentCustomFieldValues(customFieldDetailedInfo, fieldValue);
         fieldValue = populateCustomFieldValue(
-          customFieldDetailsObject,
+          customFieldDetailedInfo,
           fieldValue
         );
-        if (fieldValue && customFieldDetailsObject) {
+        if (fieldValue && customFieldDetailedInfo) {
           responseArray.push({
-            id: customFieldDetailsObject.id,
+            id: customFieldDetailedInfo.id,
             value: fieldValue
           });
         }
@@ -343,12 +329,9 @@ const customFieldsBuilder = async (
 const checkEventIfUIMapped = (message, destination) => {
   const { whitelistedEvents } = destination.Config;
   const { event } = message;
-  const nonEmptyWhitelistedEvents = whitelistedEvents?.filter(
-    whiteListedEvent => whiteListedEvent.eventName
-  );
 
-  if (nonEmptyWhitelistedEvents && nonEmptyWhitelistedEvents.length > 0) {
-    const allowEvent = nonEmptyWhitelistedEvents.some(
+  if (whitelistedEvents && whitelistedEvents.length > 0) {
+    const allowEvent = whitelistedEvents.some(
       whiteListedEvent =>
         whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
     );
@@ -361,23 +344,9 @@ const checkEventIfUIMapped = (message, destination) => {
   }
 };
 
-const isDefinedAndNotNullAndNotEmpty = value => {
-  return !(
-    value === undefined ||
-    value === null ||
-    Number.isNaN(value) ||
-    (typeof value === "object" && Object.keys(value).length === 0) ||
-    (typeof value === "string" && value.trim().length === 0)
-  );
-};
-
-const removeUndefinedAndNullAndEmptyValues = obj =>
-  _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
-
 module.exports = {
   validatePriority,
   customFieldsBuilder,
   getListOfAssignees,
-  checkEventIfUIMapped,
-  removeUndefinedAndNullAndEmptyValues
+  checkEventIfUIMapped
 };

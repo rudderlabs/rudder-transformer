@@ -24,12 +24,7 @@
     "destination": {
       "Config": {
         "apiToken": "pk_123",
-        "listId": "correctListId123",
-        "whitelistedEvents": [
-          {
-            "eventName": ""
-          }
-        ]
+        "listId": "correctListId123"
       },
       "ID": "clickup-1234"
     },

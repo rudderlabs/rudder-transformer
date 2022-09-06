@@ -417,7 +417,7 @@
     }
   },
   {
-    "description": "Event filtering : Sending non whitelisted event",
+    "description": "Event filtering : Sending non whitelisted event when some events are whitelisted",
     "input": {
       "destination": {
         "Config": {
@@ -445,13 +445,40 @@
     }
   },
   {
-    "description": "Creating task using listId from externalId array",
+    "description": "Event filtering : No event is whitelisted",
     "input": {
       "destination": {
         "Config": {
           "apiToken": "pk_123",
           "listId": "correctListId123",
-          "whitelistedEvents": [{ "eventName": "" }]
+          "whitelistedEvents": [
+            { "eventName": "" },
+            { "eventName": "" },
+            { "eventName": "" }
+          ]
+        },
+        "ID": "clickup-1234"
+      },
+      "message": {
+        "type": "track",
+        "event": "Credit Card Added",
+        "context": {},
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "messageId": "831f1fa5-de84-4f22-880a-4c3f23fc3f04",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c"
+      }
+    },
+    "output": {
+      "error": "[ CLICKUP ]:: Event Discarded. To allow this event, add this in Allowlist"
+    }
+  },
+  {
+    "description": "Creating task using listId from externalId array",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiToken": "pk_123",
+          "listId": "correctListId123"
         },
         "ID": "clickup-1234"
       },

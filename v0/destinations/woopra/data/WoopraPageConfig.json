@@ -1,0 +1,82 @@
+[
+   
+    {
+        "sourceKeys": "timestamp",
+        "destKey": "cv_originalTimestamp",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": [
+            "traits.email",
+            "context.traits.email",
+            "properties.email"
+        ],
+        "destKey": "cv_email"
+    },
+    {
+        "sourceKeys": "userId",
+        "destKey": "cv_id",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": "context.device.id",
+        "destKey": "cookie",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": "name",
+        "destKey": "cv_name",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "website",
+        "destKey": "cv_website",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "timezone",
+        "destKey": "cv_timezone",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "context.ip",
+        "destKey": "cv_ip"
+    },
+    {  "sourceKeys": "context.device.type",
+            "destKey": "device"
+          
+    },
+    {  "sourceKeys": "context.os.name",
+            "destKey": "os"
+          
+    },
+    {
+        "sourceKeys": "name",
+        "destKey": "event"
+      },
+      {
+        "sourceKeys": "properties.title",
+        "destKey": "ce_title"
+      },
+      {
+        "sourceKeys": "properties.url",
+        "destKey": "ce_url"
+      },
+      {
+        "sourceKeys": "properties.path",
+        "destKey": "ce_path"
+      },
+      {
+        "sourceKeys": "properties.search",
+        "destKey": "ce_search"
+      },
+      {
+        "sourceKeys": "properties.referrer",
+        "destKey": "ce_referrer"
+      },
+      {
+        "sourceKeys": "properties.keywords",
+        "destKey": "ce_keywords"
+      }
+      
+]

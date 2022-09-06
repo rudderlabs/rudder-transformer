@@ -1,0 +1,83 @@
+[
+   
+    {
+        "sourceKeys": "timestamp",
+        "destKey": "cv_originalTimestamp",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": [
+            "traits.email",
+            "context.traits.email",
+            "properties.email"
+        ],
+        "destKey": "cv_email"
+    },
+    {
+        "sourceKeys": "userId",
+        "destKey": "cv_id",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": "context.device.id",
+        "destKey": "cookie",
+        "sourceFromGenericMap":true
+    },
+    {
+        "sourceKeys": "timezone",
+        "destKey": "cv_timezone",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "context.ip",
+        "destKey": "cv_ip"
+    },
+    {
+        "sourceKeys": "sentAt",
+        "destKey": "timestamp",
+        "metadata": {
+            "type": "microSecondTimestamp"
+          }
+    },
+
+    {
+        "sourceKeys": "event",
+        "destKey": "event"
+      },
+      {
+        "sourceKeys": "properties.review_id",
+        "destKey": "ce_review_id"
+      },
+      {
+        "sourceKeys": "properties.product_id",
+        "destKey": "ce_product_id"
+      },
+      {
+        "sourceKeys": "properties.rating",
+        "destKey": "ce_rating"
+      },
+      {
+        "sourceKeys": "properties.review_body",
+        "destKey": "ce_review_body"
+      },
+      {
+        "sourceKeys": "properties.revenue",
+        "destKey": "ce_revenue"
+      },
+      {
+        "sourceKeys": "properties.currency",
+        "destKey": "ce_currency"
+      },
+      {
+        "sourceKeys": "properties.value",
+        "destKey": "ce_value"
+      },
+      {  "sourceKeys": "context.device.type",
+            "destKey": "device"
+          
+    },
+    {  "sourceKeys": "context.os.name",
+            "destKey": "os"
+          
+    }
+]

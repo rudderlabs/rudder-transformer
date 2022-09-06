@@ -1,0 +1,269 @@
+[
+  {
+    "description": "Create a new Visitor with projectName inside Integration Object",
+    "input": {
+      "message": {
+        "anonymousId": "21e13f4bc7ceddad",
+        "context": {
+          "app": {
+            "build": "4",
+            "name": "RuddCDN"
+          },
+          "device": {
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "name": "generic_x86_arm"
+          },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "anonymousId": "21e13f4bc7ceddad"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+        },
+        "event": "First Investment",
+        "integrations": {
+          "woopra": "int.com"
+        },
+        "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "traits": {
+          "Name": "Anant jain",
+          "email": "anant@r.com",
+          "hasPurchased": "yes",
+          "address": "H.No. abc Street PQRS ",
+          "state": "Delhi",
+          "title": "Mr."
+        },
+        "receivedAt": "2020-09-29T14:50:43.005+05:30",
+        "sentAt": "2020-09-28T19:53:44.998Z",
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "projectName": "int.com"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "GET",
+      "params": {
+        "os": "Android",
+        "app": "RuddCDN4",
+        "cv_id": "21e13f4bc7ceddad",
+        "Project": "int.com",
+        "cv_email": "anant@r.com",
+        "cv_state": "Delhi",
+        "cv_title": "Mr",
+        "cv_haspurchased": "yes",
+        "cv_originalTimestamp": "2020-09-29T14:50:29.907+05:30"
+      },
+      "headers": {},
+      "version": "1",
+      "endpoint": "https://www.woopra.com/track/identify"
+    }
+  },
+  {
+    "description": "Send track event with projectName inside Integration Object",
+    "input": {
+      "message": {
+        "anonymousId": "21e13f4bc7ceddad",
+        "channel": "mobile",
+        "context": {
+          "app": {
+            "build": "4",
+            "name": "RuddCDN"
+          },
+          "device": {
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "name": "generic_x86_arm"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.6"
+          },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "anonymousId": "21e13f4bc7ceddad"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+        },
+        "event": "First Investment",
+        "integrations": {
+          "woopra": "int.com"
+        },
+        "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "properties": {
+          "currency": "EUR",
+          "revenue": 20.37566
+        },
+        "receivedAt": "2020-09-29T14:50:43.005+05:30",
+        "sentAt": "2020-09-28T19:53:44.998Z",
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "track"
+      },
+      "destination": {
+        "Config": {
+          "projectName": "int.com"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "GET",
+      "params": {
+        "os": "Android",
+        "app": "RuddCDN4",
+        "cv_id": "21e13f4bc7ceddad",
+        "event": "First Investment",
+        "Project": "int.com",
+        "timestamp": 1601322824000000,
+        "ce_revenue": 20.37566,
+        "ce_currency": "EUR",
+        "cv_originalTimestamp": "2020-09-28T19:53:31.900Z"
+      },
+      "headers": {},
+      "version": "1",
+      "endpoint": "https://www.woopra.com/track/ce"
+    }
+  },
+  {
+    "description": "Send Page event with projectName from Config",
+    "input": {
+      "message": {
+        "anonymousId": "21e13f4bc7ceddad",
+        "channel": "mobile",
+        "context": {
+          "app": {
+            "build": "4",
+            "name": "RuddCDN"
+          },
+          "device": {
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "name": "generic_x86_arm"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.6"
+          },
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "anonymousId": "21e13f4bc7ceddad"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+        },
+        "name": "Home",
+        "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "properties": {
+          "title": "Home | RudderStack",
+          "url": "http://www.rudderstack.com"
+        },
+        "receivedAt": "2020-09-29T14:50:43.005+05:30",
+        "sentAt": "2020-09-28T19:53:44.998Z",
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "page"
+      },
+      "destination": {
+        "Config": {
+          "projectName": "abc.com"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "GET",
+      "params": {
+        "os": "Android",
+        "app": "RuddCDN4",
+        "cv_id": "21e13f4bc7ceddad",
+        "event": "Home",
+        "ce_url": "http://www.rudderstack.com",
+        "Project": "abc.com",
+        "ce_title": "Home | RudderStack",
+        "cv_originalTimestamp": "2020-09-28T19:53:31.900Z"
+      },
+      "headers": {},
+      "version": "1",
+      "endpoint": "https://www.woopra.com/track/ce"
+    }
+  },
+  {
+    "description": "Unsupported Message Type",
+    "input": {
+      "message": {
+        "anonymousId": "21e13f4bc7ceddad",
+        "channel": "mobile",
+        "event": "First Investment",
+        "integrations": {
+          "woopra": "int.com"
+        },
+
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "projectName": "int.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Message type group not supported."
+    }
+  },
+  {
+    "description": "Event Name Not Provided ",
+    "input": {
+      "message": {
+        "anonymousId": "21e13f4bc7ceddad",
+        "channel": "mobile",
+        "integrations": {
+          "woopra": "int.com"
+        },
+        "type": "track"
+      },
+      "destination": {
+        "Config": {
+          "projectName": "int.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Event Name can not be empty."
+    }
+  }
+]

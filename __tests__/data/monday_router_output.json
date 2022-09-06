@@ -1,0 +1,84 @@
+[
+  {
+    "batchedRequest": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "query": "mutation { create_item (board_id: 339283933,  item_name: \"Task 1\", column_values: \"{}\") {id}}"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.monday.com/v2",
+      "files": {},
+      "headers": {
+        "Authorization": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+        "boardId": "339283933",
+        "groupTitle": "",
+        "columnToPropertyMapping": [],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.monday.com/v2",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "query": "mutation { create_item (board_id: 339283933, group_id: group_title item_name: \"Task 1\", column_values: \"{\\\"status\\\":{\\\"label\\\":\\\"Done\\\"},\\\"email\\\":{\\\"email\\\":\\\"abc@email.com\\\",\\\"text\\\":\\\"emailId\\\"}}\") {id}}"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+        "boardId": "339283933",
+        "groupTitle": "Next month",
+        "columnToPropertyMapping": [
+          {
+            "from": "Status",
+            "to": "status"
+          },
+          { "from": "Email", "to": "emailId" }
+        ],
+        "whitelistedEvents": [{ "eventName": "create an item" }]
+      }
+    }
+  }
+]

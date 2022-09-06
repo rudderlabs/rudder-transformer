@@ -100,10 +100,12 @@ const getColumnValue = (properties, columnName, key, board) => {
           break;
         case "location":
           if (
-            properties.lat &&
-            properties.lng &&
-            regexExp.test(properties.latitude) &&
-            regexExp.test(properties.longitude)
+            properties.latitude &&
+            properties.longitude &&
+            parseFloat(properties.latitude) < 90.0 &&
+            parseFloat(properties.latitude) >= -90.0 &&
+            parseFloat(properties.longitude) < 180.0 &&
+            parseFloat(properties.longitude) >= -180.0
           )
             columnValue = {
               address: properties[key],

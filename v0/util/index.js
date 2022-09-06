@@ -757,6 +757,9 @@ const handleMetadataForValue = (
       case "toInt":
         formattedVal = parseInt(formattedVal, 10);
         break;
+      case "toLower":
+        formattedVal = formattedVal.toString().toLowerCase();
+        break;
       case "hashToSha256":
         formattedVal =
           integrationsObj && integrationsObj.hashed

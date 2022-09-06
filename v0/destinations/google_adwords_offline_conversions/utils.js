@@ -129,7 +129,7 @@ const getConversionActionId = async (method, headers, params) => {
  * @param {*} request
  * @returns
  */
-const ProxyRequest = async request => {
+const proxyRequest = async request => {
   const { method, endpoint, headers, params, body } = request;
 
   const conversionActionId = await getConversionActionId(
@@ -175,10 +175,10 @@ const responseHandler = destinationResponse => {
 
 class networkHandler {
   constructor() {
-    this.proxy = ProxyRequest;
-    this.responseHandler = responseHandler;
-    this.processAxiosResponse = processAxiosResponse;
     this.prepareProxy = prepareProxyRequest;
+    this.proxy = proxyRequest;
+    this.processAxiosResponse = processAxiosResponse;
+    this.responseHandler = responseHandler;
   }
 }
 

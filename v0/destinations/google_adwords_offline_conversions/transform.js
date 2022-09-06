@@ -32,6 +32,7 @@ const getConversions = (message, metadata, { Config }, conversionType) => {
     ":customerId",
     filteredCustomerId
   );
+  response.params = { event: message.event, customerId: filteredCustomerId };
   response.body.JSON = payload;
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata)}`,

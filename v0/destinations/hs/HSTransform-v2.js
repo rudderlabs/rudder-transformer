@@ -18,7 +18,7 @@ const {
   constructPayload,
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalIDInfoForRetl,
-  getDestinationExternalIDObject
+  getDestinationExternalIDObjectForRetl
 } = require("../../util");
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
@@ -31,7 +31,9 @@ const {
   TRACK_CRM_ENDPOINT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
-  CRM_ASSOCIATION_V3
+  CRM_ASSOCIATION_V3,
+  RETL_CREATE_ASSOCIATION_OPERATION,
+  RETL_SOURCE
 } = require("./config");
 const {
   getTransformedJSON,
@@ -39,9 +41,6 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId
 } = require("./util");
-
-const RETL_CREATE_ASSOCIATION_OPERATION = "createAssociation";
-const RETL_SOURCE = "rETL";
 
 const addHsAuthentication = (response, Config) => {
   // choosing API Type
@@ -71,7 +70,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, "context.hubspotOperation");
-  const externalIdObj = getDestinationExternalIDObject(message, "HS");
+  const externalIdObj = getDestinationExternalIDObjectForRetl(message, "HS");
   const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
   // build response
   let endpoint;

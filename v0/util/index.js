@@ -1029,7 +1029,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   return { destinationExternalId, objectType, identifierType };
 };
 
-const getDestinationExternalIDObject = (message, destination) => {
+const getDestinationExternalIDObjectForRetl = (message, destination) => {
   let externalIdArray = [];
   if (message.context && message.context.externalId) {
     externalIdArray = message.context.externalId;
@@ -1519,7 +1519,7 @@ module.exports = {
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
-  getDestinationExternalIDObject,
+  getDestinationExternalIDObjectForRetl,
   getDestinationExternalIDInfoForRetl,
   getDeviceModel,
   getErrorRespEvents,

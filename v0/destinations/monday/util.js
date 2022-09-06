@@ -93,7 +93,7 @@ const getColumnValue = (properties, columnName, key, board) => {
             text: properties.emailText
           };
           if (!columnValue.text) {
-            columnValue.text = "email";
+            columnValue.text = columnValue.email;
           }
           break;
         case "location":
@@ -127,7 +127,7 @@ const getColumnValue = (properties, columnName, key, board) => {
         case "link":
           columnValue = { url: properties[key], text: properties.linkText };
           if (!columnValue.text) {
-            columnValue.text = "link";
+            columnValue.text = columnValue.url;
           }
           break;
         case "long-text":

@@ -104,7 +104,7 @@ const getTrackResponse = (message, Config, event) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const eventsToStandard = Config.eventsToStandard;
+  const { eventsToStandard } = Config;
 
   let event = message.event?.toLowerCase().trim();
   if (!event) {
@@ -117,21 +117,21 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError(`Event name (${event}) is not valid`, 400);
   }
 
-  const returnArray = [];
+  const responseList = [];
   if (standardEventsMap[event]) {
     Object.keys(standardEventsMap).forEach(key => {
       if (key === event) {
-        standardEventsMap[event].forEach(val => {
-          returnArray.push(getTrackResponse(message, Config, val));
+        standardEventsMap[event].forEach(eventName => {
+          responseList.push(getTrackResponse(message, Config, eventName));
         });
       }
     });
-    return returnArray;
+  } else {
+    event = eventNameMapping[event];
+    responseList.push(getTrackResponse(message, Config, event));
   }
 
-  event = eventNameMapping[event];
-  returnArray.push(getTrackResponse(message, Config, event));
-  return returnArray;
+  return responseList;
 };
 
 const process = async event => {
@@ -220,16 +220,18 @@ function batchEvents(eventsChunk) {
 }
 
 function getEventChunks(event, trackResponseList, eventsChunk) {
-  // Do not apply batching if the payload contains test_event_code
-  // which corresponds to track endpoint
-  const eventTemplate = _.cloneDeep(event);
-  delete eventTemplate.message;
-  event.message.forEach(element => {
-    if (element.body.JSON.test_event_code) {
-      const newEvent = eventTemplate;
-      newEvent.message = element;
+  // only for already transformed payload
+  // eslint-disable-next-line no-param-reassign
+  event.message = Array.isArray(event.message)
+    ? event.message
+    : [event.message];
 
-      const { message, metadata, destination } = newEvent;
+  event.message.forEach(element => {
+    // Do not apply batching if the payload contains test_event_code
+    // which corresponds to track endpoint
+    if (element.body.JSON.test_event_code) {
+      const message = element;
+      const { metadata, destination } = event;
       const endpoint = get(message, "endpoint");
       delete message.body.JSON.type;
 
@@ -251,10 +253,11 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
         )
       );
     } else {
-      // build eventsChunk of MAX_BATCH_SIZE
-      const newEvent = _.cloneDeep(eventTemplate);
-      newEvent.message = element;
-      eventsChunk.push(newEvent);
+      eventsChunk.push({
+        message: element,
+        metadata: event.metadata,
+        destination: event.destination
+      });
     }
   });
 }

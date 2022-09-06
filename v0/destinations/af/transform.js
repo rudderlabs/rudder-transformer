@@ -185,16 +185,11 @@ function processEventTypeTrack(message) {
       break;
     }
   }
-  let payload;
-  if (isUnIdentifiedEvent) {
-    payload = getEventValueForUnIdentifiedTrackEvent(message);
-  } else {
-    payload = getEventValueMapFromMappingJson(
-      message,
-      mappingConfig[category.name],
-      isMultiSupport
-    );
-  }
+  const payload = getEventValueMapFromMappingJson(
+    message,
+    mappingConfig[category.name],
+    isMultiSupport
+  );
   payload.eventName = message.event;
 
   return payload;

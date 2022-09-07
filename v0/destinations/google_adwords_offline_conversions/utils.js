@@ -38,7 +38,7 @@ const validateDestinationConfig = ({ Config }) => {
 const getAccessToken = ({ secret }) => {
   if (!secret) {
     throw new CustomError(
-      "[Google Ads Offline Conversions]:: Invalid access token",
+      "[Google Ads Offline Conversions]:: OAuth - access token not found",
       500
     );
   }
@@ -53,12 +53,13 @@ const getAccessToken = ({ secret }) => {
  * @param {*} response
  * @returns
  */
-const getAuthErrCategory = (code, response) => {
+const getAuthErrCategory = code => {
   switch (code) {
     case 401:
-      if (!get(response, "error.details")) return REFRESH_TOKEN;
-      return "";
-    case 403: // Access Denied
+      // UNAUTHORIZED
+      return REFRESH_TOKEN;
+    case 403:
+      // PERMISSION_DENIED
       return DISABLE_DEST;
     default:
       return "";
@@ -98,16 +99,13 @@ const getConversionActionId = async (method, headers, params) => {
           `[Google Ads Offline Conversions]:: ${response.response.response.data[0].error.message} during google_ads_offline_conversions response transformation`
         )
         .setAuthErrorCategory(
-          getAuthErrCategory(
-            get(response, "response.response.status"),
-            get(response, "response.response.data[0]")
-          )
+          getAuthErrCategory(get(response, "response.response.status"))
         )
         .build();
     }
     const conversionActionId = get(
       response,
-      "response.data[0].results[0].conversionAction.id"
+      "response.data.0.results.0.conversionAction.id"
     );
     if (!conversionActionId) {
       throw new ErrorBuilder()

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { set, get } = require("lodash");
+const { set } = require("lodash");
 const {
   defaultRequestConfig,
   CustomError,
@@ -33,18 +33,13 @@ const identifyResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  const prefix=["cv"];
-  const method=defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload,prefix);
+  const prefix = ["cv"];
+  const method = defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload, prefix);
   const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
 
-  return responseBuilder(
-    payload,
-    endpoint,
-    method,
-    extractedProjectName
-  );
+  return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const trackResponseBuilder = async (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
@@ -55,17 +50,12 @@ const trackResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
-  const prefix=["ce","cv"];
-  const method=defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload,prefix);
+  const prefix = ["ce", "cv"];
+  const method = defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload, prefix);
   const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
-  return responseBuilder(
-    payload,
-    endpoint,
-    method,
-    extractedProjectName
-  );
+  return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const pageResponseBuilder = async (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
@@ -76,23 +66,21 @@ const pageResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.PAGE.name]
   );
-  const prefix=["ce","cv"];
-  const method=defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload,prefix);
+  const prefix = ["ce", "cv"];
+  const method = defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload, prefix);
   const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
-  return responseBuilder(
-    payload,
-    endpoint,
-    method,
-    extractedProjectName
-  );
+  return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const process = async event => {
   const { message, destination } = event;
   const { projectName } = destination.Config;
   if (!projectName) {
-    throw new CustomError("[ WOOPRA ]:: Project Name field can not be empty.", 400);
+    throw new CustomError(
+      "[ WOOPRA ]:: Project Name field can not be empty.",
+      400
+    );
   }
   if (!message.type) {
     throw new CustomError(
@@ -113,7 +101,10 @@ const process = async event => {
       response = await pageResponseBuilder(message, projectName);
       break;
     default:
-      throw new CustomError(`[ WOOPRA ]:: Message type ${messageType} not supported.`, 400);
+      throw new CustomError(
+        `[ WOOPRA ]:: Message type ${messageType} not supported.`,
+        400
+      );
   }
   return response;
 };

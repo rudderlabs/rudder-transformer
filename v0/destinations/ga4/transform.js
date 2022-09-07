@@ -30,7 +30,8 @@ const {
   getItemList,
   getGA4ExclusionList,
   getItem,
-  getGA4CustomParameters
+  getGA4CustomParameters,
+  GA4_PARAMETERS_EXCLUSION
 } = require("./utils");
 
 const responseBuilder = (message, { Config }) => {
@@ -129,6 +130,15 @@ const responseBuilder = (message, { Config }) => {
         payload
       );
     }
+
+    // take optional params parameters for track()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "identify") {
     payload.name = event;
     const traits = getFieldValueFromMessage(message, "traits");
@@ -188,9 +198,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["traits", "context.traits"],
-      GA4_IDENTIFY_EXCLUSION,
+      GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for identify()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "page") {
     // page event
     payload.name = event;
@@ -202,9 +221,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for page()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "group") {
     // group event
     payload.name = event;
@@ -219,6 +247,15 @@ const responseBuilder = (message, { Config }) => {
       getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
       payload
     );
+
+    // take optional params parameters for group()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else {
     // track
     // custom events category
@@ -243,9 +280,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for custom events
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   }
 
   removeReservedParameterPrefixNames(payload.params);

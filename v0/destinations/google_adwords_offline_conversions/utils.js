@@ -137,7 +137,7 @@ const proxyRequest = async request => {
 
   set(
     body.JSON,
-    "conversions[0].conversionAction",
+    "conversions.0.conversionAction",
     `customers/${params.customerId}/conversionActions/${conversionActionId}`
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };

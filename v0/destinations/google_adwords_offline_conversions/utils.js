@@ -30,13 +30,12 @@ const validateDestinationConfig = ({ Config }) => {
 };
 
 /**
- * for OAuth Destination
- * get access_token from metadata.secret{..}
+ * for OAuth destination
+ * get access_token from metadata.secret{ ... }
  * @param {*} param0
  * @returns
  */
 const getAccessToken = ({ secret }) => {
-  // OAuth for this destination
   if (!secret) {
     throw new CustomError(
       "[Google Ads Offline Conversions]:: Invalid access token",
@@ -47,9 +46,9 @@ const getAccessToken = ({ secret }) => {
 };
 
 /**
- * This function helps to detarmine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
+ * This function helps to determine the type of error occured. We set the authErrorCategory
+ * as per the destination response that is received and take the decision whether
+ * to refresh the access_token or disable the destination.
  * @param {*} code
  * @param {*} response
  * @returns

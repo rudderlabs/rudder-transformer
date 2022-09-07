@@ -12,26 +12,27 @@ const {
 const {
   trackClickConversionsMapping,
   CLICK_CONVERSION,
-  trackCallConversionsMapping
+  trackCallConversionsMapping,
+  CALL_CONVERSION
 } = require("./config");
 const { validateDestinationConfig, getAccessToken } = require("./utils");
 
 const getConversions = (message, metadata, { Config }, conversionType) => {
   let payload;
+  let endpoint;
+  const filteredCustomerId = removeHyphens(Config.customerId);
   if (conversionType === "click") {
     payload = constructPayload(message, trackClickConversionsMapping);
+    endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);
   } else {
     payload = constructPayload(message, trackCallConversionsMapping);
+    endpoint = CALL_CONVERSION.replace(":customerId", filteredCustomerId);
   }
 
   payload.partialFailure = true;
 
   const response = defaultRequestConfig();
-  const filteredCustomerId = removeHyphens(Config.customerId);
-  response.endpoint = CLICK_CONVERSION.replace(
-    ":customerId",
-    filteredCustomerId
-  );
+  response.endpoint = endpoint;
   response.params = { event: message.event, customerId: filteredCustomerId };
   response.body.JSON = payload;
   response.headers = {
@@ -91,7 +92,6 @@ const process = async event => {
   switch (messageType) {
     case EventType.TRACK:
       response = trackResponseBuilder(message, metadata, destination);
-
       break;
     default:
       throw new CustomError(

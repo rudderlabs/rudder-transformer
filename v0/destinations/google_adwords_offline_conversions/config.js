@@ -10,6 +10,7 @@ const CLICK_CONVERSION = `${BASE_ENDPOINT}:uploadClickConversions`;
 // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadCallConversions
 const CALL_CONVERSION = `${BASE_ENDPOINT}:uploadCallConversions`;
 
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers.googleAds/searchStream
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:searchStream`;
 
 const CONFIG_CATEGORIES = {
@@ -24,7 +25,7 @@ const CONFIG_CATEGORIES = {
 const CONVERSION_ACTION_ID_CACHE_TTL = process.env
   .CONVERSION_ACTION_ID_CACHE_TTL
   ? parseInt(process.env.CONVERSION_ACTION_ID_CACHE_TTL, 10)
-  : 24 * 60 * 60;
+  : 60 * 60 * 24; // in seconds - i.e 1 day
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

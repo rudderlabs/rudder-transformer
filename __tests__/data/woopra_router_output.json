@@ -13,13 +13,14 @@
       "params": {
         "os": "Android",
         "app": "RuddCDN4",
-        "cv_id": "21e13f4bc7ceddad",
-        "Project": "int.com",
+        "cookie": "21e13f4bc7ceddad",
+        "Project": "abc.com",
         "cv_email": "anant@r.com",
         "cv_state": "Delhi",
         "cv_title": "Mr",
-        "cv_haspurchased": "yes",
-        "cv_originalTimestamp": "2020-09-29T14:50:29.907+05:30"
+        "cv_hasPurchased": "yes",
+        "cv_address": "H.No. abc Street PQRS ",
+        "cv_Name":"Anant jain"
       },
       "headers": {},
       "version": "1",
@@ -52,13 +53,12 @@
       "params": {
         "os": "Android",
         "app": "RuddCDN4",
-        "cv_id": "21e13f4bc7ceddad",
         "event": "First Investment",
         "Project": "int.com",
-        "timestamp": 1601322824000000,
+        "timestamp": 1601322811000000,
         "ce_revenue": 20.37566,
         "ce_currency": "EUR",
-        "cv_originalTimestamp": "2020-09-28T19:53:31.900Z"
+        "cookie":"21e13f4bc7ceddad"
       },
       "headers": {},
       "version": "1",

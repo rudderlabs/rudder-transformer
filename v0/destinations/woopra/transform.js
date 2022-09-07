@@ -19,9 +19,7 @@ const responseBuilder = async (payload, endpoint, method, projectName) => {
   if (!payload) {
     throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
   }
-  if (!get(payload, "project")) {
-    set(payload, "Project", projectName);
-  }
+  set(payload, "Project", projectName);
   const response = defaultRequestConfig();
   response.params = removeUndefinedAndNullValues(payload);
   response.endpoint = endpoint;
@@ -35,15 +33,17 @@ const identifyResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  refinePayload(message, payload);
-  projectName =
+  const prefix=["cv"];
+  const method=defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload,prefix);
+  const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
 
   return responseBuilder(
     payload,
     endpoint,
-    defaultGetRequestConfig.requestMethod,
-    projectName
+    method,
+    extractedProjectName
   );
 };
 const trackResponseBuilder = async (message, projectName) => {
@@ -55,14 +55,16 @@ const trackResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
-  refinePayload(message, payload);
-  projectName =
+  const prefix=["ce","cv"];
+  const method=defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload,prefix);
+  const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
   return responseBuilder(
     payload,
     endpoint,
-    defaultGetRequestConfig.requestMethod,
-    projectName
+    method,
+    extractedProjectName
   );
 };
 const pageResponseBuilder = async (message, projectName) => {
@@ -74,14 +76,16 @@ const pageResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.PAGE.name]
   );
-  refinePayload(message, payload);
-  projectName =
+  const prefix=["ce","cv"];
+  const method=defaultGetRequestConfig.requestMethod;
+  refinePayload(message, payload,prefix);
+  const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
   return responseBuilder(
     payload,
     endpoint,
-    defaultGetRequestConfig.requestMethod,
-    projectName
+    method,
+    extractedProjectName
   );
 };
 const process = async event => {

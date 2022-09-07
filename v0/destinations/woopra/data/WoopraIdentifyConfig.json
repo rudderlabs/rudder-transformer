@@ -10,69 +10,21 @@
     {
         "sourceKeys": "title",
         "destKey": "cv_title",
-        "sourceFromGenericMap": true,
-        "metadata": {
-            "strictMultiMap": [
-                {
-                    "sourceVal": [
-                        "Mr",
-                        "Mr.",
-                        "mr",
-                        "MR"
-                    ],
-                    "destVal": "Mr"
-                },
-                {
-                    "sourceVal": [
-                        "Mrs",
-                        "Mrs.",
-                        "mrs",
-                        "MRS"
-                    ],
-                    "destVal": "Mrs"
-                },
-                {
-                    "sourceVal": [
-                        "Miss",
-                        "Miss.",
-                        "miss",
-                        "MISS"
-                    ],
-                    "destVal": "Miss"
-                }
-            ]
-        }
+        "sourceFromGenericMap": true
     },
-    {
-        "sourceKeys": "createdAt",
-        "destKey": "cv_originalTimestamp",
-        "sourceFromGenericMap":true
-    },
+   
     {
         "sourceKeys": "birthday",
         "destKey": "cv_birthday",
         "sourceFromGenericMap":true
     },
     {
-        "sourceKeys": "traits.company",
-        "destKey": "cv_company"
-    },
-    {
         "sourceKeys": ["traits.age","context.traits.age"],
         "destKey": "cv_age"
     },
     {
-        "sourceKeys":"address",
-        "destKey":"cv_address"
-    },
-    {
-        "sourceKeys": "userId",
+        "sourceKeys": "userIdOnly",
         "destKey": "cv_id",
-        "sourceFromGenericMap":true
-    },
-    {
-        "sourceKeys": "context.device.id",
-        "destKey": "cookie",
         "sourceFromGenericMap":true
     },
 
@@ -84,6 +36,11 @@
     {
         "sourceKeys": "lastName",
         "destKey": "cv_lastname",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "middleName",
+        "destKey": "cv_middlename",
         "sourceFromGenericMap": true
     },
     {
@@ -107,11 +64,6 @@
         "sourceFromGenericMap": true
     },
     {
-        "sourceKeys": "timezone",
-        "destKey": "cv_timezone",
-        "sourceFromGenericMap": true
-    },
-    {
         "sourceKeys": "state",
         "destKey": "cv_state",
         "sourceFromGenericMap": true
@@ -129,146 +81,6 @@
         "sourceKeys": "country",
         "destKey": "cv_country",
         "sourceFromGenericMap": true
-    },
-    {
-        "destKey": "cv_haspurchased",
-        "sourceKeys": [
-            "traits.hasPurchased",
-            "context.traits.hasPurchased"
-        ],
-        "required": false,
-        "metadata": {
-            "strictMultiMap": [
-                {
-                    "sourceVal": [
-                        "yes",
-                        "Yes",
-                        "YES",
-                        "Y",
-                        "y"
-                    ],
-                    "destVal": "yes"
-                },
-                {
-                    "sourceVal": [
-                        "no",
-                        "No",
-                        "NO",
-                        "N",
-                        "n"
-                    ],
-                    "destVal": "no"
-                }
-            ]
-        }
-    },
-    {
-        "destKey": "cv_role",
-        "sourceKeys": [
-            "traits.role",
-            "context.traits.role"
-        ],
-        "required": false,
-        "metadata": {
-            "strictMultiMap": [
-                {
-                    "sourceVal": [
-                        "Individual Contributor",
-                        "individual contributor",
-                        "INDIVIDUAL CONTRIBUTOR"
-                    ],
-                    "destVal": "Individual Contributor"
-                },
-                {
-                    "sourceVal": [
-                        "Manager",
-                        "manager",
-                        "MANAGER"
-                    ],
-                    "destVal": "Manager"
-                },
-                {
-                    "sourceVal": [
-                        "Director",
-                        "director",
-                        "DIRECTOR"
-                    ],
-                    "destVal": "Director"
-                },
-                {
-                    "sourceVal": [
-                        "Executive",
-                        "executive",
-                        "EXECUTIVE"
-                    ],
-                    "destVal": "Executive"
-                },
-                {
-                    "sourceVal": [
-                        "Consultant",
-                        "consultant",
-                        "CONSULTANT"
-                    ],
-                    "destVal": "Consultant"
-                }
-            ]
-        }
-    },
-    {
-        "destKey": "cv_subscription_status",
-        "sourceKeys": [
-            "traits.subscriptionStatus",
-            "context.traits.subscriptionStatus"
-        ],
-        "required": false,
-        "metadata": {
-            "strictMultiMap": [
-                {
-                    "sourceVal": [
-                        "New",
-                        "new",
-                        "NEW"
-                    ],
-                    "destVal": "New"
-                },
-                {
-                    "sourceVal": [
-                        "Existing",
-                        "existing",
-                        "EXISTING"
-                    ],
-                    "destVal": "Existing"
-                }
-            ]
-        }
-    },
-    {
-        "destKey": "cv_prospect_or_customer",
-        "sourceKeys": [
-            "traits.prospectOrCustomer",
-            "context.traits.prospectOrCustomer"
-        ],
-        "required": false,
-        "metadata": {
-            "strictMultiMap": [
-                {
-                    "sourceVal": [
-                        "prospect",
-                        "Prospect",
-                        "PROSPECT"
-                    ],
-                    "destVal": "Prospect"
-                },
-                {
-                    "sourceVal": [
-                        "customer",
-                        "Customer",
-                        "CUSTOMER"
-                    ],
-                    "destVal": "Customer"
-                }
-            ]
-        }
     },
     {  "sourceKeys": "context.device.type",
             "destKey": "device"

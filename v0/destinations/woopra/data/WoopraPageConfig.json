@@ -1,10 +1,4 @@
 [
-   
-    {
-        "sourceKeys": "timestamp",
-        "destKey": "cv_originalTimestamp",
-        "sourceFromGenericMap":true
-    },
     {
         "sourceKeys": [
             "traits.email",
@@ -14,18 +8,53 @@
         "destKey": "cv_email"
     },
     {
-        "sourceKeys": "userId",
-        "destKey": "cv_id",
+        "sourceKeys": "title",
+        "destKey": "cv_title",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "birthday",
+        "destKey": "cv_birthday",
         "sourceFromGenericMap":true
     },
     {
-        "sourceKeys": "context.device.id",
-        "destKey": "cookie",
+        "sourceKeys": ["traits.age","context.traits.age"],
+        "destKey": "cv_age"
+    },
+    {
+        "sourceKeys": "userIdOnly",
+        "destKey": "cv_id",
         "sourceFromGenericMap":true
+    },
+
+    {
+        "sourceKeys": "firstName",
+        "destKey": "cv_firstname",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "lastName",
+        "destKey": "cv_lastname",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "middleName",
+        "destKey": "cv_middlename",
+        "sourceFromGenericMap": true
     },
     {
         "sourceKeys": "name",
         "destKey": "cv_name",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "phone",
+        "destKey": "cv_phone",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "city",
+        "destKey": "cv_city",
         "sourceFromGenericMap": true
     },
     {
@@ -34,13 +63,23 @@
         "sourceFromGenericMap": true
     },
     {
-        "sourceKeys": "timezone",
-        "destKey": "cv_timezone",
+        "sourceKeys": "state",
+        "destKey": "cv_state",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "zipcode",
+        "destKey": "cv_zipcode",
         "sourceFromGenericMap": true
     },
     {
         "sourceKeys": "context.ip",
         "destKey": "cv_ip"
+    },
+    {
+        "sourceKeys": "country",
+        "destKey": "cv_country",
+        "sourceFromGenericMap": true
     },
     {  "sourceKeys": "context.device.type",
             "destKey": "device"
@@ -53,30 +92,6 @@
     {
         "sourceKeys": "name",
         "destKey": "event"
-      },
-      {
-        "sourceKeys": "properties.title",
-        "destKey": "ce_title"
-      },
-      {
-        "sourceKeys": "properties.url",
-        "destKey": "ce_url"
-      },
-      {
-        "sourceKeys": "properties.path",
-        "destKey": "ce_path"
-      },
-      {
-        "sourceKeys": "properties.search",
-        "destKey": "ce_search"
-      },
-      {
-        "sourceKeys": "properties.referrer",
-        "destKey": "ce_referrer"
-      },
-      {
-        "sourceKeys": "properties.keywords",
-        "destKey": "ce_keywords"
-      }
+    }
       
 ]

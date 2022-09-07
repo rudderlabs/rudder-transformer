@@ -1,83 +1,104 @@
 [
-   
-    {
-        "sourceKeys": "timestamp",
-        "destKey": "cv_originalTimestamp",
-        "sourceFromGenericMap":true
-    },
-    {
-        "sourceKeys": [
-            "traits.email",
-            "context.traits.email",
-            "properties.email"
-        ],
-        "destKey": "cv_email"
-    },
-    {
-        "sourceKeys": "userId",
-        "destKey": "cv_id",
-        "sourceFromGenericMap":true
-    },
-    {
-        "sourceKeys": "context.device.id",
-        "destKey": "cookie",
-        "sourceFromGenericMap":true
-    },
-    {
-        "sourceKeys": "timezone",
-        "destKey": "cv_timezone",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "context.ip",
-        "destKey": "cv_ip"
-    },
-    {
-        "sourceKeys": "sentAt",
-        "destKey": "timestamp",
-        "metadata": {
-            "type": "microSecondTimestamp"
-          }
-    },
+  {
+      "sourceKeys": [
+          "traits.email",
+          "context.traits.email",
+          "properties.email"
+      ],
+      "destKey": "cv_email"
+  },
+  {
+      "sourceKeys": "title",
+      "destKey": "cv_title",
+      "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "timestamp",
+    "sourceFromGenericMap":true,
+    "metadata": {
+        "type": "microSecondTimestamp"
+    }
+},
+  {
+      "sourceKeys": "birthday",
+      "destKey": "cv_birthday",
+      "sourceFromGenericMap":true
+  },
+  {
+      "sourceKeys": ["traits.age","context.traits.age"],
+      "destKey": "cv_age"
+  },
+  {
+      "sourceKeys": "userIdOnly",
+      "destKey": "cv_id",
+      "sourceFromGenericMap":true
+  },
 
+  {
+      "sourceKeys": "firstName",
+      "destKey": "cv_firstname",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "lastName",
+      "destKey": "cv_lastname",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "middleName",
+      "destKey": "cv_middlename",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "name",
+      "destKey": "cv_name",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "phone",
+      "destKey": "cv_phone",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "city",
+      "destKey": "cv_city",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "website",
+      "destKey": "cv_website",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "state",
+      "destKey": "cv_state",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "zipcode",
+      "destKey": "cv_zipcode",
+      "sourceFromGenericMap": true
+  },
+  {
+      "sourceKeys": "context.ip",
+      "destKey": "cv_ip"
+  },
+  {
+      "sourceKeys": "country",
+      "destKey": "cv_country",
+      "sourceFromGenericMap": true
+  },
+  {  "sourceKeys": "context.device.type",
+          "destKey": "device"
+        
+  },
+  {  "sourceKeys": "context.os.name",
+          "destKey": "os"
+        
+  },
     {
         "sourceKeys": "event",
         "destKey": "event"
-      },
-      {
-        "sourceKeys": "properties.review_id",
-        "destKey": "ce_review_id"
-      },
-      {
-        "sourceKeys": "properties.product_id",
-        "destKey": "ce_product_id"
-      },
-      {
-        "sourceKeys": "properties.rating",
-        "destKey": "ce_rating"
-      },
-      {
-        "sourceKeys": "properties.review_body",
-        "destKey": "ce_review_body"
-      },
-      {
-        "sourceKeys": "properties.revenue",
-        "destKey": "ce_revenue"
-      },
-      {
-        "sourceKeys": "properties.currency",
-        "destKey": "ce_currency"
-      },
-      {
-        "sourceKeys": "properties.value",
-        "destKey": "ce_value"
-      },
-      {  "sourceKeys": "context.device.type",
-            "destKey": "device"
-          
-    },
-    {  "sourceKeys": "context.os.name",
-            "destKey": "os"
-          
     }
 ]

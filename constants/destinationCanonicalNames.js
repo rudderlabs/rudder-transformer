@@ -53,9 +53,11 @@ const DestCanonicalNames = {
     "onesignal"
   ],
   wootric: ["wootric", "Wootric", "WOOTRIC"],
+  clickup: ["ClickUp", "clickup", "CLICKUP", "clickUp", "Clickup"],
   zapier: ["zapier", "Zapier", "ZAPIER"],
   shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"],
   woopra: ["WOOPRA", "Woopra", "woopra"]
+  monday: ["monday", "MONDAY", "monDay", "MonDay"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

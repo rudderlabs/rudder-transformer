@@ -7,10 +7,18 @@ const {
 const { genericFields } = require("./config");
 
 /**
- *
- * @param {*} message
+ * @param {Object} attributes
  * @param {*} payload
- * @param {List} prefix
+ * @param {List} prefix the prefix tobe added
+ * @param {Boolean} identifyFlag
+ * adds the prefix to the fields name inside the attributes object
+ * and updates the payload
+ * identifyFlag helps us to decide whether to check genericFields for key
+ * as there are some common attributes between properties and traits like title.
+ * e.g. title is generated from config file and so it is included in genericFields as well
+ * but for properties.title we still want to map
+ * but are not able to until we are told not to check genericFields.
+ * genericFields contains traits fields mostly and not of Properties
  */
 const customFieldsPayloadMapping = (
   attributes,

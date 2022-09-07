@@ -2,8 +2,7 @@
   {
       "sourceKeys": [
           "traits.email",
-          "context.traits.email",
-          "properties.email"
+          "context.traits.email"
       ],
       "destKey": "cv_email"
   },
@@ -55,11 +54,7 @@
       "destKey": "cv_name",
       "sourceFromGenericMap": true
   },
-  {
-      "sourceKeys": "phone",
-      "destKey": "cv_phone",
-      "sourceFromGenericMap": true
-  },
+  
   {
       "sourceKeys": "city",
       "destKey": "cv_city",

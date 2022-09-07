@@ -37,7 +37,6 @@ const genericFields = [
   "middleName",
   "middlename",
   "middle_name",
-  "phone",
   "state",
   "country",
   "name",

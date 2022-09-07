@@ -102,6 +102,27 @@ function isEmptyObject(obj) {
   return Object.keys(obj).length === 0;
 }
 
+/**
+ * Function to check if value is Defined, Not null and Not Empty.
+ * Create this function, Because existing isDefinedAndNotNullAndNotEmpty(123) is returning false due to lodash _.isEmpty function.
+ * _.isEmpty is used to detect empty collections/objects and it will return true for Integer, Boolean values.
+ * ref: https://github.com/lodash/lodash/issues/496
+ * @param {*} value 123
+ * @returns yes
+ */
+const isDefinedNotNullNotEmpty = value => {
+  return !(
+    value === undefined ||
+    value === null ||
+    Number.isNaN(value) ||
+    (typeof value === "object" && Object.keys(value).length === 0) ||
+    (typeof value === "string" && value.trim().length === 0)
+  );
+};
+
+const removeUndefinedNullEmptyExclBoolInt = obj =>
+  _.pickBy(obj, isDefinedNotNullNotEmpty);
+
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (
   arrays,
@@ -149,6 +170,30 @@ const getHashFromArrayWithDuplicate = (
         hashMap[key] = new Set();
         hashMap[key].add(array[toKey]);
       }
+    });
+  }
+  return hashMap;
+};
+
+/**
+ * Format the arrays to hashMap with key as `fromKey` and value as Object
+ * @param {*} arrays [{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}]
+ * @param {*} fromKey name
+ * @param {*} isLowerCase false
+ * @returns // {"Email":{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}}
+ */
+const getHashFromArrayWithValueAsObject = (
+  arrays,
+  fromKey = "from",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
+      hashMap[
+        isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]
+      ] = array;
     });
   }
   return hashMap;
@@ -1037,6 +1082,26 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   return { destinationExternalId, objectType, identifierType };
 };
 
+const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  let externalIdArray = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  let obj;
+  if (externalIdArray) {
+    // some stops the execution when the element is found
+    externalIdArray.some(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(`${destination}-`)) {
+        obj = extIdObj;
+        return true;
+      }
+      return false;
+    });
+  }
+  return obj;
+};
+
 const isObject = value => {
   const type = typeof value;
   return (
@@ -1507,6 +1572,7 @@ module.exports = {
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDestinationExternalIDObjectForRetl,
   getDestinationExternalIDInfoForRetl,
   getDeviceModel,
   getErrorRespEvents,
@@ -1515,6 +1581,7 @@ module.exports = {
   getFullName,
   getHashFromArray,
   getHashFromArrayWithDuplicate,
+  getHashFromArrayWithValueAsObject,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
@@ -1547,6 +1614,7 @@ module.exports = {
   removeHyphens,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
+  removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedAndNullValues,
   removeUndefinedValues,
   returnArrayOfSubarrays,

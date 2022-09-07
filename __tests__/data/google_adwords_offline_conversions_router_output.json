@@ -1,0 +1,199 @@
+[
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011"
+        },
+        "params": {
+          "event": "Promotion Clicked",
+          "customerId": "9625812972"
+        },
+        "body": {
+          "JSON": {
+            "conversions": [
+              {
+                "gbraid": "gbraid",
+                "wbraid": "wbraid",
+                "externalAttributionData": {
+                  "externalAttributionCredit": 10,
+                  "externalAttributionModel": "externalAttributionModel"
+                },
+                "customVariables": {
+                  "conversionCustomVariable": "conversionCustomVariable",
+                  "value": "value"
+                },
+                "CartData": {
+                  "merchantId": "merchantId",
+                  "feedCountryCode": "feedCountryCode",
+                  "feedLanguageCode": "feedLanguageCode",
+                  "localTransactionCost": 20,
+                  "items": [
+                    {
+                      "productId": "507f1f77bcf86cd799439011",
+                      "quantity": 2,
+                      "unitPrice": 50
+                    }
+                  ]
+                },
+                "userIdentifiers": {
+                  "userIdentifierSource": "FIRST_PARTY",
+                  "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                  "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
+                  "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
+                  "thirdPartyUserId": "thirdPartyUserId",
+                  "addressInfo": {
+                    "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
+                    "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
+                    "city": "London",
+                    "state": "England",
+                    "countryCode": "GB",
+                    "postalCode": "EC3M",
+                    "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                  }
+                },
+                "conversionEnvironment": "WEB",
+                "gclid": "gclid",
+                "conversionAction": "customer",
+                "conversionDateTime": "2022-01-01 12:32:45-08:00",
+                "conversionValue": 1,
+                "currencyCode": "GBP"
+              }
+            ],
+            "partialFailure": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
+        "customerId": "962-581-2972",
+        "eventsToStandard": [
+          {
+            "from": "download",
+            "to": "click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "call"
+          },
+          {
+            "from": "download",
+            "to": "click"
+          },
+          {
+            "from": "download",
+            "to": "call"
+          },
+          {
+            "from": "Promotion Clicked",
+            "to": "click"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadCallConversions",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011"
+        },
+        "params": {
+          "event": "Product Searched",
+          "customerId": "9625812972"
+        },
+        "body": {
+          "JSON": {
+            "conversions": [
+              {
+                "customVariables": {
+                  "conversionCustomVariable": "conversionCustomVariable",
+                  "value": "value"
+                },
+                "callerId": "callerId",
+                "callStartDateTime": "2022-08-28 15:01:30+05:30",
+                "conversionAction": "customer",
+                "conversionDateTime": "2022-01-01 12:32:45-08:00",
+                "conversionValue": 1,
+                "currencyCode": "GBP"
+              }
+            ],
+            "partialFailure": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
+        "customerId": "962-581-2972",
+        "eventsToStandard": [
+          {
+            "from": "download",
+            "to": "click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "call"
+          },
+          {
+            "from": "download",
+            "to": "click"
+          },
+          {
+            "from": "download",
+            "to": "call"
+          },
+          {
+            "from": "Promotion Clicked",
+            "to": "click"
+          }
+        ]
+      }
+    }
+  }
+]

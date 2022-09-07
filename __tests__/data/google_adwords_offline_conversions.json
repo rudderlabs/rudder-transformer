@@ -100,6 +100,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -305,6 +306,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -469,6 +471,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -587,6 +590,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -709,6 +713,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -832,6 +837,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -978,6 +984,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -1173,6 +1180,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {
@@ -1289,6 +1297,7 @@
       },
       "destination": {
         "Config": {
+          "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
           "customerId": "962-581-2972",
           "eventsToStandard": [
             {

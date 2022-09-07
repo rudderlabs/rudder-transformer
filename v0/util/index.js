@@ -1082,6 +1082,26 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   return { destinationExternalId, objectType, identifierType };
 };
 
+const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  let externalIdArray = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  let obj;
+  if (externalIdArray) {
+    // some stops the execution when the element is found
+    externalIdArray.some(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(`${destination}-`)) {
+        obj = extIdObj;
+        return true;
+      }
+      return false;
+    });
+  }
+  return obj;
+};
+
 const isObject = value => {
   const type = typeof value;
   return (
@@ -1552,6 +1572,7 @@ module.exports = {
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDestinationExternalIDObjectForRetl,
   getDestinationExternalIDInfoForRetl,
   getDeviceModel,
   getErrorRespEvents,

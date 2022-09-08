@@ -400,7 +400,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     );
 
     let filteredInfo = updateHubspotIds.filter(
-      update => update.property === destinationExternalId
+      update => update.property.toString() === destinationExternalId.toString()
     );
 
     if (filteredInfo.length) {
@@ -545,7 +545,6 @@ const getExistingData = async (inputs, destination) => {
       });
     }
   }
-
   return updateHubspotIds;
 };
 

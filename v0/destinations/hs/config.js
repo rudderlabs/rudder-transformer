@@ -76,6 +76,9 @@ const ConfigCategory = {
   }
 };
 
+const RETL_CREATE_ASSOCIATION_OPERATION = "createAssociation";
+const RETL_SOURCE = "rETL";
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 
@@ -103,5 +106,7 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   hsCommonConfigJson,
-  SEARCH_LIMIT_VALUE
+  SEARCH_LIMIT_VALUE,
+  RETL_SOURCE,
+  RETL_CREATE_ASSOCIATION_OPERATION
 };

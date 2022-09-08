@@ -62,7 +62,7 @@
       "method": "GET",
       "params": {
         "os": "Android",
-        "app": "RuddCDN4",
+        "app": "RuddCDN",
         "browser": "Chrome86.0.4240.111",
         "cookie": "21e13f4bc7ceddad",
         "Project": "abc.com",
@@ -71,6 +71,8 @@
         "cv_state": "Delhi",
         "cv_title": "Mr",
         "cv_hasPurchased": "yes",
+        "timestamp": 1601322811000000,
+        
         "cv_address": "H.No. abc Street PQRS "
       },
       "headers": {},
@@ -216,12 +218,13 @@
       "method": "GET",
       "params": {
         "os": "Android",
-        "app": "RuddCDN4",
-        "event": "Home",
+        "app": "RuddCDN",
+        "event": "Visited Home",
         "ce_url": "http://www.rudderstack.com",
         "Project": "abc.com",
         "ce_title": "Home | RudderStack",
         "cv_customProp": "customValue",
+        "timestamp": 1601322811000000,
         "cookie": "21e13f4bc7ceddad"
       },
       "headers": {},

@@ -4,15 +4,15 @@ const BASE_URL = "https://www.woopra.com/track";
 const ConfigCategories = {
   TRACK: {
     type: "track",
-    name: "WoopraTrackConfig"
+    name: "WoopraConfig"
   },
   IDENTIFY: {
     type: "identify",
-    name: "WoopraIdentifyConfig"
+    name: "WoopraConfig"
   },
   PAGE: {
     type: "page",
-    name: "WoopraPageConfig"
+    name: "WoopraConfig"
   }
 };
 

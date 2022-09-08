@@ -11,6 +11,7 @@
         "destKey": "cv_title",
         "sourceFromGenericMap": true
     },
+   
     {
         "sourceKeys": "birthday",
         "destKey": "cv_birthday",
@@ -25,7 +26,14 @@
         "destKey": "cv_id",
         "sourceFromGenericMap":true
     },
-
+    {
+        "sourceKeys": "timestamp",
+        "destKey": "timestamp",
+        "sourceFromGenericMap":true,
+        "metadata": {
+            "type": "microSecondTimestamp"
+        }
+    },
     {
         "sourceKeys": "firstName",
         "destKey": "cv_firstname",
@@ -79,13 +87,13 @@
             "destKey": "device"
           
     },
+    {  "sourceKeys": "context.app.name",
+            "destKey": "app"
+          
+    },
     {  "sourceKeys": "context.os.name",
             "destKey": "os"
           
-    },
-    {
-        "sourceKeys": "name",
-        "destKey": "event"
     }
-      
+    
 ]

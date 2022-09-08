@@ -52,7 +52,7 @@ const getCookie = message => {
  */
 const getBrowserValue = browser => {
   if (browser?.name && browser?.version) {
-    return browser.name + browser.version;
+    return `${browser.name}${browser.version}`;
   }
   return null;
 };
@@ -65,11 +65,6 @@ const getBrowserValue = browser => {
  * @param {List} prefix=ce for properties and cv for traits or both as list
  */
 const refinePayload = (message, payload, prefix) => {
-  let app;
-  if (message.context?.app?.name && message.context?.app?.build) {
-    app = message.context?.app?.name + message.context?.app?.build;
-    set(payload, "app", app);
-  }
   const browser = getBrowserValue(getBrowserInfo(message.context?.userAgent));
   if (browser) {
     set(payload, "browser", browser);

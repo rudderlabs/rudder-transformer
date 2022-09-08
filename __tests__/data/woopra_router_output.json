@@ -12,7 +12,7 @@
       "method": "GET",
       "params": {
         "os": "Android",
-        "app": "RuddCDN4",
+        "app": "RuddCDN",
         "cookie": "21e13f4bc7ceddad",
         "Project": "abc.com",
         "cv_email": "anant@r.com",
@@ -20,6 +20,7 @@
         "cv_title": "Mr",
         "cv_hasPurchased": "yes",
         "cv_address": "H.No. abc Street PQRS ",
+        "timestamp": 1601322811000000,
         "cv_Name":"Anant jain"
       },
       "headers": {},
@@ -52,7 +53,7 @@
       "method": "GET",
       "params": {
         "os": "Android",
-        "app": "RuddCDN4",
+        "app": "RuddCDN",
         "event": "First Investment",
         "Project": "int.com",
         "timestamp": 1601322811000000,

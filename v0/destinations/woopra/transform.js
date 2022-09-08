@@ -50,6 +50,7 @@ const trackResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
+  payload.event = message.event;
   const prefix = ["ce", "cv"];
   const method = defaultGetRequestConfig.requestMethod;
   refinePayload(message, payload, prefix);
@@ -66,6 +67,7 @@ const pageResponseBuilder = async (message, projectName) => {
     message,
     mappingConfig[ConfigCategories.PAGE.name]
   );
+  payload.event = `Visited ${message.name}`;
   const prefix = ["ce", "cv"];
   const method = defaultGetRequestConfig.requestMethod;
   refinePayload(message, payload, prefix);

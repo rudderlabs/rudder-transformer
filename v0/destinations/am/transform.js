@@ -84,8 +84,8 @@ const aliasEndpoint = destConfig => {
   return retVal;
 };
 
-function getSessionId(payload) {
-  const sessionId = payload.session_id;
+function getSessionId(message) {
+  const sessionId = getFieldValueFromMessage(message, "sessionId") || -1;
   if (sessionId) {
     if (typeof sessionId === "string") {
       return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);
@@ -464,7 +464,7 @@ function responseBuilderSimple(
       ) {
         payload.user_id = message.userId;
       }
-      payload.session_id = getSessionId(payload);
+      payload.session_id = getSessionId(message);
 
       updateConfigProperty(
         message,

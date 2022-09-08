@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-param-reassign */
 const get = require("get-value");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
@@ -487,10 +486,11 @@ const setHsSearchId = (input, id) => {
   if (externalIdArray) {
     externalIdArray.forEach(extIdObj => {
       const { type } = extIdObj;
+      const extIdObjParam = extIdObj;
       if (type.includes("HS")) {
-        extIdObj.hsSearchId = id;
+        extIdObjParam.hsSearchId = id;
       }
-      resultExternalId.push(extIdObj);
+      resultExternalId.push(extIdObjParam);
     });
   }
   return resultExternalId;
@@ -510,6 +510,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
 
   const resultInput = inputs.map(input => {
     const { message } = input;
+    const inputParam = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
       "HS"
@@ -520,15 +521,15 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     );
 
     if (filteredInfo.length) {
-      input.message.context.externalId = setHsSearchId(
+      inputParam.message.context.externalId = setHsSearchId(
         input,
         filteredInfo[0].id
       );
-      input.message.context.hubspotOperation = "updateObject";
-      return input;
+      inputParam.message.context.hubspotOperation = "updateObject";
+      return inputParam;
     }
-    input.message.context.hubspotOperation = "createObject";
-    return input;
+    inputParam.message.context.hubspotOperation = "createObject";
+    return inputParam;
   });
 
   return resultInput;

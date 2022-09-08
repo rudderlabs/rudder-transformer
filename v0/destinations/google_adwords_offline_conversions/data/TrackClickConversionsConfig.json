@@ -232,7 +232,7 @@
   {
     "destKey": "conversions[0].gclid",
     "sourceKeys": "properties.gclid",
-    "required": true
+    "required": false
   },
   {
     "destKey": "conversions[0].conversionAction",

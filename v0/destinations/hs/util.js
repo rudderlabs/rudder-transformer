@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 const get = require("get-value");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
@@ -17,8 +16,7 @@ const {
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
-  hsCommonConfigJson,
-  API_VERSION
+  hsCommonConfigJson
 } = require("./config");
 
 /**
@@ -440,6 +438,14 @@ const getExistingData = async (inputs, destination) => {
     }
   };
   let checkAfter = 1; // variable to keep checking if we have more results
+
+  /* eslint-disable no-await-in-loop */
+
+  /* *
+   * This is needed for processing paginated response when searching hubspot.
+   * we can't avoid await in loop as response to the request contains the pagination details
+   * */
+
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
       ":objectType",

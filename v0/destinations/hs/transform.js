@@ -92,30 +92,48 @@ const processRouterDest = async inputs => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
+
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, "HS");
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-  ) {
-    // skip splitting the batches to inserts and updates if object it is an association
-    if (objectType.toLowerCase() !== "association") {
-      // get info about existing objects and splitting accordingly.
-      inputs = await splitEventsForCreateUpdate(inputs, destination);
+  const { objectType } = getDestinationExternalIDInfoForRetl(
+    inputs[0].message,
+    "HS"
+  );
+
+  try {
+    if (
+      mappedToDestination &&
+      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+    ) {
+      // skip splitting the batches to inserts and updates if object it is an association
+      if (objectType.toLowerCase() !== "association") {
+        // get info about existing objects and splitting accordingly.
+        inputs = await splitEventsForCreateUpdate(inputs, destination);
+      }
+    } else {
+      // reduce the no. of calls for properties endpoint
+      const traitsFound = inputs.some(input => {
+        return fetchFinalSetOfTraits(input.message) !== undefined;
+      });
+      if (traitsFound) {
+        propertyMap = await getProperties(destination);
+      }
     }
-  } else {
-    // reduce the no. of calls for properties endpoint
-    const traitsFound = inputs.some(input => {
-      return fetchFinalSetOfTraits(input.message) !== undefined;
+  } catch (error) {
+    inputs.forEach(input => {
+      errorRespList.push(
+        getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response.status : 400,
+          error.message || "Error occurred while processing payload."
+        )
+      );
     });
-    if (traitsFound) {
-      propertyMap = await getProperties(destination);
-    }
+    return errorRespList;
   }
 
   await Promise.all(

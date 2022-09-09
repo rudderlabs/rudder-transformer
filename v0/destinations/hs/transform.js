@@ -123,14 +123,16 @@ const processRouterDest = async inputs => {
       }
     }
   } catch (error) {
-    errorRespList.push(
-      getErrorRespEvents(
-        [inputs[0].metadata],
-        error.response ? error.response.status : 400,
-        error.message || "Error occurred while processing payload."
-      )
-    );
-    return [...errorRespList];
+    inputs.forEach(input => {
+      errorRespList.push(
+        getErrorRespEvents(
+          [input.metadata],
+          error.response ? error.response.status : 400,
+          error.message || "Error occurred while processing payload."
+        )
+      );
+    });
+    return errorRespList;
   }
 
   await Promise.all(

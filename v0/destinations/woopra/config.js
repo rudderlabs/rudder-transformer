@@ -4,20 +4,22 @@ const BASE_URL = "https://www.woopra.com/track";
 const ConfigCategories = {
   TRACK: {
     type: "track",
-    name: "WoopraConfig"
+    name: "WoopraConfig",
+    genericFields: []
   },
   IDENTIFY: {
     type: "identify",
-    name: "WoopraConfig"
+    name: "WoopraConfig",
+    genericFields: []
   },
   PAGE: {
     type: "page",
-    name: "WoopraConfig"
+    name: "WoopraPageConfig",
+    genericFields: ["search", "title", "referrer", "url"]
   }
 };
 
-// fields that are already generating through configuration files
-const genericFields = [
+const commomGenericFields = [
   "email",
   "title",
   "birthday",
@@ -44,10 +46,11 @@ const genericFields = [
   "website",
   "zipcode"
 ];
+
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 module.exports = {
   BASE_URL,
   mappingConfig,
   ConfigCategories,
-  genericFields
+  commomGenericFields
 };

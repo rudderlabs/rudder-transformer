@@ -170,6 +170,9 @@
             "build": "4",
             "name": "RuddCDN"
           },
+          "page":{
+            "referrer":"google.com"
+          },
           "device": {
             "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
             "name": "generic_x86_arm"
@@ -219,13 +222,14 @@
       "params": {
         "os": "Android",
         "app": "RuddCDN",
-        "event": "Visited Home",
+        "event": "Loaded a page",
         "ce_url": "http://www.rudderstack.com",
         "Project": "abc.com",
         "ce_title": "Home | RudderStack",
         "cv_customProp": "customValue",
         "timestamp": 1601322811000000,
-        "cookie": "21e13f4bc7ceddad"
+        "cookie": "21e13f4bc7ceddad",
+        "ce_referrer":"google.com"
       },
       "headers": {},
       "version": "1",

@@ -13,7 +13,7 @@ const {
 
 const { EventType } = require("../../../constants");
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
-const { refinePayload } = require("./utils");
+const { refinePayload, getEvent } = require("./utils");
 
 const responseBuilder = async (payload, endpoint, method, projectName) => {
   if (!payload) {
@@ -27,18 +27,38 @@ const responseBuilder = async (payload, endpoint, method, projectName) => {
   return response;
 };
 
-const identifyResponseBuilder = async (message, projectName) => {
-  const endpoint = `${BASE_URL}/identify`;
+/**
+ * For Woopra we can pass traits as well inside track and page (track for woopra)
+ * which generates too common fields so for that we have kept this function
+ * which we genrate the common payload for the different calls
+ * @param {*} message
+ * @param {*} projectName
+ * @param {*} genericFields
+ * @returns method, payload, extractedProjectNamw which are common to all of the calls
+ */
+const commonPayloadGenerator = async (message, projectName, genericFields) => {
   const payload = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  const prefix = ["cv"];
-  const method = defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload, prefix);
+  refinePayload(message, payload, genericFields);
   const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
-
+  const method = defaultGetRequestConfig.requestMethod;
+  const response = { method, payload, extractedProjectName };
+  return response;
+};
+const identifyResponseBuilder = async (message, projectName) => {
+  const endpoint = `${BASE_URL}/identify`;
+  const {
+    method,
+    payload,
+    extractedProjectName
+  } = await commonPayloadGenerator(
+    message,
+    projectName,
+    ConfigCategories.IDENTIFY.genericFields
+  );
   return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const trackResponseBuilder = async (message, projectName) => {
@@ -46,34 +66,38 @@ const trackResponseBuilder = async (message, projectName) => {
   if (!message.event) {
     throw new CustomError("[ WOOPRA ]:: Event Name can not be empty.", 400);
   }
-  const payload = constructPayload(
+  const {
+    method,
+    payload,
+    extractedProjectName
+  } = await commonPayloadGenerator(
     message,
-    mappingConfig[ConfigCategories.TRACK.name]
+    projectName,
+    ConfigCategories.TRACK.genericFields
   );
   payload.event = message.event;
-  const prefix = ["ce", "cv"];
-  const method = defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload, prefix);
-  const extractedProjectName =
-    getIntegrationsObj(message, "woopra")?.projectName || projectName;
   return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const pageResponseBuilder = async (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
-  if (!message.name) {
-    throw new CustomError("[ WOOPRA ]:: Page Name can not be empty.", 400);
-  }
-  const payload = constructPayload(
+  const {
+    method,
+    payload,
+    extractedProjectName
+  } = await commonPayloadGenerator(
+    message,
+    projectName,
+    ConfigCategories.PAGE.genericFields
+  );
+  const commonPayload = payload;
+  const pagePayload = constructPayload(
     message,
     mappingConfig[ConfigCategories.PAGE.name]
   );
-  payload.event = `Visited ${message.name}`;
-  const prefix = ["ce", "cv"];
-  const method = defaultGetRequestConfig.requestMethod;
-  refinePayload(message, payload, prefix);
-  const extractedProjectName =
-    getIntegrationsObj(message, "woopra")?.projectName || projectName;
-  return responseBuilder(payload, endpoint, method, extractedProjectName);
+  const mergedPayload = { ...commonPayload, ...pagePayload };
+
+  mergedPayload.event = getEvent(message);
+  return responseBuilder(mergedPayload, endpoint, method, extractedProjectName);
 };
 const process = async event => {
   const { message, destination } = event;

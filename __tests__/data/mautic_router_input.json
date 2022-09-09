@@ -1,0 +1,125 @@
+[
+  {
+    "message": {
+      "anonymousId": "anon-id-new",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        },
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "role": "Manager",
+          "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "hasPurchased": "yes",
+          "email": "abc@xyz.com",
+          "title": "Mr",
+          "phone": "9876543212",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "prospectOrCustomer": "Prospect",
+          "country": "India",
+          "website": "abc.com",
+          "subscriptionStatus": "New"
+        }
+      },
+      "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z",
+      "receivedAt": "2022-08-17T10:40:21.162+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "sentAt": "2022-08-17T10:40:21.728+05:30",
+      "timestamp": "2020-02-02T05:53:08.977+05:30",
+      "type": "identify",
+      "userId": "identified user id"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "m3dG325C51C1RPq",
+        "subDomainName": "ruddertest2",
+        "userName": "anantjain45823@gmail.com"
+      }
+    },
+    "metadata": {
+      "jobId": 1
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "anon-id-new",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        },
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "role": "Manager",
+          "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "hasPurchased": "yes",
+          "email": "abc@xyz.com",
+          "title": "Mr",
+          "phone": "9876543212",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "prospectOrCustomer": "Prospect",
+          "country": "India",
+          "website": "abc.com",
+          "subscriptionStatus": "New"
+        }
+      },
+      "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z",
+      "receivedAt": "2022-08-17T10:40:21.162+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+      "sentAt": "2022-08-17T10:40:21.728+05:30",
+      "timestamp": "2020-02-02T05:53:08.977+05:30",
+      "type": "identify",
+      "userId": "identified user id"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "abcdefghij1234",
+        "subDomainName": "testapi3",
+        "userName": "abcdef"
+      }
+    },
+    "metadata": {
+      "jobId": 2
+    }
+  },
+  {
+    "message": {
+      "userId": "user123",
+      "groupId": "17",
+      "context": {
+        "externalId": [
+          {
+            "type": "mauticContactId",
+            "id": "246"
+          }
+        ]
+      },
+      "traits": {
+        "type": "Segments"
+      },
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "lastName",
+        "password": "m3dG325C51C1RPq",
+ "subDomainName": "ruddertest2",
+     "userName": "anantjain45823@gmail.com"
+      }
+    },
+    "metadata": {
+      "jobId": 3
+    }
+  }
+]

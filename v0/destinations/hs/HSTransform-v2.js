@@ -17,7 +17,8 @@ const {
   getDestinationExternalID,
   constructPayload,
   isDefinedAndNotNullAndNotEmpty,
-  getDestinationExternalIDInfoForRetl
+  getDestinationExternalIDInfoForRetl,
+  getDestinationExternalIDObjectForRetl
 } = require("../../util");
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
@@ -30,7 +31,9 @@ const {
   TRACK_CRM_ENDPOINT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
   MAX_BATCH_SIZE_CRM_OBJECT,
-  BATCH_CREATE_CUSTOM_OBJECTS
+  CRM_ASSOCIATION_V3,
+  RETL_CREATE_ASSOCIATION_OPERATION,
+  RETL_SOURCE
 } = require("./config");
 const {
   getTransformedJSON,
@@ -38,6 +41,21 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId
 } = require("./util");
+
+const addHsAuthentication = (response, Config) => {
+  // choosing API Type
+  if (Config.authorizationType === "newPrivateAppApi") {
+    // Private Apps
+    response.headers = {
+      ...response.headers,
+      Authorization: `Bearer ${Config.accessToken}`
+    };
+  } else {
+    // use legacy API Key
+    response.params = { hapikey: Config.apiKey };
+  }
+  return response;
+};
 
 /**
  * Using New API
@@ -52,18 +70,44 @@ const processIdentify = async (message, destination, propertyMap) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, "context.hubspotOperation");
+  const externalIdObj = getDestinationExternalIDObjectForRetl(message, "HS");
+  const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
   // build response
   let endpoint;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
+
+  // Handle hubspot association events sent from retl source
+  if (
+    objectType &&
+    objectType.toLowerCase() === "association" &&
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+  ) {
+    const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
+    response.endpoint = CRM_ASSOCIATION_V3.replace(
+      ":fromObjectType",
+      fromObjectType
+    ).replace(":toObjectType", toObjectType);
+    response.body.JSON = {
+      ...traits,
+      type: associationTypeId
+    };
+    response.headers = {
+      "Content-Type": "application/json"
+    };
+    response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
+    response.source = RETL_SOURCE;
+    return addHsAuthentication(response, Config);
+  }
+
   // if mappedToDestination is set true, then add externalId to traits
   if (
     mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString()) &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
     operation
   ) {
     addExternalIdToTraits(message);
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (!objectType) {
       throw new CustomError("objectType not found", 400);
     }
@@ -291,6 +335,12 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === "createAssociations") {
+      chunk.forEach(ev => {
+        batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
+        identifyResponseList.push(ev.message.body.JSON);
+        metadata.push(ev.metadata);
+      });
     } else {
       throw new CustomError("[HS]:: Unknow hubspot operation", 400);
     }
@@ -332,9 +382,10 @@ const batchEvents = destEvents => {
   const createContactEventsChunk = [];
   // update contact chunk
   const updateContactEventsChunk = [];
-   // rETL specific chunk
+  // rETL specific chunk
   const createAllObjectsEventChunk = [];
   const updateAllObjectsEventChunk = [];
+  const associationObjectsEventChunk = [];
   let maxBatchSize;
 
   destEvents.forEach(event => {
@@ -372,6 +423,9 @@ const batchEvents = destEvents => {
           createAllObjectsEventChunk.push(event);
         } else if (operation === "updateObject") {
           updateAllObjectsEventChunk.push(event);
+        } else if (operation === RETL_CREATE_ASSOCIATION_OPERATION) {
+          // Identify: chunks for handling association events
+          associationObjectsEventChunk.push(event);
         }
       } else {
         throw new CustomError("[HS]:: rETL -  Error in getting operation", 400);
@@ -409,6 +463,11 @@ const batchEvents = destEvents => {
     MAX_BATCH_SIZE_CRM_CONTACT
   );
 
+  const arrayChunksIdentifyCreateAssociations = _.chunk(
+    associationObjectsEventChunk,
+    MAX_BATCH_SIZE_CRM_OBJECT
+  );
+
   // batching up 'create' all objects endpoint chunks
   if (arrayChunksIdentifyCreateObjects.length) {
     batchedResponseList = batchIdentify(
@@ -442,6 +501,15 @@ const batchEvents = destEvents => {
       arrayChunksIdentifyUpdateContact,
       batchedResponseList,
       "updateContacts"
+    );
+  }
+
+  // batching association events
+  if (arrayChunksIdentifyCreateAssociations.length) {
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyCreateAssociations,
+      batchedResponseList,
+      "createAssociations"
     );
   }
 

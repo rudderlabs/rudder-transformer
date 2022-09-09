@@ -4,6 +4,7 @@ const set = require("set-value");
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
+  defaultPatchRequestConfig,
   defaultGetRequestConfig,
   defaultRequestConfig,
   getHashFromArray,
@@ -50,6 +51,14 @@ function process(event) {
         }
         case defaultPutRequestConfig.requestMethod: {
           response.method = defaultPutRequestConfig.requestMethod;
+          response.body.JSON = message;
+          response.headers = {
+            "content-type": "application/json"
+          };
+          break;
+        }
+        case defaultPatchRequestConfig.requestMethod: {
+          response.method = defaultPatchRequestConfig.requestMethod;
           response.body.JSON = message;
           response.headers = {
             "content-type": "application/json"

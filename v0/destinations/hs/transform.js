@@ -88,7 +88,7 @@ const process = async event => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "OMETRIA");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "HS");
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -151,11 +151,7 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          input,
-          error,
-          "OMETRIA"
-        );
+        const errRespEvent = handleRtTfSingleEventError(input, error, "HS");
         errorRespList.push(errRespEvent);
       }
     })

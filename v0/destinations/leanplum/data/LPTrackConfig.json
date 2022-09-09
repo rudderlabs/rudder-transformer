@@ -22,6 +22,11 @@
     "required": false
   },
   {
+    "destKey": "disposition",
+    "sourceKeys": "context.disposition",
+    "required": false,
+  },
+  {
     "destKey": "params",
     "sourceKeys": "properties",
     "required": false

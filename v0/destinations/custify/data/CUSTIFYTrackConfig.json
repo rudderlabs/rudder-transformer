@@ -38,9 +38,6 @@
       "originalTimestamp",
       "timestamp"
     ],
-    "required": true,
-    "metadata": {
-      "type": "secondTimestamp"
-    }
+    "required": true
   }
 ]

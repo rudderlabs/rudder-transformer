@@ -64,10 +64,7 @@
       "traits.createdAt",
       "context.traits.createdAt"
     ],
-    "required": false,
-    "metadata": {
-      "type": "secondTimestamp"
-    }
+    "required": false
   },
   {
     "destKey": "custom_attributes",

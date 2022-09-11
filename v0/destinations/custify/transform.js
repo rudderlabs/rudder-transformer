@@ -20,15 +20,15 @@ const validateAndBuildResponse = async (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       responseBody = processIdentify(message);
-      category = ConfigCategory.IDENTIFY.endpoint;
+      category = ConfigCategory.IDENTIFY;
       break;
     case EventType.TRACK:
-      responseBody = processTrack(message);
-      category = ConfigCategory.TRACK.endpoint;
+      responseBody = processTrack(message, destination);
+      category = ConfigCategory.TRACK;
       break;
     case EventType.GROUP:
       responseBody = await processGroup(message, destination);
-      category = ConfigCategory.GROUP_USER.endpoint;
+      category = ConfigCategory.GROUP_USER;
       break;
     default:
       throw new CustomError("Message type not supported", 400);

@@ -11,15 +11,6 @@
     "required": false
   },
   {
-    "destKey": "company_id",
-    "sourceKeys": [
-      "groupId",
-      "traits.groupId",
-      "context.traits.groupId"
-    ],
-    "required": false
-  },
-  {
     "destKey": "email",
     "sourceKeys": [
       "traits.email",

@@ -1,77 +1,62 @@
 [
   {
     "destKey": "user_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
-    ],
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "phone",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "session_count",
-    "sourceKeys": [
-      "traits.session_count",
-      "context.traits.session_count"
-    ],
+    "sourceKeys": ["traits.sessionCount", "context.traits.sessionCount"],
     "required": false
   },
   {
     "destKey": "unsubscribed_from_emails",
     "sourceKeys": [
-      "traits.unsubscribed_from_emails",
-      "context.traits.unsubscribed_from_emails"
+      "traits.unsubscribedFromEmails",
+      "context.traits.unsubscribedFromEmails"
     ],
     "required": false
   },
   {
     "destKey": "unsubscribed_from_calls",
     "sourceKeys": [
-      "traits.unsubscribed_from_calls",
-      "context.traits.unsubscribed_from_calls"
+      "traits.unsubscribedFromCalls",
+      "context.traits.unsubscribedFromCalls"
     ],
     "required": false
   },
   {
     "destKey": "name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "signed_up_at",
     "sourceKeys": [
-      "traits.createdAt",
-      "context.traits.createdAt"
+      "traits.signedUpAt",
+      "context.traits.signedUpAt",
+      "timestamp",
+      "originalTimestamp"
     ],
     "required": false
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   }
 ]

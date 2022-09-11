@@ -1,7 +1,7 @@
 [
   {
     "destKey": "company_id",
-    "sourceKeys": ["groupId", "traits.groupId", "traits.id"],
+    "sourceKeys": ["groupId", "traits.groupId"],
     "required": false
   },
   {

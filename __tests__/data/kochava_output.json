@@ -43,7 +43,7 @@
     "files": {},
     "userId": "sampath"
   },
-  { "statusCode": 400, "error": "message type identify not supported for kochava" },
+  { "statusCode": 400, "error": "message type \"identify\" not supported for \"kochava\"" },
   {
     "version": "1",
     "type": "REST",

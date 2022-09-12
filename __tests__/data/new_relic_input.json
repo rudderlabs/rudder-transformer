@@ -28,7 +28,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -78,7 +80,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -128,7 +132,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -178,7 +184,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -228,7 +236,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -279,7 +289,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -328,7 +340,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {
@@ -378,7 +392,9 @@
           }
         ]
       },
-      "timestamp": "2020-02-02T00:23:09.544Z"
+      "timestamp": "2020-02-02T00:23:09.544Z",
+      "sentAt": "2020-02-02T00:23:09.544Z",
+      "originalTimestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
       "DestinationDefinition": {

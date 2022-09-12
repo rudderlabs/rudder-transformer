@@ -55,11 +55,11 @@
   },
   {
     "statusCode": 400,
-    "error": "invalid message type for heap"
+    "error": "\"type\" is a required field and it must be a string"
   },
   {
     "statusCode": 400,
-    "error": "message type page not supported for heap"
+    "error": "message type \"page\" not supported for \"heap\""
   },
   {
     "version": "1",

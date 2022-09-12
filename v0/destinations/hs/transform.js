@@ -1,8 +1,9 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  getErrorRespEvents,
   CustomError,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const { API_VERSION } = require("./config");
@@ -87,9 +88,9 @@ const process = async event => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "HS");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   const successRespList = [];
   const errorRespList = [];
@@ -97,7 +98,10 @@ const processRouterDest = async inputs => {
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, "HS");
+  const { objectType } = getDestinationExternalIDInfoForRetl(
+    inputs[0].message,
+    "HS"
+  );
   if (
     mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
@@ -150,13 +154,8 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
-        );
+        const errRespEvent = handleRtTfSingleEventError(input, error, "HS");
+        errorRespList.push(errRespEvent);
       }
     })
   );

@@ -80,6 +80,7 @@
           "price": "58.0"
         },
         "originalTimestamp": "2020-05-25T18:37:10.917Z",
+        "sentAt": "2020-05-25T18:37:10.917Z",
         "type": "track",
         "userId": "sample_user_id"
       },
@@ -170,6 +171,7 @@
         },
         "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
         "originalTimestamp": "2020-05-25T18:37:10.865Z",
+        "sentAt": "2020-05-25T18:37:10.917Z",
         "type": "identify",
         "userId": "sample_user_id"
       },
@@ -260,6 +262,7 @@
         },
         "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
         "originalTimestamp": "2020-05-25T18:37:10.865Z",
+        "sentAt": "2020-05-25T18:37:10.917Z",
         "type": "page",
         "userId": "sample_user_id"
       },
@@ -350,6 +353,7 @@
         },
         "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
         "originalTimestamp": "2020-05-25T18:37:10.865Z",
+        "sentAt": "2020-05-25T18:37:10.917Z",
         "type": "screen",
         "userId": "sample_user_id"
       },
@@ -440,6 +444,7 @@
         },
         "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
         "originalTimestamp": "2020-05-25T18:37:10.865Z",
+        "sentAt": "2020-05-25T18:37:10.917Z",
         "type": "screen",
         "userId": "sample_user_id"
       },
@@ -590,6 +595,6 @@
     "method": "POST"
   },
   {
-    "error": "message type NOT_A_TYPE not supported for statsig"
+    "error": "message type \"NOT_A_TYPE\" not supported for \"statsig\""
   }
 ]

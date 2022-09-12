@@ -3,11 +3,10 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   getIntegrationsObj,
-  getErrorRespEvents,
-  getSuccessRespEvents,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  CustomError
+  CustomError,
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   getAccessToken,
@@ -177,37 +176,8 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  return Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+  const respList = await simpleProcessRouterDest(inputs, "WOOTRIC", process);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

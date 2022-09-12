@@ -179,7 +179,7 @@ function post(url, payload) {
   ) {
     return new Promise(resolve => {
       resolve(mixpanelPostRequestHandler(url, payload));
-    })
+    });
   }
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
     return new Promise((resolve, reject) => {

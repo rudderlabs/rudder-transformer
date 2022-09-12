@@ -29,7 +29,7 @@ const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
  * @param {*} useNewMapping a variable to support backward compatibility
  * @returns
  */
-function getTransformedJSON(message, mappingJson, useNewMapping) {
+const getTransformedJSON = (message, mappingJson, useNewMapping) => {
   let rawPayload = constructPayload(message, mappingJson);
   if (
     isDefined(rawPayload.$geo_source) &&
@@ -51,12 +51,12 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
     ["traits", "context.traits"],
     MP_IDENTIFY_EXCLUSION_LIST
   );
+
   /*
     we are adding backward compatibility using useNewMapping key.
-    TODO :: This portion need to be removed after we deciding to stop 
+    TODO :: This portion need to be removed after we deciding to stop
     support for old mapping.
     */
-
   if (!useNewMapping) {
     if (rawPayload.$first_name) {
       rawPayload.$firstName = rawPayload.$first_name;
@@ -87,7 +87,7 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
   }
 
   return rawPayload;
-}
+};
 
 /**
  * This function is used to generate identify response.
@@ -97,12 +97,12 @@ function getTransformedJSON(message, mappingJson, useNewMapping) {
  * @param {*} responseBuilderSimple function to generate response
  * @returns
  */
-function createIdentifyResponse(
+const createIdentifyResponse = (
   message,
   type,
   destination,
   responseBuilderSimple
-) {
+) => {
   // this variable is used for supporting backward compatibility
   const { useNewMapping } = destination.Config;
   // user payload created
@@ -124,7 +124,7 @@ function createIdentifyResponse(
   }
   // Creating the response to create user
   return responseBuilderSimple(parameters, message, type, destination.Config);
-}
+};
 
 /**
  * This function is checking availability of service account credentials, and secret token.
@@ -132,13 +132,13 @@ function createIdentifyResponse(
  * @param {*} destination inputs from dashboard
  * @returns
  */
-function isImportAuthCredentialsAvailable(destination) {
+const isImportAuthCredentialsAvailable = destination => {
   return (
     destination.Config.apiSecret ||
     (destination.Config.serviceAccountSecret &&
       destination.Config.serviceAccountUserName &&
       destination.Config.projectId)
   );
-}
+};
 
 module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };

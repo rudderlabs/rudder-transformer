@@ -1,8 +1,8 @@
-const integration = "mp";
-const name = "Mixpanel";
-
 const fs = require("fs");
 const path = require("path");
+
+const integration = "mp";
+const name = "Mixpanel";
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
@@ -18,9 +18,7 @@ const expectedData = JSON.parse(outputDataFile);
 Date.now = jest.fn(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
 inputData.forEach((input, index) => {
   test(`${name} Tests: payload - ${index}`, async () => {
-    let output,
-      expected,
-      arrayOutput = [];
+    let output, expected;
     try {
       output = await transformer.process(input);
       if (Array.isArray(output) && output.length >= 1) {
@@ -58,10 +56,9 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Router Tests", () => {
-    let arrayOutput = [];
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
-      routerOutput.forEach((eachPayload, index) => {
+      routerOutput.forEach(eachPayload => {
         // when batched payload is an array itself
         if (Array.isArray(eachPayload.batchedRequest)) {
           const { batchedRequest } = eachPayload;

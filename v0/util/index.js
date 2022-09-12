@@ -42,6 +42,14 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // GENERIC UTLITY
 // ========================================================================
 
+const getEventTime = message => {
+  return new Date(message.timestamp).toISOString();
+};
+
+const base64Convertor = string => {
+  return Buffer.from(string).toString("base64");
+};
+
 // return a valid URL object if correct else null
 const isValidUrl = url => {
   try {
@@ -1551,6 +1559,7 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  base64Convertor,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1572,10 +1581,11 @@ module.exports = {
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
-  getDestinationExternalIDObjectForRetl,
   getDestinationExternalIDInfoForRetl,
+  getDestinationExternalIDObjectForRetl,
   getDeviceModel,
   getErrorRespEvents,
+  getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
   getFullName,
@@ -1614,8 +1624,8 @@ module.exports = {
   removeHyphens,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
-  removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedAndNullValues,
+  removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedValues,
   returnArrayOfSubarrays,
   setValues,

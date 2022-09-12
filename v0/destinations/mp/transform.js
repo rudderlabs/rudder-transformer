@@ -1,18 +1,20 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  removeUndefinedValues,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  constructPayload,
-  getBrowserInfo,
-  getValuesAsArrayFromConfig,
-  toUnixTimestamp,
-  getTimeDifference,
-  getErrorRespEvents,
-  getSuccessRespEvents,
   CustomError,
-  isHttpStatusSuccess
+  base64Convertor,
+  constructPayload,
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+  getBrowserInfo,
+  getErrorRespEvents,
+  getEventTime,
+  getSuccessRespEvents,
+  getTimeDifference,
+  getValuesAsArrayFromConfig,
+  isHttpStatusSuccess,
+  removeUndefinedValues,
+  toUnixTimestamp
 } = require("../../util");
 const {
   ConfigCategory,
@@ -32,17 +34,13 @@ const {
 const mPEventPropertiesConfigJson =
   mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
-function getEventTime(message) {
-  return new Date(message.timestamp).toISOString();
-}
-
 /**
  * This function is used to send the identify call to destination to create user,
  * when we need to merge the new user with anonymous user.
  * @param {*} response identify response from transformer
  * @returns
  */
-async function createUser(response) {
+const createUser = async response => {
   const url = response.endpoint;
   const { params } = response;
   const axiosResponse = await httpPOST(url, {}, { params });
@@ -51,11 +49,9 @@ async function createUser(response) {
     return processedResponse.status;
   }
   return processedResponse.status || 400;
-}
-function base64Convertor(string) {
-  return Buffer.from(string).toString("base64");
-}
-function setImportCredentials(destConfig) {
+};
+
+const setImportCredentials = destConfig => {
   const endpoint =
     destConfig.dataResidency === "eu"
       ? `${BASE_ENDPOINT_EU}/import/`
@@ -82,9 +78,9 @@ function setImportCredentials(destConfig) {
     );
   }
   return { endpoint, headers, params };
-}
+};
 
-function responseBuilderSimple(parameters, message, eventType, destConfig) {
+const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.anonymousId || message.userId;
@@ -142,10 +138,9 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
       response.headers = {};
   }
   return response;
-}
+};
 
-function processRevenueEvents(message, destination) {
-  const revenueValue = message.properties.revenue;
+const processRevenueEvents = (message, destination, revenueValue) => {
   const transactions = {
     $time: getEventTime(message),
     $amount: revenueValue
@@ -162,9 +157,9 @@ function processRevenueEvents(message, destination) {
     "revenue",
     destination.Config
   );
-}
+};
 
-function getEventValueForTrackEvent(message, destination) {
+const getEventValueForTrackEvent = (message, destination) => {
   const mappedProperties = constructPayload(
     message,
     mPEventPropertiesConfigJson
@@ -196,18 +191,21 @@ function getEventValueForTrackEvent(message, destination) {
     EventType.TRACK,
     destination.Config
   );
-}
+};
 
-function processTrack(message, destination) {
+const processTrack = (message, destination) => {
   const returnValue = [];
-  if (message.properties && message.properties.revenue) {
-    returnValue.push(processRevenueEvents(message, destination));
+
+  const revenue = get(message, "properties.revenue");
+
+  if (revenue) {
+    returnValue.push(processRevenueEvents(message, destination, revenue));
   }
   returnValue.push(getEventValueForTrackEvent(message, destination));
   return returnValue;
-}
+};
 
-async function processIdentifyEvents(message, type, destination) {
+const processIdentifyEvents = async (message, type, destination) => {
   let returnValue;
 
   // Creating the response to identify an user
@@ -248,9 +246,9 @@ async function processIdentifyEvents(message, type, destination) {
   }
 
   return returnValue;
-}
+};
 
-function processPageOrScreenEvents(message, type, destination) {
+const processPageOrScreenEvents = (message, type, destination) => {
   const mappedProperties = constructPayload(
     message,
     mPEventPropertiesConfigJson
@@ -282,9 +280,9 @@ function processPageOrScreenEvents(message, type, destination) {
     properties
   };
   return responseBuilderSimple(parameters, message, type, destination.Config);
-}
+};
 
-function processAliasEvents(message, type, destination) {
+const processAliasEvents = (message, type, destination) => {
   if (!(message.previousId || message.anonymousId)) {
     throw new CustomError(
       "Either previous id or anonymous id should be present in alias payload",
@@ -300,9 +298,9 @@ function processAliasEvents(message, type, destination) {
     }
   };
   return responseBuilderSimple(parameters, message, type, destination.Config);
-}
+};
 
-function processGroupEvents(message, type, destination) {
+const processGroupEvents = (message, type, destination) => {
   const returnValue = [];
   const groupKeys = getValuesAsArrayFromConfig(
     destination.Config.groupKeySettings,
@@ -359,9 +357,9 @@ function processGroupEvents(message, type, destination) {
     );
   }
   return returnValue;
-}
+};
 
-async function processSingleMessage(message, destination) {
+const processSingleMessage = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -372,9 +370,8 @@ async function processSingleMessage(message, destination) {
     case EventType.TRACK:
       return processTrack(message, destination);
     case EventType.SCREEN:
-    case EventType.PAGE: {
+    case EventType.PAGE:
       return processPageOrScreenEvents(message, message.type, destination);
-    }
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     case EventType.ALIAS:
@@ -385,16 +382,15 @@ async function processSingleMessage(message, destination) {
     default:
       throw new CustomError("message type not supported", 400);
   }
-}
+};
 
-async function process(event) {
+const process = async event => {
   return processSingleMessage(event.message, event.destination);
-}
+};
 
 // Documentation about how Mixpanel handles the utm parameters
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
-
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
@@ -424,8 +420,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }

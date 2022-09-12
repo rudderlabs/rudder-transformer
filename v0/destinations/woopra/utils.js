@@ -49,10 +49,17 @@ const getBrowserValue = browser => {
 };
 
 const getEvent = message => {
-  if (message?.name) {
-    return `Loaded ${message.name} page`;
+  let pageFullName;
+  if (!message.name && !message.category) {
+    pageFullName = `Viewed a Page`;
+  } else if (!message.name && message.category) {
+    pageFullName = `Viewed ${message.category} Page`;
+  } else if (message.name && !message.category) {
+    pageFullName = `Viewed ${message.name} Page`;
+  } else {
+    pageFullName = `Viewed ${message.category} ${message.name} Page`;
   }
-  return `Loaded a page`;
+  return pageFullName;
 };
 
 /**

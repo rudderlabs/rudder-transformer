@@ -258,7 +258,7 @@
       "params": {
         "os": "Android",
         "app": "RuddCDN",
-        "event": "Loaded Home page",
+        "event": "Viewed Home Page",
         "ce_url": "http://www.rudderstack.com",
         "Project": "abc.com",
         "ce_title": "Home | RudderStack",

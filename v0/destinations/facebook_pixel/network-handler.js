@@ -70,11 +70,11 @@ const errorDetailsMap = {
 
 const getErrorDetailsFromErrorMap = error => {
   const { code, error_subcode: subCode } = error;
+  let errDetails;
   if (!isEmpty(errorDetailsMap[code]) && subCode) {
-    return errorDetailsMap[code][subCode];
+    errDetails = errorDetailsMap[code][subCode];
   }
-  // This is done to fix the eslint error, if no return is defined
-  return undefined;
+  return errDetails;
 };
 
 const getStatusAndStats = error => {
@@ -106,7 +106,7 @@ const errorResponseHandler = destResponse => {
   const { response } = destResponse;
   if (!response.error) {
     // successful response from facebook pixel api
-    return destResponse;
+    return;
   }
   const { error } = response;
   const statusAndStats = getStatusAndStats(error);
@@ -120,7 +120,7 @@ const errorResponseHandler = destResponse => {
     .build();
 };
 
-const fbPixelResponseHandler = destinationResponse => {
+const destResponseHandler = destinationResponse => {
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,
@@ -134,7 +134,7 @@ const networkHandler = function() {
   this.prepareProxyRequest = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-  this.responseHandler = fbPixelResponseHandler;
+  this.responseHandler = destResponseHandler;
 };
 
 module.exports = {

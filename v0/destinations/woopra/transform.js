@@ -15,7 +15,7 @@ const { EventType } = require("../../../constants");
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 const { refinePayload, getEvent } = require("./utils");
 
-const responseBuilder = async (payload, endpoint, method, projectName) => {
+const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {
     throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
   }
@@ -36,7 +36,7 @@ const responseBuilder = async (payload, endpoint, method, projectName) => {
  * @param {*} genericFields
  * @returns method, payload, extractedProjectNamw which are common to all of the calls
  */
-const commonPayloadGenerator = async (message, projectName, genericFields) => {
+const commonPayloadGenerator = (message, projectName, genericFields) => {
   let payload = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
@@ -49,29 +49,21 @@ const commonPayloadGenerator = async (message, projectName, genericFields) => {
   const response = { method, payload, extractedProjectName };
   return response;
 };
-const identifyResponseBuilder = async (message, projectName) => {
+const identifyResponseBuilder = (message, projectName) => {
   const endpoint = `${BASE_URL}/identify`;
-  const {
-    method,
-    payload,
-    extractedProjectName
-  } = await commonPayloadGenerator(
+  const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
     ConfigCategories.IDENTIFY.genericFields
   );
   return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
-const trackResponseBuilder = async (message, projectName) => {
+const trackResponseBuilder = (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
   if (!message.event) {
     throw new CustomError("[ WOOPRA ]:: Event Name can not be empty.", 400);
   }
-  const {
-    method,
-    payload,
-    extractedProjectName
-  } = await commonPayloadGenerator(
+  const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
     ConfigCategories.TRACK.genericFields
@@ -79,13 +71,9 @@ const trackResponseBuilder = async (message, projectName) => {
   payload.event = message.event;
   return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
-const pageResponseBuilder = async (message, projectName) => {
+const pageResponseBuilder = (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
-  const {
-    method,
-    payload,
-    extractedProjectName
-  } = await commonPayloadGenerator(
+  const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
     ConfigCategories.PAGE.genericFields
@@ -119,13 +107,13 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, projectName);
+      response = identifyResponseBuilder(message, projectName);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, projectName);
+      response = trackResponseBuilder(message, projectName);
       break;
     case EventType.PAGE:
-      response = await pageResponseBuilder(message, projectName);
+      response = pageResponseBuilder(message, projectName);
       break;
     default:
       throw new CustomError(

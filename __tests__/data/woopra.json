@@ -46,18 +46,6 @@
       },
       "destination": {
         "Config": {
-          "clickTracking": "false",
-          "cookieDomain": "",
-          "cookieName": "",
-          "cookiePath": "/",
-          "downloadTracking": "true",
-          "eventDelivery": "false",
-          "eventDeliveryTS": "1662641459744",
-          "hideCampaign": "false",
-          "idleTimeout": "300000",
-          "ignoreQueryUrl": "true",
-          "outgoingIgnoreSubdomain": "true",
-          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
@@ -84,7 +72,6 @@
         "cv_title": "Mr",
         "cv_hasPurchased": "yes",
         "timestamp": 1601322811000000,
-
         "cv_address": "H.No. abc Street PQRS "
       },
       "headers": {},
@@ -141,18 +128,6 @@
       },
       "destination": {
         "Config": {
-          "clickTracking": "false",
-          "cookieDomain": "",
-          "cookieName": "",
-          "cookiePath": "/",
-          "downloadTracking": "true",
-          "eventDelivery": "false",
-          "eventDeliveryTS": "1662641459744",
-          "hideCampaign": "false",
-          "idleTimeout": "300000",
-          "ignoreQueryUrl": "true",
-          "outgoingIgnoreSubdomain": "true",
-          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
@@ -229,18 +204,6 @@
       },
       "destination": {
         "Config": {
-          "clickTracking": "false",
-          "cookieDomain": "",
-          "cookieName": "",
-          "cookiePath": "/",
-          "downloadTracking": "true",
-          "eventDelivery": "false",
-          "eventDeliveryTS": "1662641459744",
-          "hideCampaign": "false",
-          "idleTimeout": "300000",
-          "ignoreQueryUrl": "true",
-          "outgoingIgnoreSubdomain": "true",
-          "outgoingTracking": "false",
           "projectName": "abc.com"
         }
       }
@@ -282,23 +245,10 @@
         "integrations": {
           "woopra": "int.com"
         },
-
         "type": "group"
       },
       "destination": {
         "Config": {
-          "clickTracking": "false",
-          "cookieDomain": "",
-          "cookieName": "",
-          "cookiePath": "/",
-          "downloadTracking": "true",
-          "eventDelivery": "false",
-          "eventDeliveryTS": "1662641459744",
-          "hideCampaign": "false",
-          "idleTimeout": "300000",
-          "ignoreQueryUrl": "true",
-          "outgoingIgnoreSubdomain": "true",
-          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
@@ -320,18 +270,6 @@
       },
       "destination": {
         "Config": {
-          "clickTracking": "false",
-          "cookieDomain": "",
-          "cookieName": "",
-          "cookiePath": "/",
-          "downloadTracking": "true",
-          "eventDelivery": "false",
-          "eventDeliveryTS": "1662641459744",
-          "hideCampaign": "false",
-          "idleTimeout": "300000",
-          "ignoreQueryUrl": "true",
-          "outgoingIgnoreSubdomain": "true",
-          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }

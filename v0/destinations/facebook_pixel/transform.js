@@ -23,8 +23,7 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  getValidDynamicFormConfig,
-  isDefinedAndNotNull
+  getValidDynamicFormConfig
 } = require("../../util");
 
 const {
@@ -33,7 +32,6 @@ const {
   getContentType,
   transformedPayloadData
 } = require("./utils");
-
 
 /**
  *
@@ -46,7 +44,6 @@ const handleOrder = (message, categoryToContent) => {
   const { products, revenue } = message.properties;
   const value = formatRevenue(revenue);
 
-
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
   const contents = [];
@@ -56,18 +53,18 @@ const handleOrder = (message, categoryToContent) => {
       for (const singleProduct of products) {
         const pId =
           singleProduct.product_id || singleProduct.sku || singleProduct.id;
-          if (pId) {
-            contentIds.push(pId);
-            // required field for content
-            // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
-            const content = {
-              id: pId,
-              quantity: singleProduct.quantity || message.properties.quantity || 1,
-              item_price: singleProduct.price || message.properties.price
-            };
-            contents.push(content);
-          }
-      
+        if (pId) {
+          contentIds.push(pId);
+          // required field for content
+          // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+          const content = {
+            id: pId,
+            quantity:
+              singleProduct.quantity || message.properties.quantity || 1,
+            item_price: singleProduct.price || message.properties.price
+          };
+          contents.push(content);
+        }
       }
     } else {
       throw new CustomError("Product is not an object. Event not sent", 400);
@@ -80,7 +77,7 @@ const handleOrder = (message, categoryToContent) => {
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents: contents,
+    contents,
     num_items: contentIds.length
   };
 };
@@ -100,7 +97,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach(product => {
       if (isObject(product)) {
-        const productId = product.product_id || product.sku || product.id ;
+        const productId = product.product_id || product.sku || product.id;
         if (productId) {
           contentIds.push(productId);
           contents.push({
@@ -132,7 +129,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   return {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents: contents
+    contents
   };
 };
 
@@ -143,10 +140,13 @@ const handleProductListViewed = (message, categoryToContent) => {
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
-  let contentIds = [];
-  let contents = [];
+  const contentIds = [];
+  const contents = [];
   const useValue = valueFieldIdentifier === "properties.value";
-  const contentId = message.properties.product_id || message.properties.id || message.properties.sku;
+  const contentId =
+    message.properties.product_id ||
+    message.properties.id ||
+    message.properties.sku;
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
     message.properties.product_name || message.properties.name || "";
@@ -155,14 +155,14 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
-    if(contentId) {
-      contentIds.push(contentId);
-      contents.push({
-        id:contentId,
-        quantity: message.properties.quantity || 1,
-        item_price: message.properties.price
-      });
-    }
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message.properties.quantity || 1,
+      item_price: message.properties.price
+    });
+  }
   return {
     content_ids: contentIds,
     content_type: contentType,
@@ -173,7 +173,6 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
     contents
   };
 };
-
 
 const responseBuilderSimple = (
   message,
@@ -213,7 +212,6 @@ const responseBuilderSimple = (
     delete userData.name;
     userData.fbc = userData.fbc || deduceFbcParam(message);
   }
-
 
   let customData = {};
   let commonData = {};
@@ -580,8 +578,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -591,4 +589,3 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
-

@@ -5,7 +5,6 @@ const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
-  getErrorRespEvents,
   CustomError,
   constructPayload,
   defaultRequestConfig,
@@ -16,7 +15,9 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
   getFieldValueFromMessage,
-  getHashFromArrayWithDuplicate
+  getHashFromArrayWithDuplicate,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const {
   trackMapping,
@@ -263,9 +264,9 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "TIKTOK_ADS");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format
@@ -290,13 +291,12 @@ const processRouterDest = async inputs => {
           );
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "TIKTOK_ADS"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

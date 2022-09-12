@@ -1,5 +1,6 @@
 const get = require("get-value");
 const moment = require("moment");
+const _ = require("lodash");
 const { EventType } = require("../../../constants");
 
 const {
@@ -8,11 +9,12 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
-  getErrorRespEvents,
   getSuccessRespEvents,
   CustomError,
   isAppleFamily,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const {
   ENDPOINT,
@@ -31,7 +33,6 @@ const {
   channelMapping,
   generateBatchedPayloadForArray
 } = require("./util");
-const _ = require("lodash");
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -39,7 +40,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   const event = mappedEvent.trim().replace(/\s+/g, "_");
 
   const { apiKey, pixelId, snapAppId, appId } = Config;
-  let channel = get(message, "channel");
+  const channel = get(message, "channel");
   let eventConversionType = message?.properties?.eventConversionType;
   if (
     channelMapping[eventConversionType?.toLowerCase()] ||
@@ -387,9 +388,9 @@ function getEventChunks(event, eventsChunk) {
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SNAPCHAT_CONVERSION");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const eventsChunk = []; // temporary variable to divide payload into chunks
@@ -416,13 +417,12 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "SNAPCHAT_CONVERSION"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

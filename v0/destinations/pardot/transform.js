@@ -34,17 +34,17 @@
  */
 
 const get = require("get-value");
-const { identifyConfig } = require("./config");
+const { identifyConfig, DESTINATION } = require("./config");
 const logger = require("../../../logger");
 const {
   defaultRequestConfig,
   constructPayload,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  CustomError,
   removeUndefinedValues,
   getSuccessRespEvents,
-  getErrorRespEvents
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 
@@ -104,7 +104,9 @@ const getUrl = urlParams => {
   const { externalId, category, email, nonProperExtId } = urlParams;
   let properUrl = `${category.endPointUpsert}/email/${email}`;
   if (nonProperExtId) {
-    logger.debug(`PARDOT: externalId doesn't exist/invalid datastructure`);
+    logger.debug(
+      `${DESTINATION}: externalId doesn't exist/invalid datastructure`
+    );
     return properUrl;
   }
   // when there is a proper externalId object defined
@@ -117,7 +119,7 @@ const getUrl = urlParams => {
       break;
     default:
       logger.debug(
-        `PARDOT: externalId type is different from the ones supported`
+        `${DESTINATION}: externalId type is different from the ones supported`
       );
       break;
   }
@@ -139,8 +141,8 @@ const processIdentify = ({ message, metadata }, destination, category) => {
       .setStatus(400)
       .setMessage("Without externalId, email is required")
       .setStatTags({
-        destination: "pardot",
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE,
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
@@ -167,12 +169,25 @@ const processEvent = (metadata, message, destination) => {
     throw new ErrorBuilder()
       .setMessage("Message Type is not present. Aborting message.")
       .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
       .build();
   }
   if (!destination.Config.campaignId) {
     throw new ErrorBuilder()
       .setMessage("Campaign Id is mandatory")
       .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
       .build();
   }
 
@@ -180,6 +195,13 @@ const processEvent = (metadata, message, destination) => {
     throw new ErrorBuilder()
       .setMessage("Business Unit Id is mandatory")
       .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
       .build();
   }
 
@@ -191,6 +213,12 @@ const processEvent = (metadata, message, destination) => {
     throw new ErrorBuilder()
       .setMessage(`${message.type} is not supported in Pardot`)
       .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
       .build();
   }
   return response;
@@ -201,9 +229,9 @@ const process = event => {
 };
 
 const processRouterDest = async events => {
-  if (!Array.isArray(events) || events.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(events, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const responseList = Promise.all(
@@ -215,16 +243,7 @@ const processRouterDest = async events => {
           event.destination
         );
       } catch (error) {
-        return getErrorRespEvents(
-          [event.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : error.status || 400,
-          error.message || "Error occurred while processing payload."
-        );
+        return handleRtTfSingleEventError(event, error, DESTINATION);
       }
     })
   );

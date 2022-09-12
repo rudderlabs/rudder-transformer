@@ -553,7 +553,8 @@ const processEvent = (message, destination) => {
           .setStatTags({
             ...statTags,
             meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                .CONFIGURATION
           })
           .build();
       }

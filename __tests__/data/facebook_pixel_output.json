@@ -25,7 +25,7 @@
       "destType": "FACEBOOK_PIXEL",
       "stage": "transform",
       "scope": "transformation",
-      "meta": "badParam"
+      "meta": "configuration"
     }
   },
   {

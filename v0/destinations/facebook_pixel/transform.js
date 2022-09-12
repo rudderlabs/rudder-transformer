@@ -565,7 +565,7 @@ const processEvent = (message, destination) => {
     case EventType.TRACK:
       if (!message.event) {
         throw new ErrorBuilder()
-          .setMessage("'name' is required for the event")
+          .setMessage("'event' is required")
           .setStatus(400)
           .setStatTags({
             ...statTags,

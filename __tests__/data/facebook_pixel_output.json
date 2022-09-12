@@ -468,7 +468,7 @@
   },
   {
     "statusCode": 400,
-    "error": "'name' is required for the event",
+    "error": "'event' is required",
     "statTags": {
       "destType": "FACEBOOK_PIXEL",
       "stage": "transform",

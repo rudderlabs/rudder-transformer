@@ -118,7 +118,7 @@ const processResponse = ({ dresponse, status } = {}) => {
         .setAuthErrorCategory(authErrorCategory)
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
-          destination: DESTINATION_NAME,
+          destType: DESTINATION_NAME,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
           meta: getDynamicMeta(trStatus)
@@ -133,7 +133,7 @@ const processResponse = ({ dresponse, status } = {}) => {
         .setAuthErrorCategory("")
         .isTransformResponseFailure(!isSuccess)
         .setStatTags({
-          destination: DESTINATION_NAME,
+          destType: DESTINATION_NAME,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
           meta: getDynamicMeta(temp.status || 400)
@@ -147,7 +147,7 @@ const processResponse = ({ dresponse, status } = {}) => {
       .setDestinationResponse(dresponse)
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
-        destination: DESTINATION_NAME,
+        destType: DESTINATION_NAME,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
       })

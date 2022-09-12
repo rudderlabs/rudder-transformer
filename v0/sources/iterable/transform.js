@@ -26,14 +26,14 @@ function process(event) {
 
   message.context.integration.version = "1.0.0";
 
-  if (event.dataFields.createdAt) {
+  if (event.dataFields?.createdAt) {
     const ts = new Date(event.dataFields.createdAt).toISOString();
     message.receivedAt = ts;
     message.timestamp = ts;
   }
 
   // As email is present in message.traits, removing it from properties to reduce redundancy
-  delete message.properties.email;
+  delete message.properties?.email;
 
   // Treating userId as unique identifier
   // If userId is not present, then generating it from email using md5 hash function

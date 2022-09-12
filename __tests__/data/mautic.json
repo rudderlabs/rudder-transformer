@@ -1,0 +1,1089 @@
+[
+  {
+    "description": "Create a new Contact with address as String",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "firstName": "Anant",
+            "lastName": "jain",
+            "role": "Manager",
+            "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+            "hasPurchased": "yes",
+            "email": "abc@xyz.com",
+            "title": "Mr",
+            "phone": "9876543212",
+            "state": "Uttar Pradesh",
+            "zipcode": "243001",
+            "prospectOrCustomer": "Prospect",
+            "country": "India",
+            "website": "abc.com",
+            "subscriptionStatus": "New"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "type": "identify",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "ruddertest2",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ruddertest2.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "abc@xyz.com",
+          "title": "Mr",
+          "firstname": "Anant",
+          "lastname": "jain",
+          "phone": "9876543212",
+          "website": "abc.com",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "ipAddress": "14.5.67.21",
+          "last_active": "2020-02-02T00:23:09.544Z",
+          "country": "India",
+          "haspurchased": "yes",
+          "role": "Manager",
+          "subscription_status": "New",
+          "prospect_or_customer": "Prospect",
+          "address1": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "address2": ""
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Update an existing Contact",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "firstName": "Anant",
+            "lastName": "jain",
+            "role": "Manager",
+            "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+            "hasPurchased": "yes",
+            "email": "hijibi@gmail.com",
+            "title": "Mr",
+            "phone": "9876543212",
+            "state": "Uttar Pradesh",
+            "zipcode": "243001",
+            "prospectOrCustomer": "Prospect",
+            "country": "India",
+            "website": "abc.com",
+            "subscriptionStatus": "New"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "type": "identify",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "ruddertest2",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://ruddertest2.mautic.net/api/contacts/247/edit",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "hijibi@gmail.com",
+          "title": "Mr",
+          "last_active": "2020-02-02T00:23:09.544Z",
+          "firstname": "Anant",
+          "lastname": "jain",
+          "phone": "9876543212",
+          "website": "abc.com",
+          "state": "Uttar Pradesh",
+          "zipcode": "243001",
+          "ipAddress": "14.5.67.21",
+          "country": "India",
+          "haspurchased": "yes",
+          "role": "Manager",
+          "subscription_status": "New",
+          "prospect_or_customer": "Prospect",
+          "address1": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+          "address2": ""
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Invalid userName",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "firstName": "Anant",
+            "lastName": "jain",
+            "role": "Manager",
+            "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+            "hasPurchased": "yes",
+            "email": "abc@xyz.com",
+            "title": "Mr",
+            "phone": "9876543212",
+            "state": "Uttar Pradesh",
+            "zipcode": "243001",
+            "prospectOrCustomer": "Prospect",
+            "country": "India",
+            "website": "abc.com",
+            "subscriptionStatus": "New"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "type": "identify",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef"
+        }
+      }
+    },
+    "output": {
+      "error": "User Name is not Valid."
+    }
+  },
+  {
+    "description": "Password Not Provided for Authentication",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "firstName": "Anant",
+            "lastName": "jain"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "type": "identify",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Password field can not be empty."
+    }
+  },
+  {
+    "description": "Empty Sub-Domain Field ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "firstName": "Anant",
+            "lastName": "jain",
+            "role": "Manager",
+            "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
+            "hasPurchased": "yes",
+            "email": "abc@xyz.com",
+            "title": "Mr",
+            "phone": "9876543212",
+            "state": "Uttar Pradesh",
+            "zipcode": "243001",
+            "prospectOrCustomer": "Prospect",
+            "country": "India",
+            "website": "abc.com",
+            "subscriptionStatus": "New"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "type": "identify",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Sub-Domain Name field can not be empty."
+    }
+  },
+  {
+    "description": " Message type not given",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "state": "uttar pradesh"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": " Message type not supported",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "state": "uttar pradesh"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "Alias"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Message type alias not supported."
+    }
+  },
+  {
+    "description": "Invalid Title",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "title": "jhdv11"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid entry for key title"
+    }
+  },
+  {
+    "description": "Invalid Phone No. ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "phone": "765798"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid Phone No. Provided."
+    }
+  },
+  {
+    "description": " Invalid hasPurchased",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "hasPurchased": "Mightbe"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid entry for key haspurchased"
+    }
+  },
+  {
+    "description": " Invalid role",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "role": "Xyz"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid entry for key role"
+    }
+  },
+  {
+    "description": " Invalid subscriptionStatus",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "subscriptionStatus": "NA"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid entry for key subscription_status"
+    }
+  },
+{
+  "description": " Invalid email",
+  "input": {
+    "message": {
+      "anonymousId": "anon-id-new",
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        },
+        "traits" :  {
+          "email":"abc123"
+        }
+      },
+      "type": "identify"
+    },
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "m3dG325C51C1RPq",
+        "subDomainName": "testapi3",
+        "userName": "anantjain45823@gmail.com"
+      }
+    }
+  },
+  "output": {
+    "error": "Invalid Email Provided."
+  }
+},
+  {
+    "description": " Invalid POC",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "prospectOrCustomer": "random"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "anantjain45823@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Invalid entry for key prospect_or_customer"
+    }
+  },
+  {
+    "description": " Address as object and city included in it and state Conversion ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "library": {
+            "name": "http"
+          }
+        },
+        "traits": {
+          "address": {
+            "area": "Model Town",
+            "city": "Bareilly"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi3.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "city": "Bareilly",
+          "address1": "Model Town Bareilly ",
+          "address2": ""
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": " Address as object with adress line 1, line 2 and city included in it  ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "library": {
+            "name": "http"
+          }
+        },
+        "traits": {
+          "address": {
+            "addressLine1": "abcde",
+            "addressLine2": "fghjikld",
+            "area": "Model Town",
+            "city": "Bareilly"
+          }
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi3",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi3.mautic.net/api/contacts/new",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "city": "Bareilly",
+          "address1": "abcde",
+          "address2": "fghjikld"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": " Update contact with contactId inside externalId ",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "firstName": "Anant",
+          "role": "Manager"
+        },
+        "messageId": "25ea6605-c788-4cab-8fed-2cf0b831c4a8",
+        "originalTimestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2022-08-17T10:40:21.162+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968",
+        "sentAt": "2022-08-17T10:40:21.728+05:30",
+        "timestamp": "2020-02-02T05:53:08.977+05:30",
+        "userId": "identified user id",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "testapi5",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://testapi5.mautic.net/api/contacts/246/edit",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "last_active": "2020-02-02T00:23:09.544Z",
+          "firstname": "Anant",
+          "role": "Manager"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": " Group Id not given ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "type": "Segments"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "testapi5",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Group Id is not provided."
+    }
+  },
+  {
+    "description": "Remove contact with segment with ConatctId given inside externalId and operation given as remove",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "17",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "lastName": "garwal",
+          "type": "Segments",
+          "operation": "remove"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "testapi5",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/remove",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Group contact with segment with contactId inside externalId with operation givenn as add",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "17",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "type": "Segments"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "testapi5",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://testapi5.mautic.net/api/segments/17/contact/246/add",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": " Group type not given  ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {},
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi5",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Type of group not mentioned inside traits"
+    }
+  },
+  {
+    "description": " Group type not supported  ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "17",
+        "context": {
+          "externalId": [
+            {
+              "type": "mauticContactId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "type": "Alias"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "abcdefghij1234",
+          "subDomainName": "testapi5",
+          "userName": "abcdef@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns."
+    }
+  },
+  {
+    "description": "Group contact with Company without contactId inside externalId ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "20",
+        "context": {
+          "traits": {
+            "email": "hijibi@gmail.com"
+          }
+        },
+        "traits": {
+          "type": "Companies"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "ruddertest2",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ruddertest2.mautic.net/api/companies/20/contact/247/add",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw=="
+      },
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  
+  {
+    "description": " Group contact with campaign with contactId found by lookUpField with no operation field",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "20",
+        "traits": {
+          "lastName": "kumar",
+          "type": "Campaigns"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "ruddertest2",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
+    }
+  },
+  {
+    "description": " No contact found for lookup field and email to group ",
+    "input": {
+      "message": {
+        "userId": "user123",
+        "groupId": "20",
+        "traits": {
+          "lastName": "Singh",
+          "type": "Campaigns"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "lookUpField": "lastName",
+          "password": "zzlOylGKJRKVr87",
+          "subDomainName": "ruddertest2",
+          "userName": "anant45823jain@gmail.com"
+        }
+      }
+    },
+    "output": {
+      "error": "Could not find any contact Id for the given lookup Field or email."
+    }
+  }
+]

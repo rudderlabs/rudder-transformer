@@ -1,0 +1,63 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": ["properties.taskName", "event"],
+    "required": true
+  },
+  {
+    "destKey": "description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "priority",
+    "sourceKeys": "properties.priority",
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": "properties.tags",
+    "required": false
+  },
+  {
+    "destKey": "time_estimate",
+    "sourceKeys": "properties.timeEstimate",
+    "required": false
+  },
+  {
+    "destKey": "status",
+    "sourceKeys": "properties.status",
+    "required": false
+  },
+  {
+    "destKey": "due_date",
+    "sourceKeys": "properties.dueDate",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "due_date_time",
+    "sourceKeys": "properties.includeDueDateTime",
+    "required": false
+  },
+  {
+    "destKey": "start_date",
+    "sourceKeys": "properties.startDate",
+    "required": false,
+    "metadata": {
+      "type": "timestamp"
+    }
+  },
+  {
+    "destKey": "start_date_time",
+    "sourceKeys": "properties.includeStartDateTime",
+    "required": false
+  },
+  {
+    "destKey": "notify_all",
+    "sourceKeys": "properties.notifyAll",
+    "required": false
+  }
+]

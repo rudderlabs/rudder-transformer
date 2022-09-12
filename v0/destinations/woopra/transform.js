@@ -88,7 +88,7 @@ const pageResponseBuilder = (message, projectName) => {
   mergedPayload.event = getEvent(message);
   return responseBuilder(mergedPayload, endpoint, method, extractedProjectName);
 };
-const process = async event => {
+const process = event => {
   const { message, destination } = event;
   const { projectName } = destination.Config;
   if (!projectName) {

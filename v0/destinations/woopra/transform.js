@@ -37,11 +37,12 @@ const responseBuilder = async (payload, endpoint, method, projectName) => {
  * @returns method, payload, extractedProjectNamw which are common to all of the calls
  */
 const commonPayloadGenerator = async (message, projectName, genericFields) => {
-  const payload = constructPayload(
+  let payload = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  refinePayload(message, payload, genericFields);
+  const refinedPayload = refinePayload(message, genericFields);
+  payload = { ...payload, ...refinedPayload };
   const extractedProjectName =
     getIntegrationsObj(message, "woopra")?.projectName || projectName;
   const method = defaultGetRequestConfig.requestMethod;

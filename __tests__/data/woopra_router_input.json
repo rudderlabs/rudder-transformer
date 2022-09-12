@@ -24,7 +24,7 @@
       "event": "First Investment",
       "integrations": {
         "woopra": {
-          "projectName":"abc.com"
+          "projectName": "abc.com"
         }
       },
       "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
@@ -44,6 +44,18 @@
     },
     "destination": {
       "Config": {
+        "clickTracking": "false",
+        "cookieDomain": "",
+        "cookieName": "",
+        "cookiePath": "/",
+        "downloadTracking": "true",
+        "eventDelivery": "false",
+        "eventDeliveryTS": "1662641459744",
+        "hideCampaign": "false",
+        "idleTimeout": "300000",
+        "ignoreQueryUrl": "true",
+        "outgoingIgnoreSubdomain": "true",
+        "outgoingTracking": "false",
         "projectName": "int.com"
       }
     },
@@ -92,6 +104,18 @@
     },
     "destination": {
       "Config": {
+        "clickTracking": "false",
+        "cookieDomain": "",
+        "cookieName": "",
+        "cookiePath": "/",
+        "downloadTracking": "true",
+        "eventDelivery": "false",
+        "eventDeliveryTS": "1662641459744",
+        "hideCampaign": "false",
+        "idleTimeout": "300000",
+        "ignoreQueryUrl": "true",
+        "outgoingIgnoreSubdomain": "true",
+        "outgoingTracking": "false",
         "projectName": "int.com"
       }
     },
@@ -111,6 +135,18 @@
     },
     "destination": {
       "Config": {
+        "clickTracking": "false",
+        "cookieDomain": "",
+        "cookieName": "",
+        "cookiePath": "/",
+        "downloadTracking": "true",
+        "eventDelivery": "false",
+        "eventDeliveryTS": "1662641459744",
+        "hideCampaign": "false",
+        "idleTimeout": "300000",
+        "ignoreQueryUrl": "true",
+        "outgoingIgnoreSubdomain": "true",
+        "outgoingTracking": "false",
         "projectName": "int.com"
       }
     },

@@ -26,7 +26,7 @@
         "event": "First Investment",
         "integrations": {
           "woopra": {
-            "projectName":"abc.com"
+            "projectName": "abc.com"
           }
         },
         "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
@@ -46,6 +46,18 @@
       },
       "destination": {
         "Config": {
+          "clickTracking": "false",
+          "cookieDomain": "",
+          "cookieName": "",
+          "cookiePath": "/",
+          "downloadTracking": "true",
+          "eventDelivery": "false",
+          "eventDeliveryTS": "1662641459744",
+          "hideCampaign": "false",
+          "idleTimeout": "300000",
+          "ignoreQueryUrl": "true",
+          "outgoingIgnoreSubdomain": "true",
+          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
@@ -67,12 +79,12 @@
         "cookie": "21e13f4bc7ceddad",
         "Project": "abc.com",
         "cv_email": "anant@r.com",
-        "cv_name":"Anant jain",
+        "cv_name": "Anant jain",
         "cv_state": "Delhi",
         "cv_title": "Mr",
         "cv_hasPurchased": "yes",
         "timestamp": 1601322811000000,
-        
+
         "cv_address": "H.No. abc Street PQRS "
       },
       "headers": {},
@@ -87,7 +99,7 @@
         "anonymousId": "21e13f4bc7ceddad",
         "channel": "mobile",
         "context": {
-          "externalId":[
+          "externalId": [
             {
               "type": "woopraId",
               "id": "abcd123451"
@@ -111,7 +123,7 @@
           "timezone": "Asia/Kolkata",
           "traits": {
             "anonymousId": "21e13f4bc7ceddad",
-            "customProp":"customValue"
+            "customProp": "customValue"
           },
           "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
         },
@@ -129,35 +141,47 @@
       },
       "destination": {
         "Config": {
+          "clickTracking": "false",
+          "cookieDomain": "",
+          "cookieName": "",
+          "cookiePath": "/",
+          "downloadTracking": "true",
+          "eventDelivery": "false",
+          "eventDeliveryTS": "1662641459744",
+          "hideCampaign": "false",
+          "idleTimeout": "300000",
+          "ignoreQueryUrl": "true",
+          "outgoingIgnoreSubdomain": "true",
+          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
     },
     "output": {
       "body": {
-          "XML": {},
-          "FORM": {},
-          "JSON": {},
-          "JSON_ARRAY": {}
+        "XML": {},
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
       },
       "type": "REST",
       "files": {},
       "method": "GET",
       "params": {
-          "os": "Android",
-          "event": "First Investment",
-          "cookie": "abcd123451",
-          "Project": "int.com",
-          "timestamp": 1601322811000000,
-          "ce_currency": "EUR",
-          "ce_revenue": 20.37566,
-          "cv_customProp": "customValue",
-          "cv_anonymousId": "21e13f4bc7ceddad"
+        "os": "Android",
+        "event": "First Investment",
+        "cookie": "abcd123451",
+        "Project": "int.com",
+        "timestamp": 1601322811000000,
+        "ce_currency": "EUR",
+        "ce_revenue": 20.37566,
+        "cv_customProp": "customValue",
+        "cv_anonymousId": "21e13f4bc7ceddad"
       },
       "headers": {},
       "version": "1",
       "endpoint": "https://www.woopra.com/track/ce"
-  }
+    }
   },
   {
     "description": "Send Page event with projectName from Config and no cv_id sources",
@@ -170,8 +194,8 @@
             "build": "4",
             "name": "RuddCDN"
           },
-          "page":{
-            "referrer":"google.com"
+          "page": {
+            "referrer": "google.com"
           },
           "device": {
             "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
@@ -187,7 +211,7 @@
           },
           "timezone": "Asia/Kolkata",
           "traits": {
-            "customProp":"customValue"
+            "customProp": "customValue"
           },
           "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
         },
@@ -205,6 +229,18 @@
       },
       "destination": {
         "Config": {
+          "clickTracking": "false",
+          "cookieDomain": "",
+          "cookieName": "",
+          "cookiePath": "/",
+          "downloadTracking": "true",
+          "eventDelivery": "false",
+          "eventDeliveryTS": "1662641459744",
+          "hideCampaign": "false",
+          "idleTimeout": "300000",
+          "ignoreQueryUrl": "true",
+          "outgoingIgnoreSubdomain": "true",
+          "outgoingTracking": "false",
           "projectName": "abc.com"
         }
       }
@@ -222,14 +258,14 @@
       "params": {
         "os": "Android",
         "app": "RuddCDN",
-        "event": "Loaded a page",
+        "event": "Loaded Home page",
         "ce_url": "http://www.rudderstack.com",
         "Project": "abc.com",
         "ce_title": "Home | RudderStack",
         "cv_customProp": "customValue",
         "timestamp": 1601322811000000,
         "cookie": "21e13f4bc7ceddad",
-        "ce_referrer":"google.com"
+        "ce_referrer": "google.com"
       },
       "headers": {},
       "version": "1",
@@ -251,6 +287,18 @@
       },
       "destination": {
         "Config": {
+          "clickTracking": "false",
+          "cookieDomain": "",
+          "cookieName": "",
+          "cookiePath": "/",
+          "downloadTracking": "true",
+          "eventDelivery": "false",
+          "eventDeliveryTS": "1662641459744",
+          "hideCampaign": "false",
+          "idleTimeout": "300000",
+          "ignoreQueryUrl": "true",
+          "outgoingIgnoreSubdomain": "true",
+          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }
@@ -272,6 +320,18 @@
       },
       "destination": {
         "Config": {
+          "clickTracking": "false",
+          "cookieDomain": "",
+          "cookieName": "",
+          "cookiePath": "/",
+          "downloadTracking": "true",
+          "eventDelivery": "false",
+          "eventDeliveryTS": "1662641459744",
+          "hideCampaign": "false",
+          "idleTimeout": "300000",
+          "ignoreQueryUrl": "true",
+          "outgoingIgnoreSubdomain": "true",
+          "outgoingTracking": "false",
           "projectName": "int.com"
         }
       }

@@ -21,7 +21,7 @@
         "cv_hasPurchased": "yes",
         "cv_address": "H.No. abc Street PQRS ",
         "timestamp": 1601322811000000,
-        "cv_Name":"Anant jain"
+        "cv_Name": "Anant jain"
       },
       "headers": {},
       "version": "1",
@@ -29,6 +29,18 @@
     },
     "destination": {
       "Config": {
+        "clickTracking": "false",
+        "cookieDomain": "",
+        "cookieName": "",
+        "cookiePath": "/",
+        "downloadTracking": "true",
+        "eventDelivery": "false",
+        "eventDeliveryTS": "1662641459744",
+        "hideCampaign": "false",
+        "idleTimeout": "300000",
+        "ignoreQueryUrl": "true",
+        "outgoingIgnoreSubdomain": "true",
+        "outgoingTracking": "false",
         "projectName": "int.com"
       }
     },
@@ -59,16 +71,28 @@
         "timestamp": 1601322811000000,
         "ce_revenue": 20.37566,
         "ce_currency": "EUR",
-        "cookie":"21e13f4bc7ceddad"
+        "cookie": "21e13f4bc7ceddad"
       },
       "headers": {},
       "version": "1",
       "endpoint": "https://www.woopra.com/track/ce"
     },
     "destination": {
-        "Config": {
-          "projectName": "int.com"
-        }
+      "Config": {
+        "clickTracking": "false",
+        "cookieDomain": "",
+        "cookieName": "",
+        "cookiePath": "/",
+        "downloadTracking": "true",
+        "eventDelivery": "false",
+        "eventDeliveryTS": "1662641459744",
+        "hideCampaign": "false",
+        "idleTimeout": "300000",
+        "ignoreQueryUrl": "true",
+        "outgoingIgnoreSubdomain": "true",
+        "outgoingTracking": "false",
+        "projectName": "int.com"
+      }
     },
     "metadata": [
       {

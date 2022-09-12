@@ -8,24 +8,20 @@ const { commomGenericFields } = require("./config");
 
 /**
  * @param {Object} attributes
- * @param {*} payload
  * @param {List} prefix the prefix to be added
  * @param {Boolean} genericFields fields for which data is already added
  * adds the prefix to the fields name inside the attributes object
- * and updates the payload
- *
+ * and updates the local payload
+ * @return generated payload
  */
-const customFieldsPayloadMapping = (
-  attributes,
-  payload,
-  prefix,
-  genericFields
-) => {
+const customFieldsPayloadMapping = (attributes, prefix, genericFields) => {
+  const payload = {};
   Object.keys(attributes).forEach(v => {
     if (!genericFields.includes(v)) {
       set(payload, `${prefix}_${v}`, attributes[v]);
     }
   });
+  return payload;
 };
 
 /**
@@ -53,45 +49,49 @@ const getBrowserValue = browser => {
 };
 
 const getEvent = message => {
-  if (message?.context?.page?.category) {
-    if (message?.name) {
-      return `Loaded ${message.coontext.page.category} ${message.name} page`;
-    }
-    return `Loaded ${message.coontext.page.category}page`;
+  if (message?.name) {
+    return `Loaded ${message.name} page`;
   }
   return `Loaded a page`;
 };
 
 /**
- * It adds the field (cookie,app and browser) requiring some manipulation to the payload
+ * It adds the field (cookie,app and browser) requiring some manipulation to the local payload
  * and also the custom fields provided
  * @param {*} message
- * @param {*} payload
  * @param {List} prefix=ce for properties and cv for traits or both as list
+ * @return generated payload
  */
-const refinePayload = (message, payload, specificGenericFields) => {
+const refinePayload = (message, specificGenericFields) => {
   const browser = getBrowserValue(getBrowserInfo(message.context?.userAgent));
+  let payload = {};
   if (browser) {
     set(payload, "browser", browser);
   }
   const cookie = getCookie(message);
   set(payload, "cookie", cookie);
   const traits = getFieldValueFromMessage(message, "traits");
-
+  let customTraitsPayload;
   // For User Properties
   if (traits) {
-    customFieldsPayloadMapping(traits, payload, "cv", commomGenericFields);
+    customTraitsPayload = customFieldsPayloadMapping(
+      traits,
+      "cv",
+      commomGenericFields
+    );
   }
-
+  payload = { ...payload, ...customTraitsPayload };
   // For event Properties
   const { properties } = message;
+  let customPropertiesPayload;
   if (properties) {
-    customFieldsPayloadMapping(
+    customPropertiesPayload = customFieldsPayloadMapping(
       properties,
-      payload,
       "ce",
       specificGenericFields
     );
   }
+  payload = { ...payload, ...customPropertiesPayload };
+  return payload;
 };
 module.exports = { refinePayload, getEvent };

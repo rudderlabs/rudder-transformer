@@ -14,16 +14,20 @@ const {
   CustomError,
   isHttpStatusSuccess
 } = require("../../util");
-const { ConfigCategory, mappingConfig } = require("./config");
-
+const {
+  ConfigCategory,
+  mappingConfig,
+  BASE_ENDPOINT,
+  BASE_ENDPOINT_EU
+} = require("./config");
 const { httpPOST } = require("../../../adapters/network");
-
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-
-const { createIdentifyResponse } = require("./util");
-
+const {
+  createIdentifyResponse,
+  isImportAuthCredentialsAvailable
+} = require("./util");
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson =
   mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
@@ -32,6 +36,12 @@ function getEventTime(message) {
   return new Date(message.timestamp).toISOString();
 }
 
+/**
+ * This function is used to send the identify call to destination to create user,
+ * when we need to merge the new user with anonymous user.
+ * @param {*} response identify response from transformer
+ * @returns
+ */
 async function createUser(response) {
   const url = response.endpoint;
   const { params } = response;
@@ -40,14 +50,16 @@ async function createUser(response) {
   if (processedResponse.response === 1) {
     return processedResponse.status;
   }
-  return 400;
+  return processedResponse.status || 400;
 }
-
+function base64Convertor(string) {
+  return Buffer.from(string).toString("base64");
+}
 function setImportCredentials(destConfig) {
   const endpoint =
     destConfig.dataResidency === "eu"
-      ? "https://api-eu.mixpanel.com/import/"
-      : "https://api.mixpanel.com/import/";
+      ? `${BASE_ENDPOINT_EU}/import/`
+      : `${BASE_ENDPOINT}/import/`;
   const headers = {};
   const params = {};
   const {
@@ -57,13 +69,11 @@ function setImportCredentials(destConfig) {
     projectId
   } = destConfig;
   if (apiSecret) {
-    headers.Authorization = `Basic ${Buffer.from(`${apiSecret}:`).toString(
-      "base64"
-    )}`;
+    headers.Authorization = `Basic ${base64Convertor(`${apiSecret}:`)}`;
   } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
-    headers.Authorization = `Basic ${Buffer.from(
+    headers.Authorization = `Basic ${base64Convertor(
       `${serviceAccountUserName}:${serviceAccountSecret}`
-    ).toString("base64")}`;
+    )}`;
     params.projectId = projectId;
   } else {
     throw new CustomError(
@@ -101,8 +111,8 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
       ) {
         response.endpoint =
           destConfig.dataResidency === "eu"
-            ? "https://api-eu.mixpanel.com/track/"
-            : "https://api.mixpanel.com/track/";
+            ? `${BASE_ENDPOINT_EU}/track/`
+            : `${BASE_ENDPOINT}/track/`;
         response.headers = {};
       } else if (duration.years > 5) {
         throw new CustomError(
@@ -127,8 +137,8 @@ function responseBuilderSimple(parameters, message, eventType, destConfig) {
     default:
       response.endpoint =
         destConfig.dataResidency === "eu"
-          ? "https://api-eu.mixpanel.com/engage/"
-          : "https://api.mixpanel.com/engage/";
+          ? `${BASE_ENDPOINT_EU}/engage/`
+          : `${BASE_ENDPOINT}/engage/`;
       response.headers = {};
   }
   return response;
@@ -215,10 +225,7 @@ async function processIdentifyEvents(message, type, destination) {
   if (
     message.userId &&
     message.anonymousId &&
-    (destination.Config.apiSecret ||
-      (destination.Config.serviceAccountSecret &&
-        destination.Config.serviceAccountUserName &&
-        destination.Config.projectId))
+    isImportAuthCredentialsAvailable(destination)
   ) {
     const responseStatus = await createUser(returnValue);
     if (!isHttpStatusSuccess(responseStatus)) {
@@ -339,8 +346,8 @@ function processGroupEvents(message, type, destination) {
 
         groupResponse.endpoint =
           destination.Config.dataResidency === "eu"
-            ? "https://api-eu.mixpanel.com/groups/"
-            : "https://api.mixpanel.com/groups/";
+            ? `${BASE_ENDPOINT_EU}/groups/`
+            : `${BASE_ENDPOINT}/groups/`;
 
         returnValue.push(groupResponse);
       }
@@ -417,8 +424,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-            ? error.code
-            : 400,
+              ? error.code
+              : 400,
           error.message || "Error occurred while processing payload."
         );
       }

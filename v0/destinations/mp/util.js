@@ -126,4 +126,19 @@ function createIdentifyResponse(
   return responseBuilderSimple(parameters, message, type, destination.Config);
 }
 
-module.exports = { createIdentifyResponse };
+/**
+ * This function is checking availability of service account credentials, and secret token.
+ * https://developer.mixpanel.com/reference/authentication
+ * @param {*} destination inputs from dashboard
+ * @returns
+ */
+function isImportAuthCredentialsAvailable(destination) {
+  return (
+    destination.Config.apiSecret ||
+    (destination.Config.serviceAccountSecret &&
+      destination.Config.serviceAccountUserName &&
+      destination.Config.projectId)
+  );
+}
+
+module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };

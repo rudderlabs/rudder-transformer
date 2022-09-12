@@ -303,7 +303,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
       .setStatus(400)
       .setMessage("Invalid Order Completed event")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
@@ -342,7 +342,7 @@ function processGroup(message, destination) {
       .setStatus(400)
       .setMessage("Invalid groupId")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
@@ -440,7 +440,7 @@ function process(event) {
         .setStatus(400)
         .setMessage("Message type is not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           meta:

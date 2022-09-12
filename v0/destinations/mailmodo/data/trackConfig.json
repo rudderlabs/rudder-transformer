@@ -1,0 +1,21 @@
+[
+    {
+      "destKey": "event_name",
+      "sourceKeys": "event",
+      "sourceFromGenericMap": false,
+      "required": true
+    },
+    {
+      "destKey": "email",
+      "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+      "sourceFromGenericMap": false,
+      "required": true
+    },
+    {
+      "destKey": "event_properties",
+      "sourceKeys": "properties",
+      "sourceFromGenericMap": false,
+      "required": false
+    }
+  ]
+  

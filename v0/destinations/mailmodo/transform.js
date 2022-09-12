@@ -9,6 +9,7 @@ const {
 const {
   defaultRequestConfig,
   constructPayload,
+  isDefinedAndNotNullAndNotEmpty,
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
@@ -16,6 +17,7 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents
 } = require("../../util");
+const { deduceAddressFields } = require("./utils");
 
 const responseBuilder = responseConfgs => {
   const { payload, apiKey, endpoint } = responseConfgs;
@@ -41,7 +43,15 @@ const identifyResponseBuilder = (message, { Config }) => {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
-  payload.apiKey = apiKey;
+
+  if (!payload.email) {
+    throw new CustomError("Email is required for identify call", 400);
+  }
+  if (isDefinedAndNotNullAndNotEmpty(message.address)) {
+    const { address1, address2 } = deduceAddressFields(message);
+    payload.data.address1 = address1;
+    payload.data.address2 = address2;
+  }
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
@@ -110,8 +120,15 @@ function batchEvents(arrayChunks) {
 
     // extracting destination
     // from the first event in a batch
+    // let listName = "rudderstack";
     const { destination } = chunk[0];
-    const { apiKey, listName } = destination.Config;
+    const { apiKey } = destination.Config;
+    let { listName } = destination.Config;
+
+    // listName will be "rudderstack", if it is not provided
+    if (typeof listName === "string" && listName.trim().length === 0) {
+      listName = "rudderstack";
+    }
 
     let batchEventResponse = defaultBatchRequestConfig();
 
@@ -241,6 +258,12 @@ const processRouterDest = async inputs => {
 
   // batching identifyArrayChunks
   let identifyBatchedResponseList = [];
+
+  if (identifyEventChunks.length) {
+    identifyArrayChunks.push(identifyEventChunks);
+    identifyEventChunks = [];
+  }
+
   if (identifyArrayChunks.length) {
     identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
   }

@@ -6,37 +6,20 @@
         "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
-          "users": [
+          "listName": "abc",
+          "values": [
             {
-              "email": "manashi@website.com",
-              "userId": "abcdeeeeeeeexxxx102",
-              "dataFields": {
-                "city": "Bangalore",
-                "name": "manashi",
-                "email": "manashi@website.com",
-                "country": "India"
-              },
-              "preferUserId": true,
-              "mergeNestedObjects": true
+              "email": "test@abc.com"
             },
             {
-              "email": "lynnanderson@smith.net",
-              "dataFields": {
-                "administrative_unit": "Minnesota",
-                "am_pm": "AM",
-                "boolean": true,
-                "firstname": "Jacqueline",
-                "pPower": "AM",
-                "userId": "Jacqueline",
-                "email": "lynnanderson@smith.net"
-              },
-              "userId": "lynnanderson@smith.net",
-              "preferUserId": true,
-              "mergeNestedObjects": true
-            },
-            {
-              "currentEmail": "old@email.com",
-              "newEmail": "new@email.com"
+              "email": "test@abc.com",
+              "data": {
+                "name": "Rohith Kumar Kaza",
+                "first_name": "Rohith",
+                "last_name": "Kaza",
+                "age": 21,
+                "phone": "9876543210"
+              }
             }
           ]
         }
@@ -46,21 +29,18 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://api.iterable.com/api/users/bulkUpdate"
+      "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch"
     },
     "metadata": [
       {
-        "jobId": 3
+        "jobId": 2
       },
       {
-        "jobId": 5
-      },
-      {
-        "jobId": 8
+        "jobId": 4
       }
     ],
     "batched": true,
@@ -68,10 +48,50 @@
     "destination": {
       "Config": {
         "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-        "mapToSingleEvent": false,
-        "trackAllPages": true,
-        "trackCategorisedPages": false,
-        "trackNamedPages": false
+        "listName": "abc"
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "email": "test@abc.com",
+          "event_name": "Email Opened",
+          "event_properties": {
+            "email": "test@abc.com",
+            "sendlocation": "akashdeep@gmail.com",
+            "sendtime": "2020-01-01",
+            "subject": "resume validate"
+          }
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.mailmodo.com/api/v1/addEvent"
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "listName": "abc"
       },
       "Enabled": true
     }

@@ -38,8 +38,14 @@ describe(`${name} Tests`, () => {
   });
   describe("Router", () => {
     it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+      try {
+        const routerOutput = await transformer.processRouterDest(
+          inputRouterData
+        );
+        expect(routerOutput).toEqual(expectedRouterData);
+      } catch (error) {
+        expect(error.message).toEqual(expectedRouterData.error);
+      }
     });
   });
 });

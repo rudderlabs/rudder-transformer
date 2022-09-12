@@ -27,7 +27,7 @@
       "userId": "sampath"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "statusCode": 200
   },
@@ -91,7 +91,7 @@
       "userId": "sampath"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 3
     },
     "statusCode": 200
   },
@@ -125,5 +125,27 @@
       "userId": "sampath"
     },
     "statusCode": 200
+  },
+  {
+    "statusCode": 400,
+    "error": "message type \"page\" not supported for \"heap\"",
+    "statTags": {
+      "stage": "transform",
+      "scope": "cdk",
+      "meta": "badEvent",
+      "destType": "HEAP",
+      "errorAt": "proc"
+    }
+  },
+  {
+    "statusCode": 400,
+    "error": "\"type\" is a required field and it must be a string",
+    "statTags": {
+      "stage": "transform",
+      "scope": "exception",
+      "meta": "badEvent",
+      "destType": "HEAP",
+      "errorAt": "proc"
+    }
   }
 ]

@@ -1,4 +1,4 @@
-function commonPostMapper(event, mappedPayload, rudderContext) {
+async function commonPostMapper(event, mappedPayload, rudderContext) {
   const { destination } = event;
   const payload = mappedPayload;
   if (payload.properties && payload.properties.idempotencyKey) {

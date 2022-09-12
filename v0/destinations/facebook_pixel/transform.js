@@ -277,7 +277,7 @@ const responseBuilderSimple = (
     if (Object.keys(customData).length === 0 && category.standard) {
       throw new ErrorBuilder()
         .setMessage(
-          `No valid fields are present in 'properties' for a standard event. The excluded fields are ${FB_PIXEL_DEFAULT_EXCLUSION}`
+          `After excluding ${FB_PIXEL_DEFAULT_EXCLUSION}, no fields are present in 'properties' for a standard event`
         )
         .setStatus(400)
         .setStatTags({

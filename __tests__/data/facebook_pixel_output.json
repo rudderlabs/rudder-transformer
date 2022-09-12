@@ -556,7 +556,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Category must be must be a string"
+    "error": "Category must be a string"
   },
   {
     "version": "1",

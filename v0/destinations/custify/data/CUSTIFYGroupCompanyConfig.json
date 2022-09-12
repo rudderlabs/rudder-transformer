@@ -31,7 +31,7 @@
   },
   {
     "destKey": "monthly_revenue",
-    "sourceKeys": ["traits.monthly_revenue", "traits.mrr"],
+    "sourceKeys": ["traits.monthly_revenue", "traits.monthlyRevenue", "traits.mrr"],
     "required": false
   },
   {

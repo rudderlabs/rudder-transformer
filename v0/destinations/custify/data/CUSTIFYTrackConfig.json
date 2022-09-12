@@ -19,8 +19,9 @@
   {
     "destKey": "created_at",
     "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
+      "timestamp",
+      "originalTimestamp"
+      
     ],
     "required": true
   }

@@ -12,6 +12,13 @@ const {
 } = require("../../util");
 const { processIdentify, processTrack, processGroup } = require("./util");
 
+/**
+ * This function validates the message and builds the response
+ * it handles for all the supported events for custify
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
 const validateAndBuildResponse = async (message, destination) => {
   const messageType = message.type.toLowerCase();
   const response = defaultRequestConfig();

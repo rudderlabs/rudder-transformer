@@ -21,7 +21,8 @@ const {
  *
  * Craete or update company based on the group call parameters
  * @param {*} companyPayload
- * @param {*} param1
+ * @param {*} Config
+ * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
 const createUpdateCompany = async (companyPayload, Config) => {
   const companyResponse = await httpPOST(
@@ -57,6 +58,14 @@ const getCompanyAttribute = (companyId, remove = false) => {
   return null;
 };
 
+/**
+ * This function is used for post processing the user payload
+ * the role of this fucntion is to format name and company id
+ * also it sets the custom attributes to the user payload
+ * @param {*} userPayload
+ * @param {*} message
+ * @returns {*} userPayload
+ */
 const postPorcessUserPayload = (userPayload, message) => {
   const finalPayload = userPayload;
 
@@ -94,6 +103,12 @@ const postPorcessUserPayload = (userPayload, message) => {
   return removeUndefinedAndNullValues(finalPayload);
 };
 
+/**
+ * This function is used to process the identify call
+ * @param {*} message
+ * @returns {*} userPayload
+ * @api https://docs.custify.com/#tag/People/paths/~1people/post
+ */
 const processIdentify = message => {
   const userPayload = constructPayload(
     message,
@@ -102,6 +117,15 @@ const processIdentify = message => {
   return postPorcessUserPayload(userPayload, message);
 };
 
+/**
+ * This function is used to process the track call
+ * it will send an event to the custify along with
+ * the properties passed through the track call
+ * @param {*} message
+ * @param {*} param1
+ * @returns {*} eventPayload
+ * @api https://docs.custify.com/#tag/Event/paths/~1event/post
+ */
 const processTrack = (message, { Config }) => {
   const eventPayload = constructPayload(
     message,
@@ -136,6 +160,17 @@ const processTrack = (message, { Config }) => {
   return removeUndefinedAndNullValues({ ...eventPayload, metadata });
 };
 
+/**
+ * This function is used to process the group call
+ * this function creates or updates the company details
+ * based on the groupId passed and maps the user to the company
+ * based on the userId passed
+ * @param {*} message
+ * @param {*} param1
+ * @returns {*} userPayload
+ * @api https://docs.custify.com/#tag/People/paths/~1people/post
+ * @api https://docs.custify.com/#tag/Company/paths/~1company/post
+ */
 const processGroup = async (message, { Config }) => {
   let companyPayload = constructPayload(
     message,

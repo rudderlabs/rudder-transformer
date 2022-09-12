@@ -25,7 +25,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -55,7 +55,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -85,7 +85,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -115,7 +115,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -145,7 +145,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -175,7 +175,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -205,7 +205,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -235,7 +235,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   },
@@ -265,7 +265,7 @@
             }
           }
         ],
-        "destType": "marketo_bulk_upload"
+        "destType": "MARKETO_BULK_UPLOAD"
       }
     }
   }

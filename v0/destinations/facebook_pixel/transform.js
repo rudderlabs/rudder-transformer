@@ -276,7 +276,9 @@ const responseBuilderSimple = (
     }
     if (Object.keys(customData).length === 0 && category.standard) {
       throw new ErrorBuilder()
-        .setMessage("No properties for the event so the event cannot be sent.")
+        .setMessage(
+          `No valid fields are present in 'properties' for a standard event. The excluded fields are ${FB_PIXEL_DEFAULT_EXCLUSION}`
+        )
         .setStatus(400)
         .setStatTags({
           ...statTags,

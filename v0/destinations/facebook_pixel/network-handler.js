@@ -43,21 +43,12 @@ const RETRYABLE_ERROR_CODES = [1, 2, 3, 4, 341, 368, 5000, 190];
   }
 }
  */
-const errorDetailMap = {
+const errorDetailsMap = {
   100: {
     // This error talks about event being sent after seven days or so
     // Kind of a "badEvent" case?
     2804003: {
       status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
-    },
-    // This is for testing purpose, not to committed
-    // TODO: Remove after testing
-    33: {
-      status: 402,
       statTags: {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
@@ -77,36 +68,36 @@ const errorDetailMap = {
   }
 };
 
-const getErrorDetailFromErrorMap = error => {
+const getErrorDetailsFromErrorMap = error => {
   const { code, error_subcode: subCode } = error;
-  if (!isEmpty(errorDetailMap[code]) && subCode) {
-    return errorDetailMap[code][subCode];
+  if (!isEmpty(errorDetailsMap[code]) && subCode) {
+    return errorDetailsMap[code][subCode];
   }
   // This is done to fix the eslint error, if no return is defined
   return undefined;
 };
 
 const getStatusAndStats = error => {
-  const errorDetail = getErrorDetailFromErrorMap(error);
-  let defaultStatus = 400;
+  const errorDetail = getErrorDetailsFromErrorMap(error);
+  let errorStatus = 400;
   let statTags = { ...defaultStatTags };
   if (!isEmpty(errorDetail)) {
-    defaultStatus = errorDetail.status;
+    errorStatus = errorDetail.status;
     statTags = {
       ...statTags,
       ...errorDetail.statTags
     };
   }
   if (RETRYABLE_ERROR_CODES.includes(error.code)) {
-    defaultStatus = 500;
+    errorStatus = 500;
     statTags = {
       ...statTags,
-      meta: getDynamicMeta(defaultStatus)
+      meta: getDynamicMeta(errorStatus)
     };
   }
 
   return {
-    status: defaultStatus,
+    status: errorStatus,
     statTags
   };
 };
@@ -139,9 +130,10 @@ const fbPixelResponseHandler = destinationResponse => {
 };
 
 const networkHandler = function() {
-  this.processAxiosResponse = processAxiosResponse;
-  this.proxy = proxyRequest;
+  // The order of execution also happens in this way
   this.prepareProxyRequest = prepareProxyRequest;
+  this.proxy = proxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = fbPixelResponseHandler;
 };
 

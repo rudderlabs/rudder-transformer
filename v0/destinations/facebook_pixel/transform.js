@@ -8,12 +8,12 @@ const {
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
-  STANDARD_ECOMM_EVENTS_TYPE
+  STANDARD_ECOMM_EVENTS_TYPE,
+  DESTINATION
 } = require("./config");
 const { EventType } = require("../../../constants");
 
 const {
-  CustomError,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -26,12 +26,21 @@ const {
   getValidDynamicFormConfig
 } = require("../../util");
 
+const ErrorBuilder = require("../../util/error");
+
 const {
   deduceFbcParam,
   formatRevenue,
   getContentType,
   transformedPayloadData
 } = require("./utils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+
+const statTags = {
+  destType: DESTINATION,
+  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE
+};
 
 /**
  *
@@ -67,7 +76,16 @@ const handleOrder = (message, categoryToContent) => {
         }
       }
     } else {
-      throw new CustomError("Product is not an object. Event not sent", 400);
+      throw new ErrorBuilder()
+        .setMessage("Product is not an object, Event not sent")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+      // throw new CustomError("Product is not an object. Event not sent", 400);
     }
   }
 
@@ -107,7 +125,16 @@ const handleProductListViewed = (message, categoryToContent) => {
           });
         }
       } else {
-        throw new CustomError("Product is not an object. Event not sent", 400);
+        throw new ErrorBuilder()
+          .setMessage("Product is not an object, Event not sent")
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+        // throw new CustomError("Product is not an object. Event not sent", 400);
       }
     });
   }
@@ -226,7 +253,16 @@ const responseBuilderSimple = (
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw new CustomError("Invalid Action Source type", 400);
+      throw new ErrorBuilder()
+        .setMessage("Invalid Action Source type")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
+      // throw new CustomError("Invalid Action Source type", 400);
     }
   }
   if (category.type !== "identify") {
@@ -242,10 +278,19 @@ const responseBuilderSimple = (
       category.standard = true;
     }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw new CustomError(
-        "No properties for the event so the event cannot be sent.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage("No properties for the event so the event cannot be sent.")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+      // throw new CustomError(
+      //   "No properties for the event so the event cannot be sent.",
+      //   400
+      // );
     }
     customData = transformedPayloadData(
       message,
@@ -297,10 +342,20 @@ const responseBuilderSimple = (
            */
           const validQueryType = ["string", "number", "boolean"];
           if (query && !validQueryType.includes(typeof query)) {
-            throw new CustomError(
-              "'query' should be in string format only",
-              400
-            );
+            throw new ErrorBuilder()
+              .setMessage("'query' should be in string format only")
+              .setStatus(400)
+              .setStatTags({
+                ...statTags,
+                meta:
+                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                    .BAD_EVENT
+              })
+              .build();
+            // throw new CustomError(
+            //   "'query' should be in string format only",
+            //   400
+            // );
           }
           customData = {
             ...customData,
@@ -325,7 +380,17 @@ const responseBuilderSimple = (
           commonData.event_name = category.event;
           break;
         default:
-          throw new CustomError("This standard event does not exist", 400);
+          throw new ErrorBuilder()
+            .setMessage("Product is not an object, Event not sent")
+            .setStatus(400)
+            .setStatTags({
+              ...statTags,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_EVENT
+            })
+            .build();
+        // throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
         ? message.properties.currency || "USD"
@@ -370,7 +435,16 @@ const responseBuilderSimple = (
         .map(String)
         .join(",");
     } else if (typeof customData.content_category === "object") {
-      throw new CustomError("Category must be must be a string");
+      throw new ErrorBuilder()
+        .setMessage("Category must be a string")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
+      // throw new CustomError("Category must be must be a string");
     } else {
       customData.content_category = String(customData.content_category);
     }
@@ -399,15 +473,31 @@ const responseBuilderSimple = (
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new ErrorBuilder()
+    .setMessage("Payload could not be constructed")
+    .setStatus(400)
+    .setStatTags({
+      ...statTags,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
+  // throw new CustomError("Payload could not be constructed", 400);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("Message Type is not present. Aborting message.")
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
+    // throw new CustomError(
+    //   "Message Type is not present. Aborting message.",
+    //   400
+    // );
   }
 
   const timeStamp = message.originalTimestamp || message.timestamp;
@@ -425,10 +515,21 @@ const processEvent = (message, destination) => {
       stats.increment("fb_pixel_timestamp_error", 1, {
         destinationId: destination.ID
       });
-      throw new CustomError(
-        "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future."
+        )
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+      // throw new CustomError(
+      //   "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+      //   400
+      // );
     }
   }
 
@@ -462,10 +563,21 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw new CustomError(
-          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
-          400
-        );
+        throw new ErrorBuilder()
+          .setMessage(
+            "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent."
+          )
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+          })
+          .build();
+        // throw new CustomError(
+        //   "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
+        //   400
+        // );
       }
     case EventType.PAGE:
     case EventType.SCREEN:
@@ -473,7 +585,16 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       if (!message.event) {
-        throw new CustomError("Event name is required", 400);
+        throw new ErrorBuilder()
+          .setMessage("Event name is required")
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+        // throw new CustomError("Event name is required", 400);
       }
       standard = eventsToEvents;
       if (standard) {
@@ -534,7 +655,16 @@ const processEvent = (message, destination) => {
       }
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new ErrorBuilder()
+        .setMessage("Message type not supported")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+    // throw new CustomError("Message type not supported", 400);
   }
   // build the response
   return responseBuilderSimple(

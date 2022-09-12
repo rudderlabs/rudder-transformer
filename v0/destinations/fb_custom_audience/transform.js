@@ -12,7 +12,8 @@ const {
   returnArrayOfSubarrays,
   CustomError,
   isDefinedAndNotNull,
-  flattenMap
+  flattenMap,
+  generateErrorObject
 } = require("../../util");
 
 const {
@@ -25,6 +26,7 @@ const {
 } = require("./config");
 
 const { MappedToDestinationKey } = require("../../../constants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const getSchemaForEventMappedToDest = message => {
   const mappedSchema = get(message, "context.destinationFields");
@@ -427,11 +429,16 @@ const processRouterDest = inputs => {
       });
       return responseList;
     } catch (error) {
+      const errObj = generateErrorObject(
+        error,
+        "FB_CUSTOM_AUDIENCE", // Preference is destination definition name
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      );
       return getErrorRespEvents(
         [input.metadata],
-        // eslint-disable-next-line no-nested-ternary
         400,
-        error.message || "Error occurred while processing payload."
+        error.message || "Error occurred while processing the payload.",
+        errObj.statTags
       );
     }
   });

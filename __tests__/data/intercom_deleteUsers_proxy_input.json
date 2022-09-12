@@ -3,7 +3,7 @@
     "request": {
       "body": [
         {
-          "destType": "intercom",
+          "destType": "INTERCOM",
           "userAttributes": [
             {
               "userId": "6188c2c5f47e464b4abf3235"
@@ -23,7 +23,7 @@
     "request": {
       "body": [
         {
-          "destType": "intercom",
+          "destType": "INTERCOM",
           "userAttributes": [
             {
               "userId": "6188c2c5f47e464b4abf3235"
@@ -40,7 +40,7 @@
     "request": {
       "body": [
         {
-          "destType": "intercom",
+          "destType": "INTERCOM",
           "userAttributes": [
             {
               "userId": "6188c2c5f47e464b4abf3235"
@@ -58,7 +58,7 @@
     "request": {
       "body": [
         {
-          "destType": "intercom",
+          "destType": "INTERCOM",
           "userAttributes": [
             {}
           ],

@@ -68,6 +68,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -173,6 +175,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -277,6 +281,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -381,6 +387,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "request_ip": "127.0.0.1"
     },

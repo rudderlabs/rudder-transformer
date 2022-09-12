@@ -1,0 +1,80 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": [
+      "traits.email",
+      "context.traits.email"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": [
+      "traits.phone",
+      "context.traits.phone"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "session_count",
+    "sourceKeys": [
+      "traits.session_count",
+      "context.traits.session_count"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "unsubscribed_from_emails",
+    "sourceKeys": [
+      "traits.unsubscribed_from_emails",
+      "context.traits.unsubscribed_from_emails"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "unsubscribed_from_calls",
+    "sourceKeys": [
+      "traits.unsubscribed_from_calls",
+      "context.traits.unsubscribed_from_calls"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": [
+      "traits.name",
+      "context.traits.name"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "signed_up_at",
+    "sourceKeys": [
+      "traits.createdAt",
+      "context.traits.createdAt"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
+    "required": false
+  }
+]

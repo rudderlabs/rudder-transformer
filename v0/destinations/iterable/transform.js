@@ -484,7 +484,7 @@ const processRouterDest = async inputs => {
       identifyEventChunks,
       IDENTIFY_MAX_BATCH_SIZE
     );
-    identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
+    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
   }
   // batching TrackArrayChunks
   let trackBatchedResponseList = [];
@@ -492,7 +492,7 @@ const processRouterDest = async inputs => {
     // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     // transformed payload of (n) batch size
     const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
-    trackBatchedResponseList = await batchEvents(trackArrayChunks);
+    trackBatchedResponseList = batchEvents(trackArrayChunks);
   }
   let batchedResponseList = [];
   // appending all kinds of batches

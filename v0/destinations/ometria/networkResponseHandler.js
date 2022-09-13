@@ -26,7 +26,7 @@ const responseTransform = destResponse => {
       .setMessage(`${data.rejected} requests rejected`)
       .setDestinationResponse({ ...respBody, success: false })
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(destResponse.Status || 400)
@@ -38,7 +38,7 @@ const responseTransform = destResponse => {
       .setMessage("Request failed for Ometria")
       .setDestinationResponse({ ...respBody, success: false })
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(destResponse.Status || 400)

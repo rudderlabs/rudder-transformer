@@ -28,10 +28,11 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -44,10 +45,11 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -60,10 +62,11 @@
         "status": 400
       },
       "statTags": {
-        "destination": "any",
+        "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -76,10 +79,11 @@
         "status": 500
       },
       "statTags": {
-        "destination": "any",
+        "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -92,10 +96,11 @@
         "status": 500
       },
       "statTags": {
-        "destination": "any",
+        "destType": "ANY",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },

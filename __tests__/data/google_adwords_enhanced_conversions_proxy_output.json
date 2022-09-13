@@ -13,9 +13,10 @@
         }
       ],
       "statTags": {
-        "destination": "google_adwords_enhanced_conversions",
+        "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
         "stage": "responseTransform",
-        "scope": "exception"
+        "scope": "exception",
+        "errorAt": "proxy"
       },
       "authErrorCategory": "REFRESH_TOKEN"
     }

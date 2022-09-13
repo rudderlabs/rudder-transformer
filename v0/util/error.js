@@ -31,7 +31,12 @@ function ErrorBuilder() {
   };
 
   this.setStatTags = arg => {
-    this.err.statTags = arg;
+    this.err.statTags = {
+      destType: arg.destType || arg.destination,
+      stage: arg.stage,
+      scope: arg.scope,
+      meta: arg.meta
+    };
     return this;
   };
 

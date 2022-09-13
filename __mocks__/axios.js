@@ -23,6 +23,7 @@ const {
   wootricGetRequestHandler,
   wootricPostRequestHandler
 } = require("./wootric.mock");
+const { userGetRequestHandler, userPutRequestHandler } = require("./user.mock");
 const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
 const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
@@ -118,6 +119,11 @@ function get(url, options) {
       resolve(wootricGetRequestHandler(url));
     });
   }
+  if (url.includes("https://commander.user.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(userGetRequestHandler(url));
+    });
+  }
   if (url.includes("https://api.clickup.com")) {
     return Promise.resolve(clickUpGetRequestHandler(url));
   }
@@ -210,6 +216,11 @@ function put(url, payload, options) {
       resolve(
         gainsightRequestHandler(getParamEncodedUrl(url, options), payload)
       );
+    });
+  }
+  if (url.includes("https://commander.user.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(userPutRequestHandler(url));
     });
   }
   if (url.includes("https://api.aptrinsic.com")) {

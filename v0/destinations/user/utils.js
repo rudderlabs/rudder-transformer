@@ -32,6 +32,21 @@ const prepareUrl = (endpoint, appSubdomain) => {
 };
 
 /**
+ * Returns company address in string format
+ * @param {*} endpoint
+ * @param {*} appSubdomain
+ * @returns
+ */
+const prepareCompanyAddress = address => {
+  let companyAddress = "";
+  const keys = Object.keys(address);
+  keys.forEach(key => {
+    companyAddress += address[key];
+  });
+  return companyAddress;
+};
+
+/**
  * Returns the remaining keys from traits
  * Remaining keys : keys which is not included in webapp configuration mapping and not included in source-dest keys file
  * @param {*} traits
@@ -184,6 +199,10 @@ const createCompany = async (message, destination) => {
     message
   );
   payload = { ...payload, ...companyAttributes };
+  if (payload.address) {
+    const { address } = payload;
+    payload.address = prepareCompanyAddress(address);
+  }
   let { endpoint } = CONFIG_CATEGORIES.CREATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
@@ -222,6 +241,10 @@ const updateCompany = async (message, destination, company) => {
     message
   );
   payload = { ...payload, ...companyAttributes };
+  if (payload.address) {
+    const { address } = payload;
+    payload.address = prepareCompanyAddress(address);
+  }
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
@@ -271,7 +294,6 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
   if (processedUserResponse.status === 200) {
     return processedUserResponse.response;
   }
-
   return null;
 };
 
@@ -437,7 +459,6 @@ const retrieveUserFromLookup = async (message, destination) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   const userKey = getDestinationExternalID(message, "userKey");
-
   if (isDefinedAndNotNullAndNotEmpty(userKey)) {
     return getUserByUserKey(apiKey, userKey, appSubdomain);
   }

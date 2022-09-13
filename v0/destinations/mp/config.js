@@ -1,5 +1,8 @@
 const { getMappingConfig } = require("../../util");
 
+const BASE_ENDPOINT = "https://api.mixpanel.com";
+const BASE_ENDPOINT_EU = "https://api-eu.mixpanel.com";
+
 const ConfigCategory = {
   IDENTIFY: {
     name: "MPIdentifyConfig"
@@ -44,5 +47,7 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   MP_IDENTIFY_EXCLUSION_LIST,
-  GEO_SOURCE_ALLOWED_VALUES
+  GEO_SOURCE_ALLOWED_VALUES,
+  BASE_ENDPOINT,
+  BASE_ENDPOINT_EU
 };

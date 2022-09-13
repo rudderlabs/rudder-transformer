@@ -98,7 +98,10 @@ const processRouterDest = async inputs => {
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, "HS");
+  const { objectType } = getDestinationExternalIDInfoForRetl(
+    inputs[0].message,
+    "HS"
+  );
   if (
     mappedToDestination &&
     GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())

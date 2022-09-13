@@ -5,9 +5,9 @@ const BASE_ENDPOINT = "https://api.custify.com";
 // track events | Track
 const TRACK_ENDPOINT = `${BASE_ENDPOINT}/event`;
 // Create, Update a Person with a company | Identify
-const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/people`;
+const USER_ENDPOINT = `${BASE_ENDPOINT}/people`;
 // Create, update, delete a company | Group
-const GROUP_ENDPOINT = `${BASE_ENDPOINT}/company`;
+const COMAPNY_ENDPOINT = `${BASE_ENDPOINT}/company`;
 
 const ConfigCategory = {
   TRACK: {
@@ -15,12 +15,16 @@ const ConfigCategory = {
     name: "CUSTIFYTrackConfig"
   },
   IDENTIFY: {
-    endpoint: IDENTIFY_ENDPOINT,
+    endpoint: USER_ENDPOINT,
     name: "CUSTIFYIdentifyConfig"
   },
-  GROUP: {
-    endpoint: GROUP_ENDPOINT,
-    name: "CUSTIFYGroupConfig"
+  GROUP_COMPANY: {
+    endpoint: COMAPNY_ENDPOINT,
+    name: "CUSTIFYGroupCompanyConfig"
+  },
+  GROUP_USER: {
+    endpoint: USER_ENDPOINT,
+    name: "CUSTIFYGroupUserConfig"
   }
 };
 

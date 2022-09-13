@@ -27,7 +27,14 @@ const defaultStatTags = {
  * 2. https://developers.facebook.com/docs/marketing-api/error-reference/
  *   - The doc seems to be more related to Marketing API
  */
-const RETRYABLE_ERROR_CODES = [1, 2, 3, 4, 341, 368, 5000, 190];
+const RETRYABLE_ERROR_CODES = [1, 2, 3, 341, 368, 5000, 190];
+
+/**
+ * These error codes were chosen from the below reference:
+ * https://developers.facebook.com/docs/marketing-api/error-reference/
+ *
+ */
+const THROTTLED_ERROR_CODES = [4, 17];
 
 /**
  * Only under below mentioned scenario(s), add the errorCodes, subCodes etc,. to this map
@@ -46,7 +53,6 @@ const RETRYABLE_ERROR_CODES = [1, 2, 3, 4, 341, 368, 5000, 190];
 const errorDetailsMap = {
   100: {
     // This error talks about event being sent after seven days or so
-    // Kind of a "badEvent" case?
     2804003: {
       status: 400,
       statTags: {
@@ -56,8 +62,8 @@ const errorDetailsMap = {
     }
   },
   1: {
-    // This error talks about event being sent after seven days or so
-    // Kind of a "badEvent" case?
+    // An unknown error occurred.
+    // This error may occur if you set level to adset but the correct value should be campaign
     99: {
       status: 400,
       statTags: {
@@ -90,6 +96,14 @@ const getStatusAndStats = error => {
   }
   if (RETRYABLE_ERROR_CODES.includes(error.code)) {
     errorStatus = 500;
+    statTags = {
+      ...statTags,
+      meta: getDynamicMeta(errorStatus)
+    };
+  }
+
+  if (THROTTLED_ERROR_CODES.includes(error.code)) {
+    errorStatus = 429;
     statTags = {
       ...statTags,
       meta: getDynamicMeta(errorStatus)

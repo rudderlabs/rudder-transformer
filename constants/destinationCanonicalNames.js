@@ -56,6 +56,7 @@ const DestCanonicalNames = {
   clickup: ["ClickUp", "clickup", "CLICKUP", "clickUp", "Clickup"],
   zapier: ["zapier", "Zapier", "ZAPIER"],
   shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"],
+  woopra: ["WOOPRA", "Woopra", "woopra"],
   monday: ["monday", "MONDAY", "monDay", "MonDay"]
 };
 

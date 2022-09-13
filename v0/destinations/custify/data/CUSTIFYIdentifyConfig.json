@@ -1,0 +1,62 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "session_count",
+    "sourceKeys": ["traits.sessionCount", "context.traits.sessionCount"],
+    "required": false
+  },
+  {
+    "destKey": "unsubscribed_from_emails",
+    "sourceKeys": [
+      "traits.unsubscribedFromEmails",
+      "context.traits.unsubscribedFromEmails"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "unsubscribed_from_calls",
+    "sourceKeys": [
+      "traits.unsubscribedFromCalls",
+      "context.traits.unsubscribedFromCalls"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "signed_up_at",
+    "sourceKeys": [
+      "traits.signedUpAt",
+      "context.traits.signedUpAt",
+      "timestamp",
+      "originalTimestamp"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": ["traits", "context.traits"],
+    "required": false
+  }
+]

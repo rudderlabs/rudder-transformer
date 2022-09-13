@@ -50,7 +50,7 @@ const getStatusAndStats = (code, stage) => {
     return {
       status: 500,
       stats: {
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
@@ -60,7 +60,7 @@ const getStatusAndStats = (code, stage) => {
   return {
     status: 400,
     stats: {
-      destination: DESTINATION,
+      destType: DESTINATION,
       stage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
       meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE

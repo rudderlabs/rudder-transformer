@@ -12,7 +12,8 @@ const cdkEnabledDestinations = {
   "lytics": true,
   "kochava": true,
   "statsig": true,
-  "new_relic": true
+  "new_relic": true,
+  "zapier": true
 }
 
 function getDestFromTestFile(filePath) {
@@ -84,11 +85,9 @@ function executeTransformationTest(dest, transformAt) {
         let actualData;
         try {
           if ((iscdkDest || cdkEnabled) && transformAt === 'processor') {
+            const baseConfig = await ConfigFactory.getConfig(dest);
             // We currently support processor transformation only in CDK
-            actualData = await Executor.execute(
-              tcInput,
-              ConfigFactory.getConfig(dest)
-            )
+            actualData = await Executor.execute(tcInput, baseConfig);
           } else {
             const version = "v0";
             const transformer = require(

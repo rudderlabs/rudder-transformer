@@ -153,16 +153,11 @@ const trackResponseBuilder = (message, { Config }) => {
   const properties = get(message, "properties");
   if (properties && allowedProperties && Array.isArray(allowedProperties)) {
     allowedProperties.forEach(item => {
-      if (
-        properties[item.propertyName] ||
-        properties[item.propertyName] === ""
-      ) {
-        if (eventAsTags && typeof properties[item.propertyName] === "string") {
-          tags[`${event}_${[item.propertyName]}`] =
-            properties[item.propertyName];
-        } else if (typeof properties[item.propertyName] === "string") {
-          tags[item.propertyName] = properties[item.propertyName];
-        }
+      if (typeof properties[item.propertyName] === "string") {
+        const tagName = eventAsTags
+          ? `${event}_${[item.propertyName]}`
+          : item.propertyName;
+        tags[tagName] = properties[item.propertyName];
       }
     });
   }
@@ -250,7 +245,7 @@ const process = event => {
 };
 
 const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
@@ -258,17 +253,11 @@ const processRouterDest = inputs => {
   const respList = Promise.all(
     inputs.map(async input => {
       try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
+        const message = input.message.statusCode
+          ? input.message
+          : process(input);
         return getSuccessRespEvents(
-          process(input),
+          message,
           [input.metadata],
           input.destination
         );

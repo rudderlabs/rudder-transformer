@@ -41,13 +41,23 @@ const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 // Router Test files for rETL sources
 const inputRouterDataFilerETL = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input_rETL.json`)
+  path.resolve(__dirname, `./data/${integration}_router_rETL_input.json`)
 );
 const outputRouterDataFilerETL = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output_rETL.json`)
+  path.resolve(__dirname, `./data/${integration}_router_rETL_output.json`)
 );
 const inputRouterDatarETL = JSON.parse(inputRouterDataFilerETL);
 const expectedRouterDatarETL = JSON.parse(outputRouterDataFilerETL);
+
+// Router Test files for rETL sources (legacy)
+const inputRouterDataFilerETLLegacy = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_input.json`)
+);
+const outputRouterDataFilerETLLegacy = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_legacy_rETL_output.json`)
+);
+const inputRouterDatarETLLegacy = JSON.parse(inputRouterDataFilerETLLegacy);
+const expectedRouterDatarETLLegacy = JSON.parse(outputRouterDataFilerETLLegacy);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -90,15 +100,29 @@ describe(`${name} Tests`, () => {
       );
       expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
+
+    it("should transform association events", async () => {
+      const assocInput = JSON.parse(fs.readFileSync(
+        path.resolve(__dirname, `data/${integration}_router_associations_rEtl_input.json`)
+      ));
+      const assocExpectedOutput = JSON.parse(fs.readFileSync(
+        path.resolve(__dirname, `data/${integration}_router_associations_rEtl_output.json`)
+      ));
+      const actualOutput = await transformer.processRouterDest(assocInput);
+
+      expect(actualOutput).toEqual(assocExpectedOutput);
+    });
+  });
+  // rETL Sources
+  describe("Router Tests for rETL sources (Legacy)", () => {
+    it("Payload", async () => {
+      const routerOutputrETLLegacy = await transformer.processRouterDest(
+        inputRouterDatarETLLegacy
+      );
+      expect(routerOutputrETLLegacy).toEqual(expectedRouterDatarETLLegacy);
+    });
   });
 });
 
-// rETL Sources
-describe("Router Tests for rETL sources", () => {
-  it("Payload", async () => {
-    const routerOutputrETL = await transformer.processRouterDest(
-      inputRouterDatarETL
-    );
-    expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
-  });
-});
+
+

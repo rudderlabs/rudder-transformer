@@ -602,7 +602,7 @@ function processSingleMessage(message, destination) {
             .setStatus(400)
             .setMessage("Group call parameters are not valid")
             .setStatTags({
-              destination: DESTINATION,
+              destType: DESTINATION,
               stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
               scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
               meta:
@@ -627,7 +627,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("message type not defined")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -653,7 +653,7 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:

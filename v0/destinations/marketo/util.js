@@ -34,7 +34,7 @@ const marketoApplicationErrorHandler = (
       .setDestinationResponse(marketoResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
@@ -49,7 +49,7 @@ const marketoApplicationErrorHandler = (
       .setDestinationResponse(marketoResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
@@ -64,7 +64,7 @@ const marketoApplicationErrorHandler = (
       .setDestinationResponse(marketoResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
@@ -95,7 +95,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     .setMessage(`Error occured ${sourceMessage}`)
     .setDestinationResponse(destResponse)
     .setStatTags({
-      destination: DESTINATION,
+      destType: DESTINATION,
       stage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
       meta: getDynamicMeta(status)
@@ -122,7 +122,7 @@ const sendGetRequest = async (url, options) => {
  * @returns { response, status }
  */
 const sendPostRequest = async (url, data, options) => {
-  const clientResponse = await httpPOST(url, options);
+  const clientResponse = await httpPOST(url, data, options);
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };
@@ -141,7 +141,7 @@ const responseHandler = (destinationResponse, _dest) => {
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)

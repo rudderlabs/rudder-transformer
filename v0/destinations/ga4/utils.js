@@ -68,6 +68,11 @@ const GA4_RESERVED_PARAMETER_EXCLUSION = [
 ];
 
 /**
+ * GA4 parameters names exclusion list that is passed for a message type
+ */
+const GA4_PARAMETERS_EXCLUSION = ["engagementTimeMsec", "sessionId"];
+
+/**
  * event parameter names cannot start with reserved prefixes
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  * @param {*} parameter
@@ -321,7 +326,9 @@ const getGA4ExclusionList = mappingJson => {
 
   // We are mapping "products" to "items", so to remove redundancy we should not send products again
   ga4ExclusionList.push("products");
-  ga4ExclusionList = ga4ExclusionList.concat(GA4_RESERVED_PARAMETER_EXCLUSION);
+  ga4ExclusionList = ga4ExclusionList
+    .concat(GA4_RESERVED_PARAMETER_EXCLUSION)
+    .concat(GA4_PARAMETERS_EXCLUSION);
 
   return ga4ExclusionList;
 };
@@ -387,7 +394,7 @@ const responseHandler = (destinationResponse, dest) => {
         .isTransformResponseFailure(true)
         .setDestinationResponse(response?.validationMessages[0]?.description)
         .setStatTags({
-          destination: dest,
+          destType: dest,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           meta: getDynamicMeta(status)
@@ -406,7 +413,7 @@ const responseHandler = (destinationResponse, dest) => {
       .isTransformResponseFailure(true)
       .setDestinationResponse(destinationResponse)
       .setStatTags({
-        destination: dest,
+        destType: dest,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)
@@ -432,6 +439,7 @@ module.exports = {
   networkHandler,
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
+  GA4_PARAMETERS_EXCLUSION,
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,

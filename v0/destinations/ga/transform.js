@@ -22,11 +22,10 @@ const {
   formatValue,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
-const { validatePayloadSize } = require("./utils");
 
 const gaDisplayName = "Google Analytics";
 
@@ -150,7 +149,7 @@ function processPageViews(message, destination) {
           .setStatus(400)
           .setMessage(`Invalid Url: ${documentUrl}`)
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -593,7 +592,7 @@ function processProductListEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductListEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -693,7 +692,7 @@ function processProductEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown ProductEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -750,7 +749,7 @@ function processTransactionEvent(message, destination) {
         .setMessage("unknown TransactionEvent type")
         .isExplicit(true)
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -793,7 +792,7 @@ function processTransactionEvent(message, destination) {
       .setStatus(400)
       .setMessage("No product information supplied for transaction event")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
@@ -840,7 +839,7 @@ function processEComGenericEvent(message, destination) {
           .setStatus(400)
           .setMessage("unknown TransactionEvent type")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -873,7 +872,7 @@ function processSingleMessage(message, destination) {
       .setStatus(400)
       .setMessage("Message type is not present")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -895,7 +894,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("server side identify is not on")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -920,7 +919,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("Event name is not present/is not a string")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -1016,7 +1015,7 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -1039,9 +1038,9 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const respList = inputs.map(input => {
@@ -1061,17 +1060,7 @@ const processRouterDest = inputs => {
         input.destination
       );
     } catch (error) {
-      const errObj = generateErrorObject(
-        error,
-        DESTINATION,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
-      return getErrorRespEvents(
-        [input.metadata],
-        error.status || 400,
-        error.message || "Error occurred while processing payload.",
-        errObj.statTags
-      );
+      return handleRtTfSingleEventError(input, error, DESTINATION);
     }
   });
   return respList;

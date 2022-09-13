@@ -309,6 +309,7 @@
       "request_ip": "[::1]:62312",
       "sentAt": "2020-01-16T13:23:23.782Z",
       "timestamp": "2021-02-16T18:53:20.866+05:30",
+      "originalTimestamp": "2021-02-16T18:53:20.866+05:30",
       "type": "track",
       "userId": "sampath"
     }

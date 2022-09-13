@@ -15,17 +15,21 @@ const mapping = JSON.parse(
 
 function settingProperties(event, message) {
   const flatEvent = event;
-  delete flatEvent.recipientData;
-  delete flatEvent.recordedAt;
+  delete flatEvent?.recipientData;
+  delete flatEvent?.recordedAt;
+  delete flatEvent?.triggerData?.formSubmissionData?.recordedAt;
+  delete flatEvent?.triggerData?.formSubmissionData?.recipientData;
   message.properties = removeUndefinedAndNullAndEmptyValues(
     flattenJson(flatEvent)
   );
 
   // deleting already mapped fields
-  delete message.properties["triggerData.email"];
-  delete message.properties["triggerData.userId"];
-  delete message.properties["recipientData.email"];
-  delete message.properties.recipientEmail;
+  delete message?.properties["triggerData.email"];
+  delete message?.properties["triggerData.userId"];
+  delete message?.properties["recipientData.email"];
+  delete message?.properties?.recipientEmail;
+  delete message?.properties["triggerData.formSubmissionData.email"];
+  delete message?.properties["triggerData.formSubmissionData.recipientEmail"];
 }
 
 function process(event) {
@@ -73,6 +77,10 @@ function process(event) {
   if (event?.recordedAt?.ts) {
     message.originalTimestamp = new Date(
       event.recordedAt.ts * 1000
+    ).toISOString();
+  } else if (event?.triggerData?.formSubmissionData?.recordedAt?.ts) {
+    message.originalTimestamp = new Date(
+      event.triggerData.formSubmissionData.recordedAt.ts * 1000
     ).toISOString();
   }
 

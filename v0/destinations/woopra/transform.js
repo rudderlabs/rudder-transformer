@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { set } = require("lodash");
+const { set, get } = require("lodash");
 const {
   defaultRequestConfig,
   CustomError,
@@ -19,6 +19,7 @@ const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {
     throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
   }
+  set(payload, "timestamp", get(payload, "timestamp").toString());
   set(payload, "Project", projectName);
   const response = defaultRequestConfig();
   response.params = removeUndefinedAndNullValues(payload);

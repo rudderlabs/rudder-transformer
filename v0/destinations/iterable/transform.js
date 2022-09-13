@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const get = require("get-value");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
@@ -15,10 +16,11 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  isAppleFamily
+  isAppleFamily,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -429,19 +431,17 @@ function getEventChunks(
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
-  let identifyEventChunks = []; // list containing identify events in batched format
-  let trackEventChunks = []; // list containing track events in batched format
+  const identifyEventChunks = []; // list containing identify events in batched format
+  const trackEventChunks = []; // list containing track events in batched format
   const eventResponseList = []; // list containing other events in batched format
-  const identifyArrayChunks = [];
-  const trackArrayChunks = [];
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -451,23 +451,6 @@ const processRouterDest = async inputs => {
             trackEventChunks,
             eventResponseList
           );
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
-          if (
-            trackEventChunks.length &&
-            (trackEventChunks.length >= TRACK_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            trackArrayChunks.push(trackEventChunks);
-            trackEventChunks = [];
-          }
         } else {
           // if not transformed
           getEventChunks(
@@ -480,46 +463,36 @@ const processRouterDest = async inputs => {
             trackEventChunks,
             eventResponseList
           );
-
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
-          if (
-            trackEventChunks.length &&
-            (trackEventChunks.length >= TRACK_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            trackArrayChunks.push(trackEventChunks);
-            trackEventChunks = [];
-          }
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "ITERABLE"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );
 
   // batching identifyArrayChunks
   let identifyBatchedResponseList = [];
-  if (identifyArrayChunks.length) {
-    identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
+  if (identifyEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const identifyArrayChunks = _.chunk(
+      identifyEventChunks,
+      IDENTIFY_MAX_BATCH_SIZE
+    );
+    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
   }
   // batching TrackArrayChunks
   let trackBatchedResponseList = [];
-  if (trackArrayChunks.length) {
-    trackBatchedResponseList = await batchEvents(trackArrayChunks);
+  if (trackEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+    trackBatchedResponseList = batchEvents(trackArrayChunks);
   }
   let batchedResponseList = [];
   // appending all kinds of batches

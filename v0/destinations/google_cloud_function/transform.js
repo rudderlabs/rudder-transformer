@@ -3,7 +3,8 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getSuccessRespEvents,
-  getErrorRespEvents
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 
 const {
@@ -53,9 +54,12 @@ function batchEvents(successRespList, maxBatchSize = 10) {
 
 // Router transform with batching by default
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(
+    inputs,
+    "GOOGLE_CLOUD_FUNCTION"
+  );
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const successResponseList = [];
@@ -81,13 +85,12 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "GOOGLE_CLOUD_FUNCTION"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

@@ -100,16 +100,28 @@ describe(`${name} Tests`, () => {
       );
       expect(routerOutputrETL).toEqual(expectedRouterDatarETL);
     });
+
+    it("should transform association events", async () => {
+      const assocInput = JSON.parse(fs.readFileSync(
+        path.resolve(__dirname, `data/${integration}_router_associations_rEtl_input.json`)
+      ));
+      const assocExpectedOutput = JSON.parse(fs.readFileSync(
+        path.resolve(__dirname, `data/${integration}_router_associations_rEtl_output.json`)
+      ));
+      const actualOutput = await transformer.processRouterDest(assocInput);
+
+      expect(actualOutput).toEqual(assocExpectedOutput);
+    });
   });
   // rETL Sources
-describe("Router Tests for rETL sources (Legacy)", () => {
-  it("Payload", async () => {
-    const routerOutputrETLLegacy = await transformer.processRouterDest(
-      inputRouterDatarETLLegacy
-    );
-    expect(routerOutputrETLLegacy).toEqual(expectedRouterDatarETLLegacy);
+  describe("Router Tests for rETL sources (Legacy)", () => {
+    it("Payload", async () => {
+      const routerOutputrETLLegacy = await transformer.processRouterDest(
+        inputRouterDatarETLLegacy
+      );
+      expect(routerOutputrETLLegacy).toEqual(expectedRouterDatarETLLegacy);
+    });
   });
-});
 });
 
 

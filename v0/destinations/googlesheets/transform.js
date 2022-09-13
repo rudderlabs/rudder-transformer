@@ -3,8 +3,9 @@ const get = require("get-value");
 const {
   getValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  CustomError,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
 } = require("../../util");
 
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
@@ -119,9 +120,9 @@ const process = event => {
 const processRouterDest = async inputs => {
   const successRespList = [];
   const errorRespList = [];
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "GOOGLESHEETS");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   await Promise.all(
     inputs.map(async input => {
@@ -133,17 +134,12 @@ const processRouterDest = async inputs => {
         // if not transformed
         successRespList.push(processSingleMessage(input));
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response
-              ? error.response.status
-              : error.code
-              ? error.code
-              : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          "GOOGLESHEETS"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

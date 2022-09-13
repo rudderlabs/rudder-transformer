@@ -3,7 +3,7 @@
     "request": {
       "body": [
         {
-          "destType": "braze",
+          "destType": "BRAZE",
           "userAttributes": [
             {
               "userId": "test_user_id"
@@ -24,7 +24,7 @@
     "request": {
       "body": [
         {
-          "destType": "braze",
+          "destType": "BRAZE",
           "userAttributes": [
             {
               "userId": "test_user_id"
@@ -41,7 +41,7 @@
     "request": {
       "body": [
         {
-          "destType": "braze",
+          "destType": "BRAZE",
           "userAttributes": [
             {
               "userId": "test_user_id"
@@ -61,7 +61,7 @@
     "request": {
       "body": [
         {
-          "destType": "braze",
+          "destType": "BRAZE",
           "userAttributes": [
             {
               "name": "a"

@@ -37,6 +37,11 @@
     "metadata": [{ "jobId": "2" }],
     "batched": false,
     "statusCode": 400,
-    "error": "[GCF]:: Url not found. Aborting"
+    "error": "[GCF]:: Url not found. Aborting",
+    "statTags": {
+      "destType": "GOOGLE_CLOUD_FUNCTION",
+      "scope": "exception",
+      "stage": "transform"
+    }
   }
 ]

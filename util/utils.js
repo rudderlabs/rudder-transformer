@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 class RespStatusError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -5,11 +6,16 @@ class RespStatusError extends Error {
   }
 }
 
+class RetryRequestError extends RespStatusError {
+  constructor(message) {
+    super(message, 809);
+  }
+}
+
 const transformerStatusHandler = (status, entity, versionId, url) => {
   if (status >= 500) {
-    throw new RespStatusError(
-      `Error occurred while fetching ${entity} with version id ${versionId}`,
-      809
+    throw new RetryRequestError(
+      `Error occurred while fetching ${entity} with version id ${versionId}`
     );
   } else if (status !== 200) {
     throw new RespStatusError(
@@ -21,5 +27,6 @@ const transformerStatusHandler = (status, entity, versionId, url) => {
 
 module.exports = {
   RespStatusError,
+  RetryRequestError,
   transformerStatusHandler
 };

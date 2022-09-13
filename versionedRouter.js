@@ -32,7 +32,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
-const { RespStatusError } = require("./util/utils");
+const { RespStatusError, RetryRequestError } = require("./util/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -374,6 +374,7 @@ if (startDestTransformer) {
         { processSessions }
       );
 
+      let ctxStatusCode = 200;
       const transformedEvents = [];
       let librariesVersionIDs = [];
       if (events[0].libraries) {
@@ -458,6 +459,9 @@ if (startDestTransformer) {
               logger.error(error);
               let status = 400;
               const errorString = error.toString();
+              if (error instanceof RetryRequestError) {
+                ctxStatusCode = error.statusCode;
+              }
               if (error instanceof RespStatusError) {
                 status = error.statusCode;
               }
@@ -499,6 +503,7 @@ if (startDestTransformer) {
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.status = ctxStatusCode;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
         processSessions

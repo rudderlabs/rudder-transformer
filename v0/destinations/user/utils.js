@@ -2,7 +2,6 @@ const get = require("get-value");
 const {
   CustomError,
   toUnixTimestamp,
-  getHashFromArray,
   constructPayload,
   getIntegrationsObj,
   getValueFromMessage,
@@ -60,14 +59,14 @@ const getUserDestAttributes = (userAttributesMap, message) => {
   const properties = {};
   let traits = getFieldValueFromMessage(message, "traits");
   const contextTraits = get(message, "context.traits");
-  const userAttributes = Object.keys(userAttributesMap);
   traits = { ...traits, ...contextTraits };
   const sourceKeys = [...identifySourceKeys];
-  userAttributes.forEach(attribute => {
-    if (traits[attribute]) {
-      const destAttribute = userAttributesMap[attribute];
-      properties[destAttribute] = traits[attribute];
-      sourceKeys.push(attribute);
+
+  userAttributesMap.forEach(attribute => {
+    const { from, to } = attribute;
+    if (traits[from]) {
+      properties[to] = traits[from];
+      sourceKeys.push(from);
     }
   });
 
@@ -118,6 +117,7 @@ const getCompanyDestAttributes = (companyAttributesMap, message) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const properties = {};
   const sourceKeys = [...groupSourceKeys];
+
   companyAttributesMap.forEach(attribute => {
     const { from, to } = attribute;
     if (traits[from]) {
@@ -483,8 +483,7 @@ const createUserPayloadBuilder = (message, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
   );
   const { userAttributesMapping } = destination.Config;
-  const userAttributesMap = getHashFromArray(userAttributesMapping);
-  const userAttributes = getUserDestAttributes(userAttributesMap, message);
+  const userAttributes = getUserDestAttributes(userAttributesMapping, message);
   payload = { ...payload, ...userAttributes };
   const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
   const method = "POST";
@@ -503,8 +502,7 @@ const updateUserPayloadBuilder = (message, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
   );
   const { userAttributesMapping } = destination.Config;
-  const userAttributesMap = getHashFromArray(userAttributesMapping);
-  const userAttributes = getUserDestAttributes(userAttributesMap, message);
+  const userAttributes = getUserDestAttributes(userAttributesMapping, message);
   payload = { ...payload, ...userAttributes };
   const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
   const method = "PUT";

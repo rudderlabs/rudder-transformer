@@ -147,7 +147,9 @@ const processTrack = (message, { Config }) => {
   const { properties } = message;
   if (properties) {
     eventPayload.company_id =
-      properties.organization_id || properties.company_id;
+      properties.organization_id ||
+      properties.company_id ||
+      properties.companyId;
 
     Object.keys(properties).forEach(key => {
       const val = properties[key];

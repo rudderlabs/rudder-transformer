@@ -296,7 +296,10 @@ const legacyBatchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       } else {
-        throw new CustomError("[HS]::  rETL -  Error in getting operation", 400);
+        throw new CustomError(
+          "[HS]::  rETL -  Error in getting operation",
+          400
+        );
       }
     } else {
       // making chunks for identify

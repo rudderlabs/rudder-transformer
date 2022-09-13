@@ -66,7 +66,7 @@ function responseBuilderSimple(message, category, destination) {
             .setStatus(400)
             .setMessage("Email is required for track calls")
             .setStatTags({
-              destination: DESTINATION,
+              destType: DESTINATION,
               stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
               scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
               meta:

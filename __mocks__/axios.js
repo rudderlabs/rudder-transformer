@@ -23,6 +23,7 @@ const {
   wootricGetRequestHandler,
   wootricPostRequestHandler
 } = require("./wootric.mock");
+const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
 const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
 const { mondayPostRequestHandler } = require("./monday.mock");
@@ -170,6 +171,14 @@ function post(url, payload) {
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {
       resolve(wootricPostRequestHandler(url, payload));
+    });
+  }
+  if (
+    url.includes("https://api.mixpanel.com/engage/") ||
+    url.includes("https://api-eu.mixpanel.com/engage/")
+  ) {
+    return new Promise(resolve => {
+      resolve(mixpanelPostRequestHandler(url, payload));
     });
   }
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {

@@ -31,10 +31,11 @@
         "status": 201
       },
       "statTags": {
-        "destination": "braze",
+        "destType": "BRAZE",
         "scope": "api",
         "stage": "responseTransform",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -51,10 +52,11 @@
       "message": "[Braze Response Handler] Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
-        "destination": "braze",
+        "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -67,10 +69,11 @@
         "status": 400
       },
       "statTags": {
-        "destination": "braze",
+        "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -80,10 +83,11 @@
       "message": "[Braze Response Handler] Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
-        "destination": "braze",
+        "destType": "BRAZE",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   }

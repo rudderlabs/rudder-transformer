@@ -19,12 +19,15 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 // Utility method to construct the header to be used for SFDC API calls
 // The "Authorization: Bearer <token>" header element needs to be passed for
@@ -98,7 +101,11 @@ function responseBuilderSimple(
         rawPayload[`${key}__c`] = traits[key];
       }
     });
-  } else if (salesforceType === "Contact" && mapProperty && !mappedToDestination) {
+  } else if (
+    salesforceType === "Contact" &&
+    mapProperty &&
+    !mappedToDestination
+  ) {
     rawPayload = constructPayload(
       { ...traits, ...getFirstAndLastName(traits, "n/a") },
       identifyContactMappingJson
@@ -361,9 +368,9 @@ async function process(event) {
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SALESFORCE");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   let authorizationData;
@@ -373,7 +380,12 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
       400,
-      `Authorisation failed: ${error.message}`
+      `Authorisation failed: ${error.message}`,
+      {
+        destType: "SALESFORCE",
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
+      }
     );
     return [respEvents];
   }
@@ -401,11 +413,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
-        );
+        return handleRtTfSingleEventError(input, error, "SALESFORCE");
       }
     })
   );

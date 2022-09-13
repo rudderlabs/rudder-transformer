@@ -8,11 +8,13 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!userAttributes) {
     throw new CustomError("userAttributes for deletion not present", 400);
   }
-  const { apiKey } = config;
-  const { userId } = userAttributes;
   if (!config) {
     throw new CustomError("Config for deletion not present", 400);
   }
+
+  const { apiKey } = config;
+  const { userId } = userAttributes;
+
   if (!apiKey) {
     throw new CustomError("api key for deletion not present", 400);
   }

@@ -56,7 +56,8 @@ const DestCanonicalNames = {
   clickup: ["ClickUp", "clickup", "CLICKUP", "clickUp", "Clickup"],
   zapier: ["zapier", "Zapier", "ZAPIER"],
   shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"],
-  monday: ["monday", "MONDAY", "monDay", "MonDay"]
+  monday: ["monday", "MONDAY", "monDay", "MonDay"],
+  user: ["user", "USER", "User"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

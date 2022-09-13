@@ -1,0 +1,320 @@
+[
+  {
+    "description": "No Message type",
+    "input": {
+      "message": {
+        "userId": "test@123",
+        "context": {
+          "traits": {
+            "email": "test@rudderstack.com",
+            "username": "Samle_putUserName",
+            "firstName": "uday"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "user": {
+            "lookup": "email"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander",
+          "userEvents": [
+            {
+              "rsEventName": "login",
+              "userEventName": "product viewed"
+            }
+          ],
+          "companyAttributesMapping": [
+            { "from": "category", "to": "companycategory" },
+            { "from": "owner", "to": "companyowner" }
+          ]
+        }
+      }
+    },
+    "output": {
+      "error": "Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "Unsupported Type",
+    "input": {
+      "message": {
+        "userId": "test@123",
+        "type": "trackUser",
+        "context": {
+          "traits": {
+            "email": "test@rudderstack.com",
+            "firstName": "test",
+            "lastName": "rudderstack",
+            "age": 15,
+            "gender": "male",
+            "status": "user",
+            "city": "Kalkata",
+            "country": "india",
+            "tags": ["productuser"],
+            "phone": "9225467887"
+          },
+          "externalId": [
+            {
+              "type": "userKey",
+              "id": "masncbjasbdljajdl"
+            }
+          ]
+        },
+        "traits": {
+          "googleUrl": "www.google.com"
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "Message type trackuser not supported."
+    }
+  },
+  {
+    "description": "track call without event",
+    "input": {
+      "message": {
+        "userId": "user@123",
+        "type": "track",
+        "properties": {
+          "category": "e-commerce",
+          "activity": "user logged in"
+        },
+        "traits": {
+          "email": "rudderstack@test.com"
+        },
+        "integrations": {
+          "user": {
+            "lookup": "email"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "parameter event is required"
+    }
+  },
+  {
+    "description": "page call without page url",
+    "input": {
+      "message": {
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.5"
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.5"
+          },
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "properties": {
+          "path": "/tests/html/index2.html",
+          "referrer": "",
+          "search": "",
+          "title": ""
+        },
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "type": "page",
+        "userId": "user@123"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "Parameter url is required"
+    }
+  },
+  {
+    "description": "page call without page path",
+    "input": {
+      "message": {
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.5"
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.5"
+          },
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "originalTimestamp": "2020-01-24T06:29:02.358Z",
+        "properties": {
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html"
+        },
+        "timestamp": "2020-01-24T11:59:02.402+05:30",
+        "type": "page",
+        "userId": "user@123"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "Parameter path is required"
+    }
+  },
+  {
+    "description": "page call without timestamp",
+    "input": {
+      "message": {
+        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.5"
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.5"
+          },
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+        "properties": {
+          "path": "/Testing/App_for_LaunchDarkly/ourSdk.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost/tests/html/index2.html"
+        },
+        "type": "page",
+        "userId": "user@123"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "Parameter timestamp is required"
+    }
+  },
+  {
+    "description": "group call without name",
+    "input": {
+      "message": {
+        "anonymousId": "507f191e810c19729de860ea",
+        "channel": "browser",
+        "context": {
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "messageId": "022bb90c-bbac-11e4-8dfc-aa07a5b093db",
+        "receivedAt": "2015-02-23T22:28:55.387Z",
+        "sentAt": "2015-02-23T22:28:55.111Z",
+        "timestamp": "2015-02-23T22:28:55.111Z",
+        "traits": {
+          "email": "business@rudderstack.com",
+          "plan": "premium",
+          "logins": 5,
+          "address": {
+            "street": "6th St",
+            "city": "San Francisco",
+            "state": "CA",
+            "postalCode": "94103",
+            "country": "USA"
+          }
+        },
+        "type": "group",
+        "userId": "user@123"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "Tprf8jJFTBRE9cGoLCpUIc1u19NdXtKxI8f82dkFMXSDD68MiDnK1inhXln02YbO",
+          "appSubdomain": "commander"
+        }
+      }
+    },
+    "output": {
+      "error": "Parameter name is required"
+    }
+  }
+]

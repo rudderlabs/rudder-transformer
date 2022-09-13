@@ -82,7 +82,6 @@
   ],
 
   "state":["traits.state", "context.traits.state"],
-  "zipcode":["traits.zipcode", "context.traits.zipcode", "traits.zip", "context.traits.zip"],
   "country":["traits.country", "context.traits.country"],
   "city":"traits.address.city",
 

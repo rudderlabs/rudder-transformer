@@ -26,7 +26,7 @@ const validateAndBuildResponse = async (message, destination) => {
   let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-      responseBody = processIdentify(message);
+      responseBody = processIdentify(message, destination);
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.TRACK:
@@ -41,13 +41,9 @@ const validateAndBuildResponse = async (message, destination) => {
       throw new CustomError("Message type not supported", 400);
   }
 
-  const { sendAnonymousId } = destination.Config;
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
     responseBody = getFieldValueFromMessage(message, "traits");
-  }
-  if (sendAnonymousId && !responseBody.user_id) {
-    responseBody.user_id = message.anonymousId;
   }
   response.body.JSON = responseBody;
   response.method = defaultPostRequestConfig.requestMethod;

@@ -106,14 +106,19 @@ const postPorcessUserPayload = (userPayload, message) => {
 /**
  * This function is used to process the identify call
  * @param {*} message
+ * @param {*} Config
  * @returns {*} userPayload
  * @api https://docs.custify.com/#tag/People/paths/~1people/post
  */
-const processIdentify = message => {
+const processIdentify = (message, { Config }) => {
   const userPayload = constructPayload(
     message,
     MappingConfig[ConfigCategory.IDENTIFY.name]
   );
+  const { sendAnonymousId } = Config;
+  if (sendAnonymousId && !userPayload.user_id) {
+    userPayload.user_id = message.anonymousId;
+  }
   return postPorcessUserPayload(userPayload, message);
 };
 
@@ -131,7 +136,10 @@ const processTrack = (message, { Config }) => {
     message,
     MappingConfig[ConfigCategory.TRACK.name]
   );
-  // pass only string, number, boolean properties
+  const { sendAnonymousId } = Config;
+  if (sendAnonymousId && !eventPayload.user_id) {
+    eventPayload.user_id = message.anonymousId;
+  }
   if (!eventPayload.user_id && !eventPayload.email) {
     throw new CustomError("Email or userId is mandatory", 400);
   }
@@ -197,6 +205,10 @@ const processGroup = async (message, { Config }) => {
     message,
     MappingConfig[ConfigCategory.GROUP_USER.name]
   );
+  const { sendAnonymousId } = Config;
+  if (sendAnonymousId && !userPayload.user_id) {
+    userPayload.user_id = message.anonymousId;
+  }
   const processsedUserPayload = postPorcessUserPayload(userPayload, message);
   return processsedUserPayload;
 };

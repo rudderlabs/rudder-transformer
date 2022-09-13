@@ -15,21 +15,32 @@ const mapping = JSON.parse(
 
 function settingProperties(event, message) {
   const flatEvent = event;
+
+  // deleting object fields(already mapped) before flattening the event
   delete flatEvent?.recipientData;
   delete flatEvent?.recordedAt;
   delete flatEvent?.triggerData?.formSubmissionData?.recordedAt;
   delete flatEvent?.triggerData?.formSubmissionData?.recipientData;
+
+  // flattening the event and assigning it to properties
   message.properties = removeUndefinedAndNullAndEmptyValues(
     flattenJson(flatEvent)
   );
 
+  // fields that are already mapped
+  const excludeFields = [
+    "triggerData.email",
+    "triggerData.userId",
+    "recipientData.email",
+    "recipientEmail",
+    "triggerData.formSubmissionData.email",
+    "triggerData.formSubmissionData.recipientEmail"
+  ];
+
   // deleting already mapped fields
-  delete message?.properties["triggerData.email"];
-  delete message?.properties["triggerData.userId"];
-  delete message?.properties["recipientData.email"];
-  delete message?.properties?.recipientEmail;
-  delete message?.properties["triggerData.formSubmissionData.email"];
-  delete message?.properties["triggerData.formSubmissionData.recipientEmail"];
+  for (let i = 0; i < excludeFields.length; i++) {
+    delete message?.properties[excludeFields[i]];
+  }
 }
 
 function process(event) {

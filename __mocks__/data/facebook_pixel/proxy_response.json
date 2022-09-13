@@ -49,5 +49,18 @@
       }
     },
     "status": 500
+  },
+  "https://graph.facebook.com/v13.0/1234567891234569/events?access_token=invalid_account_id_valid_access_token": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "User request limit reached",
+          "type": "OAuthException",
+          "code": 17,
+          "fbtrace_id": "facebook_px_trace_id_5"
+        }
+      }
+    },
+    "status": 500
   }
 }

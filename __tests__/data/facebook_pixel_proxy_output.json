@@ -78,5 +78,28 @@
             "meta": "throttled"
         }
     }
-  }
+  },
+  {
+    "output": {
+        "status": 400,
+        "message": "[Error occurred while processing response for destination facebook_pixel]: Facebook Pixel: Failed with Unsupported post request. Object with ID '1176111403192540' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
+        "destinationResponse": {
+            "error": {
+                "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+                "type": "GraphMethodException",
+                "code": 100,
+                "error_subcode": 33,
+                "fbtrace_id": "facebook_px_trace_id_5"
+            },
+            "status": 400
+        },
+        "statTags": {
+            "errorAt": "proxy",
+            "destType": "FACEBOOK_PIXEL",
+            "stage": "responseTransform",
+            "scope": "api",
+            "meta": "abortable"
+        }
+    }
+}
 ]

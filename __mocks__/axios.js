@@ -19,6 +19,7 @@ const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
+const custifyPostRequestHandler = require("./custify.mock");
 const {
   wootricGetRequestHandler,
   wootricPostRequestHandler
@@ -193,6 +194,9 @@ function post(url, payload) {
     return new Promise((resolve, reject) => {
       resolve(mondayPostRequestHandler(url));
     });
+  }
+  if (url.includes("https://api.custify.com")) {
+    return Promise.resolve(custifyPostRequestHandler(url));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

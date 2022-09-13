@@ -1,0 +1,36 @@
+[
+  {
+    "triggerData": {
+      "data": {},
+      "triggerSource": "CsvList",
+      "email": "gouhgc@mailmodo.com",
+      "triggerDetails": "file:1a69df39hfbfg4e0b-8b5c-73776157aa37/7647792f-4ebc-4f9d-ac79-05fb0356137e",
+      "userId": "d3775892hvh4f2f-b9d5-e49810eb2cae",
+      "journeyId": "1a69df39hgvh4e0b-8b5c-73776157aa37",
+      "eventProperty": {}
+    }
+  },
+  {
+    "fuuid": "27905",
+    "next-step-id": "success",
+    "total-steps": "3",
+    "responseId": "b9a5d224-cc5a-4e64-9800-5a3db9515fdf",
+    "recipientEmail": "sudip.paul21997@gmail.com",
+    "formId": "formosztd5",
+    "recordedAt": {
+      "ts": 1662695704,
+      "date": "2022-09-09",
+      "hour": 9,
+      "minute": 25
+    },
+    "submissionSource": "amp",
+    "elementjbtz42": "Everything ",
+    "element8jzo13": ["Reliable", "High Quality", "Useful"],
+    "recipientData": { "email": "sudip.paul21997@gmail.com" },
+    "recommend": "9",
+    "liking": "upvote",
+    "satisfaction": "4",
+    "campaignId": "0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd",
+    "campaignName": "Campaign-testing"
+  }
+]

@@ -1,21 +1,5 @@
 [
   {
-    "destKey": "conversions[0].customVariables.conversionCustomVariable",
-    "sourceKeys": "properties.conversionCustomVariable",
-    "required": false,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
-    "destKey": "conversions[0].customVariables.value",
-    "sourceKeys": "properties.value",
-    "required": false,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
     "destKey": "conversions[0].callerId",
     "sourceKeys": "properties.callerId",
     "required": true
@@ -26,16 +10,8 @@
     "required": true
   },
   {
-    "destKey": "conversions[0].conversionAction",
-    "sourceKeys": "properties.conversionAction",
-    "required": true,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
     "destKey": "conversions[0].conversionDateTime",
-    "sourceKeys": "properties.conversionDateTime",
+    "sourceKeys": ["properties.conversionDateTime", "originalTimestamp"],
     "required": true,
     "metadata": {
       "type": "toString"
@@ -43,7 +19,12 @@
   },
   {
     "destKey": "conversions[0].conversionValue",
-    "sourceKeys": "properties.conversionValue",
+    "sourceKeys": [
+      "properties.conversionValue",
+      "properties.total",
+      "properties.value",
+      "properties.revenue"
+    ],
     "required": false,
     "metadata": {
       "type": "toNumber"

@@ -78,7 +78,6 @@
         "thirdPartyUserId": "thirdPartyUserId",
         "conversionEnvironment": "WEB",
         "gclid": "gclid",
-        "conversionAction": "customer",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "conversionValue": "1",
         "currency": "GBP"
@@ -98,30 +97,54 @@
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
         "customerId": "962-581-2972",
-        "eventsToStandard": [
+        "eventsToOfflineConversionsTypeMapping": [
           {
-            "from": "download",
+            "from": "Sign up completed",
             "to": "click"
           },
           {
-            "from": "Product Searched",
-            "to": "call"
-          },
-          {
-            "from": "download",
-            "to": "click"
-          },
-          {
-            "from": "download",
+            "from": "Download",
             "to": "call"
           },
           {
             "from": "Promotion Clicked",
             "to": "click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "call"
           }
-        ]
+        ],
+        "eventsToConversionsNamesMapping": [
+          {
+            "from": "Sign up completed",
+            "to": "Sign-up - click"
+          },
+          {
+            "from": "Download",
+            "to": "Page view"
+          },
+          {
+            "from": "Promotion Clicked",
+            "to": "Sign-up - click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "search"
+          }
+        ],
+        "customVariables": [
+          {
+            "from": "value",
+            "to": "revenue"
+          },
+          {
+            "from": "total",
+            "to": "cost"
+          }
+        ],
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
     }
   },
@@ -206,7 +229,6 @@
 
         "callerId": "callerId",
         "callStartDateTime": "2022-08-28 15:01:30+05:30",
-        "conversionAction": "customer",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
         "conversionValue": "1",
         "currency": "GBP"
@@ -226,30 +248,54 @@
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
         "customerId": "962-581-2972",
-        "eventsToStandard": [
+        "eventsToOfflineConversionsTypeMapping": [
           {
-            "from": "download",
+            "from": "Sign up completed",
             "to": "click"
           },
           {
-            "from": "Product Searched",
-            "to": "call"
-          },
-          {
-            "from": "download",
-            "to": "click"
-          },
-          {
-            "from": "download",
+            "from": "Download",
             "to": "call"
           },
           {
             "from": "Promotion Clicked",
             "to": "click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "call"
           }
-        ]
+        ],
+        "eventsToConversionsNamesMapping": [
+          {
+            "from": "Sign up completed",
+            "to": "Sign-up - click"
+          },
+          {
+            "from": "Download",
+            "to": "Page view"
+          },
+          {
+            "from": "Promotion Clicked",
+            "to": "Sign-up - click"
+          },
+          {
+            "from": "Product Searched",
+            "to": "search"
+          }
+        ],
+        "customVariables": [
+          {
+            "from": "value",
+            "to": "revenue"
+          },
+          {
+            "from": "total",
+            "to": "cost"
+          }
+        ],
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
     }
   }

@@ -1,14 +1,15 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  getValueFromMessage,
   defaultRequestConfig,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  defaultPostRequestConfig,
+  simpleProcessRouterDest,
+  getHashFromArray
 } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const {
   trackClickConversionsMapping,
   CLICK_CONVERSION,
@@ -17,7 +18,13 @@ const {
 } = require("./config");
 const { validateDestinationConfig, getAccessToken } = require("./utils");
 
-const getConversions = (message, metadata, { Config }, conversionType) => {
+const getConversions = (
+  message,
+  metadata,
+  { Config },
+  event,
+  conversionType
+) => {
   let payload;
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -32,46 +39,72 @@ const getConversions = (message, metadata, { Config }, conversionType) => {
   payload.partialFailure = true;
 
   const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  response.params = { event: message.event, customerId: filteredCustomerId };
+  response.params = {
+    event,
+    customerId: filteredCustomerId,
+    customVariables: Config.customVariables,
+    properties: message.properties
+  };
   response.body.JSON = payload;
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata)}`,
     "Content-Type": "application/json",
-    "developer-token": getValueFromMessage(metadata, "secret.developer_token")
+    "developer-token": get(metadata, "secret.developer_token")
   };
 
   return response;
 };
 
 const trackResponseBuilder = (message, metadata, destination) => {
-  let { eventsToStandard } = destination.Config;
+  let {
+    eventsToConversionsNamesMapping,
+    eventsToOfflineConversionsTypeMapping
+  } = destination.Config;
   let { event } = message;
   if (!event) {
-    throw new CustomError(
-      "[Google Ads Offline Conversions]:: Event name is not present",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google Ads Offline Conversions]:: Event name is not present"
+      )
+      .setStatus(400)
+      .build();
   }
 
   event = event.toLowerCase().trim();
 
-  eventsToStandard = getHashFromArrayWithDuplicate(eventsToStandard);
+  eventsToConversionsNamesMapping = getHashFromArray(
+    eventsToConversionsNamesMapping
+  );
+
+  eventsToOfflineConversionsTypeMapping = getHashFromArrayWithDuplicate(
+    eventsToOfflineConversionsTypeMapping
+  );
 
   const responseList = [];
-  if (!eventsToStandard[event]) {
-    throw new CustomError(`Event name '${event}' is not valid`, 400);
+  if (
+    !eventsToConversionsNamesMapping[event] ||
+    !eventsToOfflineConversionsTypeMapping[event]
+  ) {
+    throw new ErrorBuilder()
+      .setMessage(`Event name '${event}' is not valid`)
+      .setStatus(400)
+      .build();
   }
 
-  Object.keys(eventsToStandard).forEach(key => {
-    if (key === event) {
-      eventsToStandard[event].forEach(conversionType => {
-        responseList.push(
-          getConversions(message, metadata, destination, conversionType)
-        );
-      });
-    }
+  eventsToOfflineConversionsTypeMapping[event].forEach(conversionType => {
+    responseList.push(
+      getConversions(
+        message,
+        metadata,
+        destination,
+        eventsToConversionsNamesMapping[event],
+        conversionType
+      )
+    );
   });
+
   return responseList;
 };
 
@@ -79,59 +112,38 @@ const process = async event => {
   const { message, metadata, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "[Google Ads Offline Conversions]:: Message type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google Ads Offline Conversions]:: Message type is not present. Aborting message."
+      )
+      .setStatus(400)
+      .build();
   }
 
   validateDestinationConfig(destination);
 
   const messageType = message.type.toLowerCase();
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, metadata, destination);
-      break;
-    default:
-      throw new CustomError(
-        `[Google Ads Offline Conversions]:: Message type ${messageType} not supported`,
-        400
-      );
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, metadata, destination);
+  } else {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[Google Ads Offline Conversions]:: Message type ${messageType} not supported`
+      )
+      .setStatus(400)
+      .build();
   }
 
   return response;
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : error.status || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "Google_adwords_offline_conversions",
+    process
   );
-
   return respList;
 };
 

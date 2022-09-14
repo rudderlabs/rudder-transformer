@@ -27,6 +27,11 @@ const CONVERSION_ACTION_ID_CACHE_TTL = process.env
   ? parseInt(process.env.CONVERSION_ACTION_ID_CACHE_TTL, 10)
   : 60 * 60 * 24; // in seconds - i.e 1 day
 
+const CONVERSION_CUSTOM_VARIABLE_CACHE_TTL = process.env
+  .CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
+  ? parseInt(process.env.CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, 10)
+  : 60 * 60 * 24; // in seconds - i.e 1 day
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
@@ -37,5 +42,6 @@ module.exports = {
   CLICK_CONVERSION,
   CALL_CONVERSION,
   SEARCH_STREAM,
-  CONVERSION_ACTION_ID_CACHE_TTL
+  CONVERSION_ACTION_ID_CACHE_TTL,
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
 };

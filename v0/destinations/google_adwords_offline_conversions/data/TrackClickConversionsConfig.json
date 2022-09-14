@@ -32,22 +32,6 @@
     }
   },
   {
-    "destKey": "conversions[0].customVariables.conversionCustomVariable",
-    "sourceKeys": "properties.conversionCustomVariable",
-    "required": false,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
-    "destKey": "conversions[0].customVariables.value",
-    "sourceKeys": "properties.value",
-    "required": false,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
     "destKey": "conversions[0].CartData.merchantId",
     "sourceKeys": "properties.merchantId",
     "required": false,
@@ -235,16 +219,8 @@
     "required": false
   },
   {
-    "destKey": "conversions[0].conversionAction",
-    "sourceKeys": "properties.conversionAction",
-    "required": true,
-    "metadata": {
-      "type": "toString"
-    }
-  },
-  {
     "destKey": "conversions[0].conversionDateTime",
-    "sourceKeys": "properties.conversionDateTime",
+    "sourceKeys": ["properties.conversionDateTime", "originalTimestamp"],
     "required": true,
     "metadata": {
       "type": "toString"

@@ -1,20 +1,31 @@
 const get = require("get-value");
 const set = require("set-value");
 const sha256 = require("sha256");
-const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
-const { CustomError, isHttpStatusSuccess } = require("../../util");
+const {
+  prepareProxyRequest,
+  httpPOST,
+  httpSend
+} = require("../../../adapters/network");
+const { isHttpStatusSuccess, getHashFromArray } = require("../../util");
 const Cache = require("../../util/cache");
 const ErrorBuilder = require("../../util/error");
 const {
   DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const { SEARCH_STREAM, CONVERSION_ACTION_ID_CACHE_TTL } = require("./config");
+const {
+  SEARCH_STREAM,
+  CONVERSION_ACTION_ID_CACHE_TTL,
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
+} = require("./config");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
+const conversionCustomVariableCache = new Cache(
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
+);
 
 /**
  * validate destination config and check for existence of data
@@ -22,10 +33,12 @@ const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
  */
 const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
-    throw new CustomError(
-      "[Google Ads Offline Conversions]:: Customer ID not found. Aborting",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google Ads Offline Conversions]:: Customer ID not found. Aborting"
+      )
+      .setStatus(400)
+      .build();
   }
 };
 
@@ -37,10 +50,12 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const getAccessToken = ({ secret }) => {
   if (!secret) {
-    throw new CustomError(
-      "[Google Ads Offline Conversions]:: OAuth - access token not found",
-      500
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Google Ads Offline Conversions]:: OAuth - access token not found"
+      )
+      .setStatus(500)
+      .build();
   }
   return secret.access_token;
 };
@@ -49,12 +64,11 @@ const getAccessToken = ({ secret }) => {
  * This function helps to determine the type of error occured. We set the authErrorCategory
  * as per the destination response that is received and take the decision whether
  * to refresh the access_token or disable the destination.
- * @param {*} code
- * @param {*} response
+ * @param {*} status
  * @returns
  */
-const getAuthErrCategory = code => {
-  switch (code) {
+const getAuthErrCategory = status => {
+  switch (status) {
     case 401:
       // UNAUTHORIZED
       return REFRESH_TOKEN;
@@ -67,13 +81,13 @@ const getAuthErrCategory = code => {
 };
 
 /**
- * get conversionActionId using the conversion name using searchStream endpoint
- * @param {*} method
+ * get conversionAction using the conversion name using searchStream endpoint
+ * @param {*} customerId
+ * @param {*} event
  * @param {*} headers
- * @param {*} params
  * @returns
  */
-const getConversionActionId = async (method, headers, params) => {
+const getConversionActionId = async (headers, params) => {
   const conversionActionIdKey = sha256(
     params.event + params.customerId
   ).toString();
@@ -81,33 +95,29 @@ const getConversionActionId = async (method, headers, params) => {
     const data = {
       query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`
     };
-    const requestBody = {
-      url: SEARCH_STREAM.replace(":customerId", params.customerId),
-      data,
-      headers,
-      method
+    const endpoint = SEARCH_STREAM.replace(":customerId", params.customerId);
+    const requestOptions = {
+      headers
     };
-    const response = await httpSend(requestBody);
-    if (
-      !response.success &&
-      !isHttpStatusSuccess(response.response.response.status)
-    ) {
+    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
+    searchStreamResponse = processAxiosResponse(searchStreamResponse);
+    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new ErrorBuilder()
-        .setStatus(response.response.response.status)
-        .setDestinationResponse(response.response.response.data)
+        .setStatus(searchStreamResponse.status)
+        .setDestinationResponse(searchStreamResponse.response)
         .setMessage(
-          `[Google Ads Offline Conversions]:: ${response.response.response.data[0].error.message} during google_ads_offline_conversions response transformation`
+          `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`
         )
         .setAuthErrorCategory(
-          getAuthErrCategory(get(response, "response.response.status"))
+          getAuthErrCategory(get(searchStreamResponse, "status"))
         )
         .build();
     }
-    const conversionActionId = get(
-      response,
-      "response.data.0.results.0.conversionAction.id"
+    const conversionAction = get(
+      searchStreamResponse,
+      "response.0.results.0.conversionAction.resourceName"
     );
-    if (!conversionActionId) {
+    if (!conversionAction) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage(
@@ -115,8 +125,90 @@ const getConversionActionId = async (method, headers, params) => {
         )
         .build();
     }
-    return conversionActionId;
+    return conversionAction;
   });
+};
+
+/**
+ * get all the custom variable for a customerID i.e created
+ * in Google Ads using searchStream endpoint
+ * @param {*} customerId
+ * @param {*} event
+ * @param {*} headers
+ * @returns
+ */
+const getConversionCustomVariable = async (headers, params) => {
+  const conversionCustomVariableKey = sha256(params.customerId).toString();
+  return conversionCustomVariableCache.get(
+    conversionCustomVariableKey,
+    async () => {
+      const data = {
+        query: `SELECT conversion_custom_variable.name FROM conversion_custom_variable`
+      };
+      const endpoint = SEARCH_STREAM.replace(":customerId", params.customerId);
+      const requestOptions = {
+        headers
+      };
+      let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
+      searchStreamResponse = processAxiosResponse(searchStreamResponse);
+      if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+        throw new ErrorBuilder()
+          .setStatus(searchStreamResponse.status)
+          .setDestinationResponse(searchStreamResponse.response)
+          .setMessage(
+            `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`
+          )
+          .setAuthErrorCategory(
+            getAuthErrCategory(get(searchStreamResponse, "status"))
+          )
+          .build();
+      }
+      const conversionCustomVariable = get(
+        searchStreamResponse,
+        "response.0.results"
+      );
+      if (!conversionCustomVariable) {
+        throw new ErrorBuilder()
+          .setStatus(400)
+          .setMessage(
+            `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`
+          )
+          .build();
+      }
+      return conversionCustomVariable;
+    }
+  );
+};
+
+/**
+ * convert it into hashMap
+ *
+ * input:
+ * [
+ *  {
+ *    "conversionCustomVariable": {
+ *    "resourceName": "customers/9625812972/conversionCustomVariables/19131634",
+ *    "name": "revenue"
+ *     }
+ *   },
+ * ]
+ *
+ * Output:
+ * {
+ *  revenue: "customers/9625812972/conversionCustomVariables/19131634"
+ * }
+ * @param {*} arrays
+ * @returns
+ */
+const getConversionCustomVariableHashMap = arrays => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      hashMap[array.conversionCustomVariable.name] =
+        array.conversionCustomVariable.resourceName;
+    });
+  }
+  return hashMap;
 };
 
 // transformer proxy
@@ -129,17 +221,47 @@ const getConversionActionId = async (method, headers, params) => {
 const ProxyRequest = async request => {
   const { method, endpoint, headers, params, body } = request;
 
-  const conversionActionId = await getConversionActionId(
-    method,
-    headers,
-    params
-  );
-
+  // fetch conversionAction
+  const conversionActionId = await getConversionActionId(headers, params);
   set(
     body.JSON,
     "conversions.0.conversionAction",
     `customers/${params.customerId}/conversionActions/${conversionActionId}`
   );
+
+  // fetch all conversion custom variable in google ads
+  let conversionCustomVariable = await getConversionCustomVariable(
+    headers,
+    params
+  );
+
+  // convert it into hashMap
+  conversionCustomVariable = getConversionCustomVariableHashMap(
+    conversionCustomVariable
+  );
+
+  const { properties } = params;
+  let { customVariables } = params;
+  const finalCustomVariables = [];
+  customVariables = getHashFromArray(customVariables);
+  Object.keys(customVariables).forEach(key => {
+    if (properties[key] && conversionCustomVariable[customVariables[key]]) {
+      const tempCustomVariables = {};
+      // set custom variable name
+      tempCustomVariables.conversionCustomVariable =
+        conversionCustomVariable[customVariables[key]];
+
+      // set custom variable value
+      tempCustomVariables.value = properties[key];
+
+      finalCustomVariables.push(tempCustomVariables);
+    }
+  });
+
+  if (finalCustomVariables) {
+    set(body.JSON, "conversions.0.customVariables", finalCustomVariables);
+  }
+
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const response = await httpSend(requestBody);
   return response;
@@ -166,17 +288,21 @@ const responseHandler = destinationResponse => {
     .setMessage(
       `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`
     )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
+    .setAuthErrorCategory(getAuthErrCategory(status))
     .build();
 };
 
-class networkHandler {
-  constructor() {
-    this.prepareProxy = prepareProxyRequest;
-    this.proxy = ProxyRequest;
-    this.processAxiosResponse = processAxiosResponse;
-    this.responseHandler = responseHandler;
-  }
-}
+const networkHandler = function() {
+  this.prepareProxy = prepareProxyRequest;
+  this.proxy = ProxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+  this.responseHandler = responseHandler;
+};
 
-module.exports = { validateDestinationConfig, getAccessToken, networkHandler };
+module.exports = {
+  validateDestinationConfig,
+  getAccessToken,
+  getConversionActionId,
+  getConversionCustomVariable,
+  networkHandler
+};

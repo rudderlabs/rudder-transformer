@@ -20,10 +20,10 @@ const {
 const { deduceAddressFields } = require("./utils");
 
 const responseBuilder = responseConfgs => {
-  const { payload, apiKey, endpoint } = responseConfgs;
+  const { resp, apiKey, endpoint } = responseConfgs;
 
   const response = defaultRequestConfig();
-  if (payload) {
+  if (resp) {
     const responseBody = "JSON";
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
@@ -31,13 +31,14 @@ const responseBuilder = responseConfgs => {
       "Content-Type": "application/json"
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body[`${responseBody}`] = removeUndefinedAndNullValues(payload);
+    response.body[`${responseBody}`] = removeUndefinedAndNullValues(resp);
   }
   return response;
 };
 
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
+  let { listName } = Config;
 
   const payload = constructPayload(
     message,
@@ -52,11 +53,18 @@ const identifyResponseBuilder = (message, { Config }) => {
     payload.data.address1 = address1;
     payload.data.address2 = address2;
   }
+  if (typeof listName === "string" && listName.trim().length === 0) {
+    listName = "rudderstack";
+  }
+  const valuesArray = [];
+  valuesArray.push(payload);
+  const resp = {};
+  resp.values = valuesArray;
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
   const responseConfgs = {
-    payload,
+    resp,
     apiKey,
     endpoint
   };
@@ -115,32 +123,25 @@ function batchEvents(arrayChunks) {
 
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
-    const batchResponseList = [];
     const metadatas = [];
+    const values = [];
 
     // extracting destination
     // from the first event in a batch
-    // let listName = "rudderstack";
     const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-    let { listName } = destination.Config;
-
-    // listName will be "rudderstack", if it is not provided
-    if (typeof listName === "string" && listName.trim().length === 0) {
-      listName = "rudderstack";
-    }
+    const { apiKey, listName } = destination.Config;
 
     let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
     chunk.forEach(ev => {
-      batchResponseList.push(get(ev, "message.body.JSON"));
+      values.push(ev?.message?.body?.JSON?.values[0]);
       metadatas.push(ev.metadata);
     });
     // batching into identify batch structure
     batchEventResponse.batchedRequest.body.JSON = {
       listName: `${listName}`,
-      values: batchResponseList
+      values
     };
     batchEventResponse.batchedRequest.endpoint = `${BASE_URL}/addToList/batch`;
 
@@ -197,7 +198,7 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
   }
 }
 
-const processRouterDest = async inputs => {
+const processRouterDest = inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -207,8 +208,8 @@ const processRouterDest = async inputs => {
   const eventResponseList = []; // list containing other events in batched format
   const identifyArrayChunks = [];
   const errorRespList = [];
-  await Promise.all(
-    inputs.map(async (event, index) => {
+  Promise.all(
+    inputs.map((event, index) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -226,7 +227,7 @@ const processRouterDest = async inputs => {
           // if not transformed
           getEventChunks(
             {
-              message: await process(event),
+              message: process(event),
               metadata: event.metadata,
               destination: event.destination
             },
@@ -265,7 +266,7 @@ const processRouterDest = async inputs => {
   }
 
   if (identifyArrayChunks.length) {
-    identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
+    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
   }
 
   let batchedResponseList = [];
@@ -274,6 +275,7 @@ const processRouterDest = async inputs => {
     .concat(identifyBatchedResponseList)
     .concat(eventResponseList);
 
+  //   console.log([...batchedResponseList, ...errorRespList]);
   return [...batchedResponseList, ...errorRespList];
 };
 

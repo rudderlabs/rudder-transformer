@@ -136,6 +136,46 @@ const prepareIdentifyPayload = (
 };
 
 /**
+ * validating the group call payload
+ * if any of the required parameter is not present then we will throw an error
+ * @param {*} destination
+ * @param {*} message
+ * @param {*} commonCompanyProperties
+ * @returns
+ */
+const prepareCreateOrUpdateCompanyPayload = (
+  destination,
+  message,
+  commonCompanyProperties
+) => {
+  let commonCompanyPropertiesPayload = commonCompanyProperties;
+  const { companyAttributesMapping } = destination.Config;
+  const companyAttributesMap = getHashFromArray(
+    companyAttributesMapping,
+    "from",
+    "to",
+    false
+  );
+  const traits = getFieldValueFromMessage(message, "traits");
+  const customCompanyAttributes = getAttributes(
+    companyAttributesMap,
+    traits,
+    groupSourceKeys
+  );
+  commonCompanyPropertiesPayload = {
+    ...commonCompanyPropertiesPayload,
+    ...customCompanyAttributes
+  };
+  if (commonCompanyPropertiesPayload.address) {
+    const { address } = commonCompanyPropertiesPayload;
+    commonCompanyPropertiesPayload.address = prepareCompanyAddress(address);
+  }
+  delete commonCompanyPropertiesPayload.userId;
+
+  return commonCompanyPropertiesPayload;
+};
+
+/**
  * Returns the list of the userEvents matching with payload event
  * @param {*} userEvents
  * @param {*} name
@@ -195,36 +235,19 @@ const validateGroupPayload = message => {
  * @returns
  */
 const createCompany = async (message, destination) => {
-  let commonCompanyPropertiesPayload = constructPayload(
+  const commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name]
   );
-  const { companyAttributesMapping } = destination.Config;
-  const companyAttributesMap = getHashFromArray(
-    companyAttributesMapping,
-    "from",
-    "to",
-    false
+  const payload = prepareCreateOrUpdateCompanyPayload(
+    destination,
+    message,
+    commonCompanyPropertiesPayload
   );
-  const traits = getFieldValueFromMessage(message, "traits");
-  const customCompanyAttributes = getAttributes(
-    companyAttributesMap,
-    traits,
-    groupSourceKeys
-  );
-  commonCompanyPropertiesPayload = {
-    ...commonCompanyPropertiesPayload,
-    ...customCompanyAttributes
-  };
-  if (commonCompanyPropertiesPayload.address) {
-    const { address } = commonCompanyPropertiesPayload;
-    commonCompanyPropertiesPayload.address = prepareCompanyAddress(address);
-  }
   let { endpoint } = CONFIG_CATEGORIES.CREATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   endpoint = prepareUrl(endpoint, appSubdomain);
-  delete commonCompanyPropertiesPayload.userId;
 
   const requestOptions = {
     headers: {
@@ -234,11 +257,7 @@ const createCompany = async (message, destination) => {
     }
   };
 
-  const response = await httpPOST(
-    endpoint,
-    commonCompanyPropertiesPayload,
-    requestOptions
-  );
+  const response = await httpPOST(endpoint, payload, requestOptions);
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -252,31 +271,15 @@ const createCompany = async (message, destination) => {
  * @returns
  */
 const updateCompany = async (message, destination, company) => {
-  let commonCompanyPropertiesPayload = constructPayload(
+  const commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name]
   );
-  const { companyAttributesMapping } = destination.Config;
-  const companyAttributesMap = getHashFromArray(
-    companyAttributesMapping,
-    "from",
-    "to",
-    false
+  const payload = prepareCreateOrUpdateCompanyPayload(
+    destination,
+    message,
+    commonCompanyPropertiesPayload
   );
-  const traits = getFieldValueFromMessage(message, "traits");
-  const customCompanyAttributes = getAttributes(
-    companyAttributesMap,
-    traits,
-    groupSourceKeys
-  );
-  commonCompanyPropertiesPayload = {
-    ...commonCompanyPropertiesPayload,
-    ...customCompanyAttributes
-  };
-  if (commonCompanyPropertiesPayload.address) {
-    const { address } = commonCompanyPropertiesPayload;
-    commonCompanyPropertiesPayload.address = prepareCompanyAddress(address);
-  }
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
@@ -285,7 +288,6 @@ const updateCompany = async (message, destination, company) => {
     "<company_id>",
     companyId
   );
-  delete commonCompanyPropertiesPayload.userId;
 
   const requestOptions = {
     headers: {
@@ -295,11 +297,7 @@ const updateCompany = async (message, destination, company) => {
     }
   };
 
-  const response = await httpPUT(
-    endpoint,
-    commonCompanyPropertiesPayload,
-    requestOptions
-  );
+  const response = await httpPUT(endpoint, payload, requestOptions);
   const data = processAxiosResponse(response);
   return data.response;
 };

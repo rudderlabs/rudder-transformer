@@ -85,7 +85,7 @@ const aliasEndpoint = destConfig => {
 };
 
 function getSessionId(message) {
-  const sessionId = getFieldValueFromMessage(message, "sessionId") || -1;
+  const sessionId = getFieldValueFromMessage(message, "sessionId");
   if (sessionId) {
     if (typeof sessionId === "string") {
       return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);

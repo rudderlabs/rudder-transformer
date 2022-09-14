@@ -82,11 +82,6 @@ function getEventId(payload, sourceKey) {
   return undefined;
 }
 
-function toNumber(payload, sourceKey) {
-  const sessionId = get(payload, sourceKey);
-  return Number(sessionId);
-}
-
 module.exports = {
   getOSName,
   getOSVersion,
@@ -94,6 +89,5 @@ module.exports = {
   getDeviceManufacturer,
   getPlatform,
   getBrand,
-  getEventId,
-  toNumber
+  getEventId
 };

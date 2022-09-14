@@ -40,11 +40,16 @@ const prepareUrl = (endpoint, appSubdomain) => {
  * @returns
  */
 const prepareCompanyAddress = address => {
+  const addressType = typeof address;
   let companyAddress = "";
-  const keys = Object.keys(address);
-  keys.forEach(key => {
-    companyAddress += address[key];
-  });
+  if (addressType === "object") {
+    const keys = Object.keys(address);
+    keys.forEach(key => {
+      companyAddress += address[key];
+    });
+  } else {
+    companyAddress = address;
+  }
   return companyAddress;
 };
 
@@ -539,12 +544,14 @@ const retrieveUserFromLookup = async (message, destination) => {
 };
 
 /**
- * Returns 'Create User' payload
+ * Returns 'Create Or Update User Payload' payload
  * @param {*} message
  * @param {*} destination
+ * @param {*} id
  * @returns
  */
-const createUserPayloadBuilder = (message, destination) => {
+const createOrUpdateUserPayloadBuilder = (message, destination, id = null) => {
+  const { appSubdomain } = destination.Config;
   const commonUserPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
@@ -554,29 +561,16 @@ const createUserPayloadBuilder = (message, destination) => {
     commonUserPropertiesPayload,
     message
   );
-  const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
-  const method = defaultPostRequestConfig.requestMethod;
-  return { payload, endpoint, method };
-};
-
-/**
- * Returns 'Update User' payload
- * @param {*} message
- * @param {*} destination
- * @returns
- */
-const updateUserPayloadBuilder = (message, destination) => {
-  const commonUserPropertiesPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
-  );
-  const payload = prepareIdentifyPayload(
-    destination,
-    commonUserPropertiesPayload,
-    message
-  );
-  const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
-  const method = defaultPutRequestConfig.requestMethod;
+  let endpoint = id
+    ? CONFIG_CATEGORIES.UPDATE_USER.endpoint
+    : CONFIG_CATEGORIES.CREATE_USER.endpoint;
+  endpoint = prepareUrl(endpoint, appSubdomain);
+  if (id) {
+    endpoint = endpoint.replace("<user_id>", id);
+  }
+  const method = id
+    ? defaultPutRequestConfig.requestMethod
+    : defaultPostRequestConfig.requestMethod;
   return { payload, endpoint, method };
 };
 
@@ -663,8 +657,7 @@ module.exports = {
   getCompanyByCustomId,
   retrieveUserFromLookup,
   pageVisitPayloadBuilder,
-  createUserPayloadBuilder,
-  updateUserPayloadBuilder,
   addUserToCompanyPayloadBuilder,
+  createOrUpdateUserPayloadBuilder,
   createEventOccurrencePayloadBuilder
 };

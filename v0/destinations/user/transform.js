@@ -15,9 +15,8 @@ const {
   validateGroupPayload,
   pageVisitPayloadBuilder,
   retrieveUserFromLookup,
-  createUserPayloadBuilder,
-  updateUserPayloadBuilder,
   addUserToCompanyPayloadBuilder,
+  createOrUpdateUserPayloadBuilder,
   createEventOccurrencePayloadBuilder
 } = require("./utils");
 
@@ -41,27 +40,18 @@ const responseBuilder = async (payload, endpoint, method, apiKey) => {
 };
 
 const identifyResponseBuilder = async (message, destination) => {
-  let payload;
-  let endpoint;
-  let method;
   let builder;
   const user = await retrieveUserFromLookup(message, destination);
   const { Config } = destination;
-  const { apiKey, appSubdomain } = Config;
+  const { apiKey } = Config;
   // If user already exist we will update it else creates a new user
   if (!user) {
-    builder = createUserPayloadBuilder(message, destination);
-    payload = builder.payload;
-    endpoint = builder.endpoint;
-    method = builder.method;
+    builder = createOrUpdateUserPayloadBuilder(message, destination);
   } else {
     const { id } = user;
-    builder = updateUserPayloadBuilder(message, destination);
-    payload = builder.payload;
-    endpoint = builder.endpoint.replace("<user_id>", id);
-    method = builder.method;
+    builder = createOrUpdateUserPayloadBuilder(message, destination, id);
   }
-  endpoint = prepareUrl(endpoint, appSubdomain);
+  const { payload, endpoint, method } = builder;
   return responseBuilder(payload, endpoint, method, apiKey);
 };
 

@@ -103,7 +103,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
       if (
         !apiSecret &&
         !(serviceAccountUserName && serviceAccountSecret && projectId) &&
-        duration.years <= 5
+        duration.days <= 5
       ) {
         response.endpoint =
           destConfig.dataResidency === "eu"

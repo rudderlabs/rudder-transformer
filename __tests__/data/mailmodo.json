@@ -79,9 +79,67 @@
       "params": {},
       "body": {
         "JSON": {
-          
           "email": "firstUser@testmail.com",
           "event_name": "trackevent"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Identify call",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiKey": "FXLkLUEhGJyvmY4",
+          "listName": ""
+        }
+      },
+      "message": {
+        "type": "identify",
+        "event": "Email Opened",
+        "sentAt": "2020-08-28T16:26:16.473Z",
+        "context": {
+          "library": {
+            "name": "analytics-node",
+            "version": "0.0.3"
+          }
+        },
+        "_metadata": {
+          "nodeVersion": "10.22.0"
+        },
+        "messageId": "node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453",
+        "properties": {
+          "email": "test@abc.com",
+          "subject": "resume validate",
+          "sendtime": "2020-01-01",
+          "sendlocation": "akashdeep@gmail.com"
+        },
+        "anonymousId": "abcdeeeeeeeexxxx102",
+        "originalTimestamp": "2020-08-28T16:26:06.468Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
+      "headers": {
+        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "listName": "rudderstack",
+          "values": [
+            {
+              "email": "test@abc.com"
+            }
+          ]
         },
         "JSON_ARRAY": {},
         "XML": {},

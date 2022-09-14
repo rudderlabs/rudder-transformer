@@ -15,8 +15,10 @@ const {
   removeUndefinedAndNullValues,
   CustomError,
   getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  generateErrorObject
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { deduceAddressFields } = require("./utils");
 
 const responseBuilder = responseConfgs => {
@@ -60,6 +62,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   valuesArray.push(payload);
   const resp = {};
   resp.values = valuesArray;
+  resp.listName = listName;
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
@@ -73,7 +76,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
-  const payload = constructPayload(
+  const resp = constructPayload(
     message,
     mappingConfig[ConfigCategory.TRACK.name]
   );
@@ -81,7 +84,7 @@ const trackResponseBuilder = (message, { Config }) => {
   const { endpoint } = ConfigCategory.TRACK;
 
   const responseConfgs = {
-    payload,
+    resp,
     apiKey,
     endpoint
   };
@@ -129,7 +132,13 @@ function batchEvents(arrayChunks) {
     // extracting destination
     // from the first event in a batch
     const { destination } = chunk[0];
-    const { apiKey, listName } = destination.Config;
+    const { apiKey } = destination.Config;
+    let { listName } = destination.Config;
+
+    // listName will be "rudderstack", if it is not provided
+    if (typeof listName === "string" && listName.trim().length === 0) {
+      listName = "rudderstack";
+    }
 
     let batchEventResponse = defaultBatchRequestConfig();
 
@@ -246,11 +255,17 @@ const processRouterDest = inputs => {
           }
         }
       } catch (error) {
+        const errObj = generateErrorObject(
+          error,
+          "mailmodo",
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+        );
         errorRespList.push(
           getErrorRespEvents(
             [event.metadata],
             error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
+            error.message || "Error occurred while processing payload.",
+            errObj.statTags
           )
         );
       }
@@ -275,7 +290,6 @@ const processRouterDest = inputs => {
     .concat(identifyBatchedResponseList)
     .concat(eventResponseList);
 
-  //   console.log([...batchedResponseList, ...errorRespList]);
   return [...batchedResponseList, ...errorRespList];
 };
 

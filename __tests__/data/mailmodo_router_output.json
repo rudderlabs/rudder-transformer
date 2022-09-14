@@ -95,5 +95,20 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "batched": false,
+    "error": "Missing required value from [\"traits.email\",\"context.traits.email\",\"properties.email\"]",
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "statTags": {
+      "destination": "mailmodo",
+      "scope": "exception",
+      "stage": "transform"
+    },
+    "statusCode": 400
   }
 ]

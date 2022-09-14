@@ -4,6 +4,10 @@ const stats = require("./stats");
 const { getFactory } = require("./ivmFactory");
 const { getMetadata } = require("./../v0/util");
 const logger = require("../logger");
+const userTransformTimeout = parseInt(
+  process.env.USER_TRANSFORM_TIMEOUT || "3600000",
+  10
+);
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -30,9 +34,23 @@ async function transform(isolatevm, events) {
       reject(error.message);
     }
   });
-  return executionPromise.catch(e => {
-    throw new Error(e);
-  });
+
+  let result;
+  try {
+    const timeoutPromise = new Promise(resolve => {
+      const wait = setTimeout(() => {
+        clearTimeout(wait);
+        resolve("Timedout");
+      }, userTransformTimeout);
+    });
+    result = await Promise.race([executionPromise, timeoutPromise]);
+    if (result === "Timedout") {
+      throw new Error("Timed out");
+    }
+  } catch (error) {
+    throw error;
+  }
+  return result;
 }
 
 function calculateMsFromIvmTime(value) {

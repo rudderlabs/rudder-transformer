@@ -1,12 +1,15 @@
 const _ = require("lodash");
-const { defaultPutRequestConfig } = require("../../util");
+const {
+  defaultPutRequestConfig,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
+} = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
   defaultRequestConfig,
   getFieldValueFromMessage,
-  getSuccessRespEvents,
-  getErrorRespEvents
+  getSuccessRespEvents
 } = require("../../util");
 const {
   processPayload,
@@ -128,9 +131,9 @@ const batchEvents = successRespList => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "MAILCHIMP");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   let batchResponseList = [];
   const batchErrorRespList = [];
@@ -156,13 +159,12 @@ const processRouterDest = async inputs => {
           successRespList.push(transformedPayload);
         }
       } catch (error) {
-        batchErrorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "MAILCHIMP"
         );
+        batchErrorRespList.push(errRespEvent);
       }
     })
   );

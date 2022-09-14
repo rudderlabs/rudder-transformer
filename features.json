@@ -36,6 +36,7 @@
     "CLICKUP": true,
     "FRESHMARKETER": true,
     "FRESHSALES": true,
-    "MONDAY": true
+    "MONDAY": true,
+    "CUSTIFY": true
   }
 }

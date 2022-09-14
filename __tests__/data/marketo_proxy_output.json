@@ -36,10 +36,11 @@
         "status": 200
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -61,10 +62,11 @@
         "status": 200
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -81,10 +83,11 @@
         "status": 413
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -97,10 +100,11 @@
         "status": 500
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -113,10 +117,11 @@
         "status": 500
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "retryable",
+        "errorAt": "proxy"
       }
     }
   },
@@ -129,10 +134,11 @@
         "status": 400
       },
       "statTags": {
-        "destination": "marketo",
+        "destType": "MARKETO",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "abortable"
+        "meta": "abortable",
+        "errorAt": "proxy"
       }
     }
   }

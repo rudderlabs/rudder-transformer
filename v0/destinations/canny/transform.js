@@ -7,8 +7,9 @@ const {
   removeUndefinedAndNullValues,
   CustomError,
   getHashFromArrayWithDuplicate,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const {
   retrieveUserId,
@@ -169,9 +170,9 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "CANNY");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const respList = await Promise.all(
@@ -186,15 +187,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
+        return handleRtTfSingleEventError(input, error, "CANNY");
       }
     })
   );

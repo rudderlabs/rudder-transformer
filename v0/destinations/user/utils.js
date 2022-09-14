@@ -70,12 +70,12 @@ const getRemainingTraits = (traits, sourceKeys) => {
  * @param {*} message
  * @returns
  */
-const getUserDestAttributes = (userAttributesMap, message) => {
+const getCustomUserAttributes = (userAttributesMap, message) => {
   const properties = {};
   let traits = getFieldValueFromMessage(message, "traits");
   const contextTraits = get(message, "context.traits");
   traits = { ...traits, ...contextTraits };
-  const sourceKeys = [...identifySourceKeys];
+  const sourceKeys = identifySourceKeys;
 
   userAttributesMap.forEach(attribute => {
     const { from, to } = attribute;
@@ -128,10 +128,10 @@ const getEventAttributes = (userEvent, properties) => {
  * @param {*} message
  * @returns
  */
-const getCompanyDestAttributes = (companyAttributesMap, message) => {
+const getCustomCompanyAttributes = (companyAttributesMap, message) => {
   const traits = getFieldValueFromMessage(message, "traits");
   const properties = {};
-  const sourceKeys = [...groupSourceKeys];
+  const sourceKeys = groupSourceKeys;
 
   companyAttributesMap.forEach(attribute => {
     const { from, to } = attribute;
@@ -189,25 +189,28 @@ const validateGroupPayload = message => {
  * @returns
  */
 const createCompany = async (message, destination) => {
-  let payload = constructPayload(
+  let commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name]
   );
   const { companyAttributesMapping } = destination.Config;
-  const companyAttributes = getCompanyDestAttributes(
+  const customCompanyAttributes = getCustomCompanyAttributes(
     companyAttributesMapping,
     message
   );
-  payload = { ...payload, ...companyAttributes };
-  if (payload.address) {
-    const { address } = payload;
-    payload.address = prepareCompanyAddress(address);
+  commonCompanyPropertiesPayload = {
+    ...commonCompanyPropertiesPayload,
+    ...customCompanyAttributes
+  };
+  if (commonCompanyPropertiesPayload.address) {
+    const { address } = commonCompanyPropertiesPayload;
+    commonCompanyPropertiesPayload.address = prepareCompanyAddress(address);
   }
   let { endpoint } = CONFIG_CATEGORIES.CREATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   endpoint = prepareUrl(endpoint, appSubdomain);
-  delete payload.userId;
+  delete commonCompanyPropertiesPayload.userId;
 
   const requestOptions = {
     headers: {
@@ -217,7 +220,11 @@ const createCompany = async (message, destination) => {
     }
   };
 
-  const response = await httpPOST(endpoint, payload, requestOptions);
+  const response = await httpPOST(
+    endpoint,
+    commonCompanyPropertiesPayload,
+    requestOptions
+  );
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -231,19 +238,22 @@ const createCompany = async (message, destination) => {
  * @returns
  */
 const updateCompany = async (message, destination, company) => {
-  let payload = constructPayload(
+  let commonCompanyPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name]
   );
   const { companyAttributesMapping } = destination.Config;
-  const companyAttributes = getCompanyDestAttributes(
+  const customCompanyAttributes = getCustomCompanyAttributes(
     companyAttributesMapping,
     message
   );
-  payload = { ...payload, ...companyAttributes };
-  if (payload.address) {
-    const { address } = payload;
-    payload.address = prepareCompanyAddress(address);
+  commonCompanyPropertiesPayload = {
+    ...commonCompanyPropertiesPayload,
+    ...customCompanyAttributes
+  };
+  if (commonCompanyPropertiesPayload.address) {
+    const { address } = commonCompanyPropertiesPayload;
+    commonCompanyPropertiesPayload.address = prepareCompanyAddress(address);
   }
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_COMPANY;
   const { Config } = destination;
@@ -253,7 +263,7 @@ const updateCompany = async (message, destination, company) => {
     "<company_id>",
     companyId
   );
-  delete payload.userId;
+  delete commonCompanyPropertiesPayload.userId;
 
   const requestOptions = {
     headers: {
@@ -263,7 +273,11 @@ const updateCompany = async (message, destination, company) => {
     }
   };
 
-  const response = await httpPUT(endpoint, payload, requestOptions);
+  const response = await httpPUT(
+    endpoint,
+    commonCompanyPropertiesPayload,
+    requestOptions
+  );
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -499,16 +513,22 @@ const retrieveUserFromLookup = async (message, destination) => {
  * @returns
  */
 const createUserPayloadBuilder = (message, destination) => {
-  let payload = constructPayload(
+  let commonUserPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
   );
   const { userAttributesMapping } = destination.Config;
-  const userAttributes = getUserDestAttributes(userAttributesMapping, message);
-  payload = { ...payload, ...userAttributes };
+  const customUserAttributes = getCustomUserAttributes(
+    userAttributesMapping,
+    message
+  );
+  commonUserPropertiesPayload = {
+    ...commonUserPropertiesPayload,
+    ...customUserAttributes
+  };
   const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
   const method = "POST";
-  return { payload, endpoint, method };
+  return { commonUserPropertiesPayload, endpoint, method };
 };
 
 /**
@@ -518,16 +538,22 @@ const createUserPayloadBuilder = (message, destination) => {
  * @returns
  */
 const updateUserPayloadBuilder = (message, destination) => {
-  let payload = constructPayload(
+  let commonUserPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
   );
   const { userAttributesMapping } = destination.Config;
-  const userAttributes = getUserDestAttributes(userAttributesMapping, message);
-  payload = { ...payload, ...userAttributes };
+  const customUserAttributes = getCustomUserAttributes(
+    userAttributesMapping,
+    message
+  );
+  commonUserPropertiesPayload = {
+    ...commonUserPropertiesPayload,
+    ...customUserAttributes
+  };
   const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
   const method = "PUT";
-  return { payload, endpoint, method };
+  return { commonUserPropertiesPayload, endpoint, method };
 };
 
 /**

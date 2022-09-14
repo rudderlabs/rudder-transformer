@@ -52,12 +52,12 @@ const identifyResponseBuilder = async (message, destination) => {
   if (!user) {
     builder = createUserPayloadBuilder(message, destination);
     payload = builder.payload;
-    endpoint = builder.endpoint;
+    endpoint = builder.commonUserPropertiesPayload;
     method = builder.method;
   } else {
     const { id } = user;
     builder = updateUserPayloadBuilder(message, destination);
-    payload = builder.payload;
+    payload = builder.commonUserPropertiesPayload;
     endpoint = builder.endpoint.replace("<user_id>", id);
     method = builder.method;
   }

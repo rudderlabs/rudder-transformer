@@ -47,7 +47,7 @@
     "required": false
   },
   {
-    "destKey": "description",
+    "destKey": "traits.description",
     "sourceKeys": "description",
     "required": false
   },

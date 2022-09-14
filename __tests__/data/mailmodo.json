@@ -113,7 +113,7 @@
         },
         "messageId": "node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453",
         "properties": {
-          "email": "test@abc.com",
+          "email": "test3@abc.com",
           "subject": "resume validate",
           "sendtime": "2020-01-01",
           "sendlocation": "akashdeep@gmail.com"
@@ -137,7 +137,7 @@
           "listName": "rudderstack",
           "values": [
             {
-              "email": "test@abc.com"
+              "email": "test3@abc.com"
             }
           ]
         },

@@ -4,7 +4,8 @@ const {
   ConfigCategory,
   IDENTIFY_MAX_BATCH_SIZE,
   mappingConfig,
-  BASE_URL
+  BASE_URL,
+  DESTINATION
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -257,7 +258,7 @@ const processRouterDest = inputs => {
       } catch (error) {
         const errObj = generateErrorObject(
           error,
-          "mailmodo",
+          DESTINATION,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
         errorRespList.push(

@@ -19,6 +19,9 @@
     "sourceKeys": "timestamp",
     "destKey": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   }
 ]

@@ -1,12 +1,14 @@
 const get = require("get-value");
 const {
   CustomError,
-  toUnixTimestamp,
+  getHashFromArray,
   constructPayload,
   getIntegrationsObj,
   getValueFromMessage,
   getDestinationExternalID,
   getFieldValueFromMessage,
+  defaultPutRequestConfig,
+  defaultPostRequestConfig,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { httpGET, httpPOST, httpPUT } = require("../../../adapters/network");
@@ -48,12 +50,24 @@ const prepareCompanyAddress = address => {
 
 /**
  * Returns the remaining keys from traits
+ * @param {*} traits
+ * @param {*} sourceKeys
+ * @returns
+ */
+const getIdentifyTraits = message => {
+  const traits = getFieldValueFromMessage(message, "traits");
+  const contextTraits = get(message, "context.traits");
+  return { ...traits, ...contextTraits };
+};
+
+/**
+ * Returns the remaining keys from traits
  * Remaining keys : keys which is not included in webapp configuration mapping and not included in source-dest keys file
  * @param {*} traits
  * @param {*} sourceKeys
  * @returns
  */
-const getRemainingTraits = (traits, sourceKeys) => {
+const getRemainingAttributes = (traits, sourceKeys) => {
   const properties = {};
   const keys = Object.keys(traits);
   keys.forEach(key => {
@@ -65,28 +79,60 @@ const getRemainingTraits = (traits, sourceKeys) => {
 };
 
 /**
- * Returns the user attributes(configured from webapp mapping) and remaining attributes(which is not configured anywhere)
- * @param {*} userAttributesMap
- * @param {*} message
+ * Returns the customAttributes (user, company and event custom attributes) + remaining attributes
+ * Remaining attributes : keys which is not included in webapp configuration mapping and not included in source-dest keys file
+ * @param {*} attributesMap
+ * @param {*} properties
+ * @param {*} excludeKeys
  * @returns
  */
-const getCustomUserAttributes = (userAttributesMap, message) => {
-  const properties = {};
-  let traits = getFieldValueFromMessage(message, "traits");
-  const contextTraits = get(message, "context.traits");
-  traits = { ...traits, ...contextTraits };
-  const sourceKeys = identifySourceKeys;
+const getAttributes = (attributesMap, properties, excludeKeys) => {
+  const sourceKeys = excludeKeys;
+  const data = {};
+  const attributesMapKeys = Object.keys(attributesMap);
 
-  userAttributesMap.forEach(attribute => {
-    const { from, to } = attribute;
-    if (traits[from]) {
-      properties[to] = traits[from];
-      sourceKeys.push(from);
+  attributesMapKeys.forEach(key => {
+    if (properties[key]) {
+      const destinationAttributeName = attributesMap[key];
+      data[destinationAttributeName] = properties[key];
+      sourceKeys.push(key);
     }
   });
 
-  const remainingTraits = getRemainingTraits(traits, sourceKeys);
-  return { ...properties, ...remainingTraits };
+  const remainingAttributes = getRemainingAttributes(properties, sourceKeys);
+  return { ...data, ...remainingAttributes };
+};
+
+/**
+ * Returns the identify call payload
+ * @param {*} destination
+ * @param {*} commonUserPropertiesPayload
+ * @param {*} message
+ * @returns
+ */
+const prepareIdentifyPayload = (
+  destination,
+  commonUserPropertiesPayload,
+  message
+) => {
+  const payload = commonUserPropertiesPayload;
+  const { userAttributesMapping } = destination.Config;
+  const userAttributesMap = getHashFromArray(
+    userAttributesMapping,
+    "from",
+    "to",
+    false
+  );
+  const traits = getIdentifyTraits(message);
+  const customUserAttributes = getAttributes(
+    userAttributesMap,
+    traits,
+    identifySourceKeys
+  );
+  return {
+    ...payload,
+    ...customUserAttributes
+  };
 };
 
 /**
@@ -103,49 +149,6 @@ const getUserEvent = (userEvents, name) => {
 };
 
 /**
- * Returns the event properties(configured from webapp mapping) and remaining event properties
- * Remaining event properties : event properties which is not configured anywhere
- * @param {*} userEvent
- * @param {*} properties
- * @returns
- */
-const getEventAttributes = (userEvent, properties) => {
-  const data = properties;
-  const { eventProperties } = userEvent;
-  eventProperties.forEach(property => {
-    const { from, to } = property;
-    if (properties[from]) {
-      data[to] = properties[from];
-      delete data[from];
-    }
-  });
-  return data;
-};
-
-/**
- * Returns the company attributes(configured from webapp mapping) and remaining attributes(which is not configured anywhere)
- * @param {*} companyAttributesMap
- * @param {*} message
- * @returns
- */
-const getCustomCompanyAttributes = (companyAttributesMap, message) => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  const properties = {};
-  const sourceKeys = groupSourceKeys;
-
-  companyAttributesMap.forEach(attribute => {
-    const { from, to } = attribute;
-    if (traits[from]) {
-      properties[to] = traits[from];
-      sourceKeys.push(from);
-    }
-  });
-
-  const remainingTraits = getRemainingTraits(traits, sourceKeys);
-  return { ...properties, ...remainingTraits };
-};
-
-/**
  * validating the page call payload
  * if any of the required parameter is not present then we will throw an error
  * @param {*} message
@@ -157,13 +160,16 @@ const validatePagePayload = message => {
   const timestamp = getFieldValueFromMessage(message, "timestamp");
 
   if (!pageUrl) {
-    throw new CustomError("Parameter url is required", 400);
+    throw new CustomError("[ User.com ]:: Parameter url is required", 400);
   }
   if (!pagePath) {
-    throw new CustomError("Parameter path is required", 400);
+    throw new CustomError("[ User.com ]:: Parameter path is required", 400);
   }
   if (!timestamp) {
-    throw new CustomError("Parameter timestamp is required", 400);
+    throw new CustomError(
+      "[ User.com ]:: Parameter timestamp is required",
+      400
+    );
   }
 };
 
@@ -177,7 +183,7 @@ const validateGroupPayload = message => {
   const traits = getFieldValueFromMessage(message, "traits");
   const { name } = traits;
   if (!name) {
-    throw new CustomError("Parameter name is required", 400);
+    throw new CustomError("[ User.com ]:: Parameter name is required", 400);
   }
 };
 
@@ -194,9 +200,17 @@ const createCompany = async (message, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name]
   );
   const { companyAttributesMapping } = destination.Config;
-  const customCompanyAttributes = getCustomCompanyAttributes(
+  const companyAttributesMap = getHashFromArray(
     companyAttributesMapping,
-    message
+    "from",
+    "to",
+    false
+  );
+  const traits = getFieldValueFromMessage(message, "traits");
+  const customCompanyAttributes = getAttributes(
+    companyAttributesMap,
+    traits,
+    groupSourceKeys
   );
   commonCompanyPropertiesPayload = {
     ...commonCompanyPropertiesPayload,
@@ -243,9 +257,17 @@ const updateCompany = async (message, destination, company) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name]
   );
   const { companyAttributesMapping } = destination.Config;
-  const customCompanyAttributes = getCustomCompanyAttributes(
+  const companyAttributesMap = getHashFromArray(
     companyAttributesMapping,
-    message
+    "from",
+    "to",
+    false
+  );
+  const traits = getFieldValueFromMessage(message, "traits");
+  const customCompanyAttributes = getAttributes(
+    companyAttributesMap,
+    traits,
+    groupSourceKeys
   );
   commonCompanyPropertiesPayload = {
     ...commonCompanyPropertiesPayload,
@@ -321,7 +343,10 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
  */
 const getUserByEmail = async (apiKey, email, appSubdomain) => {
   if (!email) {
-    throw new CustomError("lookup field : email value is not present", 400);
+    throw new CustomError(
+      "[ User.com ]:: lookup field : email value is not present",
+      400
+    );
   }
 
   const endpoint = prepareUrl(
@@ -356,7 +381,10 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
  */
 const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   if (!phoneNumber) {
-    throw new CustomError("lookup field : phone value is not present", 400);
+    throw new CustomError(
+      "[ User.com ] :: lookup field : phone value is not present",
+      400
+    );
   }
 
   const endpoint = prepareUrl(
@@ -378,10 +406,13 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     const { response } = processedUserResponse;
     const { results } = response;
     if (results.length === 0) {
-      throw new CustomError("no user found for a given lookup field", 400);
+      throw new CustomError(
+        "[ User.com ] :: no user found for a given lookup field",
+        400
+      );
     } else if (results.length > 1) {
       throw new CustomError(
-        "multiple users obtained for a given lookup field",
+        "[ User.com ] :: multiple users obtained for a given lookup field",
         400
       );
     } else {
@@ -490,7 +521,7 @@ const retrieveUserFromLookup = async (message, destination) => {
       return getUserByPhoneNumber(apiKey, lookupFieldValue, appSubdomain);
     }
     throw new CustomError(
-      `lookup field : ${lookupField} is not supported for this destination`,
+      `[ User.com ] :: lookup field : ${lookupField} is not supported for this destination`,
       400
     );
   } else {
@@ -502,7 +533,10 @@ const retrieveUserFromLookup = async (message, destination) => {
     if (isDefinedAndNotNullAndNotEmpty(email)) {
       return getUserByEmail(apiKey, email, appSubdomain);
     }
-    throw new CustomError("default lookup field : email value is empty", 400);
+    throw new CustomError(
+      "[ User.com ] :: default lookup field : email value is empty",
+      400
+    );
   }
 };
 
@@ -513,22 +547,18 @@ const retrieveUserFromLookup = async (message, destination) => {
  * @returns
  */
 const createUserPayloadBuilder = (message, destination) => {
-  let commonUserPropertiesPayload = constructPayload(
+  const commonUserPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
   );
-  const { userAttributesMapping } = destination.Config;
-  const customUserAttributes = getCustomUserAttributes(
-    userAttributesMapping,
+  const payload = prepareIdentifyPayload(
+    destination,
+    commonUserPropertiesPayload,
     message
   );
-  commonUserPropertiesPayload = {
-    ...commonUserPropertiesPayload,
-    ...customUserAttributes
-  };
   const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
-  const method = "POST";
-  return { commonUserPropertiesPayload, endpoint, method };
+  const method = defaultPostRequestConfig.requestMethod;
+  return { payload, endpoint, method };
 };
 
 /**
@@ -538,22 +568,18 @@ const createUserPayloadBuilder = (message, destination) => {
  * @returns
  */
 const updateUserPayloadBuilder = (message, destination) => {
-  let commonUserPropertiesPayload = constructPayload(
+  const commonUserPropertiesPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
   );
-  const { userAttributesMapping } = destination.Config;
-  const customUserAttributes = getCustomUserAttributes(
-    userAttributesMapping,
+  const payload = prepareIdentifyPayload(
+    destination,
+    commonUserPropertiesPayload,
     message
   );
-  commonUserPropertiesPayload = {
-    ...commonUserPropertiesPayload,
-    ...customUserAttributes
-  };
   const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
-  const method = "PUT";
-  return { commonUserPropertiesPayload, endpoint, method };
+  const method = defaultPutRequestConfig.requestMethod;
+  return { payload, endpoint, method };
 };
 
 /**
@@ -575,18 +601,21 @@ const createEventOccurrencePayloadBuilder = (message, user, destination) => {
   const userEvent = getUserEvent(userEvents, name);
   if (userEvent.length === 1) {
     const [first] = userEvent;
+    const { eventProperties: eventPropertiesMapping } = first;
+    const eventPropertiesMap = getHashFromArray(
+      eventPropertiesMapping,
+      "from",
+      "to",
+      false
+    );
     payload.name = first.userEventName;
-    payload.data = getEventAttributes(first, properties);
+    payload.data = getAttributes(eventPropertiesMap, properties, []);
   }
 
   const { id } = user;
   payload.user_id = id;
-  if (payload.timestamp) {
-    const { timestamp } = payload;
-    payload.timestamp = toUnixTimestamp(timestamp);
-  }
   const { endpoint } = CONFIG_CATEGORIES.CREATE_EVENT_OCCURRENCE;
-  const method = "POST";
+  const method = defaultPostRequestConfig.requestMethod;
   return { payload, endpoint, method };
 };
 
@@ -605,7 +634,7 @@ const pageVisitPayloadBuilder = (message, user) => {
   );
   payload.client_user = userKey;
   const { endpoint } = CONFIG_CATEGORIES.CREATE_SITE_VIEWS;
-  const method = "POST";
+  const method = defaultPostRequestConfig.requestMethod;
   return { payload, endpoint, method };
 };
 
@@ -623,7 +652,7 @@ const addUserToCompanyPayloadBuilder = (user, company) => {
   endpoint = endpoint.replace("<company_id>", companyId);
   payload.user_id = userId;
   payload.user_custom_id = userCustomId;
-  const method = "POST";
+  const method = defaultPostRequestConfig.requestMethod;
   return { payload, endpoint, method, companyId };
 };
 

@@ -6,7 +6,8 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  getHashFromArray
+  getHashFromArray,
+  getDestinationExternalID
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
@@ -29,7 +30,9 @@ const responseBuilderSimple = (message, category, destination) => {
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
   }
-
+  // mapping external id
+  const externalId = getDestinationExternalID(message, "rockerboxExternalId");
+  payload.external_id = externalId;
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   // the endpoint has advertiser = ADVERTISER_ID in the query params

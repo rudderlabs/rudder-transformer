@@ -47,10 +47,6 @@
     "destKey": "salesforce"
   },
   {
-    "sourceKeys": "properties.externalId",
-    "destKey": "external_id"
-  },
-  {
     "sourceKeys": "properties.countryCode",
     "destKey": "country_code"
   },

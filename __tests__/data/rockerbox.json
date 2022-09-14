@@ -298,6 +298,12 @@
             "last_name": "Stack",
             "first_name": "Rudder"
           },
+          "externalId": [
+            {
+              "type": "rockerboxExternalId",
+              "id": "rbUid"
+            }
+          ],
           "campaign": {},
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
         },
@@ -307,7 +313,7 @@
           "checkout_id": "12345",
           "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "product_name": "Red T-shirt",
-          "externalId": "external-Id",
+          "externalId": "rbUid",
           "countryCode": "IN",
           "listingId": "10101"
         },
@@ -336,7 +342,7 @@
           "email": "userSampleX120@gmail.com",
           "phone": "9878764736",
           "timestamp": 1659902539,
-          "external_id": "external-Id",
+          "external_id": "rbUid",
           "country_code": "IN",
           "listing_id": "10101",
           "conversion_source": "RudderStack",

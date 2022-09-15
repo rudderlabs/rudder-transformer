@@ -13,7 +13,7 @@
         },
         "integrations": {
           "All": true,
-          "user": {
+          "user.com": {
             "lookup": "email"
           }
         }
@@ -94,7 +94,7 @@
           "email": "rudderstack@test.com"
         },
         "integrations": {
-          "user": {
+          "user.com": {
             "lookup": "email"
           }
         },
@@ -252,7 +252,7 @@
         },
         "integrations": {
           "All": true,
-          "user": {
+          "user.com": {
             "lookup": "email"
           }
         }

@@ -57,7 +57,7 @@ const DestCanonicalNames = {
   zapier: ["zapier", "Zapier", "ZAPIER"],
   shynet: ["shynet", "SHYNET", "shyNet", "ShyNet"],
   monday: ["monday", "MONDAY", "monDay", "MonDay"],
-  user: ["user", "USER", "User"],
+  user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   woopra: ["WOOPRA", "Woopra", "woopra"]
 };
 

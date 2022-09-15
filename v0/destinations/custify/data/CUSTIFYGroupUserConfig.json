@@ -7,47 +7,37 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
+    "sourceKeys": "context.traits.email",
     "required": false
   },
   {
     "destKey": "phone",
-    "sourceKeys": "phone",
-    "sourceFromGenericMap": true,
+    "sourceKeys": "context.traits.phone",
     "required": false
   },
   {
     "destKey": "session_count",
-    "sourceKeys": ["traits.sessionCount", "context.traits.sessionCount"],
+    "sourceKeys": "context.traits.sessionCount",
     "required": false
   },
   {
     "destKey": "unsubscribed_from_emails",
-    "sourceKeys": [
-      "traits.unsubscribedFromEmails",
-      "context.traits.unsubscribedFromEmails"
-    ],
+    "sourceKeys": "context.traits.unsubscribedFromEmails",
     "required": false
   },
   {
     "destKey": "unsubscribed_from_calls",
-    "sourceKeys": [
-      "traits.unsubscribedFromCalls",
-      "context.traits.unsubscribedFromCalls"
-    ],
+    "sourceKeys": "context.traits.unsubscribedFromCalls",
     "required": false
   },
   {
     "destKey": "name",
-    "sourceKeys": "name",
-    "sourceFromGenericMap": true,
+    "sourceKeys": "context.traits.name",
     "required": false
   },
   {
     "destKey": "signed_up_at",
     "sourceKeys": [
-      "traits.signedUpAt",
       "context.traits.signedUpAt",
       "timestamp",
       "originalTimestamp"
@@ -56,7 +46,7 @@
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits", "context.traits"],
+    "sourceKeys": "context.traits",
     "required": false
   }
 ]

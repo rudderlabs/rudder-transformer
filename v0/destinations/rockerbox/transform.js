@@ -29,7 +29,6 @@ const responseBuilderSimple = (message, category, destination) => {
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
   }
-
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   // the endpoint has advertiser = ADVERTISER_ID in the query params

@@ -7,8 +7,7 @@ const destinations = [
   "braze",
   "pardot",
   "google_adwords_remarketing_lists",
-  "google_adwords_enhanced_conversions",
-  "google_adwords_offline_conversions"
+  "google_adwords_enhanced_conversions"
 ];
 const deleteUserDestinations = ["am", "braze", "intercom"];
 const service = require("../versionedRouter").handleProxyRequest;

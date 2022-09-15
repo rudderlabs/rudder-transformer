@@ -222,6 +222,7 @@ const ProxyRequest = async request => {
   const { method, endpoint, headers, params, body } = request;
 
   // fetch conversionAction
+  // httpPOST -> axios.post()
   const conversionActionId = await getConversionActionId(headers, params);
   set(
     body.JSON,

@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -27,14 +28,13 @@ const responseBuilder = responseConfgs => {
 
   const response = defaultRequestConfig();
   if (resp) {
-    const responseBody = "JSON";
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       mmApiKey: `${apiKey}`,
       "Content-Type": "application/json"
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body[`${responseBody}`] = removeUndefinedAndNullValues(resp);
+    response.body.JSON = removeUndefinedAndNullValues(resp);
   }
   return response;
 };
@@ -48,22 +48,17 @@ const identifyResponseBuilder = (message, { Config }) => {
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
 
-  if (!payload.email) {
-    throw new CustomError("Email is required for identify call", 400);
-  }
   if (isDefinedAndNotNullAndNotEmpty(message.address)) {
     const { address1, address2 } = deduceAddressFields(message);
     payload.data.address1 = address1;
     payload.data.address2 = address2;
   }
   if (typeof listName === "string" && listName.trim().length === 0) {
-    listName = "rudderstack";
+    listName = "Rudderstack";
   }
-  const valuesArray = [];
-  valuesArray.push(payload);
-  const resp = {};
-  resp.values = valuesArray;
-  resp.listName = listName;
+
+  const valuesArray = [payload];
+  const resp = { values: valuesArray, listName };
 
   const { endpoint } = ConfigCategory.IDENTIFY;
 
@@ -122,8 +117,10 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-function batchEvents(arrayChunks) {
+function batchEvents(eventsChunk) {
   const batchedResponseList = [];
+
+  const arrayChunks = _.chunk(eventsChunk, IDENTIFY_MAX_BATCH_SIZE);
 
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
@@ -136,17 +133,17 @@ function batchEvents(arrayChunks) {
     const { apiKey } = destination.Config;
     let { listName } = destination.Config;
 
-    // listName will be "rudderstack", if it is not provided
+    // listName will be "Rudderstack", if it is not provided
     if (typeof listName === "string" && listName.trim().length === 0) {
-      listName = "rudderstack";
+      listName = "Rudderstack";
     }
 
     let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
-    chunk.forEach(ev => {
-      values.push(ev?.message?.body?.JSON?.values[0]);
-      metadatas.push(ev.metadata);
+    chunk.forEach(event => {
+      values.push(event?.message?.body?.JSON?.values[0]);
+      metadatas.push(event.metadata);
     });
     // batching into identify batch structure
     batchEventResponse.batchedRequest.body.JSON = {
@@ -179,8 +176,7 @@ function batchEvents(arrayChunks) {
 }
 
 function getEventChunks(event, identifyEventChunks, eventResponseList) {
-  // Categorizing identify and track type of events
-  // Checking if it is identify type event
+  // Checking if event type is identify
   if (event.message.endpoint.includes("/addToList/batch")) {
     identifyEventChunks.push(event);
   } else {
@@ -214,25 +210,15 @@ const processRouterDest = inputs => {
     return [respEvents];
   }
 
-  let identifyEventChunks = []; // list containing identify events in batched format
+  const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
-  const identifyArrayChunks = [];
   const errorRespList = [];
   Promise.all(
-    inputs.map((event, index) => {
+    inputs.map(event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, identifyEventChunks, eventResponseList);
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
         } else {
           // if not transformed
           getEventChunks(
@@ -244,16 +230,6 @@ const processRouterDest = inputs => {
             identifyEventChunks,
             eventResponseList
           );
-
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
         }
       } catch (error) {
         const errObj = generateErrorObject(
@@ -273,16 +249,11 @@ const processRouterDest = inputs => {
     })
   );
 
-  // batching identifyArrayChunks
+  // batching identifyEventChunks
   let identifyBatchedResponseList = [];
 
   if (identifyEventChunks.length) {
-    identifyArrayChunks.push(identifyEventChunks);
-    identifyEventChunks = [];
-  }
-
-  if (identifyArrayChunks.length) {
-    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
+    identifyBatchedResponseList = batchEvents(identifyEventChunks);
   }
 
   let batchedResponseList = [];

@@ -134,7 +134,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "listName": "rudderstack",
+          "listName": "Rudderstack",
           "values": [
             {
               "email": "test3@abc.com"

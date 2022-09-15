@@ -67,7 +67,8 @@ const DestCanonicalNames = {
     "mailmodo",
     "MAILMODO",
     "mailModo"
-  ]
+  ],
+  user: ["user", "USER", "User", "User.com", "user.com", "USER.com"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

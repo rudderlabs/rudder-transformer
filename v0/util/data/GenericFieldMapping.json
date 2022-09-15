@@ -59,9 +59,11 @@
     "context.traits.middleName",
     "context.traits.middle_name"
   ],
+  "gender": ["traits.gender", "context.traits.gender"],
   "phone": ["traits.phone", "context.traits.phone", "properties.phone"],
   "pageTitle": ["context.page.title", "properties.title"],
   "pageUrl": ["context.page.url", "properties.url"],
+  "pagePath": ["context.page.path", "properties.path"],
   "website": ["traits.website", "context.traits.website", "properties.website"],
   "GApageUrl": ["properties.url", "context.page.url"],
   "GApageRef": ["properties.referrer", "context.page.referrer"],
@@ -82,6 +84,7 @@
 
   "state": ["traits.state", "context.traits.state"],
   "country": ["traits.country", "context.traits.country"],
+  "region": ["traits.region", "context.traits.region"],
   "city": ["traits.address.city", "context.traits.address.city"],
 
   "avatar": [

@@ -37,6 +37,7 @@
     "FRESHMARKETER": true,
     "FRESHSALES": true,
     "MONDAY": true,
-    "CUSTIFY": true
+    "CUSTIFY": true,
+    "USER": true
   }
 }

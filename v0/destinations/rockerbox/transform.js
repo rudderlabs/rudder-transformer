@@ -6,8 +6,7 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  getHashFromArray,
-  getDestinationExternalID
+  getHashFromArray
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");

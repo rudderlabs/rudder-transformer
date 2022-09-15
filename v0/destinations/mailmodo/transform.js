@@ -11,7 +11,6 @@ const {
 const {
   defaultRequestConfig,
   constructPayload,
-  isDefinedAndNotNullAndNotEmpty,
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
@@ -48,11 +47,10 @@ const identifyResponseBuilder = (message, { Config }) => {
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
 
-  if (isDefinedAndNotNullAndNotEmpty(message.address)) {
-    const { address1, address2 } = deduceAddressFields(message);
-    payload.data.address1 = address1;
-    payload.data.address2 = address2;
-  }
+  const { address1, address2 } = deduceAddressFields(message);
+  if (address1) payload.data.address1 = address1;
+  if (address2) payload.data.address2 = address2;
+
   if (typeof listName === "string" && listName.trim().length === 0) {
     listName = "Rudderstack";
   }

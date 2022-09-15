@@ -1,0 +1,76 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "user_custom_id",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "groupId",
+    "destKey": "custom_id",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "traits.name",
+    "destKey": "name",
+    "required": true
+  },
+  {
+    "sourceKeys": "email",
+    "destKey": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "address",
+    "destKey": "address",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "region",
+    "sourceKeys": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "traits.description",
+    "sourceKeys": "description",
+    "required": false
+  },
+  {
+    "destKey": "phone_numbers",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "postal_code",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "size",
+    "sourceKeys": "traits.size",
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": "traits.tags",
+    "required": false
+  }
+]

@@ -82,7 +82,7 @@
 
   "state": ["traits.state", "context.traits.state"],
   "country": ["traits.country", "context.traits.country"],
-  "city": "traits.address.city",
+  "city": ["traits.address.city", "context.traits.address.city"],
 
   "avatar": [
     "traits.avatar",

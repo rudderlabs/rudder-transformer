@@ -75,16 +75,6 @@
     "required": false
   },
   {
-    "destKey": "data.city",
-    "sourceKeys": [
-      "traits.city",
-      "context.traits.city",
-      "traits.address.city",
-      "context.traits.address.city"
-    ],
-    "required": false
-  },
-  {
     "destKey": "data.postal_code",
     "sourceKeys": "zipcode",
     "sourceFromGenericMap": true,

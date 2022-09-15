@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const get = require("get-value");
+const { isEmpty } = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   ConfigCategory,
@@ -17,10 +18,9 @@ const {
   CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
-  generateErrorObject
+  handleRtTfSingleEventError
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { deduceAddressFields } = require("./utils");
+const { deduceAddressFields, extractCustomProperties } = require("./utils");
 
 const responseBuilder = responseConfgs => {
   const { resp, apiKey, endpoint } = responseConfgs;
@@ -46,6 +46,16 @@ const identifyResponseBuilder = (message, { Config }) => {
     message,
     mappingConfig[ConfigCategory.IDENTIFY.name]
   );
+
+  // adding unmapped properties(custom properties)
+  const customProperties = extractCustomProperties(message);
+  if (!isEmpty(customProperties)) {
+    if (payload.data) {
+      payload.data = { ...customProperties, ...payload.data };
+    } else {
+      payload.data = { ...customProperties };
+    }
+  }
 
   const { address1, address2 } = deduceAddressFields(message);
   if (address1) payload.data.address1 = address1;
@@ -129,12 +139,7 @@ function batchEvents(eventsChunk) {
     // from the first event in a batch
     const { destination } = chunk[0];
     const { apiKey } = destination.Config;
-    let { listName } = destination.Config;
-
-    // listName will be "Rudderstack", if it is not provided
-    if (typeof listName === "string" && listName.trim().length === 0) {
-      listName = "Rudderstack";
-    }
+    const { listName } = chunk[0].message.body.JSON;
 
     let batchEventResponse = defaultBatchRequestConfig();
 
@@ -230,19 +235,12 @@ const processRouterDest = inputs => {
           );
         }
       } catch (error) {
-        const errObj = generateErrorObject(
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
           error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+          DESTINATION
         );
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload.",
-            errObj.statTags
-          )
-        );
+        errorRespList.push(errRespEvent);
       }
     })
   );

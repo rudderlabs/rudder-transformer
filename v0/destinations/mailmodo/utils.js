@@ -30,6 +30,71 @@ const deduceAddressFields = message => {
   return { address1, address2 };
 };
 
+/**
+ * @param {*} message
+ * @returns customProperties
+ * returns user customProperties that are unmapped
+ * */
+const extractCustomProperties = message => {
+  const customProperties = { ...message?.traits, ...message?.context?.traits };
+  // properties that are already mapped
+  const excludeList = [
+    "email",
+    "Email",
+    "firstName",
+    "first_name",
+    "firstname",
+    "lastName",
+    "last_name",
+    "lastname",
+    "name",
+    "Name",
+    "gender",
+    "Gender",
+    "age",
+    "Age",
+    "birthday",
+    "birthDay",
+    "birth_day",
+    "phone",
+    "Phone",
+    "city",
+    "City",
+    "state",
+    "State",
+    "country",
+    "Country",
+    "postal_code",
+    "postalCode",
+    "postalcode",
+    "zip",
+    "Zip",
+    "zipcode",
+    "zip_code",
+    "zipCode",
+    "designation",
+    "Designation",
+    "company",
+    "Company",
+    "industry",
+    "Industry",
+    "description",
+    "Description",
+    "anniversary_date",
+    "anniversarydate",
+    "anniversaryDate",
+    "address",
+    "Address"
+  ];
+
+  // removing already mapped properties
+  excludeList.forEach(item => {
+    delete customProperties[item];
+  });
+  return customProperties;
+};
+
 module.exports = {
-  deduceAddressFields
+  deduceAddressFields,
+  extractCustomProperties
 };

@@ -486,6 +486,7 @@
                 "last_name": "Kaza",
                 "name": "Rohith Kumar Kaza",
                 "phone": "9876543210",
+                "trait1": "new-val",
                 "city": "Vijayawada",
                 "country": "India",
                 "address1": "A street Vijayawada India "
@@ -556,6 +557,7 @@
                 "last_name": "Kaza",
                 "name": "Rohith Kumar Kaza",
                 "phone": "9876543210",
+                "trait1": "new-val",
                 "address1": "welcome to home"
               }
             }

@@ -18,7 +18,8 @@
                 "first_name": "Rohith",
                 "last_name": "Kaza",
                 "age": 21,
-                "phone": "9876543210"
+                "phone": "9876543210",
+                "trait1": "new-val"
               }
             }
           ]

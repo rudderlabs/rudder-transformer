@@ -342,7 +342,6 @@
           "email": "userSampleX120@gmail.com",
           "phone": "9878764736",
           "timestamp": 1659902539,
-          "external_id": "rbUid",
           "country_code": "IN",
           "listing_id": "10101",
           "conversion_source": "RudderStack",

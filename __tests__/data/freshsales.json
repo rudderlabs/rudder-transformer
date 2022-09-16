@@ -43,21 +43,12 @@
           "DisplayName": "Freshsales",
           "Config": {
             "destConfig": {
-              "defaultConfig": [
-                "apiKey",
-                "domain"
-              ]
+              "defaultConfig": ["apiKey", "domain"]
             },
             "excludeKeys": [],
-            "includeKeys": [
-              "apiKey",
-              "domain"
-            ],
+            "includeKeys": ["apiKey", "domain"],
             "saveDestinationResponse": true,
-            "supportedMessageTypes": [
-              "identify",
-              "group"
-            ],
+            "supportedMessageTypes": ["identify", "group"],
             "supportedSourceTypes": [
               "amp",
               "android",
@@ -107,7 +98,8 @@
             "state": "state",
             "country": "country",
             "created_at": "2022-08-30T11:28:43.647+05:30",
-            "updated_at": "2022-08-30T11:28:48.429+05:30"
+            "updated_at": "2022-08-30T11:28:48.429+05:30",
+            "zipcode": "postalCode"
           },
           "unique_identifier": {
             "emails": "user112@mail.com"

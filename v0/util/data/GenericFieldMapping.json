@@ -98,11 +98,31 @@
   "zipcode": [
     "traits.zip",
     "traits.zipcode",
+    "traits.zip_code",
+    "traits.zipCode",
+    "traits.postalcode",
+    "traits.postal_code",
+    "traits.postalCode",
     "traits.address.zipcode",
+    "traits.address.zip_code",
+    "traits.address.zip",
+    "traits.address.zipCode",
     "traits.address.postalcode",
+    "traits.address.postal_code",
+    "traits.address.postalCode",
     "context.traits.zip",
     "context.traits.zipcode",
+    "context.traits.zip_code",
+    "context.traits.zipCode",
+    "context.traits.postalcode",
+    "context.traits.postal_code",
+    "context.traits.postalCode",
+    "context.traits.address.zip",
     "context.traits.address.zipcode",
-    "context.traits.address.postalcode"
+    "context.traits.address.zip_code",
+    "context.traits.address.zipCode",
+    "context.traits.address.postalcode",
+    "context.traits.address.postal_code",
+    "context.traits.address.postalCode"
   ]
 }

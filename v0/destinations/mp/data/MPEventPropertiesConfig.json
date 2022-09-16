@@ -168,11 +168,12 @@
     "destKey": "$insert_id"
   },
   {
-    "sourceKeys": "context.sessionId",
+    "sourceKeys": "sessionId",
     "destKey": "$session_id",
     "required": false,
+    "sourceFromGenericMap": true,
     "metadata": {
-      "type": "toNumber"
+      "type": "toString"
     }
   }
 ]

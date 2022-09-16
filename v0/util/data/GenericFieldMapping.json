@@ -102,6 +102,9 @@
     "context.traits.zipcode",
     "context.traits.address.zipcode",
     "context.traits.address.postalcode"
+  ],
+  "sessionId": [
+    "context.sessionId",
+    "session_id"
   ]
-
 }

@@ -1,5 +1,6 @@
 const { httpPOST } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
+const { getEndpoint } = require("./config");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -8,45 +9,44 @@ const ErrorBuilder = require("../../util/error");
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
+  const { accountId, passcode } = config;
   if (!Array.isArray(userAttributes)) {
     throw new ErrorBuilder()
       .setMessage("userAttributes is not an array")
       .setStatus(400)
       .build();
   }
-  if (!config?.token) {
+
+  if (!accountId && !passcode) {
     throw new ErrorBuilder()
-      .setMessage("API Token is not available to make")
+      .setMessage("Project ID or Passcode is required for delete user")
       .setStatus(400)
       .build();
   }
-  const params = {
-    data: {
-      $token: `${config.token}`,
-      $delete: null,
-      $ignore_alias: true
-    }
+
+  const endpoint = getEndpoint(config, "/delete/profiles.json");
+  const headers = {
+    "X-CleverTap-Account-Id": accountId,
+    "X-CleverTap-Passcode": passcode,
+    "Content-Type": "application/json"
   };
-  const endpoint =
-    config.dataResidency === "eu"
-      ? `https://api-eu.mixpanel.com/engage`
-      : `https://api.mixpanel.com/engage`;
   for (let i = 0; i < userAttributes.length; i += 1) {
+    const identity = [];
     if (userAttributes[i].userId) {
-      params.data.$distinct_id = userAttributes[i].userId;
-      // eslint-disable-next-line no-await-in-loop
-      const response = await httpPOST(endpoint, null, { params });
-      if (!response || !response.response) {
-        throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
-          .build();
-      }
+      identity.push(userAttributes[i].userId);
+    } else
+      throw new ErrorBuilder()
+        .setMessage("User id for deletion not present")
+        .setStatus(400)
+        .build();
+    // eslint-disable-next-line no-await-in-loop
+    const response = await httpPOST(endpoint, { identity }, { headers });
+    if (!response || !response.response) {
+      throw new ErrorBuilder()
+        .setMessage("Could not get response")
+        .setStatus(500)
+        .build();
     }
-    throw new ErrorBuilder()
-      .setMessage("User id for deletion not present")
-      .setStatus(400)
-      .build();
   }
   return { statusCode: 200, status: "successful" };
 };

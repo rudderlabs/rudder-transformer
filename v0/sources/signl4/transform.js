@@ -69,6 +69,7 @@ function process(event) {
       message.setEventName("Somebody Punched-Out");
       break;
     default:
+      message.setEventName("Alert Updated");
   }
 
   // setting up signl4 user.id to externalId

@@ -22,7 +22,7 @@ const responseBuilder = (payload, endpoint) => {
     return response;
   }
   throw new CustomError(
-    "Monday]: Payload could not be populated due to wrong input",
+    "Payload could not be populated due to wrong input",
     400
   );
 };
@@ -33,7 +33,7 @@ const responseBuilder = (payload, endpoint) => {
  * @param {*} param1
  * @returns
  */
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   const { event } = message;
 
@@ -51,7 +51,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   return responseBuilder(payload, endpoint);
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -59,13 +59,13 @@ const processEvent = async (message, destination) => {
     );
   }
   if (!destination.Config.apiKey) {
-    throw new CustomError("[SIGNL4]: apiKey is a required field", 400);
+    throw new CustomError("apiKey is a required field", 400);
   }
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);

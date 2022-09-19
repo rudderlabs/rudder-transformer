@@ -911,6 +911,16 @@ const handleMetadataForValue = (
     let foundVal = false;
     if (Array.isArray(allowedKeyCheck)) {
       allowedKeyCheck.some(key => {
+        switch (key.type) {
+          case "toLowerCase":
+            formattedVal = formattedVal.toLowerCase();
+            break;
+          case "toUpperCase":
+            formattedVal = formattedVal.toUpperCase();
+            break;
+          default:
+            break;
+        }
         if (key.sourceVal.includes(formattedVal)) {
           foundVal = true;
           return true;

@@ -1,4 +1,5 @@
 const get = require("get-value");
+const { set } = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   getHashFromArrayWithDuplicate,
@@ -7,17 +8,31 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   simpleProcessRouterDest,
-  getHashFromArray
+  getHashFromArray,
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
-const {
+const { CLICK_CONVERSION, CALL_CONVERSION } = require("./config");
+let {
   trackClickConversionsMapping,
-  CLICK_CONVERSION,
-  trackCallConversionsMapping,
-  CALL_CONVERSION
+  trackCallConversionsMapping
 } = require("./config");
-const { validateDestinationConfig, getAccessToken } = require("./utils");
+const {
+  validateDestinationConfig,
+  getAccessToken,
+  removeHashToSha256TypeFromMappingJson
+} = require("./utils");
 
+/**
+ * get conversions depending on the type set from dashboard
+ * i.e click conversions or call conversions
+ * @param {*} message
+ * @param {*} metadata
+ * @param {*} param2
+ * @param {*} event
+ * @param {*} conversionType
+ * @returns
+ */
 const getConversions = (
   message,
   metadata,
@@ -28,10 +43,50 @@ const getConversions = (
   let payload;
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
+  const { hashUserIdentifier } = Config;
+
   if (conversionType === "click") {
+    // click conversions
+
+    if (hashUserIdentifier === false) {
+      trackClickConversionsMapping = removeHashToSha256TypeFromMappingJson(
+        trackClickConversionsMapping
+      );
+    }
+
     payload = constructPayload(message, trackClickConversionsMapping);
     endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);
+
+    // let products = payload.conversions[0].CartData.items;
+    const products = get(message, "properties.products");
+    const itemList = [];
+    if (products && products.length > 0 && Array.isArray(products)) {
+      // products is a list of items
+      products.forEach(product => {
+        if (Object.keys(product).length) {
+          itemList.push({
+            productId: product.product_id,
+            quantity: product.quantity,
+            unitPrice: product.price
+          });
+        }
+      });
+
+      set(payload, "conversions[0].CartData.items", itemList);
+    }
+
+    payload.conversions[0] = removeUndefinedAndNullAndEmptyValues(
+      payload.conversions[0]
+    );
   } else {
+    // call conversions
+
+    if (hashUserIdentifier === false) {
+      trackCallConversionsMapping = removeHashToSha256TypeFromMappingJson(
+        trackCallConversionsMapping
+      );
+    }
+
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(":customerId", filteredCustomerId);
   }
@@ -57,6 +112,13 @@ const getConversions = (
   return response;
 };
 
+/**
+ * response builder for track
+ * @param {*} message
+ * @param {*} metadata
+ * @param {*} destination
+ * @returns
+ */
 const trackResponseBuilder = (message, metadata, destination) => {
   let {
     eventsToConversionsNamesMapping,

@@ -37,22 +37,5 @@
     "metadata": {
       "type": "toString"
     }
-  },
-  {
-    "destKey": "validateOnly",
-    "sourceKeys": "properties.validateOnly",
-    "required": false,
-    "metadata": {
-      "multikeyMap": [
-        {
-          "sourceVal": ["true", true],
-          "destVal": false
-        },
-        {
-          "sourceVal": ["false", false],
-          "destVal": true
-        }
-      ]
-    }
   }
 ]

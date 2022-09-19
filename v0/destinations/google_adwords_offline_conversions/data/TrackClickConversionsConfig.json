@@ -65,7 +65,7 @@
   },
   {
     "destKey": "conversions[0].CartData.items[0].productId",
-    "sourceKeys": "properties.products.0.product_id",
+    "sourceKeys": "properties.product_id",
     "required": false,
     "metadata": {
       "type": "toString"
@@ -73,7 +73,7 @@
   },
   {
     "destKey": "conversions[0].CartData.items[0].quantity",
-    "sourceKeys": "properties.products.0.quantity",
+    "sourceKeys": "properties.quantity",
     "required": false,
     "metadata": {
       "type": "toInt"
@@ -81,7 +81,7 @@
   },
   {
     "destKey": "conversions[0].CartData.items[0].unitPrice",
-    "sourceKeys": "properties.products.0.price",
+    "sourceKeys": "properties.price",
     "required": false,
     "metadata": {
       "type": "toNumber"
@@ -95,7 +95,8 @@
       "type": "toString",
       "allowedKeyCheck": [
         {
-          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "FIRST_PARTY", "THIRD_PARTY"]
+          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "FIRST_PARTY", "THIRD_PARTY"],
+          "type": "toUpperCase"
         }
       ]
     }
@@ -128,7 +129,8 @@
   },
   {
     "destKey": "conversions[0].userIdentifiers.thirdPartyUserId",
-    "sourceKeys": "properties.thirdPartyUserId",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
       "type": "toString"
@@ -154,7 +156,12 @@
   },
   {
     "destKey": "conversions[0].userIdentifiers.addressInfo.city",
-    "sourceKeys": ["context.traits.city", "context.traits.address.city"],
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -162,7 +169,12 @@
   },
   {
     "destKey": "conversions[0].userIdentifiers.addressInfo.state",
-    "sourceKeys": ["context.traits.state", "context.traits.address.state"],
+    "sourceKeys": [
+      "traits.state",
+      "traits.address.state",
+      "context.traits.state",
+      "context.traits.address.state"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -171,6 +183,10 @@
   {
     "destKey": "conversions[0].userIdentifiers.addressInfo.countryCode",
     "sourceKeys": [
+      "traits.countryCode",
+      "traits.country",
+      "traits.address.countryCode",
+      "traits.address.country",
       "context.traits.countryCode",
       "context.traits.country",
       "context.traits.address.countryCode",
@@ -184,6 +200,8 @@
   {
     "destKey": "conversions[0].userIdentifiers.addressInfo.postalCode",
     "sourceKeys": [
+      "traits.postalCode",
+      "traits.address.postalCode",
       "context.traits.postalCode",
       "context.traits.address.postalCode"
     ],
@@ -194,7 +212,12 @@
   },
   {
     "destKey": "conversions[0].userIdentifiers.addressInfo.hashedStreetAddress",
-    "sourceKeys": ["context.traits.streetAddress", "context.traits.address"],
+    "sourceKeys": [
+      "traits.streetAddress",
+      "traits.address",
+      "context.traits.streetAddress",
+      "context.traits.address"
+    ],
     "required": false,
     "metadata": {
       "type": "hashToSha256"
@@ -208,7 +231,8 @@
       "type": "toString",
       "allowedKeyCheck": [
         {
-          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "APP", "WEB"]
+          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "APP", "WEB"],
+          "type": "toUpperCase"
         }
       ]
     }
@@ -228,7 +252,12 @@
   },
   {
     "destKey": "conversions[0].conversionValue",
-    "sourceKeys": "properties.conversionValue",
+    "sourceKeys": [
+      "properties.conversionValue",
+      "properties.total",
+      "properties.value",
+      "properties.revenue"
+    ],
     "required": false,
     "metadata": {
       "type": "toNumber"
@@ -248,23 +277,6 @@
     "required": false,
     "metadata": {
       "type": "toString"
-    }
-  },
-  {
-    "destKey": "validateOnly",
-    "sourceKeys": "properties.validateOnly",
-    "required": false,
-    "metadata": {
-      "multikeyMap": [
-        {
-          "sourceVal": ["true", true],
-          "destVal": false
-        },
-        {
-          "sourceVal": ["false", false],
-          "destVal": true
-        }
-      ]
     }
   }
 ]

@@ -211,6 +211,26 @@ const getConversionCustomVariableHashMap = arrays => {
   return hashMap;
 };
 
+/**
+ * update mapping Json config to remove 'hashToSha256'
+ * operation from metadata.type and replace it with
+ * 'toString'
+ * @param {*} mapping
+ * @returns
+ */
+const removeHashToSha256TypeFromMappingJson = mapping => {
+  const newMapping = [];
+  mapping.forEach(element => {
+    if (get(element, "metadata.type")) {
+      if (element.metadata.type === "hashToSha256") {
+        element.metadata.type = "toString";
+      }
+    }
+    newMapping.push(element);
+  });
+  return newMapping;
+};
+
 // transformer proxy
 
 /**
@@ -243,24 +263,23 @@ const ProxyRequest = async request => {
 
   const { properties } = params;
   let { customVariables } = params;
-  const finalCustomVariables = [];
+  const resultantCustomVariables = [];
   customVariables = getHashFromArray(customVariables);
   Object.keys(customVariables).forEach(key => {
     if (properties[key] && conversionCustomVariable[customVariables[key]]) {
       const tempCustomVariables = {};
-      // set custom variable name
-      tempCustomVariables.conversionCustomVariable =
-        conversionCustomVariable[customVariables[key]];
-
-      // set custom variable value
-      tempCustomVariables.value = properties[key];
-
-      finalCustomVariables.push(tempCustomVariables);
+      // 1. set custom variable name
+      // 2. set custom variable value
+      resultantCustomVariables.push({
+        conversionCustomVariable:
+          conversionCustomVariable[customVariables[key]],
+        value: properties[key]
+      });
     }
   });
 
-  if (finalCustomVariables) {
-    set(body.JSON, "conversions.0.customVariables", finalCustomVariables);
+  if (resultantCustomVariables) {
+    set(body.JSON, "conversions.0.customVariables", resultantCustomVariables);
   }
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
@@ -305,5 +324,6 @@ module.exports = {
   getAccessToken,
   getConversionActionId,
   getConversionCustomVariable,
+  removeHashToSha256TypeFromMappingJson,
   networkHandler
 };

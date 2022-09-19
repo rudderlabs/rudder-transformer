@@ -1,6 +1,4 @@
-const { config } = require("dotenv");
-const get = require("get-value");
-const { set } = require("lodash");
+const { get, set } = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   getHashFromArrayWithDuplicate,
@@ -44,6 +42,7 @@ const getConversions = (
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
   const { hashUserIdentifier } = Config;
+  const { properties } = message;
 
   if (conversionType === "click") {
     // click conversions
@@ -75,15 +74,38 @@ const getConversions = (
       set(payload, "conversions[0].CartData.items", itemList);
     }
 
-    if (Config.thirdPartyUserId) {
-      let thirdPartyUserId = get(message, Config.thirdPartyUserId);
-      if (thirdPartyUserId) {
-        set(
-          payload,
-          "conversions[0].userIdentifiers.thirdPartyUserId",
-          thirdPartyUserId
-        );
-      }
+    // userIdentifierSource
+    // if userIdentifierSource doesn't exist in properties
+    // then it is taken from the webapp config
+    if (!properties.userIdentifierSource) {
+      set(
+        payload,
+        "conversions[0].userIdentifiers.userIdentifierSource",
+        get(message, Config.userIdentifierSource)
+      );
+    }
+
+    // thirdPartyUserId
+    // defaults maps to userId and
+    // based on the path provided in config it will be overridden
+    let thirdPartyUserId = get(message, Config.thirdPartyUserId);
+    if (thirdPartyUserId) {
+      set(
+        payload,
+        "conversions[0].userIdentifiers.thirdPartyUserId",
+        thirdPartyUserId
+      );
+    }
+
+    // conversionEnvironment
+    // if conversionEnvironment doesn't exist in properties
+    // then it is taken from the webapp config
+    if (!properties.conversionEnvironment) {
+      set(
+        payload,
+        "conversions[0].conversionEnvironment",
+        get(message, Config.conversionEnvironment)
+      );
     }
   } else {
     // call conversions

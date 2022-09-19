@@ -1,3 +1,4 @@
+const { config } = require("dotenv");
 const get = require("get-value");
 const { set } = require("lodash");
 const { EventType } = require("../../../constants");
@@ -8,8 +9,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   simpleProcessRouterDest,
-  getHashFromArray,
-  removeUndefinedAndNullAndEmptyValues
+  getHashFromArray
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const { CLICK_CONVERSION, CALL_CONVERSION } = require("./config");
@@ -66,8 +66,8 @@ const getConversions = (
         if (Object.keys(product).length) {
           itemList.push({
             productId: product.product_id,
-            quantity: product.quantity,
-            unitPrice: product.price
+            quantity: parseInt(product.quantity, 10),
+            unitPrice: Number(product.price)
           });
         }
       });
@@ -75,9 +75,16 @@ const getConversions = (
       set(payload, "conversions[0].CartData.items", itemList);
     }
 
-    payload.conversions[0] = removeUndefinedAndNullAndEmptyValues(
-      payload.conversions[0]
-    );
+    if (Config.thirdPartyUserId) {
+      let thirdPartyUserId = get(message, Config.thirdPartyUserId);
+      if (thirdPartyUserId) {
+        set(
+          payload,
+          "conversions[0].userIdentifiers.thirdPartyUserId",
+          thirdPartyUserId
+        );
+      }
+    }
   } else {
     // call conversions
 

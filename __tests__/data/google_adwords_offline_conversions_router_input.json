@@ -144,6 +144,11 @@
             "to": "cost"
           }
         ],
+        "UserIdentifierSource": "THIRD_PARTY",
+        "thirdPartyUserId": "properties.thirdPartyUserId",
+        "conversionEnvironment": "WEB",
+        "hashUserIdentifier": true,
+        "validateOnly": false,
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
     }
@@ -295,6 +300,11 @@
             "to": "cost"
           }
         ],
+        "UserIdentifierSource": "THIRD_PARTY",
+        "thirdPartyUserId": "properties.thirdPartyUserId",
+        "conversionEnvironment": "WEB",
+        "hashUserIdentifier": true,
+        "validateOnly": false,
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
     }

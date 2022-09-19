@@ -146,6 +146,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -412,6 +417,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -637,6 +647,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -779,6 +794,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -925,6 +945,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -1072,6 +1097,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -1246,6 +1276,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -1543,6 +1578,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }
@@ -1581,7 +1621,10 @@
             "conversions": [
               {
                 "gclid": "gclid",
-                "conversionDateTime": "2022-01-01 12:32:45-08:00"
+                "conversionDateTime": "2022-01-01 12:32:45-08:00",
+                "userIdentifiers": {
+                  "thirdPartyUserId": "12345"
+                }
               }
             ],
             "partialFailure": true
@@ -1696,6 +1739,11 @@
               "to": "cost"
             }
           ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
       }

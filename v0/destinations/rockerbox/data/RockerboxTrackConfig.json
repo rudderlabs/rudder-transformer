@@ -45,5 +45,13 @@
   {
     "sourceKeys": "properties.salesforce",
     "destKey": "salesforce"
+  },
+  {
+    "sourceKeys": "properties.countryCode",
+    "destKey": "country_code"
+  },
+  {
+    "sourceKeys": "properties.listingId",
+    "destKey": "listing_id"
   }
 ]

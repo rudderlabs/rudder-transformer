@@ -18,6 +18,7 @@
     "KLAVIYO": true,
     "KUSTOMER": true,
     "MAILCHIMP": true,
+    "MAILMODO": true,
     "MARKETO": true,
     "OMETRIA": true,
     "PARDOT": true,
@@ -36,6 +37,8 @@
     "CLICKUP": true,
     "FRESHMARKETER": true,
     "FRESHSALES": true,
-    "MONDAY": true
+    "MONDAY": true,
+    "CUSTIFY": true,
+    "USER": true
   }
 }

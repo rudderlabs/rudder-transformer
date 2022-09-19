@@ -564,7 +564,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Category must be a string",
+    "error": "'properties.category' must be either be a string or an Array",
     "statTags": {
       "destType": "FACEBOOK_PIXEL",
       "stage": "transform",

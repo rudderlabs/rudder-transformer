@@ -43,6 +43,44 @@ const statTags = {
 };
 
 /**
+ * This method gets content category with proper error-handling
+ *
+ * @param {*} category
+ * @returns The content category as a string
+ */
+const getContentCategory = category => {
+  let contentCategory = category;
+  if (Array.isArray(contentCategory)) {
+    contentCategory = contentCategory.map(String).join(",");
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    typeof contentCategory !== "object"
+  ) {
+    contentCategory = String(contentCategory);
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    !Array.isArray(contentCategory) &&
+    typeof contentCategory === "object"
+  ) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "'properties.category' must be either be a string or an Array"
+      )
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  return contentCategory;
+};
+
+/**
  *
  * @param {*} message Rudder element
  * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
@@ -89,7 +127,7 @@ const handleOrder = (message, categoryToContent) => {
   }
 
   return {
-    content_category: category,
+    content_category: getContentCategory(category),
     content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
@@ -192,7 +230,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
     content_ids: contentIds,
     content_type: contentType,
     content_name: contentName,
-    content_category: contentCategory,
+    content_category: getContentCategory(contentCategory),
     currency,
     value,
     contents
@@ -417,32 +455,6 @@ const responseBuilderSimple = (
   }
 
   // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
-
-  if (
-    customData &&
-    customData.content_category &&
-    typeof customData.content_category !== "string"
-  ) {
-    if (Array.isArray(customData.content_category)) {
-      customData.content_category = customData.content_category
-        .map(String)
-        .join(",");
-    } else if (typeof customData.content_category === "object") {
-      throw new ErrorBuilder()
-        .setMessage("Category must be a string")
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
-      // throw new CustomError("Category must be must be a string");
-    } else {
-      customData.content_category = String(customData.content_category);
-    }
-    // delete customData.content_category;
-  }
 
   if (userData && commonData) {
     const response = defaultRequestConfig();

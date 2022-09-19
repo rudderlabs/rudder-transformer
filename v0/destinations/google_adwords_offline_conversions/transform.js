@@ -122,7 +122,7 @@ const getConversions = (
   }
 
   // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
-  // 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
+  // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
   if (!properties.conversionDateTime && message.originalTimestamp) {
     const timestamp = message.originalTimestamp;
     const date = moment(timestamp).format("YYYY-MM-DD");

@@ -9,6 +9,7 @@ const {
   simpleProcessRouterDest,
   getHashFromArray
 } = require("../../util");
+const moment = require("moment");
 const ErrorBuilder = require("../../util/error");
 const { CLICK_CONVERSION, CALL_CONVERSION } = require("./config");
 let {
@@ -118,6 +119,18 @@ const getConversions = (
 
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(":customerId", filteredCustomerId);
+  }
+
+  // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
+  // 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
+  if (!properties.conversionDateTime && message.originalTimestamp) {
+    const timestamp = message.originalTimestamp;
+    const date = moment(timestamp).format("YYYY-MM-DD");
+    const time = moment
+      .utc(timestamp)
+      .utcOffset(moment(timestamp).utcOffset())
+      .format("HH:MM:SSZ");
+    set(payload, "conversions[0].conversionDateTime", `${date} ${time}`);
   }
 
   payload.partialFailure = true;

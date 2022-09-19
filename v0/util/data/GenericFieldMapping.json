@@ -105,7 +105,7 @@
     "context.traits.address.postalcode"
   ],
   "sessionId": [
-    "context.sessionId",
-    "session_id"
+    "session_id",
+    "context.sessionId"
   ]
 }

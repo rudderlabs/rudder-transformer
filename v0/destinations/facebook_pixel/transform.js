@@ -8,12 +8,12 @@ const {
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
-  STANDARD_ECOMM_EVENTS_TYPE
+  STANDARD_ECOMM_EVENTS_TYPE,
+  DESTINATION
 } = require("./config");
 const { EventType } = require("../../../constants");
 
 const {
-  CustomError,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -23,9 +23,10 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  getValidDynamicFormConfig,
-  isDefinedAndNotNull
+  getValidDynamicFormConfig
 } = require("../../util");
+
+const ErrorBuilder = require("../../util/error");
 
 const {
   deduceFbcParam,
@@ -33,7 +34,51 @@ const {
   getContentType,
   transformedPayloadData
 } = require("./utils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
+const statTags = {
+  destType: DESTINATION,
+  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE
+};
+
+/**
+ * This method gets content category with proper error-handling
+ *
+ * @param {*} category
+ * @returns The content category as a string
+ */
+const getContentCategory = category => {
+  let contentCategory = category;
+  if (Array.isArray(contentCategory)) {
+    contentCategory = contentCategory.map(String).join(",");
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    typeof contentCategory !== "object"
+  ) {
+    contentCategory = String(contentCategory);
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    !Array.isArray(contentCategory) &&
+    typeof contentCategory === "object"
+  ) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "'properties.category' must be either be a string or an Array"
+      )
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  return contentCategory;
+};
 
 /**
  *
@@ -46,7 +91,6 @@ const handleOrder = (message, categoryToContent) => {
   const { products, revenue } = message.properties;
   const value = formatRevenue(revenue);
 
-
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
   const contents = [];
@@ -56,31 +100,39 @@ const handleOrder = (message, categoryToContent) => {
       for (const singleProduct of products) {
         const pId =
           singleProduct.product_id || singleProduct.sku || singleProduct.id;
-          if (pId) {
-            contentIds.push(pId);
-            // required field for content
-            // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
-            const content = {
-              id: pId,
-              quantity: singleProduct.quantity || message.properties.quantity || 1,
-              item_price: singleProduct.price || message.properties.price
-            };
-            contents.push(content);
-          }
-      
+        if (pId) {
+          contentIds.push(pId);
+          // required field for content
+          // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+          const content = {
+            id: pId,
+            quantity:
+              singleProduct.quantity || message.properties.quantity || 1,
+            item_price: singleProduct.price || message.properties.price
+          };
+          contents.push(content);
+        }
       }
     } else {
-      throw new CustomError("Product is not an object. Event not sent", 400);
+      throw new ErrorBuilder()
+        .setMessage("'properties.products' is not sent as an Array<Object>")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
     }
   }
 
   return {
-    content_category: category,
+    content_category: getContentCategory(category),
     content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
     value,
-    contents: contents,
+    contents,
     num_items: contentIds.length
   };
 };
@@ -98,9 +150,9 @@ const handleProductListViewed = (message, categoryToContent) => {
   const contents = [];
   const { products } = message.properties;
   if (products && products.length > 0 && Array.isArray(products)) {
-    products.forEach(product => {
+    products.forEach((product, index) => {
       if (isObject(product)) {
-        const productId = product.product_id || product.sku || product.id ;
+        const productId = product.product_id || product.sku || product.id;
         if (productId) {
           contentIds.push(productId);
           contents.push({
@@ -110,7 +162,15 @@ const handleProductListViewed = (message, categoryToContent) => {
           });
         }
       } else {
-        throw new CustomError("Product is not an object. Event not sent", 400);
+        throw new ErrorBuilder()
+          .setMessage(`'properties.products[${index}]' is not an object`)
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
       }
     });
   }
@@ -132,7 +192,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   return {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
-    contents: contents
+    contents
   };
 };
 
@@ -143,10 +203,13 @@ const handleProductListViewed = (message, categoryToContent) => {
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
-  let contentIds = [];
-  let contents = [];
+  const contentIds = [];
+  const contents = [];
   const useValue = valueFieldIdentifier === "properties.value";
-  const contentId = message.properties.product_id || message.properties.id || message.properties.sku;
+  const contentId =
+    message.properties.product_id ||
+    message.properties.id ||
+    message.properties.sku;
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
     message.properties.product_name || message.properties.name || "";
@@ -155,25 +218,24 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
-    if(contentId) {
-      contentIds.push(contentId);
-      contents.push({
-        id:contentId,
-        quantity: message.properties.quantity || 1,
-        item_price: message.properties.price
-      });
-    }
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message.properties.quantity || 1,
+      item_price: message.properties.price
+    });
+  }
   return {
     content_ids: contentIds,
     content_type: contentType,
     content_name: contentName,
-    content_category: contentCategory,
+    content_category: getContentCategory(contentCategory),
     currency,
     value,
     contents
   };
 };
-
 
 const responseBuilderSimple = (
   message,
@@ -214,7 +276,6 @@ const responseBuilderSimple = (
     userData.fbc = userData.fbc || deduceFbcParam(message);
   }
 
-
   let customData = {};
   let commonData = {};
 
@@ -228,7 +289,15 @@ const responseBuilderSimple = (
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw new CustomError("Invalid Action Source type", 400);
+      throw new ErrorBuilder()
+        .setMessage("Invalid Action Source type")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
     }
   }
   if (category.type !== "identify") {
@@ -244,10 +313,17 @@ const responseBuilderSimple = (
       category.standard = true;
     }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw new CustomError(
-        "No properties for the event so the event cannot be sent.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          `After excluding ${FB_PIXEL_DEFAULT_EXCLUSION}, no fields are present in 'properties' for a standard event`
+        )
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
     }
     customData = transformedPayloadData(
       message,
@@ -299,10 +375,16 @@ const responseBuilderSimple = (
            */
           const validQueryType = ["string", "number", "boolean"];
           if (query && !validQueryType.includes(typeof query)) {
-            throw new CustomError(
-              "'query' should be in string format only",
-              400
-            );
+            throw new ErrorBuilder()
+              .setMessage("'query' should be in string format only")
+              .setStatus(400)
+              .setStatTags({
+                ...statTags,
+                meta:
+                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                    .BAD_EVENT
+              })
+              .build();
           }
           customData = {
             ...customData,
@@ -327,7 +409,19 @@ const responseBuilderSimple = (
           commonData.event_name = category.event;
           break;
         default:
-          throw new CustomError("This standard event does not exist", 400);
+          throw new ErrorBuilder()
+            .setMessage(
+              `${category.standard} type of standard event does not exist`
+            )
+            .setStatus(400)
+            .setStatTags({
+              ...statTags,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_EVENT
+            })
+            .build();
+        // throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
         ? message.properties.currency || "USD"
@@ -362,23 +456,6 @@ const responseBuilderSimple = (
 
   // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
 
-  if (
-    customData &&
-    customData.content_category &&
-    typeof customData.content_category !== "string"
-  ) {
-    if (Array.isArray(customData.content_category)) {
-      customData.content_category = customData.content_category
-        .map(String)
-        .join(",");
-    } else if (typeof customData.content_category === "object") {
-      throw new CustomError("Category must be must be a string");
-    } else {
-      customData.content_category = String(customData.content_category);
-    }
-    // delete customData.content_category;
-  }
-
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
@@ -401,15 +478,26 @@ const responseBuilderSimple = (
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new ErrorBuilder()
+    .setMessage("Payload could not be constructed")
+    .setStatus(400)
+    .setStatTags({
+      ...statTags,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("'type' is missing")
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
 
   const timeStamp = message.originalTimestamp || message.timestamp;
@@ -427,10 +515,17 @@ const processEvent = (message, destination) => {
       stats.increment("fb_pixel_timestamp_error", 1, {
         destinationId: destination.ID
       });
-      throw new CustomError(
-        "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          "Events must be sent within seven days of their occurrence or up to one minute in the future."
+        )
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
     }
   }
 
@@ -464,10 +559,18 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw new CustomError(
-          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
-          400
-        );
+        throw new ErrorBuilder()
+          .setMessage(
+            'For identify events, "Advanced Mapping" configuration must be enabled on the RudderStack dashboard'
+          )
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                .CONFIGURATION
+          })
+          .build();
       }
     case EventType.PAGE:
     case EventType.SCREEN:
@@ -475,7 +578,15 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       if (!message.event) {
-        throw new CustomError("Event name is required", 400);
+        throw new ErrorBuilder()
+          .setMessage("'event' is required")
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
       }
       standard = eventsToEvents;
       if (standard) {
@@ -536,7 +647,15 @@ const processEvent = (message, destination) => {
       }
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new ErrorBuilder()
+        .setMessage("Message type not supported")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
   // build the response
   return responseBuilderSimple(
@@ -580,8 +699,8 @@ const processRouterDest = async inputs => {
           error.response
             ? error.response.status
             : error.code
-              ? error.code
-              : 400,
+            ? error.code
+            : 400,
           error.message || "Error occurred while processing payload."
         );
       }
@@ -591,4 +710,3 @@ const processRouterDest = async inputs => {
 };
 
 module.exports = { process, processRouterDest };
-

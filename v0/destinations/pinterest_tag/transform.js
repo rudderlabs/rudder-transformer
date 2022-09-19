@@ -5,10 +5,10 @@ const { EventType } = require("../../../constants");
 const {
   CustomError,
   defaultRequestConfig,
-  isDefinedAndNotNull,
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
+  isDefinedAndNotNull,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues
 } = require("../../util");
@@ -38,49 +38,6 @@ const responseBuilderSimple = finalPayload => {
     headers: {
       "Content-Type": "application/json"
     }
-  };
-};
-
-const commonFieldResponseBuilder = (message, { Config }) => {
-  let processedUserPayload;
-  const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
-  // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
-  const processedCommonPayload = processCommonPayload(message);
-  /*
-    message deduplication facility is provided *only* for the users who are using the *new configuration*.
-    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
-    sent as "event_id". On it's absence it will fallback to "messageId".
-    And if "enableDeduplication" is set to false, it will fallback to "messageId"
-  */
-  processedCommonPayload.event_id =
-    get(message, `${deduplicationKey}`) || message.messageId;
-  const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
-  const isValidUserPayload = checkUserPayloadValidity(userPayload);
-  if (isValidUserPayload === false) {
-    throw new CustomError(
-      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent.",
-      400
-    );
-  }
-
-  /**
-   * User can configure hashed checkbox to false if they are sending already hashed data to Rudderstack
-   * Otherwise we will hash data user data by default.
-   */
-  if (sendingUnHashedData) {
-    processedUserPayload = processUserPayload(userPayload);
-  } else {
-    // when user is sending already hashed data to Rudderstack
-    processedUserPayload = processHashedUserPayload(userPayload, message);
-  }
-  const deducedEventName = deduceEventName(message, Config);
-
-  return {
-    ...processedCommonPayload,
-    event_name: deducedEventName,
-    app_id: appId,
-    advertiser_id: advertiserId,
-    user_data: processedUserPayload
   };
 };
 
@@ -159,9 +116,65 @@ const processEcomFields = (message, mandatoryPayload) => {
   };
 };
 
+const commonFieldResponseBuilder = (
+  message,
+  { Config },
+  messageType,
+  eventName
+) => {
+  let processedUserPayload;
+  const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
+  // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
+  const processedCommonPayload = processCommonPayload(message);
+  /*
+    message deduplication facility is provided *only* for the users who are using the *new configuration*.
+    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
+    sent as "event_id". On it's absence it will fallback to "messageId".
+    And if "enableDeduplication" is set to false, it will fallback to "messageId"
+  */
+  processedCommonPayload.event_id =
+    get(message, `${deduplicationKey}`) || message.messageId;
+  const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
+  const isValidUserPayload = checkUserPayloadValidity(userPayload);
+  if (isValidUserPayload === false) {
+    throw new CustomError(
+      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent.",
+      400
+    );
+  }
+
+  /**
+   * User can configure hashed checkbox to false if they are sending already hashed data to Rudderstack
+   * Otherwise we will hash data user data by default.
+   */
+  if (sendingUnHashedData) {
+    processedUserPayload = processUserPayload(userPayload);
+  } else {
+    // when user is sending already hashed data to Rudderstack
+    processedUserPayload = processHashedUserPayload(userPayload, message);
+  }
+
+  let response = {
+    ...processedCommonPayload,
+    event_name: eventName,
+    app_id: appId,
+    advertiser_id: advertiserId,
+    user_data: processedUserPayload
+  };
+
+  if (messageType === EventType.TRACK) {
+    response = processEcomFields(message, response);
+  }
+  // return responseBuilderSimple(response);
+  return response;
+};
+
 const process = event => {
-  let response = {};
-  let mandatoryPayload = {};
+  // let response = {};
+  // let mandatoryPayload = {};
+  const toSendEvents = [];
+  const respList = [];
+  let deducedEventNameArray = [];
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
 
@@ -180,7 +193,18 @@ const process = event => {
     case EventType.PAGE:
     case EventType.SCREEN:
     case EventType.TRACK:
-      mandatoryPayload = commonFieldResponseBuilder(message, destination);
+      deducedEventNameArray = deduceEventName(message, destination.Config);
+      deducedEventNameArray.forEach(eventName => {
+        toSendEvents.push(
+          commonFieldResponseBuilder(
+            message,
+            destination,
+            messageType,
+            eventName
+          )
+        );
+      });
+
       break;
     default:
       throw new CustomError(
@@ -189,15 +213,10 @@ const process = event => {
       );
   }
 
-  /**
-   * Track payloads will need additional custom parameters
-   */
-  if (messageType === EventType.TRACK) {
-    response = processEcomFields(message, mandatoryPayload);
-  } else {
-    response = mandatoryPayload;
-  }
-  return responseBuilderSimple(response);
+  toSendEvents.forEach(sendEvent => {
+    respList.push(responseBuilderSimple(sendEvent));
+  });
+  return respList;
 };
 
 const generateBatchedPaylaodForArray = events => {
@@ -271,12 +290,15 @@ const processRouterDest = inputs => {
         });
       } else {
         // if not transformed
-        const transformedPayload = {
-          message: process(event),
-          metadata: event.metadata,
-          destination
-        };
-        successRespList.push(transformedPayload);
+        const transformedMessageArray = process(event);
+        transformedMessageArray.forEach(singleResponse => {
+          const transformedPayload = {
+            message: singleResponse,
+            metadata: event.metadata,
+            destination
+          };
+          successRespList.push(transformedPayload);
+        });
       }
     } catch (error) {
       batchErrorRespList.push(

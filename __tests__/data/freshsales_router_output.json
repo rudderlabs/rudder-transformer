@@ -21,6 +21,7 @@
             "city": "city",
             "state": "state",
             "country": "country",
+            "zipcode": "postalCode",
             "created_at": "2022-08-30T11:28:43.647+05:30",
             "updated_at": "2022-08-30T11:28:48.429+05:30"
           },
@@ -34,9 +35,7 @@
       },
       "files": {}
     },
-    "metadata": [
-      {}
-    ],
+    "metadata": [{}],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -48,21 +47,12 @@
         "DisplayName": "Freshsales",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "domain"
-            ]
+            "defaultConfig": ["apiKey", "domain"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "apiKey",
-            "domain"
-          ],
+          "includeKeys": ["apiKey", "domain"],
           "saveDestinationResponse": true,
-          "supportedMessageTypes": [
-            "identify",
-            "group"
-          ],
+          "supportedMessageTypes": ["identify", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",

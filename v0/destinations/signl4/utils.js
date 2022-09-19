@@ -39,10 +39,10 @@ const populatePayload = (message, Config) => {
   const signl4Properties = Object.keys(propertyMappingObj);
   signl4Properties.forEach(element => {
     // If the key is provided from web-app for this field mappping it with it's value
-    if (properties[Config[`${element}Property`]]) {
-      delete payload[`${Config[`${element}Property`]}`]; // deleting the key to avoid duplication as property is already populated in payload
-      payload[propertyMappingObj[element]] =
-        properties[Config[`${element}Property`]];
+    const index = `${element}Property`;
+    if (properties[Config[index]]) {
+      delete payload[`${Config[index]}`]; // deleting the key to avoid duplication as property is already populated in payload
+      payload[propertyMappingObj[element]] = properties[Config[index]];
     } else {
       payload[propertyMappingObj[element]] = Config[`${element}Value`]; // if the key is not provided mapping it with the default value
     }

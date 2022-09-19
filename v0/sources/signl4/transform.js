@@ -9,13 +9,10 @@ const mapping = JSON.parse(
 );
 
 function settingProperties(event, message) {
-  const flatEvent = event;
   const messageReplica = message;
 
   // flattening the event and assigning it to properties
-  messageReplica.properties = removeUndefinedAndNullValues(
-    flattenJson(flatEvent)
-  );
+  messageReplica.properties = removeUndefinedAndNullValues(flattenJson(event));
 
   // fields that are already mapped
   const excludeFields = [
@@ -37,25 +34,27 @@ function process(event) {
   let message = new Message(`Signl4`);
 
   // we are setting event type as track always
-  const eventType = "track";
-
-  message.setEventType(eventType);
+  message.setEventType("track");
 
   message.setPropertiesV2(event, mapping);
 
   // setting event Name
   switch (event.eventType) {
     case 200:
-      message.setEventName("New Signl Created");
+      message.setEventName("New Alert Created");
       break;
     case 201:
-      message.setEventName("Signl Confirmed");
+      if (event.alert?.statusCode === 4) {
+        message.setEventName("Alert Resolved");
+      } else {
+        message.setEventName("Alert Confirmed");
+      }
       break;
     case 202:
-      message.setEventName("Signl Escalated");
+      message.setEventName("Alert Escalated");
       break;
     case 203:
-      message.setEventName("Signl Annotated");
+      message.setEventName("Alert Annotated");
       break;
     case 300:
       message.setEventName("Duty Period Started");

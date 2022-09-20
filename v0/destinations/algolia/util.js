@@ -2,10 +2,16 @@ const logger = require("../../../logger");
 const { CustomError } = require("../../util");
 const { EVENT_TYPES } = require("./config");
 
+/**
+ * This function is used to generate event to eventType mapping.
+ * @param {*} Config destination.Config
+ * @returns object with key as event and value as eventType
+ */
 const eventTypeMapping = Config => {
   const eventMap = {};
   let eventName = "";
-  if (Config.eventTypeSettings.length > 0) {
+  const { eventTypeSettings } = Config;
+  if (Array.isArray(eventTypeSettings) && eventTypeSettings.length > 0) {
     Config.eventTypeSettings.forEach(event => {
       if (event.from && event.to) {
         eventName = event.from.trim().toLowerCase();

@@ -1,5 +1,6 @@
 const integration = "google_adwords_offline_conversions";
 const name = "Google Adwords Offline Conversions";
+const moment = require("moment");
 
 const fs = require("fs");
 const path = require("path");
@@ -11,6 +12,9 @@ const { handleProxyRequest } = require("../versionedRouter");
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 
 jest.mock("axios");
+
+// setting timezone in testcase
+moment.tz.setDefault("GMT");
 
 // Processor test files
 const testDataFile = fs.readFileSync(

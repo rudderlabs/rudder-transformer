@@ -1,4 +1,5 @@
 const { get, set } = require("lodash");
+const moment = require("moment");
 const { EventType } = require("../../../constants");
 const {
   getHashFromArrayWithDuplicate,
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
   getHashFromArray
 } = require("../../util");
-const moment = require("moment");
 const ErrorBuilder = require("../../util/error");
 const { CLICK_CONVERSION, CALL_CONVERSION } = require("./config");
 let {
@@ -89,7 +89,7 @@ const getConversions = (
     // thirdPartyUserId
     // defaults maps to userId and
     // based on the path provided in config it will be overridden
-    let thirdPartyUserId = get(message, Config.thirdPartyUserId);
+    const thirdPartyUserId = get(message, Config.thirdPartyUserId);
     if (thirdPartyUserId) {
       set(
         payload,
@@ -125,12 +125,11 @@ const getConversions = (
   // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
   if (!properties.conversionDateTime && message.originalTimestamp) {
     const timestamp = message.originalTimestamp;
-    const date = moment(timestamp).format("YYYY-MM-DD");
-    const time = moment
-      .utc(timestamp)
+    const conversionDateTime = moment(timestamp)
       .utcOffset(moment(timestamp).utcOffset())
-      .format("HH:MM:SSZ");
-    set(payload, "conversions[0].conversionDateTime", `${date} ${time}`);
+      .format()
+      .replace("T", " ");
+    set(payload, "conversions[0].conversionDateTime", conversionDateTime);
   }
 
   payload.partialFailure = true;

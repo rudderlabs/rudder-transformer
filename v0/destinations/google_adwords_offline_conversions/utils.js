@@ -223,6 +223,7 @@ const removeHashToSha256TypeFromMappingJson = mapping => {
   mapping.forEach(element => {
     if (get(element, "metadata.type")) {
       if (element.metadata.type === "hashToSha256") {
+        // eslint-disable-next-line no-param-reassign
         element.metadata.type = "toString";
       }
     }

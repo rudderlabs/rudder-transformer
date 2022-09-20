@@ -16,7 +16,8 @@ const {
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  DESTINATION
 } = require("./config");
 
 /**
@@ -393,9 +394,9 @@ const getExistingData = async (inputs, destination) => {
   let identifierType = null;
 
   if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .identifierType;
     if (!objectType || !identifierType) {
       throw new CustomError("[HS]:: rETL - external Id not found.", 400);
@@ -410,7 +411,7 @@ const getExistingData = async (inputs, destination) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
-      "HS"
+      DESTINATION
     );
     values.push(destinationExternalId);
   });
@@ -493,7 +494,7 @@ const setHsSearchId = (input, id) => {
     externalIdArray.forEach(extIdObj => {
       const { type } = extIdObj;
       const extIdObjParam = extIdObj;
-      if (type.includes("HS")) {
+      if (type.includes(DESTINATION)) {
         extIdObjParam.hsSearchId = id;
       }
       resultExternalId.push(extIdObjParam);
@@ -519,7 +520,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     const inputParam = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
-      "HS"
+      DESTINATION
     );
 
     const filteredInfo = updateHubspotIds.filter(
@@ -548,7 +549,7 @@ const getHsSearchId = message => {
   if (externalIdArray) {
     externalIdArray.forEach(extIdObj => {
       const { type } = extIdObj;
-      if (type.includes("HS")) {
+      if (type.includes(DESTINATION)) {
         hsSearchId = extIdObj.hsSearchId;
       }
     });

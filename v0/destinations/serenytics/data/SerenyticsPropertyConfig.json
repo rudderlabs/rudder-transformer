@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "price",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "currency",
+    "required": false
+  },
+  {
+    "destKey": "product_id",
+    "sourceKeys": "product_id",
+    "required": false
+  },
+  {
+    "destKey": "product_name",
+    "sourceKeys": "product_name",
+    "required": false
+  }
+]

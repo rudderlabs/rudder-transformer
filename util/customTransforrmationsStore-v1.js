@@ -27,12 +27,7 @@ async function getTransformationCodeV1(versionId) {
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 
-    responseStatusHandler(
-      response.status,
-      "Transformation",
-      versionId,
-      getTransformationURL
-    );
+    responseStatusHandler(response.status, "Transformation", versionId, url);
     stats.increment("get_transformation_code.success", tags);
     stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
@@ -61,7 +56,7 @@ async function getLibraryCodeV1(versionId) {
       response.status,
       "Transformation Library",
       versionId,
-      getLibrariesUrl
+      url
     );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);

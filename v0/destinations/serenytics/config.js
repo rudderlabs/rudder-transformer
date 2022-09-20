@@ -51,6 +51,7 @@ const SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST = [
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,

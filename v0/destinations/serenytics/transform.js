@@ -7,8 +7,7 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   getHashFromArrayWithDuplicate,
-  ErrorMessage,
-  extractCustomFields
+  ErrorMessage
 } = require("../../util");
 
 const {
@@ -18,22 +17,7 @@ const {
   SERENYTICS_IDENTIFY_EXCLUSION_LIST,
   SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST
 } = require("./config");
-
-const payloadBuilder = (
-  message,
-  typeName,
-  EXTRACTION_LIST,
-  SERENYTICS_EXCLUSION_LIST
-) => {
-  let payload = constructPayload(message, MAPPING_CONFIG[typeName]);
-  payload = extractCustomFields(
-    message,
-    payload,
-    EXTRACTION_LIST,
-    SERENYTICS_EXCLUSION_LIST
-  );
-  return payload;
-};
+const { payloadBuilder } = require("./utils");
 
 const responseBuilder = (STORAGE_URL, payload) => {
   const response = defaultRequestConfig();
@@ -71,13 +55,11 @@ const trackResponseBuilder = (message, { Config }, payload) => {
         MAPPING_CONFIG[CONFIG_CATEGORIES.PROPERTY.name]
       );
       payload = { ...payload, ...productDetails };
-      const response = defaultRequestConfig();
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.body.JSON = payload;
+
       const storageUrlEventList = storageUrlEventMapping[event];
-      if (storageUrlEventList && Array.isArray(storageUrlEventList)) {
-        storageUrlEventList.forEach(eventUrl => {
-          response.endpoint = eventUrl;
+      if (storageUrlEventList) {
+        Object.keys(storageUrlEventList).forEach(eventUrl => {
+          const response = responseBuilder(eventUrl, payload);
           responseList.push(response);
         });
       }
@@ -86,19 +68,16 @@ const trackResponseBuilder = (message, { Config }, payload) => {
     return responseList;
   }
 
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = payload;
   const storageUrlEventList = storageUrlEventMapping[event];
-  if (storageUrlEventList && Array.isArray(storageUrlEventList)) {
+  if (storageUrlEventList) {
     const responseList = [];
     storageUrlEventList.forEach(eventUrl => {
-      response.endpoint = eventUrl;
+      const response = responseBuilder(eventUrl, payload);
       responseList.push(response);
     });
     return responseList;
   }
-  response.endpoint = STORAGE_URL;
+  const response = responseBuilder(STORAGE_URL, payload);
   return response;
 };
 

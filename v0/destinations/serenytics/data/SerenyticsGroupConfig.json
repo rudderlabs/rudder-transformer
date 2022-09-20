@@ -31,10 +31,5 @@
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": false
-  },
-  {
-    "destKey": "",
-    "sourceKeys": ["traits", "context.traits"],
-    "required": false
   }
 ]

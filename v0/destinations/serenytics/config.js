@@ -2,24 +2,19 @@ const { getMappingConfig } = require("../../util");
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
-    name: "SerenyticsIdentifyConfig",
-    type: "identify"
+    name: "SerenyticsIdentifyConfig"
   },
   TRACK: {
-    name: "SerenyticsTrackConfig",
-    type: "track"
+    name: "SerenyticsTrackConfig"
   },
   GROUP: {
-    name: "SerenyticsGroupConfig",
-    type: "group"
+    name: "SerenyticsGroupConfig"
   },
   SCREEN: {
-    name: "SerenyticsScreenConfig",
-    type: "screen"
+    name: "SerenyticsScreenConfig"
   },
   PAGE: {
-    name: "SerenyticsPageConfig",
-    type: "page"
+    name: "SerenyticsPageConfig"
   },
   ALIAS: {
     name: "SerenyticsAliasConfig",

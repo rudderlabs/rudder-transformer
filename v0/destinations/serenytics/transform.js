@@ -19,6 +19,22 @@ const {
   SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST
 } = require("./config");
 
+const payloadBuilder = (
+  message,
+  typeName,
+  EXTRACTION_LIST,
+  SERENYTICS_EXCLUSION_LIST
+) => {
+  let payload = constructPayload(message, MAPPING_CONFIG[typeName]);
+  payload = extractCustomFields(
+    message,
+    payload,
+    EXTRACTION_LIST,
+    SERENYTICS_EXCLUSION_LIST
+  );
+  return payload;
+};
+
 const responseBuilder = (STORAGE_URL, payload) => {
   const response = defaultRequestConfig();
   response.endpoint = STORAGE_URL;
@@ -100,13 +116,9 @@ const processEvent = async (message, destination) => {
   let payload;
   switch (messageType) {
     case EventType.TRACK:
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
-      );
-      payload = extractCustomFields(
-        message,
-        payload,
+        CONFIG_CATEGORIES.TRACK.name,
         ["properties"],
         SERENYTICS_TRACK_EXCLUSION_LIST
       );
@@ -117,13 +129,9 @@ const processEvent = async (message, destination) => {
         throw new CustomError(`[Serenytics]: storage url is required.`, 400);
       }
       STORAGE_URL = Config.storageUrlIdentify;
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
-      );
-      payload = extractCustomFields(
-        message,
-        payload,
+        CONFIG_CATEGORIES.IDENTIFY.name,
         ["traits", "context.traits"],
         SERENYTICS_IDENTIFY_EXCLUSION_LIST
       );
@@ -133,9 +141,11 @@ const processEvent = async (message, destination) => {
         throw new CustomError(`[Serenytics]: storage url is required.`, 400);
       }
       STORAGE_URL = Config.storageUrlGroup;
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
+        CONFIG_CATEGORIES.GROUP.name,
+        ["properties"],
+        []
       );
       break;
     case EventType.PAGE:
@@ -143,13 +153,9 @@ const processEvent = async (message, destination) => {
         throw new CustomError(`[Serenytics]: storage url is required.`, 400);
       }
       STORAGE_URL = Config.storageUrlPage;
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PAGE.name]
-      );
-      payload = extractCustomFields(
-        message,
-        payload,
+        CONFIG_CATEGORIES.PAGE.name,
         ["properties"],
         SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST
       );
@@ -159,13 +165,9 @@ const processEvent = async (message, destination) => {
         throw new CustomError(`[Serenytics]: storage url is required.`, 400);
       }
       STORAGE_URL = Config.storageUrlScreen;
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.SCREEN.name]
-      );
-      payload = extractCustomFields(
-        message,
-        payload,
+        CONFIG_CATEGORIES.SCREEN.name,
         ["properties"],
         SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST
       );
@@ -175,9 +177,11 @@ const processEvent = async (message, destination) => {
         throw new CustomError(`[Serenytics]: storage url is required.`, 400);
       }
       STORAGE_URL = Config.storageUrlAlias;
-      payload = constructPayload(
+      payload = payloadBuilder(
         message,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.ALIAS.name]
+        CONFIG_CATEGORIES.ALIAS.name,
+        ["properties"],
+        []
       );
       break;
     default:

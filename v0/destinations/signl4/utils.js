@@ -31,9 +31,11 @@ const populatePayload = (message, Config) => {
   payload = { ...payload, ...properties };
 
   // Overriding event name with Customizable Title if avaiblable
-  if (eventToTitleMapping[event]) {
-    payload.Title = eventToTitleMapping[event];
-  }
+  eventToTitleMapping.forEach(mapping => {
+    if (mapping.from === event) {
+      payload.Title = mapping.to;
+    }
+  });
 
   // Populating the payload with the fields(properties) taken from UI
   const signl4Properties = Object.keys(propertyMappingObj);

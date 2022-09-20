@@ -38,6 +38,17 @@ function settingProperties(event, message) {
 function process(event) {
   let message = new Message(`Signl4`);
 
+  // Here, we are checking for the test event to discard them
+  if (event.eventType === 1) {
+    return {
+      outputToSource: {
+        body: Buffer.from(JSON.stringify(event)).toString("base64"),
+        contentType: "application/json"
+      },
+      statusCode: 200
+    };
+  }
+
   // we are setting event type as track always
   message.setEventType("track");
 
@@ -99,17 +110,6 @@ function process(event) {
   }
 
   message = settingProperties(event, message);
-
-  // Here, we are checking for the test event to discard them
-  if (event.eventType === 1) {
-    return {
-      outputToSource: {
-        body: Buffer.from(JSON.stringify(event)).toString("base64"),
-        contentType: "application/json"
-      },
-      statusCode: 200
-    };
-  }
 
   return message;
 }

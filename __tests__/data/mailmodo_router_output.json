@@ -107,8 +107,9 @@
     ],
     "statTags": {
       "destType": "MAILMODO",
-      "scope": "exception",
-      "stage": "transform"
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "badParam"
     },
     "statusCode": 400
   }

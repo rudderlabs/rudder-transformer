@@ -41,5 +41,64 @@
       "integrations": { "All": true },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "privateApiKey": "9270161a8e5abaa0e56efddfd9dbcb62"
+      }
+    },
+    "message": {
+      "channel": "web",
+      "userId": "sp_245",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.9"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.9"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "externalId": [
+          {
+            "type": "profitwellUserId",
+            "id": "pwu_Oea7HXV3bnTP"
+          },
+          {
+            "type": "profitwellSubscriptionId",
+            "id": "pws_FecTCEyo17rV"
+          }
+        ],
+        "traits": {
+          "email": "sample@sample.com",
+          "planId": "23",
+          "planInterval": "month",
+          "planCurrency": "usd",
+          "value": "23",
+          "subscriptionAlias": "samual",
+          "status": "active"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+      },
+      "messageId": "6a5f38c0-4e75-4268-a066-2b73fbcad01f",
+      "originalTimestamp": "2021-01-04T08:25:04.780Z",
+      "receivedAt": "2021-01-04T13:55:04.799+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "79881a62-980a-4d76-89ca-7099440f8c13",
+      "sentAt": "2021-01-04T08:25:04.781Z",
+      "timestamp": "2021-09-06T14:15:06.798+05:30",
+      "type": "identify"
+    }
   }
 ]

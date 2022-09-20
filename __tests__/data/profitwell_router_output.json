@@ -40,5 +40,16 @@
         "privateApiKey": "9270161a8e5abaa0e56efddfd9dbcb62"
       }
     }
+  },
+  {
+    "batched": false,
+    "statTags": {
+      "destType": "PROFITWELL",
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "badParam"
+    },
+    "statusCode": 400,
+    "error": "Missing required value from [\"traits.effectiveDate\",\"context.traits.effectiveDate\"]"
   }
 ]

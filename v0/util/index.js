@@ -1029,9 +1029,11 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         // This function is mostly used during transformation
         // Will be thrown as a "badParam" error in transformation scope
         // throw error if reqired value is missing
-        throw new ErrorBuilder(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
-        )
+        throw new ErrorBuilder()
+          .setMessage(
+            `Missing required value from ${JSON.stringify(sourceKeys)}`
+          )
+          .setStage(TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM)
           .setScope(TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE)
           .setMeta(
             TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
@@ -1610,7 +1612,7 @@ const handleRtTfSingleEventError = (input, error, destType) => {
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
   );
   return getErrorRespEvents(
-    [input.metadata],
+    input.metadata ? [input.metadata] : undefined,
     errObj.status,
     errObj.message,
     errObj.statTags

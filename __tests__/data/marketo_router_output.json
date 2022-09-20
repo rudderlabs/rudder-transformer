@@ -236,5 +236,21 @@
       "isConnectionEnabled": true,
       "isProcessorEnabled": true
     }
+  },
+  {
+    "batched": false,
+    "statusCode": 400,
+    "error": "Request Failed for Marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email",
+    "statTags": {
+      "destType": "MARKETO",
+      "stage": "transform",
+      "scope": "api",
+      "meta": "abortable"
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ]
   }
 ]

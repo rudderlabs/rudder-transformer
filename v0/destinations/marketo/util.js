@@ -13,7 +13,15 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 
 const MARKETO_RETRYABLE_CODES = ["601", "602", "604", "611"];
-const MARKETO_ABORTABLE_CODES = ["600", "603", "605", "609", "610", "612"];
+const MARKETO_ABORTABLE_CODES = [
+  "600",
+  "603",
+  "605",
+  "609",
+  "610",
+  "612",
+  "1006"
+];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
 
@@ -91,14 +99,13 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   }
   // non 2xx failure
   throw new ErrorBuilder()
-    .setStatus(status)
+    .setStatus(400)
     .setMessage(`Error occured ${sourceMessage}`)
     .setDestinationResponse(destResponse)
     .setStatTags({
       destType: DESTINATION,
       stage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      meta: getDynamicMeta(status)
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     })
     .build();
 };
@@ -154,6 +161,20 @@ const responseHandler = (destinationResponse, _dest) => {
     "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
+  const { response } = destinationResponse;
+  if (response && !response.success) {
+    // non 2xx failure
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage(`Error occured during Marketo Response Handling`)
+      .setDestinationResponse(destinationResponse.response)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+      })
+      .build();
+  }
   // else successfully return status, message and original destination response
   return {
     status,

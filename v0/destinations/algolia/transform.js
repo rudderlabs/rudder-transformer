@@ -1,7 +1,8 @@
 const set = require("set-value");
 const { EventType } = require("../../../constants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 const {
-  CustomError,
   getValueFromMessage,
   constructPayload,
   defaultRequestConfig,
@@ -13,7 +14,12 @@ const {
   handleRtTfSingleEventError
 } = require("../../util/index");
 
-const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
+const {
+  ENDPOINT,
+  MAX_BATCH_SIZE,
+  trackMapping,
+  DESTINATION
+} = require("./config");
 
 const {
   genericpayloadValidator,
@@ -22,10 +28,20 @@ const {
   clickPayloadValidator
 } = require("./util");
 
+const DestTfError = new ErrorBuilder()
+  .setDestType(DESTINATION)
+  .setStage(TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM)
+  .setScope(TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE);
+
 const trackResponseBuilder = (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("event is required for track call", 400);
+    throw DestTfError.setMessage("event is required for track call")
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      )
+      .build();
   }
   event = event.trim().toLowerCase();
   let payload = constructPayload(message, trackMapping);
@@ -35,7 +51,12 @@ const trackResponseBuilder = (message, { Config }) => {
     getValueFromMessage(message, "properties.eventType") || eventMapping[event];
 
   if (!payload.eventType) {
-    throw new CustomError("eventType is mandatory for track call", 400);
+    throw DestTfError.setMessage("eventType is mandatory for track call")
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      )
+      .build();
   }
   payload = genericpayloadValidator(payload);
 
@@ -58,22 +79,35 @@ const trackResponseBuilder = (message, { Config }) => {
       }
       // making size of object list and position list equal
       if (posLen > 0 && objLen > 0 && posLen !== objLen) {
-        throw new CustomError(
-          "length of objectId and position should be equal",
-          400
-        );
+        throw DestTfError.setMessage(
+          "length of objectId and position should be equal"
+        )
+          .setStatus(400)
+          .setMeta(
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          )
+          .build();
       }
     }
   }
   // for all events either filter or objectID should be there
   if (!payload.filters && !payload.objectIDs) {
-    throw new CustomError("Either filters or  objectIds is required.", 400);
+    throw DestTfError.setMessage("Either filters or  objectIds is required.")
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      )
+      .build();
   }
   if (payload.filters && payload.objectIDs) {
-    throw new CustomError(
-      "event can’t have both objectIds and filters at the same time.",
-      400
-    );
+    throw DestTfError.setMessage(
+      "event can’t have both objectIds and filters at the same time."
+    )
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      )
+      .build();
   }
   if (payload.eventType === "click") {
     payload = clickPayloadValidator(payload); // click event validator
@@ -92,17 +126,31 @@ const trackResponseBuilder = (message, { Config }) => {
 const process = event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "message Type is not present. Aborting message.",
-      400
-    );
+    throw DestTfError.setMessage(
+      "message Type is not present. Aborting message."
+    )
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      )
+      .build();
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Invalid Api Key", 400);
+    throw DestTfError.setMessage("Invalid Api Key")
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      )
+      .build();
   }
   if (!destination.Config.applicationId) {
-    throw new CustomError("Invalid Application Id", 400);
+    throw DestTfError.setMessage("Invalid Application Id")
+      .setStatus(400)
+      .setMeta(
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      )
+      .build();
   }
   const messageType = message.type.toLowerCase();
 
@@ -112,13 +160,18 @@ const process = event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw DestTfError.setMessage(`message type ${messageType} not supported`)
+        .setStatus(400)
+        .setMeta(
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        )
+        .build();
   }
   return response;
 };
 
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ALGOLIA");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -144,7 +197,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "ALGOLIA"
+          DESTINATION
         );
         errorList.push(errRespEvent);
       }

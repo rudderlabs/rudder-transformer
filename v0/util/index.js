@@ -21,6 +21,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const ErrorBuilder = require("./error");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1025,10 +1026,17 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
           payload[""] = value;
         }
       } else if (required) {
+        // This function is mostly used during transformation
+        // Will be thrown as a "badParam" error in transformation scope
         // throw error if reqired value is missing
-        throw new Error(
+        throw new ErrorBuilder(
           `Missing required value from ${JSON.stringify(sourceKeys)}`
-        );
+        )
+          .setScope(TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE)
+          .setMeta(
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+          )
+          .build();
       }
     });
 
@@ -1450,10 +1458,8 @@ function generateErrorObject(error, destination = "", transformStage) {
     statTags.destType = statTags.destination;
     delete statTags.destination;
   }
-  if (statTags.destType) {
-    // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
-    statTags.destType = statTags.destType.toUpperCase();
-  }
+  // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
+  statTags.destType = (statTags.destType || destination).toUpperCase();
   const response = {
     status: getErrorStatusCode(error),
     message: message || "Error occurred while processing the payload.",

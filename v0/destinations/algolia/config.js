@@ -11,5 +11,6 @@ module.exports = {
   ENDPOINT,
   MAX_BATCH_SIZE,
   EVENT_TYPES,
+  DESTINATION: "ALGOLIA",
   trackMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
 };

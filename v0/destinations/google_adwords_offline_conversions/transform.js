@@ -1,5 +1,6 @@
 const { get, set } = require("lodash");
 const moment = require("moment");
+const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   getHashFromArrayWithDuplicate,
@@ -57,7 +58,6 @@ const getConversions = (
     payload = constructPayload(message, trackClickConversionsMapping);
     endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);
 
-    // let products = payload.conversions[0].CartData.items;
     const products = get(message, "properties.products");
     const itemList = [];
     if (products && products.length > 0 && Array.isArray(products)) {
@@ -129,6 +129,11 @@ const getConversions = (
       .utcOffset(moment(timestamp).utcOffset())
       .format()
       .replace("T", " ");
+    logger.info(
+      "========================================================----------"
+    );
+    logger.info(`originalTimestamp: ${message.originalTimestamp}`);
+    logger.info(`Timestamp: ${new Date(message.originalTimestamp)}`);
     set(payload, "conversions[0].conversionDateTime", conversionDateTime);
   }
 

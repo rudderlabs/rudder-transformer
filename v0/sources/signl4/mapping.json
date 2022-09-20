@@ -1,0 +1,18 @@
+[
+  {
+    "sourceKeys": "user.userName",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "user.mailAddress",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "id",
+    "destKeys": "messageId"
+  },
+  {
+    "sourceKeys": "eventRaisedUtc",
+    "destKeys": "original_timestamp"
+  }
+]

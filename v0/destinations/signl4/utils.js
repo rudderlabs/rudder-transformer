@@ -38,8 +38,7 @@ const populatePayload = (message, Config) => {
   });
 
   // Populating the payload with the fields(properties) taken from UI
-  const signl4Properties = Object.keys(propertyMappingObj);
-  signl4Properties.forEach(element => {
+  Object.keys(propertyMappingObj).forEach(element => {
     // If the key is provided from web-app for this field mappping it with it's value
     const index = `${element}Property`;
     if (properties[Config[index]]) {

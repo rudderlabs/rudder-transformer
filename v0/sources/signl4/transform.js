@@ -1,6 +1,10 @@
 const path = require("path");
 const fs = require("fs");
-const { flattenJson, removeUndefinedAndNullValues, generateUUID } = require("../../util");
+const {
+  flattenJson,
+  removeUndefinedAndNullValues,
+  generateUUID
+} = require("../../util");
 const Message = require("../message");
 
 // import mapping json using JSON.parse to preserve object key order
@@ -18,6 +22,7 @@ function settingProperties(event, message) {
   const excludeFields = [
     "user.userName",
     "user.mailAddress",
+    "user.id",
     "id",
     "eventRaisedUtc"
   ];
@@ -40,6 +45,14 @@ function process(event) {
   message.anonymousId = generateUUID();
 
   message.setPropertiesV2(event, mapping);
+
+  // Updating timestamp to acceptable timestamp format ["2017-09-01T09:16:17.3717355Z" -> "2017-09-01T09:16:17.000Z"]
+  if (message.original_timestamp) {
+    const date = `${Math.floor(
+      new Date(message.original_timestamp).getTime() / 1000
+    )}`;
+    message.original_timestamp = new Date(date * 1000).toISOString();
+  }
 
   // setting event Name
   switch (event.eventType) {

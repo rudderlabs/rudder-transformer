@@ -13,6 +13,6 @@
   },
   {
     "sourceKeys": "eventRaisedUtc",
-    "destKeys": "timestamp"
+    "destKeys": "original_timestamp"
   }
 ]

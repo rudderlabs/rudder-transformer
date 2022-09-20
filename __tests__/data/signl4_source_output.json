@@ -14,7 +14,7 @@
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "New Alert Created",
     "properties": {
       "eventType": 200,
@@ -46,7 +46,7 @@
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "Alert Confirmed",
     "properties": {
       "eventType": 201,
@@ -81,7 +81,7 @@
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "Alert Resolved",
     "properties": {
       "eventType": 201,
@@ -110,7 +110,7 @@
     },
     "type": "track",
     "messageId": "27283793-47c8-4da2-9767-d37be224338d",
-    "original_timestamp": "2020-01-10T12:27:19.000Z",
+    "originalTimestamp": "2020-01-10T12:27:19.000Z",
     "event": "Alert Escalated",
     "properties": {
       "eventType": 202,
@@ -144,7 +144,7 @@
     },
     "type": "track",
     "messageId": "141c0f88-7831-4d5e-b055-f6e83c269770",
-    "original_timestamp": "2018-04-17T15:00:32.000Z",
+    "originalTimestamp": "2018-04-17T15:00:32.000Z",
     "event": "Alert Annotated",
     "properties": {
       "eventType": 203,
@@ -174,7 +174,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Duty Period Started",
     "properties": {
       "eventType": 300,
@@ -197,7 +197,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Duty Period Ended",
     "properties": {
       "eventType": 301,
@@ -225,7 +225,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Somebody Punched-In",
     "properties": {
       "eventType": 302,
@@ -253,7 +253,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Somebody Punched-Out",
     "properties": {
       "eventType": 303,

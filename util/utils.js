@@ -8,6 +8,7 @@ class RespStatusError extends Error {
 
 class RetryRequestError extends RespStatusError {
   constructor(message) {
+    // chosen random unique status code 809 to mark requests that needs to be retried
     super(message, 809);
   }
 }

@@ -58,7 +58,7 @@ const trackResponseBuilder = (message, { Config }, payload) => {
 
       const storageUrlEventList = storageUrlEventMapping[event];
       if (storageUrlEventList) {
-        Object.keys(storageUrlEventList).forEach(eventUrl => {
+        storageUrlEventList.forEach(eventUrl => {
           const response = responseBuilder(eventUrl, payload);
           responseList.push(response);
         });

@@ -1,0 +1,65 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://connect.signl4.com/webhook/t1yurrb968zk",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "message": "Please check the alert",
+          "Title": "New Alert",
+          "brand": "Zara",
+          "price": "12000",
+          "X-S4-Service": "service",
+          "X-S4-Location": "67.3, 32.3",
+          "X-S4-AlertingScenario": "single_ack",
+          "X-S4-ExternalID": "INC493933",
+          "X-S4-Status": "new"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "t1yurrb968zk",
+        "s4ServiceValue": "service",
+        "s4ServiceProperty": "",
+        "s4LocationValue": "67.3, 32.3",
+        "s4LocationProperty": "",
+        "s4AlertingScenarioValue": "single_ack",
+        "s4AlertingScenarioProperty": "",
+        "s4ExternalIDValue": "INC493933",
+        "s4ExternalIDProperty": "",
+        "s4StatusValue": "new",
+        "s4StatusProperty": "",
+        "s4Filter": false,
+        "eventToTitleMapping": []
+      }
+    }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "Message type identify not supported"
+  }
+]

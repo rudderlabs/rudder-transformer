@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "message",
+    "sourceKeys": "properties.message",
+    "required": false
+  },
+  {
+    "destKey": "Title",
+    "sourceKeys": "event",
+    "required": false
+  }
+]

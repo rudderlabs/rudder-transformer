@@ -113,18 +113,5 @@
         "status": 204
       }
     }
-  },
-  {
-    "output": {
-      "status": 200,
-      "message": "[Generic Response Handler] Request for destination: any Processed Successfully",
-      "destinationResponse": {
-        "response": {
-          "events_received": 1,
-          "fbtrace_id": "facebook_trace_id"
-        },
-        "status": 200
-      }
-    }
   }
 ]

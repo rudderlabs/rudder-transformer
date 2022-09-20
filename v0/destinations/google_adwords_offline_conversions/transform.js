@@ -127,8 +127,7 @@ const getConversions = (
     const timestamp = message.originalTimestamp;
     const conversionDateTime = moment(timestamp)
       .utcOffset(moment(timestamp).utcOffset())
-      .format("YYYY-MM-DD HH:MM:SSZ")
-      .replace("T", " ");
+      .format("YYYY-MM-DD HH:MM:SSZ");
     set(payload, "conversions[0].conversionDateTime", conversionDateTime);
   }
 

@@ -192,6 +192,7 @@ async function handleValidation(ctx) {
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  let ctxStatusCode = 200;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const eventStartTime = new Date();
@@ -226,10 +227,17 @@ async function handleValidation(ctx) {
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
+      let status = 400;
+      if (error instanceof RetryRequestError) {
+        ctxStatusCode = error.statusCode;
+      }
+      if (error instanceof RespStatusError) {
+        status = error.statusCode;
+      }
       respList.push({
         output: event.message,
         metadata: event.metadata,
-        statusCode: 200,
+        statusCode: status,
         validationErrors: [],
         error: errMessage
       });
@@ -243,6 +251,7 @@ async function handleValidation(ctx) {
     }
   }
   ctx.body = respList;
+  ctx.status = ctxStatusCode;
   ctx.set("apiVersion", API_VERSION);
 
   stats.counter("hv_events_count", events.length, {

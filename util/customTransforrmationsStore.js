@@ -2,7 +2,7 @@ const NodeCache = require("node-cache");
 const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
-const { transformerStatusHandler } = require("./utils");
+const { responseStatusHandler } = require("./utils");
 
 const myCache = new NodeCache();
 
@@ -18,12 +18,11 @@ async function getTransformationCode(versionId) {
   const transformation = myCache.get(versionId);
   if (transformation) return transformation;
   try {
+    const url = `${getTransformationURL}?versionId=${versionId}`;
     const startTime = new Date();
-    const response = await fetchWithProxy(
-      `${getTransformationURL}?versionId=${versionId}`
-    );
+    const response = await fetchWithProxy(url);
 
-    transformerStatusHandler(
+    responseStatusHandler(
       response.status,
       "Transformation",
       versionId,

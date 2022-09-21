@@ -161,25 +161,11 @@ const responseHandler = (destinationResponse, _dest) => {
       .build();
   }
   // check for marketo application level failures
-  marketoApplicationErrorHandler(
+  marketoResponseHandler(
     destinationResponse,
     "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
   );
-  const { response } = destinationResponse;
-  if (response && !response.success) {
-    // non 2xx failure
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(`Error occured during Marketo Response Handling`)
-      .setDestinationResponse(destinationResponse.response)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-      })
-      .build();
-  }
   // else successfully return status, message and original destination response
   return {
     status,

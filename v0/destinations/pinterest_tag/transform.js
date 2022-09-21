@@ -47,7 +47,7 @@ const responseBuilderSimple = finalPayload => {
  * @param {*} mandatoryPayload
  * @returns
  */
-const processEcomFields = (message, mandatoryPayload) => {
+const postProcessEcomFields = (message, mandatoryPayload) => {
   let totalQuantity = 0;
   let quantityInconsistent = false;
   const contentArray = [];
@@ -116,6 +116,19 @@ const processEcomFields = (message, mandatoryPayload) => {
   };
 };
 
+/**
+ *
+ * @param {*} message
+ * @param {*} destination.Config
+ * @param {*} messageType
+ * @param {*} eventName
+ * @returns the output of each input payload.
+ * message deduplication logic looks like below:
+ * This facility is provided *only* for the users who are using the *new configuration*.
+ * if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
+ * sent as "event_id". On it's absence it will fallback to "messageId".
+ * And if "enableDeduplication" is set to false, it will fallback to "messageId"
+ */
 const commonFieldResponseBuilder = (
   message,
   { Config },
@@ -126,12 +139,7 @@ const commonFieldResponseBuilder = (
   const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
-  /*
-    message deduplication facility is provided *only* for the users who are using the *new configuration*.
-    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
-    sent as "event_id". On it's absence it will fallback to "messageId".
-    And if "enableDeduplication" is set to false, it will fallback to "messageId"
-  */
+
   processedCommonPayload.event_id =
     get(message, `${deduplicationKey}`) || message.messageId;
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
@@ -163,15 +171,13 @@ const commonFieldResponseBuilder = (
   };
 
   if (messageType === EventType.TRACK) {
-    response = processEcomFields(message, response);
+    response = postProcessEcomFields(message, response);
   }
   // return responseBuilderSimple(response);
   return response;
 };
 
 const process = event => {
-  // let response = {};
-  // let mandatoryPayload = {};
   const toSendEvents = [];
   const respList = [];
   let deducedEventNameArray = [];

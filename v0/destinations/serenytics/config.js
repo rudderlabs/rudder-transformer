@@ -11,10 +11,10 @@ const CONFIG_CATEGORIES = {
     name: "SerenyticsGroupConfig"
   },
   SCREEN: {
-    name: "SerenyticsScreenConfig"
+    name: "SerenyticsPageScreenConfig"
   },
   PAGE: {
-    name: "SerenyticsPageConfig"
+    name: "SerenyticsPageScreenConfig"
   },
   ALIAS: {
     name: "SerenyticsAliasConfig",

@@ -54,7 +54,8 @@
   },
   {
     "destKey": "url",
-    "sourceKeys": ["properties.url", "context.page.url"],
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

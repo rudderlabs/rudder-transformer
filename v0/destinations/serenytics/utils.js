@@ -19,11 +19,11 @@ const payloadBuilder = (
   if (customPayload) {
     if (EXTRACTION_LIST[0] === "properties") {
       Object.entries(customPayload).forEach(([key, value]) => {
-        set(payload, `properties_${key}`, value);
+        set(payload, `property_${key}`, value);
       });
     } else {
       Object.entries(customPayload).forEach(([key, value]) => {
-        set(payload, `traits_${key}`, value);
+        set(payload, `trait_${key}`, value);
       });
     }
   }

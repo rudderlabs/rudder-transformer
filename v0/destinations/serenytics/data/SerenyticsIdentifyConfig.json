@@ -31,7 +31,6 @@
   {
     "destKey": "age",
     "sourceKeys": ["traits.age", "context.traits.age"],
-    "sourceFromGenericMap": true,
     "required": false
   },
   {

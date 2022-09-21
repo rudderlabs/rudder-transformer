@@ -81,7 +81,7 @@ const trackResponseBuilder = (message, { Config }, payload) => {
   return response;
 };
 
-const processEvent = async (message, destination) => {
+const processEvent = (message, destination) => {
   if (!message.type) {
     throw new CustomError(
       "Message Type is not present. Aborting message.",
@@ -101,7 +101,7 @@ const processEvent = async (message, destination) => {
         ["properties"],
         SERENYTICS_TRACK_EXCLUSION_LIST
       );
-      response = await trackResponseBuilder(message, destination, payload);
+      response = trackResponseBuilder(message, destination, payload);
       return response;
     case EventType.IDENTIFY:
       if (!Config.storageUrlIdentify) {
@@ -123,7 +123,7 @@ const processEvent = async (message, destination) => {
       payload = payloadBuilder(
         message,
         CONFIG_CATEGORIES.GROUP.name,
-        ["properties"],
+        ["traits", "context.traits"],
         []
       );
       break;
@@ -170,11 +170,11 @@ const processEvent = async (message, destination) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  response = await responseBuilder(STORAGE_URL, payload);
+  response = responseBuilder(STORAGE_URL, payload);
   return response;
 };
 
-const process = async event => {
+const process = event => {
   return processEvent(event.message, event.destination);
 };
 

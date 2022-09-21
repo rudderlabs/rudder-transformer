@@ -147,7 +147,7 @@ const processEvent = (message, destination) => {
       payload = payloadBuilder(
         message,
         CONFIG_CATEGORIES.ALIAS.name,
-        ["properties"],
+        ["traits", "context.traits"],
         []
       );
       break;

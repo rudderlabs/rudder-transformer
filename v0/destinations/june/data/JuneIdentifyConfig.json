@@ -6,15 +6,18 @@
     "required": true
   },
   {
-    "destKey": "traits",
-    "sourceKeys": "traits",
-    "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
     "destKey": "timestamp",
     "sourceKeys": "createdAt",
     "sourceFromGenericMap": true,
     "required": true
+  },
+  {
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "excludes": ["createdAt"]
+    }
   }
 ]

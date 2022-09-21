@@ -12,11 +12,9 @@
         "type": "identify",
         "context": {
           "traits": {
-            "name": "Transformer Test 1",
-            "email": "trtest12345@transformer.com",
-            "revenue": 90000,
-            "currency": "USD",
-            "offices": ["LA", "San Francisco", "Bangalore"]
+            "name": "John Doe",
+            "email": "5136633649@transformer.com",
+            "age": 25
           }
         },
         "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
@@ -41,14 +39,12 @@
         "type": "identify",
         "sentAt": "2022-01-20T13:39:21.033Z",
         "channel": "web",
-        "userId": "trtest12345",
+        "userId": "5136633649",
         "context": {
           "traits": {
-            "name": "Transformer Test 1",
-            "email": "trtest12345@transformer.com",
-            "revenue": 90000,
-            "currency": "USD",
-            "offices": ["LA", "San Francisco", "Bangalore"]
+            "name": "John Doe",
+            "email": "5136633649@transformer.com",
+            "age": 25
           }
         },
         "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
@@ -68,13 +64,11 @@
       "params": {},
       "body": {
         "JSON": {
-          "userId": "trtest12345",
+          "userId": "5136633649",
           "traits": {
-            "name": "Transformer Test 1",
-            "email": "trtest12345@transformer.com",
-            "revenue": 90000,
-            "currency": "USD",
-            "offices": ["LA", "San Francisco", "Bangalore"]
+            "name": "John Doe",
+            "email": "5136633649@transformer.com",
+            "age": 25
           },
           "timestamp": "2022-01-20T13:39:21.032Z"
         },
@@ -126,7 +120,7 @@
       "message": {
         "type": "track",
         "event": "Product Reviewed",
-        "userId": "trtest12345",
+        "userId": "5136633649",
         "properties": {
           "review_id": "12345",
           "product_id": "123",
@@ -151,7 +145,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "userId": "trtest12345",
+          "userId": "5136633649",
           "event": "Product Reviewed",
           "properties": {
             "review_id": "12345",
@@ -180,7 +174,7 @@
       "message": {
         "type": "track",
         "event": "Product Reviewed",
-        "userId": "trtest12345",
+        "userId": "5136633649",
         "context": {},
         "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
         "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
@@ -199,7 +193,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "userId": "trtest12345",
+          "userId": "5136633649",
           "event": "Product Reviewed",
           "timestamp": "2022-01-20T13:39:21.032Z"
         },
@@ -222,7 +216,7 @@
       "message": {
         "type": "track",
         "event": "Product Reviewed",
-        "userId": "trtest12345",
+        "userId": "5136633649",
         "properties": {
           "review_id": "12345",
           "product_id": "123",
@@ -248,7 +242,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "userId": "trtest12345",
+          "userId": "5136633649",
           "event": "Product Reviewed",
           "properties": {
             "review_id": "12345",
@@ -279,7 +273,7 @@
       },
       "message": {
         "type": "group",
-        "userId": "trtest12345",
+        "userId": "5136633649",
         "context": {
           "traits": {
             "name": "Initech",
@@ -308,7 +302,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "userId": "trtest12345",
+          "userId": "5136633649",
           "groupId": "9230AUbd2138h",
           "traits": {
             "name": "Initech",

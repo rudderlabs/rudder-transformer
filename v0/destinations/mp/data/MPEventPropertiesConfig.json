@@ -166,5 +166,14 @@
   {
     "sourceKeys": "messageId",
     "destKey": "$insert_id"
+  },
+  {
+    "sourceKeys": "sessionId",
+    "destKey": "$session_id",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "toString"
+    }
   }
 ]

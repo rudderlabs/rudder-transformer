@@ -293,7 +293,7 @@ const processHashedUserPayload = (userPayload, message) => {
  * @param {*} mandatoryPayload
  * @returns
  */
-const processEcomFields = (message, mandatoryPayload) => {
+const postProcessEcomFields = (message, mandatoryPayload) => {
   let totalQuantity = 0;
   let quantityInconsistent = false;
   const contentArray = [];
@@ -361,6 +361,7 @@ const processEcomFields = (message, mandatoryPayload) => {
     custom_data: { ...customPayload }
   };
 };
+
 module.exports = {
   processUserPayload,
   processCommonPayload,
@@ -368,6 +369,6 @@ module.exports = {
   setIdPriceQuantity,
   checkUserPayloadValidity,
   processHashedUserPayload,
-  processEcomFields,
-  VALID_ACTION_SOURCES
+  VALID_ACTION_SOURCES,
+  postProcessEcomFields
 };

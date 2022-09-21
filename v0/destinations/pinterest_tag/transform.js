@@ -8,7 +8,6 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
-  isDefinedAndNotNull,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues
 } = require("../../util");
@@ -16,17 +15,12 @@ const {
   processUserPayload,
   processCommonPayload,
   deduceEventName,
-  setIdPriceQuantity,
+  postProcessEcomFields,
   checkUserPayloadValidity,
   processHashedUserPayload
 } = require("./utils");
 
-const {
-  ENDPOINT,
-  MAX_BATCH_SIZE,
-  USER_CONFIGS,
-  CUSTOM_CONFIGS
-} = require("./config");
+const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require("./config");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
@@ -38,81 +32,6 @@ const responseBuilderSimple = finalPayload => {
     headers: {
       "Content-Type": "application/json"
     }
-  };
-};
-
-/**
- * This function will process the ecommerce fields and return the final payload
- * @param {*} message
- * @param {*} mandatoryPayload
- * @returns
- */
-const postProcessEcomFields = (message, mandatoryPayload) => {
-  let totalQuantity = 0;
-  let quantityInconsistent = false;
-  const contentArray = [];
-  const contentIds = [];
-  const { properties } = message;
-  // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
-  let customPayload = constructPayload(message, CUSTOM_CONFIGS);
-
-  // if product array is present will look for the product level information
-  if (
-    properties.products &&
-    Array.isArray(properties.products) &&
-    properties.products.length > 0
-  ) {
-    const { products } = properties;
-    products.forEach(product => {
-      const prodParams = setIdPriceQuantity(product, message);
-      contentIds.push(prodParams.contentId);
-      contentArray.push(prodParams.content);
-      if (!product.quantity) {
-        quantityInconsistent = true;
-      }
-      totalQuantity = product.quantity
-        ? totalQuantity + product.quantity
-        : totalQuantity;
-    });
-
-    if (totalQuantity === 0) {
-      /*
-      in case any of the products inside product array does not have quantity,
-       will map the quantity of root level
-      */
-      totalQuantity = properties.quantity;
-    }
-  } else {
-    /*
-    for the events where product array is not present, root level id, price and
-    quantity are taken into consideration
-    */
-    const prodParams = setIdPriceQuantity(message.properties, message);
-    contentIds.push(prodParams.contentId);
-    contentArray.push(prodParams.content);
-    totalQuantity = properties.quantity
-      ? totalQuantity + properties.quantity
-      : totalQuantity;
-  }
-  /*
-    if properties.numOfItems is not provided by the user, the total quantity of the products
-    will be sent as num_items
-  */
-  if (
-    !isDefinedAndNotNull(customPayload.num_items) &&
-    quantityInconsistent === false
-  ) {
-    customPayload.num_items = parseInt(totalQuantity, 10);
-  }
-  customPayload = {
-    ...customPayload,
-    content_ids: contentIds,
-    contents: contentArray
-  };
-
-  return {
-    ...mandatoryPayload,
-    custom_data: { ...customPayload }
   };
 };
 

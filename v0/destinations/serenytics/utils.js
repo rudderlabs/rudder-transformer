@@ -1,6 +1,34 @@
 const set = require("set-value");
-const { constructPayload, extractCustomFields } = require("../../util");
+const {
+  constructPayload,
+  extractCustomFields,
+  defaultRequestConfig,
+  defaultPostRequestConfig
+} = require("../../util");
 const { MAPPING_CONFIG } = require("./config");
+
+const responseBuilder = (STORAGE_URL, payload) => {
+  const response = defaultRequestConfig();
+  response.endpoint = STORAGE_URL;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = payload;
+  return response;
+};
+
+const storageUrlResponseBuilder = (
+  STORAGE_URL,
+  storageUrlEventList,
+  payload
+) => {
+  const responseList = [];
+  storageUrlEventList.forEach(eventUrl => {
+    const response = responseBuilder(eventUrl, payload);
+    responseList.push(response);
+  });
+  const response = responseBuilder(STORAGE_URL, payload);
+  responseList.push(response);
+  return responseList;
+};
 
 const payloadBuilder = (
   message,
@@ -30,4 +58,4 @@ const payloadBuilder = (
   return payload;
 };
 
-module.exports = { payloadBuilder };
+module.exports = { payloadBuilder, storageUrlResponseBuilder, responseBuilder };

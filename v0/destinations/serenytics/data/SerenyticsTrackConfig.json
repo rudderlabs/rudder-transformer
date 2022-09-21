@@ -31,8 +31,7 @@
   },
   {
     "destKey": "original_timestamp",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
+    "sourceKeys": "originalTimestamp",
     "required": false
   },
   {

@@ -1,9 +1,6 @@
 const { EventType } = require("../../../constants");
 const {
   CustomError,
-  constructPayload,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
   getHashFromArrayWithDuplicate,
@@ -12,20 +9,15 @@ const {
 
 const {
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
   SERENYTICS_TRACK_EXCLUSION_LIST,
   SERENYTICS_IDENTIFY_EXCLUSION_LIST,
   SERENYTICS_PAGE_SCREEN_EXCLUSION_LIST
 } = require("./config");
-const { payloadBuilder } = require("./utils");
-
-const responseBuilder = (STORAGE_URL, payload) => {
-  const response = defaultRequestConfig();
-  response.endpoint = STORAGE_URL;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = payload;
-  return response;
-};
+const {
+  payloadBuilder,
+  storageUrlResponseBuilder,
+  responseBuilder
+} = require("./utils");
 
 const trackResponseBuilder = (message, { Config }, payload) => {
   const STORAGE_URL = Config.storageUrlTrack;
@@ -45,36 +37,14 @@ const trackResponseBuilder = (message, { Config }, payload) => {
   if (!storageUrlEventMapping[event] && !STORAGE_URL) {
     throw new CustomError(`[Serenytics]: storage url is required.`, 400);
   }
-  const productList = message.properties?.products;
-  if (productList && Array.isArray(productList)) {
-    const responseList = [];
-    const finalPayload = payload;
-    productList.forEach(product => {
-      const productDetails = constructPayload(
-        product,
-        MAPPING_CONFIG[CONFIG_CATEGORIES.PROPERTY.name]
-      );
-      payload = { ...payload, ...productDetails };
-
-      const storageUrlEventList = storageUrlEventMapping[event];
-      if (storageUrlEventList) {
-        storageUrlEventList.forEach(eventUrl => {
-          const response = responseBuilder(eventUrl, payload);
-          responseList.push(response);
-        });
-      }
-      payload = finalPayload;
-    });
-    return responseList;
-  }
 
   const storageUrlEventList = storageUrlEventMapping[event];
   if (storageUrlEventList) {
-    const responseList = [];
-    storageUrlEventList.forEach(eventUrl => {
-      const response = responseBuilder(eventUrl, payload);
-      responseList.push(response);
-    });
+    const responseList = storageUrlResponseBuilder(
+      STORAGE_URL,
+      storageUrlEventList,
+      payload
+    );
     return responseList;
   }
   const response = responseBuilder(STORAGE_URL, payload);

@@ -20,8 +20,8 @@ function settingProperties(event, message) {
 
   // fields that are already mapped
   const excludeFields = [
-    "user.userName",
-    "user.mailAddress",
+    "user.username",
+    "user.mailaddress",
     "user.id",
     "id",
     "eventRaisedUtc"

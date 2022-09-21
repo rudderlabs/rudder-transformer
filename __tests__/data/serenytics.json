@@ -370,7 +370,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Identify is required.",
+      "error": "[Serenytics]: storage url for \"IDENTIFY\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -611,7 +611,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Page is required.",
+      "error": "[Serenytics]: storage url for \"PAGE\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -733,7 +733,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Track is required.",
+      "error": "[Serenytics]: storage url for \"TRACK\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -968,7 +968,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Screen is required.",
+      "error": "[Serenytics]: storage url for \"SCREEN\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -1202,7 +1202,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Group is required.",
+      "error": "[Serenytics]: storage url for \"GROUP\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -1283,7 +1283,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for Alias is required.",
+      "error": "[Serenytics]: storage url for \"ALIAS\" is required.",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",

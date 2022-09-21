@@ -3,11 +3,18 @@ const {
   constructPayload,
   extractCustomFields,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  CustomError
 } = require("../../util");
 const { MAPPING_CONFIG } = require("./config");
 
-const responseBuilder = (STORAGE_URL, payload) => {
+const responseBuilder = (STORAGE_URL, payload, messageType) => {
+  if (!STORAGE_URL) {
+    throw new CustomError(
+      `[Serenytics]: storage url for "${messageType.toUpperCase()}" is required.`,
+      400
+    );
+  }
   const response = defaultRequestConfig();
   response.endpoint = STORAGE_URL;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -36,7 +43,7 @@ const storageUrlResponseBuilder = (
 const payloadBuilder = (
   message,
   typeName,
-  EXTRACTION_LIST,
+  extractionList,
   SERENYTICS_EXCLUSION_LIST
 ) => {
   const payload = constructPayload(message, MAPPING_CONFIG[typeName]);
@@ -44,17 +51,17 @@ const payloadBuilder = (
   customPayload = extractCustomFields(
     message,
     customPayload,
-    EXTRACTION_LIST,
+    extractionList,
     SERENYTICS_EXCLUSION_LIST
   );
   if (customPayload) {
-    if (EXTRACTION_LIST[0] === "properties") {
+    if (extractionList.includes("properties")) {
       Object.entries(customPayload).forEach(([key, value]) => {
-        set(payload, `property_${key}`, value);
+        payload[`property_${key}`] = value;
       });
     } else {
       Object.entries(customPayload).forEach(([key, value]) => {
-        set(payload, `trait_${key}`, value);
+        payload[`trait_${key}`] = value;
       });
     }
   }

@@ -149,6 +149,20 @@ const getConversions = (
     "developer-token": get(metadata, "secret.developer_token")
   };
 
+  if (Config.subAccount) {
+    if (Config.loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+      response.headers["login-customer-id"] = filteredLoginCustomerId;
+    } else {
+      throw new ErrorBuilder()
+        .setMessage(
+          `[Google_ads_offline_conversions]:: loginCustomerId is required as subAccount is enabled`
+        )
+        .setStatus(400)
+        .build();
+    }
+  }
+
   return response;
 };
 

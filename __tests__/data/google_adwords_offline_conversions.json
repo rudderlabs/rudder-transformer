@@ -100,6 +100,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -371,6 +372,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -601,6 +603,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -748,6 +751,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -899,6 +903,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -1051,6 +1056,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -1226,6 +1232,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -1478,7 +1485,7 @@
     ]
   },
   {
-    "description": "click - passing just the minimum required parameters",
+    "description": "click - passing just the minimum required parameters and check sub-account i.e (login-customer-id) request",
     "input": {
       "message": {
         "channel": "web",
@@ -1532,6 +1539,8 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": true,
+          "loginCustomerId": "861-785-9087",
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -1596,7 +1605,8 @@
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
-          "developer-token": "ijkl91011"
+          "developer-token": "ijkl91011",
+          "login-customer-id": "8617859087"
         },
         "params": {
           "event": "Sign-up - click",
@@ -1693,6 +1703,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",
@@ -1899,6 +1910,7 @@
       "destination": {
         "Config": {
           "customerId": "962-581-2972",
+          "subAccount": false,
           "eventsToOfflineConversionsTypeMapping": [
             {
               "from": "Sign up completed",

@@ -46,6 +46,7 @@
       },
       "messageId": "a0adfab9-baf7-4e09-a2ce-bbe2844c324a",
       "timestamp": "2020-10-16T08:10:12.782Z",
+      "originalTimestamp": "2020-10-16T08:10:12.782Z",
       "properties": {
         "checkout_id": "what is checkout id here??",
         "coupon": "APPARELSALE",

@@ -17,11 +17,7 @@ const CONFIG_CATEGORIES = {
     name: "SerenyticsPageScreenConfig"
   },
   ALIAS: {
-    name: "SerenyticsAliasConfig",
-    type: "alias"
-  },
-  PROPERTY: {
-    name: "SerenyticsPropertyConfig"
+    name: "SerenyticsAliasConfig"
   }
 };
 

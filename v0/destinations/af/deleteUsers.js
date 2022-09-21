@@ -1,7 +1,25 @@
-const { _ } = require("lodash");
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-param-reassign */
 const { httpPOST } = require("../../../adapters/network");
 const { generateUUID } = require("../../util");
 const ErrorBuilder = require("../../util/error");
+
+/**
+ * This function is making the ultimate call to delete the user
+ * @param {*} endpoint Endpoint for GDPR request (https://support.appsflyer.com/hc/en-us/articles/360000811585#1-gdpr-request)
+ * @param {*} body default body which is same for all calls
+ * @param {*} identityType type of the identifier those are one of ios_advertising_id, android_advertising_id, appsflyer_id
+ * @param {*} identityValue value of identifier
+ * @returns
+ */
+const deleteUser = async (endpoint, body, identityType, identityValue) => {
+  body.subject_request_id = generateUUID();
+  body.submitted_time = new Date().toISOString();
+  body.subject_identities[0].identity_type = identityType;
+  body.subject_identities[0].identity_value = identityValue;
+  const response = await httpPOST(endpoint, body);
+  return response;
+};
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -24,56 +42,91 @@ const userDeletionHandler = async (userAttributes, config) => {
       .setStatus(400)
       .build();
   }
-  const identityTypes = {
-    ios_advertising_id: "appleAppId",
-    android_advertising_id: "androidAppId",
-    appsflyer_id: undefined
-  };
   const body = {
     subject_request_type: "erasure",
     subject_identities: [{ identity_format: "raw" }]
   };
+  if (config.statusCallbackUrls) {
+    const statusCallbackUrlsArray = config.statusCallbackUrls.split(",");
+    if (statusCallbackUrlsArray.length > 1) {
+      const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter(
+        statusCallbackUrl => {
+          const URLRegex = new RegExp(
+            "^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"
+          );
+          return statusCallbackUrl.match(URLRegex);
+        }
+      );
+      if (filteredStatusCallbackUrlsArray.length > 3) {
+        throw new ErrorBuilder()
+          .setMessage("you can send atmost 3 callBackUrls")
+          .setStatus(400)
+          .build();
+      }
+      body.status_callback_urls = filteredStatusCallbackUrlsArray;
+    }
+  }
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
   for (let i = 0; i < userAttributes.length; i += 1) {
-    const userAttribute = Object.keys(userAttributes[i]);
-    const identityAttributes = Object.keys(identityTypes);
+    const userAttributeKeys = Object.keys(userAttributes[i]);
 
-    const identities = _.intersection(userAttribute, identityAttributes);
-    for (let j = 0; j < identities.length; j += 1) {
-      if (identities[j] === "appsflyer_id") {
-        body.property_id = config.androidAppId
-          ? config.androidAppId
-          : config.appleAppId;
-      } else {
-        body.property_id = config[identityTypes[identities[j]]];
-        if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              `${identityTypes[identities[j]]} is not available in config`
-            )
-            .setStatus(400)
-            .build();
-        }
-      }
-      body.subject_request_id = generateUUID();
-      body.submitted_time = new Date().toISOString();
-      body.subject_identities[0].identity_type = identities[j];
-      body.subject_identities[0].identity_value =
-        userAttributes[i][identities[j]];
-      // eslint-disable-next-line no-await-in-loop
-      const response = await httpPOST(endpoint, body);
+    if (userAttributeKeys.includes("appsflyer_id")) {
+      body.property_id = config.androidAppId
+        ? config.androidAppId
+        : config.appleAppId;
+      const response = await deleteUser(
+        endpoint,
+        body,
+        "appsflyer_id",
+        userAttributes[i].appsflyer_id
+      );
       if (!response || !response.response) {
         throw new ErrorBuilder()
           .setMessage("Could not get response")
           .setStatus(500)
           .build();
       }
+    } else {
+      if (userAttributeKeys.includes("ios_advertising_id")) {
+        body.property_id = config.appleAppId;
+        const response = await deleteUser(
+          endpoint,
+          body,
+          "ios_advertising_id",
+          userAttributes[i].ios_advertising_id
+        );
+        if (!response || !response.response) {
+          throw new ErrorBuilder()
+            .setMessage("Could not get response")
+            .setStatus(500)
+            .build();
+        }
+      }
+      if (userAttributeKeys.includes("android_advertising_id")) {
+        body.property_id = config.androidAppId;
+        const response = await deleteUser(
+          endpoint,
+          body,
+          "android_advertising_id",
+          userAttributes[i].android_advertising_id
+        );
+        if (!response || !response.response) {
+          throw new ErrorBuilder()
+            .setMessage("Could not get response")
+            .setStatus(500)
+            .build();
+        }
+      }
     }
 
-    if (identities.length === 0) {
+    if (
+      !userAttributes[i].android_advertising_id &&
+      !userAttributes[i].ios_advertising_id &&
+      !userAttributes[i].appsflyer_id
+    ) {
       throw new ErrorBuilder()
         .setMessage(
-          "none of the possible identityTypes is provided for deletion"
+          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
         )
         .setStatus(400)
         .build();

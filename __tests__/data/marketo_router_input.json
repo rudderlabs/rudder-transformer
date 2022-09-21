@@ -465,7 +465,7 @@
     },
     "destination": {
       "Config": {
-        "accountId": "520-BRK-122",
+        "accountId": "valid_account_broken_event",
         "clientId": "504300cd-76b2-a7l4-bhle-90a07420nx73",
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,

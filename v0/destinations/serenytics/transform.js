@@ -20,7 +20,7 @@ const {
 } = require("./utils");
 
 const trackResponseBuilder = (message, { Config }, payload) => {
-  const STORAGE_URL = Config.storageUrlTrack;
+  const STORAGE_URL = Config.storageUrlTrack || "";
   const storageUrlEventMapping = getHashFromArrayWithDuplicate(
     Config.eventToStorageUrlMap,
     "from",
@@ -35,7 +35,10 @@ const trackResponseBuilder = (message, { Config }, payload) => {
     );
   }
   if (!storageUrlEventMapping[event] && !STORAGE_URL) {
-    throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+    throw new CustomError(
+      `[Serenytics]: storage url for Track is required.`,
+      400
+    );
   }
 
   const storageUrlEventList = storageUrlEventMapping[event];
@@ -75,7 +78,10 @@ const processEvent = (message, destination) => {
       return response;
     case EventType.IDENTIFY:
       if (!Config.storageUrlIdentify) {
-        throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+        throw new CustomError(
+          `[Serenytics]: storage url for Identify is required.`,
+          400
+        );
       }
       STORAGE_URL = Config.storageUrlIdentify;
       payload = payloadBuilder(
@@ -87,7 +93,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.GROUP:
       if (!Config.storageUrlGroup) {
-        throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+        throw new CustomError(
+          `[Serenytics]: storage url for Group is required.`,
+          400
+        );
       }
       STORAGE_URL = Config.storageUrlGroup;
       payload = payloadBuilder(
@@ -99,7 +108,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.PAGE:
       if (!Config.storageUrlPage) {
-        throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+        throw new CustomError(
+          `[Serenytics]: storage url for Page is required.`,
+          400
+        );
       }
       STORAGE_URL = Config.storageUrlPage;
       payload = payloadBuilder(
@@ -111,7 +123,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.SCREEN:
       if (!Config.storageUrlScreen) {
-        throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+        throw new CustomError(
+          `[Serenytics]: storage url for Screen is required.`,
+          400
+        );
       }
       STORAGE_URL = Config.storageUrlScreen;
       payload = payloadBuilder(
@@ -123,7 +138,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.ALIAS:
       if (!Config.storageUrlAlias) {
-        throw new CustomError(`[Serenytics]: storage url is required.`, 400);
+        throw new CustomError(
+          `[Serenytics]: storage url for Alias is required.`,
+          400
+        );
       }
       STORAGE_URL = Config.storageUrlAlias;
       payload = payloadBuilder(

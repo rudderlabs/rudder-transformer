@@ -25,8 +25,11 @@ const storageUrlResponseBuilder = (
     const response = responseBuilder(eventUrl, payload);
     responseList.push(response);
   });
-  const response = responseBuilder(STORAGE_URL, payload);
-  responseList.push(response);
+  if (STORAGE_URL.length > 0) {
+    const response = responseBuilder(STORAGE_URL, payload);
+    responseList.push(response);
+  }
+
   return responseList;
 };
 

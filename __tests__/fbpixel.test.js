@@ -36,6 +36,9 @@ describe(`${name} Tests`, () => {
           expect(output).toEqual(expectedData[index]);
         } catch (error) {
           expect(error.message).toEqual(expectedData[index].error);
+          if (error.statTags) {
+            expect(error.statTags).toMatchObject(expectedData[index].statTags);
+          }
         }
       });
     });

@@ -39,7 +39,11 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
@@ -51,8 +55,6 @@
     "properties": {
       "eventType": 201,
       "subscription.id": "0acf8014-22f2-4503-88d7-f7d05b46744f",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 2,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
@@ -74,7 +76,11 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
@@ -86,8 +92,6 @@
     "properties": {
       "eventType": 201,
       "subscription.id": "0acf8014-22f2-4503-88d7-f7d05b46744f",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 4,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
@@ -137,7 +141,11 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
@@ -149,8 +157,6 @@
     "properties": {
       "eventType": 203,
       "subscription.id": "1578ebd9-0a27-44ab-bc8e-52cd7d32e81d",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 0,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",

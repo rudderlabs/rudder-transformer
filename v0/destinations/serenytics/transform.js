@@ -43,12 +43,7 @@ const trackResponseBuilder = (message, { Config }, payload) => {
 
   const storageUrlEventList = storageUrlEventMapping[event];
   if (storageUrlEventList) {
-    const responseList = storageUrlResponseBuilder(
-      STORAGE_URL,
-      storageUrlEventList,
-      payload
-    );
-    return responseList;
+    return storageUrlResponseBuilder(STORAGE_URL, storageUrlEventList, payload);
   }
   const response = responseBuilder(STORAGE_URL, payload);
   return response;

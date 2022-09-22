@@ -88,6 +88,23 @@ const marketoApplicationErrorHandler = (
 
 const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   const { status, response } = destResponse;
+  // if the responsee from destination is not a success case build an explicit error
+  if (!isHttpStatusSuccess(status)) {
+    throw new ErrorBuilder()
+      .setStatus(status)
+      .setMessage(
+        `[Marketo Response Handler] - Request failed  with status: ${status}`
+      )
+      .setDestinationResponse(destResponse)
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(status)
+      })
+      .build();
+  }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
     if (response && response.access_token) {
@@ -107,7 +124,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   if (response.errors.length > 0 && response.errors[0].message) {
     message += ` -> ${response.errors[0].message}`;
   }
-  // non 2xx failure
+  // Marketo sent us some failure which is not handled
   throw new ErrorBuilder()
     .setStatus(400)
     .setMessage(message)
@@ -148,23 +165,6 @@ const sendPostRequest = async (url, data, options) => {
 const responseHandler = (destinationResponse, _dest) => {
   const message = `[Marketo Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
-  // if the responsee from destination is not a success case build an explicit error
-  if (!isHttpStatusSuccess(status)) {
-    throw new ErrorBuilder()
-      .setStatus(status)
-      .setMessage(
-        `[Marketo Response Handler] - Request failed  with status: ${status}`
-      )
-      .setDestinationResponse(destinationResponse)
-      .isTransformResponseFailure(true)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
-      })
-      .build();
-  }
   // check for marketo application level failures
   marketoResponseHandler(
     destinationResponse,

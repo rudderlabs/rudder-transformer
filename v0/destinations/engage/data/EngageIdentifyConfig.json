@@ -21,9 +21,5 @@
   {
     "sourceKeys": "originalTimestamp",
     "destKey": "created_at"
-  },
-  {
-    "sourceKeys": ["externalId.engageListId", "config.listIds"],
-    "destKey": "lists"
   }
 ]

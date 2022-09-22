@@ -1,7 +1,6 @@
 [
     {
         "message": {
-            "userId": "user123",
             "groupId": "17",
             "context": {
                 "externalId": [
@@ -43,10 +42,12 @@
                 "externalId": [
                     {
                         "type": "engageListId",
-                        "id": [
-                            "100c983ry8934hf3094yfh348gf1",
-                            "4r40hfio3rbfln"
-                        ]
+                        "id": "100c983ry8934hf3094yfh348gf1"
+                    },
+                    {
+                        "type": "engageListId",
+                        "id": "4r40hfio3rbfln"
+                        
                     }
                 ]
             },

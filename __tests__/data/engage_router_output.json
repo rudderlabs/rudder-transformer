@@ -107,6 +107,6 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "[ ENGAGE ]:: engageID is required for remove operation."
+    "error": "engageID is required for remove operation."
   }
 ]

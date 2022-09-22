@@ -60,5 +60,6 @@ const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 module.exports = {
   BASE_URL,
   mappingConfig,
-  ConfigCategories
+  ConfigCategories,
+  DESTINATION: "ENGAGE"
 };

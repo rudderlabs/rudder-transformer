@@ -1,6 +1,26 @@
 // one for lists
 const { set } = require("lodash");
-const { getDestinationExternalID } = require("../../util");
+const {
+  getDestinationExternalID,
+  getFieldValueFromMessage
+} = require("../../util");
+
+const getListsFromExternalId = (message, type) => {
+  let externalIdArray = null;
+  let destinationExternalId = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      if (extIdObj.type === type) {
+        destinationExternalId = destinationExternalId.concat(extIdObj.id);
+      }
+    });
+  }
+  console.log(destinationExternalId);
+  return destinationExternalId;
+};
 
 /**
  * @param {*} message
@@ -8,10 +28,11 @@ const { getDestinationExternalID } = require("../../util");
  * @returns the listIds from the payload based on priority and availability
  */
 const getLists = (message, Config) => {
-  let listIds = getDestinationExternalID(message, "engageListId");
-  if (!listIds) {
+  let listIds = getListsFromExternalId(message, "engageListId");
+  console.log("jhcfqevwi: ",listIds);
+  if (!listIds.length) {
     listIds = [];
-    const objectlist = Config?.listIds;
+    const objectlist = Config?.lists;
     if (objectlist) {
       objectlist.forEach(v => {
         listIds = listIds.concat(Object.values(v));
@@ -26,24 +47,9 @@ const getLists = (message, Config) => {
  * @returns the Engage User ID based on priority and availability
  */
 const getUID = message => {
-  let engageId = getDestinationExternalID(message, "engageId");
+  const engageId = getDestinationExternalID(message, "engageId");
   if (!engageId) {
-    const { context, traits, anonymousId, userId } = message;
-    if (
-      userId ||
-      traits?.userId ||
-      traits?.id ||
-      context?.traits?.userId ||
-      context?.traits?.id ||
-      anonymousId
-    )
-      engageId =
-        userId ||
-        traits.userId ||
-        traits.id ||
-        context.traits.userId ||
-        context.traits.id ||
-        anonymousId;
+    return getFieldValueFromMessage(message, "userIdOnly");
   }
   return engageId;
 };

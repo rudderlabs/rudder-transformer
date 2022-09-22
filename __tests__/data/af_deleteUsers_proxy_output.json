@@ -28,5 +28,11 @@
       "statusCode": 400,
       "error": "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
     }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "you can send atmost 3 callBackUrls"
+    }
   ]
 ]

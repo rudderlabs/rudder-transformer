@@ -48,23 +48,21 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
   if (config.statusCallbackUrls) {
     const statusCallbackUrlsArray = config.statusCallbackUrls.split(",");
-    if (statusCallbackUrlsArray.length > 1) {
-      const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter(
-        statusCallbackUrl => {
-          const URLRegex = new RegExp(
-            "^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"
-          );
-          return statusCallbackUrl.match(URLRegex);
-        }
-      );
-      if (filteredStatusCallbackUrlsArray.length > 3) {
-        throw new ErrorBuilder()
-          .setMessage("you can send atmost 3 callBackUrls")
-          .setStatus(400)
-          .build();
+    const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter(
+      statusCallbackUrl => {
+        const URLRegex = new RegExp(
+          "^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"
+        );
+        return statusCallbackUrl.match(URLRegex);
       }
-      body.status_callback_urls = filteredStatusCallbackUrlsArray;
+    );
+    if (filteredStatusCallbackUrlsArray.length > 3) {
+      throw new ErrorBuilder()
+        .setMessage("you can send atmost 3 callBackUrls")
+        .setStatus(400)
+        .build();
     }
+    body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
   for (let i = 0; i < userAttributes.length; i += 1) {

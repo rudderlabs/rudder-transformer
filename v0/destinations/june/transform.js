@@ -4,10 +4,12 @@ const {
   simpleProcessRouterDest,
   constructPayload,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig,
-  CustomError
+  defaultPostRequestConfig
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
+const { DESTINATION } = require("./config");
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -23,7 +25,16 @@ const responseBuilder = (payload, endpoint, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("[ JUNE ]:: Payload could not be constructed", 400);
+  throw new ErrorBuilder()
+    .setMessage("Payload could not be constructed")
+    .setStatus(400)
+    .setStatTags({
+      destType: DESTINATION,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+    })
+    .build();
 };
 
 const identifyResponseBuilder = (message, destination) => {
@@ -61,10 +72,16 @@ const groupResponseBuilder = (message, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "[ JUNE ]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("Message Type is not present. Aborting message.")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
 
   const messageType = message.type.toLowerCase();
@@ -80,10 +97,17 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(
-        `[ JUNE ]:: Message type ${messageType} not supported.`,
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(`Message type ${messageType} not supported.`)
+        .setStatus(400)
+        .setStatTags({
+          destType: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
   }
   return response;
 };

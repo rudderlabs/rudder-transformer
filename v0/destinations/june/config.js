@@ -25,5 +25,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   BASE_ENDPOINT,
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
+  DESTINATION: "JUNE"
 };

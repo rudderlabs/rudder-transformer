@@ -5,9 +5,10 @@ const {
   getSuccessRespEvents,
   defaultPostRequestConfig
 } = require("../../util");
-
+const ErrorBuilder = require("../../util/error");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { offlineConversionResponseBuilder, prepareUrls } = require("./utils");
-
+const { DESTINATION } = require("./config");
 const { EventType } = require("../../../constants");
 
 const responseBuilder = (payload, endpoint, method) => {
@@ -50,20 +51,37 @@ const trackResponseBuilder = (metadata, message, destination) => {
 const processEvent = (metadata, message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new CustomError(
-      "[Facebook Offline Conversions] :: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Facebook Offline Conversions] :: Message Type is not present. Aborting message."
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
   const messageType = message.type.toLowerCase();
 
   if (messageType === EventType.TRACK) {
     return trackResponseBuilder(metadata, message, destination);
   }
-  throw new CustomError(
-    `[Facebook Offline Conversions] :: Message type ${messageType} not supported.`,
-    400
-  );
+
+  throw new ErrorBuilder()
+    .setMessage(
+      `[Facebook Offline Conversions] :: Message type ${messageType} not supported.`
+    )
+    .setStatus(400)
+    .setStatTags({
+      destType: DESTINATION,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
 };
 
 const process = event => {

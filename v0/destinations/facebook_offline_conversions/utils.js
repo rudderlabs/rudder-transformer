@@ -1,6 +1,5 @@
 const sha256 = require("sha256");
 const {
-  CustomError,
   getHashFromArray,
   constructPayload,
   extractCustomFields,
@@ -9,11 +8,13 @@ const {
 } = require("../../util");
 
 const ErrorBuilder = require("../../util/error");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const {
   ENDPOINT,
   destKeys,
   destKeyType,
+  DESTINATION,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   TRACK_EXCLUSION_FIELDS
@@ -155,17 +156,35 @@ const getEventSetId = (destination, event) => {
   const eventsMapping = getHashFromArray(eventsToStandard, "from", "to", false);
   const standardEvent = getStandardEvent(eventsMapping, event);
   if (!standardEvent) {
-    throw new CustomError(
-      "[Facebook Offline Conversions] :: Please Map Your Events With Standard Events",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Facebook Offline Conversions] :: Please Map Your Events With Standard Events"
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
+      .build();
   }
   const eventSetIds = getEventSetIds(eventsToIds, standardEvent);
   if (!eventSetIds.length) {
-    throw new CustomError(
-      "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
+      .build();
   }
 
   return { eventSetIds, standardEvent };

@@ -22,7 +22,7 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { userTransformHandler } = require("./routerUtils");
+const { faasDeploymentHandler, userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
@@ -629,6 +629,19 @@ if (startDestTransformer) {
       stats.counter("user_transform_output_events", transformedEvents.length, {
         processSessions
       });
+    });
+
+    router.post("/python/deploy", async ctx => {
+      try {
+        const { transformationName, code } = ctx.request.body;
+
+        faasDeploymentHandler()(transformationName, code);
+
+        ctx.body = "";
+        ctx.status = 200;
+      } catch (error) {
+        ctx.status = 500;
+      }
     });
   }
 }

@@ -12,6 +12,13 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
+const faasDeploymentHandler = () => {
+  if (functionsEnabled()) {
+    return require("./util/openfaas").faasDeploymentHandler;
+  }
+  throw new Error("Functions are not enabled");
+};
+
 const userTransformHandler = () => {
   if (functionsEnabled()) {
     return require("./util/customTransformer").userTransformHandler;
@@ -57,5 +64,6 @@ async function sendToDestination(destination, payload) {
 
 module.exports = {
   sendToDestination,
+  faasDeploymentHandler,
   userTransformHandler
 };

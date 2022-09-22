@@ -16,7 +16,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
   if (!config?.token) {
     throw new ErrorBuilder()
-      .setMessage("API Token is not available to make")
+      .setMessage("API Token is a required field for user deletion")
       .setStatus(400)
       .build();
   }

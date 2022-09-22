@@ -17,9 +17,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       .build();
   }
 
-  if (!accountId && !passcode) {
+  if (!accountId || !passcode) {
     throw new ErrorBuilder()
-      .setMessage("Project ID or Passcode is required for delete user")
+      .setMessage("Project ID and Passcode is required for delete user")
       .setStatus(400)
       .build();
   }

@@ -37,7 +37,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
     throw new ErrorBuilder()
       .setMessage(
-        "API Token and Apple ID or Android App Id are required fields"
+        "API Token and Apple ID or Android App Id are required fields user deletion"
       )
       .setStatus(400)
       .build();
@@ -89,6 +89,14 @@ const userDeletionHandler = async (userAttributes, config) => {
     } else {
       if (userAttributeKeys.includes("ios_advertising_id")) {
         body.property_id = config.appleAppId;
+        if (!body.property_id) {
+          throw new ErrorBuilder()
+            .setMessage(
+              "appleAppId is required for ios_advertising_id type identifier"
+            )
+            .setStatus(500)
+            .build();
+        }
         const response = await deleteUser(
           endpoint,
           body,
@@ -104,6 +112,14 @@ const userDeletionHandler = async (userAttributes, config) => {
       }
       if (userAttributeKeys.includes("android_advertising_id")) {
         body.property_id = config.androidAppId;
+        if (!body.property_id) {
+          throw new ErrorBuilder()
+            .setMessage(
+              "androidAppId is required for android_advertising_id type identifier"
+            )
+            .setStatus(500)
+            .build();
+        }
         const response = await deleteUser(
           endpoint,
           body,

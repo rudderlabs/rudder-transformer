@@ -9,7 +9,14 @@ const destinations = [
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions"
 ];
-const deleteUserDestinations = ["am", "braze", "intercom"];
+const deleteUserDestinations = [
+  "am",
+  "braze",
+  "intercom",
+  "mp",
+  "af",
+  "clevertap"
+];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;
 

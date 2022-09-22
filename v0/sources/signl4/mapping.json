@@ -1,10 +1,10 @@
 [
   {
-    "sourceKeys": "user.userName",
+    "sourceKeys": "user.username",
     "destKeys": "context.traits.name"
   },
   {
-    "sourceKeys": "user.mailAddress",
+    "sourceKeys": "user.mailaddress",
     "destKeys": "context.traits.email"
   },
   {
@@ -13,6 +13,6 @@
   },
   {
     "sourceKeys": "eventRaisedUtc",
-    "destKeys": "original_timestamp"
+    "destKeys": "originalTimestamp"
   }
 ]

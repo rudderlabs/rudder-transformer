@@ -20,7 +20,7 @@ const {
 } = require("./utils");
 
 const trackResponseBuilder = (message, { Config }, payload) => {
-  const STORAGE_URL = Config.storageUrlTrack || "";
+  const STORAGE_URL = Config.storageUrlTrack;
   const storageUrlEventMapping = getHashFromArrayWithDuplicate(
     Config.eventToStorageUrlMap,
     "from",
@@ -42,11 +42,14 @@ const trackResponseBuilder = (message, { Config }, payload) => {
   }
 
   const storageUrlEventList = storageUrlEventMapping[event];
-  if (storageUrlEventList) {
-    return storageUrlResponseBuilder(STORAGE_URL, storageUrlEventList, payload);
+  const responseList =
+    storageUrlResponseBuilder(storageUrlEventList, payload) || [];
+
+  if (STORAGE_URL) {
+    const response = responseBuilder(STORAGE_URL, payload);
+    responseList.push(response);
   }
-  const response = responseBuilder(STORAGE_URL, payload);
-  return response;
+  return responseList;
 };
 
 const processEvent = (message, destination) => {

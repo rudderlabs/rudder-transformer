@@ -22,21 +22,14 @@ const responseBuilder = (STORAGE_URL, payload, messageType) => {
   return response;
 };
 
-const storageUrlResponseBuilder = (
-  STORAGE_URL,
-  storageUrlEventList,
-  payload
-) => {
+const storageUrlResponseBuilder = (storageUrlEventList, payload) => {
   const responseList = [];
-  storageUrlEventList.forEach(eventUrl => {
-    const response = responseBuilder(eventUrl, payload);
-    responseList.push(response);
-  });
-  if (STORAGE_URL.length > 0) {
-    const response = responseBuilder(STORAGE_URL, payload);
-    responseList.push(response);
+  if (storageUrlEventList) {
+    storageUrlEventList.forEach(eventUrl => {
+      const response = responseBuilder(eventUrl, payload);
+      responseList.push(response);
+    });
   }
-
   return responseList;
 };
 

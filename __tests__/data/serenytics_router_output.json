@@ -1,30 +1,32 @@
 [
   {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760",
-      "headers": {},
-      "params": {},
-      "body": {
-        "JSON": {
-          "id": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-          "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
-          "event": "New Alert",
-          "sent_at": "2021-01-03T17:02:53.195Z",
-          "original_timestamp": "2021-01-03T17:02:53.193Z",
-          "timestamp": "2021-01-03T17:02:53.193Z",
-          "price": "12000",
-          "property_message": "Please check the alert",
-          "property_brand": "Zara"
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "id": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+            "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+            "event": "New Alert",
+            "sent_at": "2021-01-03T17:02:53.195Z",
+            "original_timestamp": "2021-01-03T17:02:53.193Z",
+            "timestamp": "2021-01-03T17:02:53.193Z",
+            "price": "12000",
+            "property_message": "Please check the alert",
+            "property_brand": "Zara"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
         },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
+        "files": {}
+      }
+    ],
     "metadata": [
       {
         "jobId": 1

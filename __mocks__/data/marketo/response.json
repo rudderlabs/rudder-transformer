@@ -274,5 +274,78 @@
         "message": "Any other error"
       }
     ]
+  },
+  "https://valid_account_broken_event.mktorest.com/identity/oauth/token": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://valid_account_broken_event.mktorest.com/rest/v1/leads.json?filterType=email&filterValues=0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail": {
+    "requestId": "12093#17672aeaee6",
+    "result": [],
+    "success": true
+  },
+  "https://valid_account_broken_event.mktorest.com/rest/v1/leads.json": {
+    "requestId": "142e4#1835b117b76",
+    "success": false,
+    "errors": [
+      {
+        "code": "1006",
+        "message": "Lookup field 'userId' not found"
+      }
+    ]
+  },
+  "https://unhandled_status_code.mktorest.com/identity/oauth/token": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://unhandled_status_code.mktorest.com/rest/v1/leads.json?filterType=email&filterValues=0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail": {
+    "requestId": "12093#17672aeaee6",
+    "result": [],
+    "success": true
+  },
+  "https://unhandled_status_code.mktorest.com/rest/v1/leads.json": {
+    "requestId": "142e4#1835b117b76",
+    "success": false,
+    "errors": [
+      {
+        "code": "random_marketo_code",
+        "message": "some other problem"
+      }
+    ]
+  },
+  "https://successful_identify_transformation.mktorest.com/identity/oauth/token": {
+    "access_token": "access_token_success",
+    "expires_in": 3599,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
+  "https://successful_identify_transformation.mktorest.com/rest/v1/leads.json": {
+    "requestId": "7ab2#17672a46a99",
+    "result": [
+      {
+        "id": 4,
+        "status": "created"
+      }
+    ],
+    "success": true
+  },
+  "https://successful_identify_transformation.mktorest.com/rest/v1/leads.json?filterType=email&filterValues=0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail": {
+    "requestId": "12093#17672aeaee6",
+    "result": [
+      {
+        "createdAt": "2022-09-17T21:39:07Z",
+        "email": "0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail",
+        "firstName": "random_first",
+        "id": 4,
+        "lastName": "random_last",
+        "updatedAt": "2022-09-20T21:48:07Z",
+        "userId": "test-user-957ue"
+      }
+    ],
+    "success": true
   }
 }

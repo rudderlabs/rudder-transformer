@@ -132,7 +132,8 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     .setStatTags({
       destType: DESTINATION,
       stage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+      meta: getDynamicMeta(400)
     })
     .build();
 };

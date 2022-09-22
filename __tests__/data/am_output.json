@@ -3593,5 +3593,165 @@
     },
     "files": {},
     "userId": "my-anonymous-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "7.1.1",
+            "device_model": "Android SDK built for x86",
+            "device_manufacturer": "Google",
+            "device_id": "5d205961641ee6c5",
+            "carrier": "Android",
+            "app_name": "Sample Kotlin",
+            "app_version": "1.2",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {
+              "name": "Screen event"
+            },
+            "insert_id": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+            "user_properties": {
+              "anonymousId": "5d205961641ee6c5",
+              "id": "User Android",
+              "userId": "User Android"
+            },
+            "event_type": "Viewed Screen event Screen",
+            "user_id": "User Android",
+            "device_brand": "Google",
+            "time": 1662393883250,
+            "session_id": 1662393792,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5d205961641ee6c5"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "test os",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "lynnanderson@smith.net",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
+            "ip": "0.0.0.0",
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "anonymousId": "123456",
+              "email": "sayan@gmail.com",
+              "postalCode": 712136,
+              "state": "WB",
+              "street": "",
+              "ip": "0.0.0.0",
+              "age": 26,
+              "device_id": "lynnanderson@smith.net"
+            },
+            "event_type": "$identify",
+            "time": 1571043797562,
+            "user_id": "123456",
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "country": "India",
+            "city": "kolkata",
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "123456"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Android",
+            "os_version": "7.1.1",
+            "device_model": "Android SDK built for x86",
+            "device_manufacturer": "Google",
+            "device_id": "5d205961641ee6c5",
+            "carrier": "Android",
+            "app_name": "Sample Kotlin",
+            "app_version": "1.2",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {
+              "name": "Screen event"
+            },
+            "insert_id": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+            "user_properties": {
+              "anonymousId": "5d205961641ee6c5",
+              "id": "User Android",
+              "userId": "User Android"
+            },
+            "event_type": "Viewed Screen event Screen",
+            "user_id": "User Android",
+            "device_brand": "Google",
+            "time": 1662393883250,
+            "session_id": -1,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5d205961641ee6c5"
   }
 ]

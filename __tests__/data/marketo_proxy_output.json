@@ -141,5 +141,31 @@
         "errorAt": "proxy"
       }
     }
+  },
+  {
+   "output": {
+     "status": 400,
+     "message": "[Error occurred while processing response for destination marketo]: Error occurred during Marketo Response Handling -> problem",
+     "destinationResponse": {
+       "response": {
+         "requestId": "142e4#1835b117b76",
+         "success": false,
+         "errors": [
+           {
+             "code": "random_marketo_code",
+             "message": "problem"
+           }
+         ]
+       },
+       "status": 200
+     },
+     "statTags": {
+       "destType": "MARKETO",
+       "stage": "responseTransform",
+       "scope": "api",
+       "meta": "abortable",
+       "errorAt": "proxy"
+     }
+   }
   }
 ]

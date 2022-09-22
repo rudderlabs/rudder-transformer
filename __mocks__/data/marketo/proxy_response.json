@@ -264,5 +264,19 @@
   },
   "https://mktId.mktorest.com/rest/v1/leads.json/test7": {
     "code": "[ENOTFOUND] :: DNS lookup failed"
+  },
+  "https://unhandled_exception_in_proxy_req.mktorest.com/rest/v1/leads.json": {
+    "data": {
+      "requestId": "142e4#1835b117b76",
+      "success": false,
+      "errors": [
+        {
+          "code": "random_marketo_code",
+          "message": "problem"
+        }
+      ]
+    },
+    "status": 200,
+    "statusText": "OK"
   }
 }

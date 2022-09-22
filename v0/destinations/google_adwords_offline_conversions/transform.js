@@ -81,7 +81,7 @@ const getConversions = (
     // then it is taken from the webapp config
     if (
       !properties.userIdentifierSource &&
-      Config.userIdentifierSource !== "none"
+      Config.UserIdentifierSource !== "none"
     ) {
       set(
         payload,

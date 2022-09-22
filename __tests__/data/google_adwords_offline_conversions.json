@@ -59,7 +59,7 @@
           "externalAttributionModel": "externalAttributionModel",
           "conversionCustomVariable": "conversionCustomVariable",
           "value": "value",
-          "merchantId": "merchantId",
+          "merchantId": "9876merchantId",
           "feedCountryCode": "feedCountryCode",
           "feedLanguageCode": "feedLanguageCode",
           "localTransactionCost": 20,
@@ -188,7 +188,7 @@
             "externalAttributionModel": "externalAttributionModel",
             "conversionCustomVariable": "conversionCustomVariable",
             "value": "value",
-            "merchantId": "merchantId",
+            "merchantId": "9876merchantId",
             "feedCountryCode": "feedCountryCode",
             "feedLanguageCode": "feedLanguageCode",
             "localTransactionCost": 20,
@@ -225,8 +225,8 @@
                   "externalAttributionCredit": 10,
                   "externalAttributionModel": "externalAttributionModel"
                 },
-                "CartData": {
-                  "merchantId": "merchantId",
+                "cartData": {
+                  "merchantId": 9876,
                   "feedCountryCode": "feedCountryCode",
                   "feedLanguageCode": "feedLanguageCode",
                   "localTransactionCost": 20,
@@ -1366,8 +1366,7 @@
                   "externalAttributionCredit": 10,
                   "externalAttributionModel": "externalAttributionModel"
                 },
-                "CartData": {
-                  "merchantId": "merchantId",
+                "cartData": {
                   "feedCountryCode": "feedCountryCode",
                   "feedLanguageCode": "feedLanguageCode",
                   "localTransactionCost": 20,

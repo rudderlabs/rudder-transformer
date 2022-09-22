@@ -236,5 +236,223 @@
       "isConnectionEnabled": true,
       "isProcessorEnabled": true
     }
+  },
+  {
+    "batched": false,
+    "statusCode": 400,
+    "error": "Request Failed for Marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email",
+    "statTags": {
+      "destType": "MARKETO",
+      "stage": "transform",
+      "scope": "api",
+      "meta": "abortable"
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ]
+  },
+  {
+    "batched": false,
+    "statusCode": 400,
+    "error": "Error occurred [Marketo Transformer]: During lead look up using email -> some other problem",
+    "statTags": {
+      "destType": "MARKETO",
+      "stage": "transform",
+      "scope": "api",
+      "meta": "abortable"
+    },
+    "metadata": [
+      {
+        "jobId": 4
+      }
+    ]
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://successful_identify_transformation.mktorest.com/rest/v1/leads.json",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer access_token_success"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "action": "createOrUpdate",
+          "input": [
+            {
+              "Email": "0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail",
+              "FirstName": "A",
+              "LastName": "M",
+              "id": 4,
+              "userId": "e17c5a5e-5e2f-430b-b497-fe3f1ea3a704"
+            }
+          ],
+          "lookupField": "id"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "accountId": "successful_identify_transformation",
+        "clientId": "504300cd-76b2-a7l4-bhle-90a07420nx73",
+        "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
+        "trackAnonymousEvents": false,
+        "createIfNotExist": true,
+        "customActivityEventMap": [
+          {
+            "from": "acq_signup_completed",
+            "to": "100026"
+          },
+          {
+            "from": "act_createwebinarform_submit",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_style",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_view",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_join",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_addteammember",
+            "to": "100025"
+          },
+          {
+            "from": "act_engagement_discussions_savediscussion",
+            "to": "100025"
+          },
+          {
+            "to": "100025",
+            "from": "act_engagement_networking_savetime"
+          }
+        ]
+      },
+      "destinationDefinition": {
+        "config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accountId",
+              "clientId",
+              "clientSecret",
+              "trackAnonymousEvents",
+              "customActivityEventMap",
+              "customActivityPropertyMap",
+              "customActivityPrimaryKeyMap",
+              "leadTraitMapping"
+            ]
+          },
+          "secretKeys": [
+            "clientSecret"
+          ],
+          "excludeKeys": [],
+          "includeKeys": [],
+          "routerTransform": true,
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
+        },
+        "responseRules": {
+          "responseType": "JSON",
+          "rules": {
+            "retryable": [
+              {
+                "success": "false",
+                "errors.0.code": 600
+              },
+              {
+                "success": "false",
+                "errors.0.code": 601
+              },
+              {
+                "success": "false",
+                "errors.0.code": 602
+              },
+              {
+                "success": "false",
+                "errors.0.code": 604
+              },
+              {
+                "success": "false",
+                "errors.0.code": 606
+              },
+              {
+                "success": "false",
+                "errors.0.code": 607
+              },
+              {
+                "success": "false",
+                "errors.0.code": 608
+              },
+              {
+                "success": "false",
+                "errors.0.code": 611
+              }
+            ],
+            "abortable": [
+              {
+                "success": "false",
+                "errors.0.code": 603
+              },
+              {
+                "success": "false",
+                "errors.0.code": 605
+              },
+              {
+                "success": "false",
+                "errors.0.code": 609
+              },
+              {
+                "success": "false",
+                "errors.0.code": 610
+              }
+            ]
+          }
+        },
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "MARKETO",
+        "displayName": "Marketo",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVke",
+      "name": "Marketo",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmMd",
+      "deleted": false,
+      "createdAt": "2022-02-10T08:39:32.005Z",
+      "updatedAt": "2022-09-03T16:22:31.374Z",
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
+    }
   }
 ]

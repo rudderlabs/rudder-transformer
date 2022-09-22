@@ -28,10 +28,10 @@ const {
 } = require("./config");
 
 function checkIfValidPhoneNumber(str) {
-  // Ref - https://ads.tiktok.com/marketing_api/docs?id=1701890979375106
+  // Ref - https://ads.tiktok.com/marketing_api/docs?id=1727541103358977
   // Regular expression to check whether it has country code
   // but should not include +86
-  const regexExp = /^(\+(?!86)\d{1,3}){0,1}[0-9]{10}$/gi;
+  const regexExp = /^(\+(?!86)\d{1,3})?\d{1,12}$/gi;
 
   return regexExp.test(str);
 }
@@ -85,7 +85,7 @@ const getTrackResponse = (message, Config, event) => {
         ).toString();
       } else {
         throw new CustomError(
-          "Invalid phone number. Include proper country code except +86. Aborting ",
+          "Invalid phone number. Include proper country code except +86 and the phone number length must be no longer than 15 digit. Aborting",
           400
         );
       }

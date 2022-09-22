@@ -124,5 +124,9 @@
     "context.traits.address.postalcode",
     "context.traits.address.postal_code",
     "context.traits.address.postalCode"
+  ],
+  "sessionId": [
+    "session_id",
+    "context.sessionId"
   ]
 }

@@ -1,6 +1,5 @@
-const { get, set } = require("lodash");
+const { get, set, cloneDeep } = require("lodash");
 const moment = require("moment");
-const logger = require("../../../logger");
 const { EventType } = require("../../../constants");
 const {
   getHashFromArrayWithDuplicate,
@@ -12,8 +11,9 @@ const {
   getHashFromArray
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
-const { CLICK_CONVERSION, CALL_CONVERSION } = require("./config");
-let {
+const {
+  CLICK_CONVERSION,
+  CALL_CONVERSION,
   trackClickConversionsMapping,
   trackCallConversionsMapping
 } = require("./config");
@@ -48,14 +48,15 @@ const getConversions = (
 
   if (conversionType === "click") {
     // click conversions
+    let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
 
     if (hashUserIdentifier === false) {
-      trackClickConversionsMapping = removeHashToSha256TypeFromMappingJson(
-        trackClickConversionsMapping
+      updatedClickMapping = removeHashToSha256TypeFromMappingJson(
+        updatedClickMapping
       );
     }
 
-    payload = constructPayload(message, trackClickConversionsMapping);
+    payload = constructPayload(message, updatedClickMapping);
     endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);
 
     const products = get(message, "properties.products");
@@ -72,16 +73,19 @@ const getConversions = (
         }
       });
 
-      set(payload, "conversions[0].CartData.items", itemList);
+      set(payload, "conversions[0].cartData.items", itemList);
     }
 
     // userIdentifierSource
     // if userIdentifierSource doesn't exist in properties
     // then it is taken from the webapp config
-    if (!properties.userIdentifierSource) {
+    if (
+      !properties.userIdentifierSource &&
+      Config.userIdentifierSource !== "none"
+    ) {
       set(
         payload,
-        "conversions[0].userIdentifiers.userIdentifierSource",
+        "conversions[0].userIdentifiers[0].userIdentifierSource",
         get(message, Config.userIdentifierSource)
       );
     }
@@ -93,7 +97,7 @@ const getConversions = (
     if (thirdPartyUserId) {
       set(
         payload,
-        "conversions[0].userIdentifiers.thirdPartyUserId",
+        "conversions[0].userIdentifiers[0].thirdPartyUserId",
         thirdPartyUserId
       );
     }
@@ -101,7 +105,10 @@ const getConversions = (
     // conversionEnvironment
     // if conversionEnvironment doesn't exist in properties
     // then it is taken from the webapp config
-    if (!properties.conversionEnvironment) {
+    if (
+      !properties.conversionEnvironment &&
+      Config.conversionEnvironment !== "none"
+    ) {
       set(
         payload,
         "conversions[0].conversionEnvironment",
@@ -110,12 +117,6 @@ const getConversions = (
     }
   } else {
     // call conversions
-
-    if (hashUserIdentifier === false) {
-      trackCallConversionsMapping = removeHashToSha256TypeFromMappingJson(
-        trackCallConversionsMapping
-      );
-    }
 
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(":customerId", filteredCustomerId);
@@ -156,7 +157,7 @@ const getConversions = (
     } else {
       throw new ErrorBuilder()
         .setMessage(
-          `[Google_ads_offline_conversions]:: loginCustomerId is required as subAccount is enabled`
+          `[Google Ads Offline Conversions]:: loginCustomerId is required as subAccount is enabled`
         )
         .setStatus(400)
         .build();
@@ -230,7 +231,7 @@ const process = async event => {
   if (!message.type) {
     throw new ErrorBuilder()
       .setMessage(
-        "[Google Ads Offline Conversions]:: Message type is not present. Aborting message."
+        "[Google Ads Offline Conversions]:: message type is not present. Aborting message."
       )
       .setStatus(400)
       .build();

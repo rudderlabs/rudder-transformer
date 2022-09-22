@@ -245,11 +245,7 @@ const ProxyRequest = async request => {
   // fetch conversionAction
   // httpPOST -> axios.post()
   const conversionActionId = await getConversionActionId(headers, params);
-  set(
-    body.JSON,
-    "conversions.0.conversionAction",
-    `customers/${params.customerId}/conversionActions/${conversionActionId}`
-  );
+  set(body.JSON, "conversions.0.conversionAction", conversionActionId);
 
   // fetch all conversion custom variable in google ads
   let conversionCustomVariable = await getConversionCustomVariable(
@@ -273,7 +269,7 @@ const ProxyRequest = async request => {
       resultantCustomVariables.push({
         conversionCustomVariable:
           conversionCustomVariable[customVariables[key]],
-        value: properties[key]
+        value: String(properties[key])
       });
     }
   });

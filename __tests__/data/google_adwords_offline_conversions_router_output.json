@@ -80,22 +80,24 @@
                     }
                   ]
                 },
-                "userIdentifiers": {
-                  "userIdentifierSource": "FIRST_PARTY",
-                  "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                  "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
-                  "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
-                  "thirdPartyUserId": "thirdPartyUserId",
-                  "addressInfo": {
-                    "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
-                    "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
-                    "city": "London",
-                    "state": "England",
-                    "countryCode": "GB",
-                    "postalCode": "EC3M",
-                    "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                "userIdentifiers": [
+                  {
+                    "userIdentifierSource": "FIRST_PARTY",
+                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
+                    "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
+                    "thirdPartyUserId": "thirdPartyUserId",
+                    "addressInfo": {
+                      "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
+                      "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
+                      "city": "London",
+                      "state": "England",
+                      "countryCode": "GB",
+                      "postalCode": "EC3M",
+                      "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                    }
                   }
-                },
+                ],
                 "conversionEnvironment": "WEB",
                 "gclid": "gclid",
                 "conversionDateTime": "2022-01-01 12:32:45-08:00",

@@ -32,7 +32,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.merchantId",
+    "destKey": "conversions[0].cartData.merchantId",
     "sourceKeys": "properties.merchantId",
     "required": false,
     "metadata": {
@@ -40,7 +40,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.feedCountryCode",
+    "destKey": "conversions[0].cartData.feedCountryCode",
     "sourceKeys": "properties.feedCountryCode",
     "required": false,
     "metadata": {
@@ -48,7 +48,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.feedLanguageCode",
+    "destKey": "conversions[0].cartData.feedLanguageCode",
     "sourceKeys": "properties.feedLanguageCode",
     "required": false,
     "metadata": {
@@ -56,7 +56,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.localTransactionCost",
+    "destKey": "conversions[0].cartData.localTransactionCost",
     "sourceKeys": "properties.localTransactionCost",
     "required": false,
     "metadata": {
@@ -64,7 +64,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.items[0].productId",
+    "destKey": "conversions[0].cartData.items[0].productId",
     "sourceKeys": "properties.product_id",
     "required": false,
     "metadata": {
@@ -72,7 +72,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.items[0].quantity",
+    "destKey": "conversions[0].cartData.items[0].quantity",
     "sourceKeys": "properties.quantity",
     "required": false,
     "metadata": {
@@ -80,7 +80,7 @@
     }
   },
   {
-    "destKey": "conversions[0].CartData.items[0].unitPrice",
+    "destKey": "conversions[0].cartData.items[0].unitPrice",
     "sourceKeys": "properties.price",
     "required": false,
     "metadata": {
@@ -88,7 +88,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.userIdentifierSource",
+    "destKey": "conversions[0].userIdentifiers[0].userIdentifierSource",
     "sourceKeys": "properties.userIdentifierSource",
     "required": false,
     "metadata": {
@@ -102,7 +102,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.hashedEmail",
+    "destKey": "conversions[0].userIdentifiers[0].hashedEmail",
     "sourceKeys": "email",
     "sourceFromGenericMap": true,
     "required": false,
@@ -111,7 +111,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.hashedPhoneNumber",
+    "destKey": "conversions[0].userIdentifiers[0].hashedPhoneNumber",
     "sourceKeys": "phone",
     "sourceFromGenericMap": true,
     "required": false,
@@ -120,7 +120,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.mobileId",
+    "destKey": "conversions[0].userIdentifiers[0].mobileId",
     "sourceKeys": "context.device.advertisingId",
     "required": false,
     "metadata": {
@@ -128,7 +128,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.thirdPartyUserId",
+    "destKey": "conversions[0].userIdentifiers[0].thirdPartyUserId",
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": false,
@@ -137,7 +137,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.hashedFirstName",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.hashedFirstName",
     "sourceKeys": "firstName",
     "sourceFromGenericMap": true,
     "required": false,
@@ -146,7 +146,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.hashedLastName",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.hashedLastName",
     "sourceKeys": "lastName",
     "sourceFromGenericMap": true,
     "required": false,
@@ -155,7 +155,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.city",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.city",
     "sourceKeys": [
       "traits.city",
       "traits.address.city",
@@ -168,7 +168,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.state",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.state",
     "sourceKeys": [
       "traits.state",
       "traits.address.state",
@@ -181,7 +181,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.countryCode",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.countryCode",
     "sourceKeys": [
       "traits.countryCode",
       "traits.country",
@@ -198,7 +198,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.postalCode",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.postalCode",
     "sourceKeys": [
       "traits.postalCode",
       "traits.address.postalCode",
@@ -211,7 +211,7 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers.addressInfo.hashedStreetAddress",
+    "destKey": "conversions[0].userIdentifiers[0].addressInfo.hashedStreetAddress",
     "sourceKeys": [
       "traits.streetAddress",
       "traits.address",

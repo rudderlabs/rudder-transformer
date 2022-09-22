@@ -82,7 +82,8 @@
           "gclid": "gclid",
           "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "conversionValue": "1",
-          "currency": "GBP"
+          "currency": "GBP",
+          "orderId": "PL-123QR"
         },
         "integrations": {
           "All": true
@@ -210,7 +211,8 @@
             "gclid": "gclid",
             "conversionDateTime": "2022-01-01 12:32:45-08:00",
             "conversionValue": "1",
-            "currency": "GBP"
+            "currency": "GBP",
+            "orderId": "PL-123QR"
           }
         },
         "body": {
@@ -236,27 +238,30 @@
                     }
                   ]
                 },
-                "userIdentifiers": {
-                  "userIdentifierSource": "FIRST_PARTY",
-                  "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                  "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
-                  "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
-                  "thirdPartyUserId": "thirdPartyUserId",
-                  "addressInfo": {
-                    "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
-                    "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
-                    "city": "London",
-                    "state": "England",
-                    "countryCode": "GB",
-                    "postalCode": "EC3M",
-                    "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                "userIdentifiers": [
+                  {
+                    "userIdentifierSource": "FIRST_PARTY",
+                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
+                    "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
+                    "thirdPartyUserId": "thirdPartyUserId",
+                    "addressInfo": {
+                      "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
+                      "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
+                      "city": "London",
+                      "state": "England",
+                      "countryCode": "GB",
+                      "postalCode": "EC3M",
+                      "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                    }
                   }
-                },
+                ],
                 "conversionEnvironment": "WEB",
                 "gclid": "gclid",
                 "conversionDateTime": "2022-01-01 12:32:45-08:00",
                 "conversionValue": 1,
-                "currencyCode": "GBP"
+                "currencyCode": "GBP",
+                "orderId": "PL-123QR"
               }
             ],
             "partialFailure": true
@@ -816,7 +821,7 @@
         }
       },
       "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: Message type is not present. Aborting message.",
+      "error": "[Google Ads Offline Conversions]:: message type is not present. Aborting message.",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -1023,7 +1028,7 @@
             "density": 2
           }
         },
-        "event": "gtag",
+        "event": "purchase",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
@@ -1121,7 +1126,7 @@
         }
       },
       "statusCode": 400,
-      "error": "Event name 'gtag' is not valid",
+      "error": "Event name 'purchase' is not valid",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -1374,22 +1379,24 @@
                     }
                   ]
                 },
-                "userIdentifiers": {
-                  "userIdentifierSource": "FIRST_PARTY",
-                  "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                  "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
-                  "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
-                  "thirdPartyUserId": "thirdPartyUserId",
-                  "addressInfo": {
-                    "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
-                    "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
-                    "city": "London",
-                    "state": "England",
-                    "countryCode": "GB",
-                    "postalCode": "EC3M",
-                    "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                "userIdentifiers": [
+                  {
+                    "userIdentifierSource": "FIRST_PARTY",
+                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
+                    "mobileId": "44c97318-9040-4361-8bc7-4eb30f665ca8",
+                    "thirdPartyUserId": "thirdPartyUserId",
+                    "addressInfo": {
+                      "hashedFirstName": "a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da",
+                      "hashedLastName": "1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4",
+                      "city": "London",
+                      "state": "England",
+                      "countryCode": "GB",
+                      "postalCode": "EC3M",
+                      "hashedStreetAddress": "9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550"
+                    }
                   }
-                },
+                ],
                 "conversionEnvironment": "WEB",
                 "gclid": "gclid",
                 "conversionDateTime": "2022-01-01 12:32:45-08:00",
@@ -1590,7 +1597,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "thirdPartyUserId": "properties.thirdPartyUserId",
           "conversionEnvironment": "WEB",
-          "hashUserIdentifier": true,
+          "hashUserIdentifier": false,
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1632,9 +1639,11 @@
               {
                 "gclid": "gclid",
                 "conversionDateTime": "2022-01-01 12:32:45-08:00",
-                "userIdentifiers": {
-                  "thirdPartyUserId": "12345"
-                }
+                "userIdentifiers": [
+                  {
+                    "thirdPartyUserId": "12345"
+                  }
+                ]
               }
             ],
             "partialFailure": true
@@ -2042,5 +2051,430 @@
         "files": {}
       }
     ]
+  },
+  {
+    "description": "click - do not hash user identifier (set to false)",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {},
+          "traits": {
+            "email": "alex@example.com",
+            "phone": "+1-202-555-0146"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "event": "Promotion Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00"
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "962-581-2972",
+          "subAccount": false,
+          "loginCustomerId": "",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": false,
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011"
+        },
+        "params": {
+          "event": "Sign-up - click",
+          "customerId": "9625812972",
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "properties": {
+            "gclid": "gclid",
+            "conversionDateTime": "2022-01-01 12:32:45-08:00"
+          }
+        },
+        "body": {
+          "JSON": {
+            "conversions": [
+              {
+                "gclid": "gclid",
+                "conversionDateTime": "2022-01-01 12:32:45-08:00",
+                "userIdentifiers": [
+                  {
+                    "thirdPartyUserId": "12345",
+                    "hashedEmail": "alex@example.com",
+                    "hashedPhoneNumber": "+1-202-555-0146"
+                  }
+                ]
+              }
+            ],
+            "partialFailure": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "message type not present",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {},
+          "traits": {
+            "email": "alex@example.com",
+            "phone": "+1-202-555-0146"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "event": "Promotion Clicked",
+        "type": "page",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00"
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "962-581-2972",
+          "subAccount": false,
+          "loginCustomerId": "",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": false,
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": {
+      "metadata": {
+        "secret": null
+      },
+      "statusCode": 400,
+      "error": "[Google Ads Offline Conversions]:: Message type page not supported",
+      "statTags": {
+        "destination": "google_adwords_offline_conversions",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "check for subaccount required field i.e loginCustomerId",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {},
+          "traits": {
+            "email": "alex@example.com",
+            "phone": "+1-202-555-0146"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "event": "Promotion Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00"
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "962-581-2972",
+          "subAccount": true,
+          "loginCustomerId": "",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Promotion Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "thirdPartyUserId": "properties.thirdPartyUserId",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": false,
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": {
+      "metadata": {
+        "secret": null
+      },
+      "statusCode": 400,
+      "error": "[Google Ads Offline Conversions]:: loginCustomerId is required as subAccount is enabled",
+      "statTags": {
+        "destination": "google_adwords_offline_conversions",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
   }
 ]

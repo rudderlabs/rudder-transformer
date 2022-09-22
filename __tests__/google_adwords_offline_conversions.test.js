@@ -154,7 +154,9 @@ describe(`${name} Tests`, () => {
           const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
+          // match message and statuscode
           expect(error.message).toEqual(dataPoint.output.error);
+          expect(error.status).toEqual(dataPoint.output.statusCode);
         }
       });
     });

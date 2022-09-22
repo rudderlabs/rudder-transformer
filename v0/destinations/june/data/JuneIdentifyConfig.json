@@ -7,7 +7,7 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": "createdAt",
+    "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": true
   },
@@ -15,9 +15,6 @@
     "destKey": "traits",
     "sourceKeys": "traits",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "excludes": ["createdAt"]
-    }
+    "required": false
   }
 ]

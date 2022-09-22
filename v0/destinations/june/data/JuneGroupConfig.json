@@ -14,7 +14,7 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": "createdAt",
+    "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": true
   },
@@ -24,7 +24,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "excludes": ["groupId", "createdAt"]
+      "excludes": ["groupId"]
     }
   }
 ]

@@ -13,7 +13,7 @@
         "context": {
           "traits": {
             "name": "John Doe",
-            "email": "5136633649@transformer.com",
+            "email": "johndoe@gmail.com",
             "age": 25
           }
         },
@@ -43,7 +43,7 @@
         "context": {
           "traits": {
             "name": "John Doe",
-            "email": "5136633649@transformer.com",
+            "email": "johndoe@gmail.com",
             "age": 25
           }
         },
@@ -67,7 +67,7 @@
           "userId": "5136633649",
           "traits": {
             "name": "John Doe",
-            "email": "5136633649@transformer.com",
+            "email": "johndoe@gmail.com",
             "age": 25
           },
           "timestamp": "2022-01-20T13:39:21.032Z"

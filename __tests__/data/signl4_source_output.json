@@ -14,7 +14,7 @@
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "New Alert Created",
     "properties": {
       "eventType": 200,
@@ -39,20 +39,22 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "Alert Confirmed",
     "properties": {
       "eventType": 201,
       "subscription.id": "0acf8014-22f2-4503-88d7-f7d05b46744f",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 2,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
@@ -74,20 +76,22 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
     },
     "type": "track",
     "messageId": "dd209a2d-e037-41ee-b37d-f605cc0a39fb",
-    "original_timestamp": "2017-09-01T08:11:37.000Z",
+    "originalTimestamp": "2017-09-01T08:11:37.000Z",
     "event": "Alert Resolved",
     "properties": {
       "eventType": 201,
       "subscription.id": "0acf8014-22f2-4503-88d7-f7d05b46744f",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 4,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
@@ -110,7 +114,7 @@
     },
     "type": "track",
     "messageId": "27283793-47c8-4da2-9767-d37be224338d",
-    "original_timestamp": "2020-01-10T12:27:19.000Z",
+    "originalTimestamp": "2020-01-10T12:27:19.000Z",
     "event": "Alert Escalated",
     "properties": {
       "eventType": 202,
@@ -137,20 +141,22 @@
           "type": "signl4UserId",
           "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
         }
-      ]
+      ],
+      "traits": {
+        "email": "rene@signl4.com",
+        "name": "Rene"
+      }
     },
     "integrations": {
       "Signl4": false
     },
     "type": "track",
     "messageId": "141c0f88-7831-4d5e-b055-f6e83c269770",
-    "original_timestamp": "2018-04-17T15:00:32.000Z",
+    "originalTimestamp": "2018-04-17T15:00:32.000Z",
     "event": "Alert Annotated",
     "properties": {
       "eventType": 203,
       "subscription.id": "1578ebd9-0a27-44ab-bc8e-52cd7d32e81d",
-      "user.username": "Rene",
-      "user.mailaddress": "rene@signl4.com",
       "alert.statusCode": 0,
       "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
       "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
@@ -174,7 +180,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Duty Period Started",
     "properties": {
       "eventType": 300,
@@ -197,7 +203,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Duty Period Ended",
     "properties": {
       "eventType": 301,
@@ -225,7 +231,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Somebody Punched-In",
     "properties": {
       "eventType": 302,
@@ -253,7 +259,7 @@
     },
     "type": "track",
     "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
-    "original_timestamp": "2017-09-01T09:16:17.000Z",
+    "originalTimestamp": "2017-09-01T09:16:17.000Z",
     "event": "Somebody Punched-Out",
     "properties": {
       "eventType": 303,

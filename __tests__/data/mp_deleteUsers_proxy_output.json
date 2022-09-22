@@ -1,0 +1,14 @@
+[
+  [
+    {
+      "statusCode": 400,
+      "error": "API Token is a required field for user deletion"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "User id for deletion not present"
+    }
+  ]
+]

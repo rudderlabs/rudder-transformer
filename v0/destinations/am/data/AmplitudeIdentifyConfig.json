@@ -39,7 +39,6 @@
   "context.app.name": "app_name",
   "context.app.version": "app_version",
   "context.locale": "language",
-  "session_id": "session_id",
   "messageId": "insert_id",
   "request_ip": "ip"
 }

@@ -90,18 +90,6 @@ const getConversions = (
       );
     }
 
-    // thirdPartyUserId
-    // defaults maps to userId and
-    // based on the path provided in config it will be overridden
-    const thirdPartyUserId = get(message, Config.thirdPartyUserId);
-    if (thirdPartyUserId) {
-      set(
-        payload,
-        "conversions[0].userIdentifiers[0].thirdPartyUserId",
-        thirdPartyUserId
-      );
-    }
-
     // conversionEnvironment
     // if conversionEnvironment doesn't exist in properties
     // then it is taken from the webapp config

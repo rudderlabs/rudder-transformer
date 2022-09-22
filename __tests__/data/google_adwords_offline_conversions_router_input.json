@@ -75,7 +75,6 @@
           }
         ],
         "userIdentifierSource": "FIRST_PARTY",
-        "thirdPartyUserId": "thirdPartyUserId",
         "conversionEnvironment": "WEB",
         "gclid": "gclid",
         "conversionDateTime": "2022-01-01 12:32:45-08:00",
@@ -145,7 +144,6 @@
           }
         ],
         "UserIdentifierSource": "THIRD_PARTY",
-        "thirdPartyUserId": "properties.thirdPartyUserId",
         "conversionEnvironment": "WEB",
         "hashUserIdentifier": true,
         "validateOnly": false,
@@ -225,7 +223,6 @@
           }
         ],
         "userIdentifierSource": "FIRST_PARTY",
-        "thirdPartyUserId": "thirdPartyUserId",
         "conversionEnvironment": "WEB",
         "gclid": "gclid",
 
@@ -301,7 +298,6 @@
           }
         ],
         "UserIdentifierSource": "THIRD_PARTY",
-        "thirdPartyUserId": "properties.thirdPartyUserId",
         "conversionEnvironment": "WEB",
         "hashUserIdentifier": true,
         "validateOnly": false,

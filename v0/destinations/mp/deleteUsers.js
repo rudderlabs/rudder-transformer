@@ -32,21 +32,21 @@ const userDeletionHandler = async (userAttributes, config) => {
       ? `https://api-eu.mixpanel.com/engage`
       : `https://api.mixpanel.com/engage`;
   for (let i = 0; i < userAttributes.length; i += 1) {
-    if (userAttributes[i].userId) {
-      params.data.$distinct_id = userAttributes[i].userId;
-      // eslint-disable-next-line no-await-in-loop
-      const response = await httpPOST(endpoint, null, { params });
-      if (!response || !response.response) {
-        throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
-          .build();
-      }
+    if (!userAttributes[i].userId) {
+      throw new ErrorBuilder()
+        .setMessage("User id for deletion not present")
+        .setStatus(400)
+        .build();
     }
-    throw new ErrorBuilder()
-      .setMessage("User id for deletion not present")
-      .setStatus(400)
-      .build();
+    params.data.$distinct_id = userAttributes[i].userId;
+    // eslint-disable-next-line no-await-in-loop
+    const response = await httpPOST(endpoint, null, { params });
+    if (!response || !response.response) {
+      throw new ErrorBuilder()
+        .setMessage("Could not get response")
+        .setStatus(500)
+        .build();
+    }
   }
   return { statusCode: 200, status: "successful" };
 };

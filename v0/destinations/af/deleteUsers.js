@@ -37,7 +37,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
     throw new ErrorBuilder()
       .setMessage(
-        "API Token and Apple ID or Android App Id are required fields user deletion"
+        "API Token and one of Apple ID or Android App Id are required fields for user deletion"
       )
       .setStatus(400)
       .build();

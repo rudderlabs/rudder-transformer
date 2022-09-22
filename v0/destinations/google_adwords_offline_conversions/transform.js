@@ -86,7 +86,7 @@ const getConversions = (
       set(
         payload,
         "conversions[0].userIdentifiers[0].userIdentifierSource",
-        get(message, Config.userIdentifierSource)
+        Config.UserIdentifierSource
       );
     }
 
@@ -112,7 +112,7 @@ const getConversions = (
       set(
         payload,
         "conversions[0].conversionEnvironment",
-        get(message, Config.conversionEnvironment)
+        Config.conversionEnvironment
       );
     }
   } else {

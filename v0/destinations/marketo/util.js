@@ -102,10 +102,15 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
       marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
     }
   }
+  // More readable error message
+  let message = `Error occurred ${sourceMessage}`;
+  if (response.errors.length > 0 && response.errors[0].message) {
+    message += ` -> ${response.errors[0].message}`;
+  }
   // non 2xx failure
   throw new ErrorBuilder()
     .setStatus(400)
-    .setMessage(`Error occured ${sourceMessage}`)
+    .setMessage(message)
     .setDestinationResponse(destResponse)
     .setStatTags({
       destType: DESTINATION,

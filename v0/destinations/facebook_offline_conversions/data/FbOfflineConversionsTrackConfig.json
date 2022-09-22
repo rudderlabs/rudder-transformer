@@ -1,0 +1,166 @@
+[
+  {
+    "destKey": "extern_id",
+    "sourceKeys": "userId",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "event_name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "event_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.total",
+      "properties.price",
+      "properties.value",
+      "properties.revenue"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "gen",
+    "sourceKeys": "gender",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "ln",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "fn",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "fi",
+    "sourceKeys": [
+      "traits.initial.firstName",
+      "context.traits.initial.firstName"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "birthday",
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "ct",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "st",
+    "sourceKeys": "state",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "madid",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false,
+    "metadata": {
+      "type": "hashToSha256"
+    }
+  },
+  {
+    "destKey": "contents",
+    "sourceKeys": "properties.products",
+    "required": false
+  },
+  {
+    "destKey": "order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "item_number",
+    "sourceKeys": "properties.item_number",
+    "required": false
+  },
+  {
+    "destKey": "upload_tag",
+    "sourceKeys": "properties.upload_tag",
+    "required": false
+  }
+]

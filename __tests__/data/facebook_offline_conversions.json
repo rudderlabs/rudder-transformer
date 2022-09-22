@@ -1,0 +1,266 @@
+[
+  {
+    "description": "No Message type",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "age": 23,
+            "email": "adc@test.com",
+            "firstname": "Test",
+            "birthday": "2022-05-13T12:51:01.470Z"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "event": "Product Searched",
+        "originalTimestamp": "2020-09-22T14:42:44.724Z",
+        "timestamp": "2022-09-22T20:12:44.757+05:30",
+        "userId": "user@1"
+      },
+      "destination": {
+        "Config": {}
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "ABC"
+        }
+      }
+    },
+    "output": {
+      "error": "[Facebook Offline Conversions] :: Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "Unsupported Event type",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "age": 23,
+            "email": "adc@test.com",
+            "firstname": "Test",
+            "birthday": "2022-05-13T12:51:01.470Z"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "event": "Product Searched",
+        "type": "identify",
+        "originalTimestamp": "2020-09-22T14:42:44.724Z",
+        "timestamp": "2022-09-22T20:12:44.757+05:30",
+        "userId": "user@1"
+      },
+      "destination": {
+        "Config": {}
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "ABC"
+        }
+      }
+    },
+    "output": {
+      "error": "[Facebook Offline Conversions] :: Message type identify not supported."
+    }
+  },
+  {
+    "description": "Event is not mapped with standard event",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.1.2"
+          },
+          "traits": {
+            "abc": "1234"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.2"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "page": {
+            "path": "/tests/html/ecomm_test.html",
+            "referrer": "http://0.0.0.0:1112/tests/html/",
+            "search": "",
+            "title": "Fb Offline Conversion Ecommerce Test",
+            "url": "http://0.0.0.0:1112/tests/html/ecomm_test.html"
+          }
+        },
+        "type": "track",
+        "messageId": "9116b734-7e6b-4497-ab51-c16744d4487e",
+        "originalTimestamp": "2022-09-21T12:05:19.394Z",
+        "userId": "user@1",
+        "event": "product searched",
+        "properties": {
+          "order_id": "5241735",
+          "value": 31.98,
+          "revenue": 31.98,
+          "shipping": 4,
+          "coupon": "APPARELSALE",
+          "currency": "GBP",
+          "products": [
+            {
+              "id": "product-bacon-jam",
+              "category": "Merch",
+              "brand": ""
+            },
+            {
+              "id": "product-t-shirt",
+              "category": "Merch",
+              "brand": "Levis"
+            },
+            {
+              "id": "offer-t-shirt",
+              "category": "Merch",
+              "brand": "Levis"
+            }
+          ]
+        }
+      },
+      "destination": {
+        "Config": {
+          "valueFieldIdentifier": "properties.price",
+          "eventsToStandard": [
+            { "from": "Product Searched", "to": "Search" },
+            { "to": "ViewContent", "from": "Product Viewed" },
+            { "to": "AddToCart", "from": "Cart Checkout" },
+            { "to": "AddPaymentInfo", "from": "Card Details Added" },
+            { "to": "Lead", "from": "Order Completed" },
+            { "to": "CompleteRegistration", "from": "Signup" },
+            { "to": "AddToWishlist", "from": "Button Clicked" }
+          ],
+          "eventsToIds": [
+            { "from": "Search", "to": "582603376981640" },
+            { "from": "Search", "to": "506289934669334" },
+            { "from": "ViewContent", "to": "1166826033904512" },
+            { "from": "AddToCart", "to": "1148872185708962" },
+            { "from": "CompleteRegistration", "to": "597443908839411" },
+            { "from": "Lead", "to": "1024592094903800" },
+            { "from": "AddToWishlist", "to": "506289934669334" }
+          ]
+        }
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "ABC"
+        }
+      }
+    },
+    "output": {
+      "error": "[Facebook Offline Conversions] :: Please Map Your Events With Standard Events"
+    }
+  },
+  {
+    "description": "Standard event is not mapped with event set id",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.1.2"
+          },
+          "traits": {
+            "abc": "1234"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.2"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+          "locale": "en-GB",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "page": {
+            "path": "/tests/html/ecomm_test.html",
+            "referrer": "http://0.0.0.0:1112/tests/html/",
+            "search": "",
+            "title": "Fb Offline Conversion Ecommerce Test",
+            "url": "http://0.0.0.0:1112/tests/html/ecomm_test.html"
+          }
+        },
+        "type": "track",
+        "messageId": "9116b734-7e6b-4497-ab51-c16744d4487e",
+        "originalTimestamp": "2022-09-21T12:05:19.394Z",
+        "userId": "user@1",
+        "event": "Button Clicked",
+        "properties": {
+          "order_id": "5241735",
+          "value": 31.98,
+          "revenue": 31.98,
+          "shipping": 4,
+          "coupon": "APPARELSALE",
+          "currency": "GBP",
+          "products": [
+            {
+              "id": "product-bacon-jam",
+              "category": "Merch",
+              "brand": ""
+            },
+            {
+              "id": "product-t-shirt",
+              "category": "Merch",
+              "brand": "Levis"
+            },
+            {
+              "id": "offer-t-shirt",
+              "category": "Merch",
+              "brand": "Levis"
+            }
+          ]
+        }
+      },
+      "destination": {
+        "Config": {
+          "valueFieldIdentifier": "properties.price",
+          "eventsToStandard": [
+            { "from": "Product Searched", "to": "Search" },
+            { "to": "ViewContent", "from": "Product Viewed" },
+            { "to": "AddToCart", "from": "Cart Checkout" },
+            { "to": "AddPaymentInfo", "from": "Card Details Added" },
+            { "to": "Lead", "from": "Order Completed" },
+            { "to": "CompleteRegistration", "from": "Signup" },
+            { "to": "AddToWishlist", "from": "Button Clicked" }
+          ],
+          "eventsToIds": [
+            { "from": "Search", "to": "582603376981640" },
+            { "from": "Search", "to": "506289934669334" },
+            { "from": "ViewContent", "to": "1166826033904512" },
+            { "from": "AddToCart", "to": "1148872185708962" },
+            { "from": "CompleteRegistration", "to": "597443908839411" },
+            { "from": "Lead", "to": "1024592094903800" }
+          ]
+        }
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "ABC"
+        }
+      }
+    },
+    "output": {
+      "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
+    }
+  }
+]

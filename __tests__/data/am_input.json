@@ -682,7 +682,9 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": ["Comapny-ABC"]
+        "value_trait": [
+          "Comapny-ABC"
+        ]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -3211,7 +3213,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 3 }
+        "Amplitude": {
+          "event_id": 3
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3277,7 +3281,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 0 }
+        "Amplitude": {
+          "event_id": 0
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3343,7 +3349,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": "0" }
+        "Amplitude": {
+          "event_id": "0"
+        }
       },
       "originalTimestamp": "2021-11-17T19:13:51.143Z"
     },
@@ -3432,7 +3440,9 @@
       "userId": "123456",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 6 }
+        "Amplitude": {
+          "event_id": 6
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3524,7 +3534,9 @@
       "userId": "123456",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 6 }
+        "Amplitude": {
+          "event_id": 6
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -3596,7 +3608,9 @@
       "userId": "sampleusrRudder3",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 3 }
+        "Amplitude": {
+          "event_id": 3
+        }
       },
       "groupId": "Sample_groupId23",
       "traits": {
@@ -3637,7 +3651,12 @@
           "name": "http"
         }
       },
-      "integrations": { "All": true, "Amplitude": { "event_id": 7 } },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 7
+        }
+      },
       "timestamp": "2020-02-02T00:23:09.544Z"
     },
     "destination": {
@@ -3703,7 +3722,9 @@
       },
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 2 }
+        "Amplitude": {
+          "event_id": 2
+        }
       },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
@@ -3771,10 +3792,230 @@
       "userId": "newUserIdAlias",
       "integrations": {
         "All": true,
-        "Amplitude": { "event_id": 67 }
+        "Amplitude": {
+          "event_id": 67
+        }
       },
       "previousId": "sampleusrRudder3",
       "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "1662393792",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "event": "Screen event",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+        "name": "Screen event"
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "sessionId": "1662393792"
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "event": "Screen event",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+        "name": "Screen event"
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
     },
     "destination": {
       "Config": {

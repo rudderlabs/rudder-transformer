@@ -20,6 +20,10 @@ const {
   networkHandler: GA4NetworkHandler
 } = require("../v0/destinations/ga4/utils");
 
+const {
+  networkHandler: FbPixelNetworkHandler
+} = require("../v0/destinations/facebook_pixel/network-handler");
+
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
@@ -27,7 +31,8 @@ const handler = {
   pardot: PardotNetworkHandler,
   google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
   google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions,
-  ga4: GA4NetworkHandler
+  ga4: GA4NetworkHandler,
+  facebook_pixel: FbPixelNetworkHandler
 };
 
 const getNetworkHandler = type => {

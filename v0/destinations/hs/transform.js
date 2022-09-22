@@ -7,7 +7,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getErrorRespEvents
 } = require("../../util");
-const { API_VERSION } = require("./config");
+const { API_VERSION, DESTINATION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
@@ -89,7 +89,7 @@ const process = async event => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "HS");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -125,16 +125,10 @@ const processRouterDest = async inputs => {
       }
     }
   } catch (error) {
-    inputs.forEach(input => {
-      errorRespList.push(
-        getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 400,
-          error.message || "Error occurred while processing payload."
-        )
-      );
-    });
-    return errorRespList;
+    // Any error thrown from the above try block applies to all the events
+    return inputs.map(input =>
+      handleRtTfSingleEventError(input, error, DESTINATION)
+    );
   }
 
   await Promise.all(
@@ -170,7 +164,11 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(input, error, "HS");
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          DESTINATION
+        );
         errorRespList.push(errRespEvent);
       }
     })

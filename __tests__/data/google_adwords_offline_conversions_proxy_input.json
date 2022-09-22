@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/1234567891:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v11/customers/1234567890:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -13,7 +13,7 @@
         },
         "params": {
           "event": "Sign-up - click",
-          "customerId": "9625812972",
+          "customerId": "1234567890",
           "customVariables": [
             {
               "from": "value",
@@ -83,8 +83,7 @@
                 "userIdentifiers": [
                   {
                     "userIdentifierSource": "FIRST_PARTY",
-                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd"
+                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110"
                   }
                 ],
                 "conversionEnvironment": "WEB",
@@ -119,7 +118,7 @@
         },
         "params": {
           "event": "Sign-up - click",
-          "customerId": "9625812972",
+          "customerId": "1234567891",
           "customVariables": [
             {
               "from": "value",
@@ -189,7 +188,6 @@
                 "userIdentifiers": [
                   {
                     "userIdentifierSource": "FIRST_PARTY",
-                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
                     "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd"
                   }
                 ],

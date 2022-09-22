@@ -57,6 +57,17 @@ const getConversions = (
     }
 
     payload = constructPayload(message, updatedClickMapping);
+
+    // either of email or phone should be passed
+    // email here is the first priority
+    // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
+    if (
+      payload.conversions[0]?.userIdentifiers &&
+      payload.conversions[0]?.userIdentifiers[0]?.hashedEmail
+    ) {
+      delete payload.conversions[0].userIdentifiers[0].hashedPhoneNumber;
+    }
+
     endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);
 
     const products = get(message, "properties.products");

@@ -238,8 +238,7 @@
                 "userIdentifiers": [
                   {
                     "userIdentifierSource": "FIRST_PARTY",
-                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd"
+                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110"
                   }
                 ],
                 "conversionEnvironment": "WEB",
@@ -497,7 +496,6 @@
                 "userIdentifiers": [
                   {
                     "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                    "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd",
                     "userIdentifierSource": "THIRD_PARTY"
                   }
                 ],
@@ -1393,7 +1391,6 @@
             "advertisingId": "44c97318-9040-4361-8bc7-4eb30f665ca8"
           },
           "traits": {
-            "email": "alex@example.com",
             "phone": "+1-202-555-0146",
             "firstName": "John",
             "lastName": "Gomes",
@@ -1615,7 +1612,6 @@
                 "userIdentifiers": [
                   {
                     "userIdentifierSource": "FIRST_PARTY",
-                    "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
                     "hashedPhoneNumber": "04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd"
                   }
                 ],
@@ -2422,8 +2418,7 @@
                 "userIdentifiers": [
                   {
                     "userIdentifierSource": "THIRD_PARTY",
-                    "hashedEmail": "alex@example.com",
-                    "hashedPhoneNumber": "+1-202-555-0146"
+                    "hashedEmail": "alex@example.com"
                   }
                 ]
               }

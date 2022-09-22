@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "API Token and Apple ID or Android App Id are required fields user deletion"
+      "error": "API Token and one of Apple ID or Android App Id are required fields for user deletion"
     }
   ],
   [

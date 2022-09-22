@@ -21,7 +21,7 @@ const eventNameMapping = {
   "checkout step completed": "CompletePayment",
   "order completed": "PlaceAnOrder",
   viewcontent: "ViewContent",
-  clickbuttom: "ClickButton",
+  clickbutton: "ClickButton",
   search: "Search",
   contact: "Contact",
   download: "Download",

@@ -162,7 +162,8 @@
      "statTags": {
        "destType": "MARKETO",
        "stage": "responseTransform",
-       "scope": "exception",
+       "scope": "api",
+       "meta": "abortable",
        "errorAt": "proxy"
      }
    }

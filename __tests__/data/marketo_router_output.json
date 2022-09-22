@@ -260,7 +260,8 @@
     "statTags": {
       "destType": "MARKETO",
       "stage": "transform",
-      "scope": "exception"
+      "scope": "api",
+      "meta": "abortable"
     },
     "metadata": [
       {

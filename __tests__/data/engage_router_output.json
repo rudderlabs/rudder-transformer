@@ -105,6 +105,12 @@
         "jobId": 3
       }
     ],
+    "statTags":{
+             "destType": "ENGAGE",
+             "meta": "badParam",
+             "scope": "transformation",
+             "stage": "transform"
+           },
     "batched": false,
     "statusCode": 400,
     "error": "engageID is required for remove operation."

@@ -287,7 +287,20 @@ const responseHandler = destinationResponse => {
   const message = `[Google Ads Offline Conversions Response Handler] - Request processed successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
+    // for google ads offline conversions the partialFailureError returns with status 200
+    const { partialFailureError } = destinationResponse.response;
+    // non-zero code signifies partialFailure
+    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+    if (partialFailureError && partialFailureError.code !== 0) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setDestinationResponse(partialFailureError.details)
+        .setMessage(
+          `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`
+        )
+        .build();
+    }
+
     return {
       status,
       message,

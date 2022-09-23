@@ -1,4 +1,5 @@
 const sha256 = require("sha256");
+const get = require("get-value");
 const {
   getHashFromArray,
   constructPayload,
@@ -210,7 +211,9 @@ const getContentType = message => {
  * @param {*} message
  * @returns
  */
-const prepareData = (payload, message) => {
+const prepareData = (payload, message, destination) => {
+  const { Config } = destination;
+  const { limitedDataUSage } = Config;
   const data = {};
   const matchKeys = prepareMatchKeys(payload);
   data.match_keys = matchKeys;
@@ -220,9 +223,21 @@ const prepareData = (payload, message) => {
   data.value = payload.value || 0;
   data.content_type = getContentType(message);
 
+  if (limitedDataUSage) {
+    const dataProcessingOptions = get(message, "context.dataProcessingOptions");
+    if (dataProcessingOptions && Array.isArray(dataProcessingOptions)) {
+      [
+        data.data_processing_options,
+        data.data_processing_options_country,
+        data.data_processing_options_state
+      ] = dataProcessingOptions;
+    }
+  }
+
   if (payload.contents) {
     data.contents = payload.contents;
   }
+
   if (message.properties) {
     data.custom_data = extractCustomFields(
       message,
@@ -266,7 +281,7 @@ const offlineConversionResponseBuilder = (message, destination) => {
 
   payload.event_name = standardEvent;
 
-  const data = prepareData(payload, message);
+  const data = prepareData(payload, message, destination);
   return { payload, data, eventSetIds };
 };
 

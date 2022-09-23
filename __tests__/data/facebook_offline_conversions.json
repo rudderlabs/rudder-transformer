@@ -161,7 +161,7 @@
       }
     },
     "output": {
-      "error": "[Facebook Offline Conversions] :: Please Map Your Events With Standard Events"
+      "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
     }
   },
   {

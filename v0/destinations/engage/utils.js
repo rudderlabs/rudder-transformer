@@ -1,10 +1,14 @@
-// one for lists
 const { set } = require("lodash");
 const {
   getDestinationExternalID,
   getFieldValueFromMessage
 } = require("../../util");
 
+/**
+ * This will return the listIds as array from externalId
+ * @param {*} message input message
+ * @param {*} type the value of type inside externalId that we will be looking for
+ */
 const getListsFromExternalId = (message, type) => {
   let externalIdArray = null;
   let destinationExternalId = [];
@@ -18,18 +22,16 @@ const getListsFromExternalId = (message, type) => {
       }
     });
   }
-  console.log(destinationExternalId);
   return destinationExternalId;
 };
 
 /**
- * @param {*} message
- * @param {*} Config
+ * @param {*} message inout message
+ * @param {*} Config Destination.Cofig provided in Dashboard
  * @returns the listIds from the payload based on priority and availability
  */
 const getLists = (message, Config) => {
   let listIds = getListsFromExternalId(message, "engageListId");
-  console.log("jhcfqevwi: ",listIds);
   if (!listIds.length) {
     listIds = [];
     const objectlist = Config?.lists;
@@ -43,7 +45,7 @@ const getLists = (message, Config) => {
 };
 
 /**
- * @param {*} message
+ * @param {*} message inout message
  * @returns the Engage User ID based on priority and availability
  */
 const getUID = message => {
@@ -55,7 +57,7 @@ const getUID = message => {
 };
 
 /**
- * @param {*} message
+ * @param {*} message input message
  * @returns Page Event name with category
  */
 const getEvent = message => {
@@ -71,7 +73,7 @@ const getEvent = message => {
 
 /**
  * Flatens the input payload
- * @param {*} payload
+ * @param {*} payload Input payload that needs to be flattened
  * @returns the flattened payload at all levels
  */
 const flattenPayload = payload => {
@@ -92,10 +94,9 @@ const flattenPayload = payload => {
 };
 
 /**
- * @param {*} attributes
- * @param {*} specificGenericFields
- * @returns flattens the attribut object and
- * constructs payload for the ones going as into meta object
+ * @param {*} attributes payload that needs modification and transistion to payload
+ * @param {*} specificGenericFields fields that should be overlooked when adding fields to payload
+ * @returns payload
  */
 const refinePayload = (attributes, specificGenericFields) => {
   const flattenedPayload = flattenPayload(attributes);

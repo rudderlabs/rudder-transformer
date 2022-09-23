@@ -1,11 +1,11 @@
 const sha256 = require("sha256");
 const get = require("get-value");
 const {
-  getHashFromArray,
   constructPayload,
   extractCustomFields,
   getDestinationExternalID,
-  getHashFromArrayWithDuplicate
+  getHashFromArrayWithDuplicate,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 const ErrorBuilder = require("../../util/error");
@@ -18,7 +18,8 @@ const {
   DESTINATION,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
-  TRACK_EXCLUSION_FIELDS
+  TRACK_EXCLUSION_FIELDS,
+  eventToStandardMapping
 } = require("./config");
 
 /**
@@ -109,15 +110,24 @@ const prepareMatchKeys = payload => {
  * @param {*} event
  * @returns
  */
-const getStandardEvent = (eventsMapping, event) => {
-  let standardEvent = "";
+const getStandardEvents = (eventsMapping, event) => {
+  const standardEvents = [];
   const keys = Object.keys(eventsMapping);
   keys.forEach(key => {
     if (key === event) {
-      standardEvent = eventsMapping[key];
+      standardEvents.push(...Array.from(eventsMapping[key]));
     }
   });
-  return standardEvent;
+
+  if (!standardEvents.length && eventToStandardMapping[event]) {
+    standardEvents.push(eventToStandardMapping[event]);
+  }
+
+  if (!standardEvents.length) {
+    standardEvents.push("Other");
+  }
+
+  return standardEvents;
 };
 
 /**
@@ -151,28 +161,24 @@ const getEventSetIds = (eventsToIds, standardEvent) => {
  * @param {*} event
  * @returns
  */
-const getEventSetId = (destination, event) => {
+const getStandardEventsAndEventSetIds = (destination, event) => {
+  const payload = [];
   const { Config } = destination;
   const { eventsToIds, eventsToStandard } = Config;
-  const eventsMapping = getHashFromArray(eventsToStandard, "from", "to", false);
-  const standardEvent = getStandardEvent(eventsMapping, event);
-  if (!standardEvent) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Facebook Offline Conversions] :: Please Map Your Events With Standard Events"
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
-  }
-  const eventSetIds = getEventSetIds(eventsToIds, standardEvent);
-  if (!eventSetIds.length) {
+  const eventsMapping = getHashFromArrayWithDuplicate(
+    eventsToStandard,
+    "from",
+    "to",
+    false
+  );
+  const standardEvents = getStandardEvents(eventsMapping, event);
+  standardEvents.forEach(standardEvent => {
+    const eventSetIds = getEventSetIds(eventsToIds, standardEvent);
+    if (eventSetIds.length) {
+      payload.push({ standardEvent, eventSetIds });
+    }
+  });
+  if (!payload.length) {
     throw new ErrorBuilder()
       .setMessage(
         "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
@@ -188,7 +194,7 @@ const getEventSetId = (destination, event) => {
       .build();
   }
 
-  return { eventSetIds, standardEvent };
+  return payload;
 };
 
 /**
@@ -206,6 +212,32 @@ const getContentType = message => {
 };
 
 /**
+ * Returns an array of products
+ * @param {*} contents
+ * @returns
+ */
+const getProducts = contents => {
+  const fbContents = [];
+  const products = [];
+  if (Array.isArray(contents)) {
+    fbContents.push(...contents);
+  } else {
+    fbContents.push(contents);
+  }
+
+  fbContents.forEach(content => {
+    const id = content.product_id || content.id || content.sku;
+    const quantity = content.quantity || 1;
+    const { price, brand, category } = content;
+    if (id) {
+      const obj = { id, quantity, price, brand, category };
+      products.push(removeUndefinedAndNullValues(obj));
+    }
+  });
+  return products;
+};
+
+/**
  * Returns the data array
  * @param {*} payload
  * @param {*} message
@@ -215,13 +247,23 @@ const prepareData = (payload, message, destination) => {
   const { Config } = destination;
   const { limitedDataUSage } = Config;
   const data = {};
-  const matchKeys = prepareMatchKeys(payload);
-  data.match_keys = matchKeys;
+
+  data.match_keys = prepareMatchKeys(payload);
   data.event_time = payload.event_time;
-  data.event_name = payload.event_name;
   data.currency = payload.currency || "USD";
   data.value = payload.value || 0;
   data.content_type = getContentType(message);
+  data.order_id = payload.order_id || null;
+  data.item_number = payload.item_number || null;
+  data.contents = payload.contents ? getProducts(payload.contents) : null;
+  data.custom_data = message.properties
+    ? extractCustomFields(
+        message,
+        payload,
+        ["properties"],
+        TRACK_EXCLUSION_FIELDS
+      )
+    : null;
 
   if (limitedDataUSage) {
     const dataProcessingOptions = get(message, "context.dataProcessingOptions");
@@ -234,27 +276,20 @@ const prepareData = (payload, message, destination) => {
     }
   }
 
-  if (payload.contents) {
-    data.contents = payload.contents;
-  }
+  return [removeUndefinedAndNullValues(data)];
+};
 
-  if (message.properties) {
-    data.custom_data = extractCustomFields(
-      message,
-      payload,
-      ["properties"],
-      TRACK_EXCLUSION_FIELDS
-    );
-  }
-
-  if (payload.order_id) {
-    data.order_id = payload.order_id;
-  }
-  if (payload.item_number) {
-    data.item_number = payload.item_number;
-  }
-
-  return [data];
+/**
+ * Attaches the event_name to data object
+ * @param {*} data
+ * @param {*} standardEvent
+ * @returns
+ */
+const getData = (data, standardEvent) => {
+  const payload = data;
+  const [first] = payload;
+  first.event_name = standardEvent;
+  return [first];
 };
 
 /**
@@ -274,15 +309,23 @@ const offlineConversionResponseBuilder = (message, destination) => {
   if (leadId) {
     payload.lead_id = leadId;
   }
-  const { eventSetIds, standardEvent } = getEventSetId(
+
+  const data = prepareData(payload, message, destination);
+  const eventToIdsArray = getStandardEventsAndEventSetIds(
     destination,
     message.event
   );
 
-  payload.event_name = standardEvent;
-
-  const data = prepareData(payload, message, destination);
-  return { payload, data, eventSetIds };
+  const offlineConversionsPayload = [];
+  eventToIdsArray.forEach(eventToIds => {
+    const { standardEvent, eventSetIds } = eventToIds;
+    const obj = {};
+    obj.data = getData(data, standardEvent);
+    obj.eventSetIds = eventSetIds;
+    obj.payload = payload;
+    offlineConversionsPayload.push(obj);
+  });
+  return offlineConversionsPayload;
 };
 
 module.exports = { offlineConversionResponseBuilder, prepareUrls };

@@ -1,8 +1,6 @@
 const {
-  CustomError,
-  getErrorRespEvents,
   defaultRequestConfig,
-  getSuccessRespEvents,
+  simpleProcessRouterDest,
   defaultPostRequestConfig
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
@@ -11,38 +9,59 @@ const { offlineConversionResponseBuilder, prepareUrls } = require("./utils");
 const { DESTINATION } = require("./config");
 const { EventType } = require("../../../constants");
 
-const responseBuilder = (payload, endpoint, method) => {
-  if (payload) {
+const responseBuilder = (endpoint, method) => {
+  if (endpoint) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = method;
-    response.headers = {
-      Cookie: "sb=uTrDYKJtnSNLaphIKQpOYiDz"
-    };
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError(
-    "[Facebook Offline Conversions] :: Payload could not be constructed",
-    400
-  );
+  throw new ErrorBuilder()
+    .setMessage(
+      "[Facebook Offline Conversions] :: Payload could not be constructed"
+    )
+    .setStatus(400)
+    .setStatTags({
+      destType: DESTINATION,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
 };
 
 const trackResponseBuilder = (metadata, message, destination) => {
   if (!message.event) {
-    throw new CustomError(
-      "[Facebook Offline Conversions] :: parameter event is required",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[Facebook Offline Conversions] :: parameter event is required."
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
 
-  const builder = offlineConversionResponseBuilder(message, destination);
-  const { payload, data, eventSetIds } = builder;
-  const urls = prepareUrls(metadata, data, eventSetIds, payload);
+  const offlineConversionsPayload = offlineConversionResponseBuilder(
+    message,
+    destination
+  );
+
+  const urls = [];
+  offlineConversionsPayload.forEach(item => {
+    const { data, eventSetIds, payload } = item;
+    urls.push(...prepareUrls(metadata, data, eventSetIds, payload));
+  });
+
   const method = defaultPostRequestConfig.requestMethod;
   const eventsToSend = [];
   urls.forEach(url => {
-    const response = responseBuilder(payload, url, method);
+    const response = responseBuilder(url, method);
     eventsToSend.push(response);
   });
   return eventsToSend;
@@ -89,38 +108,13 @@ const process = event => {
   return res;
 };
 
-const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  return Promise.all(
-    inputs.map(input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+const processRouterDest = async inputs => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "FACEBOOK_OFFLINE_CONVERSIONS",
+    process
   );
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

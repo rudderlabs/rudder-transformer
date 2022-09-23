@@ -60,6 +60,17 @@ const TRACK_EXCLUSION_FIELDS = [
   "upload_tag"
 ];
 
+const eventToStandardMapping = {
+  "Products Searched": "Search",
+  "Product Viewed": "ViewContent",
+  "Product List Viewed": "ViewContent",
+  "Product Added to Wishlist": "AddToWishlist",
+  "Product Added": "AddToCart",
+  "Checkout Started": "InitiateCheckout",
+  "Payment Info Entered": "AddPaymentInfo",
+  "Order Completed": "Purchase"
+};
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
@@ -69,5 +80,6 @@ module.exports = {
   destKeys,
   destKeyType,
   TRACK_EXCLUSION_FIELDS,
+  eventToStandardMapping,
   DESTINATION: "FACEBOOK_OFFLINE_CONVERSIONS"
 };

@@ -14,7 +14,14 @@ const functionsEnabled = () => {
 
 const faasDeploymentHandler = () => {
   if (functionsEnabled()) {
-    return require("./util/openfaas").faasDeploymentHandler;
+    return require("./util/faas-core").faasDeploymentHandler;
+  }
+  throw new Error("Functions are not enabled");
+};
+
+const faasInvocationHandler = () => {
+  if (functionsEnabled()) {
+    return require("./util/faas-core").faasInvocationHandler;
   }
   throw new Error("Functions are not enabled");
 };
@@ -65,5 +72,6 @@ async function sendToDestination(destination, payload) {
 module.exports = {
   sendToDestination,
   faasDeploymentHandler,
+  faasInvocationHandler,
   userTransformHandler
 };

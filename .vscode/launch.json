@@ -9,13 +9,12 @@
             "type": "node",
             "request": "launch",
             "args": [
-                "${workspaceRoot}/destTransformer.js",
+                "/Volumes/SourceCode/rudder-transformer/destTransformer.js",
             ],
             "runtimeArgs": [
                 "--nolazy"
             ],
-            "sourceMaps": true,
-            "runtimeExecutable":"/usr/local/bin/node"
+            "sourceMaps": true
         },
         {
             "runtimeExecutable":"/usr/local/bin/node",

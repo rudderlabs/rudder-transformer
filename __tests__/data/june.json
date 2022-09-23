@@ -274,17 +274,16 @@
       "message": {
         "type": "group",
         "userId": "5136633649",
-        "context": {
-          "traits": {
-            "name": "Initech",
-            "employees": 500,
-            "headquarters": "Redwood City, California, United States",
-            "ceo": "John Doe",
-            "revenue": 70000000,
-            "currency": "USD",
-            "groupId": "9230AUbd2138h"
-          }
+        "traits": {
+          "name": "Initech",
+          "employees": 500,
+          "headquarters": "Redwood City, California, United States",
+          "ceo": "John Doe",
+          "revenue": 70000000,
+          "currency": "USD",
+          "groupId": "9230AUbd2138h"
         },
+        "context": {},
         "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
         "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
         "originalTimestamp": "2022-01-20T13:39:21.032Z"

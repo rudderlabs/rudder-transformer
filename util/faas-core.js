@@ -4,6 +4,7 @@ const os = require("os");
 const path = require("path");
 const shell = require("shelljs");
 const dockerUtils = require("./docker-utils");
+const logger = require("../logger");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
@@ -36,7 +37,7 @@ async function buildContext(code) {
   await fs.promises.writeFile(path.join(funcDir, "__init__.py"), "");
   await fs.promises.writeFile(path.join(funcDir, "handler.py"), code);
 
-  console.log("Done building context at: ", buildDir);
+  logger.debug("Done building context at: ", buildDir);
   return buildDir;
 }
 
@@ -80,7 +81,7 @@ async function faasDeploymentHandler(transformationName, code) {
     await dockerUtils.pullImage(imageName);
     return;
   } catch (error) {
-    console.log(`Error pulling image ${imageName}.`);
+    logger.error(`Error pulling image ${imageName}.`);
   }
 
   const buildDir = await buildContext(code);

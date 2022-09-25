@@ -16,7 +16,8 @@ const {
 const {
   payloadBuilder,
   storageUrlResponseBuilder,
-  responseBuilder
+  responseBuilder,
+  checkStorageUrl
 } = require("./utils");
 
 const trackResponseBuilder = (message, { Config }, payload) => {
@@ -35,10 +36,7 @@ const trackResponseBuilder = (message, { Config }, payload) => {
     );
   }
   if (!storageUrlEventMapping[event] && !STORAGE_URL) {
-    throw new CustomError(
-      `[Serenytics]: storage url for "TRACK" is required.`,
-      400
-    );
+    throw new CustomError(`Storage url for "TRACK" is missing. Aborting!`, 400);
   }
 
   const storageUrlEventList = storageUrlEventMapping[event];
@@ -72,8 +70,7 @@ const processEvent = (message, destination) => {
         ["properties"],
         SERENYTICS_TRACK_EXCLUSION_LIST
       );
-      response = trackResponseBuilder(message, destination, payload);
-      return response;
+      break;
     case EventType.IDENTIFY:
       STORAGE_URL = Config.storageUrlIdentify;
       payload = payloadBuilder(
@@ -126,7 +123,12 @@ const processEvent = (message, destination) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
-  response = responseBuilder(STORAGE_URL, payload, messageType);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, destination, payload);
+  } else {
+    checkStorageUrl(STORAGE_URL, messageType);
+    response = responseBuilder(STORAGE_URL, payload);
+  }
   return response;
 };
 

@@ -1,4 +1,3 @@
-const set = require("set-value");
 const {
   constructPayload,
   extractCustomFields,
@@ -8,13 +7,23 @@ const {
 } = require("../../util");
 const { MAPPING_CONFIG } = require("./config");
 
-const responseBuilder = (STORAGE_URL, payload, messageType) => {
+const checkStorageUrl = (STORAGE_URL, messageType) => {
   if (!STORAGE_URL) {
     throw new CustomError(
-      `[Serenytics]: storage url for "${messageType.toUpperCase()}" is required.`,
+      `Storage url for "${messageType.toUpperCase()}" is missing. Aborting!`,
       400
     );
   }
+  const regexExp = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{1,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+  if (!regexExp.test(STORAGE_URL)) {
+    throw new CustomError(
+      `Invalid storage url for "${messageType.toUpperCase()}". Aborting!`,
+      400
+    );
+  }
+};
+
+const responseBuilder = (STORAGE_URL, payload) => {
   const response = defaultRequestConfig();
   response.endpoint = STORAGE_URL;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -22,7 +31,7 @@ const responseBuilder = (STORAGE_URL, payload, messageType) => {
   return response;
 };
 
-const storageUrlResponseBuilder = (storageUrlEventList, payload) => {
+const storageUrlResponseBuilder = (storageUrlEventList, payload, event) => {
   const responseList = [];
   if (storageUrlEventList) {
     storageUrlEventList.forEach(eventUrl => {
@@ -61,4 +70,9 @@ const payloadBuilder = (
   return payload;
 };
 
-module.exports = { payloadBuilder, storageUrlResponseBuilder, responseBuilder };
+module.exports = {
+  payloadBuilder,
+  storageUrlResponseBuilder,
+  responseBuilder,
+  checkStorageUrl
+};

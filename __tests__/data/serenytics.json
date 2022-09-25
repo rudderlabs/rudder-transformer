@@ -372,7 +372,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"IDENTIFY\" is required.",
+      "error": "Storage url for \"IDENTIFY\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -613,7 +613,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"PAGE\" is required.",
+      "error": "Storage url for \"PAGE\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -735,7 +735,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"TRACK\" is required.",
+      "error": "Storage url for \"TRACK\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -970,7 +970,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"SCREEN\" is required.",
+      "error": "Storage url for \"SCREEN\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -1204,7 +1204,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"GROUP\" is required.",
+      "error": "Storage url for \"GROUP\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",
@@ -1285,7 +1285,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Serenytics]: storage url for \"ALIAS\" is required.",
+      "error": "Storage url for \"ALIAS\" is missing. Aborting!",
       "statTags": {
         "errorAt": "proc",
         "destType": "SERENYTICS",

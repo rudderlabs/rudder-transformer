@@ -59,6 +59,13 @@ const errorDetailsMap = {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
       }
+    },
+    33: {
+      status: 500,
+      statTags: {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+      }
     }
   },
   1: {

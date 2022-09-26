@@ -1,6 +1,6 @@
 [
     {
-        "description": "[IDENTFY]: Create a new User with Metadata and lists from externalId",
+        "description": "[IDENTIFY]: Create a new User with Metadata and lists from externalId",
         "input": {
             "message": {
                 "userId": "1",
@@ -88,7 +88,7 @@
         }
     },
     {
-        "description": "[IDENTFY]: Update a User with UID and lists from Config",
+        "description": "[IDENTIFY]: Update a User with UID and lists from Config",
         "input": {
             "message": {
                 "userId": "1",
@@ -165,7 +165,7 @@
         }
     },
     {
-        "description": "[IDENTFY]: Update a User with userId inside traits and no lists.",
+        "description": "[IDENTIFY]: Update a User with userId inside traits and no lists.",
         "input": {
             "message": {
                 "anonymousId": 3131,
@@ -322,7 +322,7 @@
         }
     },
     {
-        "description": "[ GROUP ]: Group contact with list with ConatctId given inside externalId and operation not given.",
+        "description": "[ GROUP ]: Group user with list with listId given inside externalId and operation not given.",
         "input": {
             "message": {
                 "anonymousId": "user123",
@@ -336,9 +336,7 @@
                     ]
                 },
                 "traits": {
-                    "lastName": "garwal",
-                    "type": "Segments",
-                    "operation": "remove"
+                    "lastName": "garwal"
                 },
                 "type": "group"
             },
@@ -360,7 +358,7 @@
         "output": {
             "version": "1",
             "type": "REST",
-            "method": "DELETE",
+            "method": "PUT",
             "endpoint": "https://api.engage.so/v1/lists/17/subscribers/246",
             "headers": {
                 "Content-Type": "application/json",
@@ -410,7 +408,7 @@
         }
     },
     {
-        "description": "[ GROUP ]: Create or update contact with payload and link it with list.",
+        "description": "[ GROUP ]: Create or update user with payload and link it with list.",
         "input": {
             "message": {
                 "groupId": "17",
@@ -467,7 +465,7 @@
         }
     },
     {
-        "description": "[ GROUP ]: Remove contact from List with externalID.",
+        "description": "[ GROUP ]: Remove user from List with externalID.",
         "input": {
             "anonymousId":3,
             "message": {

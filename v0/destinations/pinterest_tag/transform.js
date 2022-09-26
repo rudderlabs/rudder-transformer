@@ -118,7 +118,9 @@ const process = event => {
     case EventType.PAGE:
     case EventType.SCREEN:
     case EventType.TRACK:
-      deducedEventNameArray = deduceEventName(message, destination.Config);
+      deducedEventNameArray.push(
+        ...deduceEventName(message, destination.Config)
+      );
       deducedEventNameArray.forEach(eventName => {
         toSendEvents.push(
           commonFieldResponseBuilder(

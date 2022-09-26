@@ -410,62 +410,9 @@
         }
     },
     {
-        "description": "[ GROUP ]: Group contact with list with email given and operation as add.",
+        "description": "[ GROUP ]: Create or update contact with payload and link it with list.",
         "input": {
             "message": {
-                "anonymousId": "user123",
-                "groupId": "17",
-                "traits": {
-                    "lastName": "garwal",
-                    "operation": "add",
-                    "email": "abc@xyz.com"
-                },
-                "type": "group"
-            },
-            "destination": {
-                "Config": {
-                    "publicKey": "49ur490rjfo34gi04y38r9go",
-                    "privateKey": "n89g389yr389fgbef0u2rff",
-                    "lists": [
-                        {
-                            "listId": "9834trg3rgy3g08oi9893rgfb"
-                        },
-                        {
-                            "listId": "f39487tyh49go3h093gh2if2f2"
-                        }
-                    ]
-                }
-            }
-        },
-        "output": {
-            "body": {
-                "XML": {},
-                "FORM": {},
-                "JSON": {
-                    "meta": {},
-                    "email": "abc@xyz.com",
-                    "last_name": "garwal",
-                    "subscribed": true
-                },
-                "JSON_ARRAY": {}
-            },
-            "type": "REST",
-            "files": {},
-            "method": "POST",
-            "params": {},
-            "headers": {
-                "Content-Type": "application/json",
-                "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
-            },
-            "version": "1",
-            "endpoint": "https://api.engage.so/v1/lists/17/subscribers"
-        }
-    },
-    {
-        "description": "[ GROUP ]: Create contact and link it with.",
-        "input": {
-            "message": {
-                "userId": "user123",
                 "groupId": "17",
                 "traits": {
                     "lastName": "Agarwal",

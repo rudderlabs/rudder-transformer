@@ -60,7 +60,6 @@ const identifyResponseBuilder = (message, Config) => {
   );
   const { traits } = message;
   const uid = getUID(message);
-  // LIST FOR NOW IS IN CONFIG BUT TODO
   const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace("uid", uid)}`;
   const refinedPayload = refinePayload(
     traits,
@@ -146,9 +145,30 @@ const groupResponseBuilder = (message, Config) => {
       })
       .build();
   }
-  const uid = getDestinationExternalID(message, "engageId");
+  let uid = getDestinationExternalID(message, "engageId");
+  if (!uid) {
+    uid = getFieldValueFromMessage(message, "userIdOnly");
+  }
   const traits = getFieldValueFromMessage(message, "traits");
-  const operation = traits.operation ? traits.operation.toLowerCase() : "add";
+  if (
+    message.traits.operation &&
+    message.traits.operation !== "remove" &&
+    message.traits.operation !== "add"
+  ) {
+    throw new ErrorBuilder()
+      .setMessage(
+        `${message.traits.operation} is invalid for Operation field. Available are add or remove.`
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  const operation = traits.operation ? traits.operation : "add";
   if (!uid && operation === "remove") {
     throw new ErrorBuilder()
       .setMessage("engageID is required for remove operation.")

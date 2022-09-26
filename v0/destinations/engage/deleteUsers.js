@@ -44,7 +44,7 @@ const userDeletionHandler = async (userAttributes, config) => {
         .setStatus(400)
         .build();
     }
-    const endpoint = `${BASE_URL}.replace(uid,${element.userId})`;
+    const endpoint = `${BASE_URL.replace("uid", element.userId)}`;
     // eslint-disable-next-line no-await-in-loop
     const response = await httpDELETE(endpoint, { headers });
     if (!response || !response.response) {

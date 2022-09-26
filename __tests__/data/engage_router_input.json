@@ -91,7 +91,7 @@
     },
     {
         "message": {
-            "userId": "user123",
+            "anonymousId": "user123",
             "groupId": "17",
             "traits": {
                 "lastName": "garwal",

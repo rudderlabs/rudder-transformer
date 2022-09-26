@@ -68,7 +68,18 @@ const DestCanonicalNames = {
     "MAILMODO",
     "mailModo"
   ],
-  user: ["user", "USER", "User", "User.com", "user.com", "USER.com"]
+  user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
+  snapchat_custom_audience: [
+    "snapchat custom audience",
+    "snap chat custom audience",
+    "snapchat_custom_audience",
+    "snapchatCustomAudience",
+    "Snapchat Custom Audience",
+    "snapchatcustomaudience",
+    "SNAPCHAT CUSTOM AUDIENCE",
+    "SNAPCHAT_CUSTOM_AUDIENCE",
+    "SNAPCHATCUSTOMAUDIENCE"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

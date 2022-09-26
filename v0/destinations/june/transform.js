@@ -38,6 +38,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     .build();
 };
 
+// ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20users,-You%20can%20use
 const identifyResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.IDENTIFY;
   const payload = constructPayload(
@@ -47,6 +48,7 @@ const identifyResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
+// ref :- https://www.june.so/docs/api#:~:text=Copy-,Send%20track%20events,-In%20order%20to
 const trackResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.TRACK;
   const groupId =
@@ -64,6 +66,7 @@ const trackResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
+// ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20companies,-(optional)
 const groupResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.GROUP;
   const payload = constructPayload(

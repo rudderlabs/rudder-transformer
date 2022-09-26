@@ -31,7 +31,7 @@ const responseBuilder = (endpoint, method) => {
     .build();
 };
 
-const trackResponseBuilder = (metadata, message, destination) => {
+const trackResponseBuilder = (message, destination) => {
   if (!message.event) {
     throw new ErrorBuilder()
       .setMessage(
@@ -55,7 +55,7 @@ const trackResponseBuilder = (metadata, message, destination) => {
   const urls = [];
   offlineConversionsPayload.forEach(item => {
     const { data, eventSetIds, payload } = item;
-    urls.push(...prepareUrls(metadata, data, eventSetIds, payload));
+    urls.push(...prepareUrls(destination, data, eventSetIds, payload));
   });
 
   const method = defaultPostRequestConfig.requestMethod;
@@ -67,7 +67,7 @@ const trackResponseBuilder = (metadata, message, destination) => {
   return eventsToSend;
 };
 
-const processEvent = (metadata, message, destination) => {
+const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
     throw new ErrorBuilder()
@@ -84,9 +84,8 @@ const processEvent = (metadata, message, destination) => {
       .build();
   }
   const messageType = message.type.toLowerCase();
-
   if (messageType === EventType.TRACK) {
-    return trackResponseBuilder(metadata, message, destination);
+    return trackResponseBuilder(message, destination);
   }
 
   throw new ErrorBuilder()
@@ -104,7 +103,7 @@ const processEvent = (metadata, message, destination) => {
 };
 
 const process = event => {
-  const res = processEvent(event.metadata, event.message, event.destination);
+  const res = processEvent(event.message, event.destination);
   return res;
 };
 

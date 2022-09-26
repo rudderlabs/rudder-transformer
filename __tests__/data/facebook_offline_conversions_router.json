@@ -68,13 +68,11 @@
           }
         },
         "metadata": {
-          "jobId": 1,
-          "secret": {
-            "access_token": "ABC"
-          }
+          "jobId": 1
         },
         "destination": {
           "Config": {
+            "accessToken": "ABC...",
             "valueFieldIdentifier": "properties.price",
             "eventsToStandard": [
               { "from": "Product Searched", "to": "Search" },
@@ -163,13 +161,11 @@
           }
         },
         "metadata": {
-          "jobId": 2,
-          "secret": {
-            "access_token": "ABC"
-          }
+          "jobId": 2
         },
         "destination": {
           "Config": {
+            "accessToken": "ABC...",
             "valueFieldIdentifier": "properties.price",
             "eventsToStandard": [
               { "from": "Product Searched", "to": "Search" },
@@ -197,10 +193,7 @@
         "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
         "metadata": [
           {
-            "jobId": 1,
-            "secret": {
-              "access_token": "ABC"
-            }
+            "jobId": 1
           }
         ],
         "batched": false,
@@ -216,10 +209,7 @@
         "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
         "metadata": [
           {
-            "jobId": 2,
-            "secret": {
-              "access_token": "ABC"
-            }
+            "jobId": 2
           }
         ],
         "statTags": {

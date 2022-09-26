@@ -19,7 +19,9 @@
         "userId": "user@1"
       },
       "destination": {
-        "Config": {}
+        "Config": {
+          "accessToken": "ABC..."
+        }
       },
       "metadata": {
         "secret": {
@@ -52,11 +54,8 @@
         "userId": "user@1"
       },
       "destination": {
-        "Config": {}
-      },
-      "metadata": {
-        "secret": {
-          "access_token": "ABC"
+        "Config": {
+          "accessToken": "ABC..."
         }
       }
     },
@@ -133,6 +132,7 @@
       },
       "destination": {
         "Config": {
+          "accessToken": "ABC...",
           "valueFieldIdentifier": "properties.price",
           "eventsToStandard": [
             { "from": "Product Searched", "to": "Search" },
@@ -152,11 +152,6 @@
             { "from": "Lead", "to": "1024592094903800" },
             { "from": "AddToWishlist", "to": "506289934669334" }
           ]
-        }
-      },
-      "metadata": {
-        "secret": {
-          "access_token": "ABC"
         }
       }
     },
@@ -233,6 +228,7 @@
       },
       "destination": {
         "Config": {
+          "accessToken": "ABC...",
           "valueFieldIdentifier": "properties.price",
           "eventsToStandard": [
             { "from": "Product Searched", "to": "Search" },
@@ -251,11 +247,6 @@
             { "from": "CompleteRegistration", "to": "597443908839411" },
             { "from": "Lead", "to": "1024592094903800" }
           ]
-        }
-      },
-      "metadata": {
-        "secret": {
-          "access_token": "ABC"
         }
       }
     },

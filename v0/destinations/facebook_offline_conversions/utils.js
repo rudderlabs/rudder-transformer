@@ -23,28 +23,13 @@ const {
 } = require("./config");
 
 /**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
+ * Returns System User Access Token
+ * @param {Object} destination
  * @returns
  */
-const getAccessToken = metadata => {
-  // OAuth for this destination
-  const { secret } = metadata;
-
-  // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
-  }
-  return secret.access_token;
+const getAccessToken = destination => {
+  const { Config } = destination;
+  return Config.accessToken;
 };
 
 /**
@@ -55,11 +40,11 @@ const getAccessToken = metadata => {
  * @param {*} payload
  * @returns
  */
-const prepareUrls = (metadata, data, ids, payload) => {
+const prepareUrls = (destination, data, ids, payload) => {
   const urls = [];
   const uploadTags = payload.upload_tag || "rudderstack";
   const encodedData = encodeURIComponent(JSON.stringify(data));
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(destination);
 
   ids.forEach(id => {
     const endpoint = ENDPOINT.replace("OFFLINE_EVENT_SET_ID", id);
@@ -245,13 +230,14 @@ const getProducts = contents => {
  */
 const prepareData = (payload, message, destination) => {
   const { Config } = destination;
-  const { limitedDataUSage } = Config;
+  const { limitedDataUSage, valueFieldIdentifier } = Config;
   const data = {};
 
   data.match_keys = prepareMatchKeys(payload);
   data.event_time = payload.event_time;
   data.currency = payload.currency || "USD";
-  data.value = payload.value || 0;
+  data.value =
+    get(message.properties, valueFieldIdentifier) || payload.value || 0;
   data.content_type = getContentType(message);
   data.order_id = payload.order_id || null;
   data.item_number = payload.item_number || null;

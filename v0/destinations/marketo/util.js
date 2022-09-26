@@ -51,7 +51,7 @@ const marketoApplicationErrorHandler = (
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
       `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`,
-      400,
+      429,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
@@ -61,7 +61,7 @@ const marketoApplicationErrorHandler = (
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
       `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`,
-      400,
+      500,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE

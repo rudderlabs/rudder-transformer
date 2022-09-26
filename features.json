@@ -38,6 +38,7 @@
     "FRESHSALES": true,
     "MONDAY": true,
     "CUSTIFY": true,
-    "USER": true
+    "USER": true,
+    "SNAPCHAT_CUSTOM_AUDIENCE": true
   }
 }

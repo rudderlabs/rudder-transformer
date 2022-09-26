@@ -10,7 +10,7 @@ const {
   updateFunctionCode,
   waitFor
 } = require("aws-sdk/clients/lambda");
-const logger = require("../logger");
+const logger = require("../../logger");
 const { JSON_IMPORT_CODE, TRANSFORM_WRAPPER_CODE } = require("./utils");
 
 const lambda = new AWS.Lambda({

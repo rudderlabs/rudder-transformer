@@ -164,6 +164,7 @@
         "UserIdentifierSource": "THIRD_PARTY",
         "conversionEnvironment": "WEB",
         "hashUserIdentifier": true,
+        "defaultUserIdentifier": "email",
         "validateOnly": false,
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
@@ -309,6 +310,7 @@
         "UserIdentifierSource": "THIRD_PARTY",
         "conversionEnvironment": "WEB",
         "hashUserIdentifier": true,
+        "defaultUserIdentifier": "phone",
         "validateOnly": false,
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }

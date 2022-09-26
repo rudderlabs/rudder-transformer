@@ -102,24 +102,6 @@
     }
   },
   {
-    "destKey": "conversions[0].userIdentifiers[0].hashedEmail",
-    "sourceKeys": "email",
-    "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
-  },
-  {
-    "destKey": "conversions[0].userIdentifiers[0].hashedPhoneNumber",
-    "sourceKeys": "phone",
-    "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
-  },
-  {
     "destKey": "conversions[0].conversionEnvironment",
     "sourceKeys": "properties.conversionEnvironment",
     "required": false,

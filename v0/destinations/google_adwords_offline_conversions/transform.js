@@ -1,3 +1,4 @@
+const sha256 = require("sha256");
 const { get, set, cloneDeep } = require("lodash");
 const moment = require("moment");
 const { EventType } = require("../../../constants");
@@ -8,7 +9,8 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   simpleProcessRouterDest,
-  getHashFromArray
+  getHashFromArray,
+  getFieldValueFromMessage
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
@@ -59,13 +61,25 @@ const getConversions = (
     payload = constructPayload(message, updatedClickMapping);
 
     // either of email or phone should be passed
-    // email here is the first priority
+    // defaultUserIdentifier depends on the webapp configuration
     // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
-    if (
-      payload.conversions[0]?.userIdentifiers &&
-      payload.conversions[0]?.userIdentifiers[0]?.hashedEmail
-    ) {
-      delete payload.conversions[0].userIdentifiers[0].hashedPhoneNumber;
+
+    if (Config.defaultUserIdentifier === "email") {
+      let email = getFieldValueFromMessage(message, "email");
+      if (email) {
+        email = Config.hashUserIdentifier ? sha256(email).toString() : email;
+        set(payload, "conversions[0].userIdentifiers[0].hashedEmail", email);
+      }
+    } else {
+      let phone = getFieldValueFromMessage(message, "phone");
+      if (phone) {
+        phone = Config.hashUserIdentifier ? sha256(phone).toString() : phone;
+        set(
+          payload,
+          "conversions[0].userIdentifiers[0].hashedPhoneNumber",
+          phone
+        );
+      }
     }
 
     endpoint = CLICK_CONVERSION.replace(":customerId", filteredCustomerId);

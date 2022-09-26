@@ -150,6 +150,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -409,6 +410,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -669,6 +671,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -897,6 +900,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1044,6 +1048,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1195,6 +1200,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1347,6 +1353,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1524,6 +1531,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "phone",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1814,6 +1822,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": false,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -1979,6 +1988,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2184,6 +2194,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2374,6 +2385,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": false,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2542,6 +2554,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": false,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2669,6 +2682,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": false,
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2686,5 +2700,183 @@
         "scope": "exception"
       }
     }
+  },
+  {
+    "description": "click - products parameters from the properties",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {},
+          "traits": {},
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "962-581-2972",
+          "subAccount": true,
+          "loginCustomerId": "861-785-9087",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": false,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "8617859087"
+        },
+        "params": {
+          "event": "Sign-up - click",
+          "customerId": "9625812972",
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "properties": {
+            "gclid": "gclid",
+            "conversionDateTime": "2022-01-01 12:32:45-08:00",
+            "product_id": "123445",
+            "quantity": 123
+          }
+        },
+        "body": {
+          "JSON": {
+            "conversions": [
+              {
+                "gclid": "gclid",
+                "conversionDateTime": "2022-01-01 12:32:45-08:00",
+                "conversionEnvironment": "WEB",
+                "userIdentifiers": [
+                  {
+                    "userIdentifierSource": "THIRD_PARTY"
+                  }
+                ],
+                "cartData": {
+                  "items": [
+                    {
+                      "productId": "123445",
+                      "quantity": 123
+                    }
+                  ]
+                }
+              }
+            ],
+            "partialFailure": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   }
 ]

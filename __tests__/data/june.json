@@ -263,6 +263,71 @@
     }
   },
   {
+    "description": "Track call with userId, groupId (from externalId) and properties",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiKey": "93EMyDLvfpbRxxYn"
+        },
+        "ID": "june123"
+      },
+      "message": {
+        "type": "track",
+        "event": "Product Reviewed",
+        "userId": "5136633649",
+        "properties": {
+          "review_id": "12345",
+          "product_id": "123",
+          "rating": 3.0,
+          "review_body": "Average product, expected much more.",
+          "groupId": "test-12345"
+        },
+        "context": {
+          "externalId": [
+            {
+              "type": "juneGroupId",
+              "id": "91Yb32830"
+            }
+          ]
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.june.so/api/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "userId": "5136633649",
+          "event": "Product Reviewed",
+          "properties": {
+            "review_id": "12345",
+            "product_id": "123",
+            "rating": 3,
+            "review_body": "Average product, expected much more."
+          },
+          "timestamp": "2022-01-20T13:39:21.032Z",
+          "context": {
+            "groupId": "91Yb32830"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
     "description": "Group call with userId, groupId and traits",
     "input": {
       "destination": {

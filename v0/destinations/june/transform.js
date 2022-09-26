@@ -4,7 +4,8 @@ const {
   simpleProcessRouterDest,
   constructPayload,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getDestinationExternalID
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
@@ -48,7 +49,9 @@ const identifyResponseBuilder = (message, destination) => {
 
 const trackResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.TRACK;
-  const { groupId } = message.properties || {};
+  const groupId =
+    getDestinationExternalID(message, "juneGroupId") ||
+    message.properties?.groupId;
   let payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]

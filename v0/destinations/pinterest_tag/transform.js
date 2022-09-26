@@ -99,7 +99,7 @@ const commonFieldResponseBuilder = (
 const process = event => {
   const toSendEvents = [];
   const respList = [];
-  let deducedEventNameArray = [];
+  const deducedEventNameArray = [];
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
 

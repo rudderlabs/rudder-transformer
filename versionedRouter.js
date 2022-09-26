@@ -526,7 +526,7 @@ if (transformerTestModeEnabled) {
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       trRevCode.versionId = "testVersionId";
-      const res = await userTransformHandler()(
+      const res = await pyUserTransformHandler()(
         events,
         trRevCode.versionId,
         libraryVersionIDs,
@@ -555,6 +555,46 @@ if (transformerTestModeEnabled) {
     } catch (error) {
       ctx.body = { error: error.message };
       ctx.status = 400;
+    }
+  });
+  // code: string;
+  // codeVersion: string;
+  // language: string;
+  // id?: string;
+  // name?: string;
+  // testWithPublish?: boolean;
+
+  router.post("/transformation/testhandler", async ctx => {
+    try {
+      const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      const { code, codeVersion, language, name, testWithPublish = false } =
+        trRevCode || {};
+      if (!code || !codeVersion || !language || !name) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+      if (!events || events.length === 0) {
+        throw new Error("Invalid request. Missing events");
+      }
+
+      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      trRevCode.versionId = "testVersionId";
+      const res = await userTransformHandler()(
+        events,
+        trRevCode.versionId,
+        libraryVersionIDs,
+        trRevCode,
+        true,
+        testWithPublish
+      );
+      logger.debug(
+        `[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`
+      );
+      ctx.body = res;
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = { error: error.message };
     }
   });
 }

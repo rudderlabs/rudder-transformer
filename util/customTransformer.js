@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { pyUserTransformHandler } = require("./customTransformer-py");
 
 async function runUserTransform(
   events,
@@ -219,7 +220,8 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  testMode = false
+  testMode = false,
+  testWithPublish = false
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
@@ -233,7 +235,28 @@ async function userTransformHandler(
       });
 
       let userTransformedEvents = [];
-      if (res.codeVersion && res.codeVersion === "1") {
+      if (res.language && res.language !== "javascript") {
+        const result = await pyUserTransformHandler(
+          events,
+          res,
+          testMode,
+          testWithPublish
+        );
+
+        userTransformedEvents = result.transformedEvents;
+        if (testMode) {
+          userTransformedEvents = {
+            transformedEvents: result.transformedEvents.map(ev => {
+              if (ev.error) {
+                return { error: ev.error };
+              }
+              return ev.transformedEvent;
+            }),
+            logs: result.logs,
+            publishedVersion: testWithPublish ? result.publishedVersion : null
+          };
+        }
+      } else if (res.codeVersion && res.codeVersion === "1") {
         const result = await userTransformHandlerV1(
           events,
           res,

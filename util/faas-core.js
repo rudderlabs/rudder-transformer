@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const { default: axios } = require("axios");
 const fs = require("fs-extra");
 const os = require("os");
@@ -74,11 +75,26 @@ async function deployImage(imageName, transformationName) {
   );
 }
 
+function undeployFunction(functionName) {
+  return axios.delete(
+    new URL(
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
+    ).toString(),
+    {
+      functionName
+    }
+  );
+}
+
 async function faasDeploymentHandler(transformationName, code) {
   const imageName = buildImageName(transformationName);
 
   try {
     await dockerUtils.pullImage(imageName);
+    await undeployFunction(
+      normalizeTransformationName(transformationName)
+    ).catch(_ => {});
+
     return;
   } catch (error) {
     logger.error(`Error pulling image ${imageName}.`);

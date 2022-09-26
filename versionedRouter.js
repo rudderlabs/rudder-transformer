@@ -719,7 +719,11 @@ router.get("/transformerBuildVersion", ctx => {
 });
 
 router.get("/health", ctx => {
-  ctx.body = "OK";
+  const { GIT_COMMIT_SHA, transformer_build_version: version } = process.env;
+  ctx.body = {
+    ...(version && { version }),
+    ...(GIT_COMMIT_SHA && { gitCommitSha: GIT_COMMIT_SHA })
+  };
 });
 
 router.get("/features", ctx => {

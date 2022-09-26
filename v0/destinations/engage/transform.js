@@ -15,7 +15,12 @@ const { getDestinationExternalID } = require("../../util");
 
 const { EventType } = require("../../../constants");
 const { mappingConfig, ConfigCategories } = require("./config");
-const { refinePayload, getUID, getEvent, getLists } = require("./utils");
+const {
+  refinePayload,
+  getUID,
+  generatePageName,
+  getLists
+} = require("./utils");
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   if (!payload) {
@@ -32,6 +37,7 @@ const responseBuilder = (payload, endpoint, method, Config) => {
   }
   const { publicKey, privateKey } = Config;
   const response = defaultRequestConfig();
+  // Authentication Ref : https://engage.so/docs/api/
   const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString(
     "base64"
   );
@@ -44,6 +50,8 @@ const responseBuilder = (payload, endpoint, method, Config) => {
   response.method = method;
   return response;
 };
+
+// Engage Api Doc for identify, track, page calls Ref:https://engage.so/docs/api/users
 
 const identifyResponseBuilder = (message, Config) => {
   const payload = constructPayload(
@@ -113,7 +121,7 @@ const pageResponseBuilder = (message, Config) => {
   const mergedPayload = { ...meta, ...pagePayload };
   payload.properties = mergedPayload;
   payload.timestamp = getFieldValueFromMessage(message, "timestamp");
-  const name = getEvent(message);
+  const name = generatePageName(message);
   payload.event = name;
   return responseBuilder(
     payload,
@@ -123,6 +131,7 @@ const pageResponseBuilder = (message, Config) => {
   );
 };
 
+// Engage Api Doc for group calls Ref: https://engage.so/docs/api/lists
 const groupResponseBuilder = (message, Config) => {
   const { groupId } = message;
   if (!groupId) {
@@ -138,9 +147,6 @@ const groupResponseBuilder = (message, Config) => {
       .build();
   }
   const uid = getDestinationExternalID(message, "engageId");
-  // if (!uid) {
-  //   uid = getFieldValueFromMessage(message, "userId");
-  // }
   const traits = getFieldValueFromMessage(message, "traits");
   const operation = traits.operation ? traits.operation.toLowerCase() : "add";
   if (!uid && operation === "remove") {

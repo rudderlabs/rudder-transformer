@@ -7,6 +7,7 @@ const ErrorBuilder = require("../../util/error");
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
+// Engage Doc Ref: https://engage.so/docs/api/users
 const userDeletionHandler = async (userAttributes, config) => {
   if (!Array.isArray(userAttributes)) {
     throw new ErrorBuilder()

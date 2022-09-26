@@ -719,10 +719,13 @@ router.get("/transformerBuildVersion", ctx => {
 });
 
 router.get("/health", ctx => {
-  const { GIT_COMMIT_SHA, transformer_build_version: version } = process.env;
+  const {
+    git_commit_sha: gitCommitSha,
+    transformer_build_version: version
+  } = process.env;
   ctx.body = {
     ...(version && { version }),
-    ...(GIT_COMMIT_SHA && { gitCommitSha: GIT_COMMIT_SHA })
+    ...(gitCommitSha && { gitCommitSha })
   };
 });
 

@@ -2,6 +2,7 @@ const sha256 = require("sha256");
 const get = require("get-value");
 const {
   constructPayload,
+  getIntegrationsObj,
   extractCustomFields,
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
@@ -91,6 +92,9 @@ const prepareMatchKeys = payload => {
 
 /**
  * Returns the Standard event name which is mapped with event from webapp configuration
+ * we are searching from webapp configuration
+ * If not found, we are using our internal mapping
+ * if not found there as well, we are returning with other
  * @param {*} eventsMapping
  * @param {*} event
  * @returns
@@ -100,7 +104,7 @@ const getStandardEvents = (eventsMapping, event) => {
   const keys = Object.keys(eventsMapping);
   keys.forEach(key => {
     if (key === event) {
-      standardEvents.push(...Array.from(eventsMapping[key]));
+      standardEvents.push(...eventsMapping[key]);
     }
   });
 
@@ -133,7 +137,7 @@ const getEventSetIds = (eventsToIds, standardEvent) => {
   const keys = Object.keys(eventsToIdsMapping);
   keys.forEach(key => {
     if (key === standardEvent) {
-      eventSetIds = Array.from(eventsToIdsMapping[key]);
+      eventSetIds = [...eventsToIdsMapping[key]];
     }
   });
 
@@ -231,25 +235,25 @@ const getProducts = contents => {
 const prepareData = (payload, message, destination) => {
   const { Config } = destination;
   const { limitedDataUSage, valueFieldIdentifier } = Config;
-  const data = {};
 
-  data.match_keys = prepareMatchKeys(payload);
-  data.event_time = payload.event_time;
-  data.currency = payload.currency || "USD";
-  data.value =
-    get(message.properties, valueFieldIdentifier) || payload.value || 0;
-  data.content_type = getContentType(message);
-  data.order_id = payload.order_id || null;
-  data.item_number = payload.item_number || null;
-  data.contents = payload.contents ? getProducts(payload.contents) : null;
-  data.custom_data = message.properties
-    ? extractCustomFields(
-        message,
-        payload,
-        ["properties"],
-        TRACK_EXCLUSION_FIELDS
-      )
-    : null;
+  const data = {
+    match_keys: prepareMatchKeys(payload),
+    event_time: payload.event_time,
+    currency: payload.currency || "USD",
+    value: get(message.properties, valueFieldIdentifier) || payload.value || 0,
+    content_type: getContentType(message),
+    order_id: payload.order_id || null,
+    item_number: payload.item_number || null,
+    contents: payload.contents ? getProducts(payload.contents) : null,
+    custom_data: message.properties
+      ? extractCustomFields(
+          message,
+          payload,
+          ["properties"],
+          TRACK_EXCLUSION_FIELDS
+        )
+      : null
+  };
 
   if (limitedDataUSage) {
     const dataProcessingOptions = get(message, "context.dataProcessingOptions");
@@ -285,7 +289,7 @@ const getData = (data, standardEvent) => {
  * @returns
  */
 const offlineConversionResponseBuilder = (message, destination) => {
-  const payload = constructPayload(
+  let payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.OFFLINE_EVENTS.name]
   );
@@ -294,6 +298,22 @@ const offlineConversionResponseBuilder = (message, destination) => {
 
   if (leadId) {
     payload.lead_id = leadId;
+  }
+
+  const integrationsObj = getIntegrationsObj(
+    message,
+    "facebook_offline_conversions"
+  );
+
+  if (payload.name) {
+    const split = payload.name ? payload.name.split(" ") : null;
+    if (split !== null && Array.isArray(split) && split.length === 2) {
+      payload.fn =
+        integrationsObj && integrationsObj.hashed ? split[0] : sha256(split[0]);
+      payload.ln =
+        integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
+    }
+    delete payload.name;
   }
 
   const data = prepareData(payload, message, destination);

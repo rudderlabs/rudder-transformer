@@ -83,11 +83,14 @@
     }
   },
   {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
     "destKey": "fi",
-    "sourceKeys": [
-      "traits.initial.firstName",
-      "context.traits.initial.firstName"
-    ],
+    "sourceKeys": "firstName",
     "required": false,
     "metadata": {
       "type": "hashToSha256"

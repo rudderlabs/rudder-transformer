@@ -10,6 +10,13 @@ const DestCanonicalNames = {
     "Facebook Pixel",
     "FB Pixel"
   ],
+  facebook_offline_conversions: [
+    "facebook_offline_conversions",
+    "fb_offline_conversions",
+    "Facebook Offline Conversions",
+    "FacebookOfflineConversions",
+    "fb offline conversions"
+  ],
   ometria: ["Ometria", "ometria", "OMETRIA"],
   sendgrid: ["sendgrid", "Sendgrid", "SENDGRID"],
   dcm_floodlight: [

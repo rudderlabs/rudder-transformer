@@ -69,9 +69,9 @@ const prepareMatchKeys = payload => {
   if (propertyMapping.birthday) {
     const { birthday } = propertyMapping;
     const date = new Date(birthday);
-    data.doby = sha256(date.getFullYear());
-    data.dobm = sha256(date.getMonth() + 1);
-    data.dobd = sha256(date.getDate());
+    data.doby = sha256(toString(date.getFullYear()));
+    data.dobm = sha256(toString(date.getMonth() + 1));
+    data.dobd = sha256(toString(date.getDate()));
     delete propertyMapping.birthday;
   }
 

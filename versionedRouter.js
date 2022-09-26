@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
@@ -14,7 +15,8 @@ const {
   getMetadata,
   generateErrorObject,
   CustomError,
-  isHttpStatusSuccess
+  isHttpStatusSuccess,
+  getErrorRespEvents
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -30,6 +32,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
+const { RespStatusError } = require("./util/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -41,7 +44,8 @@ const startDestTransformer =
   transformerMode === "destination" || !transformerMode;
 const startSourceTransformer = transformerMode === "source" || !transformerMode;
 const transformerProxy = process.env.TRANSFORMER_PROXY || true;
-const proxyTestModeEnabled = process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
+const proxyTestModeEnabled =
+  process.env.TRANSFORMER_PROXY_TEST_ENABLED?.toLowerCase() === "true" || false;
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
@@ -103,14 +107,13 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  const respList = [];
   const executeStartTime = new Date();
   let destHandler;
   // Getting destination handler for non-cdk destination(s)
   if (!isCdkDestination(events[0])) {
     destHandler = getDestHandler(version, destination);
   }
-  await Promise.all(
+  const respList = await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
@@ -118,10 +121,8 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkDestination(parsedEvent)) {
-          respEvents = await Executor.execute(
-            parsedEvent,
-            ConfigFactory.getConfig(destination)
-          );
+          const tfConfig = await ConfigFactory.getConfig(destination);
+          respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
           respEvents = await destHandler.process(parsedEvent);
         }
@@ -129,28 +130,26 @@ async function handleDest(ctx, version, destination) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          respList.push(
-            ...respEvents.map(ev => {
-              let { userId } = ev;
-              // Set the user ID to an empty string for
-              // all the falsy values (including 0 and false)
-              // Otherwise, server panics while un-marshalling the response
-              // while expecting only strings.
-              if (!userId) {
-                userId = "";
-              }
+          return respEvents.map(ev => {
+            let { userId } = ev;
+            // Set the user ID to an empty string for
+            // all the falsy values (including 0 and false)
+            // Otherwise, server panics while un-marshalling the response
+            // while expecting only strings.
+            if (!userId) {
+              userId = "";
+            }
 
-              if (ev.statusCode !== 400 && userId) {
-                userId = `${userId}`;
-              }
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
+            }
 
-              return {
-                output: { ...ev, userId },
-                metadata: event.metadata,
-                statusCode: 200
-              };
-            })
-          );
+            return {
+              output: { ...ev, userId },
+              metadata: event.metadata,
+              statusCode: 200
+            };
+          });
         }
       } catch (error) {
         logger.error(error);
@@ -159,12 +158,16 @@ async function handleDest(ctx, version, destination) {
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
-        respList.push({
+        return {
           metadata: event.metadata,
           statusCode: errObj.status,
-          error: errObj.message || "Error occurred while processing payload.",
-          statTags: errObj.statTags
-        });
+          error:
+            errObj.message || "Error occurred while processing the payload.",
+          statTags: {
+            errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
+            ...errObj.statTags
+          }
+        };
       }
     })
   );
@@ -178,7 +181,7 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  ctx.body = respList;
+  ctx.body = respList.flat();
   return ctx.body;
 }
 
@@ -270,6 +273,16 @@ async function routerHandleDest(ctx) {
       respEvents.push(...listOutput);
     })
   );
+  respEvents
+    .filter(
+      resp =>
+        "error" in resp &&
+        _.isObject(resp.statTags) &&
+        !_.isEmpty(resp.statTags)
+    )
+    .forEach(resp => {
+      set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+    });
   ctx.body = { output: respEvents };
   return ctx.body;
 }
@@ -443,10 +456,14 @@ if (startDestTransformer) {
               );
             } catch (error) {
               logger.error(error);
+              let status = 400;
               const errorString = error.toString();
+              if (error instanceof RespStatusError) {
+                status = error.statusCode;
+              }
               destTransformedEvents = destEvents.map(e => {
                 return {
-                  statusCode: 400,
+                  statusCode: status,
                   metadata: e.metadata,
                   error: errorString
                 };
@@ -556,6 +573,15 @@ async function handleSource(ctx, version, source) {
       try {
         const respEvents = await sourceHandler.process(event);
 
+        // We send response back to the source
+        // through outputToSource. This is not sent to gateway
+        if (
+          Object.prototype.hasOwnProperty.call(respEvents, "outputToSource")
+        ) {
+          respList.push(respEvents);
+          return;
+        }
+
         if (Array.isArray(respEvents)) {
           respList.push({ output: { batch: respEvents } });
         } else {
@@ -642,7 +668,10 @@ async function handleProxyRequest(destination, ctx) {
       destination,
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
     );
-    response = { ...response };
+    response.statTags = {
+      errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
+      ...response.statTags
+    };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
@@ -716,9 +745,18 @@ const batchHandler = ctx => {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
-      response.errors.push(
-        error.message || "Error occurred while processing payload."
+      const errorObj = generateErrorObject(
+        error,
+        destType,
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
       );
+      const errResp = getErrorRespEvents(
+        destEvents.map(d => d.metadata),
+        500,
+        error.message || "Error occurred while processing payload.",
+        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+      );
+      response.errors.push(errResp);
     }
   });
   if (response.errors.length > 0) {

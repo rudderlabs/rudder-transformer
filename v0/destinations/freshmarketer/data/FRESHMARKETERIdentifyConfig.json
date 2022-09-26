@@ -1,0 +1,206 @@
+[
+  {
+    "destKey": "emails",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "subscription_status",
+    "sourceKeys": [
+      "traits.subscriptionStatus",
+      "context.traits.subscriptionStatus"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "job_title",
+    "sourceKeys": [
+      "traits.job_title",
+      "traits.jobTitle",
+      "context.traits.job_title",
+      "context.traits.jobTitle"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "work_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "mobile_number",
+    "sourceKeys": ["traits.mobileNumber", "context.traits.mobileNumber"],
+    "required": false
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "state",
+    "sourceKeys": [
+      "traits.state",
+      "traits.address.state",
+      "context.traits.state",
+      "context.traits.address.state"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": [
+      "traits.address.country",
+      "traits.country",
+      "context.traits.address.country",
+      "context.traits.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "zipcode",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "sales_accounts",
+    "sourceKeys": [
+      "traits.salesAccounts",
+      "traits.sales_accounts",
+      "context.traits.salesAccounts",
+      "context.traits.sales_accounts"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "territory_id",
+    "sourceKeys": ["traits.territoryId", "context.traits.territoryId"],
+    "required": false
+  },
+  {
+    "destKey": "lead_source_id",
+    "sourceKeys": ["traits.leadSourceId", "context.traits.leadSourceId"],
+    "required": false
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "required": false
+  },
+  {
+    "destKey": "subscription_types",
+    "sourceKeys": [
+      "traits.subscriptionTypes",
+      "context.traits.subscriptionTypes"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "medium",
+    "sourceKeys": ["traits.medium", "context.traits.medium"],
+    "required": false
+  },
+  {
+    "destKey": "campaign_id",
+    "sourceKeys": [
+      "traits.campaignId",
+      "traits.campaign_id",
+      "context.traits.campaignId",
+      "context.traits.campaign_id",
+      "context.campaign.name"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "keyword",
+    "sourceKeys": [
+      "traits.keyword",
+      "context.traits.keyword",
+      "context.campaign.term"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "time_zone",
+    "sourceKeys": "context.timeZone",
+    "required": false
+  },
+  {
+    "destKey": "facebook",
+    "sourceKeys": [
+      "traits.facebookUserName",
+      "context.traits.facebookUserName"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "twitter",
+    "sourceKeys": ["traits.twitterUserName", "context.traits.twitterUserName"],
+    "required": false
+  },
+  {
+    "destKey": "linkedin",
+    "sourceKeys": [
+      "traits.linkedinUserName",
+      "context.traits.linkedinUserName"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAt",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "updated_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "contact_status_id",
+    "sourceKeys": ["traits.contactStatusId", "context.traits.contactStatusId"],
+    "required": false
+  },
+  {
+    "destKey": "lifecycle_stage_id",
+    "sourceKeys": [
+      "traits.lifecycleStageId",
+      "context.traits.lifecycleStageId"
+    ],
+    "required": false
+  }
+]

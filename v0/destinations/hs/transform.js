@@ -1,17 +1,28 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
-const { getErrorRespEvents, CustomError } = require("../../util");
-const { API_VERSION } = require("./config");
+const {
+  CustomError,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
+  getDestinationExternalIDInfoForRetl
+} = require("../../util");
+const { API_VERSION, DESTINATION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
   legacyBatchEvents
 } = require("./HSTransform-v1");
 const {
+  MappedToDestinationKey,
+  GENERIC_TRUE_VALUES
+} = require("../../../constants");
+const {
   processIdentify,
   processTrack,
   batchEvents
 } = require("./HSTransform-v2");
 const {
+  splitEventsForCreateUpdate,
   fetchFinalSetOfTraits,
   getProperties,
   validateDestinationConfig
@@ -60,29 +71,65 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 };
 
 // has been deprecated - using routerTransform for both the versions
-const process = event => {
-  return processSingleMessage(event.message, event.destination);
+const process = async event => {
+  const { destination } = event;
+  const mappedToDestination = get(event.message, MappedToDestinationKey);
+  let events = [];
+  events = [event];
+  if (
+    mappedToDestination &&
+    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+  ) {
+    // get info about existing objects and splitting accordingly.
+    events = await splitEventsForCreateUpdate([event], destination);
+  }
+  return processSingleMessage(events[0].message, events[0].destination);
 };
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-  // reduce the no. of calls for properties endpoint
   let propertyMap;
-  const traitsFound = inputs.some(input => {
-    return fetchFinalSetOfTraits(input.message) !== undefined;
-  });
-  if (traitsFound) {
-    propertyMap = await getProperties(destination);
+  const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
+  const { objectType } = getDestinationExternalIDInfoForRetl(
+    inputs[0].message,
+    "HS"
+  );
+
+  try {
+    if (
+      mappedToDestination &&
+      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+    ) {
+      // skip splitting the batches to inserts and updates if object it is an association
+      if (objectType.toLowerCase() !== "association") {
+        // get info about existing objects and splitting accordingly.
+        inputs = await splitEventsForCreateUpdate(inputs, destination);
+      }
+    } else {
+      // reduce the no. of calls for properties endpoint
+      const traitsFound = inputs.some(input => {
+        return fetchFinalSetOfTraits(input.message) !== undefined;
+      });
+      if (traitsFound) {
+        propertyMap = await getProperties(destination);
+      }
+    }
+  } catch (error) {
+    // Any error thrown from the above try block applies to all the events
+    return inputs.map(input =>
+      handleRtTfSingleEventError(input, error, DESTINATION)
+    );
   }
+
   await Promise.all(
     inputs.map(async input => {
       try {
@@ -116,13 +163,12 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          DESTINATION
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

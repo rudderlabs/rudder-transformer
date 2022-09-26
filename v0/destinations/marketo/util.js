@@ -8,7 +8,7 @@ const {
   getDynamicMeta,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess } = require("../../util/index");
+const { isHttpStatusSuccess, ApiError } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 
@@ -39,50 +39,35 @@ const marketoApplicationErrorHandler = (
   const { response } = marketoResponse;
   const { errors } = response;
   if (errors && MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(
-        `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`
-      )
-      .setDestinationResponse(marketoResponse)
-      .isTransformResponseFailure(true)
-      .setStatTags({
-        destType: DESTINATION,
-        stage,
+    throw new ApiError(
+      `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`,
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      })
-      .build();
+      },
+      marketoResponse
+    );
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
-    throw new ErrorBuilder()
-      .setStatus(429)
-      .setMessage(
-        `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`
-      )
-      .setDestinationResponse(marketoResponse)
-      .isTransformResponseFailure(true)
-      .setStatTags({
-        destType: DESTINATION,
-        stage,
+    throw new ApiError(
+      `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`,
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
-      })
-      .build();
+      },
+      marketoResponse
+    );
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-    throw new ErrorBuilder()
-      .setStatus(500)
-      .setMessage(
-        `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`
-      )
-      .setDestinationResponse(marketoResponse)
-      .isTransformResponseFailure(true)
-      .setStatTags({
-        destType: DESTINATION,
-        stage,
+    throw new ApiError(
+      `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`,
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-      })
-      .build();
+      },
+      marketoResponse
+    );
   }
 };
 
@@ -90,20 +75,15 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
-    throw new ErrorBuilder()
-      .setStatus(status)
-      .setMessage(
-        `[Marketo Response Handler] - Request failed  with status: ${status}`
-      )
-      .setDestinationResponse(destResponse)
-      .isTransformResponseFailure(true)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    throw new ApiError(
+      `[Marketo Response Handler] - Request failed  with status: ${status}`,
+      status,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)
-      })
-      .build();
+      },
+      destResponse
+    );
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
@@ -125,17 +105,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     message += ` -> ${response.errors[0].message}`;
   }
   // Marketo sent us some failure which is not handled
-  throw new ErrorBuilder()
-    .setStatus(400)
-    .setMessage(message)
-    .setDestinationResponse(destResponse)
-    .setStatTags({
-      destType: DESTINATION,
-      stage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      meta: getDynamicMeta(400)
-    })
-    .build();
+  throw new ApiError(message, 400, null, destResponse);
 };
 
 /**

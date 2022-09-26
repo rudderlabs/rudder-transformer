@@ -21,6 +21,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const ErrorBuilder = require("./error");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -795,7 +796,7 @@ const handleMetadataForValue = (
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
         if (Number.isNaN(formattedVal)) {
-          throw new Error("Revenue is not in the correct format");
+          throw new TransformationError("Revenue is not in the correct format");
         }
         break;
       case "toString":
@@ -908,7 +909,7 @@ const handleMetadataForValue = (
     }
     if (!foundVal) {
       if (strictMultiMap) {
-        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
+        throw new TransformationError(`Invalid entry for key ${destKey}`, 400);
       } else {
         formattedVal = undefined;
       }
@@ -1026,8 +1027,9 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new Error(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
+        throw new TransformationError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`,
+          400
         );
       }
     });
@@ -1424,7 +1426,90 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
+    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
+    // Apart from destination transformation
     this.response = { status: statusCode, metadata };
+  }
+}
+
+/**
+ * This is the base error class which will be used as a base going forward
+ */
+ class RudderBaseError extends Error {
+  constructor(message, statusCode, statTags, destResponse, authErrorCategory) {
+    super(message);
+    // This schema will be used by transformation related endpoints
+    const errBuilder = new ErrorBuilder()
+      .setMessage(message)
+      .setStatus(statusCode)
+      .setStatTags(statTags)
+    // This would be needed for API scope
+    if (destResponse) {
+      errBuilder.setDestinationResponse(destResponse);
+    }
+    // We should basically set this for refreshing and disabling capability of OAuth destinations
+    if (authErrorCategory) {
+      errBuilder.setAuthErrorCategory(authErrorCategory);
+    }
+    return errBuilder.build();
+  }
+}
+
+/**
+ * This error is mainly used for transformation purposes
+ * - Destination transformation
+ *   The transformation that happens before delivering the event to the destination
+ */
+ class TransformationError extends RudderBaseError {
+  /**
+   * 
+   * @param {*} message 
+   *  - Generic response message
+   * @param {*} statusCode 
+   *  - Status code that is understandable by Rudderstack(400, 429 & 500)
+   * @param {*} statTags 
+   *  - Better monitoring we need to set this
+   */
+  constructor(message, statusCode=400, statTags={
+    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+    meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CLIENT_ERROR
+  }) {
+    super(message, statusCode, statTags);
+  }
+}
+
+/**
+ * This error is to be used to throw an error, incase a destination API, returns an erreneous response
+ * 
+ * - Destination transformation
+ *   An API call can happen during transformation phase, this error has to be used in-case we would like to throw an error
+ * - Delivery
+ *   The interpretation of response from the destination(after trying to deliver the event to destination)
+ */
+class ApiError extends RudderBaseError {
+  /**
+   * 
+   * @param {*} message 
+   *  - Generic response message
+   * @param {*} statusCode 
+   *  - Status code that is understandable by Rudderstack(400, 429 & 500)
+   * @param {*} statTags 
+   *  - Better monitoring we need to set this
+   * @param {*} destResponse 
+   *  - Better understanding of what happened using the raw response sent from the destination's API
+   * @param {*} authErrCategory 
+   *  - Need to set the auth error category when the response from destinations either boils down
+   *    to invalid access token or access denied kind of exceptions to leverage Rudder OAuth framework
+   *    retry the accesss token or disable destination
+   */
+  constructor(message, statusCode=400, statTags, destResponse, authErrCategory) {
+    if (isEmpty(statTags)) {
+      statTags = {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.UNHANDLED
+      }
+    }
+    super(message, statusCode, statTags,destResponse, authErrCategory);
   }
 }
 
@@ -1449,6 +1534,14 @@ function generateErrorObject(error, destination = "", transformStage) {
   if (statTags.destination) {
     statTags.destType = statTags.destination;
     delete statTags.destination;
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.destType) {
+    statTags.destType = destination.toUpperCase();
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.stage) {
+    statTags.stage = transformStage
   }
   if (statTags.destType) {
     // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
@@ -1684,6 +1777,8 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
+  TransformationError,
+  ApiError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,

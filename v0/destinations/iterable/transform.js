@@ -1,5 +1,6 @@
 const _ = require("lodash");
 const get = require("get-value");
+const { getCatalogEndpoint } = require("./util");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   ConfigCategory,
@@ -249,12 +250,7 @@ function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
   response.endpoint =
     category.action === "catalogs"
-      ? `${category.endpoint}/${
-          getDestinationExternalIDInfoForRetl(message, "ITERABLE").objectType
-        }/items/${
-          getDestinationExternalIDInfoForRetl(message, "ITERABLE")
-            .destinationExternalId
-        }`
+      ? getCatalogEndpoint(category, message)
       : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
@@ -308,6 +304,7 @@ function processSingleMessage(message, destination) {
           "users"
       ) {
         // catagory will be catalog for any other object other than users
+        // DOC: https://support.iterable.com/hc/en-us/articles/360033214932-Catalog-Overview
         category = ConfigCategory.CATALOG;
       } else {
         category = ConfigCategory.IDENTIFY;

@@ -152,6 +152,16 @@
     "required": false
   },
   {
+    "destKey": "fbc",
+    "sourceKeys": "context.fbc",
+    "required": false
+  },
+  {
+    "destKey": "fbp",
+    "sourceKeys": "context.fbp",
+    "required": false
+  },
+  {
     "destKey": "order_id",
     "sourceKeys": ["properties.order_id", "properties.orderId"],
     "required": false
@@ -164,6 +174,26 @@
   {
     "destKey": "upload_tag",
     "sourceKeys": "properties.upload_tag",
+    "required": false
+  },
+  {
+    "destKey": "client_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "action_source",
+    "sourceKeys": [
+      "traits.action_source",
+      "context.traits.action_source",
+      "properties.action_source"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "event_source_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
     "required": false
   }
 ]

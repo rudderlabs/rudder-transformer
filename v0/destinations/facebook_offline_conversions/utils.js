@@ -1,9 +1,10 @@
 const sha256 = require("sha256");
 const get = require("get-value");
 const {
+  formatTimeStamp,
   constructPayload,
-  getIntegrationsObj,
   extractCustomFields,
+  getFieldValueFromMessage,
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues
@@ -19,9 +20,35 @@ const {
   DESTINATION,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
+  ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping
 } = require("./config");
+
+/**
+ * @param {*} message
+ * @returns fbc parameter which is a combined string of the parameters below
+ * version : "fb" (default)
+ * subdomainIndex : 1 ( recommended by facebook, as well as our JS SDK sets cookies on the main domain, i.e "facebook.com")
+ * creationTime : mapped to originalTimestamp converted in miliseconds
+ * fbclid : deduced query paramter from context.page.url
+ * ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc#fbc
+ */
+const deduceFbcParam = message => {
+  const url = message.context?.page?.url;
+  if (!url) {
+    return undefined;
+  }
+  const parseUrl = new URL(url);
+  const paramsList = new URLSearchParams(parseUrl.search);
+  const fbclid = paramsList.get("fbclid");
+
+  if (!fbclid) {
+    return undefined;
+  }
+  const creationTime = getFieldValueFromMessage(message, "timestamp");
+  return `fb.1.${formatTimeStamp(creationTime)}.${fbclid}`;
+};
 
 /**
  * Returns System User Access Token
@@ -44,9 +71,9 @@ const getAccessToken = destination => {
 const prepareUrls = (destination, data, ids, payload) => {
   const urls = [];
   const uploadTags = payload.upload_tag || "rudderstack";
-  const encodedData = encodeURIComponent(JSON.stringify(data));
+  const [first] = data;
+  const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
   const accessToken = getAccessToken(destination);
-
   ids.forEach(id => {
     const endpoint = ENDPOINT.replace("OFFLINE_EVENT_SET_ID", id);
     urls.push(
@@ -63,9 +90,15 @@ const prepareUrls = (destination, data, ids, payload) => {
  * @param {*} payload
  * @returns
  */
-const prepareMatchKeys = payload => {
+const prepareMatchKeys = (payload, message) => {
   const data = {};
+
   const propertyMapping = payload;
+
+  propertyMapping.fbc = propertyMapping.fbc || deduceFbcParam(message);
+  if (!propertyMapping.fbc) {
+    delete propertyMapping.fbc;
+  }
 
   if (propertyMapping.birthday) {
     const { birthday } = propertyMapping;
@@ -86,7 +119,6 @@ const prepareMatchKeys = payload => {
       }
     }
   });
-
   return data;
 };
 
@@ -227,6 +259,22 @@ const getProducts = contents => {
 };
 
 /**
+ * Returns actionSource value
+ * @param {*} payload
+ * @returns
+ */
+const getActionSource = payload => {
+  let actionSource = null;
+  if (
+    payload.action_source &&
+    ACTION_SOURCES_VALUES.includes(payload.action_source)
+  ) {
+    actionSource = payload.action_source;
+  }
+  return actionSource;
+};
+
+/**
  * Returns the data array
  * @param {*} payload
  * @param {*} message
@@ -237,7 +285,7 @@ const prepareData = (payload, message, destination) => {
   const { limitedDataUSage, valueFieldIdentifier } = Config;
 
   const data = {
-    match_keys: prepareMatchKeys(payload),
+    match_keys: prepareMatchKeys(payload, message),
     event_time: payload.event_time,
     currency: payload.currency || "USD",
     value: get(message.properties, valueFieldIdentifier) || payload.value || 0,
@@ -252,9 +300,10 @@ const prepareData = (payload, message, destination) => {
           ["properties"],
           TRACK_EXCLUSION_FIELDS
         )
-      : null
+      : null,
+    action_source: getActionSource(payload),
+    event_source_url: payload.event_source_url || null
   };
-
   if (limitedDataUSage) {
     const dataProcessingOptions = get(message, "context.dataProcessingOptions");
     if (dataProcessingOptions && Array.isArray(dataProcessingOptions)) {
@@ -300,18 +349,11 @@ const offlineConversionResponseBuilder = (message, destination) => {
     payload.lead_id = leadId;
   }
 
-  const integrationsObj = getIntegrationsObj(
-    message,
-    "facebook_offline_conversions"
-  );
-
   if (payload.name) {
     const split = payload.name ? payload.name.split(" ") : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
-      payload.fn =
-        integrationsObj && integrationsObj.hashed ? split[0] : sha256(split[0]);
-      payload.ln =
-        integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
+      payload.fn = sha256(split[0]);
+      payload.ln = sha256(split[1]);
     }
     delete payload.name;
   }

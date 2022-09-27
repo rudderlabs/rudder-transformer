@@ -25,7 +25,10 @@ const destKeys = [
   "country",
   "madid",
   "extern_id",
-  "lead_id"
+  "lead_id",
+  "fbc",
+  "fbp",
+  "client_user_agent"
 ];
 
 const destKeyType = {
@@ -44,7 +47,10 @@ const destKeyType = {
   madid: "string",
   country: "string",
   extern_id: "string",
-  lead_id: "string"
+  lead_id: "string",
+  fbc: "string",
+  fbp: "string",
+  client_user_agent: "string"
 };
 
 const TRACK_EXCLUSION_FIELDS = [
@@ -71,6 +77,17 @@ const eventToStandardMapping = {
   "Order Completed": "Purchase"
 };
 
+const ACTION_SOURCES_VALUES = [
+  "email",
+  "website",
+  "phone_call",
+  "chat",
+  "app",
+  "physical_store",
+  "system_generated",
+  "other"
+];
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
@@ -79,6 +96,7 @@ module.exports = {
   ENDPOINT,
   destKeys,
   destKeyType,
+  ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
   DESTINATION: "FACEBOOK_OFFLINE_CONVERSIONS"

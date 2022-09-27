@@ -5,8 +5,8 @@ function ErrorBuilder() {
 
   /**
    * sets the error message for thrown error
-   * @param {*} message 
-   * @returns 
+   * @param {*} message
+   * @returns
    */
   this.setMessage = message => {
     this.err.message = message;
@@ -15,8 +15,8 @@ function ErrorBuilder() {
 
   /**
    * sets the status-code which has to be processed by server
-   * @param {*} status 
-   * @returns 
+   * @param {*} status
+   * @returns
    */
   this.setStatus = status => {
     this.err.status = status;
@@ -25,8 +25,8 @@ function ErrorBuilder() {
 
   /**
    * sets the raw response from the external API calls(if any)
-   * @param {*} destinationResponse 
-   * @returns 
+   * @param {*} destinationResponse
+   * @returns
    */
   this.setDestinationResponse = destinationResponse => {
     this.err.destinationResponse = destinationResponse;
@@ -62,16 +62,13 @@ function ErrorBuilder() {
    * For Example
    * algolia/transform.js
    * // We would initialise the error
-   * const AlgoliaError = new ErrorBuilder().setDestType("ALGOLIA").setStage("transform");
-   * ...
-   * // I want to throw the error now
    * // Note: We would be using constants to set meta
-   * throw AlgoliaError.setMessage("whatever").setStatus(400).setMeta("badParam").build();
+   * throw new ErrorBuilder().setDestType("ALGOLIA").setStage("transform").setMeta("badParam").build();
    *
    * This way things would easier to handle at destination level
    */
 
-   this.setDestType = destType => {
+  this.setDestType = destType => {
     destType = destType?.toUpperCase();
     this.err.statTags = {
       ...this.err.statTags,

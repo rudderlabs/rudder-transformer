@@ -64,14 +64,16 @@ const getConversions = (
     // defaultUserIdentifier depends on the webapp configuration
     // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
 
+    let email;
+    let phone;
     if (Config.defaultUserIdentifier === "email") {
-      let email = getFieldValueFromMessage(message, "email");
+      email = getFieldValueFromMessage(message, "email");
       if (email) {
         email = Config.hashUserIdentifier ? sha256(email).toString() : email;
         set(payload, "conversions[0].userIdentifiers[0].hashedEmail", email);
       }
     } else {
-      let phone = getFieldValueFromMessage(message, "phone");
+      phone = getFieldValueFromMessage(message, "phone");
       if (phone) {
         phone = Config.hashUserIdentifier ? sha256(phone).toString() : phone;
         set(
@@ -113,6 +115,16 @@ const getConversions = (
         "conversions[0].userIdentifiers[0].userIdentifierSource",
         Config.UserIdentifierSource
       );
+
+      // one of email or phone must be provided
+      if (!email && !phone) {
+        throw new ErrorBuilder()
+          .setMessage(
+            `[Google Ads Offline Conversions]:: either of email or phone is required for user identifier`
+          )
+          .setStatus(400)
+          .build();
+      }
     }
 
     // conversionEnvironment

@@ -65,7 +65,7 @@
   },
   {
     "destKey": "conversions[0].cartData.items[0].productId",
-    "sourceKeys": "properties.product_id",
+    "sourceKeys": ["properties.product_id", "properties.sku"],
     "required": false,
     "metadata": {
       "type": "toString"

@@ -15,12 +15,7 @@ const { getDestinationExternalID } = require("../../util");
 
 const { EventType } = require("../../../constants");
 const { mappingConfig, ConfigCategories } = require("./config");
-const {
-  refinePayload,
-  getUID,
-  generatePageName,
-  getLists
-} = require("./utils");
+const { refinePayload, generatePageName, getLists } = require("./utils");
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   if (!payload) {
@@ -59,7 +54,9 @@ const identifyResponseBuilder = (message, Config) => {
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
   const { traits } = message;
-  const uid = getUID(message);
+  const uid =
+    getDestinationExternalID(message, "engageId") ||
+    getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
     throw new ErrorBuilder()
       .setMessage("Neither externalId or userId is available.")
@@ -106,7 +103,9 @@ const trackResponseBuilder = (message, Config) => {
   const { properties } = message;
   const payload = {};
   const meta = refinePayload(properties, ConfigCategories.TRACK.genericFields);
-  const uid = getUID(message);
+  const uid =
+    getDestinationExternalID(message, "engageId") ||
+    getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
     throw new ErrorBuilder()
       .setMessage("Neither externalId or userId is available.")
@@ -131,7 +130,9 @@ const trackResponseBuilder = (message, Config) => {
   );
 };
 const pageResponseBuilder = (message, Config) => {
-  const uid = getUID(message);
+  const uid =
+    getDestinationExternalID(message, "engageId") ||
+    getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
     throw new ErrorBuilder()
       .setMessage("Neither externalId or userId is available.")
@@ -181,19 +182,18 @@ const groupResponseBuilder = (message, Config) => {
       })
       .build();
   }
-  let uid = getDestinationExternalID(message, "engageId");
-  if (!uid) {
-    uid = getFieldValueFromMessage(message, "userIdOnly");
-  }
+  const uid =
+    getDestinationExternalID(message, "engageId") ||
+    getFieldValueFromMessage(message, "userIdOnly");
   const traits = getFieldValueFromMessage(message, "traits");
   if (
-    message.traits.operation &&
-    message.traits.operation !== "remove" &&
-    message.traits.operation !== "add"
+    traits.operation &&
+    traits.operation !== "remove" &&
+    traits.operation !== "add"
   ) {
     throw new ErrorBuilder()
       .setMessage(
-        `${message.traits.operation} is invalid for Operation field. Available are add or remove.`
+        `${traits.operation} is invalid for Operation field. Available are add or remove.`
       )
       .setStatus(400)
       .setStatTags({
@@ -219,7 +219,7 @@ const groupResponseBuilder = (message, Config) => {
   }
   let { method } = ConfigCategories.GROUP;
   let endpoint = `${ConfigCategories.GROUP.endpoint.replace("id", groupId)}`;
-  const subscriberStatus = traits.subscriberStatus || true;
+  const subscriberStatus = message?.context?.traits?.subscriberStatus || true;
   let payload = { subscribed: subscriberStatus };
   if (uid) {
     endpoint = `${endpoint}/${uid}`;

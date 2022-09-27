@@ -344,12 +344,15 @@
         }
     },
     {
-        "description": "[ GROUP ]: Group user with list with listId given inside externalId and operation not given.",
+        "description": "[ GROUP ]: Group user with list with engageID given inside externalId and operation not given.",
         "input": {
             "message": {
                 "anonymousId": "user123",
                 "groupId": "17",
                 "context": {
+                    "traits": {
+                        "subscriberStatus": "false"
+                    },
                     "externalId": [
                         {
                             "type": "engageId",
@@ -389,7 +392,7 @@
             "params": {},
             "body": {
                 "JSON": {
-                    "subscribed": true
+                    "subscribed": "false"
                 },
                 "JSON_ARRAY": {},
                 "XML": {},
@@ -502,8 +505,7 @@
                 "userId": "user123",
                 "groupId": "17",
                 "traits": {
-                    "operation": "remove",
-                    "subscriber_status": "true"
+                    "operation": "remove"
                 },
                 "type": "group"
             },

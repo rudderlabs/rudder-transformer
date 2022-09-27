@@ -1,9 +1,5 @@
 const { set } = require("lodash");
-const {
-  getDestinationExternalID,
-  getFieldValueFromMessage,
-  flattenMultilevelPayload
-} = require("../../util");
+const { flattenMultilevelPayload } = require("../../util");
 
 /**
  * This will return the listIds as array from externalId
@@ -46,18 +42,6 @@ const getLists = (message, Config) => {
 };
 
 /**
- * @param {*} message inout message
- * @returns the Engage User ID based on priority and availability
- */
-const getUID = message => {
-  const engageId = getDestinationExternalID(message, "engageId");
-  if (!engageId) {
-    return getFieldValueFromMessage(message, "userIdOnly");
-  }
-  return engageId;
-};
-
-/**
  * @param {*} message input message
  * @returns Page Event name with category
  */
@@ -87,4 +71,4 @@ const refinePayload = (attributes, specificGenericFields) => {
   });
   return payload;
 };
-module.exports = { refinePayload, getUID, generatePageName, getLists };
+module.exports = { refinePayload, generatePageName, getLists };

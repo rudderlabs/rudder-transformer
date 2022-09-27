@@ -47,7 +47,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attribute": [],
+            "attributes": [],
             "leadId": 4,
             "primaryAttributeValue": "Test Product"
           }
@@ -75,7 +75,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attribute": [
+            "attributes": [
               {
                 "apiName": "productId",
                 "value": "prod_1"
@@ -108,7 +108,7 @@
           {
             "activityDate": "2020-12-17T21:00:59.176Z",
             "activityTypeId": 100001,
-            "attribute": [],
+            "attributes": [],
             "leadId": 4,
             "primaryAttributeValue": "Test Product"
           }

@@ -12,7 +12,12 @@ phases:
       - VERSION=saas-dev
       - ls
       - echo build Docker image on `date`
-      - docker build --build-arg version=${VERSION} -t rudderlabs/develop-rudder-transformer:$VERSION -f Dockerfile .
+      - >
+        docker build 
+        --build-arg version=${VERSION} 
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        -t rudderlabs/develop-rudder-transformer:$VERSION 
+        -f Dockerfile .
       - docker run rudderlabs/develop-rudder-transformer:$VERSION npm run testDestinations
       - docker run rudderlabs/develop-rudder-transformer:$VERSION npm run testVersionedRouter
       - echo $?

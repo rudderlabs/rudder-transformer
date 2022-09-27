@@ -20,8 +20,8 @@ function settingProperties(event, message) {
 
   // fields that are already mapped
   const excludeFields = [
-    "user.userName",
-    "user.mailAddress",
+    "user.username",
+    "user.mailaddress",
     "user.id",
     "id",
     "eventRaisedUtc"
@@ -57,12 +57,12 @@ function process(event) {
 
   message.setPropertiesV2(event, mapping);
 
-  // Updating timestamp to acceptable timestamp format ["2017-09-01T09:16:17.3717355Z" -> "2017-09-01T09:16:17.000Z"]
-  if (message.original_timestamp) {
+  // Updating timestamp to acceptable timestamp format ["2017-09-01T09:16:17Z" -> "2017-09-01T09:16:17.000Z"]
+  if (message.originalTimestamp) {
     const date = `${Math.floor(
-      new Date(message.original_timestamp).getTime() / 1000
+      new Date(message.originalTimestamp).getTime() / 1000
     )}`;
-    message.original_timestamp = new Date(date * 1000).toISOString();
+    message.originalTimestamp = new Date(date * 1000).toISOString();
   }
 
   // setting event Name

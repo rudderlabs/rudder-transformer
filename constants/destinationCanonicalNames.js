@@ -70,6 +70,7 @@ const DestCanonicalNames = {
   ],
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   engage: ["engage", "Engage", "ENGAGE"]
+  june: ["june", "JUNE", "June"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

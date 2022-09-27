@@ -15,14 +15,14 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const {
   ENDPOINT,
-  destKeys,
-  destKeyType,
   DESTINATION,
   MAPPING_CONFIG,
+  MATCH_KEY_FIELDS,
   CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
-  eventToStandardMapping
+  eventToStandardMapping,
+  MATCH_KEY_FIELD_TYPE_DICTIONARY
 } = require("./config");
 
 /**
@@ -62,6 +62,7 @@ const getAccessToken = destination => {
 
 /**
  * Returns an array of urls
+ * %5B%5D signifies an array in encode format
  * @param {*} metadata
  * @param {*} data
  * @param {*} ids
@@ -111,8 +112,8 @@ const prepareMatchKeys = (payload, message) => {
 
   const keys = Object.keys(propertyMapping);
   keys.forEach(key => {
-    if (destKeys.includes(key)) {
-      if (destKeyType[key] === "string") {
+    if (MATCH_KEY_FIELDS.includes(key)) {
+      if (MATCH_KEY_FIELD_TYPE_DICTIONARY[key] === "string") {
         data[key] = propertyMapping[key];
       } else {
         data[key] = [propertyMapping[key]];
@@ -178,6 +179,7 @@ const getEventSetIds = (eventsToIds, standardEvent) => {
 
 /**
  * Returns eventSetIds and standard event name
+ * Payload Structure : [ { standardEvent: 'AddToCart', eventSetIds: [ '1148872185708962', '1148872186708962' ] },{ standardEvent: 'InitiateCheckout', eventSetIds: [ '1148872185708962' ] } ]
  * @param {*} destination
  * @param {*} event
  * @returns
@@ -214,7 +216,6 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
       })
       .build();
   }
-
   return payload;
 };
 
@@ -260,6 +261,7 @@ const getProducts = contents => {
 
 /**
  * Returns actionSource value
+ * ref : https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event#action-source
  * @param {*} payload
  * @returns
  */
@@ -304,6 +306,8 @@ const prepareData = (payload, message, destination) => {
     action_source: getActionSource(payload),
     event_source_url: payload.event_source_url || null
   };
+
+  // ref : https://developers.facebook.com/docs/marketing-apis/data-processing-options#conversions-api-and-offline-conversions-api
   if (limitedDataUSage) {
     const dataProcessingOptions = get(message, "context.dataProcessingOptions");
     if (dataProcessingOptions && Array.isArray(dataProcessingOptions)) {
@@ -364,16 +368,16 @@ const offlineConversionResponseBuilder = (message, destination) => {
     message.event
   );
 
-  const offlineConversionsPayload = [];
+  const offlineConversionsPayloads = [];
   eventToIdsArray.forEach(eventToIds => {
     const { standardEvent, eventSetIds } = eventToIds;
     const obj = {};
     obj.data = getData(data, standardEvent);
     obj.eventSetIds = eventSetIds;
     obj.payload = payload;
-    offlineConversionsPayload.push(obj);
+    offlineConversionsPayloads.push(obj);
   });
-  return offlineConversionsPayload;
+  return offlineConversionsPayloads;
 };
 
 module.exports = { offlineConversionResponseBuilder, prepareUrls };

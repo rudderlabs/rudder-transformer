@@ -47,20 +47,22 @@ const trackResponseBuilder = (message, destination) => {
       .build();
   }
 
-  const offlineConversionsPayload = offlineConversionResponseBuilder(
+  const offlineConversionsPayloads = offlineConversionResponseBuilder(
     message,
     destination
   );
 
-  const urls = [];
-  offlineConversionsPayload.forEach(item => {
+  const finalResponseUrls = [];
+  offlineConversionsPayloads.forEach(item => {
     const { data, eventSetIds, payload } = item;
-    urls.push(...prepareUrls(destination, data, eventSetIds, payload));
+    finalResponseUrls.push(
+      ...prepareUrls(destination, data, eventSetIds, payload)
+    );
   });
 
   const method = defaultPostRequestConfig.requestMethod;
   const eventsToSend = [];
-  urls.forEach(url => {
+  finalResponseUrls.forEach(url => {
     const response = responseBuilder(url, method);
     eventsToSend.push(response);
   });

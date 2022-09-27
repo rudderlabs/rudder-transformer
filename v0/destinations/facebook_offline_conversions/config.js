@@ -9,7 +9,8 @@ const CONFIG_CATEGORIES = {
   }
 };
 
-const destKeys = [
+// ref : https://developers.facebook.com/docs/marketing-api/offline-conversions/#upload-events
+const MATCH_KEY_FIELDS = [
   "email",
   "phone",
   "gen",
@@ -31,7 +32,7 @@ const destKeys = [
   "client_user_agent"
 ];
 
-const destKeyType = {
+const MATCH_KEY_FIELD_TYPE_DICTIONARY = {
   email: "array",
   phone: "array",
   st: "array",
@@ -91,13 +92,13 @@ const ACTION_SOURCES_VALUES = [
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
   ENDPOINT,
-  destKeys,
-  destKeyType,
+  MAPPING_CONFIG,
+  MATCH_KEY_FIELDS,
+  CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
+  MATCH_KEY_FIELD_TYPE_DICTIONARY,
   DESTINATION: "FACEBOOK_OFFLINE_CONVERSIONS"
 };

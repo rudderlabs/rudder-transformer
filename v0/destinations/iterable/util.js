@@ -1,4 +1,4 @@
-import getDestinationExternalIDInfoForRetl from "../../util";
+const { getDestinationExternalIDInfoForRetl } = require("../../util");
 
 const getCatalogEndpoint = (category, message) => {
   return `${category.endpoint}/${
@@ -9,4 +9,4 @@ const getCatalogEndpoint = (category, message) => {
   }`;
 };
 
-module.exports = getCatalogEndpoint;
+module.exports = { getCatalogEndpoint };

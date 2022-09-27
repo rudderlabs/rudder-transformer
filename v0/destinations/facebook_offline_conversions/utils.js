@@ -289,7 +289,7 @@ const getData = (data, standardEvent) => {
  * @returns
  */
 const offlineConversionResponseBuilder = (message, destination) => {
-  let payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.OFFLINE_EVENTS.name]
   );

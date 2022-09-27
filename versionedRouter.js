@@ -526,7 +526,7 @@ if (transformerTestModeEnabled) {
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       trRevCode.versionId = "testVersionId";
-      const res = await pyUserTransformHandler()(
+      const res = await userTransformHandler()(
         events,
         trRevCode.versionId,
         libraryVersionIDs,

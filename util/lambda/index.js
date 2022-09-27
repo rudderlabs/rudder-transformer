@@ -3,15 +3,7 @@
 const JSZip = require("jszip");
 const fs = require("fs");
 const AWS = require("aws-sdk");
-const {
-  createFunction,
-  getFunction,
-  invoke,
-  updateFunctionCode,
-  waitFor
-} = require("aws-sdk/clients/lambda");
 const logger = require("../../logger");
-const { JSON_IMPORT_CODE, TRANSFORM_WRAPPER_CODE } = require("./utils");
 
 const lambda = new AWS.Lambda({
   apiVersion: "2015-03-31",
@@ -19,6 +11,14 @@ const lambda = new AWS.Lambda({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ""
 });
+
+const {
+  createFunction,
+  getFunction,
+  invoke,
+  updateFunctionCode,
+  waitFor
+} = lambda;
 
 const promisify = fn => (...args) =>
   new Promise((resolve, reject) => {
@@ -32,18 +32,22 @@ const promisify = fn => (...args) =>
   });
 
 const createZip = async (fileName, code) => {
-  const zip = new JSZip();
-  zip.file(`${fileName}.py`, code, {
-    base64: true,
-    compression: "DEFLATE"
-  });
+  return new Promise((resolve, reject) => {
+    const zip = new JSZip();
+    zip.file(`${fileName}.py`, code);
 
-  zip
-    .generateNodeStream({ type: "nodebuffer", streamFiles: true })
-    .pipe(fs.createWriteStream(`${fileName}.zip`))
-    .on("finish", function() {
-      logger.debug(`${fileName}.zip has been created`);
-    });
+    zip
+      .generateNodeStream({ type: "nodebuffer", streamFiles: true })
+      .pipe(fs.createWriteStream(`${fileName}.zip`))
+      .on("finish", () => {
+        logger.debug(`${fileName}.zip has been created`);
+        resolve();
+      })
+      .on("error", err => {
+        logger.error(`Error while creating zip file: ${err.message}`);
+        reject(err);
+      });
+  });
 };
 
 const createLambdaFunction = async (functionName, code, publish) => {
@@ -60,7 +64,7 @@ const createLambdaFunction = async (functionName, code, publish) => {
     // Create function
     const params = {
       Code: {
-        ZipFile: zipContent
+        ZipFile: zipContent /* required */
       },
       FunctionName: functionName /* required */,
       Handler: `${functionName}.lambda_handler` /* required */,
@@ -84,8 +88,11 @@ const createLambdaFunction = async (functionName, code, publish) => {
         delay: 1
       }
     };
-    const functionActiveStatusPromise = promisify(waitFor.bind(lambdaProvider));
-    const result = await functionActiveStatusPromise("functionActiveV2", functionParams);
+    const functionActiveStatusPromise = promisify(waitFor.bind(lambda));
+    const result = await functionActiveStatusPromise(
+      "functionActiveV2",
+      functionParams
+    );
     return result;
   } catch (err) {
     logger.error(`Error while creating function: ${err.message}`);
@@ -106,9 +113,7 @@ const updateLambdaFunction = async (functionName, code, publish) => {
     });
     // Update function code
     const params = {
-      Code: {
-        ZipFile: zipContent
-      },
+      ZipFile: zipContent,
       FunctionName: functionName /* required */,
       Publish: publish
     };
@@ -152,13 +157,17 @@ const getLambdaFunction = async (functionName, qualifier = "") => {
   }
 };
 
-const invokeLambdaFunction = async (functionName, events, qualifier = "") => {
+const invokeLambdaFunction = async (
+  functionName,
+  transformationPayload,
+  qualifier = ""
+) => {
   try {
     const params = {
       FunctionName: functionName,
       InvocationType: "RequestResponse",
       LogType: "None",
-      Payload: JSON.stringify(events)
+      Payload: JSON.stringify(transformationPayload)
     };
     if (qualifier) {
       params.Qualifier = qualifier;
@@ -166,14 +175,19 @@ const invokeLambdaFunction = async (functionName, events, qualifier = "") => {
 
     const invokeFunctionPromise = promisify(invoke.bind(lambda));
     const result = await invokeFunctionPromise(params);
-    return result;
+    return JSON.parse(result.Payload);
   } catch (err) {
     logger.error(`Error while invoking function: ${err.message}`);
     throw err;
   }
 };
 
-const testLambda = async (functionName, code, events, publish) => {
+const testLambda = async (
+  functionName,
+  code,
+  transformationPayload,
+  publish
+) => {
   try {
     logger.debug("Executing lambda test flow");
     let functionExists = true;
@@ -185,29 +199,37 @@ const testLambda = async (functionName, code, events, publish) => {
 
     // create or update function
     let resp;
-    if (functionExists) {
+    if (!functionExists) {
       resp = await createLambdaFunction(functionName, code, publish);
     } else {
       resp = await updateLambdaFunction(functionName, code, publish);
     }
     // invoke function
-    const qualifier = publish ? resp.Version : "$LATEST";
-    const result = await invokeLambdaFunction(functionName, events, qualifier);
+    const qualifier = resp.Configuration?.Version || "$LATEST";
+    const result = await invokeLambdaFunction(
+      functionName,
+      transformationPayload,
+      qualifier
+    );
     logger.debug("Finished lambda test flow");
     return {
       ...result,
       publishedVersion: publish ? qualifier : ""
     };
   } catch (err) {
-    logger.error(`Error while testing lambda ${err.message}`);
+    logger.error(`Error while testing lambda: ${err.message}`);
     throw err;
   }
 };
 
-const invokeLambda = async (functionName, events, qualifier) => {
+const invokeLambda = async (functionName, transformationPayload, qualifier) => {
   try {
     logger.debug("Executing lambda invoke flow");
-    const result = await invokeLambdaFunction(functionName, events, qualifier);
+    const result = await invokeLambdaFunction(
+      functionName,
+      transformationPayload,
+      qualifier
+    );
     logger.debug("Finished lambda invoke flow");
     return result;
   } catch (err) {

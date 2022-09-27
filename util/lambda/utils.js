@@ -2,13 +2,15 @@ const JSON_IMPORT_CODE = `
 import json
 `;
 const TRANSFORM_WRAPPER_CODE = `
+logs = []
+
+def log(arg):
+    logs.append(arg)
+
 def lambda_handler(event, context):
     # TODO implement
     res = transformWrapper(event)
-    return {
-        'statusCode': 200,
-        'version': '1'
-    }
+    return res
 
 def transformWrapper(transformationPayload):
     events = transformationPayload["events"]
@@ -75,7 +77,10 @@ def transformWrapper(transformationPayload):
                     "error": str(e),
                     "metadata": eventsMetadata[currMsgId] or {}
                 })
-    return outputEvents
+    result = dict()
+    result['transformedEvents'] = outputEvents
+    result['logs'] = logs
+    return result
 `;
 
 module.exports = {

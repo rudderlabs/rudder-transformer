@@ -21,6 +21,11 @@ async function pyUserTransformHandler(
       ...metaTags
     };
 
+    const transformationPayload = {
+      events,
+      transformationType: "transformEvent"
+    };
+
     let result;
     if (testMode) {
       const lambdaCode =
@@ -29,7 +34,7 @@ async function pyUserTransformHandler(
       result = await testLambda(
         userTransformation.name,
         lambdaCode,
-        events,
+        transformationPayload,
         testWithPublish
       );
       stats.timing("lambda_test_time", testTime, tags);
@@ -37,7 +42,11 @@ async function pyUserTransformHandler(
       const functionName = `${userTransformation.workspaceId}_${userTransformation.name}`;
       const qualifier = userTransformation.handlerId;
       const invokeTime = new Date();
-      result = await invokeLambda(functionName, qualifier, events);
+      result = await invokeLambda(
+        functionName,
+        qualifier,
+        transformationPayload
+      );
       stats.timing("lambda_invoke_time", invokeTime, tags);
     }
 

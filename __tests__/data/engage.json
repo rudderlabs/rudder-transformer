@@ -1,5 +1,29 @@
 [
     {
+        "description": "[IDENTIFY]: Neither externalId or userId is given.",
+        "input": {
+            "message": {
+                "anonymousId": "1",
+                "traits": {
+                    "firstName": "Anant",
+                    "lastName": "jain",
+                    "email": "anant@r.com",
+                    "hasPurchased": "yes"
+                },
+                "type": "identify"
+            },
+            "destination": {
+                "Config": {
+                    "publicKey": "49ur490rjfo34gi04y38r9go",
+                    "privateKey": "n89g389yr389fgbef0u2rff"
+                }
+            }
+        },
+        "output": {
+            "error": "Neither externalId or userId is available."
+        }
+    },
+    {
         "description": "[IDENTIFY]: Create a new User with Metadata and lists from externalId",
         "input": {
             "message": {
@@ -13,7 +37,6 @@
                         {
                             "type": "engageListId",
                             "id": "4r40hfio3rbfln"
-                            
                         }
                     ]
                 },
@@ -92,8 +115,7 @@
         "input": {
             "message": {
                 "userId": "1",
-                "context": {
-                },
+                "context": {},
                 "originalTimestamp": "2020-09-28T19:53:31.900Z",
                 "traits": {
                     "firstName": "Anant",
@@ -467,7 +489,7 @@
     {
         "description": "[ GROUP ]: Remove user from List with externalID.",
         "input": {
-            "anonymousId":3,
+            "anonymousId": 3,
             "message": {
                 "context": {
                     "externalId": [

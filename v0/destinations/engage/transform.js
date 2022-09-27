@@ -60,6 +60,18 @@ const identifyResponseBuilder = (message, Config) => {
   );
   const { traits } = message;
   const uid = getUID(message);
+  if (!uid) {
+    throw new ErrorBuilder()
+      .setMessage("Neither externalId or userId is available.")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
   const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace("uid", uid)}`;
   const refinedPayload = refinePayload(
     traits,
@@ -95,6 +107,18 @@ const trackResponseBuilder = (message, Config) => {
   const payload = {};
   const meta = refinePayload(properties, ConfigCategories.TRACK.genericFields);
   const uid = getUID(message);
+  if (!uid) {
+    throw new ErrorBuilder()
+      .setMessage("Neither externalId or userId is available.")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
   const endpoint = `${ConfigCategories.TRACK.endpoint.replace("uid", uid)}`;
   payload.properties = meta;
   payload.event = message.event;
@@ -108,6 +132,18 @@ const trackResponseBuilder = (message, Config) => {
 };
 const pageResponseBuilder = (message, Config) => {
   const uid = getUID(message);
+  if (!uid) {
+    throw new ErrorBuilder()
+      .setMessage("Neither externalId or userId is available.")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
   const endpoint = `${ConfigCategories.PAGE.endpoint.replace("uid", uid)}`;
 
   const { properties } = message;

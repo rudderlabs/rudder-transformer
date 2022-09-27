@@ -69,7 +69,7 @@ const DestCanonicalNames = {
     "mailModo"
   ],
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
-  engage: ["engage", "Engage", "ENGAGE"]
+  engage: ["engage", "Engage", "ENGAGE"],
   june: ["june", "JUNE", "June"]
 };
 

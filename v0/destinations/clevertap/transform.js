@@ -47,7 +47,7 @@ const responseWrapper = (payload, destination) => {
   // If the acount belongs to specific regional server,
   // we need to modify the url endpoint based on dest config.
   // Source: https://developer.clevertap.com/docs/idc
-  response.endpoint = getEndpoint(destination);
+  response.endpoint = getEndpoint(destination.Config);
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "X-CleverTap-Account-Id": destination.Config.accountId,

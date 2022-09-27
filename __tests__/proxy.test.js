@@ -16,7 +16,8 @@ const deleteUserDestinations = [
   "intercom",
   "mp",
   "af",
-  "clevertap"
+  "clevertap",
+  "engage"
 ];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;

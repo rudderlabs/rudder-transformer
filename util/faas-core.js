@@ -4,24 +4,50 @@ const fs = require("fs-extra");
 const os = require("os");
 const path = require("path");
 const shell = require("shelljs");
+const crypto = require("crypto");
 const dockerUtils = require("./docker-utils");
 const logger = require("../logger");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
+const DESTRUCTION_TIMEOUT_IN_MS = 2 * 60 * 1000;
 
 const resourcesBasePath = path.join(__dirname, "..", "resources", "openfaas");
 const buildsFolderPrefix = "openfaas-builds-";
 
-function normalizeTransformationName(transformationName) {
-  return transformationName
+function hash(value) {
+  return crypto
+    .createHash("sha256")
+    .update(value)
+    .digest("hex");
+}
+
+function weakHash(value) {
+  return crypto
+    .createHash("sha1")
+    .update(value)
+    .digest("hex");
+}
+
+function buildFunctionName(transformationName, id) {
+  let fnName = transformationName
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "-");
+
+  if (id) {
+    fnName += `-${id.trim().replace(/\s+/g, "")}`;
+  }
+
+  return fnName;
 }
 
-function buildImageName(transformationName) {
-  const tagName = normalizeTransformationName(transformationName);
+function buildImageName(versionId, code) {
+  let tagName = versionId;
+
+  if (versionId === "testVersionId") {
+    tagName = hash(code);
+  }
 
   return `${FUNCTION_REPOSITORY}:${tagName}`;
 }
@@ -49,18 +75,44 @@ async function dockerizeAndPush(buildDir, imageName) {
   await dockerUtils.pushImage(imageName);
 }
 
-async function deployImage(imageName, transformationName) {
-  const normalizedTransformationName = normalizeTransformationName(transformationName);
+function deleteFunction(functionName) {
+  return axios.delete(
+    new URL(
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
+    ).toString(),
+    {
+      data: {
+        functionName
+      }
+    }
+  );
+}
 
+async function isFunctionDeployed(functionName) {
+  const deployedFunctions = await axios.get(
+    new URL(
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
+    ).toString()
+  );
+
+  let matchFound = false;
+
+  deployedFunctions.data.forEach(deployedFunction => {
+    if (deployedFunction.name === functionName) matchFound = true;
+  });
+
+  return matchFound;
+}
+
+async function deployFunction(imageName, functionName, testMode) {
   const payload = {
-    service: normalizedTransformationName,
-    name: normalizedTransformationName,
+    service: functionName,
+    name: functionName,
     image: imageName,
     namespace: OPENFAAS_NAMESPACE,
     envProcess: "python index.py",
     labels: {
-      faas_function: normalizedTransformationName,
-      "com.openfaas.scale.max": "3"
+      faas_function: functionName
     },
     annotations: {
       "prometheus.io.scrape": "false"
@@ -75,57 +127,58 @@ async function deployImage(imageName, transformationName) {
   );
 }
 
-function undeployFunction(functionName) {
-  return axios.delete(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
-    ).toString(),
-    {
-      functionName
-    }
-  );
-}
-
-async function faasDeploymentHandler(transformationName, code) {
-  const imageName = buildImageName(transformationName);
-
-  try {
-    await dockerUtils.pullImage(imageName);
-    await undeployFunction(
-      normalizeTransformationName(transformationName)
-    ).catch(_ => {});
-
-    return;
-  } catch (error) {
-    logger.error(`Error pulling image ${imageName}.`);
-  }
-
+async function faasDeploymentHandler(imageName, functionName, code, testMode) {
   const buildDir = await buildContext(code);
   await dockerizeAndPush(buildDir, imageName);
-  await deployImage(imageName, transformationName);
+  await deployFunction(imageName, functionName, testMode);
 
   fs.rmdir(buildDir, { recursive: true, force: true });
 }
 
-async function faasInvocationHandler(transformationName, code, events = []) {
-  await faasDeploymentHandler(transformationName, code);
+async function faasInvocationHandler(
+  transformationName,
+  code,
+  versionId,
+  events = [],
+  testMode = false,
+  override = false
+) {
+  const imageName = buildImageName(versionId, code);
+  const functionName = buildFunctionName(
+    transformationName,
+    versionId === "testVersionId" ? weakHash(code) : versionId
+  );
+
+  const isFnDeployed = await isFunctionDeployed(functionName);
+
+  if (!isFnDeployed || override) {
+    if (override) {
+      await deleteFunction(functionName).catch(error => {
+        logger.error(error.message);
+      });
+    }
+
+    await faasDeploymentHandler(imageName, functionName, code, testMode);
+  }
 
   const promises = [];
 
   events.forEach(event => {
     const promise = axios.post(
       new URL(
-        path.join(
-          process.env.OPENFAAS_GATEWAY_URL,
-          "function",
-          normalizeTransformationName(transformationName)
-        )
+        path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
       ).toString(),
       event
     );
 
     promises.push(promise);
   });
+
+  if (testMode) {
+    setTimeout(async () => {
+      await deleteFunction(functionName).catch(_e => {});
+    }, DESTRUCTION_TIMEOUT_IN_MS);
+  }
 
   return Promise.all(promises);
 }

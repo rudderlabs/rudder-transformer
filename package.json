@@ -38,7 +38,7 @@
     "axios": "^0.26.0",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
-    "crypto-js": "^4.0.0",
+    "crypto-js": "^4.1.1",
     "dotenv": "^8.6.0",
     "flat": "^5.0.2",
     "fs-extra": "^10.1.0",

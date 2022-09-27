@@ -22,7 +22,7 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { faasDeploymentHandler, faasInvocationHandler ,userTransformHandler } = require("./routerUtils");
+const { faasInvocationHandler ,userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
@@ -631,27 +631,33 @@ if (startDestTransformer) {
       });
     });
 
-    router.post("/faas/python/deploy", async ctx => {
-      try {
-        const { transformationName, code } = ctx.request.body;
-
-        faasDeploymentHandler()(transformationName, code);
-
-        ctx.body = "";
-        ctx.status = 200;
-      } catch (error) {
-        ctx.status = 500;
-      }
-    });
-
     router.post("/faas/python/invoke", async ctx => {
       try {
-        const { transformationName, code, events = [] } = ctx.request.body;
+        const {
+          transformationName,
+          code,
+          versionId = "testVersionId",
+          events = [],
+          override = false
+        } = ctx.request.body;
+
+        if (!transformationName || !code) {
+          throw new Error(
+            "Invalid Request. Missing parameters in transformation code block"
+          );
+        }
+
+        if (!events || events.length === 0) {
+          throw new Error("Invalid request. Missing events");
+        }
 
         const transformationResponses = await faasInvocationHandler()(
           transformationName,
           code,
-          events
+          versionId,
+          events,
+          versionId === "testVersionId",
+          override
         );
 
         const responseArray = [];
@@ -664,7 +670,8 @@ if (startDestTransformer) {
         ctx.status = 200;
       } catch (error) {
         logger.error(`Error invoking faas function: ${error}`);
-        ctx.status = 500;
+        ctx.body = { error: error.message };
+        ctx.status = 400;
       }
     });
   }

@@ -64,7 +64,7 @@ const errorDetailsMap = {
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
     33: {
-      status: 500,
+      status: 400,
       statTags: {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE

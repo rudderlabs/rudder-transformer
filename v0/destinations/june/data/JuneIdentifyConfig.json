@@ -1,0 +1,20 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

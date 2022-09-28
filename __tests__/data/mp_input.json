@@ -3248,5 +3248,165 @@
       "type": "identify",
       "userId": "user1234"
     }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Application Installed",
+      "sentAt": "2022-09-05T07:46:26.322Z",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "12"
+        },
+        "app": {
+          "name": "Sample Kotlin",
+          "build": "4",
+          "version": "1.0",
+          "namespace": "com.example.testapp1mg"
+        },
+        "device": {
+          "id": "39da706ec83d0e90",
+          "name": "emu64a",
+          "type": "Android",
+          "model": "sdk_gphone64_arm64",
+          "manufacturer": "Google"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1440,
+          "height": 2984,
+          "density": 560
+        },
+        "traits": {
+          "anonymousId": "39da706ec83d0e90"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "T-Mobile",
+          "cellular": true,
+          "bluetooth": true
+        },
+        "timezone": "Asia/Kolkata",
+        "sessionId": 1662363980,
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+        "sessionStart": true
+      },
+      "rudderId": "3ef1dec3-d729-4830-a394-7b8be6819765",
+      "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+      "properties": {
+        "build": 4,
+        "version": "1.0"
+      },
+      "anonymousId": "39da706ec83d0e90",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2022-09-05T07:46:20.290Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "useNewMapping": true
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Application Opened",
+      "sentAt": "2022-09-05T07:46:26.322Z",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "12"
+        },
+        "app": {
+          "name": "Sample Kotlin",
+          "build": "4",
+          "version": "1.0",
+          "namespace": "com.example.testapp1mg"
+        },
+        "device": {
+          "id": "39da706ec83d0e90",
+          "name": "emu64a",
+          "type": "Android",
+          "model": "sdk_gphone64_arm64",
+          "manufacturer": "Google"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1440,
+          "height": 2984,
+          "density": 560
+        },
+        "traits": {
+          "anonymousId": "39da706ec83d0e90"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "T-Mobile",
+          "cellular": true,
+          "bluetooth": true
+        },
+        "timezone": "Asia/Kolkata",
+        "sessionId": "1662363980",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android Tiramisu Build/TPP2.220218.008)",
+        "sessionStart": true
+      },
+      "rudderId": "3ef1dec3-d729-4830-a394-7b8be6819765",
+      "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
+      "properties": {
+        "build": 4,
+        "version": "1.0"
+      },
+      "anonymousId": "39da706ec83d0e90",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2022-09-05T07:46:20.290Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "useNewMapping": true
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
+    }
   }
 ]

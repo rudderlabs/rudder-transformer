@@ -6,7 +6,7 @@ const {
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
-const { API_VERSION } = require("./config");
+const { API_VERSION, DESTINATION } = require("./config");
 const {
   processLegacyIdentify,
   processLegacyTrack,
@@ -88,10 +88,11 @@ const process = async event => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "HS");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
+
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
@@ -102,23 +103,31 @@ const processRouterDest = async inputs => {
     inputs[0].message,
     "HS"
   );
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-  ) {
-    // skip splitting the batches to inserts and updates if object it is an association
-    if (objectType.toLowerCase() !== "association") {
-      // get info about existing objects and splitting accordingly.
-      inputs = await splitEventsForCreateUpdate(inputs, destination);
+
+  try {
+    if (
+      mappedToDestination &&
+      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
+    ) {
+      // skip splitting the batches to inserts and updates if object it is an association
+      if (objectType.toLowerCase() !== "association") {
+        // get info about existing objects and splitting accordingly.
+        inputs = await splitEventsForCreateUpdate(inputs, destination);
+      }
+    } else {
+      // reduce the no. of calls for properties endpoint
+      const traitsFound = inputs.some(input => {
+        return fetchFinalSetOfTraits(input.message) !== undefined;
+      });
+      if (traitsFound) {
+        propertyMap = await getProperties(destination);
+      }
     }
-  } else {
-    // reduce the no. of calls for properties endpoint
-    const traitsFound = inputs.some(input => {
-      return fetchFinalSetOfTraits(input.message) !== undefined;
-    });
-    if (traitsFound) {
-      propertyMap = await getProperties(destination);
-    }
+  } catch (error) {
+    // Any error thrown from the above try block applies to all the events
+    return inputs.map(input =>
+      handleRtTfSingleEventError(input, error, DESTINATION)
+    );
   }
 
   await Promise.all(
@@ -154,7 +163,11 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(input, error, "HS");
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          DESTINATION
+        );
         errorRespList.push(errRespEvent);
       }
     })

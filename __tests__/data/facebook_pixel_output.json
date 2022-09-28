@@ -19,8 +19,14 @@
     "files": {}
   },
   {
-    "error": "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
-    "statusCode": 400
+    "error": "For identify events, \"Advanced Mapping\" configuration must be enabled on the RudderStack dashboard",
+    "statusCode": 400,
+    "statTags": {
+      "destType": "FACEBOOK_PIXEL",
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "configuration"
+    }
   },
   {
     "version": "1",
@@ -462,11 +468,12 @@
   },
   {
     "statusCode": 400,
-    "error": "Event name is required",
+    "error": "'event' is required",
     "statTags": {
-      "destination": "facebook_pixel",
+      "destType": "FACEBOOK_PIXEL",
       "stage": "transform",
-      "scope": "exception"
+      "scope": "transformation",
+      "meta": "badEvent"
     }
   },
   {
@@ -511,9 +518,10 @@
     "statusCode": 400,
     "error": "Revenue could not be converted to number",
     "statTags": {
-      "destination": "facebook_pixel",
+      "destType": "FACEBOOK_PIXEL",
       "stage": "transform",
-      "scope": "exception"
+      "scope": "transformation",
+      "meta": "badParam"
     }
   },
   {
@@ -556,7 +564,13 @@
   },
   {
     "statusCode": 400,
-    "error": "Category must be must be a string"
+    "error": "'properties.category' must be either be a string or an Array",
+    "statTags": {
+      "destType": "FACEBOOK_PIXEL",
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "badParam"
+    }
   },
   {
     "version": "1",
@@ -579,25 +593,33 @@
   },
   {
     "statusCode": 400,
-    "error": "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+    "error": "Events must be sent within seven days of their occurrence or up to one minute in the future.",
     "statTags": {
-      "destination": "facebook_pixel",
+      "destType": "FACEBOOK_PIXEL",
       "stage": "transform",
-      "scope": "exception"
+      "scope": "transformation",
+      "meta": "badEvent"
     }
   },
   {
     "statusCode": 400,
-    "error": "[facebook_pixel]: Events must be sent within seven days of their occurrence or up to one minute in the future.",
+    "error": "Events must be sent within seven days of their occurrence or up to one minute in the future.",
     "statTags": {
-      "destination": "facebook_pixel",
+      "destType": "FACEBOOK_PIXEL",
       "stage": "transform",
-      "scope": "exception"
+      "scope": "transformation",
+      "meta": "badEvent"
     }
   },
   {
     "statusCode": 400,
-    "error": "'query' should be in string format only"
+    "error": "'query' should be in string format only",
+    "statTags": {
+      "destType": "FACEBOOK_PIXEL",
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "badEvent"
+    }
   },
   {
     "version": "1",

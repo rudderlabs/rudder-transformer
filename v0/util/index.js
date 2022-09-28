@@ -1526,6 +1526,12 @@ function removeHyphens(str) {
   return str.replace(/-/g, "");
 }
 
+function isCdkV2Destination(event) {
+  return Boolean(
+    event.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+  );
+}
+
 function isCdkDestination(event) {
   // TODO: maybe dont need all these checks in place
   return (
@@ -1804,5 +1810,6 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  isCdkV2Destination
 };

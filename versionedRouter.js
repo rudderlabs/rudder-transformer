@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const { WorkflowEngine } = require('rudder-workflow-engine');
 const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
@@ -16,7 +17,8 @@ const {
   generateErrorObject,
   CustomError,
   isHttpStatusSuccess,
-  getErrorRespEvents
+  getErrorRespEvents,
+  isCdkV2Destination
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -120,7 +122,9 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(parsedEvent)) {
+        if (isCdkV2Destination(parsedEvent)) {
+          // TODO
+        } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {

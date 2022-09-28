@@ -39,6 +39,7 @@ const DestCanonicalNames = {
   webhook: ["webhook", "Webhook", "WebHook", "WEBHOOK"],
   mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
   mautic: ["MAUTIC", "mautic", "Mautic"],
+  mailjet: ["MAILJET", "MailJet", "mailjet", "Mailjet"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
   pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],

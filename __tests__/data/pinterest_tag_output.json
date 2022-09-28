@@ -1,219 +1,227 @@
 [
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "action_source": "web",
-        "event_name": "Watch Video",
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "app_id": "429047995",
-        "advertiser_id": "429047995",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
-        },
-        "custom_data": {
-          "currency": "USD",
-          "value": 27.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "num_items": 3,
-          "content_ids": [
-            "507f1f77bcf86cd799439011",
-            "505bd76785ebb509fc183733"
-          ],
-          "contents": [
-            {
-              "quantity": 1,
-              "item_price": "19"
-            },
-            {
-              "quantity": 2,
-              "item_price": "3"
-            }
-          ]
-        }
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "action_source": "web",
-        "event_name": "Checkout",
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "app_id": "429047995",
-        "advertiser_id": "429047995",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
+      "params": {},
+      "body": {
+        "JSON": {
+          "action_source": "web",
+          "event_name": "Watch Video",
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "advertiser_id": "429047995",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": 27.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "num_items": 3,
+            "content_ids": [
+              "507f1f77bcf86cd799439011",
+              "505bd76785ebb509fc183733"
+            ],
+            "contents": [
+              {
+                "quantity": 1,
+                "item_price": "19"
+              },
+              {
+                "quantity": 2,
+                "item_price": "3"
+              }
+            ]
+          }
         },
-        "custom_data": {
-          "currency": "USD",
-          "value": 27.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "num_items": 3,
-          "content_ids": [
-            "507f1f77bcf86cd799439011",
-            "505bd76785ebb509fc183733"
-          ],
-          "contents": [
-            {
-              "quantity": 1,
-              "item_price": "19"
-            },
-            {
-              "quantity": 2,
-              "item_price": "3"
-            }
-          ]
-        }
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_name": "AddToCart",
-        "action_source": "web",
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "app_id": "429047995",
-        "advertiser_id": "429047995",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "action_source": "web",
+          "event_name": "Checkout",
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "advertiser_id": "429047995",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": 27.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "num_items": 3,
+            "content_ids": [
+              "507f1f77bcf86cd799439011",
+              "505bd76785ebb509fc183733"
+            ],
+            "contents": [
+              {
+                "quantity": 1,
+                "item_price": "19"
+              },
+              {
+                "quantity": 2,
+                "item_price": "3"
+              }
+            ]
+          }
         },
-        "custom_data": {
-          "currency": "USD",
-          "value": 27.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "num_items": 2,
-          "content_ids": ["123"],
-          "contents": [
-            {
-              "quantity": 2,
-              "item_price": "25"
-            }
-          ]
-        }
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_name": "AddToCart",
+          "action_source": "web",
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "advertiser_id": "429047995",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": 27.5,
+            "order_id": "50314b8e9bcf000000000000",
+            "num_items": 2,
+            "content_ids": [
+              "123"
+            ],
+            "contents": [
+              {
+                "quantity": 2,
+                "item_price": "25"
+              }
+            ]
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
   {
     "statusCode": 400,
     "error": "Advertiser Id not found. Aborting"
@@ -222,80 +230,82 @@
     "statusCode": 400,
     "error": "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent."
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_name": "Watch Video",
-        "event_time": 1597383030,
-        "action_source": "web",
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "app_id": "429047995",
-        "advertiser_id": "429047995",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
-        },
-        "custom_data": {
-          "currency": "USD",
-          "value": 27.5,
-          "num_items": 2,
-          "order_id": "50314b8e9bcf000000000000",
-          "content_ids": [
-            "507f1f77bcf86cd799439011",
-            "505bd76785ebb509fc183733"
-          ],
-          "contents": [
-            {
-              "quantity": 1,
-              "item_price": "19"
-            },
-            {
-              "quantity": 2,
-              "item_price": "3"
-            }
-          ]
-        }
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_name": "Watch Video",
+          "event_time": 1597383030,
+          "action_source": "web",
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "advertiser_id": "429047995",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": 27.5,
+            "num_items": 2,
+            "order_id": "50314b8e9bcf000000000000",
+            "content_ids": [
+              "507f1f77bcf86cd799439011",
+              "505bd76785ebb509fc183733"
+            ],
+            "contents": [
+              {
+                "quantity": 1,
+                "item_price": "19"
+              },
+              {
+                "quantity": 2,
+                "item_price": "3"
+              }
+            ]
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
   {
     "statusCode": 400,
     "error": "Advertiser Id not found. Aborting"
@@ -308,347 +318,361 @@
     "statusCode": 400,
     "error": "Action source must be one of 'app_android', 'app_ios', 'web', 'offline' "
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_name": "custom",
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "app_id": "429047995",
-        "action_source": "web",
-        "advertiser_id": "123456",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_name": "custom",
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "action_source": "web",
+          "advertiser_id": "123456",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": 27.5,
+            "num_items": 2,
+            "order_id": "50314b8e9bcf000000000000",
+            "content_ids": [
+              "507f1f77bcf86cd799439011",
+              "505bd76785ebb509fc183733"
+            ],
+            "contents": [
+              {
+                "quantity": 1,
+                "item_price": "19"
+              },
+              {
+                "quantity": 2,
+                "item_price": "3"
+              }
+            ]
+          }
         },
-        "custom_data": {
-          "currency": "USD",
-          "value": 27.5,
-          "num_items": 2,
-          "order_id": "50314b8e9bcf000000000000",
-          "content_ids": [
-            "507f1f77bcf86cd799439011",
-            "505bd76785ebb509fc183733"
-          ],
-          "contents": [
-            {
-              "quantity": 1,
-              "item_price": "19"
-            },
-            {
-              "quantity": 2,
-              "item_price": "3"
-            }
-          ]
-        }
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "action_source": "web",
-        "event_name": "PageVisit",
-        "app_id": "429047995",
-        "advertiser_id": "123456",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
-        }
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_time": 1597383030,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "action_source": "web",
-        "event_name": "ViewCategory",
-        "app_id": "429047995",
-        "advertiser_id": "123456",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
-        }
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "action_source": "web",
+          "event_name": "PageVisit",
+          "app_id": "429047995",
+          "advertiser_id": "123456",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_time": 1597383030,
-        "opt_out": false,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "action_source": "web",
-        "event_name": "ViewCategory",
-        "app_id": "429047995",
-        "advertiser_id": "123456",
-        "user_data": {
-          "em": [
-            "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-          ],
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "hashed_maids": [
-            "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
-          ],
-          "client_user_agent": "chrome"
-        }
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_time": 1597383030,
-        "opt_out": true,
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "action_source": "web",
-        "event_name": "ViewCategory",
-        "app_id": "429047995",
-        "advertiser_id": "123456",
-        "user_data": {
-          "ph": [
-            "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-          ],
-          "ln": [
-            "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-          ],
-          "fn": [
-            "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-          ],
-          "ct": [
-            "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-          ],
-          "st": [
-            "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-          ],
-          "zp": [
-            "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-          ],
-          "country": [
-            "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-          ],
-          "client_ip_address": "127.0.0.0",
-          "client_user_agent": "chrome"
-        }
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_time": 1597383030,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "action_source": "web",
+          "event_name": "ViewCategory",
+          "app_id": "429047995",
+          "advertiser_id": "123456",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ct.pinterest.com/events/v3",
-    "headers": { "Content-Type": "application/json" },
-    "params": {},
-    "body": {
-      "JSON": {
-        "event_time": 1597383030,
-        "action_source": "web",
-        "opt_out": true,
-        "event_name": "ViewCategory",
-        "app_id": "429047995",
-        "advertiser_id": "123456",
-        "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "user_data": {
-          "ph": [
-            "Hashed phone"
-          ],
-          "db": [
-            "Hashed DB"
-          ],
-          "ln": [
-            "Hashed Lastname"
-          ],
-          "fn": [
-            "Hashed FirstName"
-          ],
-          "ct": [
-            "hashed city"
-          ],
-          "st": [
-            "hashed state"
-          ],
-          "zp": [
-            "Hashed Zip"
-          ],
-          "country": [
-            "hashed country"
-          ],
-          "hashed_maids": [
-            "Hashed maids"
-          ],
-          "ge": [
-            "Hashed Gender"
-          ],
-          "client_user_agent": "chrome"
-        }
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  }
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_time": 1597383030,
+          "opt_out": false,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "action_source": "web",
+          "event_name": "ViewCategory",
+          "app_id": "429047995",
+          "advertiser_id": "123456",
+          "user_data": {
+            "em": [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
+            ],
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "hashed_maids": [
+              "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
+            ],
+            "client_user_agent": "chrome"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_time": 1597383030,
+          "opt_out": true,
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "action_source": "web",
+          "event_name": "ViewCategory",
+          "app_id": "429047995",
+          "advertiser_id": "123456",
+          "user_data": {
+            "ph": [
+              "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
+            ],
+            "ln": [
+              "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
+            ],
+            "fn": [
+              "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
+            ],
+            "ct": [
+              "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
+            ],
+            "st": [
+              "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
+            ],
+            "zp": [
+              "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
+            ],
+            "country": [
+              "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
+            ],
+            "client_ip_address": "127.0.0.0",
+            "client_user_agent": "chrome"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ct.pinterest.com/events/v3",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_time": 1597383030,
+          "action_source": "web",
+          "opt_out": true,
+          "event_name": "ViewCategory",
+          "app_id": "429047995",
+          "advertiser_id": "123456",
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "user_data": {
+            "ph": [
+              "Hashed phone"
+            ],
+            "db": [
+              "Hashed DB"
+            ],
+            "ln": [
+              "Hashed Lastname"
+            ],
+            "fn": [
+              "Hashed FirstName"
+            ],
+            "ct": [
+              "hashed city"
+            ],
+            "st": [
+              "hashed state"
+            ],
+            "zp": [
+              "Hashed Zip"
+            ],
+            "country": [
+              "hashed country"
+            ],
+            "hashed_maids": [
+              "Hashed maids"
+            ],
+            "ge": [
+              "Hashed Gender"
+            ],
+            "client_user_agent": "chrome"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ]
 ]

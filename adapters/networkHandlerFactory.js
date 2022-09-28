@@ -19,6 +19,9 @@ const {
 const {
   networkHandler: GA4NetworkHandler
 } = require("../v0/destinations/ga4/utils");
+const {
+  networkHandler: GoogleAdwordsOfflineConversionsNetworkHandler
+} = require("../v0/destinations/google_adwords_offline_conversions/utils");
 
 const {
   networkHandler: FbPixelNetworkHandler
@@ -32,6 +35,7 @@ const handler = {
   google_adwords_remarketing_lists: GoogleAdwordsRemarketingListNetworkHandler,
   google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions,
   ga4: GA4NetworkHandler,
+  google_adwords_offline_conversions: GoogleAdwordsOfflineConversionsNetworkHandler,
   facebook_pixel: FbPixelNetworkHandler
 };
 

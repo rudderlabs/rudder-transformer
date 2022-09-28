@@ -4,7 +4,8 @@ const {
   constructPayload,
   getHashFromArray,
   getIntegrationsObj,
-  getDestinationExternalID
+  getDestinationExternalID,
+  getFieldValueFromMessage
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
@@ -19,8 +20,9 @@ const {
  * @param {*} payload
  * @returns
  */
-const validatePayload = payload => {
-  if (!payload.email) {
+const validatePayload = message => {
+  const email = getFieldValueFromMessage(message, "email");
+  if (!email) {
     throw new ErrorBuilder()
       .setMessage("[MailJet] :: Parameter Email Is Required")
       .setStatus(400)
@@ -87,12 +89,11 @@ const getAction = integrationsObj => {
  * @returns
  */
 const createOrUpdateContactResponseBuilder = (message, destination) => {
+  validatePayload(message);
   const createOrUpdateContactPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name]
   );
-
-  validatePayload(createOrUpdateContactPayload);
 
   const { Config } = destination;
   const { contactPropertiesMapping, listId } = Config;

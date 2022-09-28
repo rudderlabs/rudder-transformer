@@ -1,0 +1,160 @@
+[
+  {
+    "destKey": "conversions[0].gbraid",
+    "sourceKeys": "properties.gbraid",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].wbraid",
+    "sourceKeys": "properties.wbraid",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].externalAttributionData.externalAttributionCredit",
+    "sourceKeys": "properties.externalAttributionCredit",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "conversions[0].externalAttributionData.externalAttributionModel",
+    "sourceKeys": "properties.externalAttributionModel",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.merchantId",
+    "sourceKeys": "properties.merchantId",
+    "required": false,
+    "metadata": {
+      "type": "toInt"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.feedCountryCode",
+    "sourceKeys": "properties.feedCountryCode",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.feedLanguageCode",
+    "sourceKeys": "properties.feedLanguageCode",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.localTransactionCost",
+    "sourceKeys": "properties.localTransactionCost",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.items[0].productId",
+    "sourceKeys": ["properties.product_id", "properties.sku"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.items[0].quantity",
+    "sourceKeys": "properties.quantity",
+    "required": false,
+    "metadata": {
+      "type": "toInt"
+    }
+  },
+  {
+    "destKey": "conversions[0].cartData.items[0].unitPrice",
+    "sourceKeys": "properties.price",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "conversions[0].userIdentifiers[0].userIdentifierSource",
+    "sourceKeys": "properties.userIdentifierSource",
+    "required": false,
+    "metadata": {
+      "type": "toString",
+      "allowedKeyCheck": [
+        {
+          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "FIRST_PARTY", "THIRD_PARTY"],
+          "type": "toUpperCase"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "conversions[0].conversionEnvironment",
+    "sourceKeys": "properties.conversionEnvironment",
+    "required": false,
+    "metadata": {
+      "type": "toString",
+      "allowedKeyCheck": [
+        {
+          "sourceVal": ["UNSPECIFIED", "UNKNOWN", "APP", "WEB"],
+          "type": "toUpperCase"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "conversions[0].gclid",
+    "sourceKeys": "properties.gclid",
+    "required": false
+  },
+  {
+    "destKey": "conversions[0].conversionDateTime",
+    "sourceKeys": ["properties.conversionDateTime", "originalTimestamp"],
+    "required": true,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].conversionValue",
+    "sourceKeys": [
+      "properties.conversionValue",
+      "properties.total",
+      "properties.value",
+      "properties.revenue"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "conversions[0].currencyCode",
+    "sourceKeys": ["properties.currencyCode", "properties.currency"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].orderId",
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  }
+]

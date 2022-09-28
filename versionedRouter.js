@@ -5,7 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const { WorkflowEngine } = require('rudder-workflow-engine');
+const { WorkflowEngine, WorkflowUtils } = require('rudder-workflow-engine');
 const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
@@ -35,6 +35,7 @@ const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
 const { RespStatusError } = require("./util/utils");
+const { getRootPathForDestination } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -123,7 +124,20 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkV2Destination(parsedEvent)) {
-          // TODO
+          const rootDir = getRootPathForDestination(destination);
+
+          // TODO: Defaulted to `workflow.yaml` but should support others as well
+          const workflowPath = path.join(rootDir, "workflow.yaml");
+
+          // TODO: Bind CDK platform bindings here
+          const workflowEngine = new WorkflowEngine(
+            WorkflowUtils.createFromFilePath(workflowPath),
+            rootDir
+          );
+
+          const result = await workflowEngine.execute(parsedEvent);
+          // TODO: Handle remaining output scenarios
+          respEvents = result.output;
         } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);

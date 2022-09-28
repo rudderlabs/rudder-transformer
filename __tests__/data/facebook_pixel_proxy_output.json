@@ -81,7 +81,7 @@
   },
   {
     "output": {
-      "status": 500,
+      "status": 400,
       "message": "[Error occurred while processing response for destination facebook_pixel]: Facebook Pixel: Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
       "destinationResponse": {
         "error": {
@@ -98,7 +98,7 @@
         "destType": "FACEBOOK_PIXEL",
         "stage": "responseTransform",
         "scope": "api",
-        "meta": "retryable"
+        "meta": "abortable"
       }
     }
   }

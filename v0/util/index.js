@@ -167,7 +167,7 @@ const getHashFromArrayWithDuplicate = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      if (!isNotEmpty(array[fromKey])) return;
+      if (isEmpty(array[fromKey])) return;
       const key = isLowerCase
         ? array[fromKey].toLowerCase().trim()
         : array[fromKey].trim();
@@ -919,6 +919,16 @@ const handleMetadataForValue = (
     let foundVal = false;
     if (Array.isArray(allowedKeyCheck)) {
       allowedKeyCheck.some(key => {
+        switch (key.type) {
+          case "toLowerCase":
+            formattedVal = formattedVal.toLowerCase();
+            break;
+          case "toUpperCase":
+            formattedVal = formattedVal.toUpperCase();
+            break;
+          default:
+            break;
+        }
         if (key.sourceVal.includes(formattedVal)) {
           foundVal = true;
           return true;
@@ -1678,6 +1688,45 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
   return respList;
 };
 
+/**
+ * Flattens the input payload to a single level of payload
+ * @param {*} payload Input payload that needs to be flattened
+ * @returns the flattened payload at all levels
+ * Example:
+ * payload={
+    "address": {
+        "city": {
+            "Name": "Delhi",
+            "pincode": 123455
+        },
+        "Country": "India"
+    },
+    "id": 1
+}
+flattenPayload={
+    "Name": "Delhi",
+    "pincode": 123455,
+    "Country": "India",
+    "id": 1
+}
+ */
+const flattenMultilevelPayload = payload => {
+  const flattenedPayload = {};
+  if (payload) {
+    Object.keys(payload).forEach(v => {
+      if (typeof payload[v] === "object" && !Array.isArray(payload[v])) {
+        const temp = flattenMultilevelPayload(payload[v]);
+        Object.keys(temp).forEach(i => {
+          flattenedPayload[i] = temp[i];
+        });
+      } else {
+        flattenedPayload[v] = payload[v];
+      }
+    });
+  }
+  return flattenedPayload;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1702,6 +1751,7 @@ module.exports = {
   extractCustomFields,
   flattenJson,
   flattenMap,
+  flattenMultilevelPayload,
   formatTimeStamp,
   formatValue,
   generateErrorObject,

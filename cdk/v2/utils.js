@@ -54,9 +54,9 @@ function getErrorInfo(err) {
     errorInfo = {
       message: err.message,
       status: err.status,
-      destinationResponse: err.error.destinationResponse,
-      statTags: err.error.statTags,
-      authErrorCategory: err.error.authErrorCategory
+      destinationResponse: err.error?.destinationResponse,
+      statTags: err.error?.statTags,
+      authErrorCategory: err.error?.authErrorCategory
     };
     // TODO: Add a special stat tag to bump the priority of the error
   } else if (err instanceof WorkflowEngineError) {

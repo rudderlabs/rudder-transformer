@@ -1,5 +1,11 @@
 const path = require("path");
 const fs = require("fs");
+const {
+  WorkflowExecutionError
+} = require("rudder-workflow-engine/build/errors");
+const { logger } = require("handlebars");
+const { WorkflowEngineError } = require("rudder-workflow-engine/build/errors");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -37,8 +43,39 @@ function getPlatformBindingsPaths() {
   return bindingsPaths;
 }
 
+function getErrorInfo(err) {
+  // Handle various CDK error types
+  let errorInfo = err;
+  if (err instanceof WorkflowExecutionError) {
+    logger.error(
+      "Error occurred during workflow step execution: ",
+      err.stepName
+    );
+    errorInfo = {
+      message: err.message,
+      status: err.status,
+      destinationResponse: err.error.destinationResponse,
+      statTags: err.error.statTags,
+      authErrorCategory: err.error.authErrorCategory
+    };
+    // TODO: Add a special stat tag to bump the priority of the error
+  } else if (err instanceof WorkflowEngineError) {
+    logger.error("Error occurred during workflow step: ", err.stepName);
+    errorInfo = {
+      message: err.message,
+      status: err.status,
+      statTags: {
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.SCOPE
+      }
+    };
+  }
+  return errorInfo;
+}
+
 module.exports = {
   getRootPathForDestination,
   getWorkflowPath,
-  getPlatformBindingsPaths
+  getPlatformBindingsPaths,
+  getErrorInfo
 };

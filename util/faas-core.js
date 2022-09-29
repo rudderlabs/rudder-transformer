@@ -3,9 +3,7 @@ const { default: axios } = require("axios");
 const fs = require("fs-extra");
 const os = require("os");
 const path = require("path");
-const shell = require("shelljs");
 const crypto = require("crypto");
-const dockerUtils = require("./docker-utils");
 const logger = require("../logger");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
@@ -68,11 +66,20 @@ async function buildContext(code) {
   return buildDir;
 }
 
-async function dockerizeAndPush(buildDir, imageName) {
-  shell.cd(buildDir);
+async function containerizeAndPush(imageName, code) {
+  const response = await axios.post(
+    new URL(
+      path.join(process.env.OCI_IMAGE_BUILDER_URL, "api/v1/podman/faas/build/")
+    ).toString(),
+    {
+      imageName,
+      code
+    }
+  );
 
-  await dockerUtils.buildImage(".", "-t", imageName);
-  await dockerUtils.pushImage(imageName);
+  if (![200, 201, 204].includes(response.status)) {
+    throw Error(`Build/Push for image ${imageName} failed.`);
+  }
 }
 
 function deleteFunction(functionName) {
@@ -128,11 +135,8 @@ async function deployFunction(imageName, functionName, testMode) {
 }
 
 async function faasDeploymentHandler(imageName, functionName, code, testMode) {
-  const buildDir = await buildContext(code);
-  await dockerizeAndPush(buildDir, imageName);
+  await containerizeAndPush(imageName, code);
   await deployFunction(imageName, functionName, testMode);
-
-  fs.rmdir(buildDir, { recursive: true, force: true });
 }
 
 async function faasInvocationHandler(

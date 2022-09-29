@@ -121,7 +121,7 @@ const updateLambdaFunction = async (functionName, code, publish) => {
     const resp = await updateFunctionPromise(params);
 
     // verify updation
-    const qualifier = resp.Version;
+    const qualifier = resp.Configuration?.Version;
     const functionParams = {
       FunctionName: functionName,
       Qualifier: qualifier,
@@ -175,6 +175,9 @@ const invokeLambdaFunction = async (
 
     const invokeFunctionPromise = promisify(invoke.bind(lambda));
     const result = await invokeFunctionPromise(params);
+    if (result.StatusCode !== 200 || result.FunctionError) {
+      throw new Error(JSON.stringify(result.Payload || result.FunctionError));
+    }
     return JSON.parse(result.Payload);
   } catch (err) {
     logger.error(`Error while invoking function: ${err.message}`);
@@ -211,6 +214,7 @@ const testLambda = async (
       transformationPayload,
       qualifier
     );
+
     logger.debug("Finished lambda test flow");
     return {
       ...result,

@@ -4,8 +4,11 @@ import json
 const TRANSFORM_WRAPPER_CODE = `
 logs = []
 
-def log(arg):
-    logs.append(arg)
+def log(*args):
+    log_string = 'Log:'
+    for arg in args:
+        log_string += f' {arg}'
+    logs.append(log_string)
 
 def lambda_handler(event, context):
     # TODO implement

@@ -93,38 +93,6 @@
     }
   },
   {
-    "description": "MailJet identify call without ListId",
-    "input": {
-      "message": {
-        "userId": "test@123",
-        "type": "identify",
-        "context": {
-          "traits": {
-            "firstName": "test",
-            "lastName": "rudderstack",
-            "email": "test@rudderstack.com",
-            "age": 15,
-            "gender": "male",
-            "status": "user",
-            "city": "Kalkata",
-            "country": "india",
-            "tags": ["productuser"],
-            "phone": "9225467887"
-          }
-        }
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
-        }
-      }
-    },
-    "output": {
-      "error": "[MailJet] :: listId is not present,please configure it either from webapp or add it to externalId"
-    }
-  },
-  {
     "description": "Mailjet identify call without batching",
     "input": {
       "message": {

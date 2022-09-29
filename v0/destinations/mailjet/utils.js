@@ -95,23 +95,8 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name]
   );
 
-  const { Config } = destination;
-  const { contactPropertiesMapping, listId } = Config;
+  const { contactPropertiesMapping, listId } = destination.Config;
   const contactListId = getDestinationExternalID(message, "listId") || listId;
-  if (!contactListId) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[MailJet] :: listId is not present,please configure it either from webapp or add it to externalId"
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
 
   const integrationsObj = getIntegrationsObj(message, "mailjet");
   const action = getAction(integrationsObj);

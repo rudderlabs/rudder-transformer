@@ -122,6 +122,13 @@ const generateBatchedPaylaodForArray = (events, combination) => {
 
 const batchEvents = successRespList => {
   const batchedResponseList = [];
+  /*
+  ------------- eventGroups ---------------------
+  "listId1&&Action1" : [{message : {}, metadata : {}, destination: {}}],
+  "listId1&&Action2": [{message : {}, metadata : {}, destination: {}}],
+  "listId2&&Action2": [{message : {}, metadata : {}, destination: {}}],
+  "listId2&&Action1": [{message : {}, metadata : {}, destination: {}}]
+  */
   const eventGroups = _.groupBy(successRespList, event => {
     const { listId, action } = event.message;
     return `${listId}&&${action}`;

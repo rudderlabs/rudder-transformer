@@ -318,7 +318,12 @@ function eventMappingHandler(message, destination) {
       destination.ID
     );
     rudderEventsToSnapEvents.forEach(mapping => {
-      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+      if (
+        mapping.from
+          .trim()
+          .replace(/\s+/g, "_")
+          .toLowerCase() === event.toLowerCase()
+      ) {
         mappedEvents.add(mapping.to);
       }
     });

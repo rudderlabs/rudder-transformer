@@ -465,7 +465,7 @@ const getExistingData = async (inputs, destination) => {
 
     if (searchResponse.status !== 200) {
       throw new CustomError(
-        "[HS]:: rETL - Error during searching object record.",
+        `[HS]:: rETL - Error during searching object record.${searchResponse.response.message}`,
         400
       );
     }

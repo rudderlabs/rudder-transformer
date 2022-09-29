@@ -35,7 +35,10 @@ const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
 const { RespStatusError } = require("./util/utils");
-const { getRootPathForDestination } = require("./cdk/v2/utils");
+const {
+  getRootPathForDestination,
+  getWorkflowPath
+} = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -126,8 +129,7 @@ async function handleDest(ctx, version, destination) {
         if (isCdkV2Destination(parsedEvent)) {
           const rootDir = getRootPathForDestination(destination);
 
-          // TODO: Defaulted to `workflow.yaml` but should support others as well
-          const workflowPath = path.join(rootDir, "workflow.yaml");
+          const workflowPath = getWorkflowPath(rootDir);
 
           // TODO: Bind CDK platform bindings here
           const workflowEngine = new WorkflowEngine(

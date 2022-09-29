@@ -5,8 +5,11 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const { WorkflowEngine, WorkflowUtils } = require('rudder-workflow-engine');
 const set = require("set-value");
+const {
+  WorkflowExecutionError,
+  WorkflowEngineError
+} = require("rudder-workflow-engine/build/errors");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
@@ -35,11 +38,7 @@ const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
-const {
-  getRootPathForDestination,
-  getWorkflowPath,
-  getPlatformBindingsPaths
-} = require("./cdk/v2/utils");
+const { getWorkflowEngine } = require("./cdk/v2/handler");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -97,20 +96,61 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
-async function handleCdkV2(destination, parsedEvent) {
-  const destRootDir = getRootPathForDestination(destination);
+async function handleCdkV2(destName, parsedEvent) {
+  try {
+    const workflowEngine = getWorkflowEngine(destName);
 
-  const workflowPath = getWorkflowPath(destRootDir);
+    const result = await workflowEngine.execute(parsedEvent);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (err) {
+    // Handle various CDK error types
+    let errorInfo = err;
+    if (err instanceof WorkflowExecutionError) {
+      logger.error(
+        "Error occurred during workflow step execution: ",
+        err.stepName
+      );
+      errorInfo = {
+        message: err.message,
+        status: err.status,
+        destinationResponse: err.error.destinationResponse,
+        statTags: err.error.statTags,
+        authErrorCategory: err.error.authErrorCategory
+      };
+      // TODO: Add a special stat tag to bump the priority of the error
+    } else if (err instanceof WorkflowEngineError) {
+      logger.error("Error occurred during workflow step: ", err.stepName);
+      errorInfo = {
+        message: err.message,
+        status: err.status,
+        statTags: {
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.SCOPE
+        }
+      };
+    }
 
-  const workflowEngine = new WorkflowEngine(
-    WorkflowUtils.createFromFilePath(workflowPath),
-    destRootDir,
-    getPlatformBindingsPaths()
-  );
+    // TODO: Bump the error priority even further as it's an unhandled error in the CDK
+    const errObj = generateErrorObject(
+      errorInfo,
+      destName,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
 
-  const result = await workflowEngine.execute(parsedEvent);
-  // TODO: Handle remaining output scenarios
-  return result.output;
+    // Dump the raw error
+    logger.error(err);
+
+    return {
+      metadata: parsedEvent.metadata,
+      statusCode: errObj.status,
+      error: errObj.message || "Error occurred while processing the payload",
+      statTags: {
+        errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
+        ...errObj.statTags
+      }
+    };
+  }
 }
 
 async function handleDest(ctx, version, destination) {

@@ -52,6 +52,9 @@ const TRANSFORMER_METRIC = {
     EXCEPTION: {
       SCOPE: "exception"
     },
+    CDK: {
+      SCOPE: "cdk"
+    },
     DEFAULT: {
       SCOPE: "default"
     }

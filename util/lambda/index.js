@@ -5,6 +5,9 @@ const fs = require("fs");
 const AWS = require("aws-sdk");
 const logger = require("../../logger");
 
+const MAX_ATTEMPTS = parseInt(process.env.MAX_ATTEMPTS || "5", 10);
+const DELAY = parseInt(process.env.DELAY || "1", 10);
+
 const lambda = new AWS.Lambda({
   apiVersion: "2015-03-31",
   region: process.env.AWS_REGION || "",
@@ -84,8 +87,8 @@ const createLambdaFunction = async (functionName, code, publish) => {
     const functionParams = {
       FunctionName: functionName,
       $waiter: {
-        maxAttempts: 3,
-        delay: 1
+        maxAttempts: MAX_ATTEMPTS,
+        delay: DELAY
       }
     };
     const functionActiveStatusPromise = promisify(waitFor.bind(lambda));
@@ -126,8 +129,8 @@ const updateLambdaFunction = async (functionName, code, publish) => {
       FunctionName: functionName,
       Qualifier: qualifier,
       $waiter: {
-        maxAttempts: 3,
-        delay: 1
+        maxAttempts: MAX_ATTEMPTS,
+        delay: DELAY
       }
     };
     const functionUpdateStatusPromise = promisify(waitFor.bind(lambda));

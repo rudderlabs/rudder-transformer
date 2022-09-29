@@ -114,11 +114,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const executeStartTime = new Date();
-  let destHandler;
-  // Getting destination handler for non-cdk destination(s)
-  if (!isCdkDestination(events[0])) {
-    destHandler = getDestHandler(version, destination);
-  }
+  let destHandler = null;
   const respList = await Promise.all(
     events.map(async event => {
       try {
@@ -144,6 +140,9 @@ async function handleDest(ctx, version, destination) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
+          if (destHandler === null) {
+            destHandler = getDestHandler(version, destination);
+          }
           respEvents = await destHandler.process(parsedEvent);
         }
         if (respEvents) {

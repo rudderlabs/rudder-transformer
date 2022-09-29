@@ -37,7 +37,8 @@ const { getIntegrations } = require("./routes/utils");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const {
   getRootPathForDestination,
-  getWorkflowPath
+  getWorkflowPath,
+  getPlatformBindingsPaths
 } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
@@ -123,14 +124,14 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkV2Destination(parsedEvent)) {
-          const rootDir = getRootPathForDestination(destination);
+          const destRootDir = getRootPathForDestination(destination);
 
-          const workflowPath = getWorkflowPath(rootDir);
+          const workflowPath = getWorkflowPath(destRootDir);
 
-          // TODO: Bind CDK platform bindings here
           const workflowEngine = new WorkflowEngine(
             WorkflowUtils.createFromFilePath(workflowPath),
-            rootDir
+            destRootDir,
+            getPlatformBindingsPaths()
           );
 
           const result = await workflowEngine.execute(parsedEvent);

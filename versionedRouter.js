@@ -97,6 +97,22 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
+async function handleCdkV2(destination, parsedEvent) {
+  const destRootDir = getRootPathForDestination(destination);
+
+  const workflowPath = getWorkflowPath(destRootDir);
+
+  const workflowEngine = new WorkflowEngine(
+    WorkflowUtils.createFromFilePath(workflowPath),
+    destRootDir,
+    getPlatformBindingsPaths()
+  );
+
+  const result = await workflowEngine.execute(parsedEvent);
+  // TODO: Handle remaining output scenarios
+  return result.output;
+}
+
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
@@ -124,19 +140,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkV2Destination(parsedEvent)) {
-          const destRootDir = getRootPathForDestination(destination);
-
-          const workflowPath = getWorkflowPath(destRootDir);
-
-          const workflowEngine = new WorkflowEngine(
-            WorkflowUtils.createFromFilePath(workflowPath),
-            destRootDir,
-            getPlatformBindingsPaths()
-          );
-
-          const result = await workflowEngine.execute(parsedEvent);
-          // TODO: Handle remaining output scenarios
-          respEvents = result.output;
+          respEvents = await handleCdkV2(destination, parsedEvent);
         } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);

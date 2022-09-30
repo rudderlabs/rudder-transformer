@@ -1,5 +1,4 @@
-const { WorkflowUtils } = require("rudder-workflow-engine");
-const { WorkflowEngine } = require("rudder-workflow-engine");
+const { WorkflowUtils, WorkflowEngine } = require("rudder-workflow-engine");
 const {
   getRootPathForDestination,
   getWorkflowPath,

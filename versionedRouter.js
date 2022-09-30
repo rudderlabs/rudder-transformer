@@ -16,7 +16,8 @@ const {
   generateErrorObject,
   CustomError,
   isHttpStatusSuccess,
-  getErrorRespEvents
+  getErrorRespEvents,
+  isCdkV2Destination
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -33,6 +34,8 @@ const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
+const { getWorkflowEngine } = require("./cdk/v2/handler");
+const { getErrorInfo } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -90,6 +93,38 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
+async function handleCdkV2(destName, parsedEvent, flowType) {
+  try {
+    const workflowEngine = getWorkflowEngine(destName);
+
+    const result = await workflowEngine.execute(parsedEvent);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (err) {
+    const errorInfo = getErrorInfo(err);
+
+    // TODO: Bump the error priority even further as it's an unhandled error in the CDK
+    const errObj = generateErrorObject(
+      errorInfo,
+      destName,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+
+    // Dump the raw error
+    logger.error(err);
+
+    return {
+      metadata: parsedEvent.metadata,
+      statusCode: errObj.status,
+      error: errObj.message || "Error occurred while processing the payload",
+      statTags: {
+        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.UNKNOWN,
+        ...errObj.statTags
+      }
+    };
+  }
+}
+
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
@@ -108,11 +143,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const executeStartTime = new Date();
-  let destHandler;
-  // Getting destination handler for non-cdk destination(s)
-  if (!isCdkDestination(events[0])) {
-    destHandler = getDestHandler(version, destination);
-  }
+  let destHandler = null;
   const respList = await Promise.all(
     events.map(async event => {
       try {
@@ -120,10 +151,19 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(parsedEvent)) {
+        if (isCdkV2Destination(parsedEvent)) {
+          respEvents = await handleCdkV2(
+            destination,
+            parsedEvent,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
+        } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
+          if (destHandler === null) {
+            destHandler = getDestHandler(version, destination);
+          }
           respEvents = await destHandler.process(parsedEvent);
         }
         if (respEvents) {

@@ -1,10 +1,10 @@
 const path = require("path");
 const fs = require("fs");
 const {
-  WorkflowExecutionError
+  WorkflowExecutionError,
+  WorkflowEngineError
 } = require("rudder-workflow-engine/build/errors");
 const { logger } = require("handlebars");
-const { WorkflowEngineError } = require("rudder-workflow-engine/build/errors");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const CDK_V2_ROOT_DIR = __dirname;

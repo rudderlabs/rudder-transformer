@@ -5,6 +5,7 @@ const os = require("os");
 const path = require("path");
 const crypto = require("crypto");
 const logger = require("../logger");
+const stats = require("./stats");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
@@ -44,7 +45,7 @@ function buildImageName(versionId, code) {
   let tagName = versionId;
 
   if (versionId === "testVersionId") {
-    tagName = hash(code);
+    tagName = `test-${hash(code)}`;
   }
 
   return `${FUNCTION_REPOSITORY}:${tagName}`;
@@ -66,10 +67,15 @@ async function buildContext(code) {
   return buildDir;
 }
 
-async function containerizeAndPush(imageName, code) {
+async function containerizeAndPush(imageName, functionName, code) {
+  const startTime = new Date();
+
   const response = await axios.post(
     new URL(
-      path.join(process.env.OCI_IMAGE_BUILDER_URL, "api/v1/podman/faas/build/")
+      path.join(
+        process.env.OCI_IMAGE_BUILDER_URL,
+        "api/v1/podman/faas/build-push/"
+      )
     ).toString(),
     {
       imageName,
@@ -80,6 +86,11 @@ async function containerizeAndPush(imageName, code) {
   if (![200, 201, 204].includes(response.status)) {
     throw Error(`Build/Push for image ${imageName} failed.`);
   }
+
+  stats.timing("image_build_push_latency", startTime, {
+    imageName,
+    functionName
+  });
 }
 
 function deleteFunction(functionName) {
@@ -135,7 +146,7 @@ async function deployFunction(imageName, functionName, testMode) {
 }
 
 async function faasDeploymentHandler(imageName, functionName, code, testMode) {
-  await containerizeAndPush(imageName, code);
+  await containerizeAndPush(imageName, functionName, code);
   await deployFunction(imageName, functionName, testMode);
 }
 
@@ -166,6 +177,7 @@ async function faasInvocationHandler(
   }
 
   const promises = [];
+  const startTime = new Date();
 
   events.forEach(event => {
     const promise = axios.post(
@@ -184,7 +196,13 @@ async function faasInvocationHandler(
     }, DESTRUCTION_TIMEOUT_IN_MS);
   }
 
-  return Promise.all(promises);
+  const response = await Promise.all(promises);
+  stats.timing("deployed_function_execution_time", startTime, {
+    imageName,
+    functionName
+  });
+
+  return Promise.resolve(response);
 }
 
 exports.faasDeploymentHandler = faasDeploymentHandler;

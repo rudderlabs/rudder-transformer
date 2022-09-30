@@ -21,7 +21,9 @@ const TRANSFORMER_METRIC = {
     // batch transformation
     BATCH: "batch",
     // /proxy endpoint(delivery to destination)
-    PROXY: "proxy"
+    PROXY: "proxy",
+    // Default
+    UNKNOWN: "unknown"
   },
   TRANSFORMER_STAGE: {
     TRANSFORM: "transform",

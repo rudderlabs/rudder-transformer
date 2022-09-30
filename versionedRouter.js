@@ -118,7 +118,7 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
       statusCode: errObj.status,
       error: errObj.message || "Error occurred while processing the payload",
       statTags: {
-        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.PROC,
+        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.UNKNOWN,
         ...errObj.statTags
       }
     };

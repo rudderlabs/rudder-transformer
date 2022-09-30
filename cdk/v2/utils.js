@@ -6,18 +6,46 @@ const {
 } = require("rudder-workflow-engine/build/errors");
 const { logger } = require("handlebars");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const ErrorBuilder = require("../../v0/util/error");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
-function getWorkflowPath(destDir) {
-  let workflowPath;
-  // TODO: Defaulted to `workflow.yaml` but should support others as well
-  const defWorkflowPath = path.join(destDir, "workflow.yaml");
-  if (fs.existsSync(defWorkflowPath)) {
-    workflowPath = defWorkflowPath;
+function getWorkflowPath(
+  destDir,
+  flowType = TRANSFORMER_METRIC.ERROR_AT.UNKNOWN
+) {
+  // The values are of array type to support aliases
+  const flowTypeMap = {
+    // Didn't add any prefix as processor transformation is the default
+    [TRANSFORMER_METRIC.ERROR_AT.PROC]: ["workflow.yaml", "procWorkflow.yaml"],
+    [TRANSFORMER_METRIC.ERROR_AT.RT]: ["rtWorkflow.yaml"],
+    // Note: intentionally avoided the `proxy` term here
+    [TRANSFORMER_METRIC.ERROR_AT.PROXY]: ["dataDeliveryWorkflow.yaml"],
+    [TRANSFORMER_METRIC.ERROR_AT.BATCH]: ["batchWorkflow.yaml"]
+  };
+
+  const workflowFilenames = flowTypeMap[flowType];
+  if (!workflowFilenames) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "Unable to identify the workflow file. Invalid flow type input"
+      )
+      .setStatus(400)
+      .build();
   }
 
-  return workflowPath;
+  // Find the first workflow file that exists
+  let validWorkflowFilepath;
+  fs.readdir(destDir, (err, files) => {
+    const matchedFilename = workflowFilenames.find(filename =>
+      files.includes(filename)
+    );
+    if (matchedFilename) {
+      validWorkflowFilepath = path.join(destDir, matchedFilename);
+    }
+  });
+
+  return validWorkflowFilepath;
 }
 
 function getRootPathForDestination(destName) {

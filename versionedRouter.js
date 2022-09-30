@@ -93,7 +93,7 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
-async function handleCdkV2(destName, parsedEvent) {
+async function handleCdkV2(destName, parsedEvent, flowType) {
   try {
     const workflowEngine = getWorkflowEngine(destName);
 
@@ -118,7 +118,7 @@ async function handleCdkV2(destName, parsedEvent) {
       statusCode: errObj.status,
       error: errObj.message || "Error occurred while processing the payload",
       statTags: {
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
+        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.PROC,
         ...errObj.statTags
       }
     };
@@ -152,7 +152,11 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkV2Destination(parsedEvent)) {
-          respEvents = await handleCdkV2(destination, parsedEvent);
+          respEvents = await handleCdkV2(
+            destination,
+            parsedEvent,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
         } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);

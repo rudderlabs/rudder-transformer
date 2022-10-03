@@ -7,17 +7,17 @@ const {
 
 const destinationWorkflowEngineMap = new Map();
 
-function getWorkflowEngine(destName, flowType) {
+async function getWorkflowEngine(destName, flowType) {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
   if (!destinationWorkflowEngineMap.has(destName)) {
     const destRootDir = getRootPathForDestination(destName);
-    const workflowPath = getWorkflowPath(destRootDir, flowType);
+    const workflowPath = await getWorkflowPath(destRootDir, flowType);
 
     const workflowEngine = new WorkflowEngine(
       WorkflowUtils.createFromFilePath(workflowPath),
       destRootDir,
-      getPlatformBindingsPaths()
+      await getPlatformBindingsPaths()
     );
     destinationWorkflowEngineMap[destName] = workflowEngine;
   }

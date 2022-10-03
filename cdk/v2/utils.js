@@ -1,5 +1,5 @@
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs/promises");
 const {
   WorkflowExecutionError,
   WorkflowEngineError
@@ -10,7 +10,7 @@ const ErrorBuilder = require("../../v0/util/error");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
-function getWorkflowPath(
+async function getWorkflowPath(
   destDir,
   flowType = TRANSFORMER_METRIC.ERROR_AT.UNKNOWN
 ) {
@@ -35,15 +35,14 @@ function getWorkflowPath(
   }
 
   // Find the first workflow file that exists
+  const files = await fs.readdir(destDir);
+  const matchedFilename = workflowFilenames.find(filename =>
+    files.includes(filename)
+  );
   let validWorkflowFilepath;
-  fs.readdir(destDir, (err, files) => {
-    const matchedFilename = workflowFilenames.find(filename =>
-      files.includes(filename)
-    );
-    if (matchedFilename) {
-      validWorkflowFilepath = path.join(destDir, matchedFilename);
-    }
-  });
+  if (matchedFilename) {
+    validWorkflowFilepath = path.join(destDir, matchedFilename);
+  }
 
   return validWorkflowFilepath;
 }
@@ -54,20 +53,18 @@ function getRootPathForDestination(destName) {
   return path.join(CDK_V2_ROOT_DIR, destName);
 }
 
-function getPlatformBindingsPaths() {
+async function getPlatformBindingsPaths() {
   const allowedExts = [".js"];
   const bindingsPaths = [];
   const bindingsDir = path.join(CDK_V2_ROOT_DIR, "bindings");
-  fs.readdir(bindingsDir, (err, files) => {
-    if (err) return;
-
-    files.forEach(fileName => {
-      const { ext } = path.parse(fileName);
-      if (allowedExts.includes(ext.toLowerCase())) {
-        bindingsPaths.push(path.resolve(bindingsDir, fileName));
-      }
-    });
+  const files = await fs.readdir(bindingsDir);
+  files.forEach(fileName => {
+    const { ext } = path.parse(fileName);
+    if (allowedExts.includes(ext.toLowerCase())) {
+      bindingsPaths.push(path.resolve(bindingsDir, fileName));
+    }
   });
+
   return bindingsPaths;
 }
 

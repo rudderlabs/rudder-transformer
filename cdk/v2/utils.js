@@ -1,16 +1,15 @@
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs/promises");
 const {
   WorkflowExecutionError,
-  WorkflowEngineError
+  WorkflowCreationError
 } = require("rudder-workflow-engine");
 const { logger } = require("handlebars");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
-const ErrorBuilder = require("../../v0/util/error");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
-function getWorkflowPath(
+async function getWorkflowPath(
   destDir,
   flowType = TRANSFORMER_METRIC.ERROR_AT.UNKNOWN
 ) {
@@ -25,19 +24,18 @@ function getWorkflowPath(
   };
 
   const workflowFilenames = flowTypeMap[flowType];
+
   // Find the first workflow file that exists
-  const files = fs.readdirSync(destDir);
-  const matchedFilename = workflowFilenames?.find(filename =>
+  const files = await fs.readdir(destDir);
+  const matchedFilename = workflowFilenames.find(filename =>
     files.includes(filename)
   );
+  let validWorkflowFilepath;
   if (matchedFilename) {
-    return path.join(destDir, matchedFilename);
+    validWorkflowFilepath = path.join(destDir, matchedFilename);
   }
 
-  throw new ErrorBuilder()
-    .setMessage("Unable to identify the workflow file. Invalid flow type input")
-    .setStatus(400)
-    .build();
+  return validWorkflowFilepath;
 }
 
 function getRootPathForDestination(destName) {
@@ -46,17 +44,18 @@ function getRootPathForDestination(destName) {
   return path.join(CDK_V2_ROOT_DIR, destName);
 }
 
-function getPlatformBindingsPaths() {
+async function getPlatformBindingsPaths() {
   const allowedExts = [".js"];
   const bindingsPaths = [];
   const bindingsDir = path.join(CDK_V2_ROOT_DIR, "bindings");
-  const files = fs.readdirSync(bindingsDir);
+  const files = await fs.readdir(bindingsDir);
   files.forEach(fileName => {
-    const { name, ext } = path.parse(fileName);
+    const { ext } = path.parse(fileName);
     if (allowedExts.includes(ext.toLowerCase())) {
-      bindingsPaths.push(path.join(bindingsDir, name));
+      bindingsPaths.push(path.resolve(bindingsDir, fileName));
     }
   });
+
   return bindingsPaths;
 }
 
@@ -66,7 +65,9 @@ function getErrorInfo(err) {
   if (err instanceof WorkflowExecutionError) {
     logger.error(
       "Error occurred during workflow step execution: ",
-      err.stepName
+      err.workflowName,
+      err.stepName,
+      err
     );
     errorInfo = {
       message: err.message,
@@ -76,8 +77,13 @@ function getErrorInfo(err) {
       authErrorCategory: err.error?.authErrorCategory
     };
     // TODO: Add a special stat tag to bump the priority of the error
-  } else if (err instanceof WorkflowEngineError) {
-    logger.error("Error occurred during workflow step: ", err.stepName);
+  } else if (err instanceof WorkflowCreationError) {
+    logger.error(
+      "Error occurred during workflow creation: ",
+      err.workflowName,
+      err.stepName,
+      err
+    );
     errorInfo = {
       message: err.message,
       status: err.status,

@@ -63,7 +63,7 @@ steps:
         $assert($exists(event_time), "event_time is required");
         $assert($exists(action_source), "action_source is required");
         $assert(action_source in $VALID_ACTION_SOURCES, 
-          "Action source must be one of " & $join("'" & $VALID_ACTION_SOURCES & "'", ", "))
+          "Action source must be one of 'app_android', 'app_ios', 'web', 'offline'")
       )
   - name: userFields
     description: Personally identifiable fields
@@ -172,7 +172,7 @@ steps:
           (
             $event := message.[event, name][0];
             $eventMap := destination.Config.eventsMapping.{from: to};
-            $eventName := [
+            $eventNames := [
               $lookup($eventMap, $event), 
               $ecomEventMaps[$lowercase($event) in src].dest
             ];
@@ -180,9 +180,11 @@ steps:
           )
   - name: destEvents
     template: |
-      $map($outputs.eventNames, function($eventName){(
-        $merge([$outputs.basePayload, {"event_name": $eventName}])
-      )})
+      (
+        $map($outputs.eventNames, function($eventName){(
+          $merge([$outputs.basePayload, {"event_name": $eventName}])
+        )});
+      )
   - name: buildResponse
     condition: $not($exists($context.batchMode))
     template: |

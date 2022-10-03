@@ -95,7 +95,7 @@ const functionsEnabled = () => {
 
 async function handleCdkV2(destName, parsedEvent, flowType) {
   try {
-    const workflowEngine = getWorkflowEngine(destName);
+    const workflowEngine = await getWorkflowEngine(destName, flowType);
 
     const result = await workflowEngine.execute(parsedEvent);
     // TODO: Handle remaining output scenarios

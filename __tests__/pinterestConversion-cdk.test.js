@@ -6,8 +6,8 @@ const {getWorkflowEngine } = require("../cdk/v2/handler");
 const integration = "pinterest_tag";
 const name = "Pinterest Conversion API";
 
-const procWorkflowEngine = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.PROC);
-const rtWorkflowEngine = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
+const procWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.PROC);
+const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -34,6 +34,7 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
+          procWorkflowEngine = await procWorkflowEnginePromise;
           const result = await procWorkflowEngine.execute(input);
           expect(JSON.parse(JSON.stringify(result.output))).toEqual(expected);
         } catch (error) {
@@ -43,8 +44,9 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  describe.skip("Router Tests", () => {
+  describe("Router Tests", () => {
     it("Payload", async () => {
+      rtWorkflowEngine = await rtWorkflowEnginePromise;
       const result = await rtWorkflowEngine.execute(inputRouterData);
       expect(JSON.parse(JSON.stringify(result.output))).toEqual(
         expectedRouterData

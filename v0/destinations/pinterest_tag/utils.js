@@ -370,5 +370,6 @@ module.exports = {
   checkUserPayloadValidity,
   processHashedUserPayload,
   VALID_ACTION_SOURCES,
-  postProcessEcomFields
+  postProcessEcomFields,
+  ecomEventMaps
 };

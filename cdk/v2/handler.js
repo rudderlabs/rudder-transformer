@@ -10,24 +10,29 @@ const {
 
 const destinationWorkflowEngineMap = new Map();
 
-function getWorkflowEngine(destName, flowType) {
+async function getWorkflowEngine(destName, flowType) {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
   if (!destinationWorkflowEngineMap.has(destName)) {
     try {
       const destRootDir = getRootPathForDestination(destName);
-      const workflowPath = getWorkflowPath(destRootDir, flowType);
+      const workflowPath = await getWorkflowPath(destRootDir, flowType);
 
       const workflowEngine = new WorkflowEngine(
         WorkflowUtils.createWorkflowFromFilePath(workflowPath),
         destRootDir,
-        ...getPlatformBindingsPaths()
+        ...(await getPlatformBindingsPaths())
       );
       destinationWorkflowEngineMap[destName] = workflowEngine;
     } catch (error) {
-      logger.error(error);
+      logger.info(
+        "Error occurred while creating workflow",
+        error,
+        destName,
+        flowType
+      );
       throw new ErrorBuilder()
-        .setMessage("Unable to create workflow engine")
+        .setMessage("Error occurred while creating workflow")
         .setStatus(400)
         .build();
     }

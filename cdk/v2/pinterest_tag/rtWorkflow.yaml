@@ -1,6 +1,5 @@
 bindings:
-  - name: ENDPOINT
-    path: ../../../v0/destinations/pinterest_tag/config
+  - path: ../../../v0/destinations/pinterest_tag/config
 steps:
   - name: prepareContext
     template: $setContext("batchMode", true)
@@ -50,7 +49,7 @@ steps:
         $batches := $chunk($successfulEvents, $MAX_BATCH_SIZE);
         $map($batches, function($batch){(
           {
-            "batchedRequest": $prepareBatchRequest($batch),
+            "batchedRequest": $prepareBatchRequest($batch.output),
             "metadata": $batch.metadata,
             "batched": true,
             "statusCode": 200,

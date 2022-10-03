@@ -3,7 +3,7 @@ const fs = require("fs");
 const {
   WorkflowExecutionError,
   WorkflowEngineError
-} = require("rudder-workflow-engine/build/errors");
+} = require("rudder-workflow-engine");
 const { logger } = require("handlebars");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const ErrorBuilder = require("../../v0/util/error");
@@ -25,27 +25,19 @@ function getWorkflowPath(
   };
 
   const workflowFilenames = flowTypeMap[flowType];
-  if (!workflowFilenames) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "Unable to identify the workflow file. Invalid flow type input"
-      )
-      .setStatus(400)
-      .build();
+  // Find the first workflow file that exists
+  const files = fs.readdirSync(destDir);
+  const matchedFilename = workflowFilenames?.find(filename =>
+    files.includes(filename)
+  );
+  if (matchedFilename) {
+    return path.join(destDir, matchedFilename);
   }
 
-  // Find the first workflow file that exists
-  let validWorkflowFilepath;
-  fs.readdir(destDir, (err, files) => {
-    const matchedFilename = workflowFilenames.find(filename =>
-      files.includes(filename)
-    );
-    if (matchedFilename) {
-      validWorkflowFilepath = path.join(destDir, matchedFilename);
-    }
-  });
-
-  return validWorkflowFilepath;
+  throw new ErrorBuilder()
+    .setMessage("Unable to identify the workflow file. Invalid flow type input")
+    .setStatus(400)
+    .build();
 }
 
 function getRootPathForDestination(destName) {
@@ -58,15 +50,12 @@ function getPlatformBindingsPaths() {
   const allowedExts = [".js"];
   const bindingsPaths = [];
   const bindingsDir = path.join(CDK_V2_ROOT_DIR, "bindings");
-  fs.readdir(bindingsDir, (err, files) => {
-    if (err) return;
-
-    files.forEach(fileName => {
-      const { ext } = path.parse(fileName);
-      if (allowedExts.includes(ext.toLowerCase())) {
-        bindingsPaths.push(path.resolve(bindingsDir, fileName));
-      }
-    });
+  const files = fs.readdirSync(bindingsDir);
+  files.forEach(fileName => {
+    const { name, ext } = path.parse(fileName);
+    if (allowedExts.includes(ext.toLowerCase())) {
+      bindingsPaths.push(path.join(bindingsDir, name));
+    }
   });
   return bindingsPaths;
 }

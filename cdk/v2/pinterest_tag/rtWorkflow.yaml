@@ -1,0 +1,71 @@
+bindings:
+  - name: ENDPOINT
+    path: ../../../v0/destinations/pinterest_tag/config
+steps:
+  - name: prepareContext
+    template: $setContext("batchMode", true)
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+  - name: processTransformOutput
+    description: Separate Failed and successful events
+    template: |
+      (
+        $zipInputAndOutput := $map($zip($, $outputs.transform), $merge);
+        {
+          "successfulEvents": $zipInputAndOutput.output.{
+            "output": $,
+            "message": %.message,
+            "metadata": %.metadata,
+            "destination": %.destination
+          },
+          "failedEvents": $zipInputAndOutput[$exists(error)]
+        }
+      )
+  - name: successfulEvents
+    description: Batches the successfulEvents
+    template: |
+      (
+        $prepareBatchRequest := function($batch) {(
+          {
+            "body": {
+              "JSON": {"data": $batch},
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": $ENDPOINT,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "params": {},
+            "files": {}
+          }
+        )};
+        $successfulEvents := $outputs.processTransformOutput.successfulEvents;
+        $batches := $chunk($successfulEvents, $MAX_BATCH_SIZE);
+        $map($batches, function($batch){(
+          {
+            "batchedRequest": $prepareBatchRequest($batch),
+            "metadata": $batch.metadata,
+            "batched": true,
+            "statusCode": 200,
+            "destination": $batch[0].destination
+          }
+        )})[];
+      )
+  - name: failedEvents
+    template: |
+      $outputs.processTransformOutput.failedEvents.{
+        "metadata": metadata[],
+        "batched": false,
+        "statusCode": error.status,
+        "error": error.message
+      }
+  - name: finalPayload
+    template: |
+      $outputs.($append(successfulEvents, failedEvents))

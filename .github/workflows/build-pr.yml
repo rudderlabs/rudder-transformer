@@ -1,0 +1,38 @@
+name: builds on rudder-transformer push
+on: push
+
+env:
+  REPO_NAME: "rudderlabs/oci-image-builder"
+  TAG: openfaas-test
+
+jobs:
+  build-transformer:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Check out repository code
+        uses: actions/checkout@v3
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: rudderstack/rudder-transformer
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: rudderlabs
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build the image
+        run: docker build . --file Dockerfile --tag ${{ env.REPO_NAME }}:${{ env.TAG }}
+      -
+        name: Push transformer build
+        id: build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.REPO_NAME }}:${{ env.TAG }}

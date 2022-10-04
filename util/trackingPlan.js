@@ -2,6 +2,7 @@ const NodeCache = require("node-cache");
 const {fetchWithProxy} = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
+const { responseStatusHandler } = require("./utils");
 
 const tpCache = new NodeCache();
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
@@ -22,15 +23,13 @@ async function getTrackingPlan(tpId, version, workspaceId) {
     const trackingPlan = tpCache.get(`${tpId}::${version}`);
     if (trackingPlan) return trackingPlan;
     try {
+        const url = `${TRACKING_PLAN_URL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`;
         const startTime = new Date();
-        const response = await fetchWithProxy(
-            `${TRACKING_PLAN_URL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`
-        );
+        const response = await fetchWithProxy(url);
+
+        responseStatusHandler(response.status, "Tracking plan", tpId, url);
         stats.timing("get_tracking_plan", startTime);
         const myJson = await response.json();
-        if (myJson.error || response.status !== 200) {
-            throw new Error(`${tpId}::${version}  :: ${myJson.error}`);
-        }
         tpCache.set(`${tpId}::${version}`, myJson);
         return myJson;
     } catch (error) {

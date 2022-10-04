@@ -16,9 +16,9 @@
           "code": 190,
           "fbtrace_id": "fbpixel_trace_id"
         }
-      }
-    },
-    "status": 400
+      },
+      "status": 500
+    }
   },
   "https://graph.facebook.com/v13.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token": {
     "response": {
@@ -33,9 +33,9 @@
           "error_user_msg": "The timestamp for this event is too far in the past. Events need to be sent from your server within 7 days of when they occurred. Enter a timestamp that has occurred within the last 7 days.",
           "fbtrace_id": "A6UyEgg_HdoiRX9duxcBOjb"
         }
-      }
-    },
-    "status": 400
+      },
+      "status": 400
+    }
   },
   "https://graph.facebook.com/v13.0/1234567891234567/events?access_token=throttled_valid_access_token": {
     "response": {
@@ -46,21 +46,22 @@
           "code": 17,
           "fbtrace_id": "facebook_px_trace_id_4"
         }
-      }
-    },
-    "status": 500
+      },
+      "status": 500
+    }
   },
   "https://graph.facebook.com/v13.0/1234567891234569/events?access_token=invalid_account_id_valid_access_token": {
     "response": {
       "data": {
         "error": {
-          "message": "User request limit reached",
-          "type": "OAuthException",
-          "code": 17,
+          "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 33,
           "fbtrace_id": "facebook_px_trace_id_5"
         }
-      }
-    },
-    "status": 500
+      },
+      "status": 400
+    }
   }
 }

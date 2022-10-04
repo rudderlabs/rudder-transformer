@@ -16,7 +16,8 @@ const {
   generateErrorObject,
   CustomError,
   isHttpStatusSuccess,
-  getErrorRespEvents
+  getErrorRespEvents,
+  isCdkV2Destination
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -32,8 +33,10 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
-const { RespStatusError } = require("./util/utils");
 const { setupUserTransformHandle } = require("./util/customTransformer");
+const { RespStatusError, RetryRequestError } = require("./util/utils");
+const { getWorkflowEngine } = require("./cdk/v2/handler");
+const { getErrorInfo } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -91,6 +94,38 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
+async function handleCdkV2(destName, parsedEvent, flowType) {
+  try {
+    const workflowEngine = await getWorkflowEngine(destName, flowType);
+
+    const result = await workflowEngine.execute(parsedEvent);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (err) {
+    const errorInfo = getErrorInfo(err);
+
+    // TODO: Bump the error priority even further as it's an unhandled error in the CDK
+    const errObj = generateErrorObject(
+      errorInfo,
+      destName,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+
+    // Dump the raw error
+    logger.error(err);
+
+    return {
+      metadata: parsedEvent.metadata,
+      statusCode: errObj.status,
+      error: errObj.message || "Error occurred while processing the payload",
+      statTags: {
+        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.UNKNOWN,
+        ...errObj.statTags
+      }
+    };
+  }
+}
+
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
@@ -109,11 +144,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags
   });
   const executeStartTime = new Date();
-  let destHandler;
-  // Getting destination handler for non-cdk destination(s)
-  if (!isCdkDestination(events[0])) {
-    destHandler = getDestHandler(version, destination);
-  }
+  let destHandler = null;
   const respList = await Promise.all(
     events.map(async event => {
       try {
@@ -121,10 +152,19 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(parsedEvent)) {
+        if (isCdkV2Destination(parsedEvent)) {
+          respEvents = await handleCdkV2(
+            destination,
+            parsedEvent,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
+        } else if (isCdkDestination(parsedEvent)) {
           const tfConfig = await ConfigFactory.getConfig(destination);
           respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
+          if (destHandler === null) {
+            destHandler = getDestHandler(version, destination);
+          }
           respEvents = await destHandler.process(parsedEvent);
         }
         if (respEvents) {
@@ -193,6 +233,7 @@ async function handleValidation(ctx) {
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  let ctxStatusCode = 200;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const eventStartTime = new Date();
@@ -227,10 +268,17 @@ async function handleValidation(ctx) {
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
+      let status = 400;
+      if (error instanceof RetryRequestError) {
+        ctxStatusCode = error.statusCode;
+      }
+      if (error instanceof RespStatusError) {
+        status = error.statusCode;
+      }
       respList.push({
         output: event.message,
         metadata: event.metadata,
-        statusCode: 200,
+        statusCode: status,
         validationErrors: [],
         error: errMessage
       });
@@ -244,6 +292,7 @@ async function handleValidation(ctx) {
     }
   }
   ctx.body = respList;
+  ctx.status = ctxStatusCode;
   ctx.set("apiVersion", API_VERSION);
 
   stats.counter("hv_events_count", events.length, {
@@ -375,6 +424,7 @@ if (startDestTransformer) {
         { processSessions }
       );
 
+      let ctxStatusCode = 200;
       const transformedEvents = [];
       let librariesVersionIDs = [];
       if (events[0].libraries) {
@@ -459,6 +509,9 @@ if (startDestTransformer) {
               logger.error(error);
               let status = 400;
               const errorString = error.toString();
+              if (error instanceof RetryRequestError) {
+                ctxStatusCode = error.statusCode;
+              }
               if (error instanceof RespStatusError) {
                 status = error.statusCode;
               }
@@ -500,6 +553,7 @@ if (startDestTransformer) {
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.status = ctxStatusCode;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
         processSessions
@@ -754,7 +808,15 @@ router.get("/transformerBuildVersion", ctx => {
 });
 
 router.get("/health", ctx => {
-  ctx.body = "OK";
+  const {
+    git_commit_sha: gitCommitSha,
+    transformer_build_version: imageVersion
+  } = process.env;
+  ctx.body = {
+    service: "UP",
+    ...(imageVersion && { version: imageVersion }),
+    ...(gitCommitSha && { gitCommitSha })
+  };
 });
 
 router.get("/features", ctx => {

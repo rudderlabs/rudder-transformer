@@ -17,7 +17,7 @@ async function getWorkflowEngine(destName, flowType) {
     const workflowEngine = new WorkflowEngine(
       WorkflowUtils.createFromFilePath(workflowPath),
       destRootDir,
-      await getPlatformBindingsPaths()
+      ...(await getPlatformBindingsPaths())
     );
     destinationWorkflowEngineMap[destName] = workflowEngine;
   }

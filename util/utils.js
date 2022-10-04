@@ -23,8 +23,17 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
+const EC2MetadataURL = "169.254.169.254";
+
+const rejectInternalAccess = (url) => {
+  if (url?.includes(EC2MetadataURL)) {
+    throw new Error("Internal access is not allowed");
+  }
+};
+
 module.exports = {
   RespStatusError,
   RetryRequestError,
-  responseStatusHandler
+  responseStatusHandler,
+  rejectInternalAccess,
 };

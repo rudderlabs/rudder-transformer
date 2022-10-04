@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { rejectInternalAccess } = require("./utils");
 
 async function runUserTransform(
   events,
@@ -32,6 +33,8 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
+        const fetchURL = args[0];
+        rejectInternalAccess(fetchURL);
         const res = await fetch(...args);
         const data = await res.json();
         stats.timing("fetch_call_duration", fetchStartTime, { versionId });
@@ -51,6 +54,8 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
+        const fetchURL = args[0];
+        rejectInternalAccess(fetchURL);
         const res = await fetch(...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {

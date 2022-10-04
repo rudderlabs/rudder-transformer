@@ -34,7 +34,7 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
-          procWorkflowEngine = await procWorkflowEnginePromise;
+          const procWorkflowEngine = await procWorkflowEnginePromise;
           const result = await procWorkflowEngine.execute(input);
           expect(JSON.parse(JSON.stringify(result.output))).toEqual(expected);
         } catch (error) {
@@ -46,7 +46,7 @@ describe(`${name} Tests`, () => {
 
   describe("Router Tests", () => {
     it("Payload", async () => {
-      rtWorkflowEngine = await rtWorkflowEnginePromise;
+      const rtWorkflowEngine = await rtWorkflowEnginePromise;
       const result = await rtWorkflowEngine.execute(inputRouterData);
       expect(JSON.parse(JSON.stringify(result.output))).toEqual(
         expectedRouterData

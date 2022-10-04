@@ -1,4 +1,4 @@
-const { WorkflowUtils, WorkflowEngine } = require("rudder-workflow-engine");
+const { WorkflowEngineFactory } = require("rudder-workflow-engine");
 const logger = require("../../logger");
 
 const ErrorBuilder = require("../../v0/util/error");
@@ -18,10 +18,10 @@ async function getWorkflowEngine(destName, flowType) {
       const destRootDir = getRootPathForDestination(destName);
       const workflowPath = await getWorkflowPath(destRootDir, flowType);
 
-      const workflowEngine = new WorkflowEngine(
-        WorkflowUtils.createWorkflowFromFilePath(workflowPath),
+      const workflowEngine = WorkflowEngineFactory.createFromFilePath(
+        workflowPath,
         destRootDir,
-        ...(await getPlatformBindingsPaths())
+        await getPlatformBindingsPaths()
       );
       destinationWorkflowEngineMap[destName] = workflowEngine;
     } catch (error) {

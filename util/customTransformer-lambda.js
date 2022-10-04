@@ -53,7 +53,7 @@ async function runLambdaUserTransform(
     language: userTransformation.language,
     ...metaTags
   };
-  if (!testMode && !userTransformation.handlerId) {
+  if (!testMode && !userTransformation.handleId) {
     throw new Error("Handle id is not connected to transformation");
   }
 
@@ -68,7 +68,7 @@ async function runLambdaUserTransform(
   const functionName = testMode
     ? userTransformation.name
     : `${userTransformation.workspaceId}_${userTransformation.name}`;
-  const qualifier = userTransformation.handlerId;
+  const qualifier = userTransformation.handleId;
   const invokeTime = new Date();
   const result = await invokeLambda(
     functionName,

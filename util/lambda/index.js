@@ -2,13 +2,15 @@
 /* eslint-disable no-unused-vars */
 const JSZip = require("jszip");
 const fs = require("fs");
-const AWS = require("aws-sdk");
+const Lambda = require("aws-sdk/clients/lambda");
 const logger = require("../../logger");
 
 const MAX_ATTEMPTS = parseInt(process.env.MAX_ATTEMPTS || "5", 10);
 const DELAY = parseInt(process.env.DELAY || "1", 10);
+const EVENT_SIZE_LIMIT_IN_MB =
+  parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) * 1024 * 1024;
 
-const lambda = new AWS.Lambda({
+const lambda = new Lambda({
   apiVersion: "2015-03-31",
   region: process.env.AWS_REGION || "",
   accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
@@ -55,6 +57,7 @@ const createZip = async (fileName, code) => {
 
 const createLambdaFunction = async (functionName, code, publish) => {
   try {
+    logger.debug(`Creating lambda for ${functionName} with publish:${publish}`);
     // create, read and delete zip
     await createZip(functionName, code);
     const zipContent = fs.readFileSync(`./${functionName}.zip`);
@@ -82,10 +85,13 @@ const createLambdaFunction = async (functionName, code, publish) => {
     };
     const createFunctionPromise = promisify(createFunction.bind(lambda));
     const resp = await createFunctionPromise(params);
+    logger.debug(`Created lambda for ${functionName}: ${JSON.stringify(resp)}`);
 
     // verify creation
+    const qualifier = resp.Version;
     const functionParams = {
       FunctionName: functionName,
+      Qualifier: qualifier,
       $waiter: {
         maxAttempts: MAX_ATTEMPTS,
         delay: DELAY
@@ -96,6 +102,9 @@ const createLambdaFunction = async (functionName, code, publish) => {
       "functionActiveV2",
       functionParams
     );
+    logger.debug(
+      `Lambda active for ${functionName}: ${JSON.stringify(result)}`
+    );
     return result;
   } catch (err) {
     logger.error(`Error while creating function: ${err.message}`);
@@ -105,6 +114,7 @@ const createLambdaFunction = async (functionName, code, publish) => {
 
 const updateLambdaFunction = async (functionName, code, publish) => {
   try {
+    logger.debug(`Updating lambda for ${functionName} with publish:${publish}`);
     // create, read and delete zip
     await createZip(functionName, code);
     const zipContent = fs.readFileSync(`./${functionName}.zip`);
@@ -122,9 +132,10 @@ const updateLambdaFunction = async (functionName, code, publish) => {
     };
     const updateFunctionPromise = promisify(updateFunctionCode.bind(lambda));
     const resp = await updateFunctionPromise(params);
+    logger.debug(`Updated lambda for ${functionName}: ${JSON.stringify(resp)}`);
 
     // verify updation
-    const qualifier = resp.Configuration?.Version;
+    const qualifier = resp.Version;
     const functionParams = {
       FunctionName: functionName,
       Qualifier: qualifier,
@@ -138,6 +149,9 @@ const updateLambdaFunction = async (functionName, code, publish) => {
       "functionUpdatedV2",
       functionParams
     );
+    logger.debug(
+      `Lambda updated for ${functionName}: ${JSON.stringify(result)}`
+    );
     return result;
   } catch (err) {
     logger.error(`Error while creating function: ${err.message}`);
@@ -147,12 +161,14 @@ const updateLambdaFunction = async (functionName, code, publish) => {
 
 const getLambdaFunction = async (functionName, qualifier = "") => {
   try {
+    logger.debug(`Fetching lambda for ${functionName}`);
     const params = { FunctionName: functionName };
     if (qualifier) {
       params.Qualifier = qualifier;
     }
     const getFunctionPromise = promisify(getFunction.bind(lambda));
     const resp = await getFunctionPromise(params);
+    logger.debug(`Fetched lambda for ${functionName}: ${JSON.stringify(resp)}`);
     return resp;
   } catch (err) {
     logger.error(`Error while fetching function: ${err.message}`);
@@ -188,14 +204,91 @@ const invokeLambdaFunction = async (
   }
 };
 
-const testLambda = async (
+/*
+ * Request payload for invoke call cannot exceed 6 MB
+ * Calculating payload size by simple stringifying
+ * instead of using expensive TextEncoder or Buffer to calculate size
+ * Set size limit to 3 MB
+ * Following function loops over batch of events &
+ * makes several invoke calls with payload less than 3 MB
+ * No size restriction on single event
+ */
+async function invokeLambdaInLoop(
   functionName,
-  code,
   transformationPayload,
-  publish
-) => {
+  qualifier,
+  result,
+  start,
+  end
+) {
+  logger.debug(`Executing invocation for events in indices: ${start}-${end}`);
+  const size = JSON.stringify(transformationPayload.events).length;
+  if (end > start && size > EVENT_SIZE_LIMIT_IN_MB) {
+    const mid = Math.floor((start + end) / 2);
+    if (mid !== start) {
+      await invokeLambdaInLoop(
+        functionName,
+        {
+          transformationType: transformationPayload.transformationType,
+          events: transformationPayload.events.slice(start, mid)
+        },
+        qualifier,
+        result,
+        start,
+        mid
+      );
+      await invokeLambdaInLoop(
+        functionName,
+        {
+          transformationType: transformationPayload.transformationType,
+          events: transformationPayload.events.slice(mid, end)
+        },
+        qualifier,
+        result,
+        mid,
+        end
+      );
+    }
+  }
+  const res = await invokeLambdaFunction(
+    functionName,
+    transformationPayload,
+    qualifier
+  );
+
+  result.transformedEvents.push(...res.transformedEvents);
+  result.logs.push(...res.logs);
+  logger.debug(`Finished invocation for events in indices: ${start}-${end}`);
+}
+
+const invokeLambda = async (functionName, transformationPayload, qualifier) => {
   try {
-    logger.debug("Executing lambda test flow");
+    logger.debug("Executing lambda invoke flow");
+    const end = transformationPayload.events?.length || 0;
+    const start = 0;
+    const result = {
+      transformedEvents: [],
+      logs: []
+    };
+    await invokeLambdaInLoop(
+      functionName,
+      transformationPayload,
+      qualifier,
+      result,
+      start,
+      end
+    );
+    logger.debug("Finished lambda invoke flow");
+    return result;
+  } catch (err) {
+    logger.error(`Error while invoking lambda: ${err.message}`);
+    throw err;
+  }
+};
+
+const setupLambda = async (functionName, code, publish) => {
+  try {
+    logger.debug("Executing setting up a lambda function");
     let functionExists = true;
     try {
       await getLambdaFunction(functionName);
@@ -210,42 +303,20 @@ const testLambda = async (
     } else {
       resp = await updateLambdaFunction(functionName, code, publish);
     }
-    // invoke function
-    const qualifier = resp.Configuration?.Version || "$LATEST";
-    const result = await invokeLambdaFunction(
-      functionName,
-      transformationPayload,
-      qualifier
-    );
 
-    logger.debug("Finished lambda test flow");
+    const qualifier = resp.Configuration?.Version || "$LATEST";
+    logger.debug("Finished setting lambda with version:", qualifier);
     return {
-      ...result,
-      publishedVersion: publish ? qualifier : ""
+      success: true,
+      publishedVersion: publish ? qualifier : null
     };
   } catch (err) {
-    logger.error(`Error while testing lambda: ${err.message}`);
-    throw err;
-  }
-};
-
-const invokeLambda = async (functionName, transformationPayload, qualifier) => {
-  try {
-    logger.debug("Executing lambda invoke flow");
-    const result = await invokeLambdaFunction(
-      functionName,
-      transformationPayload,
-      qualifier
-    );
-    logger.debug("Finished lambda invoke flow");
-    return result;
-  } catch (err) {
-    logger.error(`Error while invoking lambda: ${err.message}`);
+    logger.error(`Error while setting up lambda: ${err.message}`);
     throw err;
   }
 };
 
 module.exports = {
   invokeLambda,
-  testLambda
+  setupLambda
 };

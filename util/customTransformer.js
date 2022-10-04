@@ -3,7 +3,10 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
-const { pyUserTransformHandler } = require("./customTransformer-py");
+const {
+  runLambdaUserTransform,
+  setLambdaUserTransform
+} = require("./customTransformer-lambda");
 
 async function runUserTransform(
   events,
@@ -220,8 +223,7 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  testMode = false,
-  testWithPublish = false
+  testMode = false
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
@@ -235,34 +237,18 @@ async function userTransformHandler(
       });
 
       let userTransformedEvents = [];
-      if (res.language && res.language !== "javascript") {
-        const result = await pyUserTransformHandler(
-          events,
-          res,
-          testMode,
-          testWithPublish
-        );
-
-        userTransformedEvents = result.transformedEvents;
-        if (testMode) {
-          userTransformedEvents = {
-            transformedEvents: result.transformedEvents.map(ev => {
-              if (ev.error) {
-                return { error: ev.error };
-              }
-              return ev.transformedEvent;
-            }),
-            logs: result.logs,
-            publishedVersion: testWithPublish ? result.publishedVersion : null
-          };
+      let result;
+      if (res.codeVersion && res.codeVersion === "1") {
+        if (res.language && res.language === "python") {
+          result = await runLambdaUserTransform(events, res, testMode);
+        } else {
+          result = await userTransformHandlerV1(
+            events,
+            res,
+            libraryVersionIDs,
+            testMode
+          );
         }
-      } else if (res.codeVersion && res.codeVersion === "1") {
-        const result = await userTransformHandlerV1(
-          events,
-          res,
-          libraryVersionIDs,
-          testMode
-        );
 
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
@@ -277,7 +263,7 @@ async function userTransformHandler(
           };
         }
       } else {
-        const result = await runUserTransform(
+        result = await runUserTransform(
           eventMessages,
           res.code,
           eventsMetadata,
@@ -298,4 +284,19 @@ async function userTransformHandler(
   return events;
 }
 
-exports.userTransformHandler = userTransformHandler;
+async function setupUserTransformHandle(
+  trRevCode = {},
+  libraryVersionIDs,
+  testWithPublish = false
+) {
+  let resp;
+  if (trRevCode.language && trRevCode.language === "python") {
+    resp = await setLambdaUserTransform(trRevCode, testWithPublish);
+  }
+  resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
+  return resp;
+}
+module.exports = {
+  userTransformHandler,
+  setupUserTransformHandle
+};

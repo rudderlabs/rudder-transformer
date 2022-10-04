@@ -1,6 +1,8 @@
-const JSON_IMPORT_CODE = `
+const IMPORT_CODE = `
 import json
+import requests
 `;
+
 const TRANSFORM_WRAPPER_CODE = `
 logs = []
 
@@ -87,6 +89,6 @@ def transformWrapper(transformationPayload):
 `;
 
 module.exports = {
-  JSON_IMPORT_CODE,
+  IMPORT_CODE,
   TRANSFORM_WRAPPER_CODE
 };

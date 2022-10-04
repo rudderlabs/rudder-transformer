@@ -70,6 +70,7 @@ async function buildContext(code) {
 async function containerizeAndPush(imageName, functionName, code) {
   const startTime = new Date();
 
+  logger.info("Build OCI Image.");
   const response = await axios.post(
     new URL(
       path.join(
@@ -107,6 +108,7 @@ function deleteFunction(functionName) {
 }
 
 async function isFunctionDeployed(functionName) {
+  logger.info("Is function deployed?.");
   const deployedFunctions = await axios.get(
     new URL(
       path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
@@ -137,6 +139,7 @@ async function deployFunction(imageName, functionName, testMode) {
     }
   };
 
+  logger.info("Deploying function.");
   await axios.post(
     new URL(
       path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
@@ -178,6 +181,8 @@ async function faasInvocationHandler(
 
   const promises = [];
   const startTime = new Date();
+
+  logger.info("Invoking function.");
 
   events.forEach(event => {
     const promise = axios.post(

@@ -651,6 +651,8 @@ if (startDestTransformer) {
           throw new Error("Invalid request. Missing events");
         }
 
+        const startTime = new Date();
+
         const transformationResponses = await faasInvocationHandler()(
           transformationName,
           code,
@@ -665,6 +667,8 @@ if (startDestTransformer) {
         transformationResponses.forEach(response => {
           responseArray.push(response.data);
         });
+
+        stats.timing("python_faas_invocation_latency", startTime);
 
         ctx.body = responseArray;
         ctx.status = 200;

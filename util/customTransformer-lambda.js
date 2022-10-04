@@ -1,4 +1,5 @@
 const { parse } = require("@qoretechnologies/python-parser");
+const _ = require("lodash");
 const stats = require("./stats");
 const { getMetadata } = require("../v0/util");
 const { invokeLambda, setupLambda } = require("./lambda");
@@ -67,7 +68,9 @@ async function runLambdaUserTransform(
 
   const functionName = testMode
     ? userTransformation.name
-    : `${userTransformation.workspaceId}_${userTransformation.name}`;
+    : `${userTransformation.workspaceId}_${_.camelCase(
+        userTransformation.name
+      )}`;
   const qualifier = userTransformation.handleId;
   const invokeTime = new Date();
   const result = await invokeLambda(

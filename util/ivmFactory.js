@@ -8,6 +8,44 @@ const { parserForImport } = require("./parser");
 const logger = require("../logger");
 const { rejectInternalAccess } = require("./utils");
 
+const http = require("http");
+const https = require("https");
+const {Resolver} = require("dns").promises;
+
+const resolver = new Resolver();
+
+// Cloudflare and Google dns
+resolver.setServers([
+  "1.1.1.1",
+  "8.8.8.8",
+]);
+
+const EC2MetadataIP = "169.254.169.254";
+
+const staticLookup = () => async (hostname, _, cb) => {
+  console.log("staticLookup", hostname);
+  const ips = await resolver.resolve(hostname);
+
+  console.log("Resolved", hostname, "to", ips);
+
+  if (ips.length === 0) {
+    throw new Error(`Unable to resolve ${hostname}`);
+  }
+
+  for (const ip of ips) {
+    if (ip.includes(EC2MetadataIP)) {
+      throw new Error("Internal access is not allowed");
+    }
+  }
+
+  cb(null, ips[0], 4);
+};
+
+const staticDnsAgent = (scheme) => {
+  const httpModule = scheme === "http" ? http : https;
+  return new httpModule.Agent({ lookup: staticLookup() });
+};
+
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
@@ -166,9 +204,14 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
+        console.log(args);
         const fetchURL = args[0];
         rejectInternalAccess(fetchURL);
-        const res = await fetch(...args);
+        const fetchOptions = args[1] || {};
+        const schemeName = fetchURL.trim().startsWith("https") ? "https" : "http";
+        fetchOptions.agent = staticDnsAgent(schemeName);
+        console.log(`Fetching ${fetchURL} with options ${JSON.stringify(fetchOptions)}`);
+        const res = await fetch(fetchURL, fetchOptions);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -189,6 +232,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
           new ivm.ExternalCopy(data).copyInto()
         ]);
       } catch (error) {
+        console.log('Error in fetchV2', error);
         const err = JSON.parse(
           JSON.stringify(error, Object.getOwnPropertyNames(error))
         );

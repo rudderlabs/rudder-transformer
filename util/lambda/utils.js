@@ -29,10 +29,17 @@ def transformWrapper(transformationPayload):
     def isObject(o):
         return isinstance(o, dict)
     
-    def func(event):
-        eventMetadata = event if eventsMetadata[event['messageId']] or {}  else {}
+    def matafunc(event):
+        if not isObject(event):
+            return {}
+        eventMetadata = eventsMetadata[event['messageId']] if event or {}  else {}
         return eventMetadata
-    metadata = func
+    metadata = matafunc
+
+    def batchfunc(event):
+        if not isObject(event):
+            return { "error": "returned event in events array from transformBatch(events) is not an object", "metadata": {}}
+        return { "transformedEvent": event, "metadata": metadata(event)}
     
     if transformType == "transformBatch":
         transformedEventsBatch = transformBatch(eventMessages, metadata)
@@ -41,6 +48,7 @@ def transformWrapper(transformationPayload):
                 "error": "returned events from transformBatch(event) is not an array",
                 "metadata": {}
             })
+        outputEvents = [ batchfunc(transformEvent) for transformEvent in transformedEventsBatch ]
     elif transformType == "transformEvent":
         for ev in eventMessages:
             currMsgId = ev['messageId']

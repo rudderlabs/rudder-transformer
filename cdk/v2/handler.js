@@ -8,36 +8,43 @@ const {
   getPlatformBindingsPaths
 } = require("./utils");
 
-const destinationWorkflowEngineMap = new Map();
+async function getWorkflowEngineInternal(destName, flowType) {
+  try {
+    const destRootDir = getRootPathForDestination(destName);
+    const workflowPath = await getWorkflowPath(destRootDir, flowType);
+    return WorkflowEngineFactory.createFromFilePath(
+      workflowPath,
+      destRootDir,
+      await getPlatformBindingsPaths()
+    );
+  } catch (error) {
+    logger.info(
+      "Error occurred while creating workflow",
+      error,
+      destName,
+      flowType
+    );
+    throw new ErrorBuilder()
+      .setMessage("Error occurred while creating workflow")
+      .setStatus(400)
+      .build();
+  }
+}
 
-async function getWorkflowEngine(destName, flowType) {
+const workflowEnginePromiseMap = new Map();
+
+function getWorkflowEngine(destName, flowType) {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
-  if (!destinationWorkflowEngineMap.has(destName)) {
-    try {
-      const destRootDir = getRootPathForDestination(destName);
-      const workflowPath = await getWorkflowPath(destRootDir, flowType);
-
-      const workflowEngine = WorkflowEngineFactory.createFromFilePath(
-        workflowPath,
-        destRootDir,
-        await getPlatformBindingsPaths()
-      );
-      destinationWorkflowEngineMap[destName] = workflowEngine;
-    } catch (error) {
-      logger.info(
-        "Error occurred while creating workflow",
-        error,
-        destName,
-        flowType
-      );
-      throw new ErrorBuilder()
-        .setMessage("Error occurred while creating workflow")
-        .setStatus(400)
-        .build();
-    }
+  workflowEnginePromiseMap[destName] =
+    workflowEnginePromiseMap[destName] || new Map();
+  if (!workflowEnginePromiseMap[destName][flowType]) {
+    workflowEnginePromiseMap[destName][flowType] = getWorkflowEngineInternal(
+      destName,
+      flowType
+    );
   }
-  return destinationWorkflowEngineMap[destName];
+  return workflowEnginePromiseMap[destName][flowType];
 }
 
 module.exports = {

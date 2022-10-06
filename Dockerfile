@@ -20,7 +20,9 @@ WORKDIR /home/node/app
 USER node
 
 ARG version
+ARG GIT_COMMIT_SHA
 ENV transformer_build_version=$version
+ENV git_commit_sha=$GIT_COMMIT_SHA
 COPY package*.json ./
 RUN npm install
 

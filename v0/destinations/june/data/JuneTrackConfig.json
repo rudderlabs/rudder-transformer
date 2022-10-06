@@ -1,0 +1,28 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": ["groupId"]
+    }
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

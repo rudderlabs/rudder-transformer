@@ -79,7 +79,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
   }
   let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
-    const contacts = await searchContactIds(message, Config, endPoint); 
+    const contacts = await searchContactIds(message, Config, endPoint);
     if (!contacts || contacts.length==0) {
       throw new CustomError(
         "Could not find any contact Id for the given lookup Field or email.",

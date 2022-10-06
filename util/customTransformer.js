@@ -289,11 +289,11 @@ async function setupUserTransformHandle(
   libraryVersionIDs,
   testWithPublish = false
 ) {
-  let resp;
+  let resp = { success: false };
   if (trRevCode.language && trRevCode.language === "python") {
     resp = await setLambdaUserTransform(trRevCode, testWithPublish);
+    resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
   }
-  resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
   return resp;
 }
 module.exports = {

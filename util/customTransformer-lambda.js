@@ -1,5 +1,4 @@
 const { parse } = require("@qoretechnologies/python-parser");
-const _ = require("lodash");
 const stats = require("./stats");
 const { getMetadata } = require("../v0/util");
 const { invokeLambda, setupLambda } = require("./lambda");
@@ -55,6 +54,7 @@ async function runLambdaUserTransform(
     ...metaTags
   };
   if (!testMode && !userTransformation.handleId) {
+    stats.counter("missing_handle", 1, tags);
     throw new Error("Handle id is not connected to transformation");
   }
 

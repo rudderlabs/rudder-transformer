@@ -4,6 +4,7 @@ const JSZip = require("jszip");
 const fs = require("fs");
 const Lambda = require("aws-sdk/clients/lambda");
 const logger = require("../../logger");
+const stats = require("../stats");
 
 const MAX_ATTEMPTS = parseInt(process.env.MAX_ATTEMPTS || "5", 10);
 const DELAY = parseInt(process.env.DELAY || "1", 10);
@@ -49,6 +50,7 @@ const createZip = async (fileName, code) => {
         resolve();
       })
       .on("error", err => {
+        stats.counter("create_zip_error", 1, { fileName });
         logger.error(`Error while creating zip file: ${err.message}`);
         reject(err);
       });
@@ -64,6 +66,7 @@ const createLambdaFunction = async (functionName, code, publish) => {
     fs.unlink(`./${functionName}.zip`, err => {
       if (err) {
         logger.error(`Error occurred while deleting zip file: ${err.message}`);
+        stats.counter("delete_zip_error", 1, { fileName: functionName });
       }
       logger.debug(`Zip file has been deleted: ${functionName}.zip`);
     });

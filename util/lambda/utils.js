@@ -55,7 +55,7 @@ def transformWrapper(transformationPayload):
             try:
                 transformedOutput = transformEvent(ev, metadata)
                 if transformedOutput == None:
-                    return
+                    continue
                 
                 if isinstance(transformedOutput, list):
                     producedEvents = []
@@ -74,10 +74,10 @@ def transformWrapper(transformationPayload):
                             encounteredError = True
                     if not encounteredError:
                         outputEvents.extend(producedEvents)
-                    return
+                    continue
                 
                 if not isObject(transformedOutput):
-                    return outputEvents.append({
+                    outputEvents.append({
                         "error": "returned event from transformEvent(event) is not an object",
                         "metadata": eventsMetadata[currMsgId] or {}
                     })
@@ -86,7 +86,7 @@ def transformWrapper(transformationPayload):
                     "metadata": eventsMetadata[currMsgId] or {}
                 })
             except Exception as e:
-                return outputEvents.append({
+                outputEvents.append({
                     "error": str(e),
                     "metadata": eventsMetadata[currMsgId] or {}
                 })

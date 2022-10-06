@@ -10,28 +10,6 @@ const CONFIG_CATEGORIES = {
 };
 
 // ref : https://developers.facebook.com/docs/marketing-api/offline-conversions/#upload-events
-const MATCH_KEY_FIELDS = [
-  "email",
-  "phone",
-  "gen",
-  "ln",
-  "fn",
-  "fi",
-  "dobm",
-  "doby",
-  "dobd",
-  "ct",
-  "st",
-  "zip",
-  "country",
-  "madid",
-  "extern_id",
-  "lead_id",
-  "fbc",
-  "fbp",
-  "client_user_agent"
-];
-
 const MATCH_KEY_FIELD_TYPE_DICTIONARY = {
   email: "array",
   phone: "array",
@@ -94,7 +72,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   ENDPOINT,
   MAPPING_CONFIG,
-  MATCH_KEY_FIELDS,
   CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,

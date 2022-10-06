@@ -9,11 +9,11 @@ const { offlineConversionResponseBuilder, prepareUrls } = require("./utils");
 const { DESTINATION } = require("./config");
 const { EventType } = require("../../../constants");
 
-const responseBuilder = (endpoint, method) => {
+const responseBuilder = endpoint => {
   if (endpoint) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
-    response.method = method;
+    response.method = defaultPostRequestConfig.requestMethod;
     return response;
   }
   // fail-safety for developer error
@@ -60,10 +60,9 @@ const trackResponseBuilder = (message, destination) => {
     );
   });
 
-  const method = defaultPostRequestConfig.requestMethod;
   const eventsToSend = [];
   finalResponseUrls.forEach(url => {
-    const response = responseBuilder(url, method);
+    const response = responseBuilder(url);
     eventsToSend.push(response);
   });
   return eventsToSend;

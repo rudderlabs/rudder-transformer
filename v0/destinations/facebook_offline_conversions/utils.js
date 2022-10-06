@@ -17,7 +17,6 @@ const {
   ENDPOINT,
   DESTINATION,
   MAPPING_CONFIG,
-  MATCH_KEY_FIELDS,
   CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
@@ -111,8 +110,9 @@ const prepareMatchKeys = (payload, message) => {
   }
 
   const keys = Object.keys(propertyMapping);
+  const matchKeyFields = Object.keys(MATCH_KEY_FIELD_TYPE_DICTIONARY);
   keys.forEach(key => {
-    if (MATCH_KEY_FIELDS.includes(key)) {
+    if (matchKeyFields.includes(key)) {
       if (MATCH_KEY_FIELD_TYPE_DICTIONARY[key] === "string") {
         data[key] = propertyMapping[key];
       } else {

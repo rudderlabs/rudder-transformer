@@ -3,10 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
-const {
-  runLambdaUserTransform,
-  setLambdaUserTransform
-} = require("./customTransformer-lambda");
+const { pyUserTransformHandler } = require("./customTransformer-py");
 
 async function runUserTransform(
   events,
@@ -240,7 +237,11 @@ async function userTransformHandler(
       let result;
       if (res.codeVersion && res.codeVersion === "1") {
         if (res.language && res.language === "python") {
-          result = await runLambdaUserTransform(events, res, testMode);
+          result = await pyUserTransformHandler().runUserTransfrom(
+            events,
+            res,
+            testMode
+          );
         } else {
           result = await userTransformHandlerV1(
             events,
@@ -291,7 +292,10 @@ async function setupUserTransformHandle(
 ) {
   let resp = { success: false };
   if (trRevCode.language && trRevCode.language === "python") {
-    resp = await setLambdaUserTransform(trRevCode, testWithPublish);
+    resp = await pyUserTransformHandler().setUserTransform(
+      trRevCode,
+      testWithPublish
+    );
     resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
   }
   return resp;

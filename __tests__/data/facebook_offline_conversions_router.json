@@ -91,7 +91,8 @@
               { "from": "CompleteRegistration", "to": "597443908839411" },
               { "from": "Lead", "to": "1024592094903800" },
               { "from": "AddToWishlist", "to": "506289934669334" }
-            ]
+            ],
+            "isHashRequired": true
           }
         }
       },
@@ -183,7 +184,8 @@
               { "from": "AddToCart", "to": "1148872185708962" },
               { "from": "CompleteRegistration", "to": "597443908839411" },
               { "from": "Lead", "to": "1024592094903800" }
-            ]
+            ],
+            "isHashRequired": true
           }
         }
       },
@@ -209,7 +211,7 @@
                 "city": "kalkata",
                 "state": "west bangal",
                 "country": "india",
-                "zip": 123456
+                "zip": "123456"
               },
               "phone": "9886775586",
               "gender": "male"
@@ -311,7 +313,8 @@
                 "to": "597443908839411"
               },
               { "from": "Lead", "to": "1024592094903800" }
-            ]
+            ],
+            "isHashRequired": true
           }
         }
       }
@@ -402,7 +405,8 @@
                 "to": "597443908839411"
               },
               { "from": "Lead", "to": "1024592094903800" }
-            ]
+            ],
+            "isHashRequired": true
           }
         }
       }

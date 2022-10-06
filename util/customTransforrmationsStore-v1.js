@@ -1,7 +1,7 @@
 const { fetchWithProxy } = require("./fetch");
 const logger = require("../logger");
 const stats = require("./stats");
-const { transformerStatusHandler } = require("./utils");
+const { responseStatusHandler } = require("./utils");
 
 const transformationCache = {};
 const libraryCache = {};
@@ -23,17 +23,11 @@ async function getTransformationCodeV1(versionId) {
     version: 1
   };
   try {
+    const url = `${getTransformationURL}?versionId=${versionId}`;
     const startTime = new Date();
-    const response = await fetchWithProxy(
-      `${getTransformationURL}?versionId=${versionId}`
-    );
+    const response = await fetchWithProxy(url);
 
-    transformerStatusHandler(
-      response.status,
-      "Transformation",
-      versionId,
-      getTransformationURL
-    );
+    responseStatusHandler(response.status, "Transformation", versionId, url);
     stats.increment("get_transformation_code.success", tags);
     stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
@@ -54,16 +48,15 @@ async function getLibraryCodeV1(versionId) {
     version: 1
   };
   try {
+    const url = `${getLibrariesUrl}?versionId=${versionId}`;
     const startTime = new Date();
-    const response = await fetchWithProxy(
-      `${getLibrariesUrl}?versionId=${versionId}`
-    );
+    const response = await fetchWithProxy(url);
 
-    transformerStatusHandler(
+    responseStatusHandler(
       response.status,
       "Transformation Library",
       versionId,
-      getLibrariesUrl
+      url
     );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);

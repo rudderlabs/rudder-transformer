@@ -621,15 +621,16 @@ if (transformerTestModeEnabled) {
   router.post("/transformation/sethandle", async ctx => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, language, name, testWithPublish = false } = trRevCode || {};
-      if (!code || !language || !name) {
+      const { code, language, testName, testWithPublish = false } =
+        trRevCode || {};
+      if (!code || !language || !testName) {
         throw new Error(
           "Invalid Request. Missing parameters in transformation code block"
         );
       }
 
       logger.debug(
-        `[CT] Setting up a transformation ${name} with publish: ${testWithPublish}`
+        `[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`
       );
       if (!trRevCode.versionId) {
         trRevCode.versionId = "testVersionId";
@@ -639,7 +640,7 @@ if (transformerTestModeEnabled) {
         libraryVersionIDs,
         testWithPublish
       );
-      logger.debug(`[CT] Finished setting up transformation: ${name}`);
+      logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error) {
       ctx.status = 400;

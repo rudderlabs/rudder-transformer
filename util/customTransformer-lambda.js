@@ -67,10 +67,8 @@ async function runLambdaUserTransform(
   };
 
   const functionName = testMode
-    ? userTransformation.name
-    : `${userTransformation.workspaceId}_${_.camelCase(
-        userTransformation.name
-      )}`;
+    ? userTransformation.testName
+    : `${userTransformation.workspaceId}_${userTransformation.id}`;
   const qualifier = userTransformation.handleId;
   const invokeTime = new Date();
   const result = await invokeLambda(
@@ -95,7 +93,7 @@ async function setLambdaUserTransform(userTransformation, testWithPublish) {
     IMPORT_CODE + userTransformation.code + TRANSFORM_WRAPPER_CODE;
   const setupTime = new Date();
   const result = await setupLambda(
-    userTransformation.name,
+    userTransformation.testName,
     lambdaCode,
     testWithPublish
   );

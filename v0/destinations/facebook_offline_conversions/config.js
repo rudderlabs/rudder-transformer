@@ -32,6 +32,20 @@ const MATCH_KEY_FIELD_TYPE_DICTIONARY = {
   client_user_agent: "string"
 };
 
+const HASHING_REQUIRED_KEYS = [
+  "ln",
+  "fn",
+  "fi",
+  "ct",
+  "st",
+  "gen",
+  "zip",
+  "email",
+  "madid",
+  "phone",
+  "country"
+];
+
 const TRACK_EXCLUSION_FIELDS = [
   "currency",
   "total",
@@ -74,6 +88,7 @@ module.exports = {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
+  HASHING_REQUIRED_KEYS,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY,

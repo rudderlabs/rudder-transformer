@@ -18,6 +18,7 @@ const {
   DESTINATION,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
+  HASHING_REQUIRED_KEYS,
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
@@ -336,30 +337,59 @@ const getData = (data, standardEvent) => {
 };
 
 /**
+ * Returns the payload according to configurations
+ * @param {*} facebookOfflineConversionsPayload
+ * @param {*} destination
+ * @returns
+ */
+const preparePayload = (facebookOfflineConversionsPayload, destination) => {
+  const { isHashRequired } = destination.Config;
+  const payload = {};
+
+  const keys = Object.keys(facebookOfflineConversionsPayload);
+  keys.forEach(key => {
+    if (isHashRequired && HASHING_REQUIRED_KEYS.includes(key)) {
+      payload[key] = sha256(facebookOfflineConversionsPayload[key]);
+    } else {
+      payload[key] = facebookOfflineConversionsPayload[key];
+    }
+  });
+
+  if (facebookOfflineConversionsPayload.name) {
+    const split = facebookOfflineConversionsPayload.name
+      ? facebookOfflineConversionsPayload.name.split(" ")
+      : null;
+    if (split !== null && Array.isArray(split) && split.length === 2) {
+      payload.fn = isHashRequired ? sha256(split[0]) : split[0];
+      payload.ln = isHashRequired ? sha256(split[1]) : split[1];
+    }
+    delete payload.name;
+  }
+
+  return payload;
+};
+
+/**
  * Returns the payload
  * @param {*} message
  * @param {*} destination
  * @returns
  */
 const offlineConversionResponseBuilder = (message, destination) => {
-  const payload = constructPayload(
+  const facebookOfflineConversionsPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.OFFLINE_EVENTS.name]
+  );
+
+  const payload = preparePayload(
+    facebookOfflineConversionsPayload,
+    destination
   );
 
   const leadId = getDestinationExternalID(message, "LeadId");
 
   if (leadId) {
     payload.lead_id = leadId;
-  }
-
-  if (payload.name) {
-    const split = payload.name ? payload.name.split(" ") : null;
-    if (split !== null && Array.isArray(split) && split.length === 2) {
-      payload.fn = sha256(split[0]);
-      payload.ln = sha256(split[1]);
-    }
-    delete payload.name;
   }
 
   const data = prepareData(payload, message, destination);

@@ -41,46 +41,31 @@
     "destKey": "email",
     "sourceKeys": "email",
     "required": false,
-    "sourceFromGenericMap": true,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "phone",
     "sourceKeys": "phone",
     "required": false,
-    "sourceFromGenericMap": true,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "gen",
     "sourceKeys": "gender",
     "required": false,
-    "sourceFromGenericMap": true,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "ln",
     "sourceKeys": "lastName",
     "required": false,
-    "sourceFromGenericMap": true,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "fn",
     "sourceKeys": "firstName",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "name",
@@ -91,10 +76,7 @@
   {
     "destKey": "fi",
     "sourceKeys": "firstName",
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "birthday",
@@ -106,45 +88,30 @@
     "destKey": "ct",
     "sourceKeys": "city",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "st",
     "sourceKeys": "state",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "zip",
     "sourceKeys": "zipcode",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "country",
     "sourceKeys": "country",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "madid",
     "sourceKeys": "context.device.advertisingId",
-    "required": false,
-    "metadata": {
-      "type": "hashToSha256"
-    }
+    "required": false
   },
   {
     "destKey": "contents",

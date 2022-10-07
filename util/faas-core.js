@@ -195,11 +195,11 @@ async function faasInvocationHandler(
     promises.push(promise);
   });
 
-  if (testMode) {
-    setTimeout(async () => {
-      await deleteFunction(functionName).catch(_e => {});
-    }, DESTRUCTION_TIMEOUT_IN_MS);
-  }
+  // if (testMode) {
+  //   setTimeout(async () => {
+  //     await deleteFunction(functionName).catch(_e => {});
+  //   }, DESTRUCTION_TIMEOUT_IN_MS);
+  // }
 
   const response = await Promise.all(promises);
   stats.timing("deployed_function_execution_time", startTime, {

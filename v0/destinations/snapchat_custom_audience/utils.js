@@ -1,7 +1,8 @@
+const { removeUndefinedValues } = require("../../util");
 const {
   prepareProxyRequest,
-  httpGET,
-  httpPOST
+  getPayloadData,
+  httpSend
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
@@ -15,99 +16,44 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 
-const BASE_ENDPOINT = "https://accounts.snapchat.com/login/oauth2";
+const prepareProxyReq = request => {
+  const { body } = request;
+  // Build the destination request data using the generic method
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(
+    request
+  );
 
-const getCode = async (clientId, redirectUri) => {
-  const scope = "snapchat-marketing-api";
-  const endpoint = `${BASE_ENDPOINT}/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+  // Modify the data
+  const { payloadFormat } = getPayloadData(body);
+  if (payloadFormat === "FORM") {
+    data.append("format", "json");
+  }
+
+  return removeUndefinedValues({
+    endpoint,
+    data,
+    params,
+    headers,
+    method
+  });
+};
+
+const scAudienceProxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+
   const requestOptions = {
-    client_id: `${clientId}`,
-    redirect_uri: `${redirectUri}`,
-    response_type: "code",
-    scope: `${scope}`
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method
   };
-  const response = await httpGET(endpoint, requestOptions);
-  return response;
-};
-
-const getRefreshToken = async (clientId, clientSecret, refreshToken) => {
-  const grantType = "refresh_token";
-  const endpoint = `${BASE_ENDPOINT}/access_token`;
-  const payload = {
-    client_id: `${clientId}`,
-    client_secret: `${clientSecret}`,
-    grant_type: `${grantType}`,
-    refresh_token: `${refreshToken}`
-  };
-  const response = await httpPOST(endpoint, payload, {});
-  return response;
-};
-
-const getAccessToken = async (clientId, clientSecret, code, redirectUri) => {
-  const grantType = "authorization_code";
-  const endpoint = `${BASE_ENDPOINT}/access_token`;
-  const payload = {
-    client_id: `${clientId}`,
-    client_secret: `${clientSecret}`,
-    code: `${code}`,
-    grant_type: `${grantType}`,
-    redirect_uri: `${redirectUri}`
-  };
-  const response = await httpPOST(endpoint, payload, {});
+  const response = await httpSend(requestOptions);
   return response;
 };
 
 /**
- * This function is responsible for making the three steps required for uploding
- * data to customer list.
- * @param {*} request
- * @returns
- */
-const scaAudienceProxyRequest = async request => {
-  // step1: get code
-
-  // 1. how to get clientId, redirectUri and scope?
-  const firstResponse = await getCode(clientId, redirectUri);
-  if (
-    !firstResponse.success &&
-    !isHttpStatusSuccess(firstResponse.response.response.status)
-  ) {
-    return firstResponse;
-  }
-
-  // 2. how to extract code?
-  //   const code=firstResponse.code;
-
-  // step2: get access token
-  const secondResponse = await getAccessToken(
-    clientId,
-    clientSecret,
-    code,
-    redirectUri
-  );
-  // console.log(JSON.stringify(secondResponse.response.response));
-  if (
-    !secondResponse.success &&
-    !isHttpStatusSuccess(secondResponse.response.response.status)
-  ) {
-    return secondResponse;
-  }
-
-  // 3. how to extract access token, refresh token
-  // const accessToken=secondResponse.access_token;
-  // const refreshToken=secondResponse.refresh_token;
-
-  // step3: get refresh access token
-  const thirdResponse = await getRefreshToken(
-    clientId,
-    clientSecret,
-    refreshToken
-  );
-  return thirdResponse;
-};
-
-/**
- * This function helps to detarmine type of error occured. According to the response
+ * This function helps to determine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
  * or need to disable the destination.
  * @param {*} code
@@ -161,7 +107,7 @@ const responseHandler = destinationResponse => {
 };
 
 const networkHandler = function() {
-  this.proxy = scaAudienceProxyRequest;
+  this.proxy = scAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;

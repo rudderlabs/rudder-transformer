@@ -260,14 +260,14 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors
         });
-        stats.counter("hv_errors", 1, {
+        stats.counter("hv_propagated_events", 1, {
           ...metaTags
         });
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
-      let status = 400;
+      let status = 200;
       if (error instanceof RetryRequestError) {
         ctxStatusCode = error.statusCode;
       }

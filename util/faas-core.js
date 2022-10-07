@@ -139,13 +139,18 @@ async function deployFunction(imageName, functionName, testMode) {
     }
   };
 
-  logger.info("Deploying function.");
-  await axios.post(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
-    ).toString(),
-    payload
-  );
+  logger.info("Attempting to deploy function.");
+
+  try {
+    await axios.post(
+      new URL(
+        path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
+      ).toString(),
+      payload
+    );
+  } catch (error) {
+    logger.error(`Error trying to deploy function ${functionName}: `, error);
+  }
 }
 
 async function faasDeploymentHandler(imageName, functionName, code, testMode) {

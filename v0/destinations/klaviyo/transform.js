@@ -19,7 +19,8 @@ const {
   isProfileExist,
   checkForMembersAndSubscribe,
   createCustomerProperties,
-  formatEcomPayload
+  formatEcomPayload,
+  lookupCreateOrUpdateProfile
 } = require("./util");
 const {
   defaultRequestConfig,
@@ -32,8 +33,8 @@ const {
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  defaultPutRequestConfig,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  defaultPutRequestConfig
 } = require("../../util");
 
 /**
@@ -68,51 +69,8 @@ const identifyRequestHandler = async (message, category, destination) => {
     adduserIdFromExternalId(message);
   }
   const traitsInfo = getFieldValueFromMessage(message, "traits");
-  const response = defaultRequestConfig();
-  const personId = await isProfileExist(message, destination);
-  if (!personId) {
-    let propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
-    // Extract other K-V property from traits about user custom properties
-    propertyPayload = extractCustomFields(
-      message,
-      propertyPayload,
-      ["traits", "context.traits"],
-      WhiteListedTraits
-    );
-    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-    if (destination.Config.enforceEmailAsPrimary) {
-      delete propertyPayload.$id;
-      propertyPayload._id = getFieldValueFromMessage(message, "userId");
-    }
-
-    const payload = {
-      token: destination.Config.publicApiKey,
-      properties: propertyPayload
-    };
-    response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      "Content-Type": "application/json",
-      Accept: "text/html"
-    };
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    const propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
-    response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      Accept: "application/json"
-    };
-    response.params = removeUndefinedAndNullValues(propertyPayload);
-    response.params.api_key = destination.Config.privateApiKey;
-  }
-  const responseArray = [response];
+  const userPayload = await lookupCreateOrUpdateProfile(message, destination);
+  const responseArray = [userPayload];
   responseArray.push(
     ...checkForMembersAndSubscribe(message, traitsInfo, destination)
   );
@@ -125,7 +83,8 @@ const identifyRequestHandler = async (message, category, destination) => {
 // DOCS: https://www.klaviyo.com/docs/http-api
 // ----------------------
 
-const trackRequestHandler = (message, category, destination) => {
+const trackRequestHandler = async (message, category, destination) => {
+  const trackResponses = [];
   let payload = {};
   if (!destination.Config.publicApiKey) {
     throw new CustomError(
@@ -165,6 +124,26 @@ const trackRequestHandler = (message, category, destination) => {
   } else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   }
+
+  // if the person exists we need to update the user with the current primary identifier
+  // lookup order:  email, anonymousId, userId, phone
+  const personId = await isProfileExist(message, destination);
+  if (personId) {
+    const userUpdateResponse = defaultRequestConfig();
+    const propertyPayload = constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+    );
+    userUpdateResponse.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
+    userUpdateResponse.method = defaultPutRequestConfig.requestMethod;
+    userUpdateResponse.headers = {
+      Accept: "application/json"
+    };
+    userUpdateResponse.params = removeUndefinedAndNullValues(propertyPayload);
+    userUpdateResponse.params.api_key = destination.Config.privateApiKey;
+    trackResponses.push(userUpdateResponse);
+  }
+  // else we can create a new user with anonymousId as primary identifier
   const customerProperties = createCustomerProperties(message);
   if (destination.Config.enforceEmailAsPrimary) {
     delete customerProperties.$id;
@@ -184,7 +163,8 @@ const trackRequestHandler = (message, category, destination) => {
     Accept: "text/html"
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  trackResponses.push(response);
+  return trackResponses;
 };
 
 // ----------------------
@@ -282,7 +262,7 @@ const processEvent = async (message, destination) => {
     case EventType.SCREEN:
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
-      response = trackRequestHandler(message, category, destination);
+      response = await trackRequestHandler(message, category, destination);
       break;
     case EventType.GROUP:
       category = CONFIG_CATEGORIES.GROUP;

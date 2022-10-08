@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-underscore-dangle */
 const get = require("get-value");
 const { httpGET } = require("../../../adapters/network");
 
@@ -13,7 +15,10 @@ const {
   extractCustomFields,
   removeUndefinedAndNullValues,
   CustomError,
-  isEmptyObject
+  isEmptyObject,
+  flattenJson,
+  removeObjectTypedData,
+  defaultPutRequestConfig
 } = require("../../util");
 
 const {
@@ -32,52 +37,134 @@ const {
  * Docs: https://developers.klaviyo.com/en/reference/get-profile-id
  * @param {*} message
  * @param {*} Config
- * @returns
+ * @returns {String | Boolean}
  */
 const isProfileExist = async (message, { Config }) => {
   const { privateApiKey } = Config;
-  const userIdentifiers = {
-    email: getFieldValueFromMessage(message, "email"),
-    external_id: getFieldValueFromMessage(message, "userId"),
-    phone_number: getFieldValueFromMessage(message, "phone")
-  };
-
-  for (const id in userIdentifiers) {
-    if (isDefinedAndNotNull(userIdentifiers[id])) {
-      const profileResponse = await httpGET(
-        `${BASE_ENDPOINT}/api/v2/people/search`,
-        {
-          header: {
-            Accept: "application/json"
-          },
-          params: {
-            api_key: privateApiKey,
-            [id]: userIdentifiers[id]
-          }
+  const userIdentifiers = [
+    { key: "email", value: getFieldValueFromMessage(message, "email") },
+    { key: "external_id", value: get(message, "anonymousId") },
+    {
+      key: "external_id",
+      value: getFieldValueFromMessage(message, "userIdOnly")
+    },
+    { key: "phone", value: getFieldValueFromMessage(message, "phone") }
+  ];
+  const filteredUserIdentifiers = userIdentifiers.filter(identifier => {
+    return isDefinedAndNotNull(identifier.value);
+  });
+  const lookUpPromises = filteredUserIdentifiers.map(async identifier => {
+    const profileResponse = await httpGET(
+      `${BASE_ENDPOINT}/api/v2/people/search`,
+      {
+        header: {
+          Accept: "application/json"
+        },
+        params: {
+          api_key: privateApiKey,
+          [identifier.key]: identifier.value
         }
-      );
-      const processedProfileResponse = processAxiosResponse(profileResponse);
-      if (
-        processedProfileResponse.status === 200 &&
-        processedProfileResponse.response?.id
-      ) {
-        return processedProfileResponse.response.id;
-      } else if (
-        !(
-          processedProfileResponse.status === 404 &&
-          processedProfileResponse?.response.detail ===
-            "There is no profile matching the given parameters."
-        )
-      ) {
-        throw new CustomError(
-          `The lookup call could not be completed with the error:
-          ${JSON.stringify(processedProfileResponse.response)}`,
-          processedProfileResponse.status
-        );
       }
+    );
+    return profileResponse;
+  });
+
+  const lookupResults = await Promise.all(lookUpPromises);
+  for (const element of lookupResults) {
+    const processedProfileResponse = processAxiosResponse(element);
+    if (
+      processedProfileResponse.status === 200 &&
+      processedProfileResponse.response?.id
+    ) {
+      return processedProfileResponse.response.id;
     }
+    if (
+      !(
+        processedProfileResponse.status === 404 &&
+        processedProfileResponse?.response.detail ===
+          "There is no profile matching the given parameters."
+      )
+    ) {
+      throw new CustomError(
+        `The lookup call could not be completed with the error:
+        ${JSON.stringify(processedProfileResponse.response)}`,
+        processedProfileResponse.status
+      );
+    }
+    return false;
   }
-  return false;
+};
+
+/**
+ * This function is used to build the user profile object which is used to create/update user profile
+ * @param {*} message
+ * @returns {Object}
+ */
+const createCustomerProperties = message => {
+  let customerProperties = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+  );
+  // Extract other K-V property from traits about user custom properties
+  let customerCustomProperties = {};
+  customerCustomProperties = extractCustomFields(
+    message,
+    customerCustomProperties,
+    ["traits", "context.traits"],
+    WhiteListedTraits
+  );
+
+  // TODO: add flag for doing this
+  customerCustomProperties = flattenJson(customerCustomProperties, " ");
+  customerCustomProperties = removeObjectTypedData(customerCustomProperties);
+  customerProperties = removeUndefinedAndNullValues({
+    ...customerProperties,
+    ...customerCustomProperties
+  });
+  return customerProperties;
+};
+
+/**
+ * This function looksup and creates or updates user based on their presennce in the destination
+ * @param {*} message
+ * @param {*} destination
+ * @returns {Array}
+ */
+const lookupCreateOrUpdateProfile = async (message, destination) => {
+  const response = defaultRequestConfig();
+  const personId = await isProfileExist(message, destination);
+  if (!personId) {
+    const propertyPayload = createCustomerProperties(message);
+    if (destination.Config.enforceEmailAsPrimary) {
+      delete propertyPayload.$id;
+      propertyPayload._id = getFieldValueFromMessage(message, "userId");
+    }
+
+    const payload = {
+      token: destination.Config.publicApiKey,
+      properties: propertyPayload
+    };
+    response.endpoint = `${BASE_ENDPOINT}${CONFIG_CATEGORIES.IDENTIFY.apiUrl}`;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+      "Content-Type": "application/json",
+      Accept: "text/html"
+    };
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+  } else {
+    const propertyPayload = constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+    );
+    response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
+    response.method = defaultPutRequestConfig.requestMethod;
+    response.headers = {
+      Accept: "application/json"
+    };
+    response.params = removeUndefinedAndNullValues(propertyPayload);
+    response.params.api_key = destination.Config.privateApiKey;
+  }
+  return [response];
 };
 
 /**
@@ -132,7 +219,7 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
  * @param {*} message
  * @param {*} traitsInfo
  * @param {*} destination
- * @returns
+ * @returns {Array}
  */
 const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
@@ -161,23 +248,6 @@ const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   return responseArray;
 };
 
-// This function is used for creating and returning customer properties using mapping json
-const createCustomerProperties = message => {
-  let customerProperties = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
-  );
-  // Extract other K-V property from traits about user custom properties
-  customerProperties = extractCustomFields(
-    message,
-    customerProperties,
-    ["traits", "context.traits"],
-    WhiteListedTraits
-  );
-  customerProperties = removeUndefinedAndNullValues(customerProperties);
-  return customerProperties;
-};
-
 const formatEcomPayload = (message, payload) => {
   // products mapping using Items.json
   if (message.properties.items && Array.isArray(message.properties.items)) {
@@ -200,9 +270,10 @@ const formatEcomPayload = (message, payload) => {
 };
 
 module.exports = {
-  isProfileExist,
   addUserToList,
   checkForMembersAndSubscribe,
   createCustomerProperties,
-  formatEcomPayload
+  formatEcomPayload,
+  lookupCreateOrUpdateProfile,
+  isProfileExist
 };

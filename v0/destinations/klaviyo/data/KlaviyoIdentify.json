@@ -50,7 +50,8 @@
       "traits.address.city",
       "context.traits.city",
       "context.traits.address.city",
-      "properties.city"
+      "properties.city",
+      "properties.address.city" 
     ],
     "required": false
   },
@@ -61,7 +62,8 @@
       "traits.address.region",
       "context.traits.region",
       "context.traits.address.region",
-      "properties.region"
+      "properties.region",
+      "properties.address.region"
     ],
     "required": false
   },
@@ -72,7 +74,8 @@
       "traits.address.country",
       "context.traits.country",
       "context.traits.address.country",
-      "properties.country"
+      "properties.country",
+      "properties.address.country"
     ],
     "required": false
   },
@@ -83,7 +86,9 @@
       "traits.address.postalcode",
       "context.traits.zip",
       "context.traits.address.postalcode",
-      "properties.zip"
+      "properties.zip",
+      "properties.address.zip",
+      "properties.address.postalcode"
     ],
     "required": false
   },

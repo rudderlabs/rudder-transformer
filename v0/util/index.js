@@ -21,6 +21,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { cloneDeep } = require("lodash");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1681,6 +1682,22 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
   return respList;
 };
 
+/**
+ * This function removes the object type of data present in the input
+ * @param {*} data
+ * @param {*} type
+ * @returns {object}
+ */
+const removeObjectTypedData = data => {
+  const clonedData = cloneDeep(data);
+  Object.keys(clonedData).forEach(key => {
+    if (clonedData[key] && typeof clonedData[key] === "object") {
+      delete clonedData[key];
+    }
+  });
+  return clonedData;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1754,6 +1771,7 @@ module.exports = {
   isValidUrl,
   removeHyphens,
   removeNullValues,
+  removeObjectTypedData,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedNullEmptyExclBoolInt,

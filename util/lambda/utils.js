@@ -1,6 +1,7 @@
 const IMPORT_CODE = `
 import json
 import requests
+
 `;
 
 const TRANSFORM_WRAPPER_CODE = `
@@ -51,7 +52,7 @@ def transformWrapper(transformationPayload):
         outputEvents = [ batchfunc(transformEvent) for transformEvent in transformedEventsBatch ]
     elif transformType == "transformEvent":
         for ev in eventMessages:
-            currMsgId = ev['messageId']
+            currMsgId = ev.messageId
             try:
                 transformedOutput = transformEvent(ev, metadata)
                 if transformedOutput == None:
@@ -96,7 +97,21 @@ def transformWrapper(transformationPayload):
     return result
 `;
 
+const isABufferValue = value => {
+  return (
+    value &&
+    value.buffer instanceof ArrayBuffer &&
+    value.byteLength !== undefined
+  );
+};
+
+const bufferToString = value => {
+  return Buffer.from(value).toString();
+};
+
 module.exports = {
   IMPORT_CODE,
-  TRANSFORM_WRAPPER_CODE
+  TRANSFORM_WRAPPER_CODE,
+  bufferToString,
+  isABufferValue
 };

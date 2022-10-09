@@ -52,7 +52,7 @@ def transformWrapper(transformationPayload):
         outputEvents = [ batchfunc(transformEvent) for transformEvent in transformedEventsBatch ]
     elif transformType == "transformEvent":
         for ev in eventMessages:
-            currMsgId = ev.messageId
+            currMsgId = ev['messageId']
             try:
                 transformedOutput = transformEvent(ev, metadata)
                 if transformedOutput == None:

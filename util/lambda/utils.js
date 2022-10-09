@@ -1,11 +1,20 @@
-const IMPORT_CODE = `
+const TRANSFORM_WRAPPER_CODE = `
 import json
 import requests
+import user_transformation
 
-`;
-
-const TRANSFORM_WRAPPER_CODE = `
 logs = []
+
+def get_transform_function():
+    supported_func_names = ["transformEvent", "transformBatch"]
+    available_func_names = []
+    func_names = dir(user_transformation)
+    for fname in func_names:
+        if fname in supported_func_names:
+            available_func_names.append(fname)
+    if len(available_func_names) != 1:
+        raise Exception(f"Expected one of {supported_func_names}. Found {available_func_names}")
+    return available_func_names[0]
 
 def log(*args):
     log_string = 'Log:'
@@ -18,9 +27,8 @@ def lambda_handler(event, context):
     res = transformWrapper(event)
     return res
 
-def transformWrapper(transformationPayload):
-    events = transformationPayload["events"]
-    transformType = transformationPayload["transformationType"]
+def transformWrapper(events):
+    transformType = get_transform_function()
     outputEvents = []
     eventMessages = [event["message"] for event in events]
     eventsMetadata = {}
@@ -43,7 +51,7 @@ def transformWrapper(transformationPayload):
         return { "transformedEvent": event, "metadata": metadata(event)}
     
     if transformType == "transformBatch":
-        transformedEventsBatch = transformBatch(eventMessages, metadata)
+        transformedEventsBatch = user_transformation.transformBatch(eventMessages, metadata)
         if not isinstance(transformedEventsBatch, list):
             outputEvents.append({
                 "error": "returned events from transformBatch(event) is not an array",
@@ -54,7 +62,7 @@ def transformWrapper(transformationPayload):
         for ev in eventMessages:
             currMsgId = ev['messageId']
             try:
-                transformedOutput = transformEvent(ev, metadata)
+                transformedOutput = user_transformation.transformEvent(ev, metadata)
                 if transformedOutput == None:
                     continue
                 
@@ -110,7 +118,6 @@ const bufferToString = value => {
 };
 
 module.exports = {
-  IMPORT_CODE,
   TRANSFORM_WRAPPER_CODE,
   bufferToString,
   isABufferValue

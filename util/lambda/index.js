@@ -13,12 +13,16 @@ const {
 } = require("@aws-sdk/client-lambda");
 const logger = require("../../logger");
 const stats = require("../stats");
-const { isABufferValue, bufferToString } = require("./utils");
+const {
+  isABufferValue,
+  bufferToString,
+  TRANSFORM_WRAPPER_CODE
+} = require("./utils");
 
 const MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || "30", 10);
 const DELAY = parseInt(process.env.DELAY || "2", 10);
 const EVENT_SIZE_LIMIT_IN_MB =
-  parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) * 1024 * 1024;
+  parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) ;
 
 const client = new LambdaClient({
   region: process.env.AWS_REGION || "us-east-1"
@@ -38,7 +42,8 @@ const ArrayBufferView = Object.getPrototypeOf(
 const createZip = async (fileName, code) => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();
-    zip.file(`${fileName}.py`, code);
+    zip.file(`${fileName}.py`, TRANSFORM_WRAPPER_CODE);
+    zip.file("user_transformation.py", code);
 
     zip
       .generateNodeStream({ type: "nodebuffer", streamFiles: true })
@@ -167,17 +172,13 @@ const getLambdaFunction = async (functionName, qualifier = "") => {
   }
 };
 
-const invokeLambdaFunction = async (
-  functionName,
-  transformationPayload,
-  qualifier = ""
-) => {
+const invokeLambdaFunction = async (functionName, events, qualifier = "") => {
   try {
     const params = {
       FunctionName: functionName,
       InvocationType: "RequestResponse",
       LogType: "None",
-      Payload: JSON.stringify(transformationPayload)
+      Payload: JSON.stringify(events)
     };
     if (qualifier) {
       params.Qualifier = qualifier;
@@ -211,23 +212,21 @@ const invokeLambdaFunction = async (
  */
 async function invokeLambdaInLoop(
   functionName,
-  transformationPayload,
+  events,
   qualifier,
   result,
   start,
   end
 ) {
+  if (end <= start) return;
   logger.debug(`Executing invocation for events in indices: ${start}-${end}`);
-  const size = JSON.stringify(transformationPayload.events).length;
-  if (end > start && size > EVENT_SIZE_LIMIT_IN_MB) {
+  const size = JSON.stringify(events.slice(start, end)).length;
+  if (size > EVENT_SIZE_LIMIT_IN_MB) {
     const mid = Math.floor((start + end) / 2);
     if (mid !== start) {
       await invokeLambdaInLoop(
         functionName,
-        {
-          transformationType: transformationPayload.transformationType,
-          events: transformationPayload.events.slice(start, mid)
-        },
+        events,
         qualifier,
         result,
         start,
@@ -235,32 +234,37 @@ async function invokeLambdaInLoop(
       );
       await invokeLambdaInLoop(
         functionName,
-        {
-          transformationType: transformationPayload.transformationType,
-          events: transformationPayload.events.slice(mid, end)
-        },
+        events,
         qualifier,
         result,
         mid,
         end
       );
+    } else {
+      const res = await invokeLambdaFunction(
+        functionName,
+        events.slice(start, end),
+        qualifier
+      );
+      result.transformedEvents.push(...res.transformedEvents);
+      result.logs.push(...res.logs);
     }
+  } else {
+    const res = await invokeLambdaFunction(
+      functionName,
+      events.slice(start, end),
+      qualifier
+    );
+    result.transformedEvents.push(...res.transformedEvents);
+    result.logs.push(...res.logs);
   }
-  const res = await invokeLambdaFunction(
-    functionName,
-    transformationPayload,
-    qualifier
-  );
-
-  result.transformedEvents.push(...res.transformedEvents);
-  result.logs.push(...res.logs);
   logger.debug(`Finished invocation for events in indices: ${start}-${end}`);
 }
 
-const invokeLambda = async (functionName, transformationPayload, qualifier) => {
+const invokeLambda = async (functionName, events, qualifier) => {
   try {
     logger.debug("Executing lambda invoke flow");
-    const end = transformationPayload.events?.length || 0;
+    const end = events.length || 0;
     const start = 0;
     const result = {
       transformedEvents: [],
@@ -268,7 +272,7 @@ const invokeLambda = async (functionName, transformationPayload, qualifier) => {
     };
     await invokeLambdaInLoop(
       functionName,
-      transformationPayload,
+      events,
       qualifier,
       result,
       start,

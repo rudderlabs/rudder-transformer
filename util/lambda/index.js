@@ -22,7 +22,7 @@ const {
 const MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || "30", 10);
 const DELAY = parseInt(process.env.DELAY || "2", 10);
 const EVENT_SIZE_LIMIT_IN_MB =
-  parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) ;
+  parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) * 1024 * 1024;
 
 const client = new LambdaClient({
   region: process.env.AWS_REGION || "us-east-1"

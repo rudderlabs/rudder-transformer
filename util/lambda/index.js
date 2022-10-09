@@ -2,40 +2,38 @@
 /* eslint-disable no-unused-vars */
 const JSZip = require("jszip");
 const fs = require("fs");
-const Lambda = require("aws-sdk/clients/lambda");
+const {
+  LambdaClient,
+  CreateFunctionCommand,
+  GetFunctionCommand,
+  InvokeCommand,
+  UpdateFunctionCodeCommand,
+  waitUntilFunctionActiveV2,
+  waitUntilFunctionUpdatedV2
+} = require("@aws-sdk/client-lambda");
 const logger = require("../../logger");
 const stats = require("../stats");
+const { isABufferValue, bufferToString } = require("./utils");
 
-const MAX_ATTEMPTS = parseInt(process.env.MAX_ATTEMPTS || "5", 10);
-const DELAY = parseInt(process.env.DELAY || "1", 10);
+const MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || "30", 10);
+const DELAY = parseInt(process.env.DELAY || "2", 10);
 const EVENT_SIZE_LIMIT_IN_MB =
   parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) * 1024 * 1024;
 
-const lambda = new Lambda({
-  apiVersion: "2015-03-31",
-  region: process.env.AWS_REGION || "",
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ""
+const client = new LambdaClient({
+  region: process.env.AWS_REGION || "us-east-1"
 });
 
-const {
-  createFunction,
-  getFunction,
-  invoke,
-  updateFunctionCode,
-  waitFor
-} = lambda;
+const waiterConfig = {
+  client,
+  maxWaitTime: MAX_WAIT_TIME,
+  minDelay: DELAY,
+  maxDelay: DELAY
+};
 
-const promisify = fn => (...args) =>
-  new Promise((resolve, reject) => {
-    fn(...args, (error, data) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+const ArrayBufferView = Object.getPrototypeOf(
+  Object.getPrototypeOf(new Uint8Array())
+).constructor;
 
 const createZip = async (fileName, code) => {
   return new Promise((resolve, reject) => {
@@ -77,8 +75,8 @@ const createLambdaFunction = async (functionName, code, publish) => {
       },
       FunctionName: functionName /* required */,
       Handler: `${functionName}.lambda_handler` /* required */,
-      Role: process.env.AWS_ROLE /* required */,
       Runtime: "python3.7" /* required */,
+      Role: process.env.AWS_CREATE_ROLE /* required */,
       Description: "Generated from node script",
       PackageType: "Zip",
       Architectures: ["x86_64"],
@@ -86,29 +84,24 @@ const createLambdaFunction = async (functionName, code, publish) => {
       Timeout: 4,
       Publish: publish
     };
-    const createFunctionPromise = promisify(createFunction.bind(lambda));
-    const resp = await createFunctionPromise(params);
+    const command = new CreateFunctionCommand(params);
+    const resp = await client.send(command);
     logger.debug(`Created lambda for ${functionName}: ${JSON.stringify(resp)}`);
 
     // verify creation
     const qualifier = resp.Version;
     const functionParams = {
       FunctionName: functionName,
-      Qualifier: qualifier,
-      $waiter: {
-        maxAttempts: MAX_ATTEMPTS,
-        delay: DELAY
-      }
+      Qualifier: qualifier
     };
-    const functionActiveStatusPromise = promisify(waitFor.bind(lambda));
-    const result = await functionActiveStatusPromise(
-      "functionActiveV2",
+    const result = await waitUntilFunctionActiveV2(
+      waiterConfig,
       functionParams
     );
     logger.debug(
-      `Lambda active for ${functionName}: ${JSON.stringify(result)}`
+      `Lambda with name ${functionName} is active: ${JSON.stringify(result)}`
     );
-    return result;
+    return resp;
   } catch (err) {
     logger.error(`Error while creating function: ${err.message}`);
     throw err;
@@ -133,29 +126,24 @@ const updateLambdaFunction = async (functionName, code, publish) => {
       FunctionName: functionName /* required */,
       Publish: publish
     };
-    const updateFunctionPromise = promisify(updateFunctionCode.bind(lambda));
-    const resp = await updateFunctionPromise(params);
+    const command = new UpdateFunctionCodeCommand(params);
+    const resp = await client.send(command);
     logger.debug(`Updated lambda for ${functionName}: ${JSON.stringify(resp)}`);
 
     // verify updation
     const qualifier = resp.Version;
     const functionParams = {
       FunctionName: functionName,
-      Qualifier: qualifier,
-      $waiter: {
-        maxAttempts: MAX_ATTEMPTS,
-        delay: DELAY
-      }
+      Qualifier: qualifier
     };
-    const functionUpdateStatusPromise = promisify(waitFor.bind(lambda));
-    const result = await functionUpdateStatusPromise(
-      "functionUpdatedV2",
+    const result = await waitUntilFunctionUpdatedV2(
+      waiterConfig,
       functionParams
     );
     logger.debug(
       `Lambda updated for ${functionName}: ${JSON.stringify(result)}`
     );
-    return result;
+    return resp;
   } catch (err) {
     logger.error(`Error while creating function: ${err.message}`);
     throw err;
@@ -169,8 +157,8 @@ const getLambdaFunction = async (functionName, qualifier = "") => {
     if (qualifier) {
       params.Qualifier = qualifier;
     }
-    const getFunctionPromise = promisify(getFunction.bind(lambda));
-    const resp = await getFunctionPromise(params);
+    const command = new GetFunctionCommand(params);
+    const resp = await client.send(command);
     logger.debug(`Fetched lambda for ${functionName}: ${JSON.stringify(resp)}`);
     return resp;
   } catch (err) {
@@ -195,12 +183,17 @@ const invokeLambdaFunction = async (
       params.Qualifier = qualifier;
     }
 
-    const invokeFunctionPromise = promisify(invoke.bind(lambda));
-    const result = await invokeFunctionPromise(params);
+    const command = new InvokeCommand(params);
+    const result = await client.send(command);
     if (result.StatusCode !== 200 || result.FunctionError) {
-      throw new Error(JSON.stringify(result.Payload || result.FunctionError));
+      const errorPayload = isABufferValue(result.Payload)
+        ? bufferToString(result.Payload)
+        : result.Payload || result.FunctionError;
+      throw new Error(JSON.stringify(errorPayload));
     }
-    return JSON.parse(result.Payload);
+    const resultPayload = bufferToString(result.Payload);
+    return JSON.parse(resultPayload);
+    // return resultPayload;
   } catch (err) {
     logger.error(`Error while invoking function: ${err.message}`);
     throw err;
@@ -307,7 +300,7 @@ const setupLambda = async (functionName, code, publish) => {
       resp = await updateLambdaFunction(functionName, code, publish);
     }
 
-    const qualifier = resp.Configuration?.Version || "$LATEST";
+    const qualifier = resp?.Version || "$LATEST";
     logger.debug("Finished setting lambda with version:", qualifier);
     return {
       success: true,

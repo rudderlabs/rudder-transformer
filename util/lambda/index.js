@@ -19,9 +19,9 @@ const {
   TRANSFORM_WRAPPER_CODE
 } = require("./utils");
 
-const MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || "30", 10);
-const DELAY = parseInt(process.env.DELAY || "2", 10);
-const EVENT_SIZE_LIMIT_IN_MB =
+const LAMBDA_MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || "30", 10);
+const LAMBDA_DELAY = parseInt(process.env.DELAY || "2", 10);
+const LAMBDA_EVENT_SIZE_LIMIT_IN_MB =
   parseInt(process.env.EVENT_SIZE_LIMIT_IN_MB || "3", 10) * 1024 * 1024;
 
 const client = new LambdaClient({
@@ -30,9 +30,9 @@ const client = new LambdaClient({
 
 const waiterConfig = {
   client,
-  maxWaitTime: MAX_WAIT_TIME,
-  minDelay: DELAY,
-  maxDelay: DELAY
+  maxWaitTime: LAMBDA_MAX_WAIT_TIME,
+  minDelay: LAMBDA_DELAY,
+  maxDelay: LAMBDA_DELAY
 };
 
 const createZip = async (fileName, code) => {
@@ -217,7 +217,7 @@ async function invokeLambdaInLoop(
   if (end <= start) return;
   logger.debug(`Executing invocation for events in indices: ${start}-${end}`);
   const size = JSON.stringify(events.slice(start, end)).length;
-  if (size > EVENT_SIZE_LIMIT_IN_MB) {
+  if (size > LAMBDA_EVENT_SIZE_LIMIT_IN_MB) {
     const mid = Math.floor((start + end) / 2);
     if (mid !== start) {
       await invokeLambdaInLoop(

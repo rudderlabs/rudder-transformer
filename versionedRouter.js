@@ -955,7 +955,7 @@ const batchHandler = ctx => {
         { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
       );
       response.errors.push(errResp);
-      errNotificationClient.notify(error, "Batch", {
+      errNotificationClient.notify(error, "Batch Transformation", {
         ...errResp,
         ...getCommonMetadata(ctx),
         ...getReqMetadata(destEvents)

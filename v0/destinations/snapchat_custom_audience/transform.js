@@ -32,134 +32,12 @@ const getAccessToken = metadata => {
   return secret.access_token;
 };
 
-const addUserResponseBuilder = (metadata, message, { Config }) => {
-  const { schema, audienceId } = Config;
-  //   const resp = constructPayload(
-  //     message,
-  //     mappingConfig[ConfigCategory.AUDIENCE_LIST.name]
-  //   );
-
-  const payload = { schema: [], data: [] };
-  let schemaType;
-  let hashedProperty;
-  switch (schema) {
-    case "email":
-      schemaType = "EMAIL_SHA256";
-      hashedProperty = message.properties.listData.add[0].email;
-      hashedProperty = sha256(hashedProperty.toLowerCase().trim());
-      break;
-    case "phone":
-      schemaType = "PHONE_SHA256";
-      hashedProperty =
-        message.properties.listData.add.phone ||
-        message.properties.listData.add.mobile;
-      hashedProperty = sha256(
-        hashedProperty
-          .toLowerCase()
-          .trim()
-          .replace(/^0+/, "")
-          .replace(/[^0-9]/g, "")
-      );
-      break;
-    case "mobileAdId":
-      schemaType = "MOBILE_AD_ID_SHA256";
-      hashedProperty =
-        message.properties.listData.add.mobileId ||
-        message.properties.listData.add.mobileAdId ||
-        message.properties.listData.add.mobile_id;
-      hashedProperty = sha256(hashedProperty.toLowerCase());
-      break;
-    default:
-      throw new CustomError("Invalid schema", 400);
-  }
-
-  payload.schema.push(schemaType);
-  payload.data.push(hashedProperty);
-
-  const response = defaultRequestConfig();
-
-  response.endpoint = `${BASE_URL}/segments/${audienceId}/users`;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = getAccessToken(metadata);
-  //   response.params = { listId: Config.listId, customerId: filteredCustomerId };
-  response.headers = {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json"
-  };
-
-  return response;
-};
-
-const removeUserResponseBuilder = (metadata, message, { Config }) => {
-  const { schema, audienceId } = Config;
-
-  const payload = { id: `${audienceId}`, schema: [], data: [] };
-  let schemaType;
-  let hashedProperty;
-  switch (schema) {
-    case "email":
-      schemaType = "EMAIL_SHA256";
-      hashedProperty = message.properties.listData.add[0].email;
-      hashedProperty = sha256(hashedProperty.toLowerCase().trim());
-      break;
-    case "phone":
-      schemaType = "PHONE_SHA256";
-      hashedProperty =
-        message.properties.listData.add.phone ||
-        message.properties.listData.add.mobile;
-      hashedProperty = sha256(
-        hashedProperty
-          .toLowerCase()
-          .trim()
-          .replace(/^0+/, "")
-          .replace(/[^0-9]/g, "")
-      );
-      break;
-    case "mobileAdId":
-      schemaType = "MOBILE_AD_ID_SHA256";
-      hashedProperty =
-        message.properties.listData.add.mobileId ||
-        message.properties.listData.add.mobileAdId ||
-        message.properties.listData.add.mobile_id;
-      hashedProperty = sha256(hashedProperty.toLowerCase());
-      break;
-    default:
-      throw new CustomError("Invalid schema", 400);
-  }
-
-  payload.schema.push(schemaType);
-  payload.data.push(hashedProperty);
-
-  const response = {
-    version: "1",
-    type: "REST",
-    method: "DELETE",
-    endpoint: "",
-    headers: {},
-    params: {},
-    body: {
-      JSON: {},
-      JSON_ARRAY: {},
-      XML: {},
-      FORM: {}
-    },
-    files: {}
-  };
-
-  response.endpoint = `${BASE_URL}/segments/${audienceId}/users`;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = getAccessToken(metadata);
-  //   response.params = { listId: Config.listId, customerId: filteredCustomerId };
-  response.headers = {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json"
-  };
-
-  return response;
-};
-
-const processEvent = async (metadata, message, destination) => {
-  const response = [];
+/**
+ * Verifies whether the input payload is in right format or not
+ * @param {Object} message
+ * @returns
+ */
+const validatePayload = message => {
   if (!message.type) {
     throw new ErrorBuilder()
       .setMessage(
@@ -184,12 +62,97 @@ const processEvent = async (metadata, message, destination) => {
       .setStatus(400)
       .build();
   }
+};
+
+const responseBuilder = (metadata, message, { Config }, type) => {
+  const { schema, segmentId } = Config;
+  const payload = { users: [] };
+  const userPayload = { schema: [], data: [] };
+  let schemaType;
+  let hashedProperty;
+  // Normalizing and hashing ref: https://marketingapi.snapchat.com/docs/#normalizing-hashing
+
+  let userArray;
+  if (type === "add") {
+    userArray = message.properties.listData.add;
+  } else if (type === "remove") {
+    userArray = message.properties.listData.remove;
+  }
+
+  switch (schema) {
+    case "email":
+      schemaType = "EMAIL_SHA256";
+      userArray.forEach(element => {
+        hashedProperty = element?.email;
+        // what if email is not present in all cases?
+        hashedProperty = sha256(hashedProperty.toLowerCase().trim());
+        userPayload.data.push([hashedProperty]);
+      });
+      break;
+
+    case "phone":
+      schemaType = "PHONE_SHA256";
+      userArray.forEach(element => {
+        hashedProperty = element?.phone || element?.mobile;
+        hashedProperty = sha256(
+          hashedProperty
+            .toLowerCase()
+            .trim()
+            .replace(/^0+/, "")
+            .replace(/[^0-9]/g, "")
+        );
+        userPayload.data.push([hashedProperty]);
+      });
+      break;
+
+    case "mobileAdId":
+      schemaType = "MOBILE_AD_ID_SHA256";
+      userArray.forEach(element => {
+        hashedProperty =
+          element?.mobileId || element?.mobileAdId || element?.mobile_id;
+        hashedProperty = sha256(hashedProperty.toLowerCase());
+        userPayload.data.push([hashedProperty]);
+      });
+      break;
+
+    default:
+      throw new CustomError("Invalid schema", 400);
+  }
+
+  userPayload.schema.push(schemaType);
+  payload.users.push(userPayload);
+
+  const response = defaultRequestConfig();
+
+  response.endpoint = `${BASE_URL}/segments/${segmentId}/users`;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  const accessToken = getAccessToken(metadata);
+  //   response.params = { segmentId: Config.segmentId };
+  response.headers = {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json"
+  };
+
+  return response;
+};
+
+const processEvent = async (metadata, message, destination) => {
+  const response = [];
+  validatePayload(message);
+
   if (message.type.toLowerCase() === "audiencelist") {
     let payload;
-    if (message.properties.listData.add) {
-      payload = addUserResponseBuilder(metadata, message, destination);
-    } else if (message.properties.listData.remove) {
-      payload = removeUserResponseBuilder(metadata, message, destination);
+    if (message.properties.listData.add || message.properties.listData.remove) {
+      if (message.properties.listData.add) {
+        payload = responseBuilder(metadata, message, destination, "add");
+        response.push(payload);
+      }
+      if (message.properties.listData.remove) {
+        payload = responseBuilder(metadata, message, destination, "remove");
+        payload.body.JSON.users[0].id = destination.Config.segmentId;
+        payload.method = "DELETE";
+        response.push(payload);
+      }
     } else {
       throw new ErrorBuilder()
         .setMessage(
@@ -199,7 +162,7 @@ const processEvent = async (metadata, message, destination) => {
         .build();
     }
 
-    response.push(payload);
+    // response.push(payload);
     return response;
   }
 

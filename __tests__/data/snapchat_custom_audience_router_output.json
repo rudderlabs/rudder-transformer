@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://adsapi.snapchat.com/v1/segments/undefined/users",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
           "Content-Type": "application/json",
           "Authorization": "Bearer abcd1234"
@@ -13,10 +13,16 @@
         "params": {},
         "body": {
           "JSON": {
-            "data": [
-              "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
-            ],
-            "schema": ["EMAIL_SHA256"]
+            "users": [
+              {
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ],
+                "schema": ["EMAIL_SHA256"]
+              }
+            ]
           },
           "JSON_ARRAY": {},
           "XML": {},

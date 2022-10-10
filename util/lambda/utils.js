@@ -1,3 +1,13 @@
+const LOG_DEF_CODE = `
+def log(*args):
+    log_string = 'Log:'
+    for arg in args:
+        log_string += f' {arg}'
+    import transform_wrapper
+    transform_wrapper.logs.append(log_string)
+
+`;
+
 const TRANSFORM_WRAPPER_CODE = `
 import json
 import requests
@@ -118,6 +128,7 @@ const bufferToString = value => {
 };
 
 module.exports = {
+  LOG_DEF_CODE,
   TRANSFORM_WRAPPER_CODE,
   bufferToString,
   isABufferValue

@@ -1,6 +1,7 @@
 const stats = require("./stats");
 const { getMetadata } = require("../v0/util");
 const { invokeLambda, setupLambda } = require("./lambda");
+const { LOG_DEF_CODE } = require("./lambda/utils");
 
 async function runLambdaUserTransform(
   events,
@@ -39,10 +40,12 @@ async function setLambdaUserTransform(userTransformation, testWithPublish) {
     publish: testWithPublish
   };
 
+  const lambdaCode = LOG_DEF_CODE + userTransformation.code;
+
   const setupTime = new Date();
   const result = await setupLambda(
     userTransformation.testName,
-    userTransformation.code,
+    lambdaCode,
     testWithPublish
   );
   stats.timing("lambda_test_time", setupTime, tags);

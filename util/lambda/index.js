@@ -35,14 +35,10 @@ const waiterConfig = {
   maxDelay: DELAY
 };
 
-const ArrayBufferView = Object.getPrototypeOf(
-  Object.getPrototypeOf(new Uint8Array())
-).constructor;
-
 const createZip = async (fileName, code) => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();
-    zip.file(`${fileName}.py`, TRANSFORM_WRAPPER_CODE);
+    zip.file("transform_wrapper.py", TRANSFORM_WRAPPER_CODE);
     zip.file("user_transformation.py", code);
 
     zip
@@ -79,7 +75,7 @@ const createLambdaFunction = async (functionName, code, publish) => {
         ZipFile: zipContent /* required */
       },
       FunctionName: functionName /* required */,
-      Handler: `${functionName}.lambda_handler` /* required */,
+      Handler: `transform_wrapper.lambda_handler` /* required */,
       Runtime: "python3.7" /* required */,
       Role: process.env.AWS_CREATE_ROLE /* required */,
       Description: "Generated from node script",

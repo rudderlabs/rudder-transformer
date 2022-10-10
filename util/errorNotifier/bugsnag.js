@@ -11,7 +11,10 @@ function init() {
     apiKey,
     appVersion: pkg.version,
     metadata: {
-      imageVersion
+      image: {
+        version: imageVersion
+      }
+    },
     }
   });
 }

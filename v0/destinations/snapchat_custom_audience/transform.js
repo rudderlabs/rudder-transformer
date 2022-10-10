@@ -45,7 +45,7 @@ const addUserResponseBuilder = (metadata, message, { Config }) => {
   switch (schema) {
     case "email":
       schemaType = "EMAIL_SHA256";
-      hashedProperty = message.properties.listData.add.email;
+      hashedProperty = message.properties.listData.add[0].email;
       hashedProperty = sha256(hashedProperty.toLowerCase().trim());
       break;
     case "phone":
@@ -99,7 +99,7 @@ const removeUserResponseBuilder = (metadata, message, { Config }) => {
   switch (schema) {
     case "email":
       schemaType = "EMAIL_SHA256";
-      hashedProperty = message.properties.listData.add.email;
+      hashedProperty = message.properties.listData.add[0].email;
       hashedProperty = sha256(hashedProperty.toLowerCase().trim());
       break;
     case "phone":

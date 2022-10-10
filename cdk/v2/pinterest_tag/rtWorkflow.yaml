@@ -12,7 +12,6 @@ steps:
       $outputs.transform#$i.output.{
           "output": $,
           /* $$ refers to input (root of the document) */
-          "message": $$[$i].message,
           "destination": $$[$i].destination,
           "metadata": $$[$i].metadata
       }

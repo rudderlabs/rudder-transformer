@@ -9,7 +9,7 @@ const {
 function init() {
   Bugsnag.start({
     apiKey,
-    ...(imageVersion && { appVersion: pkg.version }),
+    appVersion: pkg.version,
     metadata: {
       imageVersion
     }

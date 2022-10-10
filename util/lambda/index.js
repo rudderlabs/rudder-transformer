@@ -1,7 +1,8 @@
 /* eslint-disable no-useless-catch */
 /* eslint-disable no-unused-vars */
 const JSZip = require("jszip");
-const fs = require("fs");
+const fs = require("fs/promises");
+const fsNonPromise = require("fs");
 const {
   LambdaClient,
   CreateFunctionCommand,
@@ -11,6 +12,7 @@ const {
   waitUntilFunctionActiveV2,
   waitUntilFunctionUpdatedV2
 } = require("@aws-sdk/client-lambda");
+const { v4: uuidv4 } = require("uuid");
 const logger = require("../../logger");
 const stats = require("../stats");
 const {
@@ -35,18 +37,19 @@ const waiterConfig = {
   maxDelay: LAMBDA_DELAY
 };
 
-const createZip = async (fileName, code) => {
+const createZip = async code => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();
+    const fileName = `${uuidv4()}.zip`;
     zip.file("transform_wrapper.py", TRANSFORM_WRAPPER_CODE);
     zip.file("user_transformation.py", code);
 
     zip
       .generateNodeStream({ type: "nodebuffer", streamFiles: true })
-      .pipe(fs.createWriteStream(`${fileName}.zip`))
+      .pipe(fsNonPromise.createWriteStream(fileName))
       .on("finish", () => {
-        logger.debug(`${fileName}.zip has been created`);
-        resolve();
+        logger.debug(`${fileName} has been created`);
+        resolve(fileName);
       })
       .on("error", err => {
         stats.counter("create_zip_error", 1, { fileName });
@@ -56,19 +59,24 @@ const createZip = async (fileName, code) => {
   });
 };
 
+const createAndReadZip = async (functionName, code) => {
+  const zipFileName = await createZip(code);
+  const zipContent = await fs.readFile(zipFileName);
+  fs.unlink(zipFileName, err => {
+    if (err) {
+      logger.error(`Error occurred while deleting zip file: ${err.message}`);
+      stats.counter("delete_zip_error", 1, { functionName });
+    }
+    logger.debug(`Zip file has been deleted: ${zipFileName}`);
+  });
+  return zipContent;
+};
+
 const createLambdaFunction = async (functionName, code, publish) => {
   try {
     logger.debug(`Creating lambda for ${functionName} with publish:${publish}`);
     // create, read and delete zip
-    await createZip(functionName, code);
-    const zipContent = fs.readFileSync(`./${functionName}.zip`);
-    fs.unlink(`./${functionName}.zip`, err => {
-      if (err) {
-        logger.error(`Error occurred while deleting zip file: ${err.message}`);
-        stats.counter("delete_zip_error", 1, { fileName: functionName });
-      }
-      logger.debug(`Zip file has been deleted: ${functionName}.zip`);
-    });
+    const zipContent = await createAndReadZip(functionName, code);
     // Create function
     const params = {
       Code: {
@@ -113,14 +121,7 @@ const updateLambdaFunction = async (functionName, code, publish) => {
   try {
     logger.debug(`Updating lambda for ${functionName} with publish:${publish}`);
     // create, read and delete zip
-    await createZip(functionName, code);
-    const zipContent = fs.readFileSync(`./${functionName}.zip`);
-    fs.unlink(`./${functionName}.zip`, err => {
-      if (err) {
-        logger.error(`Error occurred while deleting zip file: ${err.message}`);
-      }
-      logger.debug(`Zip file has been deleted: ${functionName}.zip`);
-    });
+    const zipContent = await createAndReadZip(functionName, code);
     // Update function code
     const params = {
       ZipFile: zipContent,

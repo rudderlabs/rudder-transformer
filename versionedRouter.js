@@ -33,7 +33,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
-const { setupUserTransformHandle } = require("./util/customTransformer");
+const { setupUserTransformHandler } = require("./util/customTransformer");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
 const { getErrorInfo } = require("./cdk/v2/utils");
@@ -635,7 +635,7 @@ if (transformerTestModeEnabled) {
       if (!trRevCode.versionId) {
         trRevCode.versionId = "testVersionId";
       }
-      const res = await setupUserTransformHandle(
+      const res = await setupUserTransformHandler(
         trRevCode,
         libraryVersionIDs,
         testWithPublish

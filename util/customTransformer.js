@@ -285,7 +285,7 @@ async function userTransformHandler(
   return events;
 }
 
-async function setupUserTransformHandle(
+async function setupUserTransformHandler(
   trRevCode = {},
   libraryVersionIDs,
   testWithPublish = false
@@ -302,5 +302,5 @@ async function setupUserTransformHandle(
 }
 module.exports = {
   userTransformHandler,
-  setupUserTransformHandle
+  setupUserTransformHandler
 };

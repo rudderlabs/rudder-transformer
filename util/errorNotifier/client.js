@@ -12,9 +12,9 @@ function init() {
   }
 }
 
-function notify(err) {
+function notify(err, context, metadata) {
   try {
-    if (notifier?.notify) notifier.notify(err);
+    if (notifier?.notify) notifier.notify(err, context, metadata);
   } catch (errObj) {
     // Do nothing
   }

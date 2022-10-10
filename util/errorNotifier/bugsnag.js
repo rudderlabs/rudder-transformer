@@ -23,15 +23,10 @@ function init() {
 }
 
 function notify(err, context, metadata) {
-  if (context) Bugsnag.setContext(context);
-  if (metadata) Bugsnag.addMetadata("metadata", metadata);
-
-  Bugsnag.notify(err);
-
-  // Reset context and metadata that
-  // could've been set before
-  if (context) Bugsnag.setContext("");
-  if (metadata) Bugsnag.clearMetadata("metadata");
+  Bugsnag.notify(error, function (event) {
+    event.context = context;
+    event.addMetadata("metadata", metadata);
+  });
 }
 
 module.exports = {

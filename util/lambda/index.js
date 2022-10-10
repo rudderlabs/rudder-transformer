@@ -62,10 +62,11 @@ const createZip = async userCode => {
 const createAndReadZip = async (functionName, code) => {
   const zipFileName = await createZip(code);
   const zipContent = await fs.readFile(zipFileName);
-  fs.unlink(zipFileName, err => {
+  fsNonPromise.unlink(zipFileName, err => {
     if (err) {
       logger.error(`Error occurred while deleting zip file: ${err.message}`);
       stats.counter("delete_zip_error", 1, { functionName });
+      return;
     }
     logger.debug(`Zip file has been deleted: ${zipFileName}`);
   });

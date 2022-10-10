@@ -69,6 +69,8 @@ const DestCanonicalNames = {
     "mailModo"
   ],
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
+  engage: ["engage", "Engage", "ENGAGE"],
+  june: ["june", "JUNE", "June"],
   snapchat_custom_audience: [
     "snapchat custom audience",
     "snap chat custom audience",

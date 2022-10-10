@@ -1,13 +1,14 @@
 /* eslint-disable no-param-reassign */
-const { httpPOST } = require("../../../adapters/network");
+const logger = require("../../../logger");
+const { httpPOST, httpGET, httpPUT } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError } = require("../../util");
+const { CustomError, getFieldValueFromMessage } = require("../../util");
 const { CONFIG_CATEGORIES } = require("./config");
 
 /*
- * This functions is used for getting Account details of contacts.
+ * This functions is used for getting details of contacts with Account details.
  * @param {*} userEmail
  * @param {*} Config
  * @returns
@@ -78,6 +79,268 @@ const createUpdateAccount = async (payloadBody, Config) => {
   return accountResponse;
 };
 
+const createOrUpdateListDetails = async (listName, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlList}`;
+  // fetch all lists
+  let listResponse = await httpGET(endPoint, requestOptions);
+  listResponse = processAxiosResponse(listResponse);
+  if (listResponse.status !== 200) {
+    const errMessage = listResponse.response.errors?.message || "";
+    const errorStatus = listResponse.response.errors?.code || "500";
+    logger.error(`failed to fetch list ${errMessage}`, errorStatus);
+  }
+  const listsDetails = listResponse?.lists;
+  // check with lists name
+  if (listsDetails && Array.isArray(listsDetails)) {
+    const listDetails = listsDetails.find(list => list.name === listName);
+    if (listDetails) {
+      return listDetails.id;
+    }
+  }
+  // create list with listname
+  listResponse = await httpPOST(endPoint, { name: listName }, requestOptions);
+  listResponse = processAxiosResponse(listResponse);
+  if (listResponse.status !== 200) {
+    const errMessage = listResponse.response.errors?.message || "";
+    const errorStatus = listResponse.response.errors?.code || "500";
+    logger.error(`failed to create list ${errMessage}`, errorStatus);
+  }
+  const listId = listResponse.list?.id;
+  return listId;
+};
+
+/*
+  This functions is used for updating contact with List.
+*/
+const updateContactWithList = async (userId, listId, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
+  const listPayload = {
+    ids: [userId]
+  };
+  let listResponse = await httpPUT(endpoint, listPayload, requestOptions);
+  listResponse = processAxiosResponse(listResponse);
+  if (listResponse.status !== 200) {
+    const errMessage = listResponse.response.errors?.message || "";
+    const errorStatus = listResponse.response.errors?.code || "500";
+    logger.error(
+      `failed to update contacts with list ${errMessage}`,
+      errorStatus
+    );
+    return;
+  }
+  logger.info(`list added succesfully.`);
+};
+
+/*
+ * This function is used for getting Contact details.
+ * @param {*} userEmail
+ * @param {*} Config
+ */
+const getContactsDetails = (userEmail, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const userPayload = {
+    unique_identifier: {
+      emails: userEmail
+    },
+    contact: {
+      emails: userEmail
+    }
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+  let userResponse = httpPOST(endPoint, userPayload, requestOptions);
+  userResponse = processAxiosResponse(userResponse);
+  if (userResponse.status !== 200 && userResponse.status !== 201) {
+    const errMessage = userResponse.response.errors?.message || "";
+    const errorStatus = userResponse.response.errors?.code || "500";
+    throw new CustomError(
+      `failed to fetch Contact details ${errMessage}`,
+      errorStatus
+    );
+  }
+  return userResponse;
+};
+
+/*
+ * This function is used building the response with the user Details
+ * @param {*} email - email for Contact details
+ * @param {*} Config - headers, apiKey...
+ * @param {*} payload - created after transformation
+ * @param {*} salesActivityTypeId - for creating the sales activity
+ */
+
+const responseBuilderWithContactDetails = async (
+  email,
+  Config,
+  payload,
+  salesActivityTypeId
+) => {
+  const userDetails = await getContactsDetails(email, Config);
+  const userId = userDetails.response.id;
+  const responseBody = {
+    ...payload,
+    targetable_id: userId,
+    sales_activity_type_id: salesActivityTypeId
+  };
+  return responseBody;
+};
+
+/*
+ * This function is used for updating contact with LifeCycleStage
+ * @param {*} Config - headers, apiKey...
+ */
+const UpdateContactWithLifeCycleStage = async (
+  lifeCycleStageName,
+  Config,
+  emails
+) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.LIFECYCLE_STAGE.baseUrl}`;
+  let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
+  lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
+  if (lifeCycleStagesResponse.status !== 200) {
+    const errMessage = lifeCycleStagesResponse.response.errors?.message || "";
+    const errorStatus = lifeCycleStagesResponse.response.errors?.code || "500";
+    throw new CustomError(
+      `failed to fetch lifecycle_stages details ${errMessage}`,
+      errorStatus
+    );
+  }
+  const lifeCycleStages = lifeCycleStagesResponse.lifecycle_stages;
+  if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
+    const listDetails = lifeCycleStages.find(
+      list => list.name === lifeCycleStageName
+    );
+    if (!listDetails) {
+      throw new CustomError(
+        `failed to fetch lifeCycleStages with ${lifeCycleStageName}`,
+        400
+      );
+    }
+    const response = {
+      contact: {
+        lifecycle_stage_id: listDetails.id
+      },
+      unique_identifier: { emails }
+    };
+    return response;
+  }
+  throw new CustomError(`lifecycle stages types must be an array.`, 400);
+};
+
+/*
+ * This function is used for creating sales Activity of Contact.
+ * @param {*} payload - created after transformation
+ * @param {*} message - input message
+ * @param {*} Config - headers, apiKey...
+ */
+const UpdateContactWithSalesActivity = async (payload, message, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
+    throw new CustomError(
+      `Either of sales activity name or sales activity type id is required. Aborting!`,
+      400
+    );
+  }
+
+  const email = getFieldValueFromMessage(message, "email");
+
+  if (!payload.targetable_id && !email) {
+    throw new CustomError(
+      `Either of email or targetable_id is required for creating sales activity. Aborting!`,
+      400
+    );
+  }
+
+  if (payload.sales_activity_type_id) {
+    let responseBody;
+    if (payload.targetable_id) {
+      responseBody = {
+        ...payload,
+        targetable_id: payload.targetable_id,
+        sales_activity_type_id: payload.sales_activity_type_id
+      };
+    } else {
+      responseBody = responseBuilderWithContactDetails(
+        email,
+        Config,
+        payload,
+        payload.sales_activity_type_id
+      );
+    }
+    return responseBody;
+  }
+  // with sales activity name
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlListAll}`;
+  let salesActivityResponse = await httpGET(endPoint, requestOptions);
+  salesActivityResponse = processAxiosResponse(salesActivityResponse);
+  if (salesActivityResponse.status !== 200) {
+    const errMessage = salesActivityResponse.response.errors?.message || "";
+    const errorStatus = salesActivityResponse.response.errors?.code || "500";
+    throw new CustomError(
+      `failed to fetch sales activities details ${errMessage}`,
+      errorStatus
+    );
+  }
+
+  const salesActivityList = salesActivityResponse.sales_activity_types;
+  if (salesActivityList && Array.isArray(salesActivityList)) {
+    const listDetails = salesActivityList.find(
+      list => list.name === payload.sales_activity_name
+    );
+    if (!listDetails) {
+      throw new CustomError(
+        `sales Activity ${payload.sales_activity_name} doesn't exists. Aborting!`,
+        400
+      );
+    }
+    let responseBody;
+    if (payload.targetable_id) {
+      responseBody = {
+        ...payload,
+        targetable_id: payload.targetable_id,
+        sales_activity_type_id: payload.sales_activity_type_id
+      };
+    } else {
+      responseBody = responseBuilderWithContactDetails(
+        email,
+        Config,
+        payload,
+        payload.sales_activity_type_id
+      );
+    }
+
+    return responseBody;
+  }
+  throw new CustomError(`sales activity types must be an array.`, 400);
+};
+
 /*
  * This functions is used for checking Number Data Types of payload.
  * If the specified key is defined and it is not number then it throws error.
@@ -116,5 +379,10 @@ const checkNumberDataType = payload => {
 module.exports = {
   getUserAccountDetails,
   createUpdateAccount,
-  checkNumberDataType
+  checkNumberDataType,
+  createOrUpdateListDetails,
+  updateContactWithList,
+  UpdateContactWithLifeCycleStage,
+  UpdateContactWithSalesActivity,
+  getContactsDetails
 };

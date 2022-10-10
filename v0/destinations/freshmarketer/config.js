@@ -6,15 +6,38 @@ const CONFIG_CATEGORIES = {
     type: "identify",
     baseUrl: ".myfreshworks.com/crm/sales/api/contacts/upsert"
   },
+  TRACK: {
+    type: "track"
+  },
   GROUP: {
     name: "FRESHMARKETERGroupConfig",
     type: "group",
-    baseUrl: ".myfreshworks.com/crm/sales/api/sales_accounts/upsert"
+    baseUrlAccount: ".myfreshworks.com/crm/sales/api/sales_accounts/upsert",
+    baseUrlList: ".myfreshworks.com/crm/sales/api/lists"
+  },
+  SALES_ACTIVITY: {
+    name: "SalesActivityConfig",
+    baseUrlCreate: ".myfreshworks.com/crm/sales/api/sales_activities",
+    baseUrlListAll:
+      ".myfreshworks.com/crm/sales/api/selector/sales_activity_types"
+  },
+  LIFECYCLE_STAGE: {
+    baseUrl: ".myfreshworks.com/crm/sales/api/selector/lifecycle_stages"
   }
 };
+
+const DESTINATION = "freshmarketer";
+const IDENTIFY_MAX_BATCH_SIZE = 100;
+const BATCH_IDENTIFY_ENDPOINT =
+  ".myfreshworks.com/crm/sales/api/contacts/bulk_upsert";
+const DELETE_ENDPOINT = ".myfreshworks.com/crm/sales/api/contacts/";
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   MAPPING_CONFIG,
-  CONFIG_CATEGORIES
+  CONFIG_CATEGORIES,
+  DESTINATION,
+  IDENTIFY_MAX_BATCH_SIZE,
+  BATCH_IDENTIFY_ENDPOINT,
+  DELETE_ENDPOINT
 };

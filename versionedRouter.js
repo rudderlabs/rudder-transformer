@@ -33,6 +33,7 @@ const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
+const { setupUserTransformHandler } = require("./util/customTransformer");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
 const { getErrorInfo } = require("./cdk/v2/utils");
@@ -609,6 +610,41 @@ if (transformerTestModeEnabled) {
     } catch (error) {
       ctx.body = { error: error.message };
       ctx.status = 400;
+    }
+  });
+  /* *params
+   * code: transfromation code
+   * language
+   * name
+   * testWithPublish: publish version or not
+   */
+  router.post("/transformation/sethandle", async ctx => {
+    try {
+      const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      const { code, language, testName, testWithPublish = false } =
+        trRevCode || {};
+      if (!code || !language || !testName) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+
+      logger.debug(
+        `[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`
+      );
+      if (!trRevCode.versionId) {
+        trRevCode.versionId = "testVersionId";
+      }
+      const res = await setupUserTransformHandler(
+        trRevCode,
+        libraryVersionIDs,
+        testWithPublish
+      );
+      logger.debug(`[CT] Finished setting up transformation: ${testName}`);
+      ctx.body = res;
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = { error: error.message };
     }
   });
 }

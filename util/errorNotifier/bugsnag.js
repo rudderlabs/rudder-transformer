@@ -15,6 +15,8 @@ function init() {
         version: imageVersion
       }
     },
+    onError(event) {
+      event.severity = "error";
     }
   });
 }

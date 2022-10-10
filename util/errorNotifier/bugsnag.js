@@ -28,7 +28,8 @@ function notify(err, context, metadata) {
 
   Bugsnag.notify(err);
 
-  // Clear context and metadata if set
+  // Reset context and metadata that
+  // could've been set before
   if (context) Bugsnag.setContext("");
   if (metadata) Bugsnag.clearMetadata("metadata");
 }

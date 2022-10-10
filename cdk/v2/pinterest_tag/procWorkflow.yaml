@@ -31,7 +31,10 @@ steps:
     template: |
       message.{
         "event_time": $floor($getByPaths($, $SourceKeys.timestamp)[0].$toMillis()/1000),
-        "event_source_url": $getByPaths($, $SourceKeys.pageUrl)[0],
+        "event_source_url": (
+          $url := $getByPaths($, $SourceKeys.pageUrl)[0];
+          $length($url) > 0 ? $url;
+        ),
         "action_source": [
           traits.action_source,
           context.traits.action_source,
@@ -79,10 +82,10 @@ steps:
           "db": $getByPaths($, $SourceKeys.birthday)[0],
           "ln": $getByPaths($, $SourceKeys.lastName)[0],
           "fn": $getByPaths($, $SourceKeys.firstName)[0],
-          "ct": $lowercase([traits.address.city, context.traits.address.city][0]),
-          "st": $lowercase([traits.address.state, context.traits.address.state][0]),
-          "zp": [traits.address.zip, context.traits.address.zip][0],
-          "country": $lowercase([traits.address.country, context.traits.address.country][0]),
+          "ct": $lowercase([$, context].[traits.address.city][0]),
+          "st": $lowercase([$, context].[traits.address.state][0]),
+          "zp": [$, context].[traits.address.zip][0],
+          "country": $lowercase([$, context].[traits.address.country][0]),
           "hashed_maids": context.device.advertisingId,
           "client_ip_address": [context.ip, request_ip][0],
           "client_user_agent": context.userAgent
@@ -104,60 +107,49 @@ steps:
     steps:
       - name: customFields
         template: |
-          (
-            $customFields := message.({
-              "currency": properties.currency,
-              "value": properties.[value, total, revenue][0],
-              "num_items": $number(properties.numOfItems),
-              "order_id": properties.order_id,
-              "search_string": properties.query
-            });
-          )
+          message.{
+            "currency": properties.currency,
+            "value": properties.[value, total, revenue][0],
+            "num_items": $number(properties.numOfItems),
+            "order_id": properties.order_id,
+            "search_string": properties.query
+          }
       - name: singleProductFields
         condition: $not($exists(message.properties.products))
         template: |
-          message.properties.({
+          message.properties.{
             "num_items": $number(quantity),
             "content_ids": [[product_id, sku, id][0]],
             "contents": [{
               "quantity": [$number(quantity), 1][0],
               "item_price": $string(price)
             }]
-          })
+          }
       - name: multiProductsFields
         condition: $exists(message.properties.products)
         template: |
           {
-            "num_items": $sum(message.properties.products.quantity.$number()),
-            "content_ids": message.properties.products.[product_id, sku, id][0],
-            "contents": message.properties.products.{
-              "quantity": [$number(quantity), %.quantity, 1][0],
-              "item_price": $string([price, %.price][0])
-            }
-          }
+             "num_items": $sum(message.properties.products.quantity.$number()),
+             "content_ids": message.properties.products.[product_id, sku, id][0],
+             "contents": message.properties.products.{
+               "quantity": [$number(quantity), $number(%.quantity), 1][0],
+               "item_price": $string([price, %.price][0])
+             }
+           }
       - name: combineAllEcomFields
         template: |
-          $outputs.ecomFields.(
-            $merge([
-              singleProductFields, 
-              multiProductsFields,
-              customFields
-            ])
-          )
+          $merge($outputs.ecomFields.[
+            singleProductFields, 
+            multiProductsFields,
+            customFields
+          ])
   - name: basePayload
     template: |
-      (
-        $payload := $outputs.(
-          $merge([
-            commonFields, 
-            {"user_data": userFields}, 
-            {"custom_data": ecomFields}
-          ])
-        );
-        $sift($payload, function($v) {(
-          $length($string($v)) != 0
-        )})
-      )
+      $merge($outputs.[
+        commonFields, 
+        {"user_data": userFields}, 
+        {"custom_data": ecomFields}
+      ]) 
   - name: eventNames
     steps:
       - name: eventNamesForPage
@@ -172,38 +164,31 @@ steps:
           (
             $event := message.[event, name][0];
             $eventMap := destination.Config.eventsMapping.{from: to};
-            $eventNames := [
-              $lookup($eventMap, $event), 
-              $ecomEventMaps[$lowercase($event) in src].dest
-            ];
-            $count($eventNames) = 0 ? ["custom"] : $eventNames;
+            $eventNames := $lookup($eventMap, $event);
+            $count($eventNames) = 0 ? $eventNames := $ecomEventMaps[$lowercase($event) in src].dest;
+            $count($eventNames) = 0 ? $eventNames := ["custom"];
+            $eventNames
           )
   - name: destEvents
     template: |
-      (
-        $map($outputs.eventNames, function($eventName){(
-          $merge([$outputs.basePayload, {"event_name": $eventName}])
-        )});
-      )
+      $outputs.eventNames.($merge([%.basePayload, {"event_name": $}])) ~> $toArray
   - name: buildResponse
     condition: $not($exists($context.batchMode))
     template: |
-      $map($outputs.destEvents, function($destEvent){(
-        {
-          "body": {
-            "JSON": $destEvent,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": $ENDPOINT,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
-      )})[]
+      $outputs.destEvents.{
+        "body": {
+          "JSON": $,
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": $ENDPOINT,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      } ~> $toArray

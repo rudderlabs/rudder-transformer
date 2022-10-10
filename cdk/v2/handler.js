@@ -12,10 +12,11 @@ async function getWorkflowEngineInternal(destName, flowType) {
   try {
     const destRootDir = getRootPathForDestination(destName);
     const workflowPath = await getWorkflowPath(destRootDir, flowType);
+    const platformBindingsPaths = await getPlatformBindingsPaths();
     return WorkflowEngineFactory.createFromFilePath(
       workflowPath,
       destRootDir,
-      await getPlatformBindingsPaths()
+      platformBindingsPaths
     );
   } catch (error) {
     logger.info(

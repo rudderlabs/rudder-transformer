@@ -9,6 +9,7 @@ const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
+const { client: errNotificationClient } = require("./util/errorNotifier");
 
 const {
   isNonFuncObject,
@@ -113,6 +114,7 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
 
     // Dump the raw error
     logger.error(err);
+    errNotificationClient.notify(err);
 
     return {
       metadata: parsedEvent.metadata,
@@ -199,6 +201,7 @@ async function handleDest(ctx, version, destination) {
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
+        errNotificationClient.notify(error);
         return {
           metadata: event.metadata,
           statusCode: errObj.status,
@@ -687,6 +690,7 @@ async function handleSource(ctx, version, source) {
           source,
           version
         });
+        errNotificationClient.notify(error);
       }
     })
   );
@@ -768,6 +772,7 @@ async function handleProxyRequest(destination, ctx) {
     stats.counter("tf_proxy_err_count", 1, {
       destination
     });
+    errNotificationClient.notify(err);
   }
   ctx.body = { output: response };
   // Sending `204` status(obtained from destination) is not working as expected
@@ -855,6 +860,7 @@ const batchHandler = ctx => {
         { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
       );
       response.errors.push(errResp);
+      errNotificationClient.notify(error);
     }
   });
   if (response.errors.length > 0) {
@@ -891,6 +897,7 @@ const fileUpload = async ctx => {
       error: error.message || "Error occurred while processing payload.",
       metadata: error.response ? error.response.metadata : null
     };
+    errNotificationClient.notify(error);
   }
   ctx.body = response;
   return ctx.body;
@@ -915,6 +922,7 @@ const pollStatus = async ctx => {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occurred while processing payload."
     };
+    errNotificationClient.notify(error);
   }
   ctx.body = response;
   return ctx.body;
@@ -943,6 +951,7 @@ const getJobStatus = async (ctx, type) => {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || "Error occurred while processing payload."
     };
+    errNotificationClient.notify(error);
   }
   ctx.body = response;
   return ctx.body;
@@ -978,8 +987,9 @@ const handleDeletionOfUsers = async ctx => {
         ctx.status = error.response ? error.response.status : 400;
         respList.push({
           statusCode: error.response ? error.response.status : 400,
-          error: error.message || "Error occured while processing"
+          error: error.message || "Error occurred while processing"
         });
+        errNotificationClient.notify(error);
       }
     })
   );

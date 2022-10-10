@@ -37,12 +37,12 @@ const waiterConfig = {
   maxDelay: LAMBDA_DELAY
 };
 
-const createZip = async code => {
+const createZip = async userCode => {
   return new Promise((resolve, reject) => {
     const zip = new JSZip();
     const fileName = `${uuidv4()}.zip`;
     zip.file("transform_wrapper.py", TRANSFORM_WRAPPER_CODE);
-    zip.file("user_transformation.py", code);
+    zip.file("user_transformation.py", userCode);
 
     zip
       .generateNodeStream({ type: "nodebuffer", streamFiles: true })

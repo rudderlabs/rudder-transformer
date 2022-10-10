@@ -3,6 +3,7 @@ const fs = require("fs");
 const md5 = require("md5");
 const Message = require("../message");
 
+// ref : https://dev.mailjet.com/email/guides/webhooks/
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")

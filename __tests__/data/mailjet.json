@@ -89,7 +89,7 @@
       }
     },
     "output": {
-      "error": "[MailJet] :: Parameter Email Is Required"
+      "error": "Missing required value from \"email\""
     }
   },
   {

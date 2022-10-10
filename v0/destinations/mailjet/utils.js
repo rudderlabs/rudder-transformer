@@ -1,40 +1,11 @@
 const get = require("get-value");
-const ErrorBuilder = require("../../util/error");
 const {
   constructPayload,
   getHashFromArray,
   getIntegrationsObj,
-  getDestinationExternalID,
-  getFieldValueFromMessage
+  getDestinationExternalID
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const {
-  MAPPING_CONFIG,
-  CONFIG_CATEGORIES,
-  DESTINATION,
-  ACTIONS
-} = require("./config");
-
-/**
- * Validating payload
- * @param {*} payload
- * @returns
- */
-const validatePayload = message => {
-  const email = getFieldValueFromMessage(message, "email");
-  if (!email) {
-    throw new ErrorBuilder()
-      .setMessage("[MailJet] :: Parameter Email Is Required")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
-};
+const { MAPPING_CONFIG, CONFIG_CATEGORIES, ACTIONS } = require("./config");
 
 /**
  * Returns the contact properties object
@@ -84,12 +55,12 @@ const getAction = integrationsObj => {
 
 /**
  * Returns createOrUpdateContactPayload
+ * ref : https://dev.mailjet.com/email/guides/contact-management/#bulk-contact-management
  * @param {*} message
  * @param {*} destination
  * @returns
  */
 const createOrUpdateContactResponseBuilder = (message, destination) => {
-  validatePayload(message);
   const createOrUpdateContactPayload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name]

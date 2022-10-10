@@ -8,15 +8,8 @@ const logger = require("../logger");
 const stats = require("./stats");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
-const FAAS_BASE_IMG = "rudderlabs/user-functions-test:flask-plain-handler";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
 const DESTRUCTION_TIMEOUT_IN_MS = 2 * 60 * 1000;
-
-const FUNCTION_REQUEST_TYPE_HEADER = "X-REQUEST-TYPE";
-const FUNCTION_REQUEST_TYPES = {
-  code: "CODE",
-  event: "EVENT"
-};
 
 const resourcesBasePath = path.join(__dirname, "..", "resources", "openfaas");
 const buildsFolderPrefix = "openfaas-builds-";
@@ -114,21 +107,6 @@ function deleteFunction(functionName) {
   );
 }
 
-function invokeFunction(functionName, payload, requestType) {
-  const headers = {};
-  headers[FUNCTION_REQUEST_TYPE_HEADER] = requestType;
-
-  return axios.post(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
-    ).toString(),
-    payload,
-    {
-      headers
-    }
-  );
-}
-
 async function isFunctionDeployed(functionName) {
   logger.info("Is function deployed?.");
   const deployedFunctions = await axios.get(
@@ -146,11 +124,11 @@ async function isFunctionDeployed(functionName) {
   return matchFound;
 }
 
-async function deployFunction(imageName, functionName, code, testMode) {
+async function deployFunction(imageName, functionName, testMode) {
   const payload = {
     service: functionName,
     name: functionName,
-    image: FAAS_BASE_IMG,
+    image: imageName,
     namespace: OPENFAAS_NAMESPACE,
     envProcess: "python index.py",
     labels: {
@@ -170,16 +148,14 @@ async function deployFunction(imageName, functionName, code, testMode) {
       ).toString(),
       payload
     );
-
-    await invokeFunction(functionName, { code }, FUNCTION_REQUEST_TYPES.code);
   } catch (error) {
     logger.error(`Error trying to deploy function ${functionName}: `, error);
   }
 }
 
 async function faasDeploymentHandler(imageName, functionName, code, testMode) {
-  // await containerizeAndPush(imageName, functionName, code);
-  await deployFunction(imageName, functionName, code, testMode);
+  await containerizeAndPush(imageName, functionName, code);
+  await deployFunction(imageName, functionName, testMode);
 }
 
 async function faasInvocationHandler(
@@ -214,10 +190,11 @@ async function faasInvocationHandler(
   logger.info("Invoking function.");
 
   events.forEach(event => {
-    const promise = invokeFunction(
-      functionName,
-      event,
-      FUNCTION_REQUEST_TYPES.event
+    const promise = axios.post(
+      new URL(
+        path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
+      ).toString(),
+      event
     );
 
     promises.push(promise);

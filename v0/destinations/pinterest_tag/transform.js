@@ -5,7 +5,6 @@ const { EventType } = require("../../../constants");
 const {
   CustomError,
   defaultRequestConfig,
-  isDefinedAndNotNull,
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
@@ -16,17 +15,12 @@ const {
   processUserPayload,
   processCommonPayload,
   deduceEventName,
-  setIdPriceQuantity,
+  postProcessEcomFields,
   checkUserPayloadValidity,
   processHashedUserPayload
 } = require("./utils");
 
-const {
-  ENDPOINT,
-  MAX_BATCH_SIZE,
-  USER_CONFIGS,
-  CUSTOM_CONFIGS
-} = require("./config");
+const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require("./config");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
@@ -41,17 +35,30 @@ const responseBuilderSimple = finalPayload => {
   };
 };
 
-const commonFieldResponseBuilder = (message, { Config }) => {
+/**
+ *
+ * @param {*} message
+ * @param {*} destination.Config
+ * @param {*} messageType
+ * @param {*} eventName
+ * @returns the output of each input payload.
+ * message deduplication logic looks like below:
+ * This facility is provided *only* for the users who are using the *new configuration*.
+ * if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
+ * sent as "event_id". On it's absence it will fallback to "messageId".
+ * And if "enableDeduplication" is set to false, it will fallback to "messageId"
+ */
+const commonFieldResponseBuilder = (
+  message,
+  { Config },
+  messageType,
+  eventName
+) => {
   let processedUserPayload;
   const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
-  /*
-    message deduplication facility is provided *only* for the users who are using the *new configuration*.
-    if  "enableDeduplication" is set to *true* and "deduplicationKey" is set via webapp, that key value will be
-    sent as "event_id". On it's absence it will fallback to "messageId".
-    And if "enableDeduplication" is set to false, it will fallback to "messageId"
-  */
+
   processedCommonPayload.event_id =
     get(message, `${deduplicationKey}`) || message.messageId;
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
@@ -73,95 +80,26 @@ const commonFieldResponseBuilder = (message, { Config }) => {
     // when user is sending already hashed data to Rudderstack
     processedUserPayload = processHashedUserPayload(userPayload, message);
   }
-  const deducedEventName = deduceEventName(message, Config);
 
-  return {
+  let response = {
     ...processedCommonPayload,
-    event_name: deducedEventName,
+    event_name: eventName,
     app_id: appId,
     advertiser_id: advertiserId,
     user_data: processedUserPayload
   };
-};
 
-/**
- * This function will process the ecommerce fields and return the final payload
- * @param {*} message
- * @param {*} mandatoryPayload
- * @returns
- */
-const processEcomFields = (message, mandatoryPayload) => {
-  let totalQuantity = 0;
-  let quantityInconsistent = false;
-  const contentArray = [];
-  const contentIds = [];
-  const { properties } = message;
-  // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
-  let customPayload = constructPayload(message, CUSTOM_CONFIGS);
-
-  // if product array is present will look for the product level information
-  if (
-    properties.products &&
-    Array.isArray(properties.products) &&
-    properties.products.length > 0
-  ) {
-    const { products } = properties;
-    products.forEach(product => {
-      const prodParams = setIdPriceQuantity(product, message);
-      contentIds.push(prodParams.contentId);
-      contentArray.push(prodParams.content);
-      if (!product.quantity) {
-        quantityInconsistent = true;
-      }
-      totalQuantity = product.quantity
-        ? totalQuantity + product.quantity
-        : totalQuantity;
-    });
-
-    if (totalQuantity === 0) {
-      /*
-      in case any of the products inside product array does not have quantity,
-       will map the quantity of root level
-      */
-      totalQuantity = properties.quantity;
-    }
-  } else {
-    /*
-    for the events where product array is not present, root level id, price and
-    quantity are taken into consideration
-    */
-    const prodParams = setIdPriceQuantity(message.properties, message);
-    contentIds.push(prodParams.contentId);
-    contentArray.push(prodParams.content);
-    totalQuantity = properties.quantity
-      ? totalQuantity + properties.quantity
-      : totalQuantity;
+  if (messageType === EventType.TRACK) {
+    response = postProcessEcomFields(message, response);
   }
-  /*
-    if properties.numOfItems is not provided by the user, the total quantity of the products
-    will be sent as num_items
-  */
-  if (
-    !isDefinedAndNotNull(customPayload.num_items) &&
-    quantityInconsistent === false
-  ) {
-    customPayload.num_items = parseInt(totalQuantity, 10);
-  }
-  customPayload = {
-    ...customPayload,
-    content_ids: contentIds,
-    contents: contentArray
-  };
-
-  return {
-    ...mandatoryPayload,
-    custom_data: { ...customPayload }
-  };
+  // return responseBuilderSimple(response);
+  return response;
 };
 
 const process = event => {
-  let response = {};
-  let mandatoryPayload = {};
+  const toSendEvents = [];
+  const respList = [];
+  const deducedEventNameArray = [];
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
 
@@ -180,7 +118,20 @@ const process = event => {
     case EventType.PAGE:
     case EventType.SCREEN:
     case EventType.TRACK:
-      mandatoryPayload = commonFieldResponseBuilder(message, destination);
+      deducedEventNameArray.push(
+        ...deduceEventName(message, destination.Config)
+      );
+      deducedEventNameArray.forEach(eventName => {
+        toSendEvents.push(
+          commonFieldResponseBuilder(
+            message,
+            destination,
+            messageType,
+            eventName
+          )
+        );
+      });
+
       break;
     default:
       throw new CustomError(
@@ -189,15 +140,10 @@ const process = event => {
       );
   }
 
-  /**
-   * Track payloads will need additional custom parameters
-   */
-  if (messageType === EventType.TRACK) {
-    response = processEcomFields(message, mandatoryPayload);
-  } else {
-    response = mandatoryPayload;
-  }
-  return responseBuilderSimple(response);
+  toSendEvents.forEach(sendEvent => {
+    respList.push(responseBuilderSimple(sendEvent));
+  });
+  return respList;
 };
 
 const generateBatchedPaylaodForArray = events => {
@@ -271,12 +217,15 @@ const processRouterDest = inputs => {
         });
       } else {
         // if not transformed
-        const transformedPayload = {
-          message: process(event),
-          metadata: event.metadata,
-          destination
-        };
-        successRespList.push(transformedPayload);
+        const transformedMessageArray = process(event);
+        transformedMessageArray.forEach(singleResponse => {
+          const transformedPayload = {
+            message: singleResponse,
+            metadata: event.metadata,
+            destination
+          };
+          successRespList.push(transformedPayload);
+        });
       }
     } catch (error) {
       batchErrorRespList.push(

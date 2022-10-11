@@ -1,12 +1,11 @@
 const { getMappingConfig } = require("../../util");
 
-const getEndpoint = destination => {
-  const { region } = destination.Config;
+const getEndpoint = (config, endpoint = "/upload") => {
+  const { region } = config;
   if (region && region !== "none") {
-    return `https://${region}.api.clevertap.com/1/upload`;
+    return `https://${region}.api.clevertap.com/1${endpoint}`;
   }
-
-  return "https://api.clevertap.com/1/upload";
+  return `https://api.clevertap.com/1${endpoint}`;
 };
 
 const CONFIG_CATEGORIES = {

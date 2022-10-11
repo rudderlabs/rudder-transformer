@@ -40,7 +40,6 @@
   "context.app.version": "app_version",
   "context.locale": "language",
   "properties.category": "event_type",
-  "session_id": "session_id",
   "request_ip": "ip",
   "messageId": "insert_id"
 }

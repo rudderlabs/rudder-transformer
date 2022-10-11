@@ -9,27 +9,14 @@ const {
 } = require("./utils");
 
 async function getWorkflowEngineInternal(destName, flowType) {
-  try {
-    const destRootDir = getRootPathForDestination(destName);
-    const workflowPath = await getWorkflowPath(destRootDir, flowType);
-    const platformBindingsPaths = await getPlatformBindingsPaths();
-    return WorkflowEngineFactory.createFromFilePath(
-      workflowPath,
-      destRootDir,
-      platformBindingsPaths
-    );
-  } catch (error) {
-    logger.info(
-      "Error occurred while creating workflow",
-      error,
-      destName,
-      flowType
-    );
-    throw new ErrorBuilder()
-      .setMessage("Error occurred while creating workflow")
-      .setStatus(400)
-      .build();
-  }
+  const destRootDir = getRootPathForDestination(destName);
+  const workflowPath = await getWorkflowPath(destRootDir, flowType);
+  const platformBindingsPaths = await getPlatformBindingsPaths();
+  return WorkflowEngineFactory.createFromFilePath(
+    workflowPath,
+    destRootDir,
+    platformBindingsPaths
+  );
 }
 
 const workflowEnginePromiseMap = new Map();

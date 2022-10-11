@@ -66,7 +66,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
-const trackResponseBuilder = (message, { Config }) => {
+const trackResponseBuilder = async (message, { Config }) => {
   const { event } = message;
   if (!event) {
     throw new CustomError("Event name is required for track call.", 400);
@@ -86,7 +86,7 @@ const trackResponseBuilder = (message, { Config }) => {
         MAPPING_CONFIG[CONFIG_CATEGORIES.SALES_ACTIVITY.name]
       );
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlCreate}`;
-      response.body.JSON.sales_activity = UpdateContactWithSalesActivity(
+      response.body.JSON.sales_activity = await UpdateContactWithSalesActivity(
         payload,
         message,
         Config
@@ -135,7 +135,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   const userEmail = getFieldValueFromMessage(message, "email");
   if (!userEmail) {
     const response = defaultRequestConfig();
-    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
+    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = payloadBody;
     response.headers = {
@@ -249,7 +249,7 @@ const batchEvents = eventsChunk => {
 
     // Batch event into dest batch structure
     chunk.forEach(event => {
-      contacts.push(event?.message?.body?.JSON);
+      contacts.push(event.message?.body?.JSON);
       metadatas.push(event.metadata);
     });
     // batching into identify batch structure
@@ -310,7 +310,7 @@ const getEventChunks = (event, identifyEventChunks, eventResponseList) => {
   }
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -319,8 +319,8 @@ const processRouterDest = inputs => {
   const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
   const errorRespList = [];
-  Promise.all(
-    inputs.map(event => {
+  await Promise.all(
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -329,7 +329,7 @@ const processRouterDest = inputs => {
           // if not transformed
           getEventChunks(
             {
-              message: process(event),
+              message: await process(event),
               metadata: event.metadata,
               destination: event.destination
             },
@@ -352,7 +352,7 @@ const processRouterDest = inputs => {
   let identifyBatchedResponseList = [];
 
   if (identifyEventChunks.length) {
-    identifyBatchedResponseList = batchEvents(identifyEventChunks);
+    identifyBatchedResponseList = await batchEvents(identifyEventChunks);
   }
 
   let batchedResponseList = [];

@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
+const get = require("get-value");
 const logger = require("../../../logger");
 const { httpPOST, httpGET, httpPUT } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError, getFieldValueFromMessage } = require("../../util");
-const { CONFIG_CATEGORIES } = require("./config");
+const { CustomError } = require("../../util");
+const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
 
 /*
  * This functions is used for getting details of contacts with Account details.
@@ -65,7 +66,7 @@ const createUpdateAccount = async (payloadBody, Config) => {
       "Content-Type": "application/json"
     }
   };
-  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
@@ -148,7 +149,7 @@ const updateContactWithList = async (userId, listId, Config) => {
  * @param {*} userEmail
  * @param {*} Config
  */
-const getContactsDetails = (userEmail, Config) => {
+const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
@@ -164,7 +165,7 @@ const getContactsDetails = (userEmail, Config) => {
     }
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  let userResponse = httpPOST(endPoint, userPayload, requestOptions);
+  let userResponse = await httpPOST(endPoint, userPayload, requestOptions);
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
     const errMessage = userResponse.response.errors?.message || "";
@@ -192,7 +193,7 @@ const responseBuilderWithContactDetails = async (
   salesActivityTypeId
 ) => {
   const userDetails = await getContactsDetails(email, Config);
-  const userId = userDetails.response.id;
+  const userId = userDetails.response.contact.id;
   const responseBody = {
     ...payload,
     targetable_id: userId,
@@ -216,7 +217,7 @@ const UpdateContactWithLifeCycleStage = async (
       "Content-Type": "application/json"
     }
   };
-  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.LIFECYCLE_STAGE.baseUrl}`;
+  const endPoint = `https://${Config.domain}${LIFECYCLE_STAGE_ENDPOINT}`;
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {
@@ -227,7 +228,7 @@ const UpdateContactWithLifeCycleStage = async (
       errorStatus
     );
   }
-  const lifeCycleStages = lifeCycleStagesResponse.lifecycle_stages;
+  const lifeCycleStages = lifeCycleStagesResponse.response.lifecycle_stages;
   if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
     const listDetails = lifeCycleStages.find(
       list => list.name === lifeCycleStageName
@@ -269,7 +270,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     );
   }
 
-  const email = getFieldValueFromMessage(message, "email");
+  const email = get(message, "email");
 
   if (!payload.targetable_id && !email) {
     throw new CustomError(
@@ -283,7 +284,6 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     if (payload.targetable_id) {
       responseBody = {
         ...payload,
-        targetable_id: payload.targetable_id,
         sales_activity_type_id: payload.sales_activity_type_id
       };
     } else {
@@ -309,7 +309,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     );
   }
 
-  const salesActivityList = salesActivityResponse.sales_activity_types;
+  const salesActivityList = salesActivityResponse.response.sales_activity_types;
   if (salesActivityList && Array.isArray(salesActivityList)) {
     const listDetails = salesActivityList.find(
       list => list.name === payload.sales_activity_name
@@ -325,14 +325,14 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
       responseBody = {
         ...payload,
         targetable_id: payload.targetable_id,
-        sales_activity_type_id: payload.sales_activity_type_id
+        sales_activity_type_id: listDetails.id
       };
     } else {
-      responseBody = responseBuilderWithContactDetails(
+      responseBody = await responseBuilderWithContactDetails(
         email,
         Config,
         payload,
-        payload.sales_activity_type_id
+        listDetails.id
       );
     }
 

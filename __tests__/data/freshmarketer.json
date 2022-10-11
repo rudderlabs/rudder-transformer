@@ -610,9 +610,10 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "message type track not supported",
+      "error": "Event name is required for track call.",
       "statTags": {
-        "destination": "freshmarketer",
+        "errorAt": "proc",
+        "destType": "FRESHMARKETER",
         "stage": "transform",
         "scope": "exception"
       }

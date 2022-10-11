@@ -42,7 +42,7 @@
   {
     "destKey": "targetable_id",
     "sourceKeys": "properties.targetableId",
-    "required": true
+    "required": false
   },
   {
     "destKey": "targetable_type",

@@ -7,7 +7,6 @@ const integration = "algolia";
 const name = "Algolia";
 
 const procWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.PROC);
-// const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -33,32 +32,35 @@ describe(`${name} Tests`, () => {
           // deserialize to normalize them for comparison.
           expect(JSON.parse(JSON.stringify(result.output))).toEqual(expected);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           expect(error.message).toEqual(expected.message);
         }
       });
     });
   });
 
-// Router Test Data
-// const inputRouterDataFile = fs.readFileSync(
-//   path.resolve(__dirname, `./data/${integration}_router_input.json`)
-// );
-// const outputRouterDataFile = fs.readFileSync(
-//   path.resolve(__dirname, `./data/${integration}_router_output.json`)
-// );
-// const inputRouterData = JSON.parse(inputRouterDataFile);
-// const expectedRouterData = JSON.parse(outputRouterDataFile);
+  const inputRouterDataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${integration}_router_input.json`)
+  );
+  const outputRouterDataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${integration}_router_output.json`)
+  );
+  const inputRouterData = JSON.parse(inputRouterDataFile);
+  const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+  const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      rtWorkflowEngine = await rtWorkflowEnginePromise;
+      const result = await rtWorkflowEngine.execute(inputRouterData);
 
-
-  // describe("Router Tests", () => {
-  //   it("Payload", async () => {
-  //     rtWorkflowEngine = await rtWorkflowEnginePromise;
-  //     const result = await rtWorkflowEngine.execute(inputRouterData);
-  //     expect(JSON.parse(JSON.stringify(result.output))).toEqual(
-  //       expectedRouterData
-  //     );
-  //   });
-  // });
+      // JSONata uses internal implementation for arrays so
+      // they can't be directly compared with others.
+      // So, we need to use serialize and
+      // deserialize to normalize them for comparison.
+      expect(JSON.parse(JSON.stringify(result.output))).toEqual(
+        expectedRouterData
+      );
+    });
+  });
 });

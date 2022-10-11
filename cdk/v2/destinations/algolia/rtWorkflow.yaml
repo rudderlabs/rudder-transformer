@@ -1,0 +1,59 @@
+bindings:
+- path: ../../../../v0/destinations/algolia/config
+
+steps:
+- name: prepareContext
+  template:
+    $setContext("batchMode", true)
+
+- name: transform
+  externalWorkflow:
+    path: ./procWorkflow.yaml
+  loopOverInput: true
+
+- name: processTransformOutput
+  description: Separate Failed and successful events
+  template: |
+    (
+      $zipInputAndOutput := $map($zip($, $outputs.transform), $merge);
+      {
+        "successfulEvents": $zipInputAndOutput[$exists(output)],
+        "failedEvents": $zipInputAndOutput[$exists(error)]
+      }
+    )
+
+- name: batchEvents
+  template: |
+    (
+      /* Prepares batch requests*/
+      $prepareBatchRequest := function($batch) {(
+        {
+          "body": {
+            "JSON": {"events": $batch.output},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": $ENDPOINT,
+          "headers": $batch[0].destination.Config.{
+            "X-Algolia-Application-Id": applicationId,
+            "X-Algolia-API-Key": apiKey
+          },
+          "params": {},
+          "files": {}
+        }
+      )};
+      $batches := $chunk($outputs.processTransformOutput.successfulEvents, $MAX_BATCH_SIZE);
+      $map($batches, function($batch){(
+        {
+          "batchedRequest": $prepareBatchRequest($batch),
+          "metadata": $batch.metadata,
+          "batched": true,
+          "statusCode": 200,
+          "destination": $batch[0].destination
+        }
+      )})[];
+    )

@@ -57,7 +57,14 @@ steps:
         $assert($context.payload.(filters or objectIDs), "Either filters or  objectIds is required.");
       )
 
+  - name: prepareResponsePayloadForBatch
+    condition: $exists($context.batchMode)
+    template: |
+      $context.payload
+    onComplete: return
+
   - name: prepareResponsePayload
+    condition: $not($exists($context.batchMode))
     template: |
       {
         "body": {

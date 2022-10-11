@@ -1,7 +1,7 @@
 bindings:
-- path: ./utils
-- path: ../../../../v0/util
-- path: ./config
+  - path: ../../../../v0/destinations/algolia/util
+  - path: ../../../../v0/destinations/algolia/config
+  - path: ../../../../v0/util
 
 steps:
   - name: validateInput

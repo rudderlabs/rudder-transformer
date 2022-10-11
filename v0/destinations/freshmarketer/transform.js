@@ -66,6 +66,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   return response;
 };
 
+/*
+ * This functions is used for tracking contacts activities.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
 const trackResponseBuilder = async (message, { Config }) => {
   const { event } = message;
   if (!event) {
@@ -112,7 +118,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 };
 
 /*
- * This functions allow you to link identified contacts within a accounts.
+ * This functions allow you to link identified contacts within a accounts or marketing_lists.
  * It also helps in updating or creating accounts.
  * @param {*} message
  * @param {*} Config

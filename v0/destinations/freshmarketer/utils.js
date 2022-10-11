@@ -178,8 +178,14 @@ const updateAccountWOContact = (payload, Config) => {
 };
 
 /*
-  This functions is used for updating contact with List.
-*/
+ * This functions is used for updating contact with List.
+ * It will return listId either by creating or through look-up.
+ * @param {*} usedId
+ * @param {*} listId
+ * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#add_to_list
+ */
 const updateContactWithList = async (userId, listId, Config) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
@@ -198,6 +204,8 @@ const updateContactWithList = async (userId, listId, Config) => {
  * This function is used for getting Contact details.
  * @param {*} userEmail
  * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#upsert_a_contact
  */
 const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
@@ -234,6 +242,7 @@ const getContactsDetails = async (userEmail, Config) => {
  * @param {*} Config - headers, apiKey...
  * @param {*} payload - created after transformation
  * @param {*} salesActivityTypeId - for creating the sales activity
+ * returns
  */
 
 const responseBuilderWithContactDetails = async (
@@ -255,6 +264,7 @@ const responseBuilderWithContactDetails = async (
 /*
  * This function is used for updating contact with LifeCycleStage
  * @param {*} Config - headers, apiKey...
+ * ref: https://developers.freshworks.com/crm/api/#admin_configuration
  */
 const UpdateContactWithLifeCycleStage = async (
   lifeCycleStageName,
@@ -305,6 +315,7 @@ const UpdateContactWithLifeCycleStage = async (
  * @param {*} payload - created after transformation
  * @param {*} message - input message
  * @param {*} Config - headers, apiKey...
+ * ref: https://developers.freshworks.com/crm/api/#list_all_sales_activities
  */
 const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {

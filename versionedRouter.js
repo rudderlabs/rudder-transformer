@@ -673,7 +673,7 @@ if (startDestTransformer) {
         ctx.body = responseArray;
         ctx.status = 200;
       } catch (error) {
-        logger.error(`Error invoking faas function: ${error}`);
+        logger.error(`Error invoking faas function: ${error} - ${error.message}`);
         ctx.body = { error: error.message };
         ctx.status = 400;
       }

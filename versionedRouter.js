@@ -653,7 +653,7 @@ if (startDestTransformer) {
 
         const startTime = new Date();
 
-        const transformationResponses = await faasInvocationHandler()(
+        const transformedEvents = await faasInvocationHandler()(
           transformationName,
           code,
           versionId,
@@ -662,15 +662,9 @@ if (startDestTransformer) {
           override
         );
 
-        const responseArray = [];
-
-        transformationResponses.forEach(response => {
-          responseArray.push(response.data);
-        });
-
         stats.timing("python_faas_invocation_latency", startTime);
 
-        ctx.body = responseArray;
+        ctx.body = transformedEvents.data;
         ctx.status = 200;
       } catch (error) {
         logger.error(`Error invoking faas function: ${error} - ${error.message}`);

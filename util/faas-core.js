@@ -184,21 +184,9 @@ async function faasInvocationHandler(
     await faasDeploymentHandler(imageName, functionName, code, testMode);
   }
 
-  const promises = [];
   const startTime = new Date();
 
   logger.info("Invoking function.");
-
-  events.forEach(event => {
-    const promise = axios.post(
-      new URL(
-        path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
-      ).toString(),
-      event
-    );
-
-    promises.push(promise);
-  });
 
   // if (testMode) {
   //   setTimeout(async () => {
@@ -206,7 +194,13 @@ async function faasInvocationHandler(
   //   }, DESTRUCTION_TIMEOUT_IN_MS);
   // }
 
-  const response = await Promise.all(promises);
+  const response = await axios.post(
+    new URL(
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
+    ).toString(),
+    events
+  );
+
   stats.timing("deployed_function_execution_time", startTime, {
     imageName,
     functionName

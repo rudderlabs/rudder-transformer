@@ -18,7 +18,8 @@ const {
   CustomError,
   extractCustomFields,
   getValueFromMessage,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  toUnixTimestamp
 } = require("../../util");
 
 /*
@@ -161,6 +162,11 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   } else {
     payload.c = "carrier";
   }
+
+  // Singular accepts utime values in Unix timestamp, hence we are converting it
+  const ts = message.originalTimestamp || message.timestamp;
+  payload.utime = toUnixTimestamp(ts);
+
   payload = removeUndefinedAndNullValues(payload);
   return { payload, eventAttributes };
 };

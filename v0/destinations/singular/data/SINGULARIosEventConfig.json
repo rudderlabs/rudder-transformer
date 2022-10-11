@@ -36,12 +36,6 @@
     "required": false
   },
   {
-    "destKey": "utimȩ",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
     "destKey": "skan_conversion_value",
     "sourceKeys": "properties.skan_conversion_value",
     "required": false

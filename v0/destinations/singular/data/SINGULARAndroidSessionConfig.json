@@ -85,12 +85,6 @@
     "required": false
   },
   {
-    "destKey": "utime",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
     "destKey": "cn",
     "sourceKeys": "context.network.carrier",
     "required": false

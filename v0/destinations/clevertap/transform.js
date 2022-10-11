@@ -114,7 +114,7 @@ const mapAliasPayload = message => {
     d: [
       {
         type: "profile",
-        profileData: { Identity: message.userId },
+        profileData: { identity: message.userId },
         ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
         identity: message.previousId
       }

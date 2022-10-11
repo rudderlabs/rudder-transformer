@@ -352,6 +352,7 @@
           }
         },
         "traits": {
+          "eventType": "accounts",
           "name": "Mark Twain",
           "phone": "919191919191",
           "numberOfEmployees": 51,
@@ -461,6 +462,7 @@
           }
         },
         "traits": {
+          "eventType": "accounts",
           "phone": "919191919191",
           "numberOfEmployees": 51,
           "annualRevenue": 1000,
@@ -663,6 +665,7 @@
           "traits": {}
         },
         "traits": {
+          "eventType": "accounts",
           "name": "div-quer",
           "phone": "919191919191",
           "numberOfEmployees": 51,

@@ -1,12 +1,54 @@
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const logger = require("../../../logger");
-const { httpPOST, httpGET, httpPUT } = require("../../../adapters/network");
+const { httpPOST, httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError } = require("../../util");
+const {
+  CustomError,
+  defaultPutRequestConfig,
+  defaultRequestConfig,
+  defaultPostRequestConfig
+} = require("../../util");
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
+
+/*
+ * This functions is used for getting Account details.
+ * If account is not exists then it will create it otherwise it will update it.
+ * @param {*} payloadBody
+ * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
+ */
+const createUpdateAccount = async (payload, Config) => {
+  const requestOptions = {
+    headers: {
+      Authorization: `Token token=${Config.apiKey}`,
+      "Content-Type": "application/json"
+    }
+  };
+  const payloadBody = {
+    unique_identifier: { name: payload.name },
+    sales_account: payload
+  };
+  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
+  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
+  accountResponse = processAxiosResponse(accountResponse);
+  if (accountResponse.status !== 200 && accountResponse.status !== 201) {
+    const errMessage = accountResponse.response.errors?.message || "";
+    const errorStatus = accountResponse.response.errors?.code || "500";
+    throw new CustomError(
+      `failed to create/update group ${errMessage}`,
+      errorStatus
+    );
+  }
+  const accountId = accountResponse.response.sales_account?.id;
+  if (!accountId) {
+    throw new CustomError("[Freshmarketer]: fails in fetching accountId.", 400);
+  }
+  return accountId;
+};
 
 /*
  * This functions is used for getting details of contacts with Account details.
@@ -15,7 +57,7 @@ const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_a_contact
  */
-const getUserAccountDetails = async (userEmail, Config) => {
+const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
@@ -48,38 +90,42 @@ const getUserAccountDetails = async (userEmail, Config) => {
       errorStatus
     );
   }
-  return userSalesAccountResponse;
+  let accountDetails =
+    userSalesAccountResponse.response.contact?.sales_accounts;
+  if (!accountDetails) {
+    throw new CustomError(
+      "[Freshmarketer]: Fails in fetching user accountDetails",
+      400
+    );
+  }
+  const accountId = await createUpdateAccount(payload, Config);
+  if (accountDetails.length > 0) {
+    accountDetails = [
+      ...accountDetails,
+      {
+        id: accountId,
+        is_primary: false
+      }
+    ];
+  } else {
+    accountDetails = [
+      {
+        id: accountId,
+        is_primary: true
+      }
+    ];
+  }
+  return accountDetails;
 };
 
 /*
- * This functions is used for getting Account details.
- * If account is not exists then it will create it otherwise it will update it.
- * @param {*} payloadBody
+ * This functions is used for creating Or updating List through listName.
+ * It will return listId either by creating or through look-up.
+ * @param {*} listName
  * @param {*} Config
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
  */
-const createUpdateAccount = async (payloadBody, Config) => {
-  const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
-  };
-  const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
-  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
-  accountResponse = processAxiosResponse(accountResponse);
-  if (accountResponse.status !== 200 && accountResponse.status !== 201) {
-    const errMessage = accountResponse.response.errors?.message || "";
-    const errorStatus = accountResponse.response.errors?.code || "500";
-    throw new CustomError(
-      `failed to create/update group ${errMessage}`,
-      errorStatus
-    );
-  }
-  return accountResponse;
-};
-
 const createOrUpdateListDetails = async (listName, Config) => {
   const requestOptions = {
     headers: {
@@ -96,8 +142,8 @@ const createOrUpdateListDetails = async (listName, Config) => {
     const errorStatus = listResponse.response.errors?.code || "500";
     logger.error(`failed to fetch list ${errMessage}`, errorStatus);
   }
-  const listsDetails = listResponse?.lists;
-  // check with lists name
+  const listsDetails = listResponse.response?.lists;
+
   if (listsDetails && Array.isArray(listsDetails)) {
     const listDetails = listsDetails.find(list => list.name === listName);
     if (listDetails) {
@@ -112,36 +158,40 @@ const createOrUpdateListDetails = async (listName, Config) => {
     const errorStatus = listResponse.response.errors?.code || "500";
     logger.error(`failed to create list ${errMessage}`, errorStatus);
   }
-  const listId = listResponse.list?.id;
+  const listId = listResponse.response.list?.id;
   return listId;
+};
+
+const updateAccountWOContact = (payload, Config) => {
+  const response = defaultRequestConfig();
+  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = {
+    unique_identifier: { name: payload.name },
+    sales_account: payload
+  };
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
+  };
+  return response;
 };
 
 /*
   This functions is used for updating contact with List.
 */
 const updateContactWithList = async (userId, listId, Config) => {
-  const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+  const response = defaultRequestConfig();
+  response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
   };
-  const endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
-  const listPayload = {
+  response.body.JSON = {
     ids: [userId]
   };
-  let listResponse = await httpPUT(endpoint, listPayload, requestOptions);
-  listResponse = processAxiosResponse(listResponse);
-  if (listResponse.status !== 200) {
-    const errMessage = listResponse.response.errors?.message || "";
-    const errorStatus = listResponse.response.errors?.code || "500";
-    logger.error(
-      `failed to update contacts with list ${errMessage}`,
-      errorStatus
-    );
-    return;
-  }
-  logger.info(`list added succesfully.`);
+  response.method = defaultPutRequestConfig.requestMethod;
+  return response;
 };
 
 /*
@@ -384,5 +434,6 @@ module.exports = {
   updateContactWithList,
   UpdateContactWithLifeCycleStage,
   UpdateContactWithSalesActivity,
-  getContactsDetails
+  getContactsDetails,
+  updateAccountWOContact
 };

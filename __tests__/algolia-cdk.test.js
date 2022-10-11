@@ -50,17 +50,25 @@ describe(`${name} Tests`, () => {
 
   const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
   describe("Router Tests", () => {
-    it("Payload", async () => {
-      rtWorkflowEngine = await rtWorkflowEnginePromise;
-      const result = await rtWorkflowEngine.execute(inputRouterData);
-
-      // JSONata uses internal implementation for arrays so
-      // they can't be directly compared with others.
-      // So, we need to use serialize and
-      // deserialize to normalize them for comparison.
-      expect(JSON.parse(JSON.stringify(result.output))).toEqual(
-        expectedRouterData
-      );
+    inputRouterData.forEach((input, index) => {
+      it(`${name} - payload: ${index}`, async () => {
+        const expected = expectedRouterData[index];
+        try {
+          rtWorkflowEngine = await rtWorkflowEnginePromise;
+          const result = await rtWorkflowEngine.execute(input);
+    
+          // JSONata uses internal implementation for arrays so
+          // they can't be directly compared with others.
+          // So, we need to use serialize and
+          // deserialize to normalize them for comparison.
+          expect(JSON.parse(JSON.stringify(result.output))).toEqual(
+            expected
+          );
+        } catch (error) {
+          // console.log(error);
+          expect(error.message).toEqual(expected.message);
+        }
+      });
     });
   });
 });

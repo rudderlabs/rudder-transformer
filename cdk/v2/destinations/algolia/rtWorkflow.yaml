@@ -2,6 +2,12 @@ bindings:
 - path: ../../../../v0/destinations/algolia/config
 
 steps:
+- name: validateInput
+  template: |
+    (
+      $assert($type($) = "array" and $count($) > 0, "Invalid event array")
+    )
+
 - name: prepareContext
   template:
     $setContext("batchMode", true)
@@ -12,7 +18,7 @@ steps:
   loopOverInput: true
 
 - name: processTransformOutput
-  description: Separate Failed and successful events
+  description: Separate failed and successful events
   template: |
     (
       $zipInputAndOutput := $map($zip($, $outputs.transform), $merge);

@@ -39,8 +39,19 @@ const routerOutputDataFile = fs.readFileSync(
 );
 const routerOutputData = JSON.parse(routerOutputDataFile);
 
-test('Router Tests', async () => {
-  const output = await transformer.processRouterDest(routerInputData);
-  expect(Array.isArray(output)).toEqual(true);
-  expect(output).toEqual(routerOutputData);
+describe('Router Tests', () => {
+  routerInputData.forEach((input, index) => {
+    it(`${name} Tests: payload - ${index}`, async () => {
+      let output, expected;
+      try {
+        output = await transformer.processRouterDest(input);
+        expected = routerOutputData[index]
+      } catch (error) {
+        output = error.message;
+        // console.log(output);
+        expected = routerOutputData[index].message;
+      }
+      expect(output).toEqual(expected);
+    });
+  });
 });

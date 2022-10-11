@@ -307,32 +307,54 @@ async function handleValidation(ctx) {
 }
 
 async function routerHandleDest(ctx) {
-  const { destType, input } = ctx.request.body;
-  const routerDestHandler = getDestHandler("v0", destType);
-  if (!routerDestHandler || !routerDestHandler.processRouterDest) {
-    ctx.status = 404;
-    ctx.body = `${destType} doesn't support router transform`;
-    return null;
-  }
   const respEvents = [];
-  const allDestEvents = _.groupBy(input, event => event.destination.ID);
-  await Promise.all(
-    Object.entries(allDestEvents).map(async ([destID, desInput]) => {
-      desInput = processDynamicConfig(desInput, "router");
-      const listOutput = await routerDestHandler.processRouterDest(desInput);
-      respEvents.push(...listOutput);
-    })
-  );
-  respEvents
-    .filter(
-      resp =>
-        "error" in resp &&
-        _.isObject(resp.statTags) &&
-        !_.isEmpty(resp.statTags)
-    )
-    .forEach(resp => {
-      set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
-    });
+  let destType;
+  try {
+    const { input } = ctx.request.body;
+    destType = ctx.request.body.destType;
+    const routerDestHandler = getDestHandler("v0", destType);
+    if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+      ctx.status = 404;
+      ctx.body = `${destType} doesn't support router transform`;
+      return null;
+    }
+    const allDestEvents = _.groupBy(input, event => event.destination.ID);
+    await Promise.all(
+      Object.entries(allDestEvents).map(async ([destID, desInput]) => {
+        desInput = processDynamicConfig(desInput, "router");
+        const listOutput = await routerDestHandler.processRouterDest(desInput);
+        respEvents.push(...listOutput);
+      })
+    );
+    respEvents
+      .filter(
+        resp =>
+          "error" in resp &&
+          _.isObject(resp.statTags) &&
+          !_.isEmpty(resp.statTags)
+      )
+      .forEach(resp => {
+        set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+      });
+  } catch (error) {
+    logger.error(error);
+    const errObj = generateErrorObject(
+      error,
+      destType,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+
+    const resp = {
+      statusCode: errObj.status,
+      error: errObj.message || "Error occurred while processing the payload.",
+      statTags: {
+        ...errObj.statTags,
+        errorAt: TRANSFORMER_METRIC.ERROR_AT.RT
+      }
+    };
+
+    respEvents.push(resp);
+  }
   ctx.body = { output: respEvents };
   return ctx.body;
 }

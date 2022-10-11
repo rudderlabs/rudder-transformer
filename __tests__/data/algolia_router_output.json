@@ -1,4 +1,5 @@
 [
+  [
     {
       "batchedRequest": {
         "version": "1",
@@ -97,5 +98,14 @@
         "IsProcessorEnabled": true
       }
     }
-  ]
+  ],
+  {
+      "message": "Invalid event array",
+      "statusCode": 400
+  },
+  {
+    "message": "Invalid event array",
+    "statusCode": 400
+  }
+]
   

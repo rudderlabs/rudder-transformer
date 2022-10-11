@@ -35,6 +35,7 @@ const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
 const { setupUserTransformHandler } = require("./util/customTransformer");
+const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
 const { getErrorInfo } = require("./cdk/v2/utils");
@@ -127,48 +128,46 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
   }
 }
 
-async function compareWithCdkV2(destName, event, flowType, result) {
+async function compareWithCdkV2(destName, event, flowType, v0Result) {
   try {
-    const output = await handleCdkV2(destName, event, flowType);
-    if (!_.isEqual(output, result.output)) {
+    const cdkOutput = await handleCdkV2(destName, event, flowType);
+    const unmatchedKeys = Object.keys(
+      CommonUtils.objectDiff(v0Result.output, cdkOutput)
+    );
+    if (unmatchedKeys.length > 0) {
       logger.error(
-        `[LIVE_COMPARE_TEST] outputs didn't match and metadata=${JSON.stringify(
+        `[LIVE_COMPARE_TEST] destName=${destName}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
           event.metadata
         )}`
       );
     }
   } catch (error) {
-    if (error.message !== result.error?.message) {
+    if (error.message !== v0Result.error?.message) {
       logger.error(
-        `[LIVE_COMPARE_TEST] currentError=${error.message} and cdkError=${
-          result.error?.message
-        } and metadata=${JSON.stringify(event.metadata)}`
+        `[LIVE_COMPARE_TEST] destName=${destName}, flowType=${flowType}, v0Error=${
+          v0Result.error?.message
+        }, cdkError=${error.message}, metadata=${JSON.stringify(
+          event.metadata
+        )}`
       );
     }
   }
 }
 
-async function handleJSProcDestination(destHandler, destName, event) {
+async function handleV0Destination(destHandler, destName, event, flowType) {
   const result = {};
   try {
-    result.output = await destHandler.process(event);
+    result.output = await destHandler(event);
     return result.output;
   } catch (error) {
     result.error = error;
     throw error;
   } finally {
     if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(event)) {
-      compareWithCdkV2(
-        destName,
-        event,
-        TRANSFORMER_METRIC.ERROR_AT.PROC,
-        result
-      );
+      compareWithCdkV2(destName, event, flowType, result);
     }
   }
 }
-
-async function handleJSRTDestination(destHandler, event) {}
 
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
@@ -209,10 +208,11 @@ async function handleDest(ctx, version, destination) {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
           }
-          respEvents = await handleJSProcDestination(
-            destHandler,
+          respEvents = await handleV0Destination(
+            destHandler.process,
             destination,
-            parsedEvent
+            parsedEvent,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
           );
         }
         if (respEvents) {
@@ -365,9 +365,23 @@ async function routerHandleDest(ctx) {
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
-    Object.entries(allDestEvents).map(async ([destID, desInput]) => {
-      desInput = processDynamicConfig(desInput, "router");
-      const listOutput = await routerDestHandler.processRouterDest(desInput);
+    Object.values(allDestEvents).map(async destInput => {
+      const newDestInput = processDynamicConfig(destInput, "router");
+      let listOutput;
+      if (isCdkV2Destination(newDestInput[0])) {
+        listOutput = await handleCdkV2(
+          destType,
+          newDestInput,
+          TRANSFORMER_METRIC.ERROR_AT.RT
+        );
+      } else {
+        listOutput = await handleV0Destination(
+          routerDestHandler.processRouterDest,
+          destType,
+          newDestInput,
+          TRANSFORMER_METRIC.ERROR_AT.RT
+        );
+      }
       respEvents.push(...listOutput);
     })
   );

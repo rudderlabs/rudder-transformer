@@ -1,7 +1,4 @@
 /* eslint-disable max-classes-per-file */
-
-const { flatten } = require("flat");
-
 class RespStatusError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -26,18 +23,8 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
-const compareObjects = (obj1, obj2) => {
-  const flatObj1 = flatten(obj1);
-  const flatObj2 = flatten(obj2);
-  const allKeys = new Set(Object.keys(flatObj1).contact(Object.keys(flatObj2)));
-  for (const key of allKeys) {
-    
-  }
-};
-
 module.exports = {
   RespStatusError,
   RetryRequestError,
-  responseStatusHandler,
-  compareObjects
+  responseStatusHandler
 };

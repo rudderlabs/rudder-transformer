@@ -1538,7 +1538,7 @@ function removeHyphens(str) {
 
 function isCdkV2Destination(event) {
   return Boolean(
-    event.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+    event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled
   );
 }
 

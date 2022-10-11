@@ -17,7 +17,8 @@ const {
   CustomError,
   isHttpStatusSuccess,
   getErrorRespEvents,
-  isCdkV2Destination
+  isCdkV2Destination,
+  isCdkV2TestDestination
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -125,6 +126,49 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
   }
 }
 
+async function compareWithCdkV2(destName, event, flowType, result) {
+  try {
+    const output = await handleCdkV2(destName, event, flowType);
+    if (!_.isEqual(output, result.output)) {
+      logger.error(
+        `[LIVE_COMPARE_TEST] outputs didn't match and metadata=${JSON.stringify(
+          event.metadata
+        )}`
+      );
+    }
+  } catch (error) {
+    if (error.message !== result.error?.message) {
+      logger.error(
+        `[LIVE_COMPARE_TEST] currentError=${error.message} and cdkError=${
+          result.error?.message
+        } and metadata=${JSON.stringify(event.metadata)}`
+      );
+    }
+  }
+}
+
+async function handleJSProcDestination(destHandler, destName, event) {
+  const result = {};
+  try {
+    result.output = await destHandler.process(event);
+    return result.output;
+  } catch (error) {
+    result.error = error;
+    throw error;
+  } finally {
+    if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(event)) {
+      compareWithCdkV2(
+        destName,
+        event,
+        TRANSFORMER_METRIC.ERROR_AT.PROC,
+        result
+      );
+    }
+  }
+}
+
+async function handleJSRTDestination(destHandler, event) {}
+
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
@@ -164,7 +208,11 @@ async function handleDest(ctx, version, destination) {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
           }
-          respEvents = await destHandler.process(parsedEvent);
+          respEvents = await handleJSProcDestination(
+            destHandler,
+            destination,
+            parsedEvent
+          );
         }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {

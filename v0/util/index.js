@@ -1542,6 +1542,10 @@ function isCdkV2Destination(event) {
   );
 }
 
+function isCdkV2TestDestination(event) {
+  return Boolean(event.destination?.DestinationDefinition?.Config?.cdkV2Test);
+}
+
 function isCdkDestination(event) {
   // TODO: maybe dont need all these checks in place
   return (
@@ -1821,5 +1825,6 @@ module.exports = {
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
   getErrorStatusCode,
-  isCdkV2Destination
+  isCdkV2Destination,
+  isCdkV2TestDestination
 };

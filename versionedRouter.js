@@ -27,7 +27,7 @@ const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
-const { isCdkDestination } = require("./v0/util");
+const { isCdkDestination, getErrorStatusCode } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
@@ -38,7 +38,6 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
-const { getErrorInfo } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -97,74 +96,71 @@ const functionsEnabled = () => {
 };
 
 async function handleCdkV2(destName, parsedEvent, flowType) {
-  try {
-    const workflowEngine = await getWorkflowEngine(destName, flowType);
+  const workflowEngine = await getWorkflowEngine(destName, flowType);
 
-    const result = await workflowEngine.execute(parsedEvent);
-    // TODO: Handle remaining output scenarios
-    return result.output;
-  } catch (err) {
-    const errorInfo = getErrorInfo(err);
-
-    // TODO: Bump the error priority even further as it's an unhandled error in the CDK
-    const errObj = generateErrorObject(
-      errorInfo,
-      destName,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
-
-    // Dump the raw error
-    logger.error(err);
-
-    return {
-      metadata: parsedEvent.metadata,
-      statusCode: errObj.status,
-      error: errObj.message || "Error occurred while processing the payload",
-      statTags: {
-        errorAt: flowType || TRANSFORMER_METRIC.ERROR_AT.UNKNOWN,
-        ...errObj.statTags
-      }
-    };
-  }
+  const result = await workflowEngine.execute(parsedEvent);
+  // TODO: Handle remaining output scenarios
+  return result.output;
 }
 
-async function compareWithCdkV2(destName, event, flowType, v0Result) {
+async function getCdkV2Result(destName, event, flowType) {
+  const cdkResult = {};
   try {
-    const cdkOutput = await handleCdkV2(destName, event, flowType);
+    cdkResult.output = JSON.parse(
+      JSON.stringify(await handleCdkV2(destName, event, flowType))
+    );
+  } catch (error) {
+    cdkResult.error = {
+      message: error.message,
+      statusCode: getErrorStatusCode(error)
+    };
+  }
+  return cdkResult;
+}
+
+async function compareWithCdkV2(destType, input, flowType, v0Result) {
+  try {
+    const cdkResult = await getCdkV2Result(destType, input, flowType);
     const unmatchedKeys = Object.keys(
-      CommonUtils.objectDiff(v0Result.output, cdkOutput)
+      CommonUtils.objectDiff(v0Result, cdkResult)
     );
     if (unmatchedKeys.length > 0) {
       logger.error(
-        `[LIVE_COMPARE_TEST] destName=${destName}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
-          event.metadata
+        `[LIVE_COMPARE_TEST] destName=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
+          input.metadata
         )}`
       );
+      return;
     }
+    logger.debug(
+      `[LIVE_COMPARE_TEST] passed for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+        input.metadata
+      )}`
+    );
   } catch (error) {
-    if (error.message !== v0Result.error?.message) {
-      logger.error(
-        `[LIVE_COMPARE_TEST] destName=${destName}, flowType=${flowType}, v0Error=${
-          v0Result.error?.message
-        }, cdkError=${error.message}, metadata=${JSON.stringify(
-          event.metadata
-        )}`
-      );
-    }
+    logger.error(
+      `[LIVE_COMPARE_TEST] errored out for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+        input.metadata
+      )}`,
+      error
+    );
   }
 }
 
-async function handleV0Destination(destHandler, destName, event, flowType) {
+async function handleV0Destination(destHandler, destType, input, flowType) {
   const result = {};
   try {
-    result.output = await destHandler(event);
+    result.output = await destHandler(input);
     return result.output;
   } catch (error) {
-    result.error = error;
+    result.error = {
+      message: error.message,
+      statusCode: getErrorStatusCode(error)
+    };
     throw error;
   } finally {
-    if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(event)) {
-      compareWithCdkV2(destName, event, flowType, result);
+    if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(input)) {
+      compareWithCdkV2(destType, input, flowType, result);
     }
   }
 }

@@ -4,7 +4,7 @@ const {
   WorkflowExecutionError,
   WorkflowCreationError
 } = require("rudder-workflow-engine");
-const { logger } = require("handlebars");
+const logger = require("../../logger");
 const ErrorBuilder = require("../../v0/util/error");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 

@@ -31,7 +31,7 @@ const getLists = (message, Config) => {
   let listIds = getListsFromExternalId(message, "engageListId");
   if (!listIds.length) {
     listIds = [];
-    const objectlist = Config?.lists;
+    const objectlist = Config?.listIds;
     if (objectlist) {
       objectlist.forEach(v => {
         listIds = listIds.concat(Object.values(v));

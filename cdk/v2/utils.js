@@ -2,11 +2,11 @@ const path = require("path");
 const fs = require("fs/promises");
 const {
   WorkflowExecutionError,
-  WorkflowEngineError
-} = require("rudder-workflow-engine/build/errors");
+  WorkflowCreationError
+} = require("rudder-workflow-engine");
 const { logger } = require("handlebars");
-const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const ErrorBuilder = require("../../v0/util/error");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -25,18 +25,9 @@ async function getWorkflowPath(
   };
 
   const workflowFilenames = flowTypeMap[flowType];
-  if (!workflowFilenames) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "Unable to identify the workflow file. Invalid flow type input"
-      )
-      .setStatus(400)
-      .build();
-  }
-
   // Find the first workflow file that exists
   const files = await fs.readdir(destDir);
-  const matchedFilename = workflowFilenames.find(filename =>
+  const matchedFilename = workflowFilenames?.find(filename =>
     files.includes(filename)
   );
   let validWorkflowFilepath;
@@ -44,6 +35,14 @@ async function getWorkflowPath(
     validWorkflowFilepath = path.join(destDir, matchedFilename);
   }
 
+  if (!validWorkflowFilepath) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "Unable to identify the workflow file. Invalid flow type input"
+      )
+      .setStatus(400)
+      .build();
+  }
   return validWorkflowFilepath;
 }
 
@@ -73,8 +72,8 @@ function getErrorInfo(err) {
   let errorInfo = err;
   if (err instanceof WorkflowExecutionError) {
     logger.error(
-      "Error occurred during workflow step execution: ",
-      err.stepName
+      `Error occurred during workflow step execution:  Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
+      err
     );
     errorInfo = {
       message: err.message,
@@ -84,8 +83,11 @@ function getErrorInfo(err) {
       authErrorCategory: err.error?.authErrorCategory
     };
     // TODO: Add a special stat tag to bump the priority of the error
-  } else if (err instanceof WorkflowEngineError) {
-    logger.error("Error occurred during workflow step: ", err.stepName);
+  } else if (err instanceof WorkflowCreationError) {
+    logger.error(
+      `Error occurred during workflow creation. Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
+      err
+    );
     errorInfo = {
       message: err.message,
       status: err.status,

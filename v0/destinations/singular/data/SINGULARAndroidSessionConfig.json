@@ -56,14 +56,6 @@
     }
   },
   {
-    "destKey": "openuri",
-    "sourceKeys": "properties.url",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
     "destKey": "sessionNotificationName",
     "sourceKeys": "event",
     "required": true
@@ -82,12 +74,6 @@
   {
     "destKey": "n",
     "sourceKeys": "context.app.name",
-    "required": false
-  },
-  {
-    "destKey": "utime",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
     "required": false
   },
   {
@@ -121,14 +107,29 @@
     "required": true
   },
   {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
     "destKey": "install_time",
     "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
-    "required": true
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "update_time",
     "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
-    "required": true
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "ua",

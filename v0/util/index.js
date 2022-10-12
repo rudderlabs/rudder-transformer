@@ -168,7 +168,7 @@ const getHashFromArrayWithDuplicate = (
   const hashMap = {};
   if (Array.isArray(arrays)) {
     arrays.forEach(array => {
-      if (!isNotEmpty(array[fromKey])) return;
+      if (isEmpty(array[fromKey])) return;
       const key = isLowerCase
         ? array[fromKey].toLowerCase().trim()
         : array[fromKey].trim();
@@ -920,6 +920,16 @@ const handleMetadataForValue = (
     let foundVal = false;
     if (Array.isArray(allowedKeyCheck)) {
       allowedKeyCheck.some(key => {
+        switch (key.type) {
+          case "toLowerCase":
+            formattedVal = formattedVal.toLowerCase();
+            break;
+          case "toUpperCase":
+            formattedVal = formattedVal.toUpperCase();
+            break;
+          default:
+            break;
+        }
         if (key.sourceVal.includes(formattedVal)) {
           foundVal = true;
           return true;
@@ -1538,6 +1548,12 @@ function removeHyphens(str) {
   return str.replace(/-/g, "");
 }
 
+function isCdkV2Destination(event) {
+  return Boolean(
+    event.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+  );
+}
+
 function isCdkDestination(event) {
   // TODO: maybe dont need all these checks in place
   return (
@@ -1817,5 +1833,6 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  isCdkV2Destination
 };

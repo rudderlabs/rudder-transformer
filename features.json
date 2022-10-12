@@ -12,6 +12,7 @@
     "GOOGLESHEETS": true,
     "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS": true,
     "GOOGLE_ADWORDS_REMARKETING_LISTS": true,
+    "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS": true,
     "HS": true,
     "ITERABLE": true,
     "KLAVIYO": true,
@@ -38,6 +39,8 @@
     "FRESHSALES": true,
     "MONDAY": true,
     "CUSTIFY": true,
-    "USER": true
+    "USER": true,
+    "FACEBOOK_OFFLINE_CONVERSIONS": true,
+    "MAILJET": true
   }
 }

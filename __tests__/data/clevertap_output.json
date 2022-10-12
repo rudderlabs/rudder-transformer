@@ -596,5 +596,35 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "d": [
+          {
+            "ts": 1468308340,
+            "type": "profile",
+            "identity": "1122121",
+            "profileData": {
+              "identity": "newaddedid001"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+      "X-CleverTap-Account-Id": "476550467"
+    },
+    "version": "1",
+    "endpoint": "https://api.clevertap.com/1/upload"
+  }
 ]

@@ -153,7 +153,7 @@ async function validate(event) {
             event.message.event,
             isDraft4
         );
-        const eventTypeAjvOptions = sourceTpConfig[event.message.type].ajvOptions || {};
+        const eventTypeAjvOptions = sourceTpConfig[event.message.type]?.ajvOptions || {};
         const globalAjvOptions = (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
         const merged = {
             ...defaultOptions,

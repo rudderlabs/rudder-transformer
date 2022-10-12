@@ -124,20 +124,20 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     );
     if (unmatchedKeys.length > 0) {
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destName=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
           input.metadata
         )}`
       );
       return;
     }
     logger.debug(
-      `[LIVE_COMPARE_TEST] passed for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+      `[LIVE_COMPARE_TEST] passed for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
         input.metadata
       )}`
     );
   } catch (error) {
     logger.error(
-      `[LIVE_COMPARE_TEST] errored for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
         input.metadata
       )}`,
       error

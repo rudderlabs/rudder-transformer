@@ -138,8 +138,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   const userEmail = getFieldValueFromMessage(message, "email");
   if (!userEmail) {
-    const response = updateAccountWOContact(payload, Config);
-    return response;
+    return updateAccountWOContact(payload, Config);
   }
 
   const accountDetails = await getUserAccountDetails(

@@ -36,6 +36,15 @@
     "required": false
   },
   {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
     "destKey": "amt",
     "sourceKeys": [
       "properties.total",

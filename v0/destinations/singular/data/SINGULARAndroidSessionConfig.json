@@ -107,6 +107,31 @@
     "required": true
   },
   {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "install_time",
+    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "update_time",
+    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
     "destKey": "ua",
     "sourceKeys": "context.userAgent",
     "required": false

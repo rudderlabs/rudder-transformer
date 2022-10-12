@@ -36,6 +36,15 @@
     "required": false
   },
   {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
     "destKey": "skan_conversion_value",
     "sourceKeys": "properties.skan_conversion_value",
     "required": false

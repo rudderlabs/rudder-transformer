@@ -3,11 +3,12 @@ const _ = require("lodash");
 const { EventType } = require("../../../constants");
 const {
   CustomError,
-  getErrorRespEvents,
   defaultBatchRequestConfig,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
-const { MAX_ROWS_PER_REQUEST } = require("./config");
+const { MAX_ROWS_PER_REQUEST, DESTINATION } = require("./config");
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -98,9 +99,9 @@ const batchEvents = eventsChunk => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const eventsChunk = []; // temporary variable to divide payload into chunks
@@ -124,13 +125,12 @@ const processRouterDest = async inputs => {
           });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          DESTINATION
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );

@@ -7,7 +7,8 @@ const {
 const {
   CustomError,
   defaultRequestConfig,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getFieldValueFromMessage
 } = require("../../util");
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
 
@@ -267,17 +268,43 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
  * @param {*} Config - headers, apiKey...
  * ref: https://developers.freshworks.com/crm/api/#admin_configuration
  */
-const UpdateContactWithLifeCycleStage = async (
-  lifeCycleStageName,
-  Config,
-  emails
-) => {
+const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
       "Content-Type": "application/json"
     }
   };
+  const emails = getFieldValueFromMessage(message, "email");
+  if (!emails) {
+    throw new CustomError(
+      "email is required for updating life Cycle Stages. Aborting!",
+      400
+    );
+  }
+  const lifecycleStageId = getFieldValueFromMessage(
+    message,
+    "lifecycleStageId"
+  );
+  const lifecycleStageName = getFieldValueFromMessage(
+    message,
+    "lifecycleStageName"
+  );
+  if (!lifecycleStageId && !lifecycleStageName) {
+    throw new CustomError(
+      `Either of lifecycleStageName or lifecycleStageId is required. Aborting!`,
+      400
+    );
+  }
+  if (lifecycleStageId) {
+    const response = {
+      contact: {
+        lifecycle_stage_id: lifecycleStageId
+      },
+      unique_identifier: { emails }
+    };
+    return response;
+  }
   const endPoint = `https://${Config.domain}${LIFECYCLE_STAGE_ENDPOINT}`;
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
@@ -289,14 +316,14 @@ const UpdateContactWithLifeCycleStage = async (
       errorStatus
     );
   }
-  const lifeCycleStages = lifeCycleStagesResponse.response.lifecycle_stages;
+  const lifeCycleStages = lifeCycleStagesResponse.response?.lifecycle_stages;
   if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
     const listDetails = lifeCycleStages.find(
-      list => list.name === lifeCycleStageName
+      list => list.name === lifecycleStageName
     );
     if (!listDetails) {
       throw new CustomError(
-        `failed to fetch lifeCycleStages with ${lifeCycleStageName}`,
+        `failed to fetch lifeCycleStages with ${lifecycleStageName}`,
         400
       );
     }

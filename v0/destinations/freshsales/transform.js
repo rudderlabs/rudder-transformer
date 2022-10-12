@@ -98,14 +98,11 @@ const trackResponseBuilder = async (message, { Config }) => {
         Config
       );
       break;
-    case "lifecycle_stage":
-      response.body.JSON = UpdateContactWithLifeCycleStage(
-        payload.lifeCycleStageName,
-        Config,
-        email
-      );
+    case "lifecycle_stage": {
+      response.body.JSON = UpdateContactWithLifeCycleStage(message, Config);
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
       break;
+    }
     default:
       throw new CustomError("event name is not supported. Aborting!", 400);
   }

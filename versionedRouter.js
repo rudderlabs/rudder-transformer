@@ -38,6 +38,7 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
+const { getErrorInfo } = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -96,11 +97,15 @@ const functionsEnabled = () => {
 };
 
 async function handleCdkV2(destName, parsedEvent, flowType) {
-  const workflowEngine = await getWorkflowEngine(destName, flowType);
+  try {
+    const workflowEngine = await getWorkflowEngine(destName, flowType);
 
-  const result = await workflowEngine.execute(parsedEvent);
-  // TODO: Handle remaining output scenarios
-  return result.output;
+    const result = await workflowEngine.execute(parsedEvent);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (error) {
+    throw getErrorInfo(error);
+  }
 }
 
 async function getCdkV2Result(destName, event, flowType) {
@@ -130,11 +135,6 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       );
       return;
     }
-    logger.debug(
-      `[LIVE_COMPARE_TEST] passed for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
-        input.metadata
-      )}`
-    );
   } catch (error) {
     logger.error(
       `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
@@ -158,7 +158,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     throw error;
   } finally {
     if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(input)) {
-      await compareWithCdkV2(destType, input, flowType, result);
+      compareWithCdkV2(destType, input, flowType, result);
     }
   }
 }

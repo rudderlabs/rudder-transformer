@@ -86,7 +86,7 @@ const createLambdaFunction = async (functionName, code, publish) => {
       FunctionName: functionName /* required */,
       Handler: `transform_wrapper.lambda_handler` /* required */,
       Runtime: "python3.7" /* required */,
-      Role: process.env.AWS_CREATE_ROLE /* required */,
+      Role: process.env.USER_TRANSFORMATION_LAMBDA_EXECUTION_ROLE /* required */,
       Description: "Generated from node script",
       PackageType: "Zip",
       Architectures: ["x86_64"],

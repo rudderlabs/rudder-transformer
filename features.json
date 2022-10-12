@@ -34,7 +34,7 @@
     "LAMBDA": true,
     "WOOTRIC": true,
     "GOOGLE_CLOUD_FUNCTION": true,
-    "BQSTREAM": true
+    "BQSTREAM": true,
     "CLICKUP": true,
     "FRESHMARKETER": true,
     "FRESHSALES": true,

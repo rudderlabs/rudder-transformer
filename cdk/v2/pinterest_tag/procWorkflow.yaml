@@ -1,0 +1,194 @@
+bindings:
+  - name: EventType
+    path: ../../../constants
+  - name: SourceKeys
+    path: ../../../v0/util/data/GenericFieldMapping.json
+    exportAll: true
+  - path: ../../../v0/destinations/pinterest_tag/utils
+  - name: ENDPOINT
+    path: ../../../v0/destinations/pinterest_tag/config
+steps:
+  - name: validateInput
+    template: |
+      (
+        $assert(destination.Config.advertiserId or false, "Advertiser Id not found. Aborting");
+        $assert($exists(message.type), "Message type is not present. Aborting message.");
+        $assert(message.type in [$EventType.TRACK, $EventType.PAGE, $EventType.SCREEN], 
+          "message type " & message.type & " is not supported")
+      )
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: message.type = $EventType.TRACK
+    template: |
+      (
+        $assert($exists(message.event) or $exists(message.name), 
+        "[Pinterest Conversion]:: event_name could not be mapped. Aborting.")
+      )
+  - name: commonFields
+    description: |
+      Builds common fields in destination payload.
+      ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
+    template: |
+      message.{
+        "event_time": $floor($getByPaths($, $SourceKeys.timestamp)[0].$toMillis()/1000),
+        "event_source_url": (
+          $url := $getByPaths($, $SourceKeys.pageUrl)[0];
+          $length($url) > 0 ? $url;
+        ),
+        "action_source": [
+          traits.action_source,
+          context.traits.action_source,
+          traits.actionSource,
+          context.traits.actionSource,
+          properties.action_source,
+          properties.actionSource,
+          channel
+        ][0],
+        "app_name": [properties.appName, context.app.name][0],
+        "app_version" : [properties.appVersion, context.app.version][0],
+        "device_brand": [properties.manufacturer, context.device.manufacturer][0],
+        "device_model": [properties.deviceModel, context.device.model][0],
+        "device_type": [properties.deviceType, context.device.type][0],
+        "os_version": context.os.version,
+        "language": [
+          properties.language, 
+          context.traits.language,
+          context.locale
+        ][0],
+        "opt_out": $not(context.device.adTrackingEnabled),
+        "event_id":[$getByPaths($, $$.destination.Config.deduplicationKey), messageId][0],
+        "app_id": $$.destination.Config.appId,
+        "advertiser_id": $$.destination.Config.advertiserId
+      }
+  - name: validateCommonFields
+    template: |
+      $outputs.commonFields.(
+        $assert($exists(event_time), "event_time is required");
+        $assert($exists(action_source), "action_source is required");
+        $assert(action_source in $VALID_ACTION_SOURCES, 
+          "Action source must be one of " & $join($VALID_ACTION_SOURCES, ", "))
+      )
+  - name: userFields
+    description: Personally identifiable fields
+    template: |
+      (
+        $gender := message.[traits.gender, context.traits.gender][0];
+        ($gender in ["f", "F", "Female", "female", "FEMALE"]) ? $gender := "f";
+        ($gender in ["m", "M", "Male", "male", "MALE"]) ? $gender := "m";
+        $userFields := message.{
+          "em": $getByPaths($, $SourceKeys.email)[0],
+          "ph": $getByPaths($, $SourceKeys.phone)[0],
+          "ge": $gender,
+          "db": $getByPaths($, $SourceKeys.birthday)[0],
+          "ln": $getByPaths($, $SourceKeys.lastName)[0],
+          "fn": $getByPaths($, $SourceKeys.firstName)[0],
+          "ct": $lowercase([$, context].[traits.address.city][0]),
+          "st": $lowercase([$, context].[traits.address.state][0]),
+          "zp": [$, context].[traits.address.zip][0],
+          "country": $lowercase([$, context].[traits.address.country][0]),
+          "hashed_maids": context.device.advertisingId,
+          "client_ip_address": [context.ip, request_ip][0],
+          "client_user_agent": context.userAgent
+        };
+        (destination.Config.sendingUnHashedData or false) ? 
+          $processUserPayload($userFields) :
+          $processHashedUserPayload($userFields, message)
+      )
+  - name: validateUserFields
+    template: |
+      $outputs.userFields.(
+        $assert($exists(em) or $exists(hashed_maids) or 
+          ($exists(client_ip_address) and $exists(client_user_agent)),
+            "It is required at least one of em, hashed_maids or" &
+            " pair of client_ip_address and client_user_agent.")
+      )
+  - name: ecomFields
+    condition: message.type = $EventType.TRACK
+    steps:
+      - name: customFields
+        template: |
+          message.{
+            "currency": properties.currency,
+            "value": properties.[value, total, revenue][0],
+            "num_items": $number(properties.numOfItems),
+            "order_id": properties.order_id,
+            "search_string": properties.query
+          }
+      - name: singleProductFields
+        condition: $not($exists(message.properties.products))
+        template: |
+          message.properties.{
+            "num_items": $number(quantity),
+            "content_ids": [[product_id, sku, id][0]],
+            "contents": [{
+              "quantity": [$number(quantity), 1][0],
+              "item_price": $string(price)
+            }]
+          }
+      - name: multiProductsFields
+        condition: $exists(message.properties.products)
+        template: |
+          {
+             "num_items": $sum(message.properties.products.quantity.$number()),
+             "content_ids": message.properties.products.[product_id, sku, id][0],
+             "contents": message.properties.products.{
+               "quantity": [$number(quantity), $number(%.quantity), 1][0],
+               "item_price": $string([price, %.price][0])
+             }
+           }
+      - name: combineAllEcomFields
+        template: |
+          $merge($outputs.ecomFields.[
+            singleProductFields, 
+            multiProductsFields,
+            customFields
+          ])
+  - name: basePayload
+    template: |
+      $merge($outputs.[
+        commonFields, 
+        {"user_data": userFields}, 
+        {"custom_data": ecomFields}
+      ]) 
+  - name: eventNames
+    steps:
+      - name: eventNamesForPage
+        description: Computes event name for page message type
+        condition: message.type = $EventType.PAGE
+        template: |
+          ($exists(message.category) ? [ "ViewCategory" ] : [ "PageVisit" ])
+      - name: eventNamesForOthers
+        description: Computes event name for other message types
+        condition: message.type != $EventType.PAGE
+        template: |
+          (
+            $event := message.[event, name][0];
+            $eventMap := destination.Config.eventsMapping.{from: to};
+            $eventNames := $lookup($eventMap, $event);
+            $count($eventNames) = 0 ? $eventNames := $ecomEventMaps[$lowercase($event) in src].dest;
+            $count($eventNames) = 0 ? $eventNames := ["custom"];
+            $eventNames
+          )
+  - name: destEvents
+    template: |
+      $outputs.eventNames.($merge([%.basePayload, {"event_name": $}])) ~> $toArray
+  - name: buildResponse
+    condition: $not($exists($context.batchMode))
+    template: |
+      $outputs.destEvents.{
+        "body": {
+          "JSON": $,
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": $ENDPOINT,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      } ~> $toArray

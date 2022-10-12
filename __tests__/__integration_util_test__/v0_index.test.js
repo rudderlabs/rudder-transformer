@@ -79,3 +79,29 @@ describe("`FORM` format escape test-cases", () => {
     expect(output.toString()).toEqual(expected);
   })
 })
+
+const { getErrorStatusCode } = utilObj;
+
+describe("error status code when error is thrown", () => {
+  it('should return status-code from "response.status"', () => {
+    expect(getErrorStatusCode({ response: { status: 403 } })).toEqual(403);
+  })
+  it('should return status-code from "code"', () => {
+    expect(getErrorStatusCode({ code: 403 })).toEqual(403);
+  })
+  it('should return status-code from "status"', () => {
+    expect(getErrorStatusCode({ status: 403 })).toEqual(403);
+  })
+  it('should return default status-code when "response.status" is a stringified number', () => {
+    expect(getErrorStatusCode({ response: { status: '403' } })).toEqual(400);
+  })
+  it('should return send default status-code when "response.status" is a stringified number', () => {
+    expect(getErrorStatusCode({ response: { status: '403' } }, 500)).toEqual(500);
+  })
+  it('should return send default status-code when no status code is sent', () => {
+    expect(getErrorStatusCode({ message: "An error occurred" }, 502)).toEqual(502);
+  })
+  it('should return 400 when no status code is sent & default status code is other than number', () => {
+    expect(getErrorStatusCode({ message: "An error occurred" }, '502')).toEqual(400);
+  })
+})

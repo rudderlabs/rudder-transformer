@@ -13,8 +13,9 @@ const {
   isEmptyObject,
   getFieldValueFromMessage,
   getIntegrationsObj,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util/index");
 const {
   MAX_BATCH_SIZE,
@@ -260,9 +261,9 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "OMETRIA");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
   const successList = [];
@@ -280,17 +281,12 @@ const processRouterDest = async inputs => {
         eventsList.push(transformedEvent);
         metadataList.push(input.metadata);
       } catch (error) {
-        errorList.push(
-          getErrorRespEvents(
-            [input.metadata],
-            error.response
-              ? error.response.status
-              : error.code
-              ? error.code
-              : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          input,
+          error,
+          "OMETRIA"
         );
+        errorList.push(errRespEvent);
       }
     });
 

@@ -48,14 +48,6 @@
     }
   },
   {
-    "destKey": "openuri",
-    "sourceKeys": "properties.url",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
     "destKey": "att_authorization_status",
     "sourceKeys": "context.device.attTrackingStatus",
     "required": true
@@ -129,16 +121,6 @@
   {
     "destKey": "idfv",
     "sourceKeys": "context.device.id",
-    "required": true
-  },
-  {
-    "destKey": "install_time",
-    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
-    "required": true
-  },
-  {
-    "destKey": "update_time",
-    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
     "required": true
   }
 ]

@@ -139,6 +139,26 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     } else {
       payload.dnt = 1;
     }
+
+    // Singular accepts install_time & update_time values in Unix timestamps format,
+    // hence we are converting it
+    const it =
+      message.properties?.install_time ||
+      message.originalTimestamp ||
+      message.timestamp;
+    const ut =
+      message.properties?.update_time ||
+      message.originalTimestamp ||
+      message.timestamp;
+    payload.install_time = toUnixTimestamp(it);
+    payload.update_time = toUnixTimestamp(ut);
+
+    // set openuri in payload as "" (empty string) if url is not passed in properties
+    if (!message.properties.url) {
+      payload.openuri = "";
+    } else {
+      payload.openuri = message.properties.url;
+    }
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(

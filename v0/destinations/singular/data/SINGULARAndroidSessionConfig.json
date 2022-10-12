@@ -56,14 +56,6 @@
     }
   },
   {
-    "destKey": "openuri",
-    "sourceKeys": "properties.url",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
     "destKey": "sessionNotificationName",
     "sourceKeys": "event",
     "required": true
@@ -112,16 +104,6 @@
   {
     "destKey": "andi",
     "sourceKeys": "context.device.id",
-    "required": true
-  },
-  {
-    "destKey": "install_time",
-    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
-    "required": true
-  },
-  {
-    "destKey": "update_time",
-    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
     "required": true
   },
   {

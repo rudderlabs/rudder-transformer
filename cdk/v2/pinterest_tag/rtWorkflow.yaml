@@ -1,0 +1,57 @@
+bindings:
+  - path: ../../../v0/destinations/pinterest_tag/config
+steps:
+  - name: prepareContext
+    template: $setContext("batchMode", true)
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+  - name: successfulEvents
+    template: |
+      $outputs.transform#$i.output.{
+          "output": $,
+          /* $$ refers to input (root of the document) */
+          "destination": $$[$i].destination,
+          "metadata": $$[$i].metadata
+      }
+  - name: failedEvents
+    template: |
+      $outputs.transform#$i.error.{
+        "metadata": $toArray($$[$i].metadata),
+        "batched": false,
+        "statusCode": status,
+        "error": message
+      }
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents
+    template: |
+      (
+        $batches := $chunk($outputs.successfulEvents, $MAX_BATCH_SIZE);
+        $batches.{
+          "batchedRequest": {
+            "body": {
+              "JSON": {"data": output},
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": $ENDPOINT,
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "params": {},
+            "files": {}
+          },
+          "metadata": metadata,
+          "batched": true,
+          "statusCode": 200,
+          "destination": $[0].destination
+        } ~> $toArray;
+      )
+  - name: finalPayload
+    template: |
+      $outputs.($append(batchSuccessfulEvents, failedEvents))

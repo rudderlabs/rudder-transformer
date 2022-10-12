@@ -109,12 +109,11 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
+  return simpleProcessRouterDest(
     inputs,
     "FACEBOOK_OFFLINE_CONVERSIONS",
     process
   );
-  return respList;
 };
 
 module.exports = { process, processRouterDest };

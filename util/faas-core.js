@@ -132,7 +132,8 @@ async function deployFunction(imageName, functionName, testMode) {
     namespace: OPENFAAS_NAMESPACE,
     envProcess: "python index.py",
     labels: {
-      faas_function: functionName
+      faas_function: functionName,
+      "com.openfaas.scale.max": 5
     },
     annotations: {
       "prometheus.io.scrape": "false"

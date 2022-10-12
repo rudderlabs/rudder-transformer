@@ -189,7 +189,7 @@ const updateAccountWOContact = (payload, Config) => {
  * @returns
  * ref: https://developers.freshworks.com/crm/api/#add_to_list
  */
-const updateContactWithList = async (userId, listId, Config) => {
+const updateContactWithList = (userId, listId, Config) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
   response.headers = {
@@ -255,7 +255,7 @@ const responseBuilderWithContactDetails = async (
   salesActivityTypeId
 ) => {
   const userDetails = await getContactsDetails(email, Config);
-  const userId = userDetails.response.contact.id;
+  const userId = userDetails.response?.contact?.id;
   const responseBody = {
     ...payload,
     targetable_id: userId,
@@ -283,14 +283,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
       400
     );
   }
-  const lifecycleStageId = getFieldValueFromMessage(
-    message,
-    "lifecycleStageId"
-  );
-  const lifecycleStageName = getFieldValueFromMessage(
-    message,
-    "lifecycleStageName"
-  );
+  const lifecycleStageId = get(message, "properties.lifecycleStageId");
+  const lifecycleStageName = get(message, "properties.lifecycleStageName");
   if (!lifecycleStageId && !lifecycleStageName) {
     throw new CustomError(
       `Either of lifecycleStageName or lifecycleStageId is required. Aborting!`,
@@ -360,7 +354,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     );
   }
 
-  const email = get(message, "email");
+  const email = getFieldValueFromMessage(message, "email");
 
   if (!payload.targetable_id && !email) {
     throw new CustomError(

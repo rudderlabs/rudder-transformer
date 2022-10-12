@@ -35,7 +35,8 @@ const freshmarketerPostRequestHandler = (url, payload) => {
   });
 };
 
-const freshmarketerGetRequestHandler = (url, mockData) => {
+const freshmarketerGetRequestHandler = url => {
+  const mockData = getData(url);
   if (mockData) {
     //resolve with status 200
     return Promise.resolve({ data: mockData, status: 200 });

@@ -1,4 +1,3 @@
-const { _ } = require("lodash/chunk");
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
@@ -105,7 +104,10 @@ const trackResponseBuilder = async (message, { Config }) => {
       break;
     }
     case "lifecycle_stage": {
-      response.body.JSON = UpdateContactWithLifeCycleStage(message, Config);
+      response.body.JSON = await UpdateContactWithLifeCycleStage(
+        message,
+        Config
+      );
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
       break;
     }
@@ -128,7 +130,7 @@ const trackResponseBuilder = async (message, { Config }) => {
  * @returns
  */
 const groupResponseBuilder = async (message, { Config }) => {
-  const { groupType } = message.traits;
+  const groupType = get(message, "traits.groupType");
   if (!groupType) {
     throw new CustomError("groupType is required for Group call", 400);
   }
@@ -173,24 +175,30 @@ const groupResponseBuilder = async (message, { Config }) => {
         );
       }
       const userDetails = await getContactsDetails(userEmail, Config);
-      const userId = userDetails.response.id;
-      if (userId) {
+      const userId = userDetails.response?.contact?.id;
+      if (!userId) {
         throw new CustomError("Failed in fetching userId. Aborting!", 400);
       }
-      const listName = get(message, "listName");
-      let listId = get(message, "listId");
+      const listName = get(message, "traits.listName");
+      let listId = get(message, "traits.listId");
       if (listId) {
-        response = updateContactWithList(userId, listId);
+        response = updateContactWithList(userId, listId, Config);
       } else if (listName) {
-        listId = await createOrUpdateListDetails(listName, userId, Config);
-        response = updateContactWithList(userId, listId);
+        listId = await createOrUpdateListDetails(listName, Config);
+        if (!listId) {
+          throw new CustomError("Failed in fetching listId. Aborting!", 400);
+        }
+        response = updateContactWithList(userId, listId, Config);
       } else {
         throw new CustomError("listId or listName is required. Aborting!", 400);
       }
       break;
     }
     default:
-      throw new CustomError("groupType is not supported. Aborting!", 400);
+      throw new CustomError(
+        `groupType ${groupType} is not supported. Aborting!`,
+        400
+      );
   }
 
   return response;

@@ -8,18 +8,10 @@ const {
   defaultPostRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
-  getFieldValueFromMessage,
-  defaultBatchRequestConfig,
-  handleRtTfSingleEventError
+  getFieldValueFromMessage
 } = require("../../util");
 
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  DESTINATION,
-  IDENTIFY_MAX_BATCH_SIZE,
-  BATCH_IDENTIFY_ENDPOINT
-} = require("./config");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   getUserAccountDetails,
   checkNumberDataType,

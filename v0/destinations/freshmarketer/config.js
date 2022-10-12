@@ -20,10 +20,6 @@ const CONFIG_CATEGORIES = {
   }
 };
 
-const DESTINATION = "freshmarketer";
-const IDENTIFY_MAX_BATCH_SIZE = 100;
-const BATCH_IDENTIFY_ENDPOINT =
-  ".myfreshworks.com/crm/sales/api/contacts/bulk_upsert";
 const DELETE_ENDPOINT = ".myfreshworks.com/crm/sales/api/contacts/";
 const LIFECYCLE_STAGE_ENDPOINT =
   ".myfreshworks.com/crm/sales/api/selector/lifecycle_stages";
@@ -32,9 +28,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
-  DESTINATION,
-  IDENTIFY_MAX_BATCH_SIZE,
-  BATCH_IDENTIFY_ENDPOINT,
   DELETE_ENDPOINT,
   LIFECYCLE_STAGE_ENDPOINT
 };

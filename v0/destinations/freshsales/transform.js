@@ -78,7 +78,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     throw new CustomError("Event name is required for track call.", 400);
   }
   let payload;
-  const email = getFieldValueFromMessage(message, "email");
+
   const response = defaultRequestConfig();
   switch (
     event
@@ -86,7 +86,7 @@ const trackResponseBuilder = async (message, { Config }) => {
       .trim()
       .replace(/\s+/g, "_")
   ) {
-    case "sales_activity":
+    case "sales_activity": {
       payload = constructPayload(
         message,
         MAPPING_CONFIG[CONFIG_CATEGORIES.SALES_ACTIVITY.name]
@@ -98,8 +98,12 @@ const trackResponseBuilder = async (message, { Config }) => {
         Config
       );
       break;
+    }
     case "lifecycle_stage": {
-      response.body.JSON = UpdateContactWithLifeCycleStage(message, Config);
+      response.body.JSON = await UpdateContactWithLifeCycleStage(
+        message,
+        Config
+      );
       response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
       break;
     }

@@ -192,7 +192,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     );
   }
 
-  const email = get(message, "email");
+  const email = getFieldValueFromMessage(message, "email");
 
   if (!payload.targetable_id && !email) {
     throw new CustomError(
@@ -231,7 +231,8 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     );
   }
 
-  const salesActivityList = salesActivityResponse.response.sales_activity_types;
+  const salesActivityList =
+    salesActivityResponse.response?.sales_activity_types;
   if (salesActivityList && Array.isArray(salesActivityList)) {
     const listDetails = salesActivityList.find(
       list => list.name === payload.sales_activity_name
@@ -260,7 +261,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
 
     return responseBody;
   }
-  throw new CustomError(`sales activity types must be an array.`, 400);
+  throw new CustomError(`Unable to fetch correct list of sales activity.`, 400);
 };
 
 /*
@@ -282,14 +283,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
       400
     );
   }
-  const lifecycleStageId = getFieldValueFromMessage(
-    message,
-    "lifecycleStageId"
-  );
-  const lifecycleStageName = getFieldValueFromMessage(
-    message,
-    "lifecycleStageName"
-  );
+  const lifecycleStageId = get(message, "properties.lifecycleStageId");
+  const lifecycleStageName = get(message, "properties.lifecycleStageName");
   if (!lifecycleStageId && !lifecycleStageName) {
     throw new CustomError(
       `Either of lifecycleStageName or lifecycleStageId is required. Aborting!`,
@@ -318,10 +313,10 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   }
   const lifeCycleStages = lifeCycleStagesResponse.response?.lifecycle_stages;
   if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
-    const listDetails = lifeCycleStages.find(
-      list => list.name === lifecycleStageName
+    const lifeCycleStageDetials = lifeCycleStages.find(
+      lifeCycleStage => lifeCycleStage.name === lifecycleStageName
     );
-    if (!listDetails) {
+    if (!lifeCycleStageDetials) {
       throw new CustomError(
         `failed to fetch lifeCycleStages with ${lifecycleStageName}`,
         400
@@ -329,13 +324,16 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     }
     const response = {
       contact: {
-        lifecycle_stage_id: listDetails.id
+        lifecycle_stage_id: lifeCycleStageDetials.id
       },
       unique_identifier: { emails }
     };
     return response;
   }
-  throw new CustomError(`lifecycle stages types must be an array.`, 400);
+  throw new CustomError(
+    `Unable to fetch correct list of lifecycle stages`,
+    400
+  );
 };
 
 /*

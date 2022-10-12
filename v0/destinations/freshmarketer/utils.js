@@ -313,10 +313,10 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   }
   const lifeCycleStages = lifeCycleStagesResponse.response?.lifecycle_stages;
   if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
-    const listDetails = lifeCycleStages.find(
-      list => list.name === lifecycleStageName
+    const lifeCycleStageDetials = lifeCycleStages.find(
+      lifeCycleStage => lifeCycleStage.name === lifecycleStageName
     );
-    if (!listDetails) {
+    if (!lifeCycleStageDetials) {
       throw new CustomError(
         `failed to fetch lifeCycleStages with ${lifecycleStageName}`,
         400
@@ -324,13 +324,16 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     }
     const response = {
       contact: {
-        lifecycle_stage_id: listDetails.id
+        lifecycle_stage_id: lifeCycleStageDetials.id
       },
       unique_identifier: { emails }
     };
     return response;
   }
-  throw new CustomError(`lifecycle stages types must be an array.`, 400);
+  throw new CustomError(
+    `Unable to fetch correct list of lifecycle stages`,
+    400
+  );
 };
 
 /*
@@ -423,7 +426,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
 
     return responseBody;
   }
-  throw new CustomError(`sales activity types must be an array.`, 400);
+  throw new CustomError(`Unable to fetch correct list of sales activity.`, 400);
 };
 
 /*

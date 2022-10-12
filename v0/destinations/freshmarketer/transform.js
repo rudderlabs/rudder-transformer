@@ -32,6 +32,11 @@ const {
   updateAccountWOContact
 } = require("./utils");
 
+/*
+ * This functions is used for creating response config for identify call.
+ * @param {*} Config
+ * @returns
+ */
 const identifyResponseConfig = Config => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
@@ -125,13 +130,13 @@ const trackResponseBuilder = async (message, { Config }) => {
  * @returns
  */
 const groupResponseBuilder = async (message, { Config }) => {
-  const { eventType } = message.traits;
-  if (!eventType) {
-    throw new CustomError("eventType is required for Group call", 400);
+  const { groupType } = message.traits;
+  if (!groupType) {
+    throw new CustomError("groupType is required for Group call", 400);
   }
   let response;
   switch (
-    eventType
+    groupType
       .toLowerCase()
       .trim()
       .replace(/\s+/g, "_")
@@ -187,7 +192,7 @@ const groupResponseBuilder = async (message, { Config }) => {
       break;
     }
     default:
-      throw new CustomError("eventType is not supported. Aborting!", 400);
+      throw new CustomError("groupType is not supported. Aborting!", 400);
   }
 
   return response;
@@ -222,138 +227,43 @@ const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const batchEvents = eventsChunk => {
-  const batchedResponseList = [];
-
-  const arrayChunks = _.chunk(eventsChunk, IDENTIFY_MAX_BATCH_SIZE);
-
-  // list of chunks [ [..], [..] ]
-  arrayChunks.forEach(chunk => {
-    const metadatas = [];
-    const contacts = [];
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { domain, apiKey } = destination.Config;
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    // Batch event into dest batch structure
-    chunk.forEach(event => {
-      contacts.push(event.message?.body?.JSON);
-      metadatas.push(event.metadata);
-    });
-    // batching into identify batch structure
-    batchEventResponse.batchedRequest.body.JSON = {
-      contacts
-    };
-    batchEventResponse.batchedRequest.endpoint = `https://${domain}${BATCH_IDENTIFY_ENDPOINT}`;
-
-    batchEventResponse.batchedRequest.headers = {
-      Authorization: `Token token=${apiKey}`,
-      "Content-Type": "application/json"
-    };
-
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata: metadatas,
-      destination
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true
-      )
-    );
-  });
-
-  return batchedResponseList;
-};
-
-const getEventChunks = (event, identifyEventChunks, eventResponseList) => {
-  // Checking if event type is identify
-  if (event.message.endpoint.includes("/contacts/bulk_upsert")) {
-    identifyEventChunks.push(event);
-  } else {
-    // any other type of event
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
-
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
-
-    eventResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination
-      )
-    );
-  }
-};
-
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
 
-  const identifyEventChunks = []; // list containing identify events in batched format
-  const eventResponseList = []; // list containing other events in batched format
-  const errorRespList = [];
-  await Promise.all(
-    inputs.map(async event => {
+  const respList = await Promise.all(
+    inputs.map(async input => {
       try {
-        if (event.message.statusCode) {
+        if (input.message.statusCode) {
           // already transformed event
-          getEventChunks(event, identifyEventChunks, eventResponseList);
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination
-            },
-            identifyEventChunks,
-            eventResponseList
+          return getSuccessRespEvents(
+            input.message,
+            [input.metadata],
+            input.destination
           );
         }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          event,
-          error,
-          DESTINATION
+        // if not transformed
+        return getSuccessRespEvents(
+          await process(input),
+          [input.metadata],
+          input.destination
         );
-        errorRespList.push(errRespEvent);
+      } catch (error) {
+        return getErrorRespEvents(
+          [input.metadata],
+          error.response
+            ? error.response.status
+            : error.code
+            ? error.code
+            : 400,
+          error.message || "Error occurred while processing payload."
+        );
       }
     })
   );
-
-  // batching identifyEventChunks
-  let identifyBatchedResponseList = [];
-
-  if (identifyEventChunks.length) {
-    identifyBatchedResponseList = await batchEvents(identifyEventChunks);
-  }
-
-  let batchedResponseList = [];
-  // appending all kinds of batches
-  batchedResponseList = batchedResponseList
-    .concat(identifyBatchedResponseList)
-    .concat(eventResponseList);
-
-  return [...batchedResponseList, ...errorRespList];
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

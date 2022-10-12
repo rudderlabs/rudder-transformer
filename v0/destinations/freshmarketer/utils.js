@@ -162,6 +162,14 @@ const createOrUpdateListDetails = async (listName, Config) => {
   return listId;
 };
 
+/*
+ * This functions is used for updating account without Contact.
+ * As email is not present, so this function used to update account details.
+ * @param {*} payload
+ * @param {*} Config
+ * @returns
+ * ref: https://developers.freshworks.com/crm/api/#upsert_an_account
+ */
 const updateAccountWOContact = (payload, Config) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
@@ -439,7 +447,6 @@ const checkNumberDataType = payload => {
 
 module.exports = {
   getUserAccountDetails,
-  createUpdateAccount,
   checkNumberDataType,
   createOrUpdateListDetails,
   updateContactWithList,

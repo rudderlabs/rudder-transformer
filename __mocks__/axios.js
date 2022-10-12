@@ -27,7 +27,10 @@ const {
 const { userGetRequestHandler, userPutRequestHandler } = require("./user.mock");
 const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
-const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
+const {
+  freshmarketerPostRequestHandler,
+  freshmarketerGetRequestHandler
+} = require("./freshmarketer.mock");
 const { mondayPostRequestHandler } = require("./monday.mock");
 
 const urlDirectoryMap = {
@@ -128,6 +131,143 @@ function get(url, options) {
   if (url.includes("https://api.clickup.com")) {
     return Promise.resolve(clickUpGetRequestHandler(url));
   }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return {
+      sales_activity_types: [
+        {
+          partial: true,
+          id: 70000666879,
+          name: "own-calender",
+          internal_name: "cappointment",
+          show_in_conversation: true,
+          position: 1,
+          is_default: false,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000663932,
+          name: "fb-support",
+          internal_name: "facebook",
+          show_in_conversation: true,
+          position: 2,
+          is_default: false,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000663746,
+          name: "twitter sales",
+          internal_name: "twitter",
+          show_in_conversation: true,
+          position: 3,
+          is_default: false,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000646396,
+          name: "linked sales",
+          internal_name: "linkedin",
+          show_in_conversation: true,
+          position: 4,
+          is_default: false,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000642330,
+          name: "facebook sales",
+          internal_name: "facebook",
+          show_in_conversation: true,
+          position: 5,
+          is_default: false,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612897,
+          name: "Chat",
+          internal_name: "chat",
+          show_in_conversation: true,
+          position: 6,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612898,
+          name: "Phone",
+          internal_name: "phone",
+          show_in_conversation: true,
+          position: 7,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612899,
+          name: "Meeting",
+          internal_name: "appointment",
+          show_in_conversation: true,
+          position: 8,
+          is_default: true,
+          is_checkedin: true
+        },
+        {
+          partial: true,
+          id: 70000612900,
+          name: "Task",
+          internal_name: "task",
+          show_in_conversation: true,
+          position: 9,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612901,
+          name: "Email",
+          internal_name: "email",
+          show_in_conversation: true,
+          position: 10,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612902,
+          name: "SMS Outgoing",
+          internal_name: "sms_outgoing",
+          show_in_conversation: true,
+          position: 11,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612903,
+          name: "Reminder",
+          internal_name: "reminder",
+          show_in_conversation: false,
+          position: 12,
+          is_default: true,
+          is_checkedin: false
+        },
+        {
+          partial: true,
+          id: 70000612904,
+          name: "SMS Incoming",
+          internal_name: "sms_incoming",
+          show_in_conversation: true,
+          position: 13,
+          is_default: true,
+          is_checkedin: false
+        }
+      ]
+    };
+  }
+
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });

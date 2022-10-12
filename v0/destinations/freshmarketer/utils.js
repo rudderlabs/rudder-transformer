@@ -256,6 +256,9 @@ const responseBuilderWithContactDetails = async (
 ) => {
   const userDetails = await getContactsDetails(email, Config);
   const userId = userDetails.response?.contact?.id;
+  if (!userId) {
+    throw new CustomError("Failed in fetching userId. Aborting!", 400);
+  }
   const responseBody = {
     ...payload,
     targetable_id: userId,
@@ -399,10 +402,10 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const salesActivityList =
     salesActivityResponse.response?.sales_activity_types;
   if (salesActivityList && Array.isArray(salesActivityList)) {
-    const listDetails = salesActivityList.find(
-      list => list.name === payload.sales_activity_name
+    const salesActivityDetails = salesActivityList.find(
+      salesActivity => salesActivity.name === payload.sales_activity_name
     );
-    if (!listDetails) {
+    if (!salesActivityDetails) {
       throw new CustomError(
         `sales Activity ${payload.sales_activity_name} doesn't exists. Aborting!`,
         400
@@ -413,14 +416,14 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
       responseBody = {
         ...payload,
         targetable_id: payload.targetable_id,
-        sales_activity_type_id: listDetails.id
+        sales_activity_type_id: salesActivityDetails.id
       };
     } else {
       responseBody = await responseBuilderWithContactDetails(
         email,
         Config,
         payload,
-        listDetails.id
+        salesActivityDetails.id
       );
     }
 

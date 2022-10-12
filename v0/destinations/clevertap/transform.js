@@ -109,6 +109,25 @@ const mapIdentifyPayload = (message, profile) => {
   return payload;
 };
 
+const mapAliasPayload = message => {
+  const payload = {
+    d: [
+      {
+        type: "profile",
+        profileData: { identity: message.userId },
+        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
+        identity: message.previousId
+      }
+    ]
+  };
+
+  // If timestamp is not in unix format
+  if (payload.d[0].ts && !Number(payload.d[0].ts)) {
+    payload.d[0].ts = toUnixTimestamp(payload.d[0].ts);
+  }
+  return payload;
+};
+
 // generates clevertap tracking payload with objectId or identity
 const mapTrackPayloadWithObjectId = (message, eventPayload) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
@@ -202,6 +221,9 @@ const responseBuilderSimple = (message, category, destination) => {
     } else {
       payload = mapIdentifyPayload(message, profile);
     }
+  } else if (category.type === "alias") {
+    // const profile = getClevertapProfile(message, category);
+    payload = mapAliasPayload(message);
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
     // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
@@ -293,6 +315,9 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
+      break;
+    case EventType.ALIAS:
+      category = CONFIG_CATEGORIES.ALIAS;
       break;
     default:
       throw new CustomError("Message type not supported", 400);

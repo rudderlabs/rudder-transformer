@@ -18,7 +18,8 @@ const {
   CustomError,
   extractCustomFields,
   getValueFromMessage,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  toUnixTimestamp
 } = require("../../util");
 
 /*
@@ -138,6 +139,8 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     } else {
       payload.dnt = 1;
     }
+    // by default, the value of openuri should be "", i.e empty string if nothing is passed
+    payload.openuri = message.properties.url || "";
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(

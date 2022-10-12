@@ -110,7 +110,7 @@ const processCommonPayload = message => {
     !VALID_ACTION_SOURCES.includes(presentActionSource.toLowerCase())
   ) {
     throw new CustomError(
-      "Action source must be one of 'app_android', 'app_ios', 'web', 'offline' ",
+      `Action source must be one of ${VALID_ACTION_SOURCES.join(", ")}`,
       400
     );
   }
@@ -370,5 +370,6 @@ module.exports = {
   checkUserPayloadValidity,
   processHashedUserPayload,
   VALID_ACTION_SOURCES,
-  postProcessEcomFields
+  postProcessEcomFields,
+  ecomEventMaps
 };

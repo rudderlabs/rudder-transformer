@@ -21,7 +21,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const ErrorBuilder = require("./error");
+const { TransformationError } = require("./errors");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1448,87 +1448,6 @@ class CustomError extends Error {
 }
 
 /**
- * This is the base error class which will be used as a base going forward
- */
- class RudderBaseError extends Error {
-  constructor(message, statusCode, statTags, destResponse, authErrorCategory) {
-    super(message);
-    // This schema will be used by transformation related endpoints
-    const errBuilder = new ErrorBuilder()
-      .setMessage(message)
-      .setStatus(statusCode)
-      .setStatTags(statTags)
-    // This would be needed for API scope
-    if (destResponse) {
-      errBuilder.setDestinationResponse(destResponse);
-    }
-    // We should basically set this for refreshing and disabling capability of OAuth destinations
-    if (authErrorCategory) {
-      errBuilder.setAuthErrorCategory(authErrorCategory);
-    }
-    return errBuilder.build();
-  }
-}
-
-/**
- * This error is mainly used for transformation purposes
- * - Destination transformation
- *   The transformation that happens before delivering the event to the destination
- */
- class TransformationError extends RudderBaseError {
-  /**
-   * 
-   * @param {*} message 
-   *  - Generic response message
-   * @param {*} statusCode 
-   *  - Status code that is understandable by Rudderstack(400, 429 & 500)
-   * @param {*} statTags 
-   *  - Better monitoring we need to set this
-   */
-  constructor(message, statusCode=400, statTags={
-    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-    meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CLIENT_ERROR
-  }) {
-    super(message, statusCode, statTags);
-  }
-}
-
-/**
- * This error is to be used to throw an error, incase a destination API, returns an erreneous response
- * 
- * - Destination transformation
- *   An API call can happen during transformation phase, this error has to be used in-case we would like to throw an error
- * - Delivery
- *   The interpretation of response from the destination(after trying to deliver the event to destination)
- */
-class ApiError extends RudderBaseError {
-  /**
-   * 
-   * @param {*} message 
-   *  - Generic response message
-   * @param {*} statusCode 
-   *  - Status code that is understandable by Rudderstack(400, 429 & 500)
-   * @param {*} statTags 
-   *  - Better monitoring we need to set this
-   * @param {*} destResponse 
-   *  - Better understanding of what happened using the raw response sent from the destination's API
-   * @param {*} authErrCategory 
-   *  - Need to set the auth error category when the response from destinations either boils down
-   *    to invalid access token or access denied kind of exceptions to leverage Rudder OAuth framework
-   *    retry the accesss token or disable destination
-   */
-  constructor(message, statusCode=400, statTags, destResponse, authErrCategory) {
-    if (isEmpty(statTags)) {
-      statTags = {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.UNHANDLED
-      }
-    }
-    super(message, statusCode, statTags,destResponse, authErrCategory);
-  }
-}
-
-/**
  * Used for generating error response with stats from native and built errors
  * @param {*} arg
  * @param {*} destination
@@ -1556,7 +1475,7 @@ function generateErrorObject(error, destination = "", transformStage) {
   }
   // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
   if (!statTags.stage) {
-    statTags.stage = transformStage
+    statTags.stage = transformStage;
   }
   if (statTags.destType) {
     // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
@@ -1832,7 +1751,6 @@ const flattenMultilevelPayload = payload => {
 module.exports = {
   CustomError,
   TransformationError,
-  ApiError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,

@@ -9,7 +9,12 @@ class CommonUtils {
       new Set(Object.keys(flatObj1).concat(Object.keys(flatObj2)))
     );
     return allKeys
-      .filter(key => !isEqual(flatObj1[key], flatObj2[key]))
+      .filter(key => {
+        if (!isEqual(flatObj1[key], flatObj2[key])) {
+          return true;
+        }
+        return false;
+      })
       .reduce((acc, key) => {
         acc[key] = [flatObj1[key], flatObj2[key]];
         return acc;

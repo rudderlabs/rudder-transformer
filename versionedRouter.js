@@ -106,9 +106,7 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
-    cdkResult.output = JSON.parse(
-      JSON.stringify(await handleCdkV2(destName, event, flowType))
-    );
+    cdkResult.output = await handleCdkV2(destName, event, flowType);
   } catch (error) {
     cdkResult.error = {
       message: error.message,
@@ -126,7 +124,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     );
     if (unmatchedKeys.length > 0) {
       logger.error(
-        `[LIVE_COMPARE_TEST] destName=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
+        `[LIVE_COMPARE_TEST] failed for destName=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
           input.metadata
         )}`
       );
@@ -139,7 +137,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     );
   } catch (error) {
     logger.error(
-      `[LIVE_COMPARE_TEST] errored out for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+      `[LIVE_COMPARE_TEST] errored for destName=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
         input.metadata
       )}`,
       error
@@ -160,7 +158,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     throw error;
   } finally {
     if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(input)) {
-      compareWithCdkV2(destType, input, flowType, result);
+      await compareWithCdkV2(destType, input, flowType, result);
     }
   }
 }

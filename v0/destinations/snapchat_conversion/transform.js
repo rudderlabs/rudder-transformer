@@ -299,10 +299,12 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
 
 // Checks if there are any mapping events for the track event and returns them
 function eventMappingHandler(message, destination) {
-  const event = get(message, "event");
+  let event = get(message, "event");
+
   if (!event) {
     throw new CustomError("[Snapchat] :: Event name is required", 400);
   }
+  event = event.trim().replace(/\s+/g, "_");
 
   let { rudderEventsToSnapEvents } = destination.Config;
   const mappedEvents = new Set();
@@ -316,7 +318,12 @@ function eventMappingHandler(message, destination) {
       destination.ID
     );
     rudderEventsToSnapEvents.forEach(mapping => {
-      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+      if (
+        mapping.from
+          .trim()
+          .replace(/\s+/g, "_")
+          .toLowerCase() === event.toLowerCase()
+      ) {
         mappedEvents.add(mapping.to);
       }
     });

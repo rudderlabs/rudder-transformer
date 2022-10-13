@@ -6,7 +6,7 @@ const urlDirectoryMap = {
 };
 
 const getData = url => {
-  let directory = "";
+  let directory = "freshmarketer";
   Object.keys(urlDirectoryMap).forEach(key => {
     if (url.includes(key)) {
       directory = urlDirectoryMap[key];
@@ -35,4 +35,18 @@ const freshmarketerPostRequestHandler = (url, payload) => {
   });
 };
 
-module.exports = freshmarketerPostRequestHandler;
+const freshmarketerGetRequestHandler = url => {
+  const mockData = getData(url);
+  if (mockData) {
+    //resolve with status 200
+    return Promise.resolve({ data: mockData, status: 200 });
+  }
+  return new Promise((resolve, reject) => {
+    resolve({ error: "Request failed", status: 404 });
+  });
+};
+
+module.exports = {
+  freshmarketerPostRequestHandler,
+  freshmarketerGetRequestHandler
+};

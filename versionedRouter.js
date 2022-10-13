@@ -173,7 +173,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     };
     throw error;
   } finally {
-    compareWithCdkV2(destType, input, flowType, result);
+    await compareWithCdkV2(destType, input, flowType, result);
   }
 }
 

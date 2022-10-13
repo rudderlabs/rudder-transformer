@@ -306,7 +306,7 @@
         },
         "DestinationDefinition": {
           "Config": {
-            "cdkV2Test": true
+            "cdkV2TestThreshold": 1
           }
         },
         "Enabled": true,

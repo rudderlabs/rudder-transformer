@@ -117,7 +117,9 @@ function isCdkV2Destination(event) {
 }
 
 function getCdkV2TestThreshold(event) {
-  return event.destination?.DestinationDefinition?.Config?.cdkV2Test || 0;
+  return (
+    event.destination?.DestinationDefinition?.Config?.cdkV2TestThreshold || 0
+  );
 }
 
 module.exports = {

@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
@@ -7,16 +8,27 @@ const {
   defaultPostRequestConfig,
   getErrorRespEvents,
   getSuccessRespEvents,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getValidDynamicFormConfig
 } = require("../../util");
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  createUpdateAccount,
   getUserAccountDetails,
-  checkNumberDataType
+  checkNumberDataType,
+  createOrUpdateListDetails,
+  updateContactWithList,
+  UpdateContactWithLifeCycleStage,
+  UpdateContactWithSalesActivity,
+  getContactsDetails,
+  updateAccountWOContact
 } = require("./utils");
 
+/*
+ * This functions is used for creating response config for identify call.
+ * @param {*} Config
+ * @returns
+ */
 const identifyResponseConfig = Config => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
@@ -52,80 +64,168 @@ const identifyResponseBuilder = (message, { Config }) => {
 };
 
 /*
- * This functions allow you to link identified contacts within a accounts.
+ * This functions is used for tracking contacts activities.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const trackResponseBuilder = async (message, { Config }, event) => {
+  if (!event) {
+    throw new CustomError("Event name is required for track call.", 400);
+  }
+  let payload;
+
+  const response = defaultRequestConfig();
+  switch (
+    event
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+  ) {
+    case "sales_activity": {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.SALES_ACTIVITY.name]
+      );
+      response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlCreate}`;
+      response.body.JSON.sales_activity = await UpdateContactWithSalesActivity(
+        payload,
+        message,
+        Config
+      );
+      break;
+    }
+    case "lifecycle_stage": {
+      response.body.JSON = await UpdateContactWithLifeCycleStage(
+        message,
+        Config
+      );
+      response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+      break;
+    }
+    default:
+      throw new CustomError(
+        `event name ${event} is not supported. Aborting!`,
+        400
+      );
+  }
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  return response;
+};
+
+/*
+ * This functions allow you to link identified contacts within a accounts or marketing_lists.
  * It also helps in updating or creating accounts.
  * @param {*} message
  * @param {*} Config
  * @returns
  */
 const groupResponseBuilder = async (message, { Config }) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
-  );
-  if (!payload) {
-    // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+  const groupType = get(message, "traits.groupType");
+  if (!groupType) {
+    throw new CustomError("groupType is required for Group call", 400);
   }
-  checkNumberDataType(payload);
-  const payloadBody = {
-    unique_identifier: { name: payload.name },
-    sales_account: payload
-  };
-  const userEmail = getFieldValueFromMessage(message, "email");
-  if (!userEmail) {
-    const response = defaultRequestConfig();
-    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = payloadBody;
-    response.headers = {
-      Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    };
-    return response;
-  }
-
-  const account = await createUpdateAccount(payloadBody, Config);
-
-  const accountId = account.response.sales_account?.id;
-  if (!accountId) {
-    throw new CustomError("[Freshmarketer]: fails in fetching accountId.", 400);
-  }
-
-  const userSalesAccountResponse = await getUserAccountDetails(
-    userEmail,
-    Config
-  );
-  let accountDetails =
-    userSalesAccountResponse.response.contact?.sales_accounts;
-  if (!accountDetails) {
-    throw new CustomError(
-      "[Freshmarketer]: Fails in fetching user accountDetails",
-      400
-    );
-  }
-
-  if (accountDetails.length > 0) {
-    accountDetails = [
-      ...accountDetails,
-      {
-        id: accountId,
-        is_primary: false
+  let response;
+  switch (
+    groupType
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+  ) {
+    case "accounts": {
+      const payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
+      );
+      if (!payload) {
+        // fail-safety for developer error
+        throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
       }
-    ];
-  } else {
-    accountDetails = [
-      {
-        id: accountId,
-        is_primary: true
+      checkNumberDataType(payload);
+      const userEmail = getFieldValueFromMessage(message, "email");
+      if (!userEmail) {
+        response = updateAccountWOContact(payload, Config);
+        break;
       }
-    ];
+      const accountDetails = await getUserAccountDetails(
+        payload,
+        userEmail,
+        Config
+      );
+      response = identifyResponseConfig(Config);
+      response.body.JSON.contact = { sales_accounts: accountDetails };
+      response.body.JSON.unique_identifier = { emails: userEmail };
+      break;
+    }
+    case "marketing_lists": {
+      const userEmail = getFieldValueFromMessage(message, "email");
+      if (!userEmail) {
+        throw new CustomError(
+          "email is required for adding in the marketing lists. Aborting!",
+          400
+        );
+      }
+      const userDetails = await getContactsDetails(userEmail, Config);
+      const userId = userDetails.response?.contact?.id;
+      if (!userId) {
+        throw new CustomError("Failed in fetching userId. Aborting!", 400);
+      }
+      const listName = get(message, "traits.listName");
+      let listId = get(message, "traits.listId");
+      if (listId) {
+        response = updateContactWithList(userId, listId, Config);
+      } else if (listName) {
+        listId = await createOrUpdateListDetails(listName, Config);
+        if (!listId) {
+          throw new CustomError("Failed in fetching listId. Aborting!", 400);
+        }
+        response = updateContactWithList(userId, listId, Config);
+      } else {
+        throw new CustomError("listId or listName is required. Aborting!", 400);
+      }
+      break;
+    }
+    default:
+      throw new CustomError(
+        `groupType ${groupType} is not supported. Aborting!`,
+        400
+      );
   }
-  const responseIdentify = identifyResponseConfig(Config);
-  responseIdentify.body.JSON.contact = { sales_accounts: accountDetails };
-  responseIdentify.body.JSON.unique_identifier = { emails: userEmail };
-  return responseIdentify;
+
+  return response;
 };
+
+// Checks if there are any mapping events for the track event and returns them
+function eventMappingHandler(message, destination) {
+  const event = get(message, "event");
+  if (!event) {
+    throw new CustomError("[Freshmarketer] :: Event name is required", 400);
+  }
+
+  let { rudderEventsToFreshmarketerEvents } = destination.Config;
+  const mappedEvents = new Set();
+
+  if (Array.isArray(rudderEventsToFreshmarketerEvents)) {
+    rudderEventsToFreshmarketerEvents = getValidDynamicFormConfig(
+      rudderEventsToFreshmarketerEvents,
+      "from",
+      "to",
+      "freshmarketer_conversion",
+      destination.ID
+    );
+    rudderEventsToFreshmarketerEvents.forEach(mapping => {
+      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+        mappedEvents.add(mapping.to);
+      }
+    });
+  }
+
+  return [...mappedEvents];
+}
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
@@ -140,6 +240,27 @@ const processEvent = async (message, destination) => {
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, destination);
       break;
+    case EventType.TRACK: {
+      const mappedEvents = eventMappingHandler(message, destination);
+      if (mappedEvents.length > 0) {
+        response = [];
+        mappedEvents.forEach(async mappedEvent => {
+          const res = await trackResponseBuilder(
+            message,
+            destination,
+            mappedEvent
+          );
+          response.push(res);
+        });
+      } else {
+        response = await trackResponseBuilder(
+          message,
+          destination,
+          get(message, "event")
+        );
+      }
+      break;
+    }
     case EventType.GROUP:
       response = await groupResponseBuilder(message, destination);
       break;

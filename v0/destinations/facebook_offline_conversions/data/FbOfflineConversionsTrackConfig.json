@@ -1,0 +1,166 @@
+[
+  {
+    "destKey": "extern_id",
+    "sourceKeys": "userId",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "event_name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "event_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.total",
+      "properties.price",
+      "properties.value",
+      "properties.revenue"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "gen",
+    "sourceKeys": "gender",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ln",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "fn",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "fi",
+    "sourceKeys": "firstName",
+    "required": false
+  },
+  {
+    "destKey": "birthday",
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "ct",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "st",
+    "sourceKeys": "state",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "zip",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "madid",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "contents",
+    "sourceKeys": "properties.products",
+    "required": false
+  },
+  {
+    "destKey": "fbc",
+    "sourceKeys": "context.fbc",
+    "required": false
+  },
+  {
+    "destKey": "fbp",
+    "sourceKeys": "context.fbp",
+    "required": false
+  },
+  {
+    "destKey": "order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "item_number",
+    "sourceKeys": "properties.item_number",
+    "required": false
+  },
+  {
+    "destKey": "upload_tag",
+    "sourceKeys": "properties.upload_tag",
+    "required": false
+  },
+  {
+    "destKey": "client_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "action_source",
+    "sourceKeys": [
+      "traits.action_source",
+      "context.traits.action_source",
+      "properties.action_source"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "event_source_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

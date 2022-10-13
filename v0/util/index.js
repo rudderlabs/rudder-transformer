@@ -1421,14 +1421,19 @@ const errorStatusCodeKeys = ["response.status", "code", "status"];
  * @returns {Number}
  */
 const getErrorStatusCode = (error, defaultStatusCode = 400) => {
-  let defaultStCode = defaultStatusCode;
-  if (!_.isNumber(defaultStatusCode)) {
-    defaultStCode = 400;
+  try {
+    let defaultStCode = defaultStatusCode;
+    if (!_.isNumber(defaultStatusCode)) {
+      defaultStCode = 400;
+    }
+    const errStCode = errorStatusCodeKeys
+      .map(statusKey => get(error, statusKey))
+      .find(stCode => _.isNumber(stCode));
+    return errStCode || defaultStCode;
+  } catch (err) {
+    logger.error("Failed in getErrorStatusCode", err);
+    return defaultStatusCode;
   }
-  const errStCode = errorStatusCodeKeys
-    .map(statusKey => get(error, statusKey))
-    .find(stCode => _.isNumber(stCode));
-  return errStCode || defaultStCode;
 };
 
 class CustomError extends Error {
@@ -1534,12 +1539,6 @@ function isAppleFamily(platform) {
 
 function removeHyphens(str) {
   return str.replace(/-/g, "");
-}
-
-function isCdkV2Destination(event) {
-  return Boolean(
-    event.destination?.DestinationDefinition?.Config?.cdkV2Enabled
-  );
 }
 
 function isCdkDestination(event) {
@@ -1820,6 +1819,5 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode,
-  isCdkV2Destination
+  getErrorStatusCode
 };

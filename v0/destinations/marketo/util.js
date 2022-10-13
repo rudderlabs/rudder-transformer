@@ -10,7 +10,6 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-// const ErrorBuilder = require("../../util/error");
 const { ApiError } = require("../../util/errors");
 
 /**

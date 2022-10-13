@@ -194,6 +194,12 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
       400
     );
   }
+  if (
+    !payload.targetable_id &&
+    payload.targetable_type.toLowerCase() !== "contact"
+  ) {
+    throw new CustomError(`targetable_id is required. Aborting!`, 400);
+  }
 
   const email = getFieldValueFromMessage(message, "email");
 

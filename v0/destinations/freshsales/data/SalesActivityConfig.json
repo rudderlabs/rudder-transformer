@@ -41,12 +41,12 @@
   },
   {
     "destKey": "targetable_id",
-    "sourceKeys": "properties.targetableId",
+    "sourceKeys": "context.externalId.id",
     "required": false
   },
   {
     "destKey": "targetable_type",
-    "sourceKeys": "properties.targetableType",
+    "sourceKeys": "context.externalId.type",
     "required": true
   },
   {

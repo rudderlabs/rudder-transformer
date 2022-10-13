@@ -630,13 +630,13 @@
           "city": "Colony",
           "state": "Haryana"
         },
-        "type": "track",
+        "type": "page",
         "sentAt": "2022-04-22T10:57:58Z"
       }
     },
     "output": {
       "statusCode": 400,
-      "error": "Event name is required for track call.",
+      "error": "message type page not supported",
       "statTags": {
         "errorAt": "proc",
         "destType": "FRESHMARKETER",
@@ -872,14 +872,14 @@
       }
     },
     "output": {
-      "error": "event name is not supported. Aborting!",
-      "stage": "dest_transformer",
-      "record_id": null,
-      "source_id": "2EfN23bGjskM5qAM310n619XABT",
-      "status_code": 400,
-      "destination_id": "2FvdYen6HyqE0WlxkC6ZboEaDjR",
-      "source_job_run_id": "",
-      "source_task_run_id": ""
+      "statusCode": 400,
+      "error": "event name Add to Cart is not supported. Aborting!",
+      "statTags": {
+        "errorAt": "proc",
+        "destType": "FRESHMARKETER",
+        "stage": "transform",
+        "scope": "exception"
+      }
     }
   },
   {
@@ -1016,6 +1016,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1031,8 +1034,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1401,6 +1403,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1415,8 +1420,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1489,6 +1493,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1503,8 +1510,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1578,6 +1584,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1591,8 +1600,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1685,6 +1693,10 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "id": "70052305908",
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1694,12 +1706,10 @@
         "userId": "newUserIdAlias",
         "properties": {
           "salesActivityTypeId": "70000663932",
-          "targetableId": "70052305908",
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1833,6 +1843,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1848,8 +1861,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",

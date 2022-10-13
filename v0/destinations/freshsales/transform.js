@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
@@ -7,7 +8,8 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   getFieldValueFromMessage,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getValidDynamicFormConfig
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
@@ -108,7 +110,10 @@ const trackResponseBuilder = async (message, { Config }) => {
       break;
     }
     default:
-      throw new CustomError("event name is not supported. Aborting!", 400);
+      throw new CustomError(
+        `event name ${event} is not supported. Aborting!`,
+        400
+      );
   }
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
@@ -152,6 +157,34 @@ const groupResponseBuilder = async (message, { Config }) => {
   return responseIdentify;
 };
 
+// Checks if there are any mapping events for the track event and returns them
+function eventMappingHandler(message, destination) {
+  const event = get(message, "event");
+  if (!event) {
+    throw new CustomError("[Freshsales] :: Event name is required", 400);
+  }
+
+  let { rudderEventsToFreshsalesEvents } = destination.Config;
+  const mappedEvents = new Set();
+
+  if (Array.isArray(rudderEventsToFreshsalesEvents)) {
+    rudderEventsToFreshsalesEvents = getValidDynamicFormConfig(
+      rudderEventsToFreshsalesEvents,
+      "from",
+      "to",
+      "freshsales_conversion",
+      destination.ID
+    );
+    rudderEventsToFreshsalesEvents.forEach(mapping => {
+      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+        mappedEvents.add(mapping.to);
+      }
+    });
+  }
+
+  return [...mappedEvents];
+}
+
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new CustomError(
@@ -165,9 +198,27 @@ const processEvent = async (message, destination) => {
     case EventType.IDENTIFY:
       response = identifyResponseBuilder(message, destination);
       break;
-    case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+    case EventType.TRACK: {
+      const mappedEvents = eventMappingHandler(message, destination);
+      if (mappedEvents.length > 0) {
+        response = [];
+        mappedEvents.forEach(async mappedEvent => {
+          const res = await trackResponseBuilder(
+            message,
+            destination,
+            mappedEvent
+          );
+          response.push(res);
+        });
+      } else {
+        response = await trackResponseBuilder(
+          message,
+          destination,
+          get(message, "event")
+        );
+      }
       break;
+    }
     case EventType.GROUP:
       response = await groupResponseBuilder(message, destination);
       break;

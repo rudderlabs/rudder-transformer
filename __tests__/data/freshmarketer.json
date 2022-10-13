@@ -606,13 +606,13 @@
           "city": "Colony",
           "state": "Haryana"
         },
-        "type": "track",
+        "type": "page",
         "sentAt": "2022-04-22T10:57:58Z"
       }
     },
     "output": {
       "statusCode": 400,
-      "error": "Event name is required for track call.",
+      "error": "message type page not supported",
       "statTags": {
         "errorAt": "proc",
         "destType": "FRESHMARKETER",
@@ -848,14 +848,14 @@
       }
     },
     "output": {
-      "error": "event name is not supported. Aborting!",
-      "stage": "dest_transformer",
-      "record_id": null,
-      "source_id": "2EfN23bGjskM5qAM310n619XABT",
-      "status_code": 400,
-      "destination_id": "2FvdYen6HyqE0WlxkC6ZboEaDjR",
-      "source_job_run_id": "",
-      "source_task_run_id": ""
+      "statusCode": 400,
+      "error": "event name Add to Cart is not supported. Aborting!",
+      "statTags": {
+        "errorAt": "proc",
+        "destType": "FRESHMARKETER",
+        "stage": "transform",
+        "scope": "exception"
+      }
     }
   },
   {
@@ -992,6 +992,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1007,8 +1010,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1377,6 +1379,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1391,8 +1396,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1465,6 +1469,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1479,8 +1486,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1554,6 +1560,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1567,8 +1576,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -1661,6 +1669,10 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "id": "70052305908",
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -1670,12 +1682,10 @@
         "userId": "newUserIdAlias",
         "properties": {
           "salesActivityTypeId": "70000663932",
-          "targetableId": "70052305908",
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -2105,6 +2115,9 @@
             "category": "destination",
             "initial_referrer": "https://docs.rudderstack.com",
             "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "externalId": {
+            "type": "Contact"
           }
         },
         "type": "track",
@@ -2120,8 +2133,7 @@
           "title": "new Contact",
           "startDate": "2021-05-04T17:00:00+05:30",
           "endDate": "2022-06-04T17:30:00+05:30",
-          "ownerId": "70054866612",
-          "targetableType": "Contact"
+          "ownerId": "70054866612"
         },
         "event": "sales_activity",
         "previousId": "sampleusrRudder3",
@@ -2333,134 +2345,5 @@
       "source_job_run_id": "",
       "source_task_run_id": ""
     }
-  },
-  {
-    "description": "Group call: add the Contact in new marketing list",
-    "input": {
-      "message": {
-        "messageId": "sadjb-1e2r3fhgb-12bvbbj",
-        "originalTimestamp": "2022-06-22T10:57:58Z",
-        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-        "context": {
-          "app": {
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK",
-            "namespace": "com.rudderlabs.javascript",
-            "version": "1.0.0"
-          },
-          "device": {
-            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-            "manufacturer": "Google",
-            "model": "AOSP on IA Emulator",
-            "name": "generic_x86_arm",
-            "type": "ios",
-            "attTrackingStatus": 3
-          },
-          "library": {
-            "name": "RudderLabs JavaScript SDK",
-            "version": "1.0.0"
-          },
-          "locale": "en-US",
-          "os": {
-            "name": "iOS",
-            "version": "14.4.1"
-          },
-          "screen": {
-            "density": 2
-          },
-          "traits": {
-            "email": "jamessampleton1@gmail.com"
-          }
-        },
-        "traits": {
-          "groupType": "marketing_lists",
-          "listName": "puma",
-          "address": "Red Colony",
-          "city": "Colony",
-          "state": "Haryana"
-        },
-        "type": "group",
-        "sentAt": "2022-04-22T10:57:58Z"
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder1"
-        }
-      }
-    },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "ids": [70054866612]
-        },
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "PUT",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
-      },
-      "version": "1",
-      "endpoint": "https://domain-rudder1.myfreshworks.com/crm/sales/api/lists/70000059744/add_contacts"
-    }
-  },
-  {
-    "description": "",
-    "input": {
-      "message": "",
-      "destination": {
-        "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
-        }
-      }
-    },
-    "output": ""
-  },
-  {
-    "description": "",
-    "input": {
-      "message": "",
-      "destination": {
-        "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
-        }
-      }
-    },
-    "output": ""
-  },
-  {
-    "description": "",
-    "input": {
-      "message": "",
-      "destination": {
-        "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
-        }
-      }
-    },
-    "output": ""
-  },
-  {
-    "description": "",
-    "input": {
-      "message": "",
-      "destination": {
-        "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
-        }
-      }
-    },
-    "output": ""
   }
 ]

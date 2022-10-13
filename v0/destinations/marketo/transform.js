@@ -463,7 +463,9 @@ const processTrack = async (message, formattedDestination, token) => {
   // get leadId
   const leadId = await getLeadId(message, formattedDestination, token);
 
-  // handle custom activy attributes
+  // handle addition of custom activity attributes
+  // Reference: https://developers.marketo.com/rest-api/lead-database/activities/#add_custom_activities
+
   const attributes = [];
   Object.keys(customActivityPropertyMap).forEach(key => {
     // exclude the primaryKey

@@ -1,7 +1,5 @@
 const { WorkflowEngineFactory } = require("rudder-workflow-engine");
-const logger = require("../../logger");
 
-const ErrorBuilder = require("../../v0/util/error");
 const {
   getRootPathForDestination,
   getWorkflowPath,

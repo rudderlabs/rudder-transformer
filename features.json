@@ -40,6 +40,8 @@
     "MONDAY": true,
     "CUSTIFY": true,
     "USER": true,
-    "REFINER": true
+    "REFINER": true,
+    "FACEBOOK_OFFLINE_CONVERSIONS": true,
+    "MAILJET": true
   }
 }

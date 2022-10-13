@@ -141,6 +141,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       CommonUtils.objectDiff(v0Result, cdkResult)
     );
     if (unmatchedKeys.length > 0) {
+      stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
           input.metadata
@@ -148,7 +149,9 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       );
       return;
     }
+    stats.counter("cdk_live_compare_test_success", 1, { destType, flowType });
   } catch (error) {
+    stats.counter("cdk_live_compare_test_errored", 1, { destType, flowType });
     logger.error(
       `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
         input.metadata
@@ -170,7 +173,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     };
     throw error;
   } finally {
-    await compareWithCdkV2(destType, input, flowType, result);
+    compareWithCdkV2(destType, input, flowType, result);
   }
 }
 

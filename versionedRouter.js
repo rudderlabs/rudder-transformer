@@ -634,6 +634,7 @@ if (startDestTransformer) {
     router.post("/faas/python/invoke", async ctx => {
       try {
         const {
+          functionName,
           transformationName,
           code,
           versionId = "testVersionId",
@@ -654,6 +655,7 @@ if (startDestTransformer) {
         const startTime = new Date();
 
         const transformedEvents = await faasInvocationHandler()(
+          functionName,
           transformationName,
           code,
           versionId,

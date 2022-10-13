@@ -160,6 +160,7 @@ async function faasDeploymentHandler(imageName, functionName, code, testMode) {
 }
 
 async function faasInvocationHandler(
+  functionName,
   transformationName,
   code,
   versionId,
@@ -167,44 +168,55 @@ async function faasInvocationHandler(
   testMode = false,
   override = false
 ) {
-  const imageName = buildImageName(versionId, code);
-  const functionName = buildFunctionName(
-    transformationName,
-    versionId === "testVersionId" ? weakHash(code) : versionId
-  );
+  let derivedFunctionName = functionName;
+  let shouldSkipDeploymentProcess = false;
 
-  const isFnDeployed = await isFunctionDeployed(functionName);
+  if (derivedFunctionName) {
+    shouldSkipDeploymentProcess = true;
+  } else {
+    derivedFunctionName = buildFunctionName(
+      transformationName,
+      versionId === "testVersionId" ? weakHash(code) : versionId
+    );
+  }
 
-  if (!isFnDeployed || override) {
+  const isFnDeployed = await isFunctionDeployed(derivedFunctionName);
+
+  if (!isFnDeployed && shouldSkipDeploymentProcess) {
+    throw Error("No deployment found for specified function: ", derivedFunctionName);
+  }
+
+  if ((!isFnDeployed || override) && !shouldSkipDeploymentProcess) {
+    const imageName = buildImageName(versionId, code);
+
     if (override) {
-      await deleteFunction(functionName).catch(error => {
+      await deleteFunction(derivedFunctionName).catch(error => {
         logger.error(error.message);
       });
     }
 
-    await faasDeploymentHandler(imageName, functionName, code, testMode);
+    await faasDeploymentHandler(imageName, derivedFunctionName, code, testMode);
   }
 
   const startTime = new Date();
 
-  logger.info("Invoking function.");
+  logger.info("Invoking function: ", derivedFunctionName);
 
-  // if (testMode) {
-  //   setTimeout(async () => {
-  //     await deleteFunction(functionName).catch(_e => {});
-  //   }, DESTRUCTION_TIMEOUT_IN_MS);
-  // }
+  if (testMode && !shouldSkipDeploymentProcess) {
+    setTimeout(async () => {
+      await deleteFunction(derivedFunctionName).catch(_e => {});
+    }, DESTRUCTION_TIMEOUT_IN_MS);
+  }
 
   const response = await axios.post(
     new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", derivedFunctionName)
     ).toString(),
     events
   );
 
   stats.timing("deployed_function_execution_time", startTime, {
-    imageName,
-    functionName
+    derivedFunctionName
   });
 
   return Promise.resolve(response);

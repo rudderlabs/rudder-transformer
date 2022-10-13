@@ -17,8 +17,8 @@ const {
   CustomError,
   isHttpStatusSuccess,
   getErrorRespEvents,
-  isCdkV2Destination,
-  isCdkV2TestDestination
+  isCdkDestination,
+  getErrorStatusCode
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -27,7 +27,6 @@ const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
-const { isCdkDestination, getErrorStatusCode } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
@@ -38,7 +37,11 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { getWorkflowEngine } = require("./cdk/v2/handler");
-const { getErrorInfo } = require("./cdk/v2/utils");
+const {
+  getErrorInfo,
+  isCdkV2Destination,
+  getCdkV2TestThreshold
+} = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -104,7 +107,7 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
     // TODO: Handle remaining output scenarios
     return result.output;
   } catch (error) {
-    throw getErrorInfo(error);
+    throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
   }
 }
 
@@ -123,6 +126,12 @@ async function getCdkV2Result(destName, event, flowType) {
 
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
+    const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
+    const destThreshold = getCdkV2TestThreshold(input);
+    const liveTestThreshold = envThreshold * destThreshold;
+    if (Number.isNaN(liveTestThreshold) || liveTestThreshold < Math.random()) {
+      return;
+    }
     const cdkResult = await getCdkV2Result(destType, input, flowType);
     const unmatchedKeys = Object.keys(
       CommonUtils.objectDiff(v0Result, cdkResult)
@@ -157,9 +166,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     };
     throw error;
   } finally {
-    if (process.env.CDK_LIVE_TEST === "true" && isCdkV2TestDestination(input)) {
-      compareWithCdkV2(destType, input, flowType, result);
-    }
+    compareWithCdkV2(destType, input, flowType, result);
   }
 }
 

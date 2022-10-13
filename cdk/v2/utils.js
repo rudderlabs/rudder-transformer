@@ -67,16 +67,26 @@ async function getPlatformBindingsPaths() {
   return bindingsPaths;
 }
 
-function getErrorInfo(err) {
+/**
+ * Return message with workflow engine metadata
+ * @param {*} err
+ */
+function getWorkflowEngineErrorMessage(err) {
+  return `${err.message}: Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`;
+}
+
+function getErrorInfo(err, isProd) {
   // Handle various CDK error types
   let errorInfo = err;
+  const message = isProd ? getWorkflowEngineErrorMessage(err) : err.message;
+
   if (err instanceof WorkflowExecutionError) {
     logger.error(
       `Error occurred during workflow step execution:  Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
       err
     );
     errorInfo = {
-      message: err.message,
+      message,
       status: err.status,
       destinationResponse: err.error?.destinationResponse,
       statTags: err.error?.statTags,
@@ -89,7 +99,7 @@ function getErrorInfo(err) {
       err
     );
     errorInfo = {
-      message: err.message,
+      message,
       status: err.status,
       statTags: {
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
@@ -100,9 +110,21 @@ function getErrorInfo(err) {
   return errorInfo;
 }
 
+function isCdkV2Destination(event) {
+  return Boolean(
+    event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+  );
+}
+
+function getCdkV2TestThreshold(event) {
+  return event.destination?.DestinationDefinition?.Config?.cdkV2Test || 0;
+}
+
 module.exports = {
   getRootPathForDestination,
   getWorkflowPath,
   getPlatformBindingsPaths,
-  getErrorInfo
+  getErrorInfo,
+  isCdkV2Destination,
+  getCdkV2TestThreshold
 };

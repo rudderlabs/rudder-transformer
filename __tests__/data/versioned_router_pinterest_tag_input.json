@@ -123,7 +123,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }
@@ -248,7 +248,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }
@@ -350,7 +350,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }
@@ -471,7 +471,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }
@@ -596,7 +596,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }
@@ -721,7 +721,7 @@
             "Transformations": [],
             "DestinationDefinition": {
               "Config": {
-                "cdkV2Test": true
+                "cdkV2Test": 1
               }
             }
           }

@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 const { TRANSFORMER_METRIC } = require("../constant");
 const { RudderErrorBase } = require("./base");
 

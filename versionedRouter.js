@@ -129,7 +129,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
     const destThreshold = getCdkV2TestThreshold(input);
     const liveTestThreshold = envThreshold * destThreshold;
-    if (Number.isNaN(liveTestThreshold) || liveTestThreshold < Math.random()) {
+    if (Number.isNaN(liveTestThreshold) || !liveTestThresold || liveTestThreshold < Math.random()) {
       return;
     }
     const cdkResult = await getCdkV2Result(destType, input, flowType);

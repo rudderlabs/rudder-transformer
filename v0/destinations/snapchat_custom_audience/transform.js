@@ -62,6 +62,22 @@ const validatePayload = message => {
       .setStatus(400)
       .build();
   }
+  if (message.type.toLowerCase() !== "audiencelist") {
+    throw new ErrorBuilder()
+      .setMessage(
+        `[snapchat_custom_audience]::Message Type ${message.type} not supported.`
+      )
+      .setStatus(400)
+      .build();
+  }
+  if (!message.properties.listData.add && !message.properties.listData.remove) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "[snapchat_custom_audience]::Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
+      )
+      .setStatus(400)
+      .build();
+  }
 };
 
 const responseBuilder = (metadata, message, { Config }, type) => {
@@ -123,6 +139,10 @@ const responseBuilder = (metadata, message, { Config }, type) => {
   payload.users.push(userPayload);
 
   const response = defaultRequestConfig();
+  if (type === "remove") {
+    response.method = "DELETE";
+    payload.users[0].id = `${segmentId}`;
+  }
 
   response.endpoint = `${BASE_URL}/segments/${segmentId}/users`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -136,45 +156,24 @@ const responseBuilder = (metadata, message, { Config }, type) => {
   return response;
 };
 
-const processEvent = async (metadata, message, destination) => {
+const processEvent = (metadata, message, destination) => {
   const response = [];
   validatePayload(message);
 
-  if (message.type.toLowerCase() === "audiencelist") {
-    let payload;
-    if (message.properties.listData.add || message.properties.listData.remove) {
-      if (message.properties.listData.add) {
-        payload = responseBuilder(metadata, message, destination, "add");
-        response.push(payload);
-      }
-      if (message.properties.listData.remove) {
-        payload = responseBuilder(metadata, message, destination, "remove");
-        payload.body.JSON.users[0].id = destination.Config.segmentId;
-        payload.method = "DELETE";
-        response.push(payload);
-      }
-    } else {
-      throw new ErrorBuilder()
-        .setMessage(
-          "[snapchat_custom_audience]:: Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
-        )
-        .setStatus(400)
-        .build();
-    }
-
-    // response.push(payload);
-    return response;
+  let payload;
+  if (message.properties.listData.add) {
+    payload = responseBuilder(metadata, message, destination, "add");
+    response.push(payload);
+  }
+  if (message.properties.listData.remove) {
+    payload = responseBuilder(metadata, message, destination, "remove");
+    response.push(payload);
   }
 
-  throw new ErrorBuilder()
-    .setMessage(
-      `[snapchat_custom_audience]::Message Type ${message.type} not supported.`
-    )
-    .setStatus(400)
-    .build();
+  return response;
 };
 
-const process = async event => {
+const process = event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
 const processRouterDest = async inputs => {

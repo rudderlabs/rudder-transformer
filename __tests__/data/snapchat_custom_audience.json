@@ -452,5 +452,223 @@
         "files": {}
       }
     ]
+  },
+  {
+    "description": "message type is not audiencelist",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audience",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message Type audience not supported."
+    }
+  },
+  {
+    "description": "without message type",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "without sending properties",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message properties is not present. Aborting message."
+    }
+  },
+  {
+    "description": "without listData inside properties",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::listData is not present inside properties. Aborting message."
+    }
+  },
+  {
+    "description": "without add or remove lists inside listData",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "abc": "123"
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
+    }
   }
 ]

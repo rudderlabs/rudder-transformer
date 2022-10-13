@@ -47,84 +47,6 @@
       "record_type_id": "71010794477"
     }
   },
-  "https://domain-rudder1.myfreshworks.com/crm/sales/api/contacts/upsert": {
-    "contact": {
-      "id": 70054866612,
-      "first_name": null,
-      "last_name": null,
-      "display_name": "jamessampleton120@gmail.com",
-      "avatar": null,
-      "job_title": null,
-      "city": null,
-      "state": null,
-      "zipcode": null,
-      "country": null,
-      "email": "jamessampleton120@gmail.com",
-      "emails": [
-        {
-          "id": 70047409219,
-          "value": "jamessampleton120@gmail.com",
-          "is_primary": true,
-          "label": null,
-          "_destroy": false
-        }
-      ],
-      "time_zone": null,
-      "work_number": null,
-      "mobile_number": null,
-      "address": null,
-      "last_seen": null,
-      "lead_score": 0,
-      "last_contacted": null,
-      "open_deals_amount": null,
-      "won_deals_amount": null,
-      "links": {
-        "conversations": "/crm/sales/contacts/70054866612/conversations/all?include=email_conversation_recipients%2Ctargetable%2Cphone_number%2Cphone_caller%2Cnote%2Cuser&per_page=3",
-        "timeline_feeds": "/crm/sales/contacts/70054866612/timeline_feeds",
-        "document_associations": "/crm/sales/contacts/70054866612/document_associations",
-        "notes": "/crm/sales/contacts/70054866612/notes?include=creater",
-        "tasks": "/crm/sales/contacts/70054866612/tasks?include=creater,owner,updater,targetable,users,task_type",
-        "appointments": "/crm/sales/contacts/70054866612/appointments?include=creater,owner,updater,targetable,appointment_attendees,conference,note",
-        "reminders": "/crm/sales/contacts/70054866612/reminders?include=creater,owner,updater,targetable",
-        "duplicates": "/crm/sales/contacts/70054866612/duplicates",
-        "connections": "/crm/sales/contacts/70054866612/connections"
-      },
-      "last_contacted_sales_activity_mode": null,
-      "custom_field": {},
-      "created_at": "2022-10-11T08:42:15-04:00",
-      "updated_at": "2022-10-11T08:42:15-04:00",
-      "keyword": null,
-      "medium": null,
-      "last_contacted_mode": null,
-      "recent_note": null,
-      "won_deals_count": null,
-      "last_contacted_via_sales_activity": null,
-      "completed_sales_sequences": null,
-      "active_sales_sequences": null,
-      "web_form_ids": null,
-      "open_deals_count": null,
-      "last_assigned_at": null,
-      "tags": [],
-      "facebook": null,
-      "twitter": null,
-      "linkedin": null,
-      "is_deleted": false,
-      "team_user_ids": null,
-      "external_id": null,
-      "work_email": null,
-      "subscription_status": 1,
-      "subscription_types": "2;3;4;5;1",
-      "customer_fit": 0,
-      "record_type_id": "71012139284",
-      "whatsapp_subscription_status": 2,
-      "sms_subscription_status": 2,
-      "last_seen_chat": null,
-      "first_seen_chat": null,
-      "locale": null,
-      "total_sessions": null,
-      "phone_numbers": []
-    }
-  },
   "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert?include=sales_accounts": {
     "contact": {
       "id": 70042006456,
@@ -509,11 +431,5 @@
         "contact_status_ids": [70000697861, 70000697862]
       }
     ]
-  },
-  "https://domain-rudder1.myfreshworks.com/crm/sales/api/lists": {
-    "list": {
-      "id": 70000059744,
-      "name": "puma"
-    }
   }
 }

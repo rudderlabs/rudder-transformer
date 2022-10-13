@@ -268,7 +268,8 @@ const getLeadId = async (message, formattedDestination, token) => {
           meta:
             TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
               .CONFIGURATION
-        }
+        },
+        DESTINATION
       );
     }
   }
@@ -288,7 +289,8 @@ const getLeadId = async (message, formattedDestination, token) => {
         meta:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
             .INSTRUMENTATION
-      }
+      },
+      DESTINATION
     );
   }
 
@@ -312,10 +314,15 @@ const processIdentify = async (message, formattedDestination, token) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new TransformationError("Invalid traits value for Marketo", 400, {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    });
+    throw new TransformationError(
+      "Invalid traits value for Marketo",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -409,7 +416,8 @@ const processTrack = async (message, formattedDestination, token) => {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      }
+      },
+      DESTINATION
     );
   }
 
@@ -422,7 +430,8 @@ const processTrack = async (message, formattedDestination, token) => {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      }
+      },
+      DESTINATION
     );
   }
 
@@ -439,7 +448,8 @@ const processTrack = async (message, formattedDestination, token) => {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
           TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      }
+      },
+      DESTINATION
     );
   }
 
@@ -499,7 +509,8 @@ const processEvent = async (message, destination, token) => {
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      }
+      },
+      DESTINATION
     );
   }
   const messageType = message.type.toLowerCase();
@@ -514,10 +525,16 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new TransformationError("Message type not supported", 400, {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      });
+      throw new TransformationError(
+        "Message type not supported",
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
+      );
   }
 
   // wrap response for router processing
@@ -527,9 +544,14 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new TransformationError("Authorisation failed", 400, {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-    });
+    throw new TransformationError(
+      "Authorisation failed",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
+      },
+      DESTINATION
+    );
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;

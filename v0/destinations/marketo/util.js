@@ -40,7 +40,6 @@ const marketoApplicationErrorHandler = (
   const { response } = marketoResponse;
   const { errors } = response;
   if (errors && MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
-    console.log("in abortable");
     throw new ApiError(
       `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`,
       400,
@@ -48,7 +47,9 @@ const marketoApplicationErrorHandler = (
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
       },
-      marketoResponse
+      marketoResponse,
+      undefined, // represents authErrorCategory
+      DESTINATION
     );
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
@@ -58,10 +59,11 @@ const marketoApplicationErrorHandler = (
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED
       },
-      marketoResponse
+      marketoResponse,
+      undefined,
+      DESTINATION
     );
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
-    console.log("in retryable");
     throw new ApiError(
       `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
@@ -69,7 +71,9 @@ const marketoApplicationErrorHandler = (
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
       },
-      marketoResponse
+      marketoResponse,
+      undefined,
+      DESTINATION
     );
   }
 };
@@ -85,7 +89,9 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)
       },
-      destResponse
+      destResponse,
+      undefined,
+      DESTINATION
     );
   }
   if (isHttpStatusSuccess(status)) {

@@ -40,14 +40,6 @@
     "required": true
   },
   {
-    "destKey": "install_source",
-    "sourceKeys": "properties.referring_application",
-    "required": true,
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
     "destKey": "asid",
     "sourceKeys": "properties.asid",
     "required": true,

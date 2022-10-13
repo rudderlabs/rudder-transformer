@@ -1,18 +1,43 @@
 class RudderErrorBase extends Error {
   constructor(message, statusCode, statTags, destResponse, authErrorCategory) {
     super(message);
-    this.err = new Error();
-    this.message = message;
     this.status = statusCode;
-    this.statTags = statTags;
     this.destinationResponse = destResponse;
-    this.err.authErrorCategory = authErrorCategory;
-    this.err.statTags = {
+    this.authErrorCategory = authErrorCategory;
+    this.statTags = {
       destType: statTags.destType || statTags.destination,
       stage: statTags.stage,
       scope: statTags.scope,
       meta: statTags.meta
     };
+  }
+
+  static getStatTags(statTags, defaults) {
+    let finalStatTags = statTags;
+    const { defScope, defMeta, destination } = defaults;
+    if (!finalStatTags || Array.isArray(finalStatTags)) {
+      finalStatTags = {
+        scope: defScope,
+        meta: defMeta
+      };
+    }
+
+    const tagNames = Object.keys(finalStatTags);
+    if (!tagNames.includes("scope")) {
+      finalStatTags = {
+        ...finalStatTags,
+        scope: defScope
+      };
+    }
+
+    if (!tagNames.includes("meta")) {
+      finalStatTags = {
+        ...finalStatTags,
+        meta: defMeta
+      };
+    }
+
+    return { ...finalStatTags, destType: destination };
   }
 }
 

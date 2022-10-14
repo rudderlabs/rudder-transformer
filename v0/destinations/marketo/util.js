@@ -86,7 +86,13 @@ const marketoApplicationErrorHandler = (
   }
 };
 
-const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
+const marketoResponseHandler = (
+  destResponse,
+  sourceMessage,
+  stage,
+  authCache,
+  key
+) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
@@ -116,6 +122,16 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     }
     // marketo application level failure
     if (response && !response.success) {
+      if (response.errors) {
+        response.errors.forEach(errorObj => {
+          if (
+            authCache &&
+            (errorObj.code === "601" || errorObj.code === "602")
+          ) {
+            authCache.del(key);
+          }
+        });
+      }
       marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
     }
   }

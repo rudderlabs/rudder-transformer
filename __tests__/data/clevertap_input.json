@@ -746,5 +746,27 @@
       },
       "originalTimestamp": "2021-05-24T08:53:37.929Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": true
+      }
+    },
+    "message": {
+      "type": "alias",
+      "userId": "newaddedid001",
+      "context": {
+        "traits": {
+          "ts": 1468308340
+        }
+      },
+      "rudderId": "a8556b1b-9d11-478d-9242-be124d1f0c93",
+      "messageId": "46c1a69c-cc24-4a49-8079-3fcbabf15eb8",
+      "previousId": "1122121"
+    }
   }
 ]

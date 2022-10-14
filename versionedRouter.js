@@ -240,7 +240,13 @@ async function handleDest(ctx, version, destination) {
 
             return {
               output: { ...ev, userId },
-              metadata: event.metadata,
+              metadata: destHandler.processMetadata
+                ? destHandler.processMetadata({
+                    metadata: event.metadata,
+                    inputEvent: parsedEvent,
+                    outPutEvent: ev
+                  })
+                : event.metadata,
               statusCode: 200
             };
           });

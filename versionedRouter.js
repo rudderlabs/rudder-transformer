@@ -132,7 +132,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     const isCdkCompareEnabled =
       Number.isNaN(liveTestThreshold) ||
       !liveTestThreshold ||
-      liveTestThreshold > Math.random();
+      liveTestThreshold < Math.random();
     stats.counter("cdk_live_compare_test_input", 1, {
       destType,
       flowType,

@@ -24,13 +24,22 @@
     "funcName": "getPlatform",
     "outKey": "platform"
   },
+  "context.device.brand": {
+    "isFunc": true,
+    "funcName": "getBrand",
+    "outKey": "device_brand"
+  },
+  "integrations.Amplitude.event_id": {
+    "isFunc": true,
+    "funcName": "getEventId",
+    "outKey": "event_id"
+  },
   "anonymousId": "device_id",
   "context.network.carrier": "carrier",
   "context.app.name": "app_name",
   "context.app.version": "app_version",
   "context.locale": "language",
   "properties.category": "event_type",
-  "session_id": "session_id",
   "request_ip": "ip",
   "messageId": "insert_id"
 }

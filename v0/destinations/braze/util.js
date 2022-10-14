@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { proxyRequest } = require("../../../adapters/network");
+const {
+  proxyRequest,
+  prepareProxyRequest
+} = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -22,7 +25,7 @@ const responseHandler = (destinationResponse, _dest) => {
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)
@@ -44,7 +47,7 @@ const responseHandler = (destinationResponse, _dest) => {
       .setDestinationResponse(destinationResponse)
       .isTransformResponseFailure(true)
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         meta: getDynamicMeta(status)
@@ -61,6 +64,7 @@ const responseHandler = (destinationResponse, _dest) => {
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
 

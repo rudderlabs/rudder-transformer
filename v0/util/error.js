@@ -1,6 +1,7 @@
 // Todo add documentation for internal functions
 function ErrorBuilder() {
   this.err = new Error();
+  this.err.isExpected = true;
 
   this.setMessage = message => {
     this.err.message = message;
@@ -30,7 +31,12 @@ function ErrorBuilder() {
   };
 
   this.setStatTags = arg => {
-    this.err.statTags = arg;
+    this.err.statTags = {
+      destType: arg.destType || arg.destination,
+      stage: arg.stage,
+      scope: arg.scope,
+      meta: arg.meta
+    };
     return this;
   };
 

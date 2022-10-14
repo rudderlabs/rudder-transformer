@@ -6,15 +6,20 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   flattenJson,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  CustomError,
+  simpleProcessRouterDest
 } = require("../../util");
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   if (payload) {
-    payload.properties = flattenJson(payload.properties);
+    if (payload.properties) {
+      payload.properties = flattenJson(payload.properties);
+      // remove duplicate key as it is being passed at root.
+      if (payload.properties.idempotencyKey) {
+        delete payload.properties.idempotencyKey;
+      }
+    }
     const responseBody = {
       ...payload,
       app_id: destination.Config.appId
@@ -36,12 +41,12 @@ function responseBuilderSimple(message, category, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("Message Type is not present. Aborting message.", 400);
+    throw new CustomError("invalid message type for heap", 400);
   }
 
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type;
   let category;
-  switch (messageType) {
+  switch (messageType.toLowerCase()) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
       break;
@@ -49,52 +54,21 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new CustomError(
+        `message type ${messageType} not supported for heap`,
+        400
+      );
   }
 
   // build the response
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
+const process = async event => {
   return processEvent(event.message, event.destination);
 };
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+  const respList = await simpleProcessRouterDest(inputs, "HEAP", process);
   return respList;
 };
 

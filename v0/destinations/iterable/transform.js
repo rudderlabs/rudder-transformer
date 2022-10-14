@@ -1,16 +1,26 @@
-const { get } = require("lodash");
+const _ = require("lodash");
+const get = require("get-value");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
-const { ConfigCategory, mappingConfig } = require("./config");
+const {
+  ConfigCategory,
+  mappingConfig,
+  IDENTIFY_BATCH_ENDPOINT,
+  TRACK_BATCH_ENDPOINT,
+  IDENTIFY_MAX_BATCH_SIZE,
+  TRACK_MAX_BATCH_SIZE
+} = require("./config");
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
+  defaultBatchRequestConfig,
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  isAppleFamily
+  isAppleFamily,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -147,7 +157,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -160,7 +170,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);
@@ -197,7 +207,7 @@ function constructPayloadItem(message, category, destination) {
             el,
             mappingConfig[ConfigCategory.PRODUCT.name]
           );
-          if (element.categories) {
+          if (element.categories && typeof element.categories === "string") {
             element.categories = element.categories.split(",");
           }
           element.price = parseFloat(element.price);
@@ -210,7 +220,7 @@ function constructPayloadItem(message, category, destination) {
           message.properties,
           mappingConfig[ConfigCategory.PRODUCT.name]
         );
-        if (element.categories) {
+        if (element.categories && typeof element.categories === "string") {
           element.categories = element.categories.split(",");
         }
         element.price = parseFloat(element.price);
@@ -220,6 +230,9 @@ function constructPayloadItem(message, category, destination) {
       }
 
       rawPayload.items = rawPayloadItemArr;
+      break;
+    case "alias":
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
       break;
     default:
       logger.debug("not supported type");
@@ -295,6 +308,9 @@ function processSingleMessage(message, destination) {
           category = ConfigCategory.TRACK;
       }
       break;
+    case EventType.ALIAS:
+      category = ConfigCategory.ALIAS;
+      break;
     default:
       throw new CustomError("Message type not supported", 400);
   }
@@ -319,43 +335,173 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+function batchEvents(arrayChunks) {
+  const batchedResponseList = [];
+
+  // list of chunks [ [..], [..] ]
+  arrayChunks.forEach(chunk => {
+    const batchResponseList = [];
+    const metadatas = [];
+
+    // extracting destination
+    // from the first event in a batch
+    const { destination } = chunk[0];
+    const { apiKey } = destination.Config;
+
+    let batchEventResponse = defaultBatchRequestConfig();
+
+    // Batch event into dest batch structure
+    chunk.forEach(ev => {
+      batchResponseList.push(get(ev, "message.body.JSON"));
+      metadatas.push(ev.metadata);
+    });
+    // batching into identify batch structure
+    if (chunk[0].message.endpoint.includes("/api/users")) {
+      batchEventResponse.batchedRequest.body.JSON = {
+        users: batchResponseList
+      };
+      batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
+    } else {
+      // batching into track batch structure
+      batchEventResponse.batchedRequest.body.JSON = {
+        events: batchResponseList
+      };
+      batchEventResponse.batchedRequest.endpoint = TRACK_BATCH_ENDPOINT;
+    }
+
+    batchEventResponse.batchedRequest.headers = {
+      "Content-Type": "application/json",
+      api_key: apiKey
+    };
+
+    batchEventResponse = {
+      ...batchEventResponse,
+      metadata: metadatas,
+      destination
+    };
+    batchedResponseList.push(
+      getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true
+      )
+    );
+  });
+
+  return batchedResponseList;
+}
+
+function getEventChunks(
+  event,
+  identifyEventChunks,
+  trackEventChunks,
+  eventResponseList
+) {
+  // Categorizing identify and track type of events
+  // Checking if it is identify type event
+  if (event.message.endpoint.includes("api/users/update")) {
+    identifyEventChunks.push(event);
+  } else if (event.message.endpoint.includes("api/events/track")) {
+    // Checking if it is track type of event
+    trackEventChunks.push(event);
+  } else {
+    // any other type of event
+    const { message, metadata, destination } = event;
+    const endpoint = get(message, "endpoint");
+
+    const batchedResponse = defaultBatchRequestConfig();
+    batchedResponse.batchedRequest.headers = message.headers;
+    batchedResponse.batchedRequest.endpoint = endpoint;
+    batchedResponse.batchedRequest.body = message.body;
+    batchedResponse.batchedRequest.params = message.params;
+    batchedResponse.batchedRequest.method =
+      defaultPostRequestConfig.requestMethod;
+    batchedResponse.metadata = [metadata];
+    batchedResponse.destination = destination;
+
+    eventResponseList.push(
+      getSuccessRespEvents(
+        batchedResponse.batchedRequest,
+        batchedResponse.metadata,
+        batchedResponse.destination
+      )
+    );
+  }
+}
+
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
-  const respList = await Promise.all(
-    inputs.map(async input => {
+  const identifyEventChunks = []; // list containing identify events in batched format
+  const trackEventChunks = []; // list containing track events in batched format
+  const eventResponseList = []; // list containing other events in batched format
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async event => {
       try {
-        if (input.message.statusCode) {
+        if (event.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
+          getEventChunks(
+            event,
+            identifyEventChunks,
+            trackEventChunks,
+            eventResponseList
+          );
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination
+            },
+            identifyEventChunks,
+            trackEventChunks,
+            eventResponseList
           );
         }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "ITERABLE"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );
-  return respList;
+
+  // batching identifyArrayChunks
+  let identifyBatchedResponseList = [];
+  if (identifyEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const identifyArrayChunks = _.chunk(
+      identifyEventChunks,
+      IDENTIFY_MAX_BATCH_SIZE
+    );
+    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
+  }
+  // batching TrackArrayChunks
+  let trackBatchedResponseList = [];
+  if (trackEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+    trackBatchedResponseList = batchEvents(trackArrayChunks);
+  }
+  let batchedResponseList = [];
+  // appending all kinds of batches
+  batchedResponseList = batchedResponseList
+    .concat(identifyBatchedResponseList)
+    .concat(trackBatchedResponseList)
+    .concat(eventResponseList);
+
+  return [...batchedResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

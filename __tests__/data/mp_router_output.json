@@ -7,12 +7,30 @@
       "endpoint": "https://api.mixpanel.com/track/",
       "headers": {},
       "params": {
-        "data": "eyJldmVudCI6IkxvYWRlZCBhIHBhZ2UiLCJwcm9wZXJ0aWVzIjp7ImlwIjoiMC4wLjAuMCIsIiR1c2VyX2lkIjoiaGppa2wiLCIkY3VycmVudF91cmwiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tL2Rlc3RpbmF0aW9ucy9taXhwYW5lbCIsIiRzY3JlZW5fZHBpIjoyLCJtcF9saWIiOiJSdWRkZXJMYWJzIEphdmFTY3JpcHQgU0RLIiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwidG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiZGlzdGluY3RfaWQiOiJoamlrbCIsInRpbWUiOjE1Nzk4NDczNDIsIm5hbWUiOiJDb250YWN0IFVzIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9fQ=="
+        "data": {
+          "event": "Loaded a Page",
+          "properties": {
+            "ip": "0.0.0.0",
+            "$user_id": "hjikl",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "distinct_id": "hjikl",
+            "time": 1579847342,
+            "name": "Contact Us",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          }
+        }
       },
       "body": {
         "JSON": {},
-        "XML": {},
         "JSON_ARRAY": {},
+        "XML": {},
         "FORM": {}
       },
       "files": {},
@@ -30,7 +48,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -44,26 +63,39 @@
     }
   },
   {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.mixpanel.com/engage/",
-        "headers": {},
-        "params": {
-          "data": "eyIkc2V0Ijp7ImNpdHkiOiJEaXNuZXkiLCJjb3VudHJ5IjoiVVNBIiwiJGVtYWlsIjoibWlja2V5QGRpc25leS5jb20iLCIkZmlyc3ROYW1lIjoiTWlja2V5IiwiJGluaXRpYWxfcmVmZXJyZXIiOiJodHRwczovL2RvY3MucnVkZGVyc3RhY2suY29tIiwiJGluaXRpYWxfcmVmZXJyaW5nX2RvbWFpbiI6ImRvY3MucnVkZGVyc3RhY2suY29tIiwiJGJyb3dzZXIiOiJDaHJvbWUiLCIkYnJvd3Nlcl92ZXJzaW9uIjoiNzkuMC4zOTQ1LjExNyJ9LCIkdG9rZW4iOiI5NDMyZjExZjcwZjhjZTM4NmY1MTEwYzhjOTI0YjNlYzRmODI1MjU2IiwiJGRpc3RpbmN0X2lkIjoiZTZhYjJjNWUtMmNkYS00NGE5LWE5NjItZTJmNjdkZjc4YmNhIiwiJGlwIjoiMC4wLjAuMCIsIiR0aW1lIjoxNTc5ODQ3MzQyfQ=="
-        },
-        "body": {
-          "JSON": {},
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      }
-    ],
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$email": "mickey@disney.com",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$firstName": "Mickey",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
     "metadata": [
       {
         "jobId": 2
@@ -76,7 +108,8 @@
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "useOldMapping": true
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",

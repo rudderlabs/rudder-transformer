@@ -68,6 +68,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -91,6 +93,13 @@
       }
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "webhookUrl": "http://6b0e6a60.ngrok.io",
         "authHeader": "Basic MVA4dUtGOF="
@@ -166,6 +175,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -189,6 +200,13 @@
       }
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "webhookUrl": "https://6b0e6a60.ngrok.io/n"
       }
@@ -263,6 +281,8 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "user_properties": {
         "coin_balance": 9466052,
@@ -286,6 +306,13 @@
       }
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "webhookUrl": "https://6b0e6a60."
       }
@@ -360,10 +387,19 @@
         "win_amount": 0
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "sentAt": "2019-09-01T15:46:51.693229+05:30",
       "type": "track",
       "request_ip": "127.0.0.1"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "webhookUrl": "http://6b0e6a60.ngrok.io",
         "header": [

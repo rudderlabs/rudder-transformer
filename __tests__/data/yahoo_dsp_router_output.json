@@ -1,0 +1,48 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893",
+      "headers": {
+        "X-Auth-Method": "OAuth2",
+        "X-Auth-Token": "fb8c05c9-3a32-409a-9993-3f53d307fe75",
+        "Content-Type": "application/json"
+      },
+      "params":{},
+      "body": {
+        "JSON": {
+          "seedList": [
+            "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+            "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+            "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+          ],
+          "accountId": "12444"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "clientId": "abcdef8-f49-4cd6-b4c5-958b3d66d431",
+        "clientSecret": "sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg",
+        "audienceType": "EMAIL",
+        "accountId": "12444",
+        "audienceId": "34893",
+        "hashRequired": true
+      },
+      "ID": "iwehr83843"
+    }
+  }
+]

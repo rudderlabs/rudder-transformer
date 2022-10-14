@@ -31,6 +31,10 @@
     "statusCode": 200
   },
   {
+    "message": "userId not present",
+    "statusCode": 400
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},
@@ -93,8 +97,8 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "type": "event",
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "data": {
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
@@ -107,7 +111,7 @@
     },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -193,21 +197,21 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
-        "type": "event",
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "data": {
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
           "user_time_spent": 50000
         },
+        "name": "Application Installed",
         "timestamp": 1571051718,
-        "name": "Application Installed"
+        "type": "event"
       },
       "FORM": {}
     },
     "files": {},
     "endpoint": "https://track.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -441,8 +445,8 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "type": "event",
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "data": {
           "user_actual_id": 12345,
           "user_actual_role": "system_admin",
@@ -455,7 +459,7 @@
     },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -541,21 +545,21 @@
       "XML": {},
       "JSON_ARRAY": {},
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
-        "type": "event",
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "data": {
-          "user_actual_id": 12345,
           "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
           "user_time_spent": 50000
         },
+        "name": "Application Installed",
         "timestamp": 1571051718,
-        "name": "Application Installed"
+        "type": "event"
       },
       "FORM": {}
     },
     "files": {},
     "endpoint": "https://track-eu.customer.io/api/v1/events",
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
       "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
     },
@@ -707,12 +711,12 @@
     "params": {},
     "body": {
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
           "user_time_spent": 50
         },
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-s",
         "type": "event",
         "timestamp": 1571051718
@@ -722,7 +726,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {
@@ -736,12 +740,12 @@
     "params": {},
     "body": {
       "JSON": {
-        "anonymous_id": "00000000000000000000000000",
         "data": {
           "user_actual_role": "system_admin",
           "user_actual_id": 12345,
           "user_time_spent": 50000
         },
+        "anonymous_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "name": "Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-q Screen",
         "type": "event",
         "timestamp": 1571051718
@@ -751,7 +755,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "00000000000000000000000000",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "statusCode": 200
   },
   {
@@ -1099,6 +1103,32 @@
     "body": {
       "JSON": {
         "device": {
+          "id": "deviceToken",
+          "platform": "ios",
+          "last_used": 1641808826
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices",
+    "headers": {
+      "Authorization": "Basic REVTVSBTQUk6REVTQVUgU0FJ"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "device": {
+          "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
           "last_used": 1641808826

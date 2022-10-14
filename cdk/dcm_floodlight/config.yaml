@@ -1,0 +1,26 @@
+message:
+  supportedMessageTypes:
+    - track
+    - page
+  track:
+    transformation:
+      mapperPath: ./mapping/DCMFloodlightConfig.yaml
+      postMapper:
+        name: "postMapper"
+      response:
+        endpoint: "{{ rudderContext.endpoint }}"
+        method: GET
+        format: JSON
+        headers:
+          User-Agent: "{{ rudderContext.userAgent }}"
+  page:
+    transformation:
+      mapperPath: ./mapping/DCMFloodlightConfig.yaml
+      postMapper:
+        name: "postMapper"
+      response:
+        endpoint: "{{ rudderContext.endpoint }}"
+        method: GET
+        format: JSON
+        headers:
+          User-Agent: "{{ rudderContext.userAgent }}"

@@ -3,6 +3,98 @@
     "message": {
       "channel": "web",
       "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
         "app": {
           "build": "1.0.0",
           "name": "RudderLabs JavaScript SDK",
@@ -590,7 +682,9 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": ["Comapny-ABC"]
+        "value_trait": [
+          "Comapny-ABC"
+        ]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -2642,6 +2736,1286 @@
         "All": true
       },
       "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "device": {
+          "brand": "testBrand",
+          "manufacturer": "testManufacturer"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "mapDeviceBrand": true,
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Sample track event BEFORE IDENTIFY1**",
+      "sentAt": "2020-09-17T15:07:13.171Z",
+      "userId": "0572f78fa49c648e",
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "brand": "testBrand",
+          "manufacturer": "testManufacturer"
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "app": {
+          "name": "AMTestProject",
+          "build": "1",
+          "version": "1.0",
+          "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1080,
+          "height": 2088,
+          "density": 440
+        },
+        "traits": {
+          "id": "0572f78fa49c648e",
+          "userId": "0572f78fa49c648e",
+          "address": {},
+          "company": {},
+          "anonymousId": "0572f78fa49c648e"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.4"
+        },
+        "network": {
+          "wifi": true,
+          "carrier": "Android",
+          "cellular": true,
+          "bluetooth": false
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "messageId": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
+      "anonymousId": "0572f78fa49c648e",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2020-09-17T15:07:03.515Z"
+    },
+    "destination": {
+      "Config": {
+        "mapDeviceBrand": true,
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "event": "Screen View",
+      "channel": "web",
+      "properties": {
+        "prop1": "5"
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "device": {
+          "brand": "testBrand",
+          "manufacturer": "testManufacturer"
+        },
+        "library": {
+          "name": "http"
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "mapDeviceBrand": true
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "rohith@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "rohith@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "residencyServer": "EU"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": {
+        "All": true
+      },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait",
+        "residencyServer": "EU"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "newUserIdAlias",
+      "integrations": {
+        "All": true
+      },
+      "previousId": "sampleusrRudder3",
+      "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "residencyServer": "EU"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "App_Opened",
+      "sentAt": "2021-11-17T19:13:52.106Z",
+      "userId": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+      "channel": "mobile",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "country": "United States",
+          "city": "San Francisco",
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "externalID": "1637170658229-3961832492194264209"
+      },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 3
+        }
+      },
+      "originalTimestamp": "2021-11-17T19:13:51.143Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "App_Opened",
+      "sentAt": "2021-11-17T19:13:52.106Z",
+      "userId": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+      "channel": "mobile",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "country": "United States",
+          "city": "San Francisco",
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "externalID": "1637170658229-3961832492194264209"
+      },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 0
+        }
+      },
+      "originalTimestamp": "2021-11-17T19:13:51.143Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "App_Opened",
+      "sentAt": "2021-11-17T19:13:52.106Z",
+      "userId": "ab419c3a-47ce-11ec-82ac-16a1bb813a59",
+      "channel": "mobile",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a31aaa1",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          }
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "T-Mobile"
+        },
+        "location": {
+          "country": "United States",
+          "city": "San Francisco",
+          "latitude": "37.7672319",
+          "longitude": "-122.4021353",
+          "dma": "San Francisco-Oakland-San Jose, CA"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        },
+        "os": {
+          "name": "Android",
+          "version": "11"
+        },
+        "app": {
+          "version": "2.6.0 v3"
+        },
+        "device": {
+          "type": "Android",
+          "model": "SM-A025M",
+          "manufacturer": "samsung"
+        }
+      },
+      "messageId": "7208abb6-2c4e-45bb-bf5b-aa426f3593a2",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "externalID": "1637170658229-3961832492194264209"
+      },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": "0"
+        }
+      },
+      "originalTimestamp": "2021-11-17T19:13:51.143Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 6
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 6
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 3
+        }
+      },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "event": "Screen View",
+      "properties": {
+        "prop1": "5",
+        "event_id": 7
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 7
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "request_ip": "1.1.1.1",
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/destinations/amplitude",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/amplitude",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
+      },
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 2
+        }
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "alias",
+      "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+      "originalTimestamp": "2020-10-20T08:14:28.778Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "newUserIdAlias",
+      "integrations": {
+        "All": true,
+        "Amplitude": {
+          "event_id": 67
+        }
+      },
+      "previousId": "sampleusrRudder3",
+      "sentAt": "2020-10-20T08:14:28.778Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "1662393792",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "event": "Screen event",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+        "name": "Screen event"
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "device_id",
+            "type": "AM-users"
+          }
+        ],
+        "mappedToDestination": "true",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "sayan@gmail.com",
+          "address": {
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": "",
+            "os_version": "test os"
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "sessionId": "1662393792"
+      },
+      "traits": {
+        "anonymousId": "123456",
+        "email": "sayan@gmail.com",
+        "city": "kolkata",
+        "address": {
+          "country": "India",
+          "postalCode": 712136,
+          "state": "WB",
+          "street": ""
+        },
+        "os_version": "test os",
+        "ip": "0.0.0.0",
+        "age": 26
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "event": "Screen event",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+        "name": "Screen event"
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
     },
     "destination": {
       "Config": {

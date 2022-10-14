@@ -5,16 +5,25 @@ const _ = require("lodash");
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 const { parserForImport } = require("./parser");
+const logger = require("../logger");
 
 const isolateVmMem = 128;
+async function evaluateModule(isolate, context, moduleCode) {
+  const module = await isolate.compileModule(moduleCode);
+  await module.instantiate(context, (specifier, referrer) => referrer);
+  await module.evaluate({ release: true });
+  return true;
+}
+
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId) {
+async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const createIvmStartTime = new Date();
+  const logs = [];
   const libraries = await Promise.all(
     libraryVersionIds.map(async libraryVersionId =>
       getLibraryCodeV1(libraryVersionId)
@@ -178,19 +187,22 @@ async function createIvm(code, libraryVersionIds, versionId) {
         const err = JSON.parse(
           JSON.stringify(error, Object.getOwnPropertyNames(error))
         );
-        reject.applyIgnored(undefined, [
-          new ivm.ExternalCopy(err).copyInto(),
-        ]);
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
     })
   );
 
-  await jail.set(
-    "_log",
-    new ivm.Reference((...args) => {
-      console.log("Log: ", ...args);
-    })
-  );
+  await jail.set("log", function(...args) {
+    if (testMode) {
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
+    }
+  });
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -230,21 +242,6 @@ async function createIvm(code, libraryVersionIds, versionId) {
           ]);
         });
       };
-
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let log = _log;
-      delete _log;
-      global.log = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        log.applyIgnored(
-          undefined,
-          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-         );
-       };
 
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
@@ -288,7 +285,9 @@ async function createIvm(code, libraryVersionIds, versionId) {
 
   await Promise.all(
     supportedFuncNames.map(async sName => {
-      const funcRef = await customScriptModule.namespace.get(sName);
+      const funcRef = await customScriptModule.namespace.get(sName, {
+        reference: true
+      });
       if (funcRef && funcRef.typeof === "function") {
         supportedFuncs[sName] = funcRef;
       }
@@ -304,7 +303,9 @@ async function createIvm(code, libraryVersionIds, versionId) {
     );
   }
 
-  const fnRef = await customScriptModule.namespace.get("transformWrapper");
+  const fnRef = await customScriptModule.namespace.get("transformWrapper", {
+    reference: true
+  });
   const fName = availableFuncNames[0];
   stats.timing("createivm_duration", createIvmStartTime);
   // TODO : check if we can resolve this
@@ -314,20 +315,33 @@ async function createIvm(code, libraryVersionIds, versionId) {
     isolate,
     jail,
     bootstrapScriptResult,
+    bootstrap,
+    customScriptModule,
     context,
     fnRef,
     isolateStartWallTime,
     isolateStartCPUTime,
-    fName
+    fName,
+    logs
   };
 }
 
-async function getFactory(code, libraryVersionIds, versionId) {
+async function compileUserLibrary(code) {
+  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const context = await isolate.createContext();
+  return evaluateModule(isolate, context, code);
+}
+
+async function getFactory(code, libraryVersionIds, versionId, testMode) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId);
+      return createIvm(code, libraryVersionIds, versionId, testMode);
     },
     destroy: async client => {
+      client.fnRef.release();
+      client.bootstrap.release();
+      client.customScriptModule.release();
+      client.context.release();
       await client.isolate.dispose();
     }
   };
@@ -335,4 +349,7 @@ async function getFactory(code, libraryVersionIds, versionId) {
   return factory;
 }
 
-exports.getFactory = getFactory;
+module.exports = {
+  getFactory,
+  compileUserLibrary
+};

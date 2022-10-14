@@ -25,6 +25,16 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+const batchInputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
+);
+const batchOutputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
+);
+
+const batchInputData = JSON.parse(batchInputDataFile);
+const batchExpectedData = JSON.parse(batchOutputDataFile);
+
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {
@@ -38,12 +48,19 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-  
+
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });
-  
+
+  describe("Batching", () => {
+    it("Payload", async () => {
+      const output = await transformer.processRouterDest(batchInputData);
+      expect(Array.isArray(output)).toEqual(true);
+      expect(output).toEqual(batchExpectedData);
+    });
+  });
 });

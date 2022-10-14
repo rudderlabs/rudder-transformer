@@ -28,7 +28,29 @@ const logger = require("../../../logger");
 //   float: parseFloat
 // };
 
-const extInfoArray = ["", "", 0, 0, "", "", "", "", "", 0, 0, 0.0, 0, 0, 0];
+// The order and type of `extinfo` parameters is defined here:
+// https://developers.facebook.com/docs/graph-api/reference/application/activities/#parameters
+const extInfoArray = [
+  "", // extinfo version ("a2" = Android, "i2" = iOS)
+  "", // app package name
+  "", // app version build
+  "", // app version name
+  "", // OS version
+  "", // device model
+  "", // locale
+  "", // abbreviated time zone
+  "", // carrier
+  0, //  screen width
+  0, //  screen height
+  "", // screen density
+  0, //  CPU cores
+  0, //  storage size in GB
+  0, //  free space in GB
+  "" //  time zone
+];
+
+// User data (`ud`) parameters are also defined there, but not properly documented; instead see here:
+// https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/
 const userProps = [
   "ud[em]",
   "ud[fn]",
@@ -190,13 +212,13 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           let count = parentArray.length;
           while (count > 0) {
             const intendValue = get(parentArray[length], suffixSlice);
-            updatedEvent.custom_events[0][fbEventPath][length] =
-              getCorrectedTypedValue(
-                fbEventPath,
-                intendValue,
-                parentArray[length]
-              ) || "";
-
+            updatedEvent.custom_events[0][fbEventPath][
+              length
+            ] = getCorrectedTypedValue(
+              fbEventPath,
+              intendValue,
+              parentArray[length]
+            );
             length += 1;
             count -= 1;
           }
@@ -207,8 +229,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           set(
             updatedEvent.custom_events[0],
             fbEventPath,
-            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath) ||
-              ""
+            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath)
           );
         }
       } else {
@@ -220,20 +241,19 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
 }
 
 function responseBuilderSimple(message, payload, destination) {
-  const requestConfig = {
-    requestFormat: "FORM",
-    requestMethod: "POST"
-  };
-
   const { appID } = destination.Config;
 
-  // "https://graph.facebook.com/v3.3/644758479345539/activities?access_token=644758479345539|748924e2713a7f04e0e72c37e336c2bd"
+  // "https://graph.facebook.com/v13.0/644748472345539/activities"
 
-  const endpoint = `https://graph.facebook.com/v3.3/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/v13.0/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    // Forward the client IP: https://developers.facebook.com/docs/marketing-api/app-event-api#http
+    "x-forwarded-for": message?.context.ip || message.request_ip
+  };
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.FORM = removeUndefinedValues(payload);
   response.statusCode = 200;
@@ -243,7 +263,7 @@ function responseBuilderSimple(message, payload, destination) {
 
 function buildBaseEvent(message) {
   const baseEvent = {};
-  baseEvent.extinfo = extInfoArray;
+  baseEvent.extinfo = Array.from(extInfoArray);
   baseEvent.custom_events = [{}];
 
   let sourceSDK = get(message, "context.device.type") || "";
@@ -253,8 +273,11 @@ function buildBaseEvent(message) {
   } else if (isAppleFamily(sourceSDK)) {
     sourceSDK = "i2";
   } else {
-    // if the sourceSDK is not android or ios, send an empty string
-    sourceSDK = "";
+    // if the sourceSDK is not android or ios
+    throw new CustomError(
+      'Extended device information i.e, "context.device.type" is required',
+      400
+    );
   }
 
   baseEvent.extinfo[0] = sourceSDK;
@@ -265,23 +288,16 @@ function buildBaseEvent(message) {
     if (inputVal) {
       const splits = destKey.split(".");
       if (splits.length > 1 && splits[0] === "extinfo") {
-        extInfoIdx = splits[1];
-        let outputVal;
-        switch (typeof extInfoArray[extInfoIdx]) {
-          case "number":
-            if (extInfoIdx === 11) {
-              // density
-              outputVal = parseFloat(inputVal);
-              outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
-            } else {
-              outputVal = parseInt(inputVal, 10);
-              outputVal = isNaN(outputVal) ? undefined : outputVal;
-            }
-            break;
-
-          default:
-            outputVal = inputVal;
-            break;
+        extInfoIdx = Number(splits[1]);
+        let outputVal = inputVal;
+        if (typeof extInfoArray[extInfoIdx] === "number") {
+          outputVal = parseInt(inputVal, 10);
+          outputVal = isNaN(outputVal) ? undefined : outputVal;
+        }
+        if (extInfoIdx === 11) {
+          // density
+          outputVal = parseFloat(inputVal);
+          outputVal = isNaN(outputVal) ? undefined : `${outputVal.toFixed(2)}`;
         }
         baseEvent.extinfo[extInfoIdx] =
           outputVal || baseEvent.extinfo[extInfoIdx];
@@ -293,39 +309,6 @@ function buildBaseEvent(message) {
       }
     }
   });
-
-  // //////////////////////////////
-  // Object.keys(baseMapping).forEach(k => {
-  //   const inputVal = get(message, k);
-  //   const splits = baseMapping[k].split(".");
-  //   if (splits.length > 1 && splits[0] === "extinfo") {
-  //     extInfoIdx = splits[1];
-  //     let outputVal;
-  //     switch (typeof extInfoArray[extInfoIdx]) {
-  //       case "number":
-  //         if (extInfoIdx === 11) {
-  //           // density
-  //           outputVal = parseFloat(inputVal);
-  //           outputVal = isNaN(outputVal) ? undefined : outputVal.toFixed(2);
-  //         } else {
-  //           outputVal = parseInt(inputVal, 10);
-  //           outputVal = isNaN(outputVal) ? undefined : outputVal;
-  //         }
-  //         break;
-
-  //       default:
-  //         outputVal = inputVal;
-  //         break;
-  //     }
-  //     baseEvent.extinfo[extInfoIdx] =
-  //       outputVal || baseEvent.extinfo[extInfoIdx];
-  //   } else if (splits.length === 3) {
-  //     // custom event key
-  //     set(baseEvent.custom_events[0], splits[2], inputVal || "");
-  //   } else {
-  //     set(baseEvent, baseMapping[k], inputVal || "");
-  //   }
-  // });
   return baseEvent;
 }
 

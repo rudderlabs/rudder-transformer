@@ -3,7 +3,7 @@
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
 const stats = require("../../../util/stats");
-const { EventType } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   identifyConfig,
   formatConfig,
@@ -13,6 +13,8 @@ const {
   DESTINATION
 } = require("./config");
 const {
+  addExternalIdToTraits,
+  getDestinationExternalIDInfoForRetl,
   isDefined,
   removeUndefinedValues,
   constructPayload,
@@ -23,7 +25,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   isDefinedAndNotNull,
-  generateErrorObject
+  generateErrorObject,
+  checkInvalidRtTfEvents
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const Cache = require("../../util/cache");
@@ -216,7 +219,18 @@ const getLeadId = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
-  let leadId = getDestinationExternalID(message, "marketoLeadId");
+  // check if marketo lead id is set in the externalId through rETL
+  // "externalId": [
+  //   {
+  //     "id": "lynnanderson@smith.net",
+  //     "identifierType": "email",
+  //     "type": "MARKETO-{object}"
+  //   }
+  let leadId = getDestinationExternalIDInfoForRetl(message, "MARKETO")
+    .destinationExternalId;
+  if (!leadId) {
+    leadId = getDestinationExternalID(message, "marketoLeadId");
+  }
 
   // leadId is not supplied through the externalId parameter
   if (!leadId) {
@@ -249,7 +263,7 @@ const getLeadId = async (message, formattedDestination, token) => {
         .setStatus(400)
         .setMessage("Lead creation is turned off on the dashboard")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -273,7 +287,7 @@ const getLeadId = async (message, formattedDestination, token) => {
         "lookup failure - either anonymousId or userId or both fields are not created in marketo"
       )
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -294,6 +308,10 @@ const getLeadId = async (message, formattedDestination, token) => {
 // Almost same as leadId lookup. Noticable difference from lookup is we'll using
 // `id` i.e. leadId as lookupField at the end of it
 const processIdentify = async (message, formattedDestination, token) => {
+  // If mapped to destination, Add externalId to traits
+  if (get(message, MappedToDestinationKey)) {
+    addExternalIdToTraits(message);
+  }
   // get the leadId and proceed
   const { accountId, leadTraitMapping } = formattedDestination;
 
@@ -303,7 +321,7 @@ const processIdentify = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Invalid traits value for Marketo")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -314,11 +332,16 @@ const processIdentify = async (message, formattedDestination, token) => {
   const leadId = await getLeadId(message, formattedDestination, token);
 
   let attribute = constructPayload(traits, identifyConfig);
-  Object.keys(leadTraitMapping).forEach(key => {
-    const val = traits[key];
-    attribute[leadTraitMapping[key]] = val;
-  });
-  attribute = removeUndefinedValues(attribute);
+  // leadTraitMapping will not be used if mapping is done through VDM in rETL
+  if (!get(message, MappedToDestinationKey)) {
+    Object.keys(leadTraitMapping).forEach(key => {
+      const val = traits[key];
+      attribute[leadTraitMapping[key]] = val;
+    });
+    attribute = removeUndefinedValues(attribute);
+  } else {
+    attribute = removeUndefinedValues(traits);
+  }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const inputObj = {
@@ -328,16 +351,42 @@ const processIdentify = async (message, formattedDestination, token) => {
   if (isDefinedAndNotNull(userId)) {
     inputObj.userId = userId;
   }
+  let endPoint = `https://${accountId}.mktorest.com/rest/v1/leads.json`;
+  let payload = {
+    action: "createOrUpdate",
+    input: [inputObj],
+    lookupField: "id"
+  };
+  // handled if vdm enabled
+  if (get(message, MappedToDestinationKey)) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      "MARKETO"
+    );
+    // if leads object then will fallback to the already existing endpoint and payload
+    if (objectType !== "leads") {
+      endPoint = `https://${accountId}.mktorest.com/rest/v1/customobjects/${objectType}.json`;
+      // we will be using the dedupeBy dedupeFields for this endpoint
+      // DOC: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
+      // if marketoGUID is mapped it should be removed before sending to marketo as for this type the following error can arise
+      // Field 'marketoGUID' not updateable or Field 'marketoGUID' is not allowed when dedupeBy is 'dedupeFields'
+      if (traits.marketoGUID) {
+        delete traits.marketoGUID;
+      }
+      const input = [removeUndefinedValues(traits)];
+      payload = {
+        action: "createOrUpdate",
+        dedupeBy: "dedupeFields",
+        input
+      };
+    }
+  }
   return {
-    endPoint: `https://${accountId}.mktorest.com/rest/v1/leads.json`,
+    endPoint,
     headers: {
       Authorization: `Bearer ${token}`
     },
-    payload: {
-      action: "createOrUpdate",
-      input: [inputObj],
-      lookupField: "id"
-    }
+    payload
   };
 };
 
@@ -368,7 +417,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Anonymous event tracking is turned off and invalid userId")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -383,7 +432,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Event is not mapped to Custom Activity")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -402,7 +451,7 @@ const processTrack = async (message, formattedDestination, token) => {
       .setStatus(400)
       .setMessage("Primary Key value is invalid for the event")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta:
@@ -414,14 +463,16 @@ const processTrack = async (message, formattedDestination, token) => {
   // get leadId
   const leadId = await getLeadId(message, formattedDestination, token);
 
-  // handle custom activy attributes
-  const attribute = [];
+  // handle addition of custom activity attributes
+  // Reference: https://developers.marketo.com/rest-api/lead-database/activities/#add_custom_activities
+
+  const attributes = [];
   Object.keys(customActivityPropertyMap).forEach(key => {
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
       if (isDefined(value)) {
-        attribute.push({ apiName: customActivityPropertyMap[key], value });
+        attributes.push({ name: customActivityPropertyMap[key], value });
       }
     }
   });
@@ -431,7 +482,7 @@ const processTrack = async (message, formattedDestination, token) => {
       {
         activityDate: getFieldValueFromMessage(message, "timestamp"),
         activityTypeId: Number.parseInt(activityTypeId, 10),
-        attribute,
+        attributes,
         leadId,
         primaryAttributeValue
       }
@@ -463,7 +514,7 @@ const processEvent = async (message, destination, token) => {
       .setStatus(400)
       .setMessage("Message Type is not present. Aborting message.")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
@@ -486,7 +537,7 @@ const processEvent = async (message, destination, token) => {
         .setStatus(400)
         .setMessage("Message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
@@ -506,7 +557,7 @@ const process = async event => {
       .setStatus(400)
       .setMessage("Authorisation failed")
       .setStatTags({
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       })
@@ -519,9 +570,9 @@ const process = async event => {
 const processRouterDest = async inputs => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   let token;
   try {
@@ -548,7 +599,7 @@ const processRouterDest = async inputs => {
       message: "Authorisation failed",
       responseTransformFailure: true,
       statTags: {
-        destination: DESTINATION,
+        destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
       }

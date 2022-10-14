@@ -76,6 +76,10 @@
     "destKey": "extinfo.14"
   },
   {
+    "sourceKeys": "context.timezone",
+    "destKey": "extinfo.15"
+  },
+  {
     "sourceKeys": [
       "traits.email",
       "context.traits.email"

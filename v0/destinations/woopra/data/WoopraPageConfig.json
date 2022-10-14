@@ -1,0 +1,39 @@
+[
+  {
+    "sourceKeys": "context.page.path",
+    "destKey": "ce_pagepath"
+  },
+  {
+    "sourceKeys": "context.page.initial_referring_domain",
+    "destKey": "ce_page_initial_referring_domain"
+  },
+
+  {
+    "sourceKeys": "context.page.initial_referrer",
+    "destKey": "ce_page_intial_referrer"
+  },
+  {
+    "sourceKeys": "context.page.referring_domain",
+    "destKey": "ce_page_referring_domain"
+  },
+  {
+    "sourceKeys": "GApageRef",
+    "destKey": "ce_referrer",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "GApageSearch",
+    "destKey": "ce_search",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "pageTitle",
+    "destKey": "ce_title",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "pageUrl",
+    "destKey": "ce_url",
+    "sourceFromGenericMap": true
+  }
+]

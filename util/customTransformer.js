@@ -3,8 +3,15 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { pyUserTransformHandler } = require("./customTransformer-py");
 
-async function runUserTransform(events, code, eventsMetadata, versionId) {
+async function runUserTransform(
+  events,
+  code,
+  eventsMetadata,
+  versionId,
+  testMode = false
+) {
   const tags = {
     transformerVersionId: versionId,
     version: 0
@@ -12,6 +19,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = await isolate.createContext();
+  const logs = [];
   const jail = context.global;
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
@@ -75,20 +83,22 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
     })
   );
 
-  jail.setSync(
-    "_log",
-    new ivm.Reference(() => {
-      // console.log("Log: ", ...args);
-    })
-  );
+  jail.setSync("log", function(...args) {
+    if (testMode) {
+      let logString = "Log:";
+      args.forEach(arg => {
+        logString = logString.concat(
+          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
+        );
+      });
+      logs.push(logString);
+    }
+  });
 
-  jail.setSync(
-    "_metadata",
-    new ivm.Reference((...args) => {
-      const eventMetadata = eventsMetadata[args[0].messageId] || {};
-      return new ivm.ExternalCopy(eventMetadata).copyInto();
-    })
-  );
+  jail.setSync("metadata", function(...args) {
+    const eventMetadata = eventsMetadata[args[0].messageId] || {};
+    return new ivm.ExternalCopy(eventMetadata).copyInto();
+  });
 
   const bootstrap = await isolate.compileScript(
     "new " +
@@ -129,36 +139,6 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
         });
       };
 
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let log = _log;
-      delete _log;
-      global.log = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        log.applyIgnored(
-          undefined,
-          args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          );
-        };
-
-        // Now we create the other half of the 'metadata' function in this isolate. We'll just take every
-        // argument, create an external copy of it and pass it along to metadata log function above.
-        let metadata = _metadata;
-        delete _metadata;
-        global.metadata = function(...args) {
-          // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-          // doesn't make a difference who requests the copy, the result is the same.
-          // 'applyIgnored' calls 'metadata' asynchronously but doesn't return a promise-- it ignores the
-          // return value or thrown exception from 'metadata'.
-          return metadata.applySync(
-            undefined,
-            args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-            );
-          };
-
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -187,7 +167,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
 
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
-  const fnRef = await jail.get("transform");
+  const fnRef = await jail.get("transform", { reference: true });
   // stat
   stats.counter("events_into_vm", events.length, tags);
   // TODO : check if we can resolve this
@@ -219,16 +199,31 @@ async function runUserTransform(events, code, eventsMetadata, versionId) {
       throw new Error("Timed out");
     }
   } catch (error) {
-    isolate.dispose();
     throw error;
+  } finally {
+    // release function, script, context and isolate
+    fnRef.release();
+    customScript.release();
+    bootstrapScriptResult.release();
+    context.release();
+    isolate.dispose();
   }
-  isolate.dispose();
-  return result;
+
+  return {
+    transformedEvents: result,
+    logs
+  };
 }
 
-async function userTransformHandler(events, versionId, libraryVersionIDs) {
+async function userTransformHandler(
+  events,
+  versionId,
+  libraryVersionIDs,
+  trRevCode = {},
+  testMode = false
+) {
   if (versionId) {
-    const res = await getTransformationCode(versionId);
+    const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
       // And put back the destination after transforrmation
@@ -239,23 +234,50 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
       });
 
       let userTransformedEvents = [];
+      let result;
       if (res.codeVersion && res.codeVersion === "1") {
-        userTransformedEvents = await userTransformHandlerV1(
-          events,
-          res,
-          libraryVersionIDs
-        );
+        if (res.language && res.language === "python") {
+          result = await pyUserTransformHandler().runUserTransfrom(
+            events,
+            res,
+            testMode
+          );
+        } else {
+          result = await userTransformHandlerV1(
+            events,
+            res,
+            libraryVersionIDs,
+            testMode
+          );
+        }
+
+        userTransformedEvents = result.transformedEvents;
+        if (testMode) {
+          userTransformedEvents = {
+            transformedEvents: result.transformedEvents.map(ev => {
+              if (ev.error) {
+                return { error: ev.error };
+              }
+              return ev.transformedEvent;
+            }),
+            logs: result.logs
+          };
+        }
       } else {
-        userTransformedEvents = await runUserTransform(
+        result = await runUserTransform(
           eventMessages,
           res.code,
           eventsMetadata,
-          versionId
+          versionId,
+          testMode
         );
-        userTransformedEvents = userTransformedEvents.map(ev => ({
-          transformedEvent: ev,
-          metadata: {}
-        }));
+
+        userTransformedEvents = testMode
+          ? result
+          : result.transformedEvents.map(ev => ({
+              transformedEvent: ev,
+              metadata: {}
+            }));
       }
       return userTransformedEvents;
     }
@@ -263,4 +285,22 @@ async function userTransformHandler(events, versionId, libraryVersionIDs) {
   return events;
 }
 
-exports.userTransformHandler = userTransformHandler;
+async function setupUserTransformHandler(
+  trRevCode = {},
+  libraryVersionIDs,
+  testWithPublish = false
+) {
+  let resp = { success: false };
+  if (trRevCode.language && trRevCode.language === "python") {
+    resp = await pyUserTransformHandler().setUserTransform(
+      trRevCode,
+      testWithPublish
+    );
+    resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
+  }
+  return resp;
+}
+module.exports = {
+  userTransformHandler,
+  setupUserTransformHandler
+};

@@ -6,12 +6,29 @@
         "FORM": {},
         "JSON_ARRAY": {},
         "JSON": {
-          "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
           "contact": {
             "email": "jamesDoe@gmail.com",
             "firstName": "James",
             "lastName": "Doe",
-            "phone": "92374162212"
+            "phone": "92374162212",
+            "fieldValues": [
+              {
+                "field": "0",
+                "value": "Trastkiv"
+              },
+              {
+                "field": "1",
+                "value": "Russia"
+              },
+              {
+                "field": "3",
+                "value": "||Potato||Onion||"
+              },
+              {
+                "field": "4",
+                "value": "random"
+              }
+            ]
           }
         }
       },
@@ -49,9 +66,8 @@
         "FORM": {},
         "JSON_ARRAY": {},
         "JSON": {
-          "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
           "siteTrackingDomain": {
-            "name": "www.rudderlabs.com"
+            "name": "rudderlabs.com"
           }
         }
       },

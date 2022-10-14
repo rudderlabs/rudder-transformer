@@ -77,10 +77,18 @@
         "price": "58.0"
       },
       "originalTimestamp": "2020-05-25T18:37:10.917Z",
+      "sentAt": "2020-05-25T18:37:10.917Z",
       "type": "track",
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -157,10 +165,18 @@
       },
       "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
       "originalTimestamp": "2020-05-25T18:37:10.865Z",
+      "sentAt": "2020-05-25T18:37:10.917Z",
       "type": "identify",
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -237,10 +253,18 @@
       },
       "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
       "originalTimestamp": "2020-05-25T18:37:10.865Z",
+      "sentAt": "2020-05-25T18:37:10.917Z",
       "type": "page",
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -317,10 +341,18 @@
       },
       "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
       "originalTimestamp": "2020-05-25T18:37:10.865Z",
+      "sentAt": "2020-05-25T18:37:10.917Z",
       "type": "screen",
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -397,10 +429,18 @@
       },
       "messageId": "1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9",
       "originalTimestamp": "2020-05-25T18:37:10.865Z",
+      "sentAt": "2020-05-25T18:37:10.917Z",
       "type": "screen",
       "userId": "sample_user_id"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-4n07h3rsecr3t"
       }
@@ -468,6 +508,13 @@
       "sentAt": "2020-10-20T08:14:28.778Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -511,6 +558,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }
@@ -554,6 +608,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
+      "DestinationDefinition":{
+        "Config":
+        {
+            "cdkEnabled":true
+        }
+
+    },
       "Config": {
         "secretKey": "secret-tHe5ecr37"
       }

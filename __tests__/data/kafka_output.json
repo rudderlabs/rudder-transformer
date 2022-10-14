@@ -272,5 +272,65 @@
       "userId": "user-12345"
     },
     "userId": "user-12345"
+  },
+  {
+    "message": {
+      "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.1"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.1"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/tests/html/index7.html",
+          "referrer": "http://localhost:1111/tests/html/",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:1111/tests/html/index7.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "age": 23,
+          "email": "test@kinesis.com",
+          "firstname": "Test Kinesis"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+      },
+      "event": "Purchase",
+      "integrations": {
+        "All": true,
+        "KAFKA": {
+          "schemaId": "schema001"
+        }
+      },
+      "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
+      "originalTimestamp": "2020-05-14T06:54:08.745Z",
+      "properties": {
+        "currency": "USD",
+        "revenue": 100
+      },
+      "receivedAt": "2020-05-14T12:24:08.781+05:30",
+      "request_ip": "[::1]:53194",
+      "sentAt": "2020-05-14T06:54:08.746Z",
+      "timestamp": "2020-05-14T12:24:08.780+05:30",
+      "type": "track",
+      "userId": "user-12345"
+    },
+    "userId": "user-12345",
+    "schemaId": "schema001"
   }
 ]

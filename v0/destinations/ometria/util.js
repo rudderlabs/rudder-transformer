@@ -10,7 +10,8 @@ const {
   extractCustomFields,
   isEmptyObject,
   getValueFromMessage,
-  isObject
+  isObject,
+  isDefinedAndNotNull
 } = require("../../util");
 
 const isValidTimestamp = timestamp => {
@@ -48,7 +49,7 @@ const createLineItems = items => {
       if (
         itemPayload.product_id &&
         itemPayload.quantity &&
-        (itemPayload.unit_price || itemPayload.subtotal)
+        (isDefinedAndNotNull(itemPayload.unit_price) || isDefinedAndNotNull(itemPayload.subtotal))
       ) {
         const variantList = item.variant_options;
         if (!variantList || !Array.isArray(variantList)) {

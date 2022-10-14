@@ -2,8 +2,23 @@ const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
-const destinations = ["marketo", "braze"];
-const deleteUserDestinations = ["am", "braze", "intercom"];
+const destinations = [
+  "marketo",
+  "braze",
+  "pardot",
+  "google_adwords_remarketing_lists",
+  "google_adwords_enhanced_conversions",
+  "facebook_pixel"
+];
+const deleteUserDestinations = [
+  "am",
+  "braze",
+  "intercom",
+  "mp",
+  "af",
+  "clevertap",
+  "engage"
+];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;
 
@@ -25,6 +40,7 @@ inputData.forEach((input, index) => {
       const output = await service("any", input);
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
+      console.log(error);
       expect(error).toEqual(expectedData[index]);
     }
   });
@@ -48,6 +64,7 @@ destinations.forEach(destination => {
         const output = await service(destination, input);
         expect(output).toEqual(expectedData[index]);
       } catch (error) {
+        console.log(error);
         expect(error).toEqual(expectedData[index]);
       }
     });

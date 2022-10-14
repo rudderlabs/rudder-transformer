@@ -9,11 +9,12 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 10
+      nodejs: 14
     commands:
       - wget https://github.com/mikefarah/yq/releases/download/v4.9.6/yq_linux_amd64 -O /usr/bin/yq
       - chmod +x /usr/bin/yq
-      - yum install -y hub
+      - apt-get update
+      - apt install -y hub
   pre_build:
     commands:
       - docker login --username rudderlabs --password $dockerhub_passwd
@@ -21,7 +22,12 @@ phases:
     commands:
       - VERSION="$(date '+%d%m%Y.%H%M%S')"
       - ls
-      - docker build --build-arg version=${VERSION} -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
+      - >
+        docker build 
+        --build-arg version=${VERSION} 
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        -t rudderlabs/rudder-transformer:$VERSION 
+        -f Dockerfile .
       - docker run rudderlabs/rudder-transformer:$VERSION npm run testDestinations
       - docker run rudderlabs/rudder-transformer:$VERSION npm run testVersionedRouter
       - echo $?
@@ -36,7 +42,8 @@ phases:
       - cd rudder-devops/helm-charts/shared-services/per-az
       - git checkout -b shared-transformer-\"$VERSION\"
       - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-      - git add values.blue-release.yaml
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - git add values.blue-release.yaml values.prod.yaml
       - git commit -m "changing version for shared transformer"
       - git push -u origin shared-transformer-\"$VERSION\"
       - hub pull-request -m "rudder-transformer version change-\"$VERSION\" "

@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "Name",
+    "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "IsExcludedFromCampaigns",
+    "sourceKeys": [
+      "context.traits.IsExcludedFromCampaigns",
+      "traits.IsExcludedFromCampaigns"
+    ],
+    "required": false
+  }
+]

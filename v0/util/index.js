@@ -16,6 +16,7 @@ const uaParser = require("ua-parser-js");
 const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
+const stats = require("../../util/stats");
 const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
@@ -40,6 +41,14 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+const getEventTime = message => {
+  return new Date(message.timestamp).toISOString();
+};
+
+const base64Convertor = string => {
+  return Buffer.from(string).toString("base64");
+};
 
 // return a valid URL object if correct else null
 const isValidUrl = url => {
@@ -101,6 +110,27 @@ function isEmptyObject(obj) {
   return Object.keys(obj).length === 0;
 }
 
+/**
+ * Function to check if value is Defined, Not null and Not Empty.
+ * Create this function, Because existing isDefinedAndNotNullAndNotEmpty(123) is returning false due to lodash _.isEmpty function.
+ * _.isEmpty is used to detect empty collections/objects and it will return true for Integer, Boolean values.
+ * ref: https://github.com/lodash/lodash/issues/496
+ * @param {*} value 123
+ * @returns yes
+ */
+const isDefinedNotNullNotEmpty = value => {
+  return !(
+    value === undefined ||
+    value === null ||
+    Number.isNaN(value) ||
+    (typeof value === "object" && Object.keys(value).length === 0) ||
+    (typeof value === "string" && value.trim().length === 0)
+  );
+};
+
+const removeUndefinedNullEmptyExclBoolInt = obj =>
+  _.pickBy(obj, isDefinedNotNullNotEmpty);
+
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (
   arrays,
@@ -114,6 +144,64 @@ const getHashFromArray = (
       if (isEmpty(array[fromKey])) return;
       hashMap[isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]] =
         array[toKey];
+    });
+  }
+  return hashMap;
+};
+
+/**
+ * Format the destination.Config.dynamicMap arrays to hashMap
+ * where value is an array
+ * @param  {} arrays [{"from":"prop1","to":"val1"},{"from":"prop1","to":"val2"},{"from":"prop2","to":"val2"}]
+ * @param  {} fromKey="from"
+ * @param  {} toKey="to"
+ * @param  {} isLowerCase=true
+ * @param  {} return hashmap {"prop1":["val1","val2"],"prop2":["val2"]}
+ */
+const getHashFromArrayWithDuplicate = (
+  arrays,
+  fromKey = "from",
+  toKey = "to",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
+      const key = isLowerCase
+        ? array[fromKey].toLowerCase().trim()
+        : array[fromKey].trim();
+
+      if (hashMap[key]) {
+        hashMap[key].add(array[toKey]);
+      } else {
+        hashMap[key] = new Set();
+        hashMap[key].add(array[toKey]);
+      }
+    });
+  }
+  return hashMap;
+};
+
+/**
+ * Format the arrays to hashMap with key as `fromKey` and value as Object
+ * @param {*} arrays [{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}]
+ * @param {*} fromKey name
+ * @param {*} isLowerCase false
+ * @returns // {"Email":{"id":"a0b8efe1-c828-4c63-8850-0d0742888f9d","name":"Email","type":"email","type_config":{},"date_created":"1662225840284","hide_from_guests":false,"required":false}}
+ */
+const getHashFromArrayWithValueAsObject = (
+  arrays,
+  fromKey = "from",
+  isLowerCase = true
+) => {
+  const hashMap = {};
+  if (Array.isArray(arrays)) {
+    arrays.forEach(array => {
+      if (isEmpty(array[fromKey])) return;
+      hashMap[
+        isLowerCase ? array[fromKey].toLowerCase() : array[fromKey]
+      ] = array;
     });
   }
   return hashMap;
@@ -148,8 +236,20 @@ const setValues = (payload, message, mappingJson) => {
   return payload;
 };
 
+// get the value from the message given a key
+// it'll look for properties, traits and context.traits in the order
+const getValueFromPropertiesOrTraits = ({ message, key }) => {
+  const keySet = ["properties", "traits", "context.traits"];
+
+  const val = _.find(
+    _.map(keySet, k => get(message, `${k}.${key}`)),
+    v => !_.isNil(v)
+  );
+  return !_.isNil(val) ? val : null;
+};
+
 // function to flatten a json
-function flattenJson(data) {
+function flattenJson(data, separator = ".") {
   const result = {};
   let l;
 
@@ -169,7 +269,7 @@ function flattenJson(data) {
       let isEmptyFlag = true;
       Object.keys(cur).forEach(key => {
         isEmptyFlag = false;
-        recurse(cur[key], prop ? `${prop}.${key}` : key);
+        recurse(cur[key], prop ? `${prop}${separator}${key}` : key);
       });
       if (isEmptyFlag && prop) result[prop] = {};
     }
@@ -197,6 +297,7 @@ const getOffsetInSec = value => {
   }
   return undefined;
 };
+
 // Important !@!
 // format date in yyyymmdd format
 // NEED TO DEPRECATE
@@ -273,6 +374,11 @@ const defaultDeleteRequestConfig = {
 const defaultPutRequestConfig = {
   requestFormat: "JSON",
   requestMethod: "PUT"
+};
+// PATCH
+const defaultPatchRequestConfig = {
+  requestFormat: "JSON",
+  requestMethod: "PATCH"
 };
 
 // DEFAULT
@@ -397,29 +503,121 @@ const updatePayload = (currentKey, eventMappingArr, value, payload) => {
   return payload;
 };
 
-const getValueFromMessage = (message, sourceKey) => {
-  if (Array.isArray(sourceKey) && sourceKey.length > 0) {
-    if (sourceKey.length === 1) {
+// This method handles the operations between two keys from the sourceKeys. One of the possible
+// usecase is to calculate the value from the "price" and "quantity"
+//
+// Definition of the operation object is as follows
+//
+// {
+//   "operation": "multiplication",
+//   "args": [
+//     {
+//       "sourceKeys": "properties.price"
+//     },
+//     {
+//       "sourceKeys": "properties.quantity",
+//       "defaultVal": 1
+//     }
+//   ]
+// }
+//
+// Supported operations are "addition", "multiplication"
+//
+const handleSourceKeysOperation = ({ message, operationObject }) => {
+  const { operation, args } = operationObject;
+
+  // populate the values from the arguments
+  // in the same order it is populated
+  const argValues = args.map(arg => {
+    const { sourceKeys, defaultVal } = arg;
+    const val = get(message, sourceKeys);
+    if (val || val === false || val === 0) {
+      return val;
+    }
+    return defaultVal;
+  });
+
+  // quick sanity check for the undefined values in the list.
+  // if there is any undefined values, return null
+  // without going further for operations
+  const isAllDefined = _.every(argValues, v => {
+    return !_.isNil(v);
+  });
+  if (!isAllDefined) {
+    return null;
+  }
+
+  // start handling operations
+  let result = null;
+  switch (operation) {
+    case "multiplication":
+      result = 1;
+      for (let ind = 0; ind < argValues.length; ind += 1) {
+        const v = argValues[ind];
+        if (_.isNumber(v)) {
+          result *= v;
+        } else {
+          // if there is a non number argument simply return null
+          // non numbers can't be operated arithmatically
+          return null;
+        }
+      }
+      return result;
+    case "addition":
+      result = 0;
+      for (let ind = 0; ind < argValues.length; ind += 1) {
+        const v = argValues[ind];
+        if (_.isNumber(v)) {
+          result += v;
+        } else {
+          // if there is a non number argument simply return null
+          // non numbers can't be operated arithmatically
+          return null;
+        }
+      }
+      return result;
+    default:
+      return null;
+  }
+};
+
+const getValueFromMessage = (message, sourceKeys) => {
+  if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+    if (sourceKeys.length === 1) {
       logger.warn(
         "List with single element is not ideal. Use it as string instead"
       );
     }
     // got the possible sourceKeys
-    for (let index = 0; index < sourceKey.length; index += 1) {
-      const val = get(message, sourceKey[index]);
+    for (let index = 0; index < sourceKeys.length; index += 1) {
+      const sourceKey = sourceKeys[index];
+      let val = null;
+      // if the sourceKey is an object we expect it to be a operation
+      if (typeof sourceKey === "object") {
+        val = handleSourceKeysOperation({
+          message,
+          operationObject: sourceKey
+        });
+      } else {
+        val = get(message, sourceKeys[index]);
+      }
       if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence
         return val;
       }
     }
-  } else if (typeof sourceKey === "string") {
+  } else if (typeof sourceKeys === "string") {
     // got a single key
     // - we don't need to iterate over a loop for a single possible value
-    return get(message, sourceKey);
+    return get(message, sourceKeys);
+  } else if (typeof sourceKeys === "object") {
+    // if the sourceKey is an object we expect it to be a operation
+    return handleSourceKeysOperation({ message, operationObject: sourceKeys });
   } else {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
+    // TODO - think of a way to crash the pod
     throw new Error("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
@@ -445,7 +643,12 @@ const getFieldValueFromMessage = (message, sourceKey) => {
 // - - template : need to have a handlebar expression {{value}}
 // - - excludes : fields you want to strip of from the final value (works only for object)
 // - - - - ex: "anonymousId", "userId" from traits
-const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
+const handleMetadataForValue = (
+  value,
+  metadata,
+  destKey,
+  integrationsObj = null
+) => {
   if (!metadata) {
     return value;
   }
@@ -458,15 +661,89 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     defaultValue,
     excludes,
     multikeyMap,
+    strictMultiMap,
+    validateTimestamp,
     allowedKeyCheck
   } = metadata;
 
   // if value is null and defaultValue is supplied - use that
-  if (!value) {
+  if (!isDefinedAndNotNull(value)) {
     return defaultValue || value;
   }
   // we've got a correct value. start processing
   let formattedVal = value;
+
+  /**
+   * validate allowed time difference
+   */
+  if (validateTimestamp) {
+    const {
+      allowedPastTimeDifference,
+      allowedPastTimeUnit, // seconds, minutes, hours
+      allowedFutureTimeDifference,
+      allowedFutureTimeUnit // seconds, minutes, hours
+    } = validateTimestamp;
+
+    let pastTimeDifference;
+    let futureTimeDifference;
+
+    const currentTime = moment.unix(moment().format("X"));
+    const time = moment.unix(moment(formattedVal).format("X"));
+
+    switch (allowedPastTimeUnit) {
+      case "seconds":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asSeconds()
+        );
+        break;
+      case "minutes":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asMinutes()
+        );
+        break;
+      case "hours":
+        pastTimeDifference = Math.ceil(
+          moment.duration(currentTime.diff(time)).asHours()
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (pastTimeDifference > allowedPastTimeDifference) {
+      throw new Error(
+        `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
+      );
+    }
+
+    if (pastTimeDifference <= 0) {
+      switch (allowedFutureTimeUnit) {
+        case "seconds":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asSeconds()
+          );
+          break;
+        case "minutes":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asMinutes()
+          );
+          break;
+        case "hours":
+          futureTimeDifference = Math.ceil(
+            moment.duration(time.diff(currentTime)).asHours()
+          );
+          break;
+        default:
+          break;
+      }
+
+      if (futureTimeDifference > allowedFutureTimeDifference) {
+        throw new Error(
+          `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
+        );
+      }
+    }
+  }
 
   // handle type and format
   if (type) {
@@ -479,6 +756,12 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           formatTimeStamp(formattedVal, typeFormat) / 1000
         );
         break;
+      case "microSecondTimestamp":
+        formattedVal = moment.unix(moment(formattedVal).format("X"));
+        formattedVal =
+          formattedVal.toDate().getTime() * 1000 +
+          formattedVal.toDate().getMilliseconds();
+        break;
       case "flatJson":
         formattedVal = flattenJson(formattedVal);
         break;
@@ -490,6 +773,10 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
         break;
       case "jsonStringifyOnFlatten":
         formattedVal = JSON.stringify(flattenJson(formattedVal));
+        break;
+      case "dobInMMDD":
+        formattedVal = String(formattedVal).slice(5);
+        formattedVal = formattedVal.replace("-", "/");
         break;
       case "jsonStringifyOnObject":
         // if already a string, will not stringify
@@ -523,6 +810,9 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
       case "toInt":
         formattedVal = parseInt(formattedVal, 10);
         break;
+      case "toLower":
+        formattedVal = formattedVal.toString().toLowerCase();
+        break;
       case "hashToSha256":
         formattedVal =
           integrationsObj && integrationsObj.hashed
@@ -540,6 +830,11 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
           .replace("https://", "")
           .replace("http://", "");
         break;
+      case "domainUrlV2": {
+        const url = new URL(formattedVal);
+        formattedVal = url.hostname.replace("www.", "");
+        break;
+      }
       case "IsBoolean":
         if (!(typeof formattedVal === "boolean")) {
           logger.debug("Boolean value missing, so dropping it");
@@ -585,11 +880,16 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
   //     "destVal": "F"
   //   }
   // ]
-  if (multikeyMap) {
+  if (multikeyMap || strictMultiMap) {
+    const finalKeyMap = multikeyMap || strictMultiMap;
     let foundVal = false;
-    if (Array.isArray(multikeyMap)) {
-      multikeyMap.some(map => {
-        if (!map.sourceVal || !map.destVal || !Array.isArray(map.sourceVal)) {
+    if (Array.isArray(finalKeyMap)) {
+      finalKeyMap.some(map => {
+        if (
+          !map.sourceVal ||
+          !isDefinedAndNotNull(map.destVal) ||
+          !Array.isArray(map.sourceVal)
+        ) {
           logger.warn(
             "multikeyMap skipped: sourceVal and destVal must be of valid type"
           );
@@ -606,13 +906,29 @@ const handleMetadataForValue = (value, metadata, integrationsObj = null) => {
     } else {
       logger.warn("multikeyMap skipped: multikeyMap must be an array");
     }
-    if (!foundVal) formattedVal = undefined;
+    if (!foundVal) {
+      if (strictMultiMap) {
+        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
+      } else {
+        formattedVal = undefined;
+      }
+    }
   }
 
   if (allowedKeyCheck) {
     let foundVal = false;
     if (Array.isArray(allowedKeyCheck)) {
       allowedKeyCheck.some(key => {
+        switch (key.type) {
+          case "toLowerCase":
+            formattedVal = formattedVal.toLowerCase();
+            break;
+          case "toUpperCase":
+            formattedVal = formattedVal.toUpperCase();
+            break;
+          default:
+            break;
+        }
         if (key.sourceVal.includes(formattedVal)) {
           foundVal = true;
           return true;
@@ -706,13 +1022,14 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
           ? getFieldValueFromMessage(message, sourceKeys)
           : getValueFromMessage(message, sourceKeys),
         metadata,
+        destKey,
         integrationsObj
       );
 
       if (value || value === 0 || value === false) {
         if (destKey) {
           // set the value only if correct
-          set(payload, destKey, value);
+          _.set(payload, destKey, value);
         } else {
           // to set to root and flatten later
           payload[""] = value;
@@ -759,6 +1076,49 @@ function getDestinationExternalID(message, type) {
   }
   return destinationExternalId;
 }
+
+// Get id, identifierType and object type from externalId for rETL
+// type will be of the form: <DESTINATION-NAME>-<object>
+const getDestinationExternalIDInfoForRetl = (message, destination) => {
+  let externalIdArray = [];
+  let destinationExternalId = null;
+  let identifierType = null;
+  let objectType = null;
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(`${destination}-`)) {
+        destinationExternalId = extIdObj.id;
+        objectType = type.replace(`${destination}-`, "");
+        identifierType = extIdObj.identifierType;
+      }
+    });
+  }
+  return { destinationExternalId, objectType, identifierType };
+};
+
+const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  let externalIdArray = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  let obj;
+  if (externalIdArray) {
+    // some stops the execution when the element is found
+    externalIdArray.some(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(`${destination}-`)) {
+        obj = extIdObj;
+        return true;
+      }
+      return false;
+    });
+  }
+  return obj;
+};
 
 const isObject = value => {
   const type = typeof value;
@@ -1040,6 +1400,42 @@ const adduserIdFromExternalId = message => {
     message.userId = externalId;
   }
 };
+
+/**
+ * These are keys where the status-code can be present in the error object
+ */
+const errorStatusCodeKeys = ["response.status", "code", "status"];
+/**
+ * The status-code is expected to be present in one of the following properties
+ * - response.status
+ * - code
+ * - status
+ * The first matched status-code will be returned
+ * If not the defaultStatusCode will be returned
+ * If the value of defaultStatusCode is not set or is not a number then 400 will be returned by default
+ *
+ * Note: The not a number check is performed using lodash's isNumber function
+ *
+ * @param {object} error error object when an error is thrown
+ * @param {Number} defaultStatusCode default status code that has to be set
+ * @returns {Number}
+ */
+const getErrorStatusCode = (error, defaultStatusCode = 400) => {
+  try {
+    let defaultStCode = defaultStatusCode;
+    if (!_.isNumber(defaultStatusCode)) {
+      defaultStCode = 400;
+    }
+    const errStCode = errorStatusCodeKeys
+      .map(statusKey => get(error, statusKey))
+      .find(stCode => _.isNumber(stCode));
+    return errStCode || defaultStCode;
+  } catch (err) {
+    logger.error("Failed in getErrorStatusCode", err);
+    return defaultStatusCode;
+  }
+};
+
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
@@ -1053,20 +1449,29 @@ class CustomError extends Error {
  * @param {*} destination
  * @param {*} transformStage
  */
-function generateErrorObject(error, destination, transformStage) {
-  // check err is object
-  const { status, message, destinationResponse } = error;
+function generateErrorObject(error, destination = "", transformStage) {
+  const { message, destinationResponse } = error;
   let { statTags } = error;
   if (!statTags) {
     statTags = {
-      destination,
+      destType: destination,
       stage: transformStage,
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
     };
   }
+  // In previous versions of cdk, we had destination tag
+  // This block is mainly to support it and also for backward for non-cdk destinations
+  if (statTags.destination) {
+    statTags.destType = statTags.destination;
+    delete statTags.destination;
+  }
+  if (statTags.destType) {
+    // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
+    statTags.destType = statTags.destType.toUpperCase();
+  }
   const response = {
-    status: status || 400,
-    message,
+    status: getErrorStatusCode(error),
+    message: message || "Error occurred while processing the payload.",
     destinationResponse,
     statTags
   };
@@ -1129,8 +1534,203 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform.toLowerCase());
+  return appleOsNames.includes(platform?.toLowerCase());
 }
+
+function removeHyphens(str) {
+  return str.replace(/-/g, "");
+}
+
+function isCdkDestination(event) {
+  // TODO: maybe dont need all these checks in place
+  return (
+    event.destination &&
+    event.destination.DestinationDefinition &&
+    event.destination.DestinationDefinition.Config &&
+    event.destination.DestinationDefinition.Config.cdkEnabled
+  );
+}
+
+/**
+ * This function helps to remove any invalid object values from the config generated by dynamicForm,
+ * dynamicCustomForm, and dynamicSelectForm web app form elements.
+ *
+ * example:
+ * input: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    },
+                    {
+                        "to": "Schedule"
+                    }
+                ]
+ * output: "eventsToEvents": [
+                    {
+                        "from": "spin_result",
+                        "to": "Schedule"
+                    }
+                ]
+
+ * @param {*} attributeArray -> This is the config output (array) from dynamicForm/dynamicCustomForm/dynamicSelectForm element.
+ * @param {*} keyLeft -> This is the name of the leftKey, in general it is 'from'.
+ * @param {*} keyRight -> This is the name of the rightKey, in general it is 'to'.
+ * @param {*} destinationType -> This is the type of the destination.
+ * @param {*} destinationId -> This is the id of the destination.
+ * @returns
+ */
+function getValidDynamicFormConfig(
+  attributeArray,
+  keyLeft,
+  keyRight,
+  destinationType,
+  destinationId
+) {
+  const res = attributeArray.filter(element => {
+    return (
+      (element[keyLeft] || element[keyLeft] === "") &&
+      (element[keyRight] || element[keyRight] === "")
+    );
+  });
+  if (res.length < attributeArray.length) {
+    stats.increment("dest_transform_invalid_dynamicConfig_count", 1, {
+      destinationType,
+      destinationId
+    });
+  }
+  return res;
+}
+
+/**
+ * error handler during transformation of a single rudder event for rt transform destinaiton
+ *
+ * This function is to be used only when we have a simple error handling scenario
+ * If some customisation wrt error handling is required, we recommend to not use this function
+ *
+ * @param {object} input - single rudder event
+ * @param {*} error - error occurred during transformation of a single rudder event
+ * @param {string} destType - destination name
+ * @returns
+ */
+const handleRtTfSingleEventError = (input, error, destType) => {
+  const errObj = generateErrorObject(
+    error,
+    destType, // Preference is destination definition name
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+  );
+  return getErrorRespEvents(
+    [input.metadata],
+    errObj.status,
+    errObj.message,
+    errObj.statTags
+  );
+};
+
+/**
+ * This method is used to check if the input events sent to router transformation are valid
+ * It is to be used only for router transform destinations
+ *
+ * Example:
+ * ```
+ * const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+ * if (errorRespEvents.length > 0) {
+ *  return errorRespEvents;
+ * }
+ * ```
+ * @param {Array<object>} inputs - list of rudder events to be transformed
+ * @param {String} destType - destination name
+ * @returns {Array<object> | []}
+ */
+const checkInvalidRtTfEvents = (inputs, destType) => {
+  let destTyp = destType;
+  if (!destTyp) {
+    destTyp = "";
+  }
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array", {
+      destType: destTyp.toUpperCase(),
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
+    });
+    return [respEvents];
+  }
+  return [];
+};
+
+/**
+ * This function serves as a simple implementation of router transformation destinations
+ *
+ * <strong>Note</strong>:
+ * Don't use this method when the following are the scenarios
+ *  - When a specific router transformation logic is involved
+ *  - When batching is involved
+ * @param {Array<object>} inputs - List of rudder events to be transformed
+ * @param {String} destType - destination definition name
+ * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
+ * @returns
+ */
+const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async input => {
+      try {
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await singleTfFunc(input);
+        }
+
+        return getSuccessRespEvents(resp, [input.metadata], input.destination);
+      } catch (error) {
+        return handleRtTfSingleEventError(input, error, destType);
+      }
+    })
+  );
+  return respList;
+};
+
+/**
+ * Flattens the input payload to a single level of payload
+ * @param {*} payload Input payload that needs to be flattened
+ * @returns the flattened payload at all levels
+ * Example:
+ * payload={
+    "address": {
+        "city": {
+            "Name": "Delhi",
+            "pincode": 123455
+        },
+        "Country": "India"
+    },
+    "id": 1
+}
+flattenPayload={
+    "Name": "Delhi",
+    "pincode": 123455,
+    "Country": "India",
+    "id": 1
+}
+ */
+const flattenMultilevelPayload = payload => {
+  const flattenedPayload = {};
+  if (payload) {
+    Object.keys(payload).forEach(v => {
+      if (typeof payload[v] === "object" && !Array.isArray(payload[v])) {
+        const temp = flattenMultilevelPayload(payload[v]);
+        Object.keys(temp).forEach(i => {
+          flattenedPayload[i] = temp[i];
+        });
+      } else {
+        flattenedPayload[v] = payload[v];
+      }
+    });
+  }
+  return flattenedPayload;
+};
 
 // ========================================================================
 // EXPORTS
@@ -1141,12 +1741,14 @@ module.exports = {
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
+  base64Convertor,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
   defaultBatchRequestConfig,
   defaultDeleteRequestConfig,
   defaultGetRequestConfig,
+  defaultPatchRequestConfig,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
   defaultRequestConfig,
@@ -1154,44 +1756,59 @@ module.exports = {
   extractCustomFields,
   flattenJson,
   flattenMap,
+  flattenMultilevelPayload,
   formatTimeStamp,
   formatValue,
-  generateUUID,
-  getSuccessRespEvents,
   generateErrorObject,
+  generateUUID,
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDestinationExternalIDInfoForRetl,
+  getDestinationExternalIDObjectForRetl,
   getDeviceModel,
   getErrorRespEvents,
+  getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
   getFullName,
   getHashFromArray,
+  getHashFromArrayWithDuplicate,
+  getHashFromArrayWithValueAsObject,
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
   getParsedIP,
   getStringValueOfJSON,
+  getSuccessRespEvents,
   getTimeDifference,
   getType,
+  getValidDynamicFormConfig,
   getValueFromMessage,
+  getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
+  handleSourceKeysOperation,
+  isAppleFamily,
   isBlank,
+  isCdkDestination,
   isDefined,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isEmptyObject,
-  isHttpStatusSuccess,
   isHttpStatusRetryable,
+  isHttpStatusSuccess,
   isNonFuncObject,
+  isOAuthDestination,
+  isOAuthSupported,
   isObject,
   isPrimitive,
   isValidUrl,
+  removeHyphens,
   removeNullValues,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
+  removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedValues,
   returnArrayOfSubarrays,
   setValues,
@@ -1199,7 +1816,8 @@ module.exports = {
   toTitleCase,
   toUnixTimestamp,
   updatePayload,
-  isOAuthSupported,
-  isOAuthDestination,
-  isAppleFamily
+  checkInvalidRtTfEvents,
+  simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  getErrorStatusCode
 };

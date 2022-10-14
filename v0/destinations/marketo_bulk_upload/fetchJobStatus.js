@@ -8,7 +8,7 @@ const {
   RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY
 } = require("./util");
-const { httpSend } = require("../../../adapters/network");
+const { httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
 
 const getFailedJobStatus = async event => {
@@ -18,15 +18,14 @@ const getFailedJobStatus = async event => {
   // Get status of each lead for failed leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
-    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`,
-    method: "get",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`
     }
   };
+  const failedLeadUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
   const startTime = Date.now();
-  const resp = await httpSend(requestOptions);
+  const resp = await httpGET(failedLeadUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {
@@ -124,15 +123,14 @@ const getWarningJobStatus = async event => {
   // Get status of each lead for warning leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {
-    url: `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`,
-    method: "get",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`
     }
   };
   const startTime = Date.now();
-  const resp = await httpSend(requestOptions);
+  const warningJobStatusUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
+  const resp = await httpGET(warningJobStatusUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.gauge("marketo_bulk_upload_fetch_job_time", requestTime, {

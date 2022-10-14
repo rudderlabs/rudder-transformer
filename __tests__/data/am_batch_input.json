@@ -47,10 +47,14 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api.eu.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "EU" }
+      }
     },
     {
       "message": {
@@ -90,7 +94,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -130,7 +138,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -171,7 +183,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -212,7 +228,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -237,7 +257,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -262,7 +286,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     }
   ],
   [
@@ -314,7 +342,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -352,7 +384,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -390,7 +426,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -429,7 +469,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -468,7 +512,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -493,7 +541,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -518,7 +570,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     }
   ],
 
@@ -600,7 +656,11 @@
             ]
           }
         },
-        "Config": { "appKey": "asdf", "dataCenter": "asdfasdf" },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf",
+          "residencyServer": "standard"
+        },
         "Enabled": true,
         "Transformations": [],
         "IsProcessorEnabled": false
@@ -683,7 +743,11 @@
             ]
           }
         },
-        "Config": { "appKey": "asdf", "dataCenter": "asdfasdf" },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf",
+          "residencyServer": "standard"
+        },
         "Enabled": true,
         "Transformations": [],
         "IsProcessorEnabled": false
@@ -766,7 +830,11 @@
             ]
           }
         },
-        "Config": { "appKey": "asdf", "dataCenter": "asdfasdf" },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf",
+          "residencyServer": "standard"
+        },
         "Enabled": true,
         "Transformations": [],
         "IsProcessorEnabled": false
@@ -849,7 +917,11 @@
             ]
           }
         },
-        "Config": { "appKey": "asdf", "dataCenter": "asdfasdf" },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf",
+          "residencyServer": "standard"
+        },
         "Enabled": true,
         "Transformations": [],
         "IsProcessorEnabled": false
@@ -932,7 +1004,11 @@
             ]
           }
         },
-        "Config": { "appKey": "asdf", "dataCenter": "asdfasdf" },
+        "Config": {
+          "appKey": "asdf",
+          "dataCenter": "asdfasdf",
+          "residencyServer": "standard"
+        },
         "Enabled": true,
         "Transformations": [],
         "IsProcessorEnabled": false
@@ -991,7 +1067,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1031,7 +1111,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1071,7 +1155,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1112,7 +1200,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1153,7 +1245,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1178,7 +1274,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1203,7 +1303,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     }
   ],
 
@@ -1257,7 +1361,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1297,7 +1405,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1337,7 +1449,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1378,7 +1494,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1419,7 +1539,11 @@
         "endpoint": "https://api.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1444,7 +1568,11 @@
         "endpoint": "https://api.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     },
     {
       "message": {
@@ -1469,7 +1597,11 @@
         "endpoint": "https://api.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
-      "destination": { "ID": "a", "url": "a" }
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": { "residencyServer": "standard" }
+      }
     }
   ]
 ]

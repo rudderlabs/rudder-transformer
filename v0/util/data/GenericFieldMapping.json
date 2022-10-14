@@ -7,7 +7,12 @@
     "originalTimestamp"
   ],
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
-  "email": ["traits.email", "context.traits.email", "properties.email", "context.externalId.0.id"],
+  "email": [
+    "traits.email",
+    "context.traits.email",
+    "properties.email",
+    "context.externalId.0.id"
+  ],
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
@@ -29,6 +34,7 @@
     "context.traits.id"
   ],
   "name": ["traits.name", "context.traits.name"],
+  "title": ["traits.title", "context.traits.title"],
   "firstName": [
     "traits.firstName",
     "traits.firstname",
@@ -53,12 +59,74 @@
     "context.traits.middleName",
     "context.traits.middle_name"
   ],
+  "gender": ["traits.gender", "context.traits.gender"],
   "phone": ["traits.phone", "context.traits.phone", "properties.phone"],
   "pageTitle": ["context.page.title", "properties.title"],
   "pageUrl": ["context.page.url", "properties.url"],
+  "pagePath": ["context.page.path", "properties.path"],
   "website": ["traits.website", "context.traits.website", "properties.website"],
   "GApageUrl": ["properties.url", "context.page.url"],
   "GApageRef": ["properties.referrer", "context.page.referrer"],
   "GApageTitle": ["properties.title", "context.page.title"],
-  "GApageSearch": ["properties.search", "context.page.search"]
+  "GApageSearch": ["properties.search", "context.page.search"],
+  "birthday": [
+    "traits.birthday",
+    "context.traits.birthday",
+    "traits.dateOfBirth",
+    "context.traits.dateOfBirth",
+    "traits.dateofbirth",
+    "context.dateofbirth",
+    "traits.dob",
+    "context.traits.dob",
+    "traits.DOB",
+    "context.traits.DOB"
+  ],
+
+  "state": ["traits.state", "context.traits.state"],
+  "country": ["traits.country", "context.traits.country"],
+  "region": ["traits.region", "context.traits.region"],
+  "city": ["traits.address.city", "context.traits.address.city"],
+
+  "avatar": [
+    "traits.avatar",
+    "context.traits.avatar",
+    "traits.avatarURL",
+    "context.traits.avatarURL",
+    "traits.avatar_URL",
+    "context.traits.avatar_URL"
+  ],
+  "zipcode": [
+    "traits.zip",
+    "traits.zipcode",
+    "traits.zip_code",
+    "traits.zipCode",
+    "traits.postalcode",
+    "traits.postal_code",
+    "traits.postalCode",
+    "traits.address.zipcode",
+    "traits.address.zip_code",
+    "traits.address.zip",
+    "traits.address.zipCode",
+    "traits.address.postalcode",
+    "traits.address.postal_code",
+    "traits.address.postalCode",
+    "context.traits.zip",
+    "context.traits.zipcode",
+    "context.traits.zip_code",
+    "context.traits.zipCode",
+    "context.traits.postalcode",
+    "context.traits.postal_code",
+    "context.traits.postalCode",
+    "context.traits.address.zip",
+    "context.traits.address.zipcode",
+    "context.traits.address.zip_code",
+    "context.traits.address.zipCode",
+    "context.traits.address.postalcode",
+    "context.traits.address.postal_code",
+    "context.traits.address.postalCode"
+  ],
+  "sessionId": [
+    "session_id",
+    "context.sessionId"
+  ]
 }

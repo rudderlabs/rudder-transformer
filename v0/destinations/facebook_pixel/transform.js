@@ -1,17 +1,19 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require("sha256");
 const get = require("get-value");
+const moment = require("moment");
+const stats = require("../../../util/stats");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
-  STANDARD_ECOMM_EVENTS_TYPE
+  STANDARD_ECOMM_EVENTS_TYPE,
+  DESTINATION
 } = require("./config");
 const { EventType } = require("../../../constants");
 
 const {
-  CustomError,
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -20,64 +22,62 @@ const {
   getErrorRespEvents,
   getIntegrationsObj,
   getSuccessRespEvents,
-  isObject
+  isObject,
+  getValidDynamicFormConfig
 } = require("../../util");
 
-/**  format revenue according to fb standards with max two decimal places.
- * @param revenue
- * @return number
- */
+const ErrorBuilder = require("../../util/error");
 
-const formatRevenue = revenue => {
-  return Number((revenue || 0).toFixed(2));
+const {
+  deduceFbcParam,
+  formatRevenue,
+  getContentType,
+  transformedPayloadData
+} = require("./utils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+
+const statTags = {
+  destType: DESTINATION,
+  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE
 };
 
 /**
+ * This method gets content category with proper error-handling
  *
- * @param {*} message Rudder Payload
- * @param {*} defaultValue product / product_group
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
- *
- * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
- * If category is clothing it will be set to ["product"]
- * @return Content Type array as defined in:
- * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
+ * @param {*} category
+ * @returns The content category as a string
  */
-const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations } = message;
+const getContentCategory = category => {
+  let contentCategory = category;
+  if (Array.isArray(contentCategory)) {
+    contentCategory = contentCategory.map(String).join(",");
+  }
   if (
-    integrations &&
-    integrations.FacebookPixel &&
-    isObject(integrations.FacebookPixel) &&
-    integrations.FacebookPixel.contentType
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    typeof contentCategory !== "object"
   ) {
-    return integrations.FacebookPixel.contentType;
+    contentCategory = String(contentCategory);
   }
-
-  let { category } = message.properties;
-  if (!category) {
-    const { products } = message.properties;
-    if (products && products.length > 0 && Array.isArray(products)) {
-      if (isObject(products[0])) {
-        category = products[0].category;
-      }
-    }
-  } else {
-    if (categoryToContent === undefined) {
-      categoryToContent = [];
-    }
-    const mapped = categoryToContent;
-    const mappedTo = mapped.reduce((filtered, map) => {
-      if (map.from === category) {
-        filtered = map.to;
-      }
-      return filtered;
-    }, "");
-    if (mappedTo.length) {
-      return mappedTo;
-    }
+  if (
+    contentCategory &&
+    typeof contentCategory !== "string" &&
+    !Array.isArray(contentCategory) &&
+    typeof contentCategory === "object"
+  ) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "'properties.category' must be either be a string or an Array"
+      )
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
-  return defaultValue;
+  return contentCategory;
 };
 
 /**
@@ -88,34 +88,46 @@ const getContentType = (message, defaultValue, categoryToContent) => {
  * Handles order completed and checkout started types of specific events
  */
 const handleOrder = (message, categoryToContent) => {
-  const { products } = message.properties;
-  const value = formatRevenue(message.properties.revenue);
+  const { products, revenue } = message.properties;
+  const value = formatRevenue(revenue);
+
   const contentType = getContentType(message, "product", categoryToContent);
   const contentIds = [];
   const contents = [];
   const { category } = message.properties;
-  if (products && products.length > 0 && Array.isArray(products)) {
-    for (let i = 0; i < products.length; i += 1) {
-      const pId =
-        products[i].product_id || products[i].sku || products[i].id || "";
-      contentIds.push(pId);
-      const content = {
-        id: pId,
-        quantity: products[i].quantity,
-        item_price: products[i].price
-      };
-      contents.push(content);
-    }
-    contents.forEach(content => {
-      if (content.id === "") {
-        throw new CustomError("Product id is required. Event not sent", 400);
+  if (products) {
+    if (products.length > 0 && Array.isArray(products)) {
+      for (const singleProduct of products) {
+        const pId =
+          singleProduct.product_id || singleProduct.sku || singleProduct.id;
+        if (pId) {
+          contentIds.push(pId);
+          // required field for content
+          // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+          const content = {
+            id: pId,
+            quantity:
+              singleProduct.quantity || message.properties.quantity || 1,
+            item_price: singleProduct.price || message.properties.price
+          };
+          contents.push(content);
+        }
       }
-    });
-  } else {
-    throw new CustomError("Product is not an object. Event not sent", 400);
+    } else {
+      throw new ErrorBuilder()
+        .setMessage("'properties.products' is not sent as an Array<Object>")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+    }
   }
+
   return {
-    content_category: category,
+    content_category: getContentCategory(category),
     content_ids: contentIds,
     content_type: contentType,
     currency: message.properties.currency || "USD",
@@ -138,18 +150,27 @@ const handleProductListViewed = (message, categoryToContent) => {
   const contents = [];
   const { products } = message.properties;
   if (products && products.length > 0 && Array.isArray(products)) {
-    products.forEach(product => {
+    products.forEach((product, index) => {
       if (isObject(product)) {
-        const productId = product.product_id;
+        const productId = product.product_id || product.sku || product.id;
         if (productId) {
           contentIds.push(productId);
           contents.push({
             id: productId,
-            quantity: message.properties.quantity
+            quantity: product.quantity || message.properties.quantity || 1,
+            item_price: product.price
           });
         }
       } else {
-        throw new CustomError("Product is not an object. Event not sent", 400);
+        throw new ErrorBuilder()
+          .setMessage(`'properties.products[${index}]' is not an object`)
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
       }
     });
   }
@@ -157,18 +178,17 @@ const handleProductListViewed = (message, categoryToContent) => {
   if (contentIds.length > 0) {
     contentType = "product";
   } else {
-    contentIds.push(message.properties.category || "");
-    contents.push({
-      id: message.properties.category || "",
-      quantity: 1
-    });
-    contentType = "product_group";
-  }
-  contents.forEach(content => {
-    if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
+    //  for viewContent event content_ids and content arrays are not mandatory
+    if (message.properties?.category) {
+      contentIds.push(message.properties.category);
+      contents.push({
+        id: message.properties.category,
+        quantity: 1
+      });
+      contentType = "product_group";
     }
-  });
+  }
+
   return {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
@@ -183,13 +203,13 @@ const handleProductListViewed = (message, categoryToContent) => {
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
+  const contentIds = [];
+  const contents = [];
   const useValue = valueFieldIdentifier === "properties.value";
-  const contentIds = [
+  const contentId =
     message.properties.product_id ||
-      message.properties.id ||
-      message.properties.sku ||
-      ""
-  ];
+    message.properties.id ||
+    message.properties.sku;
   const contentType = getContentType(message, "product", categoryToContent);
   const contentName =
     message.properties.product_name || message.properties.name || "";
@@ -198,174 +218,35 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const value = useValue
     ? formatRevenue(message.properties.value)
     : formatRevenue(message.properties.price);
-  const contents = [
-    {
-      id:
-        message.properties.product_id ||
-        message.properties.id ||
-        message.properties.sku ||
-        "",
-      quantity: message.properties.quantity,
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message.properties.quantity || 1,
       item_price: message.properties.price
-    }
-  ];
-  contents.forEach(content => {
-    if (content.id === "") {
-      throw new CustomError("Product id is required. Event not sent", 400);
-    }
-  });
+    });
+  }
   return {
     content_ids: contentIds,
     content_type: contentType,
     content_name: contentName,
-    content_category: contentCategory,
+    content_category: getContentCategory(contentCategory),
     currency,
     value,
     contents
   };
 };
 
-/** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
- Also checks if it is a standard event and sends properties only if it is mentioned in our configs.
- @param message --> the rudder payload
-
- {
-      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-      destination_props: { Fb: { app_id: 'RudderFbApp' } },
-      context: {
-        device: {
-          id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
-          manufacturer: 'Xiaomi',
-          model: 'Redmi 6',
-          name: 'xiaomi'
-        },
-        network: { carrier: 'Banglalink' },
-        os: { name: 'android', version: '8.1.0' },
-        screen: { height: '100', density: 50 },
-        traits: {
-          email: 'abc@gmail.com',
-          anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1'
-        }
-      },
-      event: 'spin_result',
-      integrations: {
-        All: true,
-        FacebookPixel: {
-          dataProcessingOptions: [Array],
-          fbc: 'fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890',
-          fbp: 'fb.1.1554763741205.234567890',
-          fb_login_id: 'fb_id',
-          lead_id: 'lead_id'
-        }
-      },
-      message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-      properties: { revenue: 400, additional_bet_index: 0 },
-      timestamp: '2019-09-01T15:46:51.693229+05:30',
-      type: 'track'
-    }
-
- @param customData --> properties
- { revenue: 400, additional_bet_index: 0 }
-
- @param blacklistPiiProperties -->
- [ { blacklistPiiProperties: 'phone', blacklistPiiHash: true } ] // hashes the phone property
-
- @param whitelistPiiProperties -->
- [ { whitelistPiiProperties: 'email' } ] // sets email
-
- @param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
- false
-
- @param eventCustomProperties -->
- [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
-
- */
-
-const transformedPayloadData = (
+const responseBuilderSimple = (
   message,
-  customData,
-  blacklistPiiProperties,
-  whitelistPiiProperties,
-  isStandard,
-  eventCustomProperties,
-  integrationsObj
+  category,
+  destination,
+  categoryToContent
 ) => {
-  const defaultPiiProperties = [
-    "email",
-    "firstName",
-    "lastName",
-    "firstname",
-    "lastname",
-    "first_name",
-    "last_name",
-    "gender",
-    "city",
-    "country",
-    "phone",
-    "state",
-    "zip",
-    "birthday"
-  ];
-  blacklistPiiProperties = blacklistPiiProperties || [];
-  whitelistPiiProperties = whitelistPiiProperties || [];
-  eventCustomProperties = eventCustomProperties || [];
-  const customBlackListedPiiProperties = {};
-  const customWhiteListedProperties = {};
-  const customEventProperties = {};
-  for (let i = 0; i < blacklistPiiProperties.length; i += 1) {
-    const singularConfigInstance = blacklistPiiProperties[i];
-    customBlackListedPiiProperties[
-      singularConfigInstance.blacklistPiiProperties
-    ] = singularConfigInstance.blacklistPiiHash;
-  }
-  for (let i = 0; i < whitelistPiiProperties.length; i += 1) {
-    const singularConfigInstance = whitelistPiiProperties[i];
-    customWhiteListedProperties[
-      singularConfigInstance.whitelistPiiProperties
-    ] = true;
-  }
-  for (let i = 0; i < eventCustomProperties.length; i += 1) {
-    const singularConfigInstance = eventCustomProperties[i];
-    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
-  }
-  Object.keys(customData).forEach(eventProp => {
-    const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
-    const isProperyWhiteListed =
-      customWhiteListedProperties[eventProp] || false;
-    if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete customData[eventProp];
-    }
-
-    if (
-      Object.prototype.hasOwnProperty.call(
-        customBlackListedPiiProperties,
-        eventProp
-      )
-    ) {
-      if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] =
-          integrationsObj && integrationsObj.hashed
-            ? String(message.properties[eventProp])
-            : sha256(String(message.properties[eventProp]));
-      } else {
-        delete customData[eventProp];
-      }
-    }
-    const isCustomProperty = customEventProperties[eventProp] || false;
-    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete customData[eventProp];
-    }
-  });
-
-  return customData;
-};
-
-const responseBuilderSimple = (message, category, destination) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
   const {
     blacklistPiiProperties,
-    categoryToContent,
     eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
@@ -376,7 +257,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, "fb_pixel");
 
-  const endpoint = `https://graph.facebook.com/v11.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v13.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
@@ -392,6 +273,7 @@ const responseBuilderSimple = (message, category, destination) => {
         integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
     }
     delete userData.name;
+    userData.fbc = userData.fbc || deduceFbcParam(message);
   }
 
   let customData = {};
@@ -402,11 +284,20 @@ const responseBuilderSimple = (message, category, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
     "fb_pixel"
   );
+
   if (commonData.action_source) {
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw new CustomError("Invalid Action Source type", 400);
+      throw new ErrorBuilder()
+        .setMessage("Invalid Action Source type")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
     }
   }
   if (category.type !== "identify") {
@@ -422,10 +313,17 @@ const responseBuilderSimple = (message, category, destination) => {
       category.standard = true;
     }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw new CustomError(
-        "No properties for the event so the event cannot be sent.",
-        400
-      );
+      throw new ErrorBuilder()
+        .setMessage(
+          `After excluding ${FB_PIXEL_DEFAULT_EXCLUSION}, no fields are present in 'properties' for a standard event`
+        )
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
     }
     customData = transformedPayloadData(
       message,
@@ -463,11 +361,31 @@ const responseBuilderSimple = (message, category, destination) => {
         case "order completed":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "Purchase";
           break;
         case "products searched":
+          const query = message.properties?.query;
+          /**
+           * Facebook Pixel states "search_string" a string type
+           * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
+           * But it accepts "number" and "boolean" types. So, we are also doing the same by accepting "number" and "boolean"
+           * and throwing an error if "Object" or other types are being sent.
+           */
+          const validQueryType = ["string", "number", "boolean"];
+          if (query && !validQueryType.includes(typeof query)) {
+            throw new ErrorBuilder()
+              .setMessage("'query' should be in string format only")
+              .setStatus(400)
+              .setStatTags({
+                ...statTags,
+                meta:
+                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                    .BAD_EVENT
+              })
+              .build();
+          }
           customData = {
             ...customData,
             search_string: message.properties.query
@@ -477,7 +395,7 @@ const responseBuilderSimple = (message, category, destination) => {
         case "checkout started":
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent, valueFieldIdentifier)
+            ...handleOrder(message, categoryToContent)
           };
           commonData.event_name = "InitiateCheckout";
           break;
@@ -491,7 +409,19 @@ const responseBuilderSimple = (message, category, destination) => {
           commonData.event_name = category.event;
           break;
         default:
-          throw new CustomError("This standard event does not exist", 400);
+          throw new ErrorBuilder()
+            .setMessage(
+              `${category.standard} type of standard event does not exist`
+            )
+            .setStatus(400)
+            .setStatTags({
+              ...statTags,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .BAD_EVENT
+            })
+            .build();
+        // throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
         ? message.properties.currency || "USD"
@@ -524,6 +454,8 @@ const responseBuilderSimple = (message, category, destination) => {
     }
   }
 
+  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
@@ -546,17 +478,76 @@ const responseBuilderSimple = (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new ErrorBuilder()
+    .setMessage("Payload could not be constructed")
+    .setStatus(400)
+    .setStatTags({
+      ...statTags,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("'type' is missing")
+      .setStatus(400)
+      .setStatTags({
+        ...statTags,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
-  const { advancedMapping, eventsToEvents } = destination.Config;
+
+  const timeStamp = message.originalTimestamp || message.timestamp;
+  if (timeStamp) {
+    const start = moment.unix(moment(timeStamp).format("X"));
+    const current = moment.unix(moment().format("X"));
+    // calculates past event in days
+    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+    // calculates future event in minutes
+    const deltaMin = Math.ceil(
+      moment.duration(start.diff(current)).asMinutes()
+    );
+    if (deltaDay > 7 || deltaMin > 1) {
+      // TODO: Remove after testing in mirror transformer
+      stats.increment("fb_pixel_timestamp_error", 1, {
+        destinationId: destination.ID
+      });
+      throw new ErrorBuilder()
+        .setMessage(
+          "Events must be sent within seven days of their occurrence or up to one minute in the future."
+        )
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
+    }
+  }
+
+  let eventsToEvents;
+  if (destination.Config.eventsToEvents)
+    eventsToEvents = getValidDynamicFormConfig(
+      destination.Config.eventsToEvents,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  let categoryToContent;
+  if (destination.Config.categoryToContent)
+    categoryToContent = getValidDynamicFormConfig(
+      destination.Config.categoryToContent,
+      "from",
+      "to",
+      "FB_PIXEL",
+      destination.ID
+    );
+  const { advancedMapping } = destination.Config;
   let standard;
   let standardTo = "";
   let checkEvent;
@@ -568,16 +559,35 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw new CustomError(
-          "Advanced Mapping is not on Rudder Dashboard. Identify events will not be sent.",
-          400
-        );
+        throw new ErrorBuilder()
+          .setMessage(
+            'For identify events, "Advanced Mapping" configuration must be enabled on the RudderStack dashboard'
+          )
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                .CONFIGURATION
+          })
+          .build();
       }
     case EventType.PAGE:
     case EventType.SCREEN:
       category = CONFIG_CATEGORIES.PAGE;
       break;
     case EventType.TRACK:
+      if (!message.event) {
+        throw new ErrorBuilder()
+          .setMessage("'event' is required")
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
       standard = eventsToEvents;
       if (standard) {
         standardTo = standard.reduce((filtered, standards) => {
@@ -637,10 +647,23 @@ const processEvent = (message, destination) => {
       }
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new ErrorBuilder()
+        .setMessage("Message type not supported")
+        .setStatus(400)
+        .setStatTags({
+          ...statTags,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(
+    message,
+    category,
+    destination,
+    categoryToContent
+  );
 };
 
 const process = event => {

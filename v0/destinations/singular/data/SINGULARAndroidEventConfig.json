@@ -31,15 +31,18 @@
     "required": false
   },
   {
-    "destKey": "utime",
-    "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true,
-    "required": false
-  },
-  {
     "destKey": "is_revenue_event",
     "sourceKeys": "properties.is_revenue_event",
     "required": false
+  },
+  {
+    "destKey": "utime",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "amt",

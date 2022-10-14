@@ -1,3 +1,5 @@
+const { isObject } = require("lodash");
+
 class RudderErrorBase extends Error {
   constructor(message, statusCode, statTags, destResponse, authErrorCategory) {
     super(message);
@@ -13,31 +15,21 @@ class RudderErrorBase extends Error {
   }
 
   static getStatTags(statTags, defaults) {
-    let finalStatTags = statTags;
-    const { defScope, defMeta, destination } = defaults;
-    if (!finalStatTags || Array.isArray(finalStatTags)) {
-      finalStatTags = {
-        scope: defScope,
-        meta: defMeta
-      };
-    }
+    if (isObject(statTags)) {
+      const finalStatTags = Object.keys(statTags)
+        .filter(tagKey => ["scope", "meta", "destType"].includes(tagKey))
+        .reduce((prevTags, tagKey) => {
+          return {
+            ...prevTags,
+            [tagKey]: statTags[tagKey] || defaults[tagKey]
+          };
+        }, {});
 
-    const tagNames = Object.keys(finalStatTags);
-    if (!tagNames.includes("scope")) {
-      finalStatTags = {
-        ...finalStatTags,
-        scope: defScope
-      };
+      return finalStatTags;
     }
-
-    if (!tagNames.includes("meta")) {
-      finalStatTags = {
-        ...finalStatTags,
-        meta: defMeta
-      };
-    }
-
-    return { ...finalStatTags, destType: destination };
+    return {
+      ...defaults
+    };
   }
 }
 

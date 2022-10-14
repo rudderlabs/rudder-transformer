@@ -197,6 +197,8 @@ async function handleDest(ctx, version, destination) {
   const respList = await Promise.all(
     events.map(async event => {
       try {
+        // look for traits under every object in file v0\util\data\GenericFieldMapping.json like
+        // "traits": ["traits", "context.traits"]
         let parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);

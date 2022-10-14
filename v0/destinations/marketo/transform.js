@@ -69,11 +69,13 @@ const getAuthToken = async formattedDestination => {
     const data = marketoResponseHandler(
       clientResponse,
       "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return data.access_token;
+      return { token: data.access_token, age: data.expires_in };
     }
     stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
@@ -126,7 +128,9 @@ const createOrUpdateLead = async (
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lookup lead",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -157,7 +161,9 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using email",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -196,7 +202,9 @@ const lookupLeadUsingId = async (
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using userId",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -570,6 +578,13 @@ const process = async event => {
 const processRouterDest = async inputs => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
+  const { destination, metadata } = inputs[0];
+  if (metadata.attemptNum > 0) {
+    const { response } = metadata.jobsT?.LastJobStatus?.ErrorResponse;
+    if (response.includes("601") || response.includes("602")) {
+      authCache.del(destination.ID);
+    }
+  }
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;

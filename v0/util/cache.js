@@ -17,11 +17,19 @@ class Cache {
 
     return storeFunction().then(result => {
       // store in cache if the value is valid, else skip
+      if (result && typeof result === "object") {
+        this.cache.set(key, result.token, result.age);
+        return result.token;
+      }
       if (result) {
         this.cache.set(key, result);
+        return result;
       }
-      return result;
     });
+  }
+
+  del(key) {
+    this.cache.del(key);
   }
 }
 

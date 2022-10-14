@@ -127,7 +127,13 @@ async function getCdkV2Result(destName, event, flowType) {
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
-    const destThreshold = getCdkV2TestThreshold(input);
+    let destThreshold = getCdkV2TestThreshold(input);
+    if (flowType === TRANSFORMER_METRIC.ERROR_AT.RT) {
+      // As RouterTransformation "input" will be of type Array<object>
+      // The difference in implementation can be observed when you look at arg sent to "isCdkV2Destination"
+      // in-case of handleDest & routerHandleDest functions
+      destThreshold = getCdkV2TestThreshold(input[0]);
+    }
     const liveTestThreshold = envThreshold * destThreshold;
     const shouldNotCompare =
       Number.isNaN(liveTestThreshold) ||

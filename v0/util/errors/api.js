@@ -12,7 +12,7 @@ class ApiError extends RudderErrorBase {
   ) {
     const defScope = TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE;
     const defMeta = TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.UNHANDLED;
-    const finalStatTags = RudderErrorBase.getStatTags(statTags, {
+    const finalStatTags = RudderErrorBase.populateStatTags(statTags, {
       meta: defMeta,
       scope: defScope,
       destType: destination

@@ -41,6 +41,7 @@
     "CUSTIFY": true,
     "USER": true,
     "FACEBOOK_OFFLINE_CONVERSIONS": true,
-    "MAILJET": true
+    "MAILJET": true,
+    "APPSFLYER": true
   }
 }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.0.0...v1.1.0) (2022-10-14)
+
+
+### Features
+
+* **integration:** Marketo- attribute to attributes, apiName to name,… ([#1481](https://github.com/rudderlabs/rudder-transformer/issues/1481)) ([e7187d6](https://github.com/rudderlabs/rudder-transformer/commit/e7187d64ef20dd788826eed91a9bd234b778c93a))
+
+
+### Miscellaneous
+
+* **node-fetch:** capture fetchError thrownby fetch call ([#1485](https://github.com/rudderlabs/rudder-transformer/issues/1485)) ([1cf5d4d](https://github.com/rudderlabs/rudder-transformer/commit/1cf5d4d17588c920bc2f60c8de82bf82993f89b6))
+
 ## 1.0.0 (2022-10-13)
 
 

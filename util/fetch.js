@@ -3,7 +3,7 @@ const HttpsProxyAgent = require("https-proxy-agent");
 const _ = require("lodash");
 const { RetryRequestError } = require("./utils");
 
-const fetchWithProxy = (url, options = {}) => {
+const fetchWithProxy = async (url, options = {}) => {
   try {
     const instanceOptions = {
       ...options
@@ -14,10 +14,9 @@ const fetchWithProxy = (url, options = {}) => {
     }
 
     if (_.isEmpty(instanceOptions)) {
-      return fetch(url);
-    } else {
-      return fetch(url, instanceOptions);
+      return await fetch(url);
     }
+    return await fetch(url, instanceOptions);
   } catch (err) {
     throw new RetryRequestError(`Invalid url: ${url}`);
   }

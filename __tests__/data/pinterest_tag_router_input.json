@@ -197,7 +197,7 @@
         "metadata": {
             "jobId": 2
         },
-        "destination": {
+        "destination":  {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
             "Name": "PINTEREST_TAG",
             "Config": {
@@ -298,7 +298,7 @@
         "metadata": {
             "jobId": 3
         },
-        "destination": {
+        "destination":  {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
             "Name": "PINTEREST_TAG",
             "Config": {
@@ -328,6 +328,10 @@
                     },
                     {
                         "from": "User Signup",
+                        "to": "Signup"
+                    },
+                    {
+                        "from": "User Created",
                         "to": "Signup"
                     }
                 ]
@@ -414,12 +418,12 @@
         "metadata": {
             "jobId": 4
         },
-        "destination": {
+        "destination":  {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
             "Name": "PINTEREST_TAG",
             "Config": {
                 "tagId": "123456789",
-                "advertiserId": "",
+                "advertiserId": "429047995",
                 "appId": "429047995",
                 "sendingUnHashedData": true,
                 "enableDeduplication": true,
@@ -444,6 +448,10 @@
                     },
                     {
                         "from": "User Signup",
+                        "to": "Signup"
+                    },
+                    {
+                        "from": "User Created",
                         "to": "Signup"
                     }
                 ]
@@ -530,7 +538,7 @@
         "metadata": {
             "jobId": 5
         },
-        "destination": {
+        "destination":  {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
             "Name": "PINTEREST_TAG",
             "Config": {
@@ -650,12 +658,12 @@
         "metadata": {
             "jobId": 6
         },
-        "destination": {
+        "destination":  {
             "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
             "Name": "PINTEREST_TAG",
             "Config": {
                 "tagId": "123456789",
-                "advertiserId": "",
+                "advertiserId": "429047995",
                 "appId": "429047995",
                 "sendingUnHashedData": true,
                 "enableDeduplication": true,

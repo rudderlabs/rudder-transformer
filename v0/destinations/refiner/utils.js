@@ -60,9 +60,13 @@ const replaceDestAttributes = (attributesMap, destinationPayload) => {
  */
 const getAccountTraits = (message, destination) => {
   const { accountAttributesMapping } = destination.Config;
+  // all the traits fields, that are not mapped in webapp are going as it is
   const traits = getFieldValueFromMessage(message, "groupTraits");
   const id = getFieldValueFromMessage(message, "groupId");
-  let groupUsersPayload = { ...traits, id };
+  let groupUsersPayload = {
+    ...traits,
+    id
+  };
   const accountAttributesMap = getHashFromArray(
     accountAttributesMapping,
     "from",
@@ -85,11 +89,18 @@ const getAccountTraits = (message, destination) => {
  */
 const identifyUserPayloadBuilder = (message, destination) => {
   const { userAttributesMapping } = destination.Config;
+  // mapping refiner remote_id with userId
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
+  // all the traits fields, that are not mapped in webapp are going as it is
   const traits = getFieldValueFromMessage(message, "traits");
   const contextTraits = get(message, "context.traits");
-  let payload = { ...traits, ...contextTraits, userId, email };
+  let payload = {
+    ...traits,
+    ...contextTraits,
+    userId,
+    email
+  };
   const userAttributesMap = getHashFromArray(
     userAttributesMapping,
     "from",
@@ -98,7 +109,10 @@ const identifyUserPayloadBuilder = (message, destination) => {
   );
   payload = replaceDestAttributes(userAttributesMap, payload);
   const { endpoint } = CONFIG_CATEGORIES.IDENTIFY_USER;
-  return { payload, endpoint };
+  return {
+    payload,
+    endpoint
+  };
 };
 
 /**
@@ -142,7 +156,10 @@ const groupUsersPayloadBuilder = (message, destination) => {
   }
   payload.account = getAccountTraits(message, destination);
   const { endpoint } = CONFIG_CATEGORIES.GROUP_USERS;
-  return { payload, endpoint };
+  return {
+    payload,
+    endpoint
+  };
 };
 
 /**
@@ -167,7 +184,7 @@ const responseHandler = destinationResponse => {
     .setStatus(status)
     .setDestinationResponse(response)
     .setMessage(
-      `Refiner: ${response.error.message} during Refiner response transformation`
+      `Refiner: ${response.message} during Refiner response transformation`
     )
     .build();
 };

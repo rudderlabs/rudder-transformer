@@ -15,21 +15,11 @@ class RudderErrorBase extends Error {
   }
 
   static getStatTags(statTags, defaults) {
+    let finalStatTags = { ...defaults };
     if (isObject(statTags)) {
-      const finalStatTags = Object.keys(statTags)
-        .filter(tagKey => ["scope", "meta", "destType"].includes(tagKey))
-        .reduce((prevTags, tagKey) => {
-          return {
-            ...prevTags,
-            [tagKey]: statTags[tagKey] || defaults[tagKey]
-          };
-        }, {});
-
-      return finalStatTags;
+      finalStatTags = { ...finalStatTags, ...statTags };
     }
-    return {
-      ...defaults
-    };
+    return finalStatTags;
   }
 }
 

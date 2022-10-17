@@ -6,6 +6,7 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
+  flattenJson,
   CustomError,
   defaultPostRequestConfig
 } = require("../../util");
@@ -41,6 +42,8 @@ function processTrack(message, rudderStackApiKey) {
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
+  // flatten json as factorsAi do not support nested properties
+  requestJson.properties = flattenJson(requestJson.properties);
   return buildResponse(requestJson, rudderStackApiKey);
 }
 

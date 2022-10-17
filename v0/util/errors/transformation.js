@@ -7,7 +7,7 @@ class TransformationError extends RudderErrorBase {
     const defMeta =
       TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CLIENT_ERROR;
 
-    const finalStatTags = RudderErrorBase.getStatTags(statTags, {
+    const finalStatTags = RudderErrorBase.populateStatTags(statTags, {
       meta: defMeta,
       scope: defScope,
       destType: destination

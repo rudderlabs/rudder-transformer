@@ -1,25 +1,20 @@
-const { isObject } = require("lodash");
-
 class RudderErrorBase extends Error {
   constructor(message, statusCode, statTags, destResponse, authErrorCategory) {
     super(message);
     this.status = statusCode;
     this.destinationResponse = destResponse;
     this.authErrorCategory = authErrorCategory;
-    this.statTags = {
-      destType: statTags.destType || statTags.destination,
-      stage: statTags.stage,
-      scope: statTags.scope,
-      meta: statTags.meta
-    };
+    this.statTags = statTags;
   }
 
-  static getStatTags(statTags, defaults) {
-    let finalStatTags = { ...defaults };
-    if (isObject(statTags)) {
-      finalStatTags = { ...finalStatTags, ...statTags };
-    }
-    return finalStatTags;
+  static populateStatTags(statTags, defaults) {
+    return {
+      destType:
+        statTags?.destType || statTags?.destination || defaults?.destType,
+      stage: statTags?.stage || defaults?.stage,
+      scope: statTags?.scope || defaults?.scope,
+      meta: statTags?.meta || defaults?.meta
+    };
   }
 }
 

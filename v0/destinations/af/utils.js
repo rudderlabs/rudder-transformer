@@ -51,10 +51,10 @@ const processResponse = ({ dresponse, status } = {}) => {
     throw new ErrorBuilder()
       .setStatus(rudderStatus)
       .setMessage(
-        dresponse.error.message ||
+        dresponse?.error?.message ||
           `Request failed for ${DESTINATION_NAME} with status: ${status}`
       )
-      .setDestinationResponse(dresponse)
+      .setDestinationResponse({ response: dresponse, status })
       .isTransformResponseFailure(!isSuccess)
       .setStatTags({
         destType: DESTINATION_NAME,
@@ -67,14 +67,14 @@ const processResponse = ({ dresponse, status } = {}) => {
 };
 
 const responseHandler = destinationResponse => {
-  const { body, status } = destinationResponse;
+  const { response, status } = destinationResponse;
   processResponse({
-    dresponse: body,
+    dresponse: response,
     status
   });
   return {
     status,
-    destinationResponse: body,
+    destinationResponse: response,
     message: "Request Processed Successfully"
   };
 };

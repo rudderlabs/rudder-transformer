@@ -1,0 +1,36 @@
+[
+    {
+        "output": {
+            "status": 400,
+            "destinationResponse": {
+                "response": "Failed to authenticate",
+                "status": 400
+            },
+            "message": "Request failed for AppsFlyer with status: 400",
+            "statTags": {
+                "destType": "APPSFLYER",
+                "errorAt": "proxy",
+                "stage": "responseTransform",
+                "scope": "api",
+                "meta": "abortable"
+            }
+        }
+    },
+    {
+        "output": {
+            "status": 400,
+            "destinationResponse": {
+                "response": "Forbidden",
+                "status": 403
+            },
+            "message": "Request failed for AppsFlyer with status: 403",
+            "statTags": {
+                "destType": "APPSFLYER",
+                "errorAt": "proxy",
+                "stage": "responseTransform",
+                "scope": "api",
+                "meta": "abortable"
+            }
+        }
+    }
+]

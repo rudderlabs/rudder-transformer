@@ -1,0 +1,14 @@
+{
+  "https://api2.appsflyer.com/inappevent/com.rudder1.game": {
+    "response": {
+      "status": 403,
+      "data": "Forbidden"
+    }
+  },
+  "https://api2.appsflyer.com/inappevent/com.rudder.game": {
+    "response": {
+      "data": "Failed to authenticate",
+      "status": 400
+    }
+  }
+}

@@ -18,6 +18,7 @@ const urlDirectoryMap = {
   "graph.facebook.com": "facebook_pixel",
   "api.wootric.com": "wootric",
   "api.mautic.com": "mautic",
+  "api2.appsflyer.com": "af",
 };
 
 function getData(url) {

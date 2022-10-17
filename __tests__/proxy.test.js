@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
 const destinations = [
+  "af",
   "marketo",
   "braze",
   "pardot",

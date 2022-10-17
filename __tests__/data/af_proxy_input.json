@@ -1,0 +1,70 @@
+[
+  {
+    "request": {
+      "body": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "ip": "[::1]",
+            "os": "",
+            "eventName": "Product Clicked+1",
+            "eventTime": "2022-10-17T13:44:50.330+05:30",
+            "eventValue": "{\"properties\":{\"id\":1,\"name\":\"Test Product\"}}",
+            "appsflyer_id": "1665148898336-5539842602053895577",
+            "sharing_filter": "all",
+            "app_version_name": "1.0.0",
+            "bundleIdentifier": "com.rudderlabs.javascript",
+            "customer_user_id": 1
+          },
+          "JSON_ARRAY": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "userId": "",
+        "headers": {
+          "Content-Type": "application/json",
+          "authentication": "v44ozx4a5kXWtnydu4xvoR=1"
+        },
+        "version": "1",
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudder.game"
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "ip": "[::1]",
+            "os": "",
+            "eventName": "Product Clicked+1",
+            "eventTime": "2022-10-17T13:44:50.330+05:30",
+            "eventValue": "{\"properties\":{\"id\":1,\"name\":\"Test Product\"}}",
+            "appsflyer_id": "1665148898336-5539842602053895577",
+            "sharing_filter": "all",
+            "app_version_name": "1.0.0",
+            "bundleIdentifier": "com.rudderlabs.javascript",
+            "customer_user_id": 1
+          },
+          "JSON_ARRAY": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "userId": "",
+        "headers": {
+          "Content-Type": "application/json",
+          "authentication": "v44ozx4a5kXWtnydu4xvoR"
+        },
+        "version": "1",
+        "endpoint": "https://api2.appsflyer.com/inappevent/com.rudder1.game"
+      }
+    }
+  }
+]

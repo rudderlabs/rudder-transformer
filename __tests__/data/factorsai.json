@@ -29,7 +29,7 @@
         "userId": "PageTestAnonymousUser",
         "type": "track",
         "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
-        "timestamp": "2022-10-17T15:32:44.202+05:30"
+        "originalTimestamp": "2022-10-17T15:32:44.202+05:30"
       }
     },
     "output": {
@@ -85,7 +85,7 @@
       "message": {
         "type": "track",
         "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
-        "timestamp": "2022-10-17T15:32:44.202+05:30",
+        "originalTimestamp": "2022-10-17T15:32:44.202+05:30",
         "context": {
           "page": {
             "url": "myurl",
@@ -170,7 +170,7 @@
         },
         "type": "identify",
         "userId": "userIdTest",
-        "timestamp": "2022-10-17T15:53:10.566+05:30",
+        "originalTimestamp": "2022-10-17T15:53:10.566+05:30",
         "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82"
       }
     },

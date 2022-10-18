@@ -642,7 +642,7 @@ if (startDestTransformer) {
           override = false
         } = ctx.request.body;
 
-        if (!transformationName || !code) {
+        if (!functionName && (!transformationName || !code)) {
           throw new Error(
             "Invalid Request. Missing parameters in transformation code block"
           );

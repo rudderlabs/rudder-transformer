@@ -133,7 +133,7 @@ async function deployFunction(imageName, functionName, testMode) {
     envProcess: "python index.py",
     labels: {
       faas_function: functionName,
-      "com.openfaas.scale.max": 5
+      "com.openfaas.scale.max": "5"
     },
     annotations: {
       "prometheus.io.scrape": "false"

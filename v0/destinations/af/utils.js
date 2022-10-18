@@ -35,7 +35,7 @@ const destToRudderStatusMap = {
 const getStatusAndCategory = status => {
   const rudderStatus = destToRudderStatusMap[status]
     ? destToRudderStatusMap[status].default
-    : 500;
+    : status;
   return { status: rudderStatus };
 };
 

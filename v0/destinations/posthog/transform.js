@@ -89,22 +89,21 @@ const responseBuilderSimple = (message, category, destination) => {
     ...payload.properties
   };
 
-  if (
-    category.type === CONFIG_CATEGORIES.GROUP.type &&
-    destination.Config.useV2Group
-  ) {
+  if (category.type === CONFIG_CATEGORIES.GROUP.type) {
     // This is to ensure groupType delete from $group_set, as it is properly mapped
     // in 'properties.$group_type'.
-    delete payload?.properties?.$group_set?.groupType;
-  }
-  // This will add the attributes $groups, which will associate the group with the user.
-  if (category.type === CONFIG_CATEGORIES.GROUP.type && payload.properties) {
-    const groupType = get(payload, "properties.$group_type");
-    const groupKey = get(payload, "properties.$group_key");
-    if (groupType && groupKey) {
-      payload.properties.$groups = {
-        [groupType]: groupKey
-      };
+    if (destination.Config.useV2Group) {
+      delete payload?.properties?.$group_set?.groupType;
+    }
+    // This will add the attributes $groups, which will associate the group with the user.
+    if (payload.properties) {
+      const groupType = get(payload, "properties.$group_type");
+      const groupKey = get(payload, "properties.$group_key");
+      if (groupType && groupKey) {
+        payload.properties.$groups = {
+          [groupType]: groupKey
+        };
+      }
     }
   }
 

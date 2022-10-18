@@ -2,11 +2,11 @@ const fs = require("fs");
 const path = require("path");
 
 const urlDirectoryMap = {
-  "myfreshworks.com/crm/sales/api": "freshmarketer"
+  "myfreshworks.com/crm/sales/api": "freshsales"
 };
 
 const getData = url => {
-  let directory = "freshmarketer";
+  let directory = "freshsales";
   Object.keys(urlDirectoryMap).forEach(key => {
     if (url.includes(key)) {
       directory = urlDirectoryMap[key];
@@ -22,7 +22,7 @@ const getData = url => {
   return {};
 };
 
-const freshmarketerPostRequestHandler = (url, payload) => {
+const freshsalesPostRequestHandler = (url, payload) => {
   const mockData = getData(url);
   if (mockData) {
     return {
@@ -35,7 +35,7 @@ const freshmarketerPostRequestHandler = (url, payload) => {
   });
 };
 
-const freshmarketerGetRequestHandler = url => {
+const freshsalesGetRequestHandler = url => {
   const mockData = getData(url);
   if (mockData) {
     //resolve with status 200
@@ -47,6 +47,6 @@ const freshmarketerGetRequestHandler = url => {
 };
 
 module.exports = {
-  freshmarketerPostRequestHandler,
-  freshmarketerGetRequestHandler
+  freshsalesPostRequestHandler,
+  freshsalesGetRequestHandler
 };

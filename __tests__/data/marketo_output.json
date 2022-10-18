@@ -77,7 +77,7 @@
             "activityTypeId": 100001,
             "attributes": [
               {
-                "apiName": "productId",
+                "name": "productId",
                 "value": "prod_1"
               }
             ],

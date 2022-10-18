@@ -158,6 +158,7 @@
         }
       },
       "traits": {
+        "groupType": "accounts",
         "name": "Mark Twain",
         "phone": "919191919191",
         "numberOfEmployees": 51,

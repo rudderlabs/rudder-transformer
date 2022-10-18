@@ -316,7 +316,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Action source must be one of 'app_android', 'app_ios', 'web', 'offline' "
+    "error": "Action source must be one of app_android, app_ios, web, offline"
   },
   [
     {

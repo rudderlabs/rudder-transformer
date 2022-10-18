@@ -39,6 +39,8 @@
     "FRESHSALES": true,
     "MONDAY": true,
     "CUSTIFY": true,
-    "USER": true
+    "USER": true,
+    "FACEBOOK_OFFLINE_CONVERSIONS": true,
+    "MAILJET": true
   }
 }

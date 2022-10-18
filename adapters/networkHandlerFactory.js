@@ -28,7 +28,7 @@ const {
 } = require("../v0/destinations/facebook_pixel/network-handler");
 
 const {
-  networkHandler: AFNetworkHandler
+  networkHandler: AppsFlyerNetworkHandler
 } = require("../v0/destinations/af/utils");
 
 const handler = {

@@ -6,6 +6,7 @@ const {
 } = require("../../util");
 const {
   validatePayload,
+  pageEventPayloadBuilder,
   groupUsersPayloadBuilder,
   trackEventPayloadBuilder,
   identifyUserPayloadBuilder
@@ -67,6 +68,13 @@ const trackResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
+const pageResponseBuilder = (message, destination) => {
+  validatePayload(message);
+  const builder = pageEventPayloadBuilder(message);
+  const { payload, endpoint } = builder;
+  return responseBuilder(payload, endpoint, destination);
+};
+
 const groupResponseBuilder = (message, destination) => {
   validatePayload(message);
   const builder = groupUsersPayloadBuilder(message, destination);
@@ -96,6 +104,9 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
+      break;
+    case EventType.PAGE:
+      response = pageResponseBuilder(message, destination);
       break;
     case EventType.GROUP:
       response = groupResponseBuilder(message, destination);

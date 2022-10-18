@@ -47,7 +47,7 @@
     "description": "Unsupported Event type ",
     "input": {
       "message": {
-        "type": "page",
+        "type": "alias",
         "sentAt": "2022-10-11T13:10:54.877+05:30",
         "userId": "user@45",
         "context": {
@@ -85,7 +85,7 @@
       }
     },
     "output": {
-      "error": "[Refiner] :: Message type page not supported"
+      "error": "[Refiner] :: Message type alias not supported"
     }
   },
   {
@@ -458,6 +458,88 @@
         }
       },
       "files": {}
+    }
+  },
+  {
+    "description": "Refiner page call",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "type": "page",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "timestamp": "2019-09-01T15:46:51.693229+05:30",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "path": "/abc",
+          "referrer": "xyz",
+          "search": "def",
+          "title": "ghi",
+          "url": "jkl"
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "pageviewed",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "destination": {
+        "Config": {
+          "accountAttributesMapping": [
+            { "from": "email", "to": "businessEmail" }
+          ],
+          "apiKey": "dc70156e-05a3-4fa1-bb1c-da767fd036b4",
+          "blacklistedEvents": [{ "eventName": "" }],
+          "eventDelivery": true,
+          "eventDeliveryTS": 1665476456112,
+          "eventFilteringOption": "disable",
+          "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
+          "whitelistedEvents": [{ "eventName": "" }]
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {
+          "id": "12345",
+          "event": "Viewed pageviewed Page"
+        },
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Bearer dc70156e-05a3-4fa1-bb1c-da767fd036b4"
+      },
+      "version": "1",
+      "endpoint": "https://api.refiner.io/v1/track"
     }
   }
 ]

@@ -138,6 +138,37 @@ const trackEventPayloadBuilder = message => {
 };
 
 /**
+ * Returns page event payload
+ * ref : https://refiner.io/docs/api/#track-event
+ * @param {*} message
+ * @returns
+ */
+const pageEventPayloadBuilder = message => {
+  const payload = {};
+  let event;
+  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const email = getFieldValueFromMessage(message, "email");
+  if (userId) {
+    payload.id = userId;
+  }
+  if (email) {
+    payload.email = email;
+  }
+  if (!message.name && !message.category) {
+    event = `pageView`;
+  } else if (!message.name && message.category) {
+    event = `Viewed ${message.category} Page`;
+  } else if (message.name && !message.category) {
+    event = `Viewed ${message.name} Page`;
+  } else {
+    event = `Viewed ${message.category} ${message.name} Page`;
+  }
+  payload.event = event;
+  const { endpoint } = CONFIG_CATEGORIES.TRACK_EVENT;
+  return { payload, endpoint };
+};
+
+/**
  * Returns group event payload
  * ref : https://refiner.io/docs/api/#group-users
  * @param {*} message
@@ -223,5 +254,6 @@ module.exports = {
   identifyUserPayloadBuilder,
   trackEventPayloadBuilder,
   groupUsersPayloadBuilder,
+  pageEventPayloadBuilder,
   networkHandler
 };

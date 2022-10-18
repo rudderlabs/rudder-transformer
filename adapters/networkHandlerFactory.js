@@ -41,7 +41,7 @@ const handler = {
   ga4: GA4NetworkHandler,
   google_adwords_offline_conversions: GoogleAdwordsOfflineConversionsNetworkHandler,
   facebook_pixel: FbPixelNetworkHandler,
-  af: AFNetworkHandler
+  af: AppsFlyerNetworkHandler
 };
 
 const getNetworkHandler = type => {

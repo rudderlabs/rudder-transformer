@@ -223,16 +223,39 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
 };
 
 /**
+ * Returns true if event is configured from webapp else false
+ * @param {*} eventsMapping
+ * @param {*} event
+ * @returns
+ */
+const findEventConfigurationPlace = (eventsMapping, event) => {
+  let eventIsMappedFromWebapp = false;
+  const keys = Object.keys(eventsMapping);
+  keys.forEach(key => {
+    if (key === event) {
+      eventIsMappedFromWebapp = true;
+    }
+  });
+  return eventIsMappedFromWebapp;
+};
+
+/**
  *
  * @param {*} message Rudder Payload
  * @param {*} standardEvent
  * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} destination
  * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
  * If category is clothing it will be set to ["product"]
  * @return Content Type array as defined in:
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
-const getContentType = (message, standardEvent, categoryToContent) => {
+const getContentType = (
+  message,
+  standardEvent,
+  categoryToContent,
+  destination
+) => {
   const { integrations } = message;
   if (
     integrations &&
@@ -282,8 +305,22 @@ const getContentType = (message, standardEvent, categoryToContent) => {
       contentType = "product";
     }
   } else if (standardEvent === "ViewContent") {
+    const { event } = message;
     const { products } = message.properties;
-    if (products && products.length > 0 && Array.isArray(products)) {
+    const { eventsToStandard } = destination.Config;
+    const eventsMapping = getHashFromArrayWithDuplicate(
+      eventsToStandard,
+      "from",
+      "to",
+      false
+    );
+    const isEventConfiguredFromWebapp = findEventConfigurationPlace(
+      eventsMapping,
+      event
+    );
+    if (!isEventConfiguredFromWebapp && event === "Product Viewed") {
+      contentType = "product";
+    } else if (products && products.length > 0 && Array.isArray(products)) {
       contentType = "product";
     } else {
       contentType = "product_group";
@@ -398,7 +435,8 @@ const getData = (data, standardEvent, message, destination) => {
   first.content_type = getContentType(
     message,
     standardEvent,
-    categoryToContent
+    categoryToContent,
+    destination
   );
   return [first];
 };

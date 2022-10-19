@@ -784,8 +784,20 @@ if (startSourceTransformer) {
   });
 }
 
+function getAuthCacheProperties(destType) {
+  const destInf = getDestHandler("v0", destType);
+  // const desTf = require(`./v0/destinations/${destType}/transform`);
+  if (destInf) {
+    return {
+      authCache: destInf?.authCache
+    };
+  }
+  return "";
+}
+
 async function handleProxyRequest(destination, ctx) {
   const destinationRequest = ctx.request.body;
+  const { authCache } = getAuthCacheProperties(destination);
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
@@ -795,6 +807,7 @@ async function handleProxyRequest(destination, ctx) {
       destination
     });
     const startTime = new Date();
+    const authKey = destinationRequest?.headers?.["x-cache-key"];
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
     stats.timing("transformer_proxy_time", startTime, {
       destination
@@ -812,7 +825,9 @@ async function handleProxyRequest(destination, ctx) {
     });
     response = destNetworkHandler.responseHandler(
       processedProxyResponse,
-      destination
+      destination,
+      authCache,
+      authKey
     );
     stats.counter("tf_proxy_resp_handler_count", 1, {
       destination

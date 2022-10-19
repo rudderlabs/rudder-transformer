@@ -7,7 +7,8 @@
       "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer access_token_success"
+        "Authorization": "Bearer access_token_success",
+        "x-cache-key": "1mMy5cqbtfuaKZv1IhVQKnBdVwe"
       },
       "params": {},
       "body": {
@@ -126,7 +127,8 @@
       "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer access_token_success"
+        "Authorization": "Bearer access_token_success",
+        "x-cache-key": "1mMy5cqbtfuaKZv1IhVQKnBdVwe"
       },
       "params": {},
       "body": {
@@ -277,7 +279,8 @@
       "endpoint": "https://successful_identify_transformation.mktorest.com/rest/v1/leads.json",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer access_token_success"
+        "Authorization": "Bearer access_token_success",
+        "x-cache-key": "1mMy5cqbtfuaKZv1IhVQKnBdVke"
       },
       "params": {},
       "body": {
@@ -363,9 +366,7 @@
               "leadTraitMapping"
             ]
           },
-          "secretKeys": [
-            "clientSecret"
-          ],
+          "secretKeys": ["clientSecret"],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,

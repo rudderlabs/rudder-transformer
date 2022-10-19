@@ -507,11 +507,15 @@ const processTrack = async (message, formattedDestination, token) => {
   };
 };
 
-const responseWrapper = response => {
+const responseWrapper = (response, authKey) => {
   const resp = defaultRequestConfig();
   resp.endpoint = response.endPoint;
   resp.method = defaultPostRequestConfig.requestMethod;
-  resp.headers = { ...response.headers, "Content-Type": "application/json" };
+  resp.headers = {
+    ...response.headers,
+    "Content-Type": "application/json",
+    "x-cache-key": authKey
+  };
   resp.body.JSON = response.payload;
   return resp;
 };
@@ -555,7 +559,7 @@ const processEvent = async (message, destination, token) => {
   }
 
   // wrap response for router processing
-  return responseWrapper(response);
+  return responseWrapper(response, destination.ID);
 };
 
 const process = async event => {
@@ -578,13 +582,6 @@ const process = async event => {
 const processRouterDest = async inputs => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  const { destination, metadata } = inputs[0];
-  if (metadata.attemptNum > 0) {
-    const { response } = metadata.jobsT?.LastJobStatus?.ErrorResponse;
-    if (response.includes("601") || response.includes("602")) {
-      authCache.del(destination.ID);
-    }
-  }
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -657,4 +654,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, authCache };

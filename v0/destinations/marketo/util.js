@@ -91,7 +91,7 @@ const marketoResponseHandler = (
   sourceMessage,
   stage,
   authCache,
-  key
+  authKey
 ) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
@@ -126,9 +126,10 @@ const marketoResponseHandler = (
         response.errors.forEach(errorObj => {
           if (
             authCache &&
+            authKey &&
             (errorObj.code === "601" || errorObj.code === "602")
           ) {
-            authCache.del(key);
+            authCache.del(authKey);
           }
         });
       }
@@ -179,14 +180,16 @@ const sendPostRequest = async (url, data, options) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const responseHandler = (destinationResponse, _dest) => {
+const responseHandler = (destinationResponse, _dest, authCache, authKey) => {
   const message = `[Marketo Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
   // check for marketo application level failures
   marketoResponseHandler(
     destinationResponse,
     "during Marketo Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    authCache,
+    authKey
   );
   // else successfully return status, message and original destination response
   return {

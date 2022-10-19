@@ -108,7 +108,7 @@
     "statTags": {
       "destType": "MAILMODO",
       "scope": "transformation",
-      "meta": "clientError",
+      "meta": "handled",
       "stage": "transform"
     },
     "statusCode": 400

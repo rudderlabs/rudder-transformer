@@ -37,7 +37,7 @@ const TRANSFORMER_METRIC = {
         RETRYABLE: "retryable",
         THROTTLED: "throttled",
         SUCCESS: "success",
-        /** 
+        /**
          * This meta needs to be used when the response is not an expected one from the destination's API
          * This can be during transformation or response handling(during delivery of event)
          */
@@ -55,7 +55,7 @@ const TRANSFORMER_METRIC = {
          * Basically this means that the error is an expected error(thrown during transformation)
          * This meta will be used for CustomError thrown during transformations
          */
-        CLIENT_ERROR: "clientError"
+        HANDLED: "handled"
       }
     },
     AUTHENTICATION: {

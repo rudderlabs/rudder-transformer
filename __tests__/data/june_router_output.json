@@ -51,7 +51,7 @@
     "statTags": {
       "destType": "JUNE",
       "scope": "transformation",
-      "meta": "clientError",
+      "meta": "handled",
       "stage": "transform"
     },
     "statusCode": 400

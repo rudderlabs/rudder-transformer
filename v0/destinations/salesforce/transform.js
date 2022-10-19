@@ -301,7 +301,7 @@ async function processIdentify(message, authorizationData, destination) {
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const identifierType = get(message, "context.externalId.0.type");
+  const identifierType = get(message, "context.externalId.0.identifierType");
   if (
     mappedToDestination &&
     identifierType &&

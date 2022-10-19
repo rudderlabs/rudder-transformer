@@ -127,7 +127,10 @@ async function getCdkV2Result(destName, event, flowType) {
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
-    const destThreshold = getCdkV2TestThreshold(input);
+    let destThreshold = getCdkV2TestThreshold(input);
+    if (flowType === TRANSFORMER_METRIC.ERROR_AT.RT) {
+      destThreshold = getCdkV2TestThreshold(input[0]);
+    }
     const liveTestThreshold = envThreshold * destThreshold;
     if (
       Number.isNaN(liveTestThreshold) ||
@@ -173,7 +176,11 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     };
     throw error;
   } finally {
-    compareWithCdkV2(destType, input, flowType, result);
+    if (process.env.NODE_ENV === "test") {
+      await compareWithCdkV2(destType, input, flowType, result);
+    } else {
+      compareWithCdkV2(destType, input, flowType, result);
+    }
   }
 }
 

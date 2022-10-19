@@ -305,7 +305,7 @@ async function processIdentify(message, authorizationData, destination) {
   if (
     mappedToDestination &&
     identifierType &&
-    identifierType.toLowerCase !== "id"
+    identifierType.toLowerCase() !== "id"
   ) {
     addExternalIdToTraits(message);
   }

@@ -14,6 +14,7 @@ const {
 } = require("../../util");
 const {
   ENDPOINT,
+  DEBUG_ENDPOINT,
   trackCommonConfig,
   mappingConfig,
   ConfigCategory
@@ -29,7 +30,8 @@ const {
   getItemList,
   getGA4ExclusionList,
   getItem,
-  getGA4CustomParameters
+  getGA4CustomParameters,
+  GA4_PARAMETERS_EXCLUSION
 } = require("./utils");
 
 const responseBuilder = (message, { Config }) => {
@@ -128,6 +130,15 @@ const responseBuilder = (message, { Config }) => {
         payload
       );
     }
+
+    // take optional params parameters for track()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "identify") {
     payload.name = event;
     const traits = getFieldValueFromMessage(message, "traits");
@@ -187,9 +198,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["traits", "context.traits"],
-      GA4_IDENTIFY_EXCLUSION,
+      GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for identify()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "page") {
     // page event
     payload.name = event;
@@ -201,9 +221,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for page()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   } else if (message.type === "group") {
     // group event
     payload.name = event;
@@ -218,6 +247,15 @@ const responseBuilder = (message, { Config }) => {
       getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
       payload
     );
+
+    // take optional params parameters for group()
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
+      )
+    };
   } else {
     // track
     // custom events category
@@ -242,9 +280,18 @@ const responseBuilder = (message, { Config }) => {
     payload.params = getGA4CustomParameters(
       message,
       ["properties"],
-      GA4_RESERVED_PARAMETER_EXCLUSION,
+      GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
       payload
     );
+
+    // take optional params parameters for custom events
+    payload.params = {
+      ...payload.params,
+      ...constructPayload(
+        message,
+        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
+      )
+    };
   }
 
   removeReservedParameterPrefixNames(payload.params);
@@ -277,7 +324,13 @@ const responseBuilder = (message, { Config }) => {
   // build response
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINT;
+  // if debug_mode is true, we need to send the event to debug validation server
+  // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
+  if (Config.debugMode) {
+    response.endpoint = DEBUG_ENDPOINT;
+  } else {
+    response.endpoint = ENDPOINT;
+  }
   response.headers = {
     HOST: "www.google-analytics.com",
     "Content-Type": "application/json"
@@ -339,7 +392,7 @@ const process = event => {
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
           throw new CustomError(
-            `[GA4] Identify:: '${Config.newOrExistingUserTrait}' is a required field in traits`,
+            `[GA4] Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
             400
           );
         }

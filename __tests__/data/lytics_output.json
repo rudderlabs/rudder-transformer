@@ -190,11 +190,11 @@
   },
   {
     "statusCode": 400,
-    "error": "invalid message type for lytics"
+    "error": "\"type\" is a required field and it must be a string"
   },
   {
     "statusCode": 400,
-    "error": "message type gone not supported for lytics"
+    "error": "message type \"gone\" not supported for \"lytics\""
   },
   {
     "version": "1",

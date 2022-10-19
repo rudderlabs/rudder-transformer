@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
 const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
+const { pyUserTransformHandler } = require("./customTransformer-py");
 
 async function runUserTransform(
   events,
@@ -233,13 +234,22 @@ async function userTransformHandler(
       });
 
       let userTransformedEvents = [];
+      let result;
       if (res.codeVersion && res.codeVersion === "1") {
-        const result = await userTransformHandlerV1(
-          events,
-          res,
-          libraryVersionIDs,
-          testMode
-        );
+        if (res.language && res.language === "python") {
+          result = await pyUserTransformHandler().runUserTransfrom(
+            events,
+            res,
+            testMode
+          );
+        } else {
+          result = await userTransformHandlerV1(
+            events,
+            res,
+            libraryVersionIDs,
+            testMode
+          );
+        }
 
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
@@ -254,7 +264,7 @@ async function userTransformHandler(
           };
         }
       } else {
-        const result = await runUserTransform(
+        result = await runUserTransform(
           eventMessages,
           res.code,
           eventsMetadata,
@@ -275,4 +285,22 @@ async function userTransformHandler(
   return events;
 }
 
-exports.userTransformHandler = userTransformHandler;
+async function setupUserTransformHandler(
+  trRevCode = {},
+  libraryVersionIDs,
+  testWithPublish = false
+) {
+  let resp = { success: false };
+  if (trRevCode.language && trRevCode.language === "python") {
+    resp = await pyUserTransformHandler().setUserTransform(
+      trRevCode,
+      testWithPublish
+    );
+    resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
+  }
+  return resp;
+}
+module.exports = {
+  userTransformHandler,
+  setupUserTransformHandler
+};

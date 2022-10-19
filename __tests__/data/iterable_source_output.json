@@ -38,7 +38,25 @@
     "message": "Unknwon event type from Iterable"
   },
   {
-    "message": "Cannot read property 'createdAt' of undefined"
+    "context": {
+      "integration": {
+        "name": "Iterable",
+        "version": "1.0.0"
+      },
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "traits": {
+        "email": "rohith@xyz.com"
+      }
+    },
+    "event": "inAppSendSkip",
+    "integrations": {
+      "Iterable": false
+    },
+    "type": "track",
+    "userId": "7fed00989ed61c7e22a0855a7b38cd34"
   },
   {
     "userId": "1b546c04424c5c9effc17739c849fb6b",

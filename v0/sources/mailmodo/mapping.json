@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "recipientData",
+    "destKeys": "context.traits"
+  },
+  {
+    "sourceKeys": [
+      "triggerData.email",
+      "recipientData.email",
+      "recipientEmail"
+    ],
+    "destKeys": "context.traits.email"
+  }
+]

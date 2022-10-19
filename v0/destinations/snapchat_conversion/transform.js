@@ -1,7 +1,6 @@
 const get = require("get-value");
-const { logger } = require("handlebars");
-const { stringify } = require("uuid");
 const moment = require("moment");
+const _ = require("lodash");
 const { EventType } = require("../../../constants");
 
 const {
@@ -10,10 +9,12 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
-  defaultBatchRequestConfig,
-  getErrorRespEvents,
   getSuccessRespEvents,
-  CustomError
+  CustomError,
+  isAppleFamily,
+  getValidDynamicFormConfig,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const {
   ENDPOINT,
@@ -29,18 +30,17 @@ const {
   getPriceSum,
   getDataUseValue,
   getNormalizedPhoneNumber,
-  channelMapping
+  channelMapping,
+  generateBatchedPayloadForArray
 } = require("./util");
 
-function trackResponseBuilder(message, { Config }) {
-  let event = get(message, "event");
-  if (!event) {
-    throw new CustomError("[Snapchat] :: Event name is required", 400);
-  }
-  event = event.trim().replace(/\s+/g, "_");
+// Returns the response for the track event after constructing the payload and setting necessary fields
+function trackResponseBuilder(message, { Config }, mappedEvent) {
+  let payload = {};
+  const event = mappedEvent.trim().replace(/\s+/g, "_");
 
   const { apiKey, pixelId, snapAppId, appId } = Config;
-  let channel = get(message, "channel");
+  const channel = get(message, "channel");
   let eventConversionType = message?.properties?.eventConversionType;
   if (
     channelMapping[eventConversionType?.toLowerCase()] ||
@@ -65,10 +65,14 @@ function trackResponseBuilder(message, { Config }) {
 
   if (eventConversionType === "MOBILE_APP" && !(appId && snapAppId)) {
     if (!appId) {
-      throw new CustomError("[Snapchat] :: App Id is required for app events");
+      throw new CustomError(
+        "[Snapchat] :: App Id is required for app events",
+        400
+      );
     } else {
       throw new CustomError(
-        "[Snapchat] :: Snap App Id is required for app events"
+        "[Snapchat] :: Snap App Id is required for app events",
+        400
       );
     }
   }
@@ -76,7 +80,6 @@ function trackResponseBuilder(message, { Config }) {
   if (eventNameMapping[event.toLowerCase()]) {
     // Snapchat standard events
     // get event specific parameters
-
     switch (event.toLowerCase()) {
       /* Browsing Section */
       case "products_searched":
@@ -185,27 +188,50 @@ function trackResponseBuilder(message, { Config }) {
     payload.event_tag = message.properties.event_tag;
   }
 
-  payload.hashed_email = getHashedValue(
-    message?.context?.traits?.email
-      ?.trim()
-      ?.toString()
-      ?.toLowerCase()
-  );
-  payload.hashed_phone_number = getHashedValue(
-    getNormalizedPhoneNumber(message)
-      ?.toString()
-      ?.toLowerCase()
-  );
-  payload.user_agent = message?.context?.userAgent?.toString()?.toLowerCase();
-  payload.hashed_ip_address = getHashedValue(
-    message?.context?.ip?.toString()?.toLowerCase()
-  );
-  (hashed_mobile_ad_id = getHashedValue(
-    message?.context?.idfa?.toString()?.toLowerCase()
-  )),
-    (hashed_idfv = getHashedValue(
-      message?.context?.idfv?.toString()?.toLowerCase()
-    ));
+  const email = getFieldValueFromMessage(message, "email");
+  if (email) {
+    payload.hashed_email = getHashedValue(
+      email
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  const phone = getNormalizedPhoneNumber(message);
+  if (phone) {
+    payload.hashed_phone_number = getHashedValue(
+      phone
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  const ip = message.context?.ip || message.request_ip;
+  if (ip) {
+    payload.hashed_ip_address = getHashedValue(
+      ip
+        .toString()
+        .toLowerCase()
+        .trim()
+    );
+  }
+  // only in case of ios platform this is required
+  if (
+    isAppleFamily(message.context?.device?.type) &&
+    (message.properties?.idfv || message.context?.device?.id)
+  ) {
+    payload.hashed_idfv = getHashedValue(
+      message.properties?.idfv || message.context?.device?.id
+    );
+  }
+
+  if (message.properties?.adId || message.context?.device?.advertisingId) {
+    payload.hashed_ad_id = getHashedValue(
+      message.properties?.adId || message.context?.device?.advertisingId
+    );
+  }
+
+  payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 
   if (
     !payload.hashed_email &&
@@ -214,7 +240,7 @@ function trackResponseBuilder(message, { Config }) {
     !(payload.hashed_ip_address && payload.user_agent)
   ) {
     throw new CustomError(
-      "At least one of email or phone or idfa or ip and userAgent is required",
+      "At least one of email or phone or advertisingId or ip and userAgent is required",
       400
     );
   }
@@ -252,6 +278,11 @@ function trackResponseBuilder(message, { Config }) {
     payload.pixel_id = pixelId;
   }
 
+  // adding for deduplication for more than one source
+  if (Config.enableDeduplication) {
+    const dedupId = Config.deduplicationKey || "messageId";
+    payload.client_dedup_id = get(message, dedupId);
+  }
   payload = removeUndefinedAndNullValues(payload);
 
   // build response
@@ -264,6 +295,41 @@ function trackResponseBuilder(message, { Config }) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
+}
+
+// Checks if there are any mapping events for the track event and returns them
+function eventMappingHandler(message, destination) {
+  let event = get(message, "event");
+
+  if (!event) {
+    throw new CustomError("[Snapchat] :: Event name is required", 400);
+  }
+  event = event.trim().replace(/\s+/g, "_");
+
+  let { rudderEventsToSnapEvents } = destination.Config;
+  const mappedEvents = new Set();
+
+  if (Array.isArray(rudderEventsToSnapEvents)) {
+    rudderEventsToSnapEvents = getValidDynamicFormConfig(
+      rudderEventsToSnapEvents,
+      "from",
+      "to",
+      "snapchat_conversion",
+      destination.ID
+    );
+    rudderEventsToSnapEvents.forEach(mapping => {
+      if (
+        mapping.from
+          .trim()
+          .replace(/\s+/g, "_")
+          .toLowerCase() === event.toLowerCase()
+      ) {
+        mappedEvents.add(mapping.to);
+      }
+    });
+  }
+
+  return [...mappedEvents];
 }
 
 function process(event) {
@@ -279,50 +345,37 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+    case EventType.TRACK: {
+      const mappedEvents = eventMappingHandler(message, destination);
+      if (mappedEvents.length > 0) {
+        response = [];
+        mappedEvents.forEach(mappedEvent => {
+          const res = trackResponseBuilder(message, destination, mappedEvent);
+          response.push(res);
+        });
+      } else {
+        response = trackResponseBuilder(
+          message,
+          destination,
+          get(message, "event")
+        );
+      }
       break;
+    }
     default:
       throw new CustomError(`Message type ${messageType} not supported`, 400);
   }
   return response;
 }
 
-function batchEvents(arrayChunks) {
+function batchEvents(eventsChunk) {
   const batchedResponseList = [];
 
-  // list of chunks [ [..], [..] ]
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
+
   arrayChunks.forEach(chunk => {
-    const batchResponseList = [];
-    const metadata = [];
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    // Batch event into dest batch structure
-    chunk.forEach(ev => {
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
-    });
-
-    batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-      batch: JSON.stringify(batchResponseList)
-    };
-
-    batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-    batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
-    };
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata,
-      destination
-    };
+    const batchEventResponse = generateBatchedPayloadForArray(chunk);
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
@@ -342,64 +395,48 @@ function getEventChunks(event, eventsChunk) {
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SNAPCHAT_CONVERSION");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
-  let eventsChunk = []; // temporary variable to divide payload into chunks
-  const arrayChunks = []; // transformed payload of (2000) batch size
+  const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map(event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, eventsChunk);
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         } else {
           // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination
-            },
-            eventsChunk
-          );
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
+          let response = process(event);
+          response = Array.isArray(response) ? response : [response];
+          response.forEach(res => {
+            getEventChunks(
+              {
+                message: res,
+                metadata: event.metadata,
+                destination: event.destination
+              },
+              eventsChunk
+            );
+          });
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "SNAPCHAT_CONVERSION"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );
 
   let batchedResponseList = [];
-  if (arrayChunks.length) {
-    batchedResponseList = batchEvents(arrayChunks);
+  if (eventsChunk.length) {
+    batchedResponseList = batchEvents(eventsChunk);
   }
   return [...batchedResponseList, ...errorRespList];
 };

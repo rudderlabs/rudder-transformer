@@ -8,8 +8,15 @@ const logger = require("../logger");
 const stats = require("./stats");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
+const FAAS_BASE_IMG = "rudderlabs/user-functions-test:flask-plain-handler";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
 const DESTRUCTION_TIMEOUT_IN_MS = 2 * 60 * 1000;
+
+const FUNCTION_REQUEST_TYPE_HEADER = "X-REQUEST-TYPE";
+const FUNCTION_REQUEST_TYPES = {
+  code: "CODE",
+  event: "EVENT"
+};
 
 const resourcesBasePath = path.join(__dirname, "..", "resources", "openfaas");
 const buildsFolderPrefix = "openfaas-builds-";
@@ -41,7 +48,9 @@ function buildFunctionName(transformationName, id) {
   return fnName;
 }
 
-function buildImageName(versionId, code) {
+function buildImageName(versionId, code, testMode) {
+  if (testMode) return FAAS_BASE_IMG;
+
   let tagName = versionId;
 
   if (versionId === "testVersionId") {
@@ -49,22 +58,6 @@ function buildImageName(versionId, code) {
   }
 
   return `${FUNCTION_REPOSITORY}:${tagName}`;
-}
-
-async function buildContext(code) {
-  const buildDir = await fs.promises.mkdtemp(
-    path.join(os.tmpdir(), buildsFolderPrefix)
-  );
-  const funcDir = path.join(buildDir, "function");
-
-  await fs.promises.mkdir(funcDir);
-  await fs.copy(resourcesBasePath, buildDir);
-
-  await fs.promises.writeFile(path.join(funcDir, "__init__.py"), "");
-  await fs.promises.writeFile(path.join(funcDir, "handler.py"), code);
-
-  logger.debug("Done building context at: ", buildDir);
-  return buildDir;
 }
 
 async function containerizeAndPush(imageName, functionName, code) {
@@ -124,7 +117,22 @@ async function isFunctionDeployed(functionName) {
   return matchFound;
 }
 
-async function deployFunction(imageName, functionName, testMode) {
+function invokeFunction(functionName, payload, requestType) {
+  const headers = {};
+  headers[FUNCTION_REQUEST_TYPE_HEADER] = requestType;
+
+  return axios.post(
+    new URL(
+      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
+    ).toString(),
+    payload,
+    {
+      headers
+    }
+  );
+}
+
+async function deployFunction(imageName, functionName) {
   const payload = {
     service: functionName,
     name: functionName,
@@ -154,9 +162,24 @@ async function deployFunction(imageName, functionName, testMode) {
   }
 }
 
+async function deployCode(functionName, code) {
+  try {
+    await invokeFunction(functionName, { code }, FUNCTION_REQUEST_TYPES.code);
+  } catch (error) {
+    logger.error(`Error trying to deploy code to function ${functionName}: `, error);
+  }
+}
+
 async function faasDeploymentHandler(imageName, functionName, code, testMode) {
-  await containerizeAndPush(imageName, functionName, code);
+  if (!testMode) {
+    await containerizeAndPush(imageName, functionName, code);
+  }
+
   await deployFunction(imageName, functionName, testMode);
+
+  if (testMode) {
+    deployCode(functionName, code);
+  }
 }
 
 async function faasInvocationHandler(
@@ -187,7 +210,7 @@ async function faasInvocationHandler(
   }
 
   if ((!isFnDeployed || override) && !shouldSkipDeploymentProcess) {
-    const imageName = buildImageName(versionId, code);
+    const imageName = buildImageName(versionId, code, testMode);
 
     if (override) {
       await deleteFunction(derivedFunctionName).catch(error => {
@@ -202,18 +225,15 @@ async function faasInvocationHandler(
 
   logger.info("Invoking function: ", derivedFunctionName);
 
-  if (testMode && !shouldSkipDeploymentProcess) {
-    setTimeout(async () => {
-      await deleteFunction(derivedFunctionName).catch(_e => {});
-    }, DESTRUCTION_TIMEOUT_IN_MS);
-  }
-
-  const response = await axios.post(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", derivedFunctionName)
-    ).toString(),
-    events
+  const response = await invokeFunction(
+    derivedFunctionName,
+    events,
+    FUNCTION_REQUEST_TYPES.event
   );
+
+  if (testMode && !shouldSkipDeploymentProcess) {
+    deleteFunction(derivedFunctionName).catch(_e => {});
+  }
 
   stats.timing("deployed_function_execution_time", startTime, {
     derivedFunctionName

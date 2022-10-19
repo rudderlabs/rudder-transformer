@@ -1,0 +1,65 @@
+[
+    {
+        "sourceKeys": "user",
+        "destKeys": "context.traits"
+    },
+    {
+        "sourceKeys": "event.attributes",
+        "destKeys": "properties"
+    },
+    {
+        "sourceKeys": "event.propertyKey",
+        "destKeys": "propertyKey"
+    },
+    {
+        "sourceKeys": "user.identifyId",
+        "destKeys": "userId"
+    },
+    {
+        "sourceKeys": "event.remoteHost",
+        "destKeys": [
+            "context.ip",
+            "properties.ip"
+        ]
+    },
+    {
+        "sourceKeys": "user.location.countryName",
+        "destKeys": "context.traits.country"
+    },
+    {
+        "sourceKeys": "user.location.stateName",
+        "destKeys": "context.traits.state"
+    },
+    {
+        "sourceKeys": "account",
+        "destKeys": "context.traits.account"
+    },
+    {
+        "sourceKeys": "user.lastVisitedUserAgentData",
+        "destKeys": "context.userAgent"
+    },
+    {
+        "sourceKeys": "event.url",
+        "destKeys": "properties.url"
+    },
+    {
+        "sourceKeys": "event.eventType",
+        "destKeys": "category"
+    },
+    {
+        "sourceKeys": "event.category",
+        "destKeys": "name"
+    },
+    {
+        "sourceKeys": "event.labels",
+        "destKeys": "properties.feedback.labels"
+    },
+    {
+        "sourceKeys": "event.description",
+        "destKeys": "properties.feedback.description"
+    },
+    {
+        "sourceKeys": "event.source",
+        "destKeys": "properties.feedback.source"
+    }
+]

@@ -87,6 +87,8 @@
           "$region": "Kanto",
           "$country": "JP",
           "$zip": "100-0001",
+          "Flagged": false,
+          "Residence": "Shibuya",
           "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
         },
         "body": {
@@ -1072,7 +1074,10 @@
         "params": {
           "$id": "utsab@rudderstack.com",
           "$email": "utsab@rudderstack.com",
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "$first_name": "Utsab",
+          "$last_name": "Chowdhury",
+          "omega": "omegashenron"
         },
         "body": {
           "JSON": {},

@@ -31,7 +31,7 @@ steps:
         $batches.{
           "batchedRequest": {
             "body": {
-              "JSON": {"data": output},
+              "JSON": {"data": $toArray(output)},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -46,7 +46,7 @@ steps:
             "params": {},
             "files": {}
           },
-          "metadata": metadata,
+          "metadata": $toArray(metadata),
           "batched": true,
           "statusCode": 200,
           "destination": $[0].destination

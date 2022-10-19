@@ -6,6 +6,7 @@ const path = require("path");
 const crypto = require("crypto");
 const logger = require("../logger");
 const stats = require("./stats");
+const {v4 : uuidv4} = require("uuid");
 
 const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
 const FAAS_BASE_IMG = "rudderlabs/user-functions-test:flask-plain-handler";
@@ -35,14 +36,18 @@ function weakHash(value) {
     .digest("hex");
 }
 
-function buildFunctionName(transformationName, id) {
+function buildFunctionName(transformationName, id, testMode) {
   let fnName = transformationName
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "-");
 
-  if (id) {
+  if (!testMode && id) {
     fnName += `-${id.trim().replace(/\s+/g, "")}`;
+  }
+
+  if (testMode) {
+    fnName += `-${uuidv4()}`;
   }
 
   return fnName;
@@ -199,7 +204,8 @@ async function faasInvocationHandler(
   } else {
     derivedFunctionName = buildFunctionName(
       transformationName,
-      versionId === "testVersionId" ? weakHash(code) : versionId
+      versionId === "testVersionId" ? weakHash(code) : versionId,
+      testMode
     );
   }
 

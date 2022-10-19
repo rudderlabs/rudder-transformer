@@ -41,10 +41,12 @@ inputData.forEach((input, index) => {
 
 describe(`${name} Tests`, () => {
 describe("Router Tests", () => {
-  it("Payload", async () => {
-    const routerOutput = await transformer.processRouterDest(inputRouterData);
-    expect(routerOutput).toEqual(expectedRouterData);
-  });
+  // inputRouterData are object of arrays with keys `rETL` and `others` for input data of the respective sources
+Object.keys(inputRouterData).forEach((index)=> {
+  it(`${name} Tests: payload: ${index}`, async () => {
+    const routerOutput = await transformer.processRouterDest(inputRouterData[index]);
+    expect(routerOutput).toEqual(expectedRouterData[index]);
+    })
+}) 
 });
-
 });

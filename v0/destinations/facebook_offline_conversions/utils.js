@@ -258,8 +258,8 @@ const getContentType = (message, standardEvent, categoryToContent) => {
 
   /** *
    * if none of the above is followed, we are defaulting it to "product" except whatever events that are mapped to viewContent
-   * for viewContent if there is any product array we are setting content_type as "product_group"
-   * when no product array is not found we are defaulting it to "product"
+   * for viewContent if there is any product array we are setting content_type as "product"
+   * when no product array is not found we are defaulting it to "product_group"
    */
   if (category) {
     const categoryToContentMapping = getHashFromArray(
@@ -284,9 +284,9 @@ const getContentType = (message, standardEvent, categoryToContent) => {
   } else if (standardEvent === "ViewContent") {
     const { products } = message.properties;
     if (products && products.length > 0 && Array.isArray(products)) {
-      contentType = "product_group";
-    } else {
       contentType = "product";
+    } else {
+      contentType = "product_group";
     }
   } else {
     contentType = "product";

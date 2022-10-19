@@ -63,7 +63,7 @@ const scAudienceProxyRequest = async request => {
 const getAuthErrCategory = (code, response) => {
   switch (code) {
     case 401:
-      if (!response.error.details) return REFRESH_TOKEN;
+      if (!response.error?.details) return REFRESH_TOKEN;
       return "";
     case 403: // Access Denied
       return DISABLE_DEST;
@@ -81,7 +81,7 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
     .setStatus(status)
     .setDestinationResponse(response)
     .setMessage(
-      `snapchat_custom_audience: ${response.error.message} ${stageMsg}`
+      `snapchat_custom_audience: ${response.error?.message} ${stageMsg}`
     )
     .setAuthErrorCategory(getAuthErrCategory(status, response))
     .build();
@@ -101,8 +101,7 @@ const responseHandler = destinationResponse => {
   // else successfully return status, message and original destination response
   scaAudienceRespHandler(
     destinationResponse,
-    "during snapchat_custom_audience response transformation",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    "during snapchat_custom_audience response transformation"
   );
 };
 

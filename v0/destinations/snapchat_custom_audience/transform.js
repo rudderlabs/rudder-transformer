@@ -3,7 +3,8 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
-  CustomError
+  CustomError,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const { BASE_URL } = require("./config");
@@ -80,10 +81,37 @@ const validatePayload = message => {
   }
 };
 
+const generateResponse = (
+  groupedData,
+  schemaType,
+  segmentId,
+  metadata,
+  type
+) => {
+  const payload = { users: [] };
+  const userPayload = { schema: [schemaType], data: groupedData };
+  payload.users.push(userPayload);
+  const response = defaultRequestConfig();
+  if (type === "remove") {
+    response.method = "DELETE";
+    payload.users[0].id = `${segmentId}`;
+  }
+
+  response.endpoint = `${BASE_URL}/segments/${segmentId}/users`;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  const accessToken = getAccessToken(metadata);
+  response.headers = {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json"
+  };
+
+  return response;
+};
+
 const responseBuilder = (metadata, message, { Config }, type) => {
   const { schema, segmentId } = Config;
-  const payload = { users: [] };
-  const userPayload = { schema: [], data: [] };
+  let data = [[]];
+  let index = 0;
   let schemaType;
   let hashedProperty;
   // Normalizing and hashing ref: https://marketingapi.snapchat.com/docs/#normalizing-hashing
@@ -100,9 +128,15 @@ const responseBuilder = (metadata, message, { Config }, type) => {
       schemaType = "EMAIL_SHA256";
       userArray.forEach(element => {
         hashedProperty = element?.email;
-        // what if email is not present in all cases?
+        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
+          return;
+        }
         hashedProperty = sha256(hashedProperty.toLowerCase().trim());
-        userPayload.data.push([hashedProperty]);
+        if (data[index].length >= 100000) {
+          data.push([]);
+          index += 1;
+        }
+        data[index].push([hashedProperty]);
       });
       break;
 
@@ -110,6 +144,9 @@ const responseBuilder = (metadata, message, { Config }, type) => {
       schemaType = "PHONE_SHA256";
       userArray.forEach(element => {
         hashedProperty = element?.phone || element?.mobile;
+        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
+          return;
+        }
         hashedProperty = sha256(
           hashedProperty
             .toLowerCase()
@@ -117,7 +154,11 @@ const responseBuilder = (metadata, message, { Config }, type) => {
             .replace(/^0+/, "")
             .replace(/[^0-9]/g, "")
         );
-        userPayload.data.push([hashedProperty]);
+        if (data[index].length >= 100000) {
+          data.push([]);
+          index += 1;
+        }
+        data[index].push([hashedProperty]);
       });
       break;
 
@@ -126,8 +167,15 @@ const responseBuilder = (metadata, message, { Config }, type) => {
       userArray.forEach(element => {
         hashedProperty =
           element?.mobileId || element?.mobileAdId || element?.mobile_id;
+        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
+          return;
+        }
         hashedProperty = sha256(hashedProperty.toLowerCase());
-        userPayload.data.push([hashedProperty]);
+        if (data[index].length >= 100000) {
+          data.push([]);
+          index += 1;
+        }
+        data[index].push([hashedProperty]);
       });
       break;
 
@@ -135,25 +183,23 @@ const responseBuilder = (metadata, message, { Config }, type) => {
       throw new CustomError("Invalid schema", 400);
   }
 
-  userPayload.schema.push(schemaType);
-  payload.users.push(userPayload);
-
-  const response = defaultRequestConfig();
-  if (type === "remove") {
-    response.method = "DELETE";
-    payload.users[0].id = `${segmentId}`;
+  // if required field is not present in all the cases
+  if (data[0].length === 0) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "[snapchat_custom_audience]::Required field(email/phone/mobileAdId) for the chosen schema should be sent."
+      )
+      .setStatus(400)
+      .build();
   }
 
-  response.endpoint = `${BASE_URL}/segments/${segmentId}/users`;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = getAccessToken(metadata);
-  //   response.params = { segmentId: Config.segmentId };
-  response.headers = {
-    Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json"
-  };
-
-  return response;
+  let finalResponse = [];
+  data.forEach(groupedData => {
+    finalResponse.push(
+      generateResponse(groupedData, schemaType, segmentId, metadata, type)
+    );
+  });
+  return finalResponse;
 };
 
 const processEvent = (metadata, message, destination) => {
@@ -163,11 +209,11 @@ const processEvent = (metadata, message, destination) => {
   let payload;
   if (message.properties.listData.add) {
     payload = responseBuilder(metadata, message, destination, "add");
-    response.push(payload);
+    response.push(...payload);
   }
   if (message.properties.listData.remove) {
     payload = responseBuilder(metadata, message, destination, "remove");
-    response.push(payload);
+    response.push(...payload);
   }
 
   return response;

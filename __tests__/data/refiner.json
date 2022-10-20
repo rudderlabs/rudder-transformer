@@ -450,11 +450,9 @@
         "FORM": {
           "id": "test@12",
           "email": "business@rudderstack.com",
-          "account": {
-            "id": "group@123",
-            "name": "rudder ventures",
-            "businessEmail": "business@rudderstack.com"
-          }
+          "account[businessEmail]": "business@rudderstack.com",
+          "account[id]": "group@123",
+          "account[name]": "rudder ventures"
         }
       },
       "files": {}

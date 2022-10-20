@@ -1,14 +1,8 @@
-const qs = require("qs");
 const get = require("get-value");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
-const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { DESTINATION, CONFIG_CATEGORIES } = require("./config");
 const { getHashFromArray, getFieldValueFromMessage } = require("../../util");
-const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 
 /**
  * Validation for userId and an email
@@ -185,7 +179,19 @@ const groupUsersPayloadBuilder = (message, destination) => {
   if (email) {
     payload.email = email;
   }
-  payload.account = getAccountTraits(message, destination);
+
+  /**
+   * converting an account object into destination structure format
+   * example of a destination account object :
+   * 'account[id]': 'group@123'
+   * 'account[name]': 'rudder ventures',
+   */
+  const accountTraits = getAccountTraits(message, destination);
+  const keys = Object.keys(accountTraits);
+  keys.forEach(key => {
+    payload[`account[${key}]`] = accountTraits[key];
+  });
+
   const { endpoint } = CONFIG_CATEGORIES.GROUP_USERS;
   return {
     payload,
@@ -193,67 +199,10 @@ const groupUsersPayloadBuilder = (message, destination) => {
   };
 };
 
-/**
- * Handles the destination Response and return it to rudder-server
- * @param {*} destinationResponse
- * @returns
- */
-const responseHandler = destinationResponse => {
-  const message = `[Refiner] - Request Processed Successfully`;
-  const { status } = destinationResponse;
-  if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
-    return {
-      status,
-      message,
-      destinationResponse
-    };
-  }
-  // else successfully return status, message and original destination response
-  const { response } = destinationResponse;
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Refiner: ${response.message} during Refiner response transformation`
-    )
-    .build();
-};
-
-/**
- * Making an api call to destination in appropriate format and returns the payload
- * @param {*} request
- * @returns
- */
-const ProxyRequest = async request => {
-  const { method, endpoint, headers, body } = request;
-  const payload = body.FORM;
-  // since content-type is x-www-form-urlencoded we are signifying the payload
-  const data = qs.stringify(payload);
-  const requestBody = {
-    url: endpoint,
-    data,
-    headers,
-    method
-  };
-  const response = await httpSend(requestBody);
-  return response;
-};
-
-class networkHandler {
-  constructor() {
-    this.prepareProxy = prepareProxyRequest;
-    this.proxy = ProxyRequest;
-    this.processAxiosResponse = processAxiosResponse;
-    this.responseHandler = responseHandler;
-  }
-}
-
 module.exports = {
   validatePayload,
   identifyUserPayloadBuilder,
   trackEventPayloadBuilder,
   groupUsersPayloadBuilder,
-  pageEventPayloadBuilder,
-  networkHandler
+  pageEventPayloadBuilder
 };

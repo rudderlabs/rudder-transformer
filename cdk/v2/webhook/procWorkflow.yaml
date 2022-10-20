@@ -33,7 +33,7 @@ steps:
     condition: destination.Config.webhookMethod = $defaultGetRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultDeleteRequestConfig.requestMethod
     template: |
       (
-       $response : { 
+       $response := { 
         "method" : $defaultGetRequestConfig.requestMethod or $defaultDeleteRequestConfig.requestMethod,
         "params" : $getPropertyParams(message)
       };
@@ -44,11 +44,10 @@ steps:
     condition: destination.Config.webhookMethod = $defaultPostRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPutRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPatchRequestConfig.requestMethod
     template: |
       (
-      $filteredMessage : message ~> |$|{}, ['fullPath', 'appendPath']|
       $userId:= {"userId": message.anonymousId};
-      $response : {
+      $response := {
         "method" : destination.Config.webhookMethod,
-        "body": $merge([$filteredMessage, $userId]),
+        "body": $merge([$userId,message ~> |$|{}, ['fullPath', 'appendPath']|]),
         "headers": $context.finalHeaders
       };
       $setContext("payload", $response);

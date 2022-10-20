@@ -14,9 +14,9 @@ const {
 const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
 
 // build final response
-function buildResponse(payload, rudderStackApiKey) {
+function buildResponse(payload, factorsAIApiKey) {
   const response = defaultRequestConfig();
-  const apiKey = Buffer.from(`${rudderStackApiKey}:`).toString("base64");
+  const apiKey = Buffer.from(`${factorsAIApiKey}:`).toString("base64");
   response.endpoint = BASE_URL;
   response.headers = {
     "Content-Type": "application/json",
@@ -28,28 +28,28 @@ function buildResponse(payload, rudderStackApiKey) {
 }
 
 // process identify call
-function processIdentify(message, rudderStackApiKey) {
+function processIdentify(message, factorsAIApiKey) {
   const requestJson = constructPayload(
     message,
     mappingConfig[ConfigCategories.IDENTIFY.name]
   );
-  return buildResponse(requestJson, rudderStackApiKey);
+  return buildResponse(requestJson, factorsAIApiKey);
 }
 
 // process track call
-function processTrack(message, rudderStackApiKey) {
+function processTrack(message, factorsAIApiKey) {
   const requestJson = constructPayload(
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
   // flatten json as factorsAi do not support nested properties
   requestJson.properties = flattenJson(requestJson.properties);
-  return buildResponse(requestJson, rudderStackApiKey);
+  return buildResponse(requestJson, factorsAIApiKey);
 }
 
 function process(event) {
   const { message, destination } = event;
-  const { rudderStackApiKey } = destination.Config;
+  const { factorsAIApiKey } = destination.Config;
 
   if (!message.type) {
     throw new CustomError(
@@ -62,9 +62,9 @@ function process(event) {
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      return processIdentify(message, rudderStackApiKey);
+      return processIdentify(message, factorsAIApiKey);
     case EventType.TRACK:
-      return processTrack(message, rudderStackApiKey);
+      return processTrack(message, factorsAIApiKey);
     default:
       throw new CustomError("Message type is not supported", 400);
   }

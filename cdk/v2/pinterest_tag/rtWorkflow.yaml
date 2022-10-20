@@ -1,6 +1,11 @@
 bindings:
   - path: ../../../v0/destinations/pinterest_tag/config
 steps:
+  - name: validateInput
+    template: |
+      (
+        $assert($type($$) = "array", "Invalid event array")
+      )
   - name: prepareContext
     template: $setContext("batchMode", true)
   - name: transform

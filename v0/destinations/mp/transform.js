@@ -164,6 +164,9 @@ const getEventValueForTrackEvent = (message, destination) => {
     message,
     mPEventPropertiesConfigJson
   );
+  if (mappedProperties.$insert_id) {
+    mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
+  }
   const unixTimestamp = toUnixTimestamp(message.timestamp);
   const properties = {
     ...message.properties,

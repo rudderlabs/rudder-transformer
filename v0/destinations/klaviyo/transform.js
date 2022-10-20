@@ -29,13 +29,12 @@ const {
   extractCustomFields,
   toUnixTimestamp,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  simpleProcessRouterDest
 } = require("../../util");
 
 /**
@@ -72,24 +71,23 @@ const identifyRequestHandler = async (message, category, destination) => {
   const traitsInfo = getFieldValueFromMessage(message, "traits");
   const response = defaultRequestConfig();
   const personId = await isProfileExist(message, destination);
+  let propertyPayload = constructPayload(
+    message,
+    MAPPING_CONFIG[category.name]
+  );
+  // Extract other K-V property from traits about user custom properties
+  propertyPayload = extractCustomFields(
+    message,
+    propertyPayload,
+    ["traits", "context.traits"],
+    WhiteListedTraits
+  );
   if (!personId) {
-    let propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
-    // Extract other K-V property from traits about user custom properties
-    propertyPayload = extractCustomFields(
-      message,
-      propertyPayload,
-      ["traits", "context.traits"],
-      WhiteListedTraits
-    );
     propertyPayload = removeUndefinedAndNullValues(propertyPayload);
     if (destination.Config?.enforceEmailAsPrimary) {
       delete propertyPayload.$id;
       propertyPayload._id = getFieldValueFromMessage(message, "userId");
     }
-
     const payload = {
       token: destination.Config.publicApiKey,
       properties: propertyPayload
@@ -102,10 +100,6 @@ const identifyRequestHandler = async (message, category, destination) => {
     };
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
-    const propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
     response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
@@ -284,7 +278,7 @@ const groupRequestHandler = (message, category, destination) => {
       profiles: [subscribeProfile]
     };
     const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint =  `${BASE_ENDPOINT}/api/v2/list/${get(
+    subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
       message,
       "groupId"
     )}/subscribe`;
@@ -337,41 +331,7 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+  const respList = await simpleProcessRouterDest(inputs, "KLAVIYO", process);
   return respList;
 };
 

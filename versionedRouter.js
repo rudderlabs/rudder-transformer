@@ -5,6 +5,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
@@ -14,7 +15,10 @@ const {
   getMetadata,
   generateErrorObject,
   CustomError,
-  isHttpStatusSuccess
+  isHttpStatusSuccess,
+  getErrorRespEvents,
+  isCdkDestination,
+  getErrorStatusCode
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
@@ -23,14 +27,21 @@ const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
-const { isCdkDestination } = require("./v0/util");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
 const { getIntegrations } = require("./routes/utils");
-const { RespStatusError } = require("./util/utils");
+const { setupUserTransformHandler } = require("./util/customTransformer");
+const { CommonUtils } = require("./util/common");
+const { RespStatusError, RetryRequestError } = require("./util/utils");
+const { getWorkflowEngine } = require("./cdk/v2/handler");
+const {
+  getErrorInfo,
+  isCdkV2Destination,
+  getCdkV2TestThreshold
+} = require("./cdk/v2/utils");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -88,6 +99,81 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
+async function handleCdkV2(destName, parsedEvent, flowType) {
+  try {
+    const workflowEngine = await getWorkflowEngine(destName, flowType);
+
+    const result = await workflowEngine.execute(parsedEvent);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (error) {
+    throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
+  }
+}
+
+async function getCdkV2Result(destName, event, flowType) {
+  const cdkResult = {};
+  try {
+    cdkResult.output = await handleCdkV2(destName, event, flowType);
+  } catch (error) {
+    cdkResult.error = {
+      message: error.message,
+      statusCode: getErrorStatusCode(error)
+    };
+  }
+  return cdkResult;
+}
+
+async function compareWithCdkV2(destType, input, flowType, v0Result) {
+  try {
+    const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
+    const destThreshold = getCdkV2TestThreshold(input);
+    const liveTestThreshold = envThreshold * destThreshold;
+    if (
+      Number.isNaN(liveTestThreshold) ||
+      !liveTestThreshold ||
+      liveTestThreshold < Math.random()
+    ) {
+      return;
+    }
+    const cdkResult = await getCdkV2Result(destType, input, flowType);
+    const unmatchedKeys = Object.keys(
+      CommonUtils.objectDiff(v0Result, cdkResult)
+    );
+    if (unmatchedKeys.length > 0) {
+      logger.error(
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
+          input.metadata
+        )}`
+      );
+      return;
+    }
+  } catch (error) {
+    logger.error(
+      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
+        input.metadata
+      )}`,
+      error
+    );
+  }
+}
+
+async function handleV0Destination(destHandler, destType, input, flowType) {
+  const result = {};
+  try {
+    result.output = await destHandler(input);
+    return result.output;
+  } catch (error) {
+    result.error = {
+      message: error.message,
+      statusCode: getErrorStatusCode(error)
+    };
+    throw error;
+  } finally {
+    await compareWithCdkV2(destType, input, flowType, result);
+  }
+}
+
 async function handleDest(ctx, version, destination) {
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
@@ -105,54 +191,59 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  const respList = [];
   const executeStartTime = new Date();
-  let destHandler;
-  // Getting destination handler for non-cdk destination(s)
-  if (!isCdkDestination(events[0])) {
-    destHandler = getDestHandler(version, destination);
-  }
-  await Promise.all(
+  let destHandler = null;
+  const respList = await Promise.all(
     events.map(async event => {
       try {
         let parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkDestination(parsedEvent)) {
-          respEvents = await Executor.execute(
+        if (isCdkV2Destination(parsedEvent)) {
+          respEvents = await handleCdkV2(
+            destination,
             parsedEvent,
-            ConfigFactory.getConfig(destination)
+            TRANSFORMER_METRIC.ERROR_AT.PROC
           );
+        } else if (isCdkDestination(parsedEvent)) {
+          const tfConfig = await ConfigFactory.getConfig(destination);
+          respEvents = await Executor.execute(parsedEvent, tfConfig);
         } else {
-          respEvents = await destHandler.process(parsedEvent);
+          if (destHandler === null) {
+            destHandler = getDestHandler(version, destination);
+          }
+          respEvents = await handleV0Destination(
+            destHandler.process,
+            destination,
+            parsedEvent,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
         }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          respList.push(
-            ...respEvents.map(ev => {
-              let { userId } = ev;
-              // Set the user ID to an empty string for
-              // all the falsy values (including 0 and false)
-              // Otherwise, server panics while un-marshalling the response
-              // while expecting only strings.
-              if (!userId) {
-                userId = "";
-              }
+          return respEvents.map(ev => {
+            let { userId } = ev;
+            // Set the user ID to an empty string for
+            // all the falsy values (including 0 and false)
+            // Otherwise, server panics while un-marshalling the response
+            // while expecting only strings.
+            if (!userId) {
+              userId = "";
+            }
 
-              if (ev.statusCode !== 400 && userId) {
-                userId = `${userId}`;
-              }
+            if (ev.statusCode !== 400 && userId) {
+              userId = `${userId}`;
+            }
 
-              return {
-                output: { ...ev, userId },
-                metadata: event.metadata,
-                statusCode: 200
-              };
-            })
-          );
+            return {
+              output: { ...ev, userId },
+              metadata: event.metadata,
+              statusCode: 200
+            };
+          });
         }
       } catch (error) {
         logger.error(error);
@@ -161,12 +252,16 @@ async function handleDest(ctx, version, destination) {
           destination,
           TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
         );
-        respList.push({
+        return {
           metadata: event.metadata,
           statusCode: errObj.status,
-          error: errObj.message || "Error occurred while processing payload.",
-          statTags: errObj.statTags
-        });
+          error:
+            errObj.message || "Error occurred while processing the payload.",
+          statTags: {
+            errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
+            ...errObj.statTags
+          }
+        };
       }
     })
   );
@@ -180,7 +275,7 @@ async function handleDest(ctx, version, destination) {
     version,
     ...metaTags
   });
-  ctx.body = respList;
+  ctx.body = respList.flat();
   return ctx.body;
 }
 
@@ -191,6 +286,7 @@ async function handleValidation(ctx) {
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
+  let ctxStatusCode = 200;
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const eventStartTime = new Date();
@@ -218,17 +314,24 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors
         });
-        stats.counter("hv_errors", 1, {
+        stats.counter("hv_propagated_events", 1, {
           ...metaTags
         });
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
       logger.error(errMessage);
+      let status = 200;
+      if (error instanceof RetryRequestError) {
+        ctxStatusCode = error.statusCode;
+      }
+      if (error instanceof RespStatusError) {
+        status = error.statusCode;
+      }
       respList.push({
         output: event.message,
         metadata: event.metadata,
-        statusCode: 200,
+        statusCode: status,
         validationErrors: [],
         error: errMessage
       });
@@ -242,6 +345,7 @@ async function handleValidation(ctx) {
     }
   }
   ctx.body = respList;
+  ctx.status = ctxStatusCode;
   ctx.set("apiVersion", API_VERSION);
 
   stats.counter("hv_events_count", events.length, {
@@ -266,12 +370,36 @@ async function routerHandleDest(ctx) {
   const respEvents = [];
   const allDestEvents = _.groupBy(input, event => event.destination.ID);
   await Promise.all(
-    Object.entries(allDestEvents).map(async ([destID, desInput]) => {
-      desInput = processDynamicConfig(desInput, "router");
-      const listOutput = await routerDestHandler.processRouterDest(desInput);
+    Object.values(allDestEvents).map(async destInput => {
+      const newDestInput = processDynamicConfig(destInput, "router");
+      let listOutput;
+      if (isCdkV2Destination(newDestInput[0])) {
+        listOutput = await handleCdkV2(
+          destType,
+          newDestInput,
+          TRANSFORMER_METRIC.ERROR_AT.RT
+        );
+      } else {
+        listOutput = await handleV0Destination(
+          routerDestHandler.processRouterDest,
+          destType,
+          newDestInput,
+          TRANSFORMER_METRIC.ERROR_AT.RT
+        );
+      }
       respEvents.push(...listOutput);
     })
   );
+  respEvents
+    .filter(
+      resp =>
+        "error" in resp &&
+        _.isObject(resp.statTags) &&
+        !_.isEmpty(resp.statTags)
+    )
+    .forEach(resp => {
+      set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+    });
   ctx.body = { output: respEvents };
   return ctx.body;
 }
@@ -363,6 +491,7 @@ if (startDestTransformer) {
         { processSessions }
       );
 
+      let ctxStatusCode = 200;
       const transformedEvents = [];
       let librariesVersionIDs = [];
       if (events[0].libraries) {
@@ -447,6 +576,9 @@ if (startDestTransformer) {
               logger.error(error);
               let status = 400;
               const errorString = error.toString();
+              if (error instanceof RetryRequestError) {
+                ctxStatusCode = error.statusCode;
+              }
               if (error instanceof RespStatusError) {
                 status = error.statusCode;
               }
@@ -488,6 +620,7 @@ if (startDestTransformer) {
       );
       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
+      ctx.status = ctxStatusCode;
       ctx.set("apiVersion", API_VERSION);
       stats.timing("user_transform_request_latency", startTime, {
         processSessions
@@ -544,6 +677,41 @@ if (transformerTestModeEnabled) {
     } catch (error) {
       ctx.body = { error: error.message };
       ctx.status = 400;
+    }
+  });
+  /* *params
+   * code: transfromation code
+   * language
+   * name
+   * testWithPublish: publish version or not
+   */
+  router.post("/transformation/sethandle", async ctx => {
+    try {
+      const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
+      const { code, language, testName, testWithPublish = false } =
+        trRevCode || {};
+      if (!code || !language || !testName) {
+        throw new Error(
+          "Invalid Request. Missing parameters in transformation code block"
+        );
+      }
+
+      logger.debug(
+        `[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`
+      );
+      if (!trRevCode.versionId) {
+        trRevCode.versionId = "testVersionId";
+      }
+      const res = await setupUserTransformHandler(
+        trRevCode,
+        libraryVersionIDs,
+        testWithPublish
+      );
+      logger.debug(`[CT] Finished setting up transformation: ${testName}`);
+      ctx.body = res;
+    } catch (error) {
+      ctx.status = 400;
+      ctx.body = { error: error.message };
     }
   });
 }
@@ -657,7 +825,10 @@ async function handleProxyRequest(destination, ctx) {
       destination,
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
     );
-    response = { ...response };
+    response.statTags = {
+      errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
+      ...response.statTags
+    };
     if (!err.responseTransformFailure) {
       response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
     }
@@ -705,7 +876,15 @@ router.get("/transformerBuildVersion", ctx => {
 });
 
 router.get("/health", ctx => {
-  ctx.body = "OK";
+  const {
+    git_commit_sha: gitCommitSha,
+    transformer_build_version: imageVersion
+  } = process.env;
+  ctx.body = {
+    service: "UP",
+    ...(imageVersion && { version: imageVersion }),
+    ...(gitCommitSha && { gitCommitSha })
+  };
 });
 
 router.get("/features", ctx => {
@@ -731,9 +910,18 @@ const batchHandler = ctx => {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
-      response.errors.push(
-        error.message || "Error occurred while processing payload."
+      const errorObj = generateErrorObject(
+        error,
+        destType,
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
       );
+      const errResp = getErrorRespEvents(
+        destEvents.map(d => d.metadata),
+        500,
+        error.message || "Error occurred while processing payload.",
+        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+      );
+      response.errors.push(errResp);
     }
   });
   if (response.errors.length > 0) {

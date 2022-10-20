@@ -17,7 +17,7 @@ const {
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
-  API_VERSION
+  DESTINATION
 } = require("./config");
 
 /**
@@ -380,76 +380,6 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 };
 
 /**
- *
- * To reduce the number of calls for searching of already existing objects
- * We do search for all the objects before router transform and assign the type (create/update)
- * accordingly to context.hubspotOperation
- *
- * */
-
-const splitEventsForCreateUpdate = async (inputs, destination) => {
-  // get all the id and properties of already existing objects needed for update.
-  const updateHubspotIds = await getExistingData(inputs, destination);
-  const resultInput = [];
-
-  inputs.map(input => {
-    const { message } = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
-      message,
-      "HS"
-    );
-
-    let filteredInfo = updateHubspotIds.filter(
-      update => update.property === destinationExternalId
-    );
-
-    if (filteredInfo.length) {
-      input.message.context.externalId = setHsSearchId(
-        input,
-        filteredInfo[0].id
-      );
-      input.message.context.hubspotOperation = "updateObject";
-      resultInput.push(input);
-    } else {
-      input.message.context.hubspotOperation = "createObject";
-      resultInput.push(input);
-    }
-  });
-
-  return resultInput;
-};
-
-const getHsSearchId = message => {
-  let externalIdArray = message.context?.externalId;
-  let hsSearchId = null;
-
-  if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
-      const { type } = extIdObj;
-      if (type.includes("HS")) {
-        hsSearchId = extIdObj.hsSearchId;
-      }
-    });
-  }
-  return { hsSearchId };
-};
-
-const setHsSearchId = (input, id) => {
-  const { message } = input;
-  const resultExternalId = [];
-  let externalIdArray = message.context?.externalId;
-  if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
-      const { type } = extIdObj;
-      if (type.includes("HS")) {
-        extIdObj.hsSearchId = id;
-      }
-      resultExternalId.push(extIdObj);
-    });
-  }
-  return resultExternalId;
-};
-/**
  * DOC: https://developers.hubspot.com/docs/api/crm/search
  * @param {*} inputs
  * @param {*} destination
@@ -458,15 +388,15 @@ const getExistingData = async (inputs, destination) => {
   const { Config } = destination;
   const values = [];
   let searchResponse;
-  const updateHubspotIds = [];
+  let updateHubspotIds = [];
   const firstMessage = inputs[0].message;
   let objectType = null;
   let identifierType = null;
 
   if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .identifierType;
     if (!objectType || !identifierType) {
       throw new CustomError("[HS]:: rETL - external Id not found.", 400);
@@ -481,11 +411,11 @@ const getExistingData = async (inputs, destination) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
-      "HS"
+      DESTINATION
     );
     values.push(destinationExternalId);
   });
-  let requestData = {
+  const requestData = {
     filterGroups: [
       {
         filters: [
@@ -509,6 +439,14 @@ const getExistingData = async (inputs, destination) => {
     }
   };
   let checkAfter = 1; // variable to keep checking if we have more results
+
+  /* eslint-disable no-await-in-loop */
+
+  /* *
+   * This is needed for processing paginated response when searching hubspot.
+   * we can't avoid await in loop as response to the request contains the pagination details
+   * */
+
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
       ":objectType",
@@ -532,21 +470,91 @@ const getExistingData = async (inputs, destination) => {
       );
     }
 
-    const after = searchResponse.response?.paging?.next?.after | 0;
+    const after = searchResponse.response?.paging?.next?.after || 0;
 
     requestData.after = after; // assigning to the new value of after
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
 
     const results = searchResponse.response?.results;
     if (results) {
-      results.map(result => {
+      updateHubspotIds = results.map(result => {
         const propertyValue = result.properties[identifierType];
-        updateHubspotIds.push({ id: result.id, property: propertyValue });
+        return { id: result.id, property: propertyValue };
       });
     }
   }
-
   return updateHubspotIds;
+};
+
+const setHsSearchId = (input, id) => {
+  const { message } = input;
+  const resultExternalId = [];
+  const externalIdArray = message.context?.externalId;
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      const extIdObjParam = extIdObj;
+      if (type.includes(DESTINATION)) {
+        extIdObjParam.hsSearchId = id;
+      }
+      resultExternalId.push(extIdObjParam);
+    });
+  }
+  return resultExternalId;
+};
+
+/**
+ *
+ * To reduce the number of calls for searching of already existing objects
+ * We do search for all the objects before router transform and assign the type (create/update)
+ * accordingly to context.hubspotOperation
+ *
+ * */
+
+const splitEventsForCreateUpdate = async (inputs, destination) => {
+  // get all the id and properties of already existing objects needed for update.
+  const updateHubspotIds = await getExistingData(inputs, destination);
+
+  const resultInput = inputs.map(input => {
+    const { message } = input;
+    const inputParam = input;
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
+      message,
+      DESTINATION
+    );
+
+    const filteredInfo = updateHubspotIds.filter(
+      update => update.property.toString() === destinationExternalId.toString()
+    );
+
+    if (filteredInfo.length) {
+      inputParam.message.context.externalId = setHsSearchId(
+        input,
+        filteredInfo[0].id
+      );
+      inputParam.message.context.hubspotOperation = "updateObject";
+      return inputParam;
+    }
+    inputParam.message.context.hubspotOperation = "createObject";
+    return inputParam;
+  });
+
+  return resultInput;
+};
+
+const getHsSearchId = message => {
+  const externalIdArray = message.context?.externalId;
+  let hsSearchId = null;
+
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      const { type } = extIdObj;
+      if (type.includes(DESTINATION)) {
+        hsSearchId = extIdObj.hsSearchId;
+      }
+    });
+  }
+  return { hsSearchId };
 };
 
 module.exports = {

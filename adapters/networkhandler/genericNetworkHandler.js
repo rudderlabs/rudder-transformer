@@ -33,7 +33,7 @@ const responseHandler = (destinationResponse, dest) => {
       .isTransformResponseFailure(true)
       .setDestinationResponse(destinationResponse)
       .setStatTags({
-        destination: dest,
+        destType: dest,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)

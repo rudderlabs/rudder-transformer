@@ -1,4 +1,4 @@
-FROM node:14.19.0-alpine3.15
+FROM node:14.20-alpine3.15
 
 RUN apk update
 RUN apk upgrade
@@ -20,7 +20,9 @@ WORKDIR /home/node/app
 USER node
 
 ARG version
+ARG GIT_COMMIT_SHA
 ENV transformer_build_version=$version
+ENV git_commit_sha=$GIT_COMMIT_SHA
 COPY package*.json ./
 RUN npm install
 

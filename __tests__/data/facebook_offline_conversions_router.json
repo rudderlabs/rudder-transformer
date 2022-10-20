@@ -1,0 +1,415 @@
+[
+  {
+    "description": "Router Test Case 1",
+    "input": [
+      {
+        "message": {
+          "channel": "web",
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.1.2"
+            },
+            "traits": {
+              "abc": "1234"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.2"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+            "locale": "en-GB",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            },
+            "page": {
+              "path": "/tests/html/ecomm_test.html",
+              "referrer": "http://0.0.0.0:1112/tests/html/",
+              "search": "",
+              "title": "Fb Offline Conversion Ecommerce Test",
+              "url": "http://0.0.0.0:1112/tests/html/ecomm_test.html"
+            }
+          },
+          "type": "track",
+          "messageId": "9116b734-7e6b-4497-ab51-c16744d4487e",
+          "originalTimestamp": "2022-09-21T12:05:19.394Z",
+          "userId": "user@1",
+          "event": "product searched",
+          "properties": {
+            "order_id": "5241735",
+            "value": 31.98,
+            "revenue": 31.98,
+            "shipping": 4,
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "products": [
+              {
+                "id": "product-bacon-jam",
+                "category": "Merch",
+                "brand": ""
+              },
+              {
+                "id": "product-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              },
+              {
+                "id": "offer-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 1
+        },
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              { "to": "ViewContent", "from": "Product Viewed" },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              { "to": "AddPaymentInfo", "from": "Card Details Added" },
+              { "to": "Lead", "from": "Order Completed" },
+              { "to": "CompleteRegistration", "from": "Signup" },
+              { "to": "AddToWishlist", "from": "Button Clicked" }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              { "from": "ViewContent", "to": "1166826033904512" },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              { "from": "CompleteRegistration", "to": "597443908839411" },
+              { "from": "Lead", "to": "1024592094903800" },
+              { "from": "AddToWishlist", "to": "506289934669334" }
+            ],
+            "isHashRequired": true
+          }
+        }
+      },
+      {
+        "message": {
+          "channel": "web",
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.1.2"
+            },
+            "traits": {
+              "abc": "1234"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.2"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+            "locale": "en-GB",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            },
+            "page": {
+              "path": "/tests/html/ecomm_test.html",
+              "referrer": "http://0.0.0.0:1112/tests/html/",
+              "search": "",
+              "title": "Fb Offline Conversion Ecommerce Test",
+              "url": "http://0.0.0.0:1112/tests/html/ecomm_test.html"
+            }
+          },
+          "type": "track",
+          "messageId": "9116b734-7e6b-4497-ab51-c16744d4487e",
+          "originalTimestamp": "2022-09-21T12:05:19.394Z",
+          "userId": "user@1",
+          "event": "Button Clicked",
+          "properties": {
+            "order_id": "5241735",
+            "value": 31.98,
+            "revenue": 31.98,
+            "shipping": 4,
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "products": [
+              {
+                "id": "product-bacon-jam",
+                "category": "Merch",
+                "brand": ""
+              },
+              {
+                "id": "product-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              },
+              {
+                "id": "offer-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        },
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              { "to": "ViewContent", "from": "Product Viewed" },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              { "to": "AddPaymentInfo", "from": "Card Details Added" },
+              { "to": "Lead", "from": "Order Completed" },
+              { "to": "CompleteRegistration", "from": "Signup" },
+              { "to": "AddToWishlist", "from": "Button Clicked" }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              { "from": "ViewContent", "to": "1166826033904512" },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              { "from": "CompleteRegistration", "to": "597443908839411" },
+              { "from": "Lead", "to": "1024592094903800" }
+            ],
+            "isHashRequired": true
+          }
+        }
+      },
+      {
+        "message": {
+          "channel": "web",
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.1.2"
+            },
+            "traits": {
+              "email": "test@rudderlabs.com",
+              "birthday": "2005-01-01T23:28:56.782Z",
+              "firstName": "test",
+              "lastName": "rudderstack",
+              "initial": {
+                "firstName": "rudderlabs"
+              },
+              "address": {
+                "city": "kalkata",
+                "state": "west bangal",
+                "country": "india",
+                "zip": "123456"
+              },
+              "phone": "9886775586",
+              "gender": "male"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.1.2"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36",
+            "locale": "en-GB",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            },
+            "page": {
+              "path": "/tests/html/ecomm_test.html",
+              "referrer": "http://0.0.0.0:1112/tests/html/",
+              "search": "",
+              "title": "Fb Offline Conversion Ecommerce Test",
+              "url": "http://0.0.0.0:1112/tests/html/ecomm_test.html"
+            },
+            "device": {
+              "advertisingId": "apple@123"
+            }
+          },
+          "type": "track",
+          "messageId": "9116b734-7e6b-4497-ab51-c16744d4487e",
+          "originalTimestamp": "2022-09-21T12:05:19.394Z",
+          "userId": "user@1",
+          "event": "Cart Checkout",
+          "properties": {
+            "upload_tag": "test campaign",
+            "order_id": "485893487985894998",
+            "value": 100,
+            "revenue": 31.98,
+            "shipping": 4,
+            "coupon": "APPARELSALE",
+            "currency": "IND",
+            "products": [
+              {
+                "id": "product-bacon-jam",
+                "category": "Merch",
+                "brand": ""
+              },
+              {
+                "id": "product-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              },
+              {
+                "id": "offer-t-shirt",
+                "category": "Merch",
+                "brand": "Levis"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 3
+        },
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              {
+                "to": "ViewContent",
+                "from": "Product Searched"
+              },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              {
+                "to": "AddPaymentInfo",
+                "from": "Card Details Added"
+              },
+              { "to": "Lead", "from": "Order Completed" },
+              {
+                "to": "CompleteRegistration",
+                "from": "Signup"
+              },
+              {
+                "to": "AddToWishlist",
+                "from": "Button Clicked"
+              }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              {
+                "from": "ViewContent",
+                "to": "1166826033904512"
+              },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              {
+                "from": "CompleteRegistration",
+                "to": "597443908839411"
+              },
+              { "from": "Lead", "to": "1024592094903800" }
+            ],
+            "isHashRequired": true
+          }
+        }
+      }
+    ],
+    "output": [
+      {
+        "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
+        "metadata": [
+          {
+            "jobId": 1
+          }
+        ],
+        "batched": false,
+        "statTags": {
+          "destType": "FACEBOOK_OFFLINE_CONVERSIONS",
+          "meta": "configuration",
+          "scope": "transformation",
+          "stage": "transform"
+        },
+        "statusCode": 400
+      },
+      {
+        "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
+        "metadata": [
+          {
+            "jobId": 2
+          }
+        ],
+        "statTags": {
+          "destType": "FACEBOOK_OFFLINE_CONVERSIONS",
+          "meta": "configuration",
+          "scope": "transformation",
+          "stage": "transform"
+        },
+        "batched": false,
+        "statusCode": 400
+      },
+      {
+        "metadata": [
+          {
+            "jobId": 3
+          }
+        ],
+        "data": [
+          {
+            "access_token": "ABC...",
+            "data": "[{\"match_keys\":{\"doby\":\"f388bc7cd953b951ffdf8e06275d94946dc52f03ed96536497fbe534469d38d6\",\"dobm\":\"f388bc7cd953b951ffdf8e06275d94946dc52f03ed96536497fbe534469d38d6\",\"dobd\":\"f388bc7cd953b951ffdf8e06275d94946dc52f03ed96536497fbe534469d38d6\",\"extern_id\":\"user@1\",\"email\":[\"f188486df6078f7450a12507395d47d06ece9487125bd776fbf676446855571f\"],\"phone\":[\"74a39482392f83119041d571d5dace439d315faea8214fe8e815c00261b80615\"],\"gen\":\"0d248e82c62c9386878327d491c762a002152d42ab2c391a31c44d9f62675ddf\",\"ln\":\"7fb35d4777487797615cfa7c57724a47ba99152485600ccdb98e3871a6d05b21\",\"fn\":\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\",\"ct\":\"375aba919c30870659093b7ddcf6045ff7a8624dd4dba49ced8981bd4d0666e0\",\"zip\":[\"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\"],\"madid\":\"c20fa16907343eef642d10f0bdb81bf629e6aaf6c906f26eabda079ca9e5ab67\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36\"},\"event_time\":1663761919,\"currency\":\"IND\",\"value\":100,\"content_type\":\"product\",\"order_id\":\"485893487985894998\",\"contents\":[{\"id\":\"product-bacon-jam\",\"quantity\":1,\"brand\":\"\",\"category\":\"Merch\"},{\"id\":\"product-t-shirt\",\"quantity\":1,\"brand\":\"Levis\",\"category\":\"Merch\"},{\"id\":\"offer-t-shirt\",\"quantity\":1,\"brand\":\"Levis\",\"category\":\"Merch\"}],\"custom_data\":{\"extern_id\":\"user@1\",\"event_name\":\"Cart Checkout\",\"event_time\":1663761919,\"currency\":\"IND\",\"value\":100,\"email\":\"f188486df6078f7450a12507395d47d06ece9487125bd776fbf676446855571f\",\"phone\":\"74a39482392f83119041d571d5dace439d315faea8214fe8e815c00261b80615\",\"gen\":\"0d248e82c62c9386878327d491c762a002152d42ab2c391a31c44d9f62675ddf\",\"ln\":\"7fb35d4777487797615cfa7c57724a47ba99152485600ccdb98e3871a6d05b21\",\"fn\":\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\",\"ct\":\"375aba919c30870659093b7ddcf6045ff7a8624dd4dba49ced8981bd4d0666e0\",\"zip\":\"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\",\"madid\":\"c20fa16907343eef642d10f0bdb81bf629e6aaf6c906f26eabda079ca9e5ab67\",\"contents\":[{\"id\":\"product-bacon-jam\",\"category\":\"Merch\",\"brand\":\"\"},{\"id\":\"product-t-shirt\",\"category\":\"Merch\",\"brand\":\"Levis\"},{\"id\":\"offer-t-shirt\",\"category\":\"Merch\",\"brand\":\"Levis\"}],\"order_id\":\"485893487985894998\",\"upload_tag\":\"test campaign\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36\",\"event_source_url\":\"http://0.0.0.0:1112/tests/html/ecomm_test.html\",\"shipping\":4,\"coupon\":\"APPARELSALE\"},\"event_source_url\":\"http://0.0.0.0:1112/tests/html/ecomm_test.html\",\"event_name\":\"AddToCart\"}]",
+            "upload_tag": "test campaign"
+          }
+        ],
+        "batched": false,
+        "statusCode": 200,
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              {
+                "to": "ViewContent",
+                "from": "Product Searched"
+              },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              {
+                "to": "AddPaymentInfo",
+                "from": "Card Details Added"
+              },
+              { "to": "Lead", "from": "Order Completed" },
+              {
+                "to": "CompleteRegistration",
+                "from": "Signup"
+              },
+              {
+                "to": "AddToWishlist",
+                "from": "Button Clicked"
+              }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              {
+                "from": "ViewContent",
+                "to": "1166826033904512"
+              },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              {
+                "from": "CompleteRegistration",
+                "to": "597443908839411"
+              },
+              { "from": "Lead", "to": "1024592094903800" }
+            ],
+            "isHashRequired": true
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,4 +1,6 @@
+const _ = require("lodash");
 const get = require("get-value");
+const { getCatalogEndpoint } = require("./util");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   ConfigCategory,
@@ -15,10 +17,12 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
-  isAppleFamily
+  isAppleFamily,
+  handleRtTfSingleEventError,
+  checkInvalidRtTfEvents,
+  getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -232,6 +236,9 @@ function constructPayloadItem(message, category, destination) {
     case "alias":
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       break;
+    case "catalogs":
+      rawPayload = constructPayload(message, mappingConfig[category.name]);
+      break;
     default:
       logger.debug("not supported type");
   }
@@ -241,9 +248,16 @@ function constructPayloadItem(message, category, destination) {
 
 function responseBuilderSimple(message, category, destination) {
   const response = defaultRequestConfig();
-  response.endpoint = category.endpoint;
+  response.endpoint =
+    category.action === "catalogs"
+      ? getCatalogEndpoint(category, message)
+      : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
+  // adding operation to understand what type of event will be sent in batch
+  if (category.action === "catalogs") {
+    response.operation = "catalogs";
+  }
   response.headers = {
     "Content-Type": "application/json",
     api_key: destination.Config.apiKey
@@ -284,7 +298,17 @@ function processSingleMessage(message, destination) {
   let event;
   switch (messageType) {
     case EventType.IDENTIFY:
-      category = ConfigCategory.IDENTIFY;
+      if (
+        get(message, MappedToDestinationKey) &&
+        getDestinationExternalIDInfoForRetl(message, "ITERABLE").objectType !==
+          "users"
+      ) {
+        // catagory will be catalog for any other object other than users
+        // DOC: https://support.iterable.com/hc/en-us/articles/360033214932-Catalog-Overview
+        category = ConfigCategory.CATALOG;
+      } else {
+        category = ConfigCategory.IDENTIFY;
+      }
       break;
     case EventType.PAGE:
       category = ConfigCategory.PAGE;
@@ -340,6 +364,11 @@ function batchEvents(arrayChunks) {
   arrayChunks.forEach(chunk => {
     const batchResponseList = [];
     const metadatas = [];
+    // DOC: https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
+    const batchCatalogResponseList = {
+      documents: {},
+      replaceUploadedFieldsOnly: true
+    };
 
     // extracting destination
     // from the first event in a batch
@@ -350,11 +379,34 @@ function batchEvents(arrayChunks) {
 
     // Batch event into dest batch structure
     chunk.forEach(ev => {
+      if (chunk[0].message.operation === "catalogs") {
+        // body will be in the format:
+        //   {
+        //     "documents": {
+        //         "test-1-item": {
+        //             "abc": "TestValue"
+        //         },
+        //         "test-2-item": {
+        //             "abc": "TestValue1"
+        //         }
+        //     },
+        //     "replaceUploadedFieldsOnly": true
+        // }
+        batchCatalogResponseList.documents[
+          ev.message.endpoint.split("/").pop()
+        ] = get(ev, "message.body.JSON.update");
+      }
       batchResponseList.push(get(ev, "message.body.JSON"));
       metadatas.push(ev.metadata);
     });
     // batching into identify batch structure
-    if (chunk[0].message.endpoint.includes("/api/users")) {
+    if (chunk[0].message.operation === "catalogs") {
+      batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
+      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint.substr(
+        0,
+        chunk[0].message.endpoint.lastIndexOf("/")
+      );
+    } else if (chunk[0].message.endpoint.includes("/api/users")) {
       batchEventResponse.batchedRequest.body.JSON = {
         users: batchResponseList
       };
@@ -398,7 +450,10 @@ function getEventChunks(
 ) {
   // Categorizing identify and track type of events
   // Checking if it is identify type event
-  if (event.message.endpoint.includes("api/users/update")) {
+  if (
+    event.message.endpoint.includes("api/users/update") ||
+    event.message.operation === "catalogs"
+  ) {
     identifyEventChunks.push(event);
   } else if (event.message.endpoint.includes("api/events/track")) {
     // Checking if it is track type of event
@@ -429,19 +484,17 @@ function getEventChunks(
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
-  let identifyEventChunks = []; // list containing identify events in batched format
-  let trackEventChunks = []; // list containing track events in batched format
+  const identifyEventChunks = []; // list containing identify events in batched format
+  const trackEventChunks = []; // list containing track events in batched format
   const eventResponseList = []; // list containing other events in batched format
-  const identifyArrayChunks = [];
-  const trackArrayChunks = [];
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -451,23 +504,6 @@ const processRouterDest = async inputs => {
             trackEventChunks,
             eventResponseList
           );
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
-          if (
-            trackEventChunks.length &&
-            (trackEventChunks.length >= TRACK_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            trackArrayChunks.push(trackEventChunks);
-            trackEventChunks = [];
-          }
         } else {
           // if not transformed
           getEventChunks(
@@ -480,46 +516,36 @@ const processRouterDest = async inputs => {
             trackEventChunks,
             eventResponseList
           );
-
-          // slice according to batch size
-          if (
-            identifyEventChunks.length &&
-            (identifyEventChunks.length >= IDENTIFY_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            identifyArrayChunks.push(identifyEventChunks);
-            identifyEventChunks = [];
-          }
-          if (
-            trackEventChunks.length &&
-            (trackEventChunks.length >= TRACK_MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            trackArrayChunks.push(trackEventChunks);
-            trackEventChunks = [];
-          }
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "ITERABLE"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );
 
   // batching identifyArrayChunks
   let identifyBatchedResponseList = [];
-  if (identifyArrayChunks.length) {
-    identifyBatchedResponseList = await batchEvents(identifyArrayChunks);
+  if (identifyEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const identifyArrayChunks = _.chunk(
+      identifyEventChunks,
+      IDENTIFY_MAX_BATCH_SIZE
+    );
+    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
   }
   // batching TrackArrayChunks
   let trackBatchedResponseList = [];
-  if (trackArrayChunks.length) {
-    trackBatchedResponseList = await batchEvents(trackArrayChunks);
+  if (trackEventChunks.length) {
+    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    // transformed payload of (n) batch size
+    const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+    trackBatchedResponseList = batchEvents(trackArrayChunks);
   }
   let batchedResponseList = [];
   // appending all kinds of batches

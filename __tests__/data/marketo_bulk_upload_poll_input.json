@@ -2,7 +2,7 @@
   {
     "request": {
       "body": {
-        "destType": "marketo_bulk_upload",
+        "destType": "MARKETO_BULK_UPLOAD",
         "importId": 1234,
         "config": {
           "clientId": "b",
@@ -21,7 +21,7 @@
   {
     "request": {
       "body": {
-        "destType": "marketo_bulk_upload",
+        "destType": "MARKETO_BULK_UPLOAD",
         "importId": 1234,
         "config": {
           "clientId": "b",
@@ -40,7 +40,7 @@
   {
     "request": {
       "body": {
-        "destType": "marketo_bulk_upload",
+        "destType": "MARKETO_BULK_UPLOAD",
         "importId": 1234,
         "config": {
           "clientId": "b",

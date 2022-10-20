@@ -1,0 +1,24 @@
+[
+  {
+    "destKey": "user_id",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": ["timestamp", "originalTimestamp"],
+    "required": true
+  }
+]

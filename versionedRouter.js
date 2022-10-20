@@ -127,14 +127,16 @@ async function getCdkV2Result(destName, event, flowType) {
 function removeSensitiveData(result) {
   let newOutput = result.output;
   if (newOutput) {
-    newOutput = CommonUtils.toArray(result.output).map(elm => {
-      return {
-        metadata: elm.metadata,
-        statusCode: elm.statusCode,
-        error: elm.error,
-        batched: elm.batched
-      };
-    });
+    newOutput = CommonUtils.toArray(newOutput)
+      .filter(elm => elm)
+      .map(elm => {
+        return {
+          metadata: elm.metadata,
+          statusCode: elm.statusCode,
+          error: elm.error,
+          batched: elm.batched
+        };
+      });
   }
   return { output: newOutput, error: result.error };
 }

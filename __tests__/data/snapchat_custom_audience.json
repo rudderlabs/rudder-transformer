@@ -12,7 +12,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -103,7 +103,7 @@
           "listData": {
             "remove": [
               {
-                "email": "sudip@abc.com",
+                "email": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
                 "phone": "@09432457768",
                 "firstName": "sudip",
                 "lastName": "paul",
@@ -169,7 +169,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -287,7 +287,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -376,7 +376,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -466,7 +466,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -517,7 +517,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -567,7 +567,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -603,7 +603,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -642,7 +642,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -684,7 +684,7 @@
       "destination": {
         "Config": {
           "segmentId": "123",
-          "disableHashing": true,
+          "disableHashing": false,
           "schema": "email"
         }
       },
@@ -719,7 +719,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::Required field(email/phone/mobileAdId) for the chosen schema should be sent."
+      "error": "[snapchat_custom_audience]::email is required for the chosen schema."
     }
   }
 ]

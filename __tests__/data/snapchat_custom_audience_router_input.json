@@ -10,7 +10,7 @@
     "destination": {
       "Config": {
         "segmentId": "123",
-        "disableHashing": true,
+        "disableHashing": false,
         "schema": "email"
       }
     },

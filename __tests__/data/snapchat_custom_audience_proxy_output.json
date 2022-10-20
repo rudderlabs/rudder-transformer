@@ -1,0 +1,9 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "[snapchat_custom_audience Response Handler] - Request Processed Successfully",
+      "destinationResponse": { "response": "", "status": 200 }
+    }
+  }
+]

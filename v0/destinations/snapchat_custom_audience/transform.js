@@ -7,7 +7,8 @@ const {
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
-const { BASE_URL } = require("./config");
+const { BASE_URL, schemaType } = require("./config");
+const { validatePayload, validateFields } = require("./utils");
 
 /**
  * Get access token to be bound to the event req headers
@@ -31,54 +32,6 @@ const getAccessToken = metadata => {
       .build();
   }
   return secret.access_token;
-};
-
-/**
- * Verifies whether the input payload is in right format or not
- * @param {Object} message
- * @returns
- */
-const validatePayload = message => {
-  if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[snapchat_custom_audience]::Message Type is not present. Aborting message."
-      )
-      .setStatus(400)
-      .build();
-  }
-  if (!message.properties) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[snapchat_custom_audience]::Message properties is not present. Aborting message."
-      )
-      .setStatus(400)
-      .build();
-  }
-  if (!message.properties.listData) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[snapchat_custom_audience]::listData is not present inside properties. Aborting message."
-      )
-      .setStatus(400)
-      .build();
-  }
-  if (message.type.toLowerCase() !== "audiencelist") {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[snapchat_custom_audience]::Message Type ${message.type} not supported.`
-      )
-      .setStatus(400)
-      .build();
-  }
-  if (!message.properties.listData.add && !message.properties.listData.remove) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[snapchat_custom_audience]::Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
-      )
-      .setStatus(400)
-      .build();
-  }
 };
 
 const generateResponse = (
@@ -108,13 +61,67 @@ const generateResponse = (
   return response;
 };
 
-const responseBuilder = (metadata, message, { Config }, type) => {
-  const { schema, segmentId } = Config;
-  let data = [[]];
-  let index = 0;
-  let schemaType;
-  let hashedProperty;
+const getProperty = (schema, element) => {
+  let property;
+  switch (schema) {
+    case "email":
+      return element?.email;
+    case "phone":
+      property = element?.phone || element?.mobile;
+      return property;
+    case "mobileAdId":
+      property = element?.mobileId || element?.mobileAdId || element?.mobile_id;
+      return property;
+    default:
+      throw new CustomError("Invalid schema", 400);
+  }
+};
+
+const getHashedProperty = (schema, hashedProperty) => {
   // Normalizing and hashing ref: https://marketingapi.snapchat.com/docs/#normalizing-hashing
+  switch (schema) {
+    case "email":
+      return sha256(hashedProperty.toLowerCase().trim());
+    case "phone":
+      return sha256(
+        hashedProperty
+          .toLowerCase()
+          .trim()
+          .replace(/^0+/, "")
+          .replace(/[^0-9]/g, "")
+      );
+    case "mobileAdId":
+      return sha256(hashedProperty.toLowerCase());
+    default:
+      throw new CustomError("Invalid schema", 400);
+  }
+};
+
+const getData = (userArray, schema, disableHashing) => {
+  const data = [[]];
+  let index = 0;
+  let hashedProperty;
+  userArray.forEach(element => {
+    hashedProperty = getProperty(schema, element);
+    if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
+      return;
+    }
+    if (!disableHashing) {
+      hashedProperty = getHashedProperty(schema, hashedProperty);
+    }
+    if (data[index].length >= 100000) {
+      data.push([]);
+      index += 1;
+    }
+
+    data[index].push([hashedProperty]);
+  });
+  validateFields(schema, data);
+  return data;
+};
+
+const responseBuilder = (metadata, message, { Config }, type) => {
+  const { schema, segmentId, disableHashing } = Config;
 
   let userArray;
   if (type === "add") {
@@ -123,80 +130,18 @@ const responseBuilder = (metadata, message, { Config }, type) => {
     userArray = message.properties.listData.remove;
   }
 
-  switch (schema) {
-    case "email":
-      schemaType = "EMAIL_SHA256";
-      userArray.forEach(element => {
-        hashedProperty = element?.email;
-        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
-          return;
-        }
-        hashedProperty = sha256(hashedProperty.toLowerCase().trim());
-        if (data[index].length >= 100000) {
-          data.push([]);
-          index += 1;
-        }
-        data[index].push([hashedProperty]);
-      });
-      break;
+  const data = getData(userArray, schema, disableHashing);
 
-    case "phone":
-      schemaType = "PHONE_SHA256";
-      userArray.forEach(element => {
-        hashedProperty = element?.phone || element?.mobile;
-        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
-          return;
-        }
-        hashedProperty = sha256(
-          hashedProperty
-            .toLowerCase()
-            .trim()
-            .replace(/^0+/, "")
-            .replace(/[^0-9]/g, "")
-        );
-        if (data[index].length >= 100000) {
-          data.push([]);
-          index += 1;
-        }
-        data[index].push([hashedProperty]);
-      });
-      break;
-
-    case "mobileAdId":
-      schemaType = "MOBILE_AD_ID_SHA256";
-      userArray.forEach(element => {
-        hashedProperty =
-          element?.mobileId || element?.mobileAdId || element?.mobile_id;
-        if (!isDefinedAndNotNullAndNotEmpty(hashedProperty)) {
-          return;
-        }
-        hashedProperty = sha256(hashedProperty.toLowerCase());
-        if (data[index].length >= 100000) {
-          data.push([]);
-          index += 1;
-        }
-        data[index].push([hashedProperty]);
-      });
-      break;
-
-    default:
-      throw new CustomError("Invalid schema", 400);
-  }
-
-  // if required field is not present in all the cases
-  if (data[0].length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[snapchat_custom_audience]::Required field(email/phone/mobileAdId) for the chosen schema should be sent."
-      )
-      .setStatus(400)
-      .build();
-  }
-
-  let finalResponse = [];
+  const finalResponse = [];
   data.forEach(groupedData => {
     finalResponse.push(
-      generateResponse(groupedData, schemaType, segmentId, metadata, type)
+      generateResponse(
+        groupedData,
+        schemaType[schema],
+        segmentId,
+        metadata,
+        type
+      )
     );
   });
   return finalResponse;

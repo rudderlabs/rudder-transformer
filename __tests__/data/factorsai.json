@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "rudderStackApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
+          "factorsAIApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
         }
       },
       "message": {
@@ -79,7 +79,7 @@
     "input": {
       "destination": {
         "Config": {
-          "rudderStackApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
+          "factorsAIApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
         }
       },
       "message": {
@@ -154,7 +154,7 @@
     "input": {
       "destination": {
         "Config": {
-          "rudderStackApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
+          "factorsAIApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
         }
       },
       "message": {

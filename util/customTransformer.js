@@ -230,7 +230,9 @@ async function userTransformHandler(
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
       events.forEach(ev => {
-        eventsMetadata[ev.message.messageId] = ev.metadata;
+        if(ev.message !== undefined && ev.message.messageId !== undefined){
+          eventsMetadata[ev.message.messageId] = ev.metadata;
+        }
       });
 
       let userTransformedEvents = [];

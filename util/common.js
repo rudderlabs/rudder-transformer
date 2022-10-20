@@ -3,6 +3,9 @@ const { isEqual } = require("lodash");
 
 class CommonUtils {
   static objectDiff(obj1, obj2) {
+    if (isEqual(obj1, obj2)) {
+      return {};
+    }
     const flatObj1 = flatten(obj1 || {});
     const flatObj2 = flatten(obj2 || {});
     const allKeys = Array.from(

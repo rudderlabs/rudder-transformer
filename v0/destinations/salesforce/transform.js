@@ -118,6 +118,11 @@ function responseBuilderSimple(
     });
   }
 
+  // delete id in the payload for events coming from rETL sources mapped with visual mapper
+  if (mappedToDestination) {
+    delete rawPayload.Id;
+  }
+
   const response = defaultRequestConfig();
   const header = {
     "Content-Type": "application/json",

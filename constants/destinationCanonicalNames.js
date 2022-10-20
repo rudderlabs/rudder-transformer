@@ -71,7 +71,8 @@ const DestCanonicalNames = {
   ],
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   engage: ["engage", "Engage", "ENGAGE"],
-  june: ["june", "JUNE", "June"]
+  june: ["june", "JUNE", "June"],
+  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

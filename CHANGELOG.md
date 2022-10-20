@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.1.0...v1.2.0) (2022-10-18)
+
+
+### Features
+
+* added custom traits support in profile updation request ([3fabd79](https://github.com/rudderlabs/rudder-transformer/commit/3fabd79813a2fc0c2ee04bccca75dc78d05e0f79))
+
+
+### Miscellaneous
+
+* **node-fetch:** capture fetchError status code thrown by fetch call ([#1491](https://github.com/rudderlabs/rudder-transformer/issues/1491)) ([84c5f99](https://github.com/rudderlabs/rudder-transformer/commit/84c5f999ae81ff108300249120f8897d76e903d4))
+* release 1.2.0 ([1ce4963](https://github.com/rudderlabs/rudder-transformer/commit/1ce4963a959d38077d5eece1795d7af5b6379314))
+
 ## [1.1.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.0.0...v1.1.0) (2022-10-14)
 
 

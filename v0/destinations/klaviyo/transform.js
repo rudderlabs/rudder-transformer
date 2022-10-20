@@ -71,24 +71,23 @@ const identifyRequestHandler = async (message, category, destination) => {
   const traitsInfo = getFieldValueFromMessage(message, "traits");
   const response = defaultRequestConfig();
   const personId = await isProfileExist(message, destination);
+  let propertyPayload = constructPayload(
+    message,
+    MAPPING_CONFIG[category.name]
+  );
+  // Extract other K-V property from traits about user custom properties
+  propertyPayload = extractCustomFields(
+    message,
+    propertyPayload,
+    ["traits", "context.traits"],
+    WhiteListedTraits
+  );
   if (!personId) {
-    let propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
-    // Extract other K-V property from traits about user custom properties
-    propertyPayload = extractCustomFields(
-      message,
-      propertyPayload,
-      ["traits", "context.traits"],
-      WhiteListedTraits
-    );
     propertyPayload = removeUndefinedAndNullValues(propertyPayload);
     if (destination.Config?.enforceEmailAsPrimary) {
       delete propertyPayload.$id;
       propertyPayload._id = getFieldValueFromMessage(message, "userId");
     }
-
     const payload = {
       token: destination.Config.publicApiKey,
       properties: propertyPayload
@@ -101,10 +100,6 @@ const identifyRequestHandler = async (message, category, destination) => {
     };
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
-    const propertyPayload = constructPayload(
-      message,
-      MAPPING_CONFIG[category.name]
-    );
     response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {

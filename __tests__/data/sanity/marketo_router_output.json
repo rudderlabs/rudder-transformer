@@ -7,7 +7,8 @@
       "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/activities/external.json",
       "headers": {
         "Authorization": "Bearer access_token_success",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-cache-key": "1mMy5cqbtfuaKZv1IhVQKnBdVwe"
       },
       "params": {},
       "body": {

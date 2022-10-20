@@ -9,6 +9,7 @@ const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
+const v0Utils = require("./v0/util");
 
 const {
   isNonFuncObject,
@@ -18,10 +19,10 @@ const {
   isHttpStatusSuccess,
   getErrorRespEvents,
   isCdkDestination,
-  getErrorStatusCode
-} = require("./v0/util");
+  getErrorStatusCode,
+  getDestHandler
+} = v0Utils;
 const { processDynamicConfig } = require("./util/dynamicConfig");
-const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
@@ -63,13 +64,6 @@ const router = new Router();
 
 // Router for assistance in profiling
 router.use(profilingRouter);
-
-const getDestHandler = (version, dest) => {
-  if (DestHandlerMap.hasOwnProperty(dest)) {
-    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
-  }
-  return require(`./${version}/destinations/${dest}/transform`);
-};
 
 const getDestFileUploadHandler = (version, dest) => {
   return require(`./${version}/destinations/${dest}/fileUpload`);
@@ -784,20 +778,9 @@ if (startSourceTransformer) {
   });
 }
 
-function getAuthCacheProperties(destType) {
-  const destInf = getDestHandler("v0", destType);
-  // const desTf = require(`./v0/destinations/${destType}/transform`);
-  if (destInf) {
-    return {
-      authCache: destInf?.authCache
-    };
-  }
-  return "";
-}
-
-async function handleProxyRequest(destination, ctx) {
+const handleProxyRequest = async (destination, ctx) => {
   const destinationRequest = ctx.request.body;
-  const { authCache } = getAuthCacheProperties(destination);
+  const authCache = v0Utils.getDestAuthCacheInstance(destination);
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
@@ -856,7 +839,7 @@ async function handleProxyRequest(destination, ctx) {
   // Since this is success scenario, we'll be forcefully sending `200` status-code to server
   ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
   return ctx.body;
-}
+};
 
 if (transformerProxy) {
   SUPPORTED_VERSIONS.forEach(version => {

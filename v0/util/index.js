@@ -18,7 +18,7 @@ const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
 const {
-  DestCanonicalNames
+  DestCanonicalNames, DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
@@ -1732,6 +1732,37 @@ const flattenMultilevelPayload = payload => {
   return flattenedPayload;
 };
 
+/**
+ * Gets the destintion's transform.js file used for transformation
+ * **Note**: The transform.js file is imported from
+ *  `v0/destinations/${dest}/transform`
+ * @param {*} _version -> version for the transfor
+ * @param {*} dest destination name
+ * @returns
+ *  The transform.js instance used for destination transformation
+ */
+const getDestHandler = (_version, dest) => {
+  if (DestHandlerMap.hasOwnProperty(dest)) {
+    // eslint-disable-next-line import/no-dynamic-require, global-require
+    return require(`../destinations/${DestHandlerMap[dest]}/transform`);
+  }
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  return require(`../destinations/${dest}/transform`);
+};
+
+/**
+ * Obtain the authCache instance used to store the access token information to send/get information to/from destination
+ * @param {string} destType destination name
+ * @returns {Cache | undefined} The instance of "v0/util/cache.js"
+ */
+const getDestAuthCacheInstance = destType => {
+  const destInf = getDestHandler("v0", destType);
+  if (destInf) {
+    return destInf?.authCache;
+  }
+  return {};
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1819,5 +1850,7 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  getDestAuthCacheInstance,
+  getDestHandler
 };

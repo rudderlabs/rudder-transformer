@@ -1,13 +1,15 @@
 const sha256 = require("sha256");
 const get = require("get-value");
 const {
+  isObject,
   formatTimeStamp,
+  getHashFromArray,
   constructPayload,
   extractCustomFields,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getHashFromArrayWithDuplicate,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  getHashFromArrayWithDuplicate
 } = require("../../util");
 
 const ErrorBuilder = require("../../util/error");
@@ -221,15 +223,110 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
 };
 
 /**
- * Returns content type
- * @param {*} message
+ * Returns true if event is configured from webapp else false
+ * @param {*} eventsMapping
+ * @param {*} event
  * @returns
  */
-const getContentType = message => {
-  let contentType = "product";
-  const { event } = message;
-  if (event === "Product List Viewed") {
-    contentType = "product_group";
+const findEventConfigurationPlace = (eventsMapping, event) => {
+  let eventIsMappedFromWebapp = false;
+  const keys = Object.keys(eventsMapping);
+  keys.forEach(key => {
+    if (key === event) {
+      eventIsMappedFromWebapp = true;
+    }
+  });
+  return eventIsMappedFromWebapp;
+};
+
+/**
+ *
+ * @param {*} message Rudder Payload
+ * @param {*} standardEvent
+ * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} destination
+ * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
+ * If category is clothing it will be set to ["product"]
+ * @return Content Type array as defined in:
+ * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
+ */
+const getContentType = (
+  message,
+  standardEvent,
+  categoryToContent,
+  destination
+) => {
+  const { integrations } = message;
+  if (
+    integrations &&
+    integrations.FacebookOfflineConversions &&
+    isObject(integrations.FacebookOfflineConversions) &&
+    integrations.FacebookOfflineConversions.contentType
+  ) {
+    return integrations.FacebookOfflineConversions.contentType;
+  }
+
+  let contentType;
+
+  let { category } = message.properties;
+  // category field is mapped from properties.category, if not found, then, category of the first product item from the products array ( if any )
+  if (!category) {
+    const { products } = message.properties;
+    if (products && products.length > 0 && Array.isArray(products)) {
+      if (isObject(products[0])) {
+        category = products[0].category;
+      }
+    }
+  }
+
+  /** *
+   * if none of the above is followed, we are defaulting it to "product" except whatever events that are mapped to viewContent
+   * for viewContent if there is any product array we are setting content_type as "product"
+   * when no product array is not found we are defaulting it to "product_group"
+   */
+  if (category) {
+    const categoryToContentMapping = getHashFromArray(
+      categoryToContent,
+      "from",
+      "to",
+      false
+    );
+
+    const keys = Object.keys(categoryToContentMapping);
+
+    keys.forEach(key => {
+      if (key === category) {
+        contentType = categoryToContentMapping[key];
+      }
+    });
+
+    // if category isn't mapped with contentType then keeping default contentType as "product"
+    if (!contentType) {
+      contentType = "product";
+    }
+  } else if (standardEvent === "ViewContent") {
+    const { event } = message;
+    const { products } = message.properties;
+    const { eventsToStandard } = destination.Config;
+    const eventsMapping = getHashFromArrayWithDuplicate(
+      eventsToStandard,
+      "from",
+      "to",
+      false
+    );
+    const isEventConfiguredFromWebapp = findEventConfigurationPlace(
+      eventsMapping,
+      event
+    );
+    if (!isEventConfiguredFromWebapp && event === "Product Viewed") {
+      contentType = "product";
+    } else if (products && products.length > 0 && Array.isArray(products)) {
+      contentType = "product";
+    } else {
+      contentType = "product_group";
+    }
+  } else {
+    contentType = "product";
   }
   return contentType;
 };
@@ -292,7 +389,6 @@ const prepareData = (payload, message, destination) => {
     event_time: payload.event_time,
     currency: payload.currency || "USD",
     value: get(message.properties, valueFieldIdentifier) || payload.value || 0,
-    content_type: getContentType(message),
     order_id: payload.order_id || null,
     item_number: payload.item_number || null,
     contents: payload.contents ? getProducts(payload.contents) : null,
@@ -327,12 +423,21 @@ const prepareData = (payload, message, destination) => {
  * Attaches the event_name to data object
  * @param {*} data
  * @param {*} standardEvent
+ * @param {*} message
+ * @param {*} destination
  * @returns
  */
-const getData = (data, standardEvent) => {
+const getData = (data, standardEvent, message, destination) => {
+  const { categoryToContent } = destination.Config;
   const payload = data;
   const [first] = payload;
   first.event_name = standardEvent;
+  first.content_type = getContentType(
+    message,
+    standardEvent,
+    categoryToContent,
+    destination
+  );
   return [first];
 };
 
@@ -402,7 +507,7 @@ const offlineConversionResponseBuilder = (message, destination) => {
   eventToIdsArray.forEach(eventToIds => {
     const { standardEvent, eventSetIds } = eventToIds;
     const obj = {};
-    obj.data = getData(data, standardEvent);
+    obj.data = getData(data, standardEvent, message, destination);
     obj.eventSetIds = eventSetIds;
     obj.payload = payload;
     offlineConversionsPayloads.push(obj);

@@ -273,7 +273,6 @@
               "account[businessEmail]": "business@rudderstack.com",
               "account[id]": "group@123",
               "account[name]": "rudder ventures",
-              "email": "business@rudderstack.com",
               "id": "test@12"
             },
             "JSON": {},

@@ -163,11 +163,9 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     if (unmatchedKeys.length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}`,
-        "v0Result",
-        JSON.stringify(removeSensitiveData(v0Result)),
-        "cdkResult",
-        JSON.stringify(removeSensitiveData(cdkResult))
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys} v0=${JSON.stringify(
+          removeSensitiveData(v0Result)
+        )} cdk=${JSON.stringify(removeSensitiveData(cdkResult))}`
       );
       return;
     }

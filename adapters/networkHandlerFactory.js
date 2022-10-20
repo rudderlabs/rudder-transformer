@@ -26,9 +26,6 @@ const {
 const {
   networkHandler: FbPixelNetworkHandler
 } = require("../v0/destinations/facebook_pixel/network-handler");
-// const {
-//   networkHandler: RefinerNetworkHandler
-// } = require("../v0/destinations/refiner/utils");
 
 const handler = {
   generic: GenericNetworkHandler,

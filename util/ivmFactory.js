@@ -1,11 +1,21 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const _ = require("lodash");
+const Redis = require("redis");
 
 const stats = require("./stats");
 const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
 const { parserForImport } = require("./parser");
 const logger = require("../logger");
+const Cache = require("../v0/util/cache");
+
+const REDIS_CACHE = new Cache();
+
+const getRedisClient = async url => {
+  return REDIS_CACHE.get(url, async () => {
+    return Redis.createClient({ url });
+  });
+};
 
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -204,6 +214,28 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     }
   });
 
+  await jail.set(
+    "_redisClient",
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const cmdStartTime = new Date();
+        const client = await getRedisClient(args[0]);
+        if (!client.isReady || !client.isOpen) {
+          await client.connect();
+        }
+        const data = await client.sendCommand(args[1]);
+        stats.timing("redis_call_duaration", cmdStartTime, { versionId });
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(data).copyInto()
+        ]);
+      } catch (error) {
+        resolve.applyIgnored(undefined, [
+          new ivm.ExternalCopy(error.message).copyInto()
+        ]);
+      }
+    })
+  );
+
   const bootstrap = await isolate.compileScript(
     "new " +
       `
@@ -236,6 +268,18 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       global.fetchV2 = function(...args) {
         return new Promise((resolve,reject) => {
           fetchV2.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let redisClient = _redisClient;
+      delete _redisClient;
+      global.redisClient = function(...args) {
+        return new Promise((resolve,reject) => {
+          redisClient.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())

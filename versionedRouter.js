@@ -124,6 +124,18 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
+function removeSensitiveData(result) {
+  const newOutput = CommonUtils.toArray(result.output).map(elm => {
+    return {
+      metadata: elm.metadata,
+      statusCode: elm.statusCode,
+      error: elm.error,
+      batched: elm.batched
+    };
+  });
+  return { output: newOutput, error: result.error };
+}
+
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
@@ -151,9 +163,11 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     if (unmatchedKeys.length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, v0Error=${JSON.stringify(
-          v0Result.error
-        )}, cdkError=${JSON.stringify(cdkResult.error)}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}`,
+        "v0Result",
+        JSON.stringify(removeSensitiveData(v0Result)),
+        "cdkResult",
+        JSON.stringify(removeSensitiveData(cdkResult))
       );
       return;
     }
@@ -161,9 +175,7 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
   } catch (error) {
     stats.counter("cdk_live_compare_test_errored", 1, { destType, flowType });
     logger.error(
-      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
-        input.metadata
-      )}`,
+      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}`,
       error
     );
   }

@@ -9,100 +9,55 @@ steps:
         $assert($exists(message.type), "message Type is not present. Aborting message.");
       )
   - name: buildHeaderBlock
-    steps:
-      - name: defaultHeaderBlock
-        template: |
-          $defaultHeaders :=  {"content-type": "application/json"}
-      - name: appendHeaderFromUI
-        template: |
-          $finalHeaders:= $merge([$outputs.defaultHeaders, $getHashFromArray(destination.Config.headers)]);
-      - name: appendHeaderFromMessage
-        destination: only filter out the object properties with string values
-        condition: $exists(message.headers) and $type(message.headers) = "object"
-        template: |
-          $finalHeaders := $merge([$outputs.finalHeaders, $sift(message.headers, function($v){(
+    template: |
+      (
+        $defaultHeaders :=  {"content-type": "application/json"};
+        $finalHeaders := $merge([$defaultHeaders, $getHashFromArray(destination.Config.headers)]);
+        $messageHeader := $type(message.headers) = "object" ? message.headers : {};
+        $finalHeaders := $merge([$finalHeaders, $sift($messageHeader, function($v){(
           $type($v) = "string"
           )})]);
-          $setContext("finalHeaders", $finalHeaders)
+        $setContext("finalHeaders", $finalHeaders);
+      )
   - name: deduceEndPoint
-    steps: 
-      - name: fetchIntegrationsObjects
-        template: |
-          $integrationsObjects := $getIntegrationsObj(message, "webhook");
-          $setContext("integrationsObjects", $integrationsObjects)
-      - name: setDefaultEndPoint
-        template: |
-         $defaultEndpoint := destination.Config.webhookUrl;
-         $setContext("defaultEndpoint", $defaultEndpoint)
-      - name: setEndPointFromFullPath
-        condition: $exists(message.fullPath) and $type(message.fullPath) = "string" 
-        template: |
-          $context.defaultEndpoint := message.fullPath;
-      - name: setEndPointFromIntegrationsObject
-        condition: $exists($context.integrationsObjects.fullPath) and $type($context.integrationsObjects.fullPath) = "string"
-        template: |
-          $context.defaultEndpoint := $context.integrationsObjects.fullPath;
-      - name: appendEndPointFromMessage
-        condition: $exists(message.appendPath) and $type(message.appendPath) = "string" 
-        template: |
-          $context.defaultEndpoint := $context.defaultEndpoint & message.appendPath
-      - name: setEndPointFromIntegrationsObject
-        condition: $exists($context.integrationsObjects.fullPath) and $type($context.integrationsObjects.fullPath) = "string"
-        template: |
-          $context.defaultEndpoint := $context.defaultEndpoint & context.integrationsObjects.appendPath;
-
-  - name: processForGETMethod
-    condition: destination.webhookMethod = $defaultGetRequestConfig.requestMethod
     template: |
-      $response : { 
-        "method" : $defaultGetRequestConfig.requestMethod,
+      (
+        $integrationsObjects := $getIntegrationsObj(message, "webhook");
+        $defaultEndpoint := destination.Config.webhookUrl;
+        $finaleEndpoint := [ message.fullPath , $integrationsObjects.fullPath, $defaultEndpoint ][0];
+        $messageAppendPath := [ message.appendPath, $integrationsObjects.appendPath ][0];
+        $finaleEndpoint := $finaleEndpoint & $messageAppendPath;
+        $setContext("finaleEndpoint", $finaleEndpoint)
+      )
+  - name: processForGETANDDELETEMethod
+    condition: destination.Config.webhookMethod = $defaultGetRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultDeleteRequestConfig.requestMethod
+    template: |
+      (
+       $response : { 
+        "method" : $defaultGetRequestConfig.requestMethod or $defaultDeleteRequestConfig.requestMethod,
         "params" : $getPropertyParams(message)
-      }
+      };
       $setContext("payload", $response);
-  - name: processPOSTMethod
-    condition: destination.webhookMethod = $defaultPostRequestConfig.requestMethod
+      )
+     
+  - name: processPOSTPUTPATCHMethod
+    condition: destination.Config.webhookMethod = $defaultPostRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPutRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPatchRequestConfig.requestMethod
     template: |
+      (
+      $filteredMessage : message ~> |$|{}, ['fullPath', 'appendPath']|
+      $userId:= {"userId": message.anonymousId};
       $response : {
-        "method" : $defaultPostRequestConfig.requestMethod,
-        "body": { "JSON" : $message },
+        "method" : destination.Config.webhookMethod,
+        "body": $merge([$filteredMessage, $userId]),
         "headers": $context.finalHeaders
-      }
+      };
       $setContext("payload", $response);
-  - name: processPUTMethod
-    condition: destination.webhookMethod = $defaultPutRequestConfig.requestMethod
-    template: |
-      $response : {
-          "method" : $defaultPutRequestConfig.requestMethod,
-          "body": { "JSON" : $message },
-          "headers": $context.finalHeaders
-        }
-      $setContext("payload", $response);
-  - name: processPATCHMethod
-    condition: destination.webhookMethod = $defaultPatchRequestConfig.requestMethod
-    template: |
-      $response : {
-          "method" : $defaultPatchRequestConfig.requestMethod,
-          "body": { "JSON" : $message },
-          "headers": $context.finalHeaders
-        }
-      $setContext("response", $response);
-  - name: processDELETEMethod
-    condition: destination.webhookMethod = $defaultGetRequestConfig.requestMethod
-    template: |
-      $response : { 
-        "method" : $defaultGetRequestConfig.requestMethod,
-        "params" : $getPropertyParams(message)
-      }
-      $setContext("response", $response);
-  - name: addingUserIdAndEndPoint
-    template: |
-      context.response.userId :=  message.anonymousId;
-      context.response.endpoint = $context.defaultEndpoint
+      )
   - name: buildingResponse
     template: |
       {
           "body": {
-            "JSON": $,
+            "JSON": $context.response.body ? $context.response.body : {} ,
             "JSON_ARRAY": {},
             "XML": {},
             "FORM": {}
@@ -110,8 +65,8 @@ steps:
           "version": "1",
           "type": "REST",
           "method": $context.response.method ? $context.response.method : 'POST' ,
-          "endpoint": $context.defaultEndpoint ? $context.defaultEndpoint : {} ,
-          "headers": $context.response.headers ? $context.response.headers : {} ,
+          "endpoint": $context.defaultEndpoint ? $context.finaleEndpoint,
+          "headers": $context.response.finalHeaders ? $context.response.finalHeaders : {} ,
           "params": $context.response.params ? $context.response.params : {},
           "files": {}
         }

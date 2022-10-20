@@ -47,7 +47,6 @@ const buildTrackPayload = event => {
       message.setPropertiesV2(event, featureMatchMapping);
       break;
     default:
-      // TODO
       throw new CustomError(
         `Event type ${event.event.eventType} not supported`,
         400
@@ -60,11 +59,6 @@ const buildTrackPayload = event => {
     ...message.context.traits,
     ...event.user.location
   };
-  // if (!message?.properties) {
-  //   message.properties = event.event?.attributes;
-  // } else if (event.event?.attributes) {
-  //   message.properties = { ...message.properties, ...event.event.attributes };
-  // }
   message.context = refineTraitPayload(message.context);
   return message;
 };
@@ -85,7 +79,9 @@ function processEvent(event) {
   message.context.externalId = externalId;
   // setting anonymous id for failsafety from server
   if (!message?.userId) {
-    message.anonymousId = md5(event.user.email);
+    message.anonymousId = event?.event?.sessionId
+      ? event.event.sessionId
+      : md5(event.user.email);
   }
   return message;
 }

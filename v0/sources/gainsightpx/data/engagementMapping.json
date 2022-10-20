@@ -23,6 +23,10 @@
         ]
     },
     {
+        "sourceKeys": "event.globalContext",
+        "destKeys": "properties.globalContext"
+    },
+    {
         "sourceKeys": "user.location.countryName",
         "destKeys": "context.traits.country"
     },
@@ -56,15 +60,15 @@
     },
     {
         "sourceKeys": "event.contentType",
-        "destKeys": "properties.engagement.contentType"
+        "destKeys": "properties.contentType"
     },
     {
         "sourceKeys": "event.engagementType",
-        "destKeys": "properties.engagement.engagementType"
+        "destKeys": "properties.engagementType"
     },
     {
         "sourceKeys": "event.interaction",
-        "destKeys": "properties.engagement.interaction"
+        "destKeys": "properties.interaction"
     },
     {
         "sourceKeys": "event.stepNumber",

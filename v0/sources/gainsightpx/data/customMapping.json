@@ -16,6 +16,10 @@
         "destKeys": "userId"
     },
     {
+        "sourceKeys": "event.globalContext",
+        "destKeys": "properties.globalContext"
+    },
+    {
         "sourceKeys": "event.remoteHost",
         "destKeys": [
             "context.ip",

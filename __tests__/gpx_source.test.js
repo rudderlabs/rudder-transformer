@@ -16,7 +16,7 @@ testData.forEach((data, index) => {
       const output = transformer.process(data.input);
       expect(output).toEqual(data.output);
     } catch (error) {
-      expect(error.message).toEqual(data.output.message);
+      expect(error.message).toEqual(data.output.error);
     }
   });
 });

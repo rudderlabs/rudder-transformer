@@ -23,7 +23,7 @@ const refinePayload = obj => {
 
 const refineTraitPayload = event => {
   const message = event;
-  delete message.traits?.IdentifyId;
+  delete message.traits?.identifyId;
   delete message.traits?.location;
   delete message.traits?.aptrinsicId;
   delete message.traits?.signUpDate;
@@ -38,8 +38,8 @@ const refineTraitPayload = event => {
   delete message.traits?.createDate;
   delete message.traits?.lastModifiedDate;
   // deleting account.location as its will be least but can disturb many others
-  delete message.traits?.account.location;
-  delete message.traits?.account.createDate;
+  delete message.traits?.account?.location;
+  delete message.traits?.account?.createDate;
   delete message.traits?.account?.lastModifiedDate;
   delete message.traits?.account.lastSeenDate;
   return message;

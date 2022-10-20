@@ -23,6 +23,10 @@
         ]
     },
     {
+        "sourceKeys": "event.globalContext",
+        "destKeys": "properties.globalContext"
+    },
+    {
         "sourceKeys": "user.location.countryName",
         "destKeys": "context.traits.country"
     },

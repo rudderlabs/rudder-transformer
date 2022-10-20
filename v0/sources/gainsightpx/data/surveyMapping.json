@@ -23,6 +23,10 @@
         ]
     },
     {
+        "sourceKeys": "event.globalContext",
+        "destKeys": "properties.globalContext"
+    },
+    {
         "sourceKeys": "user.location.countryName",
         "destKeys": "context.traits.country"
     },
@@ -56,11 +60,15 @@
     },
     {
         "sourceKeys": "event.contentType",
-        "destKeys": "properties.survey.contentType"
+        "destKeys": "properties.contentType"
+    },
+    {
+        "sourceKeys": "event.surveyType",
+        "destKeys": "properties.surveyType"
     },
     {
         "sourceKeys": "event.interaction",
-        "destKeys": "properties.survey.interaction"
+        "destKeys": "properties.interaction"
     },
     {
         "sourceKeys": "event.score",
@@ -89,5 +97,21 @@
     {
         "sourceKeys": "event.contactMeAllowed",
         "destKeys": "properties.survey.contactMeAllowed"
+    },
+    {
+        "sourceKeys": "event.questionHtml",
+        "destKeys": "properties.survey.questionHtml"
+    },
+    {
+        "sourceKeys": "event.questionText",
+        "destKeys": "properties.survey.questionText"
+    },
+    {
+        "sourceKeys": "event.questionId",
+        "destKeys": "properties.survey.questionId"
+    },
+    {
+        "sourceKeys": "event.answers",
+        "destKeys": "properties.survey.answers"
     }
 ]

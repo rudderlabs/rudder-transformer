@@ -172,7 +172,7 @@ const pageEventPayloadBuilder = message => {
 const groupUsersPayloadBuilder = (message, destination) => {
   const payload = {};
   const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+  const email = getFieldValueFromMessage(message, "context.traits.email");
   if (userId) {
     payload.id = userId;
   }

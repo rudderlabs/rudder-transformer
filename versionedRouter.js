@@ -125,17 +125,19 @@ async function getCdkV2Result(destName, event, flowType) {
 }
 
 function removeSensitiveData(result) {
-  return Object.keys(result)
-    .filter(
-      key =>
-        key.includes("metadata") ||
-        key.includes("error") ||
-        key.includes("statusCode")
-    )
-    .reduce((acc, key) => {
-      acc[key] = result[key];
-      return acc;
-    }, {});
+  const newResult = {};
+  Object.keys(result).forEach(key => {
+    if (
+      key.includes("metadata") ||
+      key.includes("error") ||
+      key.includes("statusCode")
+    ) {
+      newResult[key] = result[key];
+    } else {
+      newResult[key] = "***";
+    }
+  });
+  return newResult;
 }
 
 async function compareWithCdkV2(destType, input, flowType, v0Result) {

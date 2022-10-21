@@ -18,7 +18,8 @@ const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
 const {
-  DestCanonicalNames, DestHandlerMap
+  DestCanonicalNames,
+  DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 // ========================================================================
@@ -1742,12 +1743,9 @@ const flattenMultilevelPayload = payload => {
  *  The transform.js instance used for destination transformation
  */
 const getDestHandler = (_version, dest) => {
-  if (DestHandlerMap.hasOwnProperty(dest)) {
-    // eslint-disable-next-line import/no-dynamic-require, global-require
-    return require(`../destinations/${DestHandlerMap[dest]}/transform`);
-  }
+  const destName = DestHandlerMap[dest] || dest;
   // eslint-disable-next-line import/no-dynamic-require, global-require
-  return require(`../destinations/${dest}/transform`);
+  return require(`../destinations/${destName}/transform`);
 };
 
 /**
@@ -1757,10 +1755,7 @@ const getDestHandler = (_version, dest) => {
  */
 const getDestAuthCacheInstance = destType => {
   const destInf = getDestHandler("v0", destType);
-  if (destInf) {
-    return destInf?.authCache;
-  }
-  return {};
+  return destInf?.authCache || {};
 };
 
 // ========================================================================

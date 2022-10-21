@@ -112,21 +112,6 @@ function getCommonMetadata(ctx) {
 }
 
 async function handleCdkV2(destType, parsedEvent, flowType) {
-  const getReqMetadata = () => {
-    try {
-      return {
-        flowType,
-        destType,
-        destinationId: parsedEvent.destination.ID,
-        destName: parsedEvent.destination.Name,
-        metadata: parsedEvent.metadata
-      };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
-
   try {
     const workflowEngine = await getWorkflowEngine(destType, flowType);
 
@@ -147,14 +132,6 @@ async function getCdkV2Result(destName, event, flowType) {
       message: error.message,
       statusCode: getErrorStatusCode(error)
     };
-
-    errNotificationClient.notify(err, `CDK v2`, {
-      ...resp,
-      // TODO: add common metadata here
-      ...getReqMetadata()
-    });
-
-    return resp;
   }
   return cdkResult;
 }
@@ -214,9 +191,9 @@ async function handleDest(ctx, version, destination) {
     try {
       return {
         destType: destination,
-        destinationId: event.destination.ID,
-        destName: event.destination.Name,
-        metadata: event.metadata
+        destinationId: event?.destination?.ID,
+        destName: event?.destination?.Name,
+        metadata: event?.metadata
       };
     } catch (error) {
       // Do nothing
@@ -311,7 +288,15 @@ async function handleDest(ctx, version, destination) {
             ...errObj.statTags
           }
         };
-        errNotificationClient.notify(error, "Destination Transformation", {
+
+        let errCtx = "Destination Transformation";
+        if (isCdkV2Destination(event)) {
+          errCtx = `CDK V2 - ${errCtx}`;
+        } else if (isCdkDestination(event)) {
+          errCtx = `CDK - ${errCtx}`;
+        }
+
+        errNotificationClient.notify(error, errCtx, {
           ...resp,
           ...getCommonMetadata(ctx),
           ...getReqMetadata(event)
@@ -982,10 +967,10 @@ const batchHandler = ctx => {
       const reqBody = ctx.request.body;
       const firstEvent = destEvents[0];
       return {
-        destType: reqBody.destType,
-        destinationId: firstEvent.destination.ID,
-        destName: firstEvent.destination.Name,
-        metadata: firstEvent.metadata
+        destType: reqBody?.destType,
+        destinationId: firstEvent?.destination?.ID,
+        destName: firstEvent?.destination?.Name,
+        metadata: firstEvent?.metadata
       };
     } catch (error) {
       // Do nothing
@@ -1046,7 +1031,7 @@ const fileUpload = async ctx => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody.destType };
+      return { destType: reqBody?.destType };
     } catch (error) {
       // Do nothing
     }
@@ -1087,7 +1072,7 @@ const pollStatus = async ctx => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody.destType, importId: reqBody.importId };
+      return { destType: reqBody?.destType, importId: reqBody?.importId };
     } catch (error) {
       // Do nothing
     }
@@ -1126,7 +1111,7 @@ const getJobStatus = async (ctx, type) => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody.destType, importId: reqBody.importId };
+      return { destType: reqBody?.destType, importId: reqBody?.importId };
     } catch (error) {
       // Do nothing
     }
@@ -1169,7 +1154,7 @@ const handleDeletionOfUsers = async ctx => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody.destType };
+      return { destType: reqBody?.destType };
     } catch (error) {
       // Do nothing
     }

@@ -156,13 +156,13 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       return;
     }
     const cdkResult = await getCdkV2Result(destType, input, flowType);
-    const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
-    if (!_.isEmpty(objectDiff)) {
+    // const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
+    if (!_.isEqual(v0Result, cdkResult)) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedData=${JSON.stringify(
-          removeSensitiveData(objectDiff)
-        )}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, v0Result=${JSON.stringify(
+          v0Result
+        )}, cdkResult=${JSON.stringify(cdkResult)}`
       );
       return;
     }

@@ -20,6 +20,7 @@ const prepareIdentifyaPayload = event => {
   const message = new Message("Refiner");
   message.setEventType("identify");
   message.setPropertiesV2(event, identifyMapping);
+  message.context.traits = removeUndefinedAndNullValues(message.context.traits);
   return message;
 };
 

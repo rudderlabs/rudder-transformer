@@ -34,15 +34,9 @@ const getAccessToken = metadata => {
   return secret.access_token;
 };
 
-const generateResponse = (
-  groupedData,
-  schemaType,
-  segmentId,
-  metadata,
-  type
-) => {
+const generateResponse = (groupedData, schema, segmentId, metadata, type) => {
   const payload = { users: [] };
-  const userPayload = { schema: [schemaType], data: groupedData };
+  const userPayload = { schema: [schema], data: groupedData };
   payload.users.push(userPayload);
   const response = defaultRequestConfig();
   if (type === "remove") {

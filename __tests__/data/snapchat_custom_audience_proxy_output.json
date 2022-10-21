@@ -3,7 +3,47 @@
     "output": {
       "status": 200,
       "message": "[snapchat_custom_audience Response Handler] - Request Processed Successfully",
-      "destinationResponse": { "response": "", "status": 200 }
+      "destinationResponse": {
+        "response": {
+          "request_status": "SUCCESS",
+          "request_id": "12345",
+          "users": [
+            {
+              "sub_request_status": "SUCCESS",
+              "user": {
+                "number_uploaded_users": 1
+              }
+            }
+          ]
+        },
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "destinationResponse": "",
+      "message": "[Error occurred while processing response for destination snapchat_custom_audience]: snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "statTags": {
+        "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
+        "errorAt": "proxy",
+        "scope": "exception",
+        "stage": "responseTransform"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "destinationResponse": "",
+      "message": "[Error occurred while processing response for destination snapchat_custom_audience]: snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "statTags": {
+        "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
+        "errorAt": "proxy",
+        "scope": "exception",
+        "stage": "responseTransform"
+      }
     }
   }
 ]

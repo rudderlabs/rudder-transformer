@@ -463,14 +463,16 @@ const processTrack = async (message, formattedDestination, token) => {
   // get leadId
   const leadId = await getLeadId(message, formattedDestination, token);
 
-  // handle custom activy attributes
-  const attribute = [];
+  // handle addition of custom activity attributes
+  // Reference: https://developers.marketo.com/rest-api/lead-database/activities/#add_custom_activities
+
+  const attributes = [];
   Object.keys(customActivityPropertyMap).forEach(key => {
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
       if (isDefined(value)) {
-        attribute.push({ apiName: customActivityPropertyMap[key], value });
+        attributes.push({ name: customActivityPropertyMap[key], value });
       }
     }
   });
@@ -480,7 +482,7 @@ const processTrack = async (message, formattedDestination, token) => {
       {
         activityDate: getFieldValueFromMessage(message, "timestamp"),
         activityTypeId: Number.parseInt(activityTypeId, 10),
-        attribute,
+        attributes,
         leadId,
         primaryAttributeValue
       }

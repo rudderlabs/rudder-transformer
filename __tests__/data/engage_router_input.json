@@ -21,7 +21,7 @@
             "Config": {
                 "publicKey": "49ur490rjfo34gi04y38r9go",
                 "privateKey": "n89g389yr389fgbef0u2rff",
-                "lists": [
+                "listIds": [
                     {
                         "listId": "9834trg3rgy3g08oi9893rgfb"
                     },
@@ -75,7 +75,7 @@
             "Config": {
                 "publicKey": "49ur490rjfo34gi04y38r9go",
                 "privateKey": "n89g389yr389fgbef0u2rff",
-                "lists": [
+                "listIds": [
                     {
                         "listId": "9834trg3rgy3g08oi9893rgfb"
                     },
@@ -104,7 +104,7 @@
             "Config": {
                 "publicKey": "49ur490rjfo34gi04y38r9go",
                 "privateKey": "n89g389yr389fgbef0u2rff",
-                "lists": [
+                "listIds": [
                     {
                         "listId": "9834trg3rgy3g08oi9893rgfb"
                     },

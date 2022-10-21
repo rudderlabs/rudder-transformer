@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
@@ -7,14 +8,33 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   getFieldValueFromMessage,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  getValidDynamicFormConfig
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  createUpdateAccount,
   getUserAccountDetails,
-  flattenAddress
+  flattenAddress,
+  UpdateContactWithSalesActivity,
+  UpdateContactWithLifeCycleStage,
+  updateAccountWOContact
 } = require("./utils");
+
+/*
+ * This functions is used for creating response config for identify call.
+ * @param {*} Config
+ * @returns
+ */
+const identifyResponseConfig = Config => {
+  const response = defaultRequestConfig();
+  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
+  };
+  return response;
+};
 
 /*
  * This functions is used for creating response for identify call, to create or update contacts.
@@ -39,12 +59,67 @@ const identifyResponseBuilder = (message, { Config }) => {
     Authorization: `Token token=${Config.apiKey}`,
     "Content-Type": "application/json"
   };
-  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}`;
+  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
   response.body.JSON = {
     contact: payload,
     unique_identifier: { emails: payload.emails }
   };
+  return response;
+};
+
+/*
+ * This functions is used for tracking contacts activities.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const trackResponseBuilder = async (message, { Config }) => {
+  const { event } = message;
+  if (!event) {
+    throw new CustomError("Event name is required for track call.", 400);
+  }
+  let payload;
+
+  const response = defaultRequestConfig();
+  switch (
+    event
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+  ) {
+    case "sales_activity": {
+      payload = constructPayload(
+        message,
+        MAPPING_CONFIG[CONFIG_CATEGORIES.SALES_ACTIVITY.name]
+      );
+      response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlCreate}`;
+      response.body.JSON.sales_activity = await UpdateContactWithSalesActivity(
+        payload,
+        message,
+        Config
+      );
+      break;
+    }
+    case "lifecycle_stage": {
+      response.body.JSON = await UpdateContactWithLifeCycleStage(
+        message,
+        Config
+      );
+      response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+      break;
+    }
+    default:
+      throw new CustomError(
+        `event name ${event} is not supported. Aborting!`,
+        400
+      );
+  }
+  response.headers = {
+    Authorization: `Token token=${Config.apiKey}`,
+    "Content-Type": "application/json"
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
   return response;
 };
 
@@ -65,55 +140,50 @@ const groupResponseBuilder = async (message, { Config }) => {
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
-  const payloadBody = {
-    unique_identifier: { name: payload.name },
-    sales_account: payload
-  };
 
-  const account = await createUpdateAccount(payloadBody, Config);
-
-  const accountId = account.response?.sales_account?.id;
-  if (!accountId) {
-    throw new CustomError("Error while fetching accountId", 400);
-  }
   const userEmail = getFieldValueFromMessage(message, "email");
   if (!userEmail) {
-    const response = defaultRequestConfig();
-    response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrl}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = payloadBody;
-    response.headers = {
-      Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    };
-    return response;
+    return updateAccountWOContact(payload, Config);
   }
-  const userSalesAccount = await getUserAccountDetails(userEmail, Config);
-  let accountDetails = userSalesAccount?.response?.contact?.sales_accounts;
-  if (!accountDetails) {
-    throw new CustomError("Error while fetching user accountDetails", 400);
-  }
-  const accountDetail = {
-    id: accountId,
-    is_primary: false
-  };
-  if (accountDetails.length > 0) {
-    accountDetails = [...accountDetails, accountDetail];
-  } else {
-    accountDetail.is_primary = true;
-    accountDetails = [accountDetail];
-  }
-  const responseIdentify = defaultRequestConfig();
-  responseIdentify.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.endpoint}`;
-  responseIdentify.method = CONFIG_CATEGORIES.IDENTIFY.method;
-  responseIdentify.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    "Content-Type": "application/json"
-  };
+
+  const accountDetails = await getUserAccountDetails(
+    payload,
+    userEmail,
+    Config
+  );
+  const responseIdentify = identifyResponseConfig(Config);
   responseIdentify.body.JSON.contact = { sales_accounts: accountDetails };
   responseIdentify.body.JSON.unique_identifier = { emails: userEmail };
   return responseIdentify;
 };
+
+// Checks if there are any mapping events for the track event and returns them
+function eventMappingHandler(message, destination) {
+  const event = get(message, "event");
+  if (!event) {
+    throw new CustomError("[Freshsales] :: Event name is required", 400);
+  }
+
+  let { rudderEventsToFreshsalesEvents } = destination.Config;
+  const mappedEvents = new Set();
+
+  if (Array.isArray(rudderEventsToFreshsalesEvents)) {
+    rudderEventsToFreshsalesEvents = getValidDynamicFormConfig(
+      rudderEventsToFreshsalesEvents,
+      "from",
+      "to",
+      "freshsales_conversion",
+      destination.ID
+    );
+    rudderEventsToFreshsalesEvents.forEach(mapping => {
+      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+        mappedEvents.add(mapping.to);
+      }
+    });
+  }
+
+  return [...mappedEvents];
+}
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
@@ -128,6 +198,27 @@ const processEvent = async (message, destination) => {
     case EventType.IDENTIFY:
       response = identifyResponseBuilder(message, destination);
       break;
+    case EventType.TRACK: {
+      const mappedEvents = eventMappingHandler(message, destination);
+      if (mappedEvents.length > 0) {
+        response = [];
+        mappedEvents.forEach(async mappedEvent => {
+          const res = await trackResponseBuilder(
+            message,
+            destination,
+            mappedEvent
+          );
+          response.push(res);
+        });
+      } else {
+        response = await trackResponseBuilder(
+          message,
+          destination,
+          get(message, "event")
+        );
+      }
+      break;
+    }
     case EventType.GROUP:
       response = await groupResponseBuilder(message, destination);
       break;

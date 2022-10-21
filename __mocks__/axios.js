@@ -27,8 +27,15 @@ const {
 const { userGetRequestHandler, userPutRequestHandler } = require("./user.mock");
 const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
-const freshmarketerPostRequestHandler = require("./freshmarketer.mock");
+const {
+  freshmarketerPostRequestHandler,
+  freshmarketerGetRequestHandler
+} = require("./freshmarketer.mock");
 const { mondayPostRequestHandler } = require("./monday.mock");
+const {
+  freshsalesGetRequestHandler,
+  freshsalesPostRequestHandler
+} = require("./freshsales.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -128,6 +135,12 @@ function get(url, options) {
   if (url.includes("https://api.clickup.com")) {
     return Promise.resolve(clickUpGetRequestHandler(url));
   }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return Promise.resolve(freshmarketerGetRequestHandler(url));
+  }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return Promise.resolve(freshsalesGetRequestHandler(url));
+  }
   return new Promise((resolve, reject) => {
     if (mockData) {
       resolve({ data: mockData, status: 200 });
@@ -191,6 +204,11 @@ function post(url, payload) {
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
     return new Promise((resolve, reject) => {
       resolve(freshmarketerPostRequestHandler(url));
+    });
+  }
+  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
+    return new Promise((resolve, reject) => {
+      resolve(freshsalesPostRequestHandler(url));
     });
   }
   if (

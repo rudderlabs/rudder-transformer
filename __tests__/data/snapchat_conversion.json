@@ -2261,35 +2261,37 @@
         }
       }
     },
-    "output": [{
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://tr.snapchat.com/v2/conversion",
-      "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
-        "Content-Type": "application/json"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "search_string": "t-shirts",
-          "event_type": "SEARCH",
-          "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
-          "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
-          "hashed_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
-          "hashed_idfv": "54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f",
-          "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
-          "timestamp": "1650625078",
-          "event_conversion_type": "OFFLINE",
-          "pixel_id": "68e3dab0-3282-49ef10931dbf3"
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://tr.snapchat.com/v2/conversion",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Content-Type": "application/json"
         },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    }]
+        "params": {},
+        "body": {
+          "JSON": {
+            "search_string": "t-shirts",
+            "event_type": "SEARCH",
+            "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
+            "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
+            "hashed_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
+            "hashed_idfv": "54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f",
+            "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
+            "timestamp": "1650625078",
+            "event_conversion_type": "OFFLINE",
+            "pixel_id": "68e3dab0-3282-49ef10931dbf3"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   },
   {
     "description": "Test case event doesn't match with snapchat events",
@@ -2362,5 +2364,201 @@
       "statusCode": 400,
       "error": "Event ProdSearched doesn't match with Snapchat Events!"
     }
+  },
+  {
+    "description": "test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground",
+    "input": {
+      "message": {
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-22T10:57:58Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "traits": {
+            "email": "test@email.com",
+            "phone": "+91 2111111 "
+          },
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "Product Added to Cart",
+        "properties": {
+          "query": "t-shirts",
+          "event_conversion_type": "web"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-22T10:57:58Z"
+      },
+      "destination": {
+        "Config": {
+          "pixelId": "68e3dab0-3282-49ef10931dbf3",
+          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "rudderEventsToSnapEvents": [
+            {
+              "from": "Product_Added_To_Cart",
+              "to": "products_searched"
+            }
+          ]
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://tr.snapchat.com/v2/conversion",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "search_string": "t-shirts",
+            "event_type": "SEARCH",
+            "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
+            "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
+            "hashed_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
+            "hashed_idfv": "54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f",
+            "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
+            "timestamp": "1650625078",
+            "event_conversion_type": "OFFLINE",
+            "pixel_id": "68e3dab0-3282-49ef10931dbf3"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground - here destination config need to be modified",
+    "input": {
+      "message": {
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "originalTimestamp": "2022-04-22T10:57:58Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "traits": {
+            "email": "test@email.com",
+            "phone": "+91 2111111 "
+          },
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "Product_Added_to_Cart",
+        "properties": {
+          "query": "t-shirts",
+          "event_conversion_type": "web"
+        },
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2022-04-22T10:57:58Z"
+      },
+      "destination": {
+        "Config": {
+          "pixelId": "68e3dab0-3282-49ef10931dbf3",
+          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "rudderEventsToSnapEvents": [
+            {
+              "from": "Product Added To Cart",
+              "to": "products_searched"
+            }
+          ]
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://tr.snapchat.com/v2/conversion",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "search_string": "t-shirts",
+            "event_type": "SEARCH",
+            "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
+            "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
+            "hashed_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
+            "hashed_idfv": "54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f",
+            "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
+            "timestamp": "1650625078",
+            "event_conversion_type": "OFFLINE",
+            "pixel_id": "68e3dab0-3282-49ef10931dbf3"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   }
 ]

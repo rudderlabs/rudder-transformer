@@ -45,15 +45,32 @@ describe(`${name} Tests`, () => {
       path.resolve(__dirname, `./data/${integration}_router_input.json`)
     );
 
+    const inputRouterErrorDataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_router_error_input.json`)
+    );
+
     const outputRouterBatchDataFile = fs.readFileSync(
       path.resolve(__dirname, `./data/${integration}_router_batch_output.json`)
     );
     const outputRouterDataFile = fs.readFileSync(
       path.resolve(__dirname, `./data/${integration}_router_output.json`)
     );
+    const outputRouterErrorDataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_router_error_output.json`)
+    );
     const inputRouterData = JSON.parse(inputRouterDataFile);
+    const inputRouterErrorData = JSON.parse(inputRouterErrorDataFile);
+
     const expectedRouterBatchData = JSON.parse(outputRouterBatchDataFile);
     const expectedRouterData = JSON.parse(outputRouterDataFile);
+    const expectedRouterErrorData = JSON.parse(outputRouterErrorDataFile);
+
+    it("Payload with error input", async () => {
+      const rtWorkflowEngine = await rtWorkflowEnginePromise;
+      const result = await rtWorkflowEngine.execute(inputRouterErrorData);
+      expect(result.output).toEqual(expectedRouterErrorData);
+    });
+
     it("Payload with Default Batch size", async () => {
       const rtWorkflowEngine = await rtWorkflowEnginePromise;
       const result = await rtWorkflowEngine.execute(inputRouterData);

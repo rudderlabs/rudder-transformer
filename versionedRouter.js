@@ -125,20 +125,17 @@ async function getCdkV2Result(destName, event, flowType) {
 }
 
 function removeSensitiveData(result) {
-  let newOutput = result.output;
-  if (newOutput) {
-    newOutput = CommonUtils.toArray(newOutput)
-      .filter(elm => elm)
-      .map(elm => {
-        return {
-          metadata: elm.metadata,
-          statusCode: elm.statusCode,
-          error: elm.error,
-          batched: elm.batched
-        };
-      });
-  }
-  return { output: newOutput, error: result.error };
+  return Object.keys(result)
+    .filter(
+      key =>
+        key.includes("metadata") ||
+        key.includes("error") ||
+        key.includes("statusCode")
+    )
+    .reduce((acc, key) => {
+      acc[key] = result[key];
+      return acc;
+    }, {});
 }
 
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
@@ -157,15 +154,13 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       return;
     }
     const cdkResult = await getCdkV2Result(destType, input, flowType);
-    const unmatchedKeys = Object.keys(
-      CommonUtils.objectDiff(v0Result, cdkResult)
-    );
-    if (unmatchedKeys.length > 0) {
+    const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
+    if (!_.isEmpty(objectDiff)) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys} v0=${JSON.stringify(
-          removeSensitiveData(v0Result)
-        )} cdk=${JSON.stringify(removeSensitiveData(cdkResult))}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedData=${JSON.stringify(
+          removeSensitiveData(objectDiff)
+        )}`
       );
       return;
     }

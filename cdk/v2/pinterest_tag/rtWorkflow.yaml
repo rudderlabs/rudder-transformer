@@ -59,4 +59,4 @@ steps:
       )
   - name: finalPayload
     template: |
-      $outputs.($append(batchSuccessfulEvents, failedEvents))
+      $toArray($outputs.($append(batchSuccessfulEvents, failedEvents)))

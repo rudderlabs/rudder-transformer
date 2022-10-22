@@ -9,7 +9,7 @@ const {
 } = require("./customTransformer-faas");
 
 // add identifier in constructor to route to set & run functions in future
-const pyUserTransformHandler = (identifier = "") => {
+const pyUserTransformHandler = (identifier = "openfaas") => {
   const transformHandler = {
     setUserTransform: async (userTransformation, testWithPublish) => {
       if (identifier === "openfaas") {

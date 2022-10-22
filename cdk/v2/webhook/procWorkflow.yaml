@@ -1,6 +1,7 @@
 bindings:
-  - path: ../../../../v0/util
-  - path: ../../../../v0/destinations/webhook/util
+  - path: ../../../v0/util
+  - path: ../../../v0/destinations/webhook/utils
+  - path: ../../../constants
 steps:
   - name: validateInput
     template: |
@@ -11,9 +12,11 @@ steps:
   - name: buildHeaderBlock
     template: |
       (
-        $defaultHeaders :=  {"content-type": "application/json"};
+        $defaultHeaders := destination.Config.webhookMethod in ['POST', 'PUT', 'PATCH'] or $not($exists(destination.Config.webhookMethod)) ? {"content-type": "application/json"};
+        $log(destination.Config.webhookMethod);
+        $log($defaultHeaders);
         $finalHeaders := $merge([$defaultHeaders, $getHashFromArray(destination.Config.headers)]);
-        $messageHeader := $type(message.headers) = "object" ? message.headers : {};
+        $messageHeader := $type(message.header) = "object" ? message.header : {};
         $finalHeaders := $merge([$finalHeaders, $sift($messageHeader, function($v){(
           $type($v) = "string"
           )})]);
@@ -30,44 +33,47 @@ steps:
         $setContext("finaleEndpoint", $finaleEndpoint)
       )
   - name: processForGETANDDELETEMethod
-    condition: destination.Config.webhookMethod = $defaultGetRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultDeleteRequestConfig.requestMethod
+    condition: destination.Config.webhookMethod = 'GET' or destination.Config.webhookMethod = 'DELETE'
     template: |
       (
        $response := { 
-        "method" : $defaultGetRequestConfig.requestMethod or $defaultDeleteRequestConfig.requestMethod,
+        "method" : destination.Config.webhookMethod,
         "params" : $getPropertyParams(message)
       };
       $setContext("payload", $response);
       )
      
   - name: processPOSTPUTPATCHMethod
-    condition: destination.Config.webhookMethod = $defaultPostRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPutRequestConfig.requestMethod or destination.Config.webhookMethod = $defaultPatchRequestConfig.requestMethod
+    condition: destination.Config.webhookMethod = 'POST' or destination.Config.webhookMethod = 'PUT' or destination.Config.webhookMethod = 'PATCH' or $not($exists(destination.Config.webhookMethod))
     template: |
       (
-      $userId:= {"userId": message.anonymousId};
+      /*$userId:= {"userId": message.anonymousId };*/
       $response := {
         "method" : destination.Config.webhookMethod,
-        "body": $merge([$userId,message ~> |$|{}, ['fullPath', 'appendPath']|]),
-        "headers": $context.finalHeaders
+        "body": $merge([$userId,message ~> |$|{}, ['fullPath', 'appendPath', 'header']|])
       };
       $setContext("payload", $response);
       )
   - name: buildingResponse
     template: |
-      {
-          "body": {
-            "JSON": $context.response.body ? $context.response.body : {} ,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": $context.response.method ? $context.response.method : 'POST' ,
-          "endpoint": $context.defaultEndpoint ? $context.finaleEndpoint,
-          "headers": $context.response.finalHeaders ? $context.response.finalHeaders : {} ,
-          "params": $context.response.params ? $context.response.params : {},
-          "files": {}
-        }
+      (
+        {
+            "body": {
+              "JSON": $context.payload.body ? $context.payload.body : {} ,
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "version": "1",
+            "type": "REST",
+            "userId": message.anonymousId,
+            "method": $context.payload.method ? $context.payload.method : 'POST' ,
+            "endpoint": $context.finaleEndpoint,
+            "headers": $context.finalHeaders ,
+            "params": $context.payload.params ? $context.payload.params : {},
+            "files": {}
+          }
 
-    
+      )
+      
+      

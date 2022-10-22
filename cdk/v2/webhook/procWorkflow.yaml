@@ -47,10 +47,15 @@ steps:
     condition: destination.Config.webhookMethod = 'POST' or destination.Config.webhookMethod = 'PUT' or destination.Config.webhookMethod = 'PATCH' or $not($exists(destination.Config.webhookMethod))
     template: |
       (
-      /*$userId:= {"userId": message.anonymousId };*/
+      $contextObj := message.context;
+       $req_ip := message.request_ip;
+       $abc := message.context.ip? message.context : $merge([message.context, {"ip": message.request_ip}]);
+       $context := message.{
+            "context": $abc
+        };
       $response := {
         "method" : destination.Config.webhookMethod,
-        "body": $merge([$userId,message ~> |$|{}, ['fullPath', 'appendPath', 'header']|])
+        "body": $merge([message ~> |$|{}, ['fullPath', 'appendPath', 'header']|,$context])
       };
       $setContext("payload", $response);
       )

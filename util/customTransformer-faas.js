@@ -23,6 +23,7 @@ async function runOpenFaasUserTransform(
   const tags = {
     transformerVersionId: userTransformation.versionId,
     language: userTransformation.language,
+    identifier: "openfaas",
     ...metaTags
   };
   if (!testMode && !userTransformation.handleId) {
@@ -49,6 +50,7 @@ async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
   const tags = {
     transformerVersionId: userTransformation.versionId,
     language: userTransformation.language,
+    identifier: "openfaas",
     publish: testWithPublish
   };
 

@@ -86,7 +86,7 @@ async function containerizeAndPush(imageName, functionName, code) {
     throw Error(`Build/Push for image ${imageName} failed.`);
   }
 
-  stats.timing("image_build_push_latency", startTime, {
+  stats.timing("faas_image_build_push_duration", startTime, {
     imageName,
     functionName
   });

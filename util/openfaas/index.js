@@ -41,7 +41,7 @@ async function containerizeAndPush(imageName, functionName, code) {
     throw Error(`Build/Push for image ${imageName} failed.`);
   }
 
-  stats.timing("image_build_push_latency", startTime, {
+  stats.timing("faas_image_build_push_duration", startTime, {
     imageName,
     functionName
   });
@@ -165,17 +165,11 @@ async function run(functionName, events, code, testMode) {
     await setupFunction(functionName, code, testMode);
   }
 
-  const startTime = new Date();
-
   const response = await invokeFunction(
     functionName,
     events,
     FUNCTION_REQUEST_TYPES.event
   );
-
-  stats.timing("deployed_function_execution_time", startTime, {
-    functionName
-  });
 
   deleteFunction(functionName).catch(_e => {});
 

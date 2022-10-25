@@ -7,6 +7,7 @@ const engagementMapping = require("./data/engagementMapping.json");
 const feedbackMapping = require("./data/feedbackMapping.json");
 const surveyMapping = require("./data/surveyMapping.json");
 const featureMatchMapping = require("./data/featureMatchMapping.json");
+const segmentIoMapping = require("./data/segmentIOMapping.json");
 const { refinePayload, refineTraitPayload } = require("./utils");
 const { CustomError } = require("../../util");
 
@@ -45,6 +46,10 @@ const buildTrackPayload = event => {
       break;
     case "FEATURE_MATCH":
       message.setPropertiesV2(event, featureMatchMapping);
+      break;
+    case "SEGMENT_IO":
+      message.setPropertiesV2(event, segmentIoMapping);
+      message.name = "SegmentIO Cloud Server";
       break;
     default:
       throw new CustomError(

@@ -20,6 +20,7 @@ const {
   getErrorRespEvents,
   CustomError,
   addExternalIdToTraits,
+  getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
@@ -115,6 +116,11 @@ function responseBuilderSimple(
         rawPayload[`${key}__c`] = traits[key];
       }
     });
+  }
+
+  // delete id in the payload for events coming from rETL sources mapped with visual mapper
+  if (mappedToDestination) {
+    delete rawPayload.Id;
   }
 
   const response = defaultRequestConfig();
@@ -308,11 +314,13 @@ async function processIdentify(message, authorizationData, destination) {
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const identifierType = get(message, "context.externalId.0.type");
+  const externalId = getDestinationExternalIDObjectForRetl(
+    message,
+    "SALESFORCE"
+  );
   if (
     mappedToDestination &&
-    identifierType &&
-    identifierType.toLowerCase !== "id"
+    externalId?.identifierType?.toLowerCase() !== "id"
   ) {
     addExternalIdToTraits(message);
   }

@@ -13,8 +13,6 @@ steps:
     template: |
       (
         $defaultHeaders := destination.Config.webhookMethod in ['POST', 'PUT', 'PATCH'] or $not($exists(destination.Config.webhookMethod)) ? {"content-type": "application/json"};
-        $log(destination.Config.webhookMethod);
-        $log($defaultHeaders);
         $finalHeaders := $merge([$defaultHeaders, $getHashFromArray(destination.Config.headers)]);
         $messageHeader := $type(message.header) = "object" ? message.header : {};
         $finalHeaders := $merge([$finalHeaders, $sift($messageHeader, function($v){(
@@ -50,12 +48,12 @@ steps:
       $contextObj := message.context;
        $req_ip := message.request_ip;
        $abc := message.context.ip? message.context : $merge([message.context, {"ip": message.request_ip}]);
-       $context := message.{
+       $contextObj := message.{
             "context": $abc
         };
       $response := {
         "method" : destination.Config.webhookMethod,
-        "body": $merge([message ~> |$|{}, ['fullPath', 'appendPath', 'header']|,$context])
+        "body": $merge([message ~> |$|{}, ['fullPath', 'appendPath', 'header']|,$contextObj]);
       };
       $setContext("payload", $response);
       )

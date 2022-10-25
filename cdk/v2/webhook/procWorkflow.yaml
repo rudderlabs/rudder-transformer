@@ -43,21 +43,20 @@ steps:
         $setContext("body", {});
       )
   - name: prepareParams
-    condition: $outputs.deduceMethod in ['GET', 'DELETE']
+    condition: $context.method in ['GET', 'DELETE']
     template: |
       (
         $setContext("params", $getPropertyParams(message));
       )
      
   - name: prepareBody
-    condition: $outputs.deduceMethod in ['POST', 'PUT', 'PATCH']
+    condition: $context.method in ['POST', 'PUT', 'PATCH']
     template: |
       (
         $newContext :=  message.($merge([context, {"ip": [context.ip, request_ip][0]}]));
         $newContext := $boolean($newContext)? {"context": $newContext};
         $body:= message ~> |$|$newContext, ['fullPath', 'appendPath', 'header']|;
         $setContext("body", $body);
-        $log($body);
       )
   - name: buildingResponse
     template: |

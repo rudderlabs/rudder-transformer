@@ -73,7 +73,7 @@ const getAuthToken = async formattedDestination => {
       authCache,
       formattedDestination.ID
     );
-    if (data) {
+    if (data && data?.access_token && data?.expires_in) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
       return { value: data.access_token, age: data.expires_in };
     }

@@ -171,7 +171,6 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     }
     const cdkResult = await getCdkV2Result(destType, input, flowType);
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
-
     if (Object.keys(objectDiff).length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(

@@ -23,7 +23,7 @@ function init() {
 }
 
 function notify(err, context, metadata) {
-  Bugsnag.notify(error, function (event) {
+  Bugsnag.notify(err, event => {
     event.context = context;
     event.addMetadata("metadata", metadata);
   });

@@ -270,5 +270,51 @@
       },
       "files": {}
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "john@rs.com",
+          "firstname": "john doe"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "email": "john@rs.com",
+          "firstname": "john doe"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]

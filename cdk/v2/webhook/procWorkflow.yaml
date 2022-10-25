@@ -18,7 +18,7 @@ steps:
         $finalHeaders := $merge([$finalHeaders, $sift($messageHeader, function($v){(
           $type($v) = "string"
           )})]);
-        $setContext("finalHeaders", $finalHeaders);
+        $setContext("headers", $finalHeaders);
       )
   - name: deduceEndPoint
     template: |
@@ -28,55 +28,56 @@ steps:
         $finaleEndpoint := [ message.fullPath , $integrationsObjects.fullPath, $defaultEndpoint ][0];
         $messageAppendPath := [ message.appendPath, $integrationsObjects.appendPath ][0];
         $finaleEndpoint := $finaleEndpoint & $messageAppendPath;
-        $setContext("finaleEndpoint", $finaleEndpoint)
+        $setContext("endpoint", $finaleEndpoint)
       )
-  - name: processForGETANDDELETEMethod
-    condition: destination.Config.webhookMethod = 'GET' or destination.Config.webhookMethod = 'DELETE'
+  - name: deduceMethod
     template: |
       (
-       $response := { 
-        "method" : destination.Config.webhookMethod,
-        "params" : $getPropertyParams(message)
-      };
-      $setContext("payload", $response);
+       $method := destination.Config.webhookMethod ? destination.Config.webhookMethod : 'POST';
+       $setContext("method", $method);
+      )  
+  - name: prepareContext
+    template: |
+      (
+        $setContext ("params", {});
+        $setContext("body", {});
+      )
+  - name: prepareParams
+    condition: $outputs.deduceMethod in ['GET', 'DELETE']
+    template: |
+      (
+        $setContext("params", $getPropertyParams(message));
       )
      
-  - name: processPOSTPUTPATCHMethod
-    condition: destination.Config.webhookMethod = 'POST' or destination.Config.webhookMethod = 'PUT' or destination.Config.webhookMethod = 'PATCH' or $not($exists(destination.Config.webhookMethod))
+  - name: prepareBody
+    condition: $outputs.deduceMethod in ['POST', 'PUT', 'PATCH']
     template: |
       (
-      $contextObj := message.context;
-       $req_ip := message.request_ip;
-       $abc := message.context.ip? message.context : $merge([message.context, {"ip": message.request_ip}]);
-       $contextObj := message.{
-            "context": $abc
-        };
-      $response := {
-        "method" : destination.Config.webhookMethod,
-        "body": $merge([message ~> |$|{}, ['fullPath', 'appendPath', 'header']|,$contextObj]);
-      };
-      $setContext("payload", $response);
+        $newContext :=  message.($merge([context, {"ip": [context.ip, request_ip][0]}]));
+        $newContext := $boolean($newContext)? {"context": $newContext};
+        $body:= message ~> |$|$newContext, ['fullPath', 'appendPath', 'header']|;
+        $setContext("body", $body);
+        $log($body);
       )
   - name: buildingResponse
     template: |
       (
-        {
-            "body": {
-              "JSON": $context.payload.body ? $context.payload.body : {} ,
-              "JSON_ARRAY": {},
-              "XML": {},
-              "FORM": {}
-            },
-            "version": "1",
-            "type": "REST",
-            "userId": message.anonymousId,
-            "method": $context.payload.method ? $context.payload.method : 'POST' ,
-            "endpoint": $context.finaleEndpoint,
-            "headers": $context.finalHeaders ,
-            "params": $context.payload.params ? $context.payload.params : {},
-            "files": {}
-          }
-
+        $context.{
+        "body": {
+            "JSON": body,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "userId": $$.message.anonymousId,
+        "method": method ,
+        "endpoint": endpoint,
+        "headers": headers ,
+        "params": params,
+        "files": {}
+        }
       )
       
       

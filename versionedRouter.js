@@ -114,7 +114,10 @@ async function handleCdkV2(destName, parsedEvent, flowType) {
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
-    cdkResult.output = await handleCdkV2(destName, event, flowType);
+    cdkResult.output = JSON.parse(
+      JSON.stringify(await handleCdkV2(destName, event, flowType))
+    );
+    return cdkResult.output;
   } catch (error) {
     cdkResult.error = {
       message: error.message,

@@ -1,0 +1,97 @@
+[
+  {
+    "destKey": "sales_activity_name",
+    "sourceKeys": "properties.salesActivityName",
+    "required": false
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "properties.title",
+    "required": true
+  },
+  {
+    "destKey": "sales_activity_type_id",
+    "sourceKeys": "properties.salesActivityTypeId",
+    "required": false
+  },
+  {
+    "destKey": "sales_activity_outcome_id",
+    "sourceKeys": "properties.salesActivityOutcomeId",
+    "required": false
+  },
+  {
+    "destKey": "start_date",
+    "sourceKeys": "properties.startDate",
+    "required": true
+  },
+  {
+    "destKey": "end_date",
+    "sourceKeys": "properties.endDate",
+    "required": true
+  },
+  {
+    "destKey": "notes",
+    "sourceKeys": "properties.notes",
+    "required": false
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": "properties.ownerId",
+    "required": true
+  },
+  {
+    "destKey": "targetable_id",
+    "sourceKeys": "context.externalId.id",
+    "required": false
+  },
+  {
+    "destKey": "targetable_type",
+    "sourceKeys": "context.externalId.type",
+    "required": true
+  },
+  {
+    "destKey": "creater_id",
+    "sourceKeys": "properties.createrId",
+    "required": false
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "originalTimestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "updated_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": "true",
+    "required": false
+  },
+  {
+    "destKey": "location",
+    "sourceKeys": "properties.location",
+    "required": false
+  },
+  {
+    "destKey": "latitude",
+    "sourceKeys": [
+      "latitude",
+      "context.address.latitude",
+      "context.location.latitude"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "longitude",
+    "sourceKeys": [
+      "longitude",
+      "context.address.longitude",
+      "context.location.longitude"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "checkedin_at",
+    "sourceKeys": "properties.checkedinAt",
+    "required": false
+  }
+]

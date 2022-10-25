@@ -35,7 +35,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
     } catch (error) {
         logger.error(`Failed during trackingPlan fetch : ${error}`);
         stats.increment("get_tracking_plan.error");
-        throw error.message;
+        throw error;
     }
 }
 

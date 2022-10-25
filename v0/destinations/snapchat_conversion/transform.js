@@ -226,7 +226,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   }
 
   if (message.properties?.adId || message.context?.device?.advertisingId) {
-    payload.hashed_ad_id = getHashedValue(
+    payload.hashed_mobile_ad_id = getHashedValue(
       message.properties?.adId || message.context?.device?.advertisingId
     );
   }

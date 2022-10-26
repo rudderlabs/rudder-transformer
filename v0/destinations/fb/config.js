@@ -28,5 +28,6 @@ module.exports = {
   eventNameMapping,
   eventPropsMapping,
   eventPropsToPathMapping,
-  eventPropToTypeMapping
+  eventPropToTypeMapping,
+  DESTINATION: "FACEBOOK_APP_EVENT"
 };

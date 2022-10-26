@@ -27,6 +27,10 @@ const {
   networkHandler: FbPixelNetworkHandler
 } = require("../v0/destinations/facebook_pixel/network-handler");
 
+const {
+  networkHandler: FbAppEventsNetworkHandler
+} = require("../v0/destinations/fb/network-handler");
+
 const handler = {
   generic: GenericNetworkHandler,
   braze: BrazeNetworkHandler,
@@ -36,7 +40,8 @@ const handler = {
   google_adwords_enhanced_conversions: GoogleAdwordsEnhancedConversions,
   ga4: GA4NetworkHandler,
   google_adwords_offline_conversions: GoogleAdwordsOfflineConversionsNetworkHandler,
-  facebook_pixel: FbPixelNetworkHandler
+  facebook_pixel: FbPixelNetworkHandler,
+  fb: FbAppEventsNetworkHandler
 };
 
 const getNetworkHandler = type => {

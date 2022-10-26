@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-syntax */
+const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
 const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const { getIntegrationsObj } = require("../../util");
@@ -9,15 +10,9 @@ function batch(destEvents) {
   const respList = [];
 
   // Grouping the events by topic
-  const groupedEvents = destEvents.reduce((acc, event) => {
-    const { topic } = event.message;
-    if (acc[topic]) {
-      acc[topic].push(event);
-    } else {
-      acc[topic] = [event];
-    }
-    return acc;
-  }, {});
+  const groupedEvents = groupBy(destEvents, event => {
+    return event.message.topic;
+  });
 
   // Creating a batched request for each topic
   // we are grouping the events based on topics

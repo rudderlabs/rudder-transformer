@@ -174,7 +174,9 @@ async function run(functionName, events, code, testMode) {
     FUNCTION_REQUEST_TYPES.event
   );
 
-  deleteFunction(functionName).catch(_e => {});
+  if (testMode) {
+    deleteFunction(functionName).catch(_e => {});
+  }
 
   return Promise.resolve(response);
 }

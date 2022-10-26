@@ -6,12 +6,12 @@ const { logger } = require("handlebars");
 
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
-    return `${userTransformation.testName
+    return `fn-${userTransformation.testName
       .replace("_", "-")
       .toLowerCase()}-${uuidv4()}`;
   }
 
-  return `${userTransformation.workspaceId.toLowerCase()}-${userTransformation.versionId.toLowerCase()}`;
+  return `fn-${userTransformation.workspaceId.toLowerCase()}-${userTransformation.versionId.toLowerCase()}`;
 }
 
 async function runOpenFaasUserTransform(

@@ -25,12 +25,7 @@ describe(`${name} Tests`, () => {
         try {
           procWorkflowEngine = await procWorkflowEnginePromise;
           const result = await procWorkflowEngine.execute(input);
-
-          // JSONata uses internal implementation for arrays so
-          // they can't be directly compared with others.
-          // So, we need to use serialize and
-          // deserialize to normalize them for comparison.
-          expect(JSON.parse(JSON.stringify(result.output))).toEqual(expected);
+          expect(result.output).toEqual(expected);
         } catch (error) {
           // console.log(error);
           expect(error.message).toEqual(expected.message);
@@ -56,14 +51,7 @@ describe(`${name} Tests`, () => {
         try {
           rtWorkflowEngine = await rtWorkflowEnginePromise;
           const result = await rtWorkflowEngine.execute(input);
-    
-          // JSONata uses internal implementation for arrays so
-          // they can't be directly compared with others.
-          // So, we need to use serialize and
-          // deserialize to normalize them for comparison.
-          expect(JSON.parse(JSON.stringify(result.output))).toEqual(
-            expected
-          );
+          expect(result.output).toEqual(expected);
         } catch (error) {
           // console.log(error);
           expect(error.message).toEqual(expected.message);

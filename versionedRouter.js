@@ -126,7 +126,9 @@ async function handleCdkV2(destType, parsedEvent, flowType) {
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
-    cdkResult.output = await handleCdkV2(destName, event, flowType);
+    cdkResult.output = JSON.parse(
+      JSON.stringify(await handleCdkV2(destName, event, flowType))
+    );
   } catch (error) {
     cdkResult.error = {
       message: error.message,
@@ -136,10 +138,29 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
+function removeSensitiveData(result) {
+  const newResult = {};
+  Object.keys(result).forEach(key => {
+    if (
+      key.includes("metadata") ||
+      key.includes("error") ||
+      key.includes("statusCode")
+    ) {
+      newResult[key] = result[key];
+    } else {
+      newResult[key] = "***";
+    }
+  });
+  return newResult;
+}
+
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
-    const destThreshold = getCdkV2TestThreshold(input);
+    let destThreshold = getCdkV2TestThreshold(input);
+    if (flowType === TRANSFORMER_METRIC.ERROR_AT.RT) {
+      destThreshold = getCdkV2TestThreshold(input[0]);
+    }
     const liveTestThreshold = envThreshold * destThreshold;
     if (
       Number.isNaN(liveTestThreshold) ||
@@ -149,22 +170,26 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
       return;
     }
     const cdkResult = await getCdkV2Result(destType, input, flowType);
-    const unmatchedKeys = Object.keys(
-      CommonUtils.objectDiff(v0Result, cdkResult)
-    );
-    if (unmatchedKeys.length > 0) {
+    const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
+    if (Object.keys(objectDiff).length > 0) {
+      stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, unmatchedKeys=${unmatchedKeys}, metadata=${JSON.stringify(
-          input.metadata
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, diff=${JSON.stringify(
+          objectDiff
         )}`
+      );
+      logger.error(
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, v0Result=${JSON.stringify(
+          v0Result
+        )}, cdkResult=${JSON.stringify(cdkResult)}`
       );
       return;
     }
+    stats.counter("cdk_live_compare_test_success", 1, { destType, flowType });
   } catch (error) {
+    stats.counter("cdk_live_compare_test_errored", 1, { destType, flowType });
     logger.error(
-      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}, metadata=${JSON.stringify(
-        input.metadata
-      )}`,
+      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}`,
       error
     );
   }
@@ -182,7 +207,11 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     };
     throw error;
   } finally {
-    await compareWithCdkV2(destType, input, flowType, result);
+    if (process.env.NODE_ENV === "test") {
+      await compareWithCdkV2(destType, input, flowType, result);
+    } else {
+      compareWithCdkV2(destType, input, flowType, result);
+    }
   }
 }
 

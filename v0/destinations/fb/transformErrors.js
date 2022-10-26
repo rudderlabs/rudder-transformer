@@ -39,19 +39,8 @@ const BAD_PARAM_ERROR = message =>
     })
     .build();
 
-const RESPONSE_TRANSFORMATION_ERROR = statusAndStats =>
-  new ErrorBuilder()
-    .setStatus(statusAndStats.status)
-    .setDestinationResponse({ ...response, status: destResponse.status })
-    .setMessage(
-      `Facebook App Event: Failed with ${error.message} during response transformation`
-    )
-    .setStatTags(statusAndStats.statTags)
-    .build();
-
 module.exports = {
   INVALID_NAME_ERROR,
   UNSUPPORTED_TYPE_ERROR,
-  BAD_PARAM_ERROR,
-  RESPONSE_TRANSFORMATION_ERROR
+  BAD_PARAM_ERROR
 };

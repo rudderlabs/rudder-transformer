@@ -39,6 +39,7 @@ const DestCanonicalNames = {
   webhook: ["webhook", "Webhook", "WebHook", "WEBHOOK"],
   mailchimp: ["mailchimp", "MailChimp", "MAILCHIMP"],
   mautic: ["MAUTIC", "mautic", "Mautic"],
+  mailjet: ["MAILJET", "MailJet", "mailjet", "Mailjet"],
   kafka: ["KAFKA", "kafka", "Kafka"],
   vero: ["vero", "Vero", "VERO"],
   pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],
@@ -70,7 +71,8 @@ const DestCanonicalNames = {
   ],
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   engage: ["engage", "Engage", "ENGAGE"],
-  june: ["june", "JUNE", "June"]
+  june: ["june", "JUNE", "June"],
+  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

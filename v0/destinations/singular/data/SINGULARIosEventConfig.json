@@ -36,10 +36,13 @@
     "required": false
   },
   {
-    "destKey": "utimȩ",
+    "destKey": "utime",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "skan_conversion_value",

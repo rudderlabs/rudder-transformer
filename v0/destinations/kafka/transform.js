@@ -1,6 +1,9 @@
 /* eslint-disable no-restricted-syntax */
 const cloneDeep = require("lodash/cloneDeep");
+const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const { getIntegrationsObj } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
 
 function batch(destEvents) {
   const respList = [];
@@ -21,7 +24,7 @@ function batch(destEvents) {
   // and creating a batched request for each topic
   // example: input events = [{event1,topic1},{event2,topic1},{event3,topic2}]
   // out from transformer:  {batchedRequest:[{event1},{event2}]}, {batchedRequest:[{event3}]} (2 multilexed responses)
-  for (const [, events] of Object.entries(groupedEvents)) {
+  for (const events of Object.values(groupedEvents)) {
     const response = {};
     response.batchedRequest = events.map(event => event.message);
     response.metadata = events.map(event => event.metadata);
@@ -38,7 +41,17 @@ function process(event) {
   const { schemaId } = integrationsObj || {};
   const topic = integrationsObj?.topic || destination.Config.topic;
   if (!topic) {
-    throw new Error("Topic is required for Kafka destination");
+    throw new ErrorBuilder()
+      .setStatus(400)
+      .setMessage("Topic is required for Kafka destination")
+      .isTransformResponseFailure(true)
+      .setStatTags({
+        destType: "KAFKA",
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(400)
+      })
+      .build();
   }
   const userId = message.userId || message.anonymousId;
   if (schemaId) {

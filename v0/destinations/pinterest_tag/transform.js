@@ -201,43 +201,54 @@ const processRouterDest = inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-  let batchResponseList = [];
-  const batchErrorRespList = [];
-  const successRespList = [];
   const { destination } = inputs[0];
 
-  inputs.map(event => {
+  const processedEvents = inputs.map(event => {
     try {
       if (event.message.statusCode) {
         // already transformed event
-        successRespList.push({
-          message: event.message,
+        return {
+          output: [
+            {
+              message: event.message,
+              metadata: event.metadata,
+              destination
+            }
+          ]
+        };
+      }
+      // if not transformed
+      const transformedMessageArray = process(event);
+      const transformedEvents = transformedMessageArray.map(singleResponse => {
+        return {
+          message: singleResponse,
           metadata: event.metadata,
           destination
-        });
-      } else {
-        // if not transformed
-        const transformedMessageArray = process(event);
-        transformedMessageArray.forEach(singleResponse => {
-          const transformedPayload = {
-            message: singleResponse,
-            metadata: event.metadata,
-            destination
-          };
-          successRespList.push(transformedPayload);
-        });
-      }
+        };
+      });
+      return {
+        output: transformedEvents
+      };
     } catch (error) {
-      batchErrorRespList.push(
-        getErrorRespEvents(
+      return {
+        error: getErrorRespEvents(
           [event.metadata],
           error.response ? error.response.status : 400,
           error.message || "Error occurred while processing payload."
         )
-      );
+      };
     }
   });
 
+  let batchResponseList = [];
+  const successRespList = processedEvents
+    .filter(resp => resp.output)
+    .map(resp => resp.output)
+    .flat();
+  const batchErrorRespList = processedEvents
+    .filter(resp => resp.error)
+    .map(resp => resp.error)
+    .flat();
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);
   }

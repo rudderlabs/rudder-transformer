@@ -15,6 +15,13 @@ class CommonUtils {
         return acc;
       }, {});
   }
+
+  static toArray(obj) {
+    if (Array.isArray(obj)) {
+      return obj;
+    }
+    return [obj];
+  }
 }
 
 module.exports = {

@@ -21,13 +21,11 @@ function batch(destEvents) {
   // and creating a batched request for each topic
   // example: input events = [{event1,topic1},{event2,topic1},{event3,topic2}]
   // out from transformer:  {batchedRequest:[{event1},{event2}]}, {batchedRequest:[{event3}]} (2 multilexed responses)
-  for (const [events] of Object.entries(groupedEvents)) {
-    const response = {
-      batchedRequest: [],
-      metadata: []
-    };
-    response.batchedRequest.push(events.map(event => event.message));
-    response.metadata.push(events.map(event => event.metadata));
+  for (const [, events] of Object.entries(groupedEvents)) {
+    const response = {};
+    response.batchedRequest = events.map(event => event.message);
+    response.metadata = events.map(event => event.metadata);
+    response.destination = events[0].destination;
     respList.push(response);
   }
 
@@ -39,6 +37,9 @@ function process(event) {
   const integrationsObj = getIntegrationsObj(message, "kafka");
   const { schemaId } = integrationsObj || {};
   const topic = integrationsObj?.topic || destination.Config.topic;
+  if (!topic) {
+    throw new Error("Topic is required for Kafka destination");
+  }
   const userId = message.userId || message.anonymousId;
   if (schemaId) {
     return {

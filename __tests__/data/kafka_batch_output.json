@@ -23,7 +23,8 @@
           "request_ip": "[::1]",
           "anonymousId": "anon-id-new",
           "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-        }
+        },
+        "topic": "new-topic"
       },
       {
         "userId": "user2",
@@ -47,7 +48,8 @@
           "request_ip": "[::1]",
           "anonymousId": "anon-id-new",
           "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-        }
+        },
+        "topic": "new-topic"
       },
       {
         "userId": "user3",
@@ -71,7 +73,8 @@
           "request_ip": "[::1]",
           "anonymousId": "anon-id-new",
           "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-        }
+        },
+        "topic": "new-topic"
       },
       {
         "userId": "user4",
@@ -95,7 +98,8 @@
           "request_ip": "[::1]",
           "anonymousId": "anon-id-new",
           "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-        }
+        },
+        "topic": "new-topic"
       },
       {
         "userId": "user5",
@@ -126,7 +130,8 @@
           "anonymousId": "anon-id-new",
           "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
         },
-        "schemaId": "schema001"
+        "schemaId": "schema001",
+        "topic": "new-topic"
       }
     ],
     "metadata": [

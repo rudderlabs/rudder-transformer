@@ -119,6 +119,7 @@ async function deployFunction(imageName, functionName) {
     );
   } catch (error) {
     logger.error(`Error trying to deploy function ${functionName}: `, error);
+    throw error;
   }
 }
 
@@ -130,12 +131,14 @@ async function deployCode(functionName, code) {
       `Error trying to deploy code to function ${functionName}: `,
       error
     );
+
+    throw error;
   }
 }
 
 async function setupFunction(functionName, code, testMode) {
   if (!testMode) {
-    if (isFunctionDeployed(functionName)) {
+    if (await isFunctionDeployed(functionName)) {
       await deleteFunction(functionName);
     }
   }

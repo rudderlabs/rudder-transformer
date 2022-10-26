@@ -2,13 +2,16 @@ const { v4: uuidv4 } = require("uuid");
 const stats = require("./stats");
 const { getMetadata } = require("../v0/util");
 const { run, setupFunction } = require("./openfaas");
+const { logger } = require("handlebars");
 
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
-    return `${userTransformation.testName.replace("_", "-")}-${uuidv4}`;
+    return `${userTransformation.testName
+      .replace("_", "-")
+      .toLowerCase()}-${uuidv4()}`;
   }
 
-  return `${userTransformation.workspaceId}-${userTransformation.versionId}`;
+  return `${userTransformation.workspaceId.toLowerCase()}-${userTransformation.versionId.toLowerCase()}`;
 }
 
 async function runOpenFaasUserTransform(
@@ -43,7 +46,7 @@ async function runOpenFaasUserTransform(
 
   stats.timing("faas_invoke_time", invokeTime, tags);
 
-  return result;
+  return result.data;
 }
 
 async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
@@ -55,15 +58,13 @@ async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
   };
 
   const setupTime = new Date();
-  const result = await setupFunction(
-    generateFunctionName(userTransformation, testWithPublish),
-    userTransformation.code,
-    testWithPublish
-  );
+  const functionName = generateFunctionName(userTransformation, false);
+
+  await setupFunction(functionName, userTransformation.code, false);
 
   stats.timing("faas_publish_time", setupTime, tags);
 
-  return result;
+  return { success: true, publishedVersion: functionName };
 }
 
 module.exports = {

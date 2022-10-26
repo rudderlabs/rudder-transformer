@@ -4,7 +4,7 @@ const {
 } = require("./customTransformer-lambda");
 
 const {
-  setOpenfaasUserTransform,
+  setOpenFaasUserTransform,
   runOpenFaasUserTransform
 } = require("./customTransformer-faas");
 
@@ -14,7 +14,7 @@ const pyUserTransformHandler = (identifier = "openfaas") => {
     setUserTransform: async (userTransformation, testWithPublish) => {
       if (identifier === "openfaas") {
         if (!testWithPublish) return { success: true };
-        return setOpenfaasUserTransform(userTransformation, testWithPublish);
+        return setOpenFaasUserTransform(userTransformation, testWithPublish);
       }
 
       return setLambdaUserTransform(userTransformation, testWithPublish);

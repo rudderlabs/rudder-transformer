@@ -238,25 +238,13 @@ const searchContacts = async (message, destination) => {
     }
   } else {
     // look for propertyName (key name) in traits
-    // Config.lookupField -> lookupField
-    // traits: { lookupField: email }
-    propertyName = traits[`${Config.lookupField}`];
+    // Config.lookupField -> firstname
+    // traits: { firstname: test name }
+    propertyName = Config.lookupField;
   }
-
-  // extract its value from the known propertyName (key name)
-  // if not found in our structure then look for it in traits
-  // Config.lookupField -> lookupField
-  // eg: traits: { lookupField: email, email: "test@test.com" }
   const value =
     getFieldValueFromMessage(message, propertyName) ||
     traits[`${propertyName}`];
-
-  if (!value) {
-    throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
-      400
-    );
-  }
 
   const requestData = {
     filterGroups: [

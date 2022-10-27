@@ -753,5 +753,8 @@
       "JSON_ARRAY": {}
     },
     "files": {}
+  },
+  {
+    "error": "[HS]:: rETL - Error during searching object record. 404 not found"
   }
 ]

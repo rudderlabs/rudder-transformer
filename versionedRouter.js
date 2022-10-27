@@ -435,11 +435,6 @@ async function routerHandleDest(ctx) {
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
-    if (!Array.isArray(input)) {
-      ctx.status = 400;
-      ctx.body = "input should be an array";
-      return null;
-    }
     const isValidRTDest = await isValidRouterDest(input[0], destType);
     if (!isValidRTDest) {
       ctx.status = 404;

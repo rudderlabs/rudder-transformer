@@ -412,34 +412,60 @@ async function handleValidation(ctx) {
   });
 }
 
+async function isValidRouterDest(event, destType) {
+  const isCdkV2Dest = isCdkV2Destination(event);
+  if (isCdkV2Dest) {
+    try {
+      await getWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  try {
+    const routerDestHandler = getDestHandler("v0", destType);
+    return routerDestHandler?.processRouterDest !== undefined;
+  } catch (error) {
+    return false;
+  }
+}
 async function routerHandleDest(ctx) {
   const respEvents = [];
   let destType;
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
+    if (!Array.isArray(input)) {
+      ctx.status = 400;
+      ctx.body = "input should be an array";
+      return null;
+    }
+    const isValidRTDest = await isValidRouterDest(input[0], destType);
+    if (!isValidRTDest) {
+      ctx.status = 404;
+      ctx.body = `${destType} doesn't support router transform`;
+      return null;
+    }
     const allDestEvents = _.groupBy(input, event => event.destination.ID);
     await Promise.all(
-      Object.values(allDestEvents).map(async destInput => {
-        const newDestInput = processDynamicConfig(destInput, "router");
+      Object.values(allDestEvents).map(async destInputArray => {
+        const newDestInputArray = processDynamicConfig(
+          destInputArray,
+          "router"
+        );
         let listOutput;
-        if (isCdkV2Destination(newDestInput[0])) {
+        if (isCdkV2Destination(newDestInputArray[0])) {
           listOutput = await handleCdkV2(
             destType,
-            newDestInput,
+            newDestInputArray,
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
         } else {
           const routerDestHandler = getDestHandler("v0", destType);
-          if (!routerDestHandler || !routerDestHandler.processRouterDest) {
-            ctx.status = 404;
-            ctx.body = `${destType} doesn't support router transform`;
-            return null;
-          }
           listOutput = await handleV0Destination(
             routerDestHandler.processRouterDest,
             destType,
-            newDestInput,
+            newDestInputArray,
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
         }

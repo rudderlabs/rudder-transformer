@@ -19,7 +19,7 @@ steps:
           /* $$ refers to input (root of the document) */
           "destination": $$[$i].destination,
           "metadata": $$[$i].metadata
-      }
+      } ~> $toArray
   - name: failedEvents
     template: |
       $outputs.transform#$i.error.{
@@ -27,7 +27,7 @@ steps:
         "batched": false,
         "statusCode": status,
         "error": message
-      }
+      } ~> $toArray
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |

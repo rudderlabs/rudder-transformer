@@ -2,11 +2,11 @@ const path = require("path");
 const fs = require("fs/promises");
 const {
   WorkflowExecutionError,
-  WorkflowEngineError
-} = require("rudder-workflow-engine/build/errors");
-const { logger } = require("handlebars");
-const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+  WorkflowCreationError
+} = require("rudder-workflow-engine");
+const logger = require("../../logger");
 const ErrorBuilder = require("../../v0/util/error");
+const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -25,18 +25,9 @@ async function getWorkflowPath(
   };
 
   const workflowFilenames = flowTypeMap[flowType];
-  if (!workflowFilenames) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "Unable to identify the workflow file. Invalid flow type input"
-      )
-      .setStatus(400)
-      .build();
-  }
-
   // Find the first workflow file that exists
   const files = await fs.readdir(destDir);
-  const matchedFilename = workflowFilenames.find(filename =>
+  const matchedFilename = workflowFilenames?.find(filename =>
     files.includes(filename)
   );
   let validWorkflowFilepath;
@@ -44,6 +35,14 @@ async function getWorkflowPath(
     validWorkflowFilepath = path.join(destDir, matchedFilename);
   }
 
+  if (!validWorkflowFilepath) {
+    throw new ErrorBuilder()
+      .setMessage(
+        "Unable to identify the workflow file. Invalid flow type input"
+      )
+      .setStatus(400)
+      .build();
+  }
   return validWorkflowFilepath;
 }
 
@@ -68,26 +67,39 @@ async function getPlatformBindingsPaths() {
   return bindingsPaths;
 }
 
-function getErrorInfo(err) {
+/**
+ * Return message with workflow engine metadata
+ * @param {*} err
+ */
+function getWorkflowEngineErrorMessage(err) {
+  return `${err.message}: Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`;
+}
+
+function getErrorInfo(err, isProd) {
   // Handle various CDK error types
   let errorInfo = err;
+  const message = isProd ? getWorkflowEngineErrorMessage(err) : err.message;
+
   if (err instanceof WorkflowExecutionError) {
     logger.error(
-      "Error occurred during workflow step execution: ",
-      err.stepName
+      `Error occurred during workflow step execution:  Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
+      err
     );
     errorInfo = {
-      message: err.message,
+      message,
       status: err.status,
       destinationResponse: err.error?.destinationResponse,
       statTags: err.error?.statTags,
       authErrorCategory: err.error?.authErrorCategory
     };
     // TODO: Add a special stat tag to bump the priority of the error
-  } else if (err instanceof WorkflowEngineError) {
-    logger.error("Error occurred during workflow step: ", err.stepName);
+  } else if (err instanceof WorkflowCreationError) {
+    logger.error(
+      `Error occurred during workflow creation. Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
+      err
+    );
     errorInfo = {
-      message: err.message,
+      message,
       status: err.status,
       statTags: {
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
@@ -98,9 +110,23 @@ function getErrorInfo(err) {
   return errorInfo;
 }
 
+function isCdkV2Destination(event) {
+  return Boolean(
+    event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+  );
+}
+
+function getCdkV2TestThreshold(event) {
+  return (
+    event.destination?.DestinationDefinition?.Config?.cdkV2TestThreshold || 0
+  );
+}
+
 module.exports = {
   getRootPathForDestination,
   getWorkflowPath,
   getPlatformBindingsPaths,
-  getErrorInfo
+  getErrorInfo,
+  isCdkV2Destination,
+  getCdkV2TestThreshold
 };

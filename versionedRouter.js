@@ -138,22 +138,6 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
-function removeSensitiveData(result) {
-  const newResult = {};
-  Object.keys(result).forEach(key => {
-    if (
-      key.includes("metadata") ||
-      key.includes("error") ||
-      key.includes("statusCode")
-    ) {
-      newResult[key] = result[key];
-    } else {
-      newResult[key] = "***";
-    }
-  });
-  return newResult;
-}
-
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
@@ -434,12 +418,6 @@ async function routerHandleDest(ctx) {
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
-    const routerDestHandler = getDestHandler("v0", destType);
-    if (!routerDestHandler || !routerDestHandler.processRouterDest) {
-      ctx.status = 404;
-      ctx.body = `${destType} doesn't support router transform`;
-      return null;
-    }
     const allDestEvents = _.groupBy(input, event => event.destination.ID);
     await Promise.all(
       Object.values(allDestEvents).map(async destInput => {
@@ -452,6 +430,12 @@ async function routerHandleDest(ctx) {
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
         } else {
+          const routerDestHandler = getDestHandler("v0", destType);
+          if (!routerDestHandler || !routerDestHandler.processRouterDest) {
+            ctx.status = 404;
+            ctx.body = `${destType} doesn't support router transform`;
+            return null;
+          }
           listOutput = await handleV0Destination(
             routerDestHandler.processRouterDest,
             destType,

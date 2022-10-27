@@ -69,11 +69,13 @@ const getAuthToken = async formattedDestination => {
     const data = marketoResponseHandler(
       clientResponse,
       "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return data.access_token;
+      return { value: data.access_token, age: data.expires_in };
     }
     stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
@@ -126,7 +128,9 @@ const createOrUpdateLead = async (
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lookup lead",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -157,7 +161,9 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using email",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -196,7 +202,9 @@ const lookupLeadUsingId = async (
     const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using userId",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      authCache,
+      formattedDestination.ID
     );
     if (data) {
       const { result } = data;
@@ -619,6 +627,7 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
+        input.metadata.destInfo = { authKey: input.destination.ID };
         return getSuccessRespEvents(
           await processEvent(input.message, input.destination, token),
           [input.metadata],
@@ -642,4 +651,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, authCache };

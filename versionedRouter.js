@@ -10,6 +10,7 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 const { client: errNotificationClient } = require("./util/errorNotifier");
+const v0Utils = require("./v0/util");
 
 const {
   isNonFuncObject,
@@ -878,10 +879,11 @@ async function handleProxyRequest(destination, ctx) {
     return {};
   };
 
-  const destinationRequest = ctx.request.body;
+  const { metadata, destinationRequest } = ctx.request.body;
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
+  const authCache = v0Utils.getDestAuthCacheInstance(destination);
   let response;
   try {
     stats.counter("tf_proxy_dest_req_count", 1, {
@@ -905,7 +907,9 @@ async function handleProxyRequest(destination, ctx) {
     });
     response = destNetworkHandler.responseHandler(
       processedProxyResponse,
-      destination
+      destination,
+      metadata.destInfo,
+      authCache
     );
     stats.counter("tf_proxy_resp_handler_count", 1, {
       destination

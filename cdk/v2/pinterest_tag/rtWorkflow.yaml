@@ -1,6 +1,11 @@
 bindings:
   - path: ../../../v0/destinations/pinterest_tag/config
 steps:
+  - name: validateInput
+    template: |
+      (
+        $assert($type($$) = "array", "Invalid event array")
+      )
   - name: prepareContext
     template: $setContext("batchMode", true)
   - name: transform
@@ -31,7 +36,7 @@ steps:
         $batches.{
           "batchedRequest": {
             "body": {
-              "JSON": {"data": output},
+              "JSON": {"data": $toArray(output)},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -46,7 +51,7 @@ steps:
             "params": {},
             "files": {}
           },
-          "metadata": metadata,
+          "metadata": $toArray(metadata),
           "batched": true,
           "statusCode": 200,
           "destination": $[0].destination
@@ -54,4 +59,4 @@ steps:
       )
   - name: finalPayload
     template: |
-      $outputs.($append(batchSuccessfulEvents, failedEvents))
+      $toArray($outputs.($append(batchSuccessfulEvents, failedEvents)))

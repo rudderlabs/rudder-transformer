@@ -103,6 +103,8 @@ const getData = (userArray, schema, disableHashing) => {
     if (!disableHashing) {
       hashedProperty = getHashedProperty(schema, hashedProperty);
     }
+
+    // ref: https://marketingapi.snapchat.com/docs/#update-an-audience-segment:~:text=via%20a%20LIST-,Identifiers%20should%20be%20grouped%20in%20batches%20of%20a%20maximum%20of%20100%2C000%20identifiers/request.,-Attributes
     if (data[index].length >= 100000) {
       data.push([]);
       index += 1;
@@ -117,12 +119,7 @@ const getData = (userArray, schema, disableHashing) => {
 const responseBuilder = (metadata, message, { Config }, type) => {
   const { schema, segmentId, disableHashing } = Config;
 
-  let userArray;
-  if (type === "add") {
-    userArray = message.properties.listData.add;
-  } else if (type === "remove") {
-    userArray = message.properties.listData.remove;
-  }
+  const userArray = message.properties.listData[type];
 
   const data = getData(userArray, schema, disableHashing);
 

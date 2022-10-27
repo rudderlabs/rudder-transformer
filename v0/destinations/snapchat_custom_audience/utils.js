@@ -5,7 +5,6 @@ const {
   httpSend
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const {
   DISABLE_DEST,

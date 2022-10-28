@@ -922,9 +922,6 @@ async function handleProxyRequest(destination, ctx) {
       errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
       ...response.statTags
     };
-    if (!err.responseTransformFailure) {
-      response.message = `[Error occurred while processing response for destination ${destination}]: ${err.message}`;
-    }
     stats.counter("tf_proxy_err_count", 1, {
       destination
     });

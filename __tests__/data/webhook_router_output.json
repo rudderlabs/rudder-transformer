@@ -253,13 +253,5 @@
         }
       }
     }
-  ],
-  {
-    "message": "Invalid event array",
-    "statusCode": 400
-  },
-  {
-    "message": "Invalid event array",
-    "statusCode": 400
-  }
+  ]
 ]

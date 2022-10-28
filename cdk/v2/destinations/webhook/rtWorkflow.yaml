@@ -2,7 +2,6 @@ steps:
   - name: validateInput
     template: |
       (
-        $log($type($));
         $assert($type($) = "array" and $count($) > 0, "Invalid event array")
       )
   - name: transform
@@ -23,10 +22,10 @@ steps:
   - name: failedEvents
     template: |
       $outputs.transform#$i.error.{
-        "metadata": $toArray($$[$i].metadata),
+        "metadata": $toArray(metadata),
         "batched": false,
         "statusCode": status,
-        "error": message
+        "message": message
       } ~> $toArray
   - name: finalPayload
     template: |

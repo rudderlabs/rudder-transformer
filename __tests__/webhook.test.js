@@ -15,35 +15,43 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
-// Router Test Data
-const inputRouterDataFile = fs.readFileSync(
+inputData.forEach((input, index) => {
+  it(`${name} Tests: payload - ${index}`, () => {
+    let output, expected;
+    try {
+      output = transformer.process(input);
+      expected = expectedData[index]
+    } catch (error) {
+      output = error.message;
+      // console.log(output);
+      expected = expectedData[index].message;
+    }
+    expect(output).toEqual(expected);
+  });
+});
+
+const routerInputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_router_input.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
+const routerInputData = JSON.parse(routerInputDataFile);
+const routerOutputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_router_output.json`)
 );
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const routerOutputData = JSON.parse(routerOutputDataFile);
 
-describe(`${name} Tests`, () => {
-  describe("Processor Tests", () => {
-    inputData.forEach((input, index) => {
-      it(`${name} - payload: ${index}`, async () => {
-        try {
-          const output = await transformer.process(input);
-          expect(output).toEqual(expectedData[index]);
-        } catch (error) {
-          expect(error.message).toEqual(expectedData[index].error);
-        }
-      });
+describe('Router Tests', () => {
+  routerInputData.forEach((input, index) => {
+    it(`${name} Tests: payload - ${index}`, async () => {
+      let output, expected;
+      try {
+        output = await transformer.processRouterDest(input);
+        expected = routerOutputData[index]
+      } catch (error) {
+        output = error.message;
+        // console.log(output);
+        expected = routerOutputData[index].message;
+      }
+      expect(output).toEqual(expected);
     });
   });
-  
-  describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
-    });
-  });
-  
 });

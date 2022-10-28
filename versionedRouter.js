@@ -263,7 +263,7 @@ async function handleDest(ctx, version, destination) {
 
             return {
               output: { ...ev, userId },
-              metadata: destHandler.processMetadata
+              metadata: destHandler?.processMetadata
                 ? destHandler.processMetadata({
                     metadata: event.metadata,
                     inputEvent: parsedEvent,

@@ -11,6 +11,9 @@ const typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send ar
 // eg: jest versionedRouter --destName=heap --type=router
 // eg: jest versionedRouter --destName=heap --type=response
 // eg: jest versionedRouter --type=all
+// To invoke CDK live compare:
+// router: CDK_LIVE_TEST=1 npx jest versionedRouter --destName=algolia --type=router
+// processor: CDK_LIVE_TEST=1 npx jest versionedRouter --destName=algolia --type=processor
 
 let destination;
 if (typeArg) {

@@ -1,12 +1,12 @@
 bindings:
   - name: EventType
-    path: ../../../constants
+    path: ../../../../constants
   - name: SourceKeys
-    path: ../../../v0/util/data/GenericFieldMapping.json
+    path: ../../../../v0/util/data/GenericFieldMapping.json
     exportAll: true
-  - path: ../../../v0/destinations/pinterest_tag/utils
+  - path: ../../../../v0/destinations/pinterest_tag/utils
   - name: ENDPOINT
-    path: ../../../v0/destinations/pinterest_tag/config
+    path: ../../../../v0/destinations/pinterest_tag/config
 steps:
   - name: checkIfProcessed
     condition: $exists(message.statusCode)

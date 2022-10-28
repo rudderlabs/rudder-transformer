@@ -82,7 +82,7 @@ const marketoResponseHandler = (
   destResponse,
   sourceMessage,
   stage,
-  destInfo,
+  rudderJobMetadata,
   authCache
 ) => {
   const { status, response } = destResponse;
@@ -111,16 +111,18 @@ const marketoResponseHandler = (
     }
     // marketo application level failure
     if (response && !response.success) {
-      if (response.errors && destInfo) {
-        const { authKey } = destInfo;
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      if (response.errors && rudderJobMetadata?.destInfo) {
+        const { authKey } = rudderJobMetadata.destInfo;
         if (
+          authCache &&
+          authKey &&
           response.errors.some(errorObj => {
             return errorObj.code === "601" || errorObj.code === "602";
           })
         ) {
-          if (authCache && authKey) {
-            authCache.del(authKey);
-          }
+          authCache.del(authKey);
         }
       }
       marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
@@ -163,14 +165,13 @@ const sendPostRequest = async (url, data, options) => {
 const responseHandler = (destinationResponse, destType) => {
   const message = `[Marketo Response Handler] - Request Processed Successfully`;
   const { status } = destinationResponse;
-  const destInfo = destinationResponse?.metadata?.destInfo;
   const authCache = v0Utils.getDestAuthCacheInstance(destType);
   // check for marketo application level failures
   marketoResponseHandler(
     destinationResponse,
     "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-    destInfo,
+    destinationResponse?.rudderJobMetadata,
     authCache
   );
   // else successfully return status, message and original destination response

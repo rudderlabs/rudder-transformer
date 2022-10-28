@@ -915,7 +915,7 @@ async function handleProxyRequest(destination, ctx) {
       destination
     });
     response = destNetworkHandler.responseHandler(
-      { ...processedProxyResponse, metadata },
+      { ...processedProxyResponse, rudderJobMetadata: metadata },
       destination
     );
     stats.counter("tf_proxy_resp_handler_count", 1, {

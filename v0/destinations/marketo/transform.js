@@ -70,9 +70,7 @@ const getAuthToken = async formattedDestination => {
     const data = marketoResponseHandler(
       clientResponse,
       "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      authCache,
-      formattedDestination.ID
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });

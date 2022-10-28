@@ -19,7 +19,11 @@ class Cache {
       // store in cache if the value is valid, else skip
       let retVal = result;
       if (result) {
-        if (typeof result === "object" && result.value && result.age) {
+        if (
+          typeof result === "object" &&
+          "value" in result &&
+          "age" in result
+        ) {
           this.cache.set(key, result.value, result.age);
           retVal = result.value;
         } else {

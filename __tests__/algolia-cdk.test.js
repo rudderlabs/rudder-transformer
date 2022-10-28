@@ -1,12 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
-const { getWorkflowEngine } = require("../cdk/v2/handler");
+const { processCdkV2Workflow } = require("../cdk/v2/handler");
 
 const integration = "algolia";
 const name = "Algolia";
-
-const procWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.PROC);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -23,11 +21,13 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
-          procWorkflowEngine = await procWorkflowEnginePromise;
-          const result = await procWorkflowEngine.execute(input);
-          expect(result.output).toEqual(expected);
+          const output = await processCdkV2Workflow(
+            integration,
+            input,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
+          expect(output).toEqual(expected);
         } catch (error) {
-          // console.log(error);
           expect(error.message).toEqual(expected.message);
         }
       });
@@ -43,15 +43,17 @@ describe(`${name} Tests`, () => {
   const inputRouterData = JSON.parse(inputRouterDataFile);
   const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-  const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
   describe("Router Tests", () => {
     inputRouterData.forEach((input, index) => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedRouterData[index];
         try {
-          rtWorkflowEngine = await rtWorkflowEnginePromise;
-          const result = await rtWorkflowEngine.execute(input);
-          expect(result.output).toEqual(expected);
+          const output = await processCdkV2Workflow(
+            integration,
+            input,
+            TRANSFORMER_METRIC.ERROR_AT.RT
+          );
+          expect(output).toEqual(expected);
         } catch (error) {
           // console.log(error);
           expect(error.message).toEqual(expected.message);

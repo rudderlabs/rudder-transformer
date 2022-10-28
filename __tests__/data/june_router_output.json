@@ -50,7 +50,8 @@
     ],
     "statTags": {
       "destType": "JUNE",
-      "scope": "exception",
+      "scope": "transformation",
+      "meta": "handled",
       "stage": "transform"
     },
     "statusCode": 400

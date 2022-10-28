@@ -888,8 +888,8 @@ function batch(destEvents) {
         : messageEvent
         ? messageEvent.device_id
         : undefined;
-     // this case shold not happen and should be filtered already
-     // by the first pass of single event transformation
+    // this case shold not happen and should be filtered already
+    // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {
       const errorResponse = getErrorRespEvents(
         metadata,

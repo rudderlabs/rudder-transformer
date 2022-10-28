@@ -189,6 +189,7 @@ function processEventTypeTrack(message) {
     isMultiSupport
   );
   payload.eventName = message.event;
+  payload.eventCurrency = message?.properties?.currency;
 
   return payload;
 }

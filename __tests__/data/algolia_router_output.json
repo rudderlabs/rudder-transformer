@@ -1,0 +1,111 @@
+[
+  [
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://insights.algolia.io/1/events",
+        "headers": {
+          "X-Algolia-Application-Id": "appId",
+          "X-Algolia-API-Key": "apiKey"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "events": [
+              {
+                "index": "products",
+                "userToken": "test-user-id1",
+                "queryID": "43b15df305339e827f0ac0bdc5ebcaa7",
+                "eventName": "product list viewed",
+                "eventType": "view",
+                "objectIDs": ["ecommerce-sample-data-919", "9780439784542"]
+              },
+              {
+                "index": "products",
+                "userToken": "test-user-id1",
+                "filters": ["field1:hello", "val1:val2"],
+                "eventName": "product clicked",
+                "eventType": "click"
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      "metadata": [
+        {
+          "jobId": 1
+        },
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": true,
+      "statusCode": 200,
+      "destination": {
+        "ID": "1zzHtStW2ZPlullmz6L7DGnmk9V",
+        "Name": "algolia-dev",
+        "DestinationDefinition": {
+          "ID": "1zgVZhcj1Tij4qlKg7B1Jp16IrH",
+          "Name": "ALGOLIA",
+          "DisplayName": "Algolia",
+          "Config": {
+            "destConfig": {
+              "defaultConfig": ["apiKey", "applicationId", "eventTypeSettings"]
+            },
+            "excludeKeys": [],
+            "includeKeys": [],
+            "saveDestinationResponse": true,
+            "secretKeys": ["apiKey", "applicationId"],
+            "supportedMessageTypes": ["track"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative",
+              "flutter",
+              "cordova"
+            ],
+            "transformAt": "router",
+            "transformAtV1": "router"
+          },
+          "ResponseRules": {}
+        },
+        "Config": {
+          "apiKey": "apiKey",
+          "applicationId": "appId",
+          "eventTypeSettings": [
+            {
+              "from": "product clicked",
+              "to": "click"
+            },
+            {
+              "from": "product list viewed",
+              "to": "view"
+            }
+          ]
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      }
+    }
+  ],
+  {
+      "message": "Invalid event array",
+      "statusCode": 400
+  },
+  {
+    "message": "Invalid event array",
+    "statusCode": 400
+  }
+]
+  

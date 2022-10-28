@@ -118,9 +118,8 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ALGOLIA");
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    throw new CustomError("Invalid event array", 400);
   }
 
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);

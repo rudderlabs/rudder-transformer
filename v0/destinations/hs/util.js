@@ -396,8 +396,10 @@ const getExistingData = async (inputs, destination) => {
   if (firstMessage) {
     objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
-      .identifierType;
+    identifierType = getDestinationExternalIDInfoForRetl(
+      firstMessage,
+      DESTINATION
+    ).identifierType;
     if (!objectType || !identifierType) {
       throw new CustomError("[HS]:: rETL - external Id not found.", 400);
     }
@@ -465,8 +467,8 @@ const getExistingData = async (inputs, destination) => {
 
     if (searchResponse.status !== 200) {
       throw new CustomError(
-        "[HS]:: rETL - Error during searching object record.",
-        400
+        `[HS]:: rETL - Error during searching object record. ${searchResponse.response?.message}`,
+        searchResponse.status || 400
       );
     }
 

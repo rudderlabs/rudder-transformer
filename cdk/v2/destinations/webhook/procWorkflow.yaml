@@ -1,7 +1,7 @@
 bindings:
-  - path: ../../../v0/util
-  - path: ../../../v0/destinations/webhook/utils
-  - path: ../../../constants
+  - path: ../../../../v0/util
+  - path: ../../../../v0/destinations/webhook/utils
+  - path: ../../../../constants
 steps:
   - name: validateInput
     template: |

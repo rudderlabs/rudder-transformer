@@ -17,12 +17,12 @@ const CONFIG_CATEGORIES = {
   GROUP: {
     name: "PHGroupConfigOld",
     type: "group",
-    event: "$group"
+    event: "$groupidentify"
   },
   GROUPV2: {
     name: "PHGroupConfig",
     type: "group",
-    event: "$group"
+    event: "$groupidentify"
   },
   PAGE: {
     name: "PHPageConfig",

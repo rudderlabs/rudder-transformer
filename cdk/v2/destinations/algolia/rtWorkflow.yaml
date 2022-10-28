@@ -1,12 +1,22 @@
 bindings:
-  - path: ../../../v0/destinations/pinterest_tag/config
+- path: ../../../../v0/destinations/algolia/config
+
 steps:
+  - name: validateInput
+    template: |
+      (
+        $assert($type($) = "array" and $count($) > 0, "Invalid event array")
+      )
+
   - name: prepareContext
-    template: $setContext("batchMode", true)
+    template:
+      $setContext("batchMode", true)
+
   - name: transform
     externalWorkflow:
       path: ./procWorkflow.yaml
     loopOverInput: true
+
   - name: successfulEvents
     template: |
       $outputs.transform#$i.output.{
@@ -14,7 +24,7 @@ steps:
           /* $$ refers to input (root of the document) */
           "destination": $$[$i].destination,
           "metadata": $$[$i].metadata
-      }
+      } ~> $toArray
   - name: failedEvents
     template: |
       $outputs.transform#$i.error.{
@@ -22,7 +32,7 @@ steps:
         "batched": false,
         "statusCode": status,
         "error": message
-      }
+      } ~> $toArray
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
@@ -31,7 +41,7 @@ steps:
         $batches.{
           "batchedRequest": {
             "body": {
-              "JSON": {"data": output},
+              "JSON": {"events": output},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -40,9 +50,10 @@ steps:
             "type": "REST",
             "method": "POST",
             "endpoint": $ENDPOINT,
-            "headers": {
-              "Content-Type": "application/json"
-            },
+          "headers": $[0].destination.Config.{
+            "X-Algolia-Application-Id": applicationId,
+            "X-Algolia-API-Key": apiKey
+          },
             "params": {},
             "files": {}
           },
@@ -54,4 +65,4 @@ steps:
       )
   - name: finalPayload
     template: |
-      $outputs.($append(batchSuccessfulEvents, failedEvents))
+      $toArray($outputs.($append(batchSuccessfulEvents, failedEvents)))

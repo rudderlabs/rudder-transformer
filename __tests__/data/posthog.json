@@ -1183,7 +1183,7 @@
             "$browser_version": "85.0.4183.121",
             "$host": "docs.rudderstack.com"
           },
-          "event": "$group",
+          "event": "$groupidentify",
           "api_key": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
           "type": "group"
         },
@@ -1280,23 +1280,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "distinct_id": "sampleusrRudder7",
-          "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
           "properties": {
-            "$group_key": "Sample_groupId27",
-            "$group_type": "company",
-            "$group_set": {
-              "KEY_3": {
-                "CHILD_KEY_92": "value_95",
-                "CHILD_KEY_102": "value_103"
-              },
-              "KEY_2": {
-                "CHILD_KEY_92": "value_95",
-                "CHILD_KEY_102": "value_103"
-              },
-              "name_trait": "Company",
-              "value_trait": "Comapny-ABC"
-            },
             "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
             "$pathname": "/destinations/amplitude",
             "$lib": "RudderLabs JavaScript SDK",
@@ -1313,9 +1297,28 @@
             "$os": "Mac OS",
             "$browser": "Chrome",
             "$browser_version": "85.0.4183.121",
-            "$host": "docs.rudderstack.com"
+            "$host": "docs.rudderstack.com",
+            "$group_key": "Sample_groupId27",
+            "$group_set": {
+              "KEY_3": {
+                "CHILD_KEY_92": "value_95",
+                "CHILD_KEY_102": "value_103"
+              },
+              "KEY_2": {
+                "CHILD_KEY_92": "value_95",
+                "CHILD_KEY_102": "value_103"
+              },
+              "name_trait": "Company",
+              "value_trait": "Comapny-ABC"
+            },
+            "$group_type": "company",
+            "$groups": {
+              "company": "Sample_groupId27"
+            }
           },
-          "event": "$group",
+          "distinct_id": "sampleusrRudder7",
+          "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+          "event": "$groupidentify",
           "api_key": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
           "type": "group"
         },
@@ -1385,51 +1388,54 @@
       }
     },
     "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://app.posthog.com/batch",
       "headers": {
         "Content-Type": "application/json"
       },
-      "version": "1",
-      "endpoint": "https://app.posthog.com/batch",
-      "method": "POST",
       "params": {},
-      "type": "REST",
       "body": {
         "JSON": {
-          "distinct_id": "user@1234",
-          "messageId": "e50df0-a404-47b4-a463-76df99934fea",
           "properties": {
-            "$os": "Mac OS",
-            "$host": "docs.rudderstack.com",
-            "$locale": "en-US",
-            "$browser": "Chrome",
-            "utm_campaign": "some campaign",
-            "utm_term": "keyword",
+            "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
             "$pathname": "/destinations/amplitude",
+            "$anon_distinct_id": "newid@1234",
+            "distinct_id": "user@1234",
+            "$locale": "en-US",
+            "$useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+            "utm_source": "google",
+            "utm_medium": "medium",
+            "utm_campaign": "some campaign",
+            "utm_content": "some content",
+            "utm_term": "keyword",
+            "$performance_page_loaded": "20",
+            "$os": "Mac OS",
+            "$browser": "Chrome",
+            "$browser_version": "85.0.4183.121",
+            "$host": "docs.rudderstack.com",
             "$group_key": "group@1234",
             "$group_set": {
-              "KEY_2": {
+              "KEY_3": {
                 "CHILD_KEY_92": "value_95",
                 "CHILD_KEY_102": "value_103"
               },
-              "KEY_3": {
+              "KEY_2": {
                 "CHILD_KEY_92": "value_95",
                 "CHILD_KEY_102": "value_103"
               },
               "name_trait": "Company",
               "value_trait": "Comapny-ABC"
             },
-            "utm_medium": "medium",
-            "utm_source": "google",
             "$group_type": "company",
-            "$useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-            "distinct_id": "user@1234",
-            "utm_content": "some content",
-            "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
-            "$browser_version": "85.0.4183.121",
-            "$anon_distinct_id": "newid@1234",
-            "$performance_page_loaded": "20"
+            "$groups": {
+              "company": "group@1234"
+            }
           },
-          "event": "$group",
+          "distinct_id": "user@1234",
+          "messageId": "e50df0-a404-47b4-a463-76df99934fea",
+          "event": "$groupidentify",
           "api_key": "K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE",
           "type": "group"
         },

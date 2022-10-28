@@ -1,27 +1,20 @@
 [
   {
     "destKey": "timestamp",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "properties.$group_key",
     "sourceKeys": "groupId",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "distinct_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {

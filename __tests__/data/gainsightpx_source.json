@@ -108,7 +108,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -288,7 +288,7 @@
         "ip": "122.161.66.140",
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -298,8 +298,7 @@
       },
       "type": "track",
       "properties": {
-        "globalContext": {
-      },
+        "propertyKey": "AP-EOXPSEZGC5LA-2-1",
         "Audience Size": 5000,
         "name": "TESTing TRACK CALL FIRST",
         "Launched date": 1520532660000,
@@ -307,10 +306,9 @@
         "ip": "122.161.66.140",
         "url": "http://127.0.0.1:5501/GPXTEST2.html"
       },
-      "propertyKey": "AP-EOXPSEZGC5LA-2-1",
       "userId": "New!",
       "category": "CUSTOM",
-      "name": "Product Clicked",
+      "event": "Product Clicked",
       "sentAt": "2022-10-13T10:28:01.448Z",
       "originalTimestamp": "2022-10-13T10:28:01.448Z"
     }
@@ -416,7 +414,7 @@
         "labels": [
           "492120f5-3573-11ec-bef0-42010a800545"
         ],
-        "remoteHost":"122.161.66.140",
+        "remoteHost": "122.161.66.140",
         "source": "Knowledge Center Bot"
       },
       "configId": "32f07727-d231-4c9d-881e-fb50b80bad63"
@@ -455,7 +453,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ],
@@ -465,13 +463,13 @@
         "GAINSIGHTPX": false
       },
       "type": "track",
-      "propertyKey": "AP-E9VUBBLZ6BIS-2-1",
       "properties": {
-        "feedback":{
+        "propertyKey": "AP-E9VUBBLZ6BIS-2-1",
+        "feedback": {
           "labels": [
             "492120f5-3573-11ec-bef0-42010a800545"
           ],
-          "description": "feedback body" ,
+          "description": "feedback body",
           "subject": "feedback title",
           "source": "Knowledge Center Bot"
         },
@@ -479,7 +477,7 @@
       },
       "userId": "New!",
       "category": "FEEDBACK",
-      "name": "Labels test",
+      "event": "Labels test",
       "sentAt": "2022-10-10T15:29:13.621Z",
       "originalTimestamp": "2022-10-10T15:29:13.621Z"
     }
@@ -578,7 +576,7 @@
         "date": 1665582808376,
         "sessionId": "AP-8MF5LPSWUBFW-2-1601303023809-98881162",
         "globalContext": {
-            "role" : "Admin"      
+          "role": "Admin"
         },
         "userType": "USER",
         "featureId": "05951b40-944f-4052-9a4a-51c74683f658",
@@ -619,7 +617,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -629,15 +627,15 @@
       },
       "type": "track",
       "properties": {
+        "propertyKey": "AP-8MF5LPSWUBFW-2-1",
         "globalContext": {
-          "role" : "Admin"
-      },
+          "role": "Admin"
+        },
         "featureId": "05951b40-944f-4052-9a4a-51c74683f658"
       },
-      "propertyKey": "AP-8MF5LPSWUBFW-2-1",
       "userId": "New!",
       "category": "FEATURE_MATCH",
-      "name": "Charts",
+      "event": "Charts",
       "sentAt": "2022-10-12T13:53:28.376Z",
       "originalTimestamp": "2022-10-12T13:53:28.376Z"
     }
@@ -735,7 +733,7 @@
         "date": 1665582808376,
         "sessionId": "AP-8MF5LPSWUBFW-2-1601303023809-98881162",
         "globalContext": {
-            "role" : "Admin"
+          "role": "Admin"
         },
         "userType": "USER",
         "segmentId": "e3ab2e48-24f9-4602-ab92-b9f1f4343845",
@@ -777,7 +775,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -787,14 +785,14 @@
       },
       "type": "track",
       "properties": {
+        "propertyKey": "AP-8MF5LPSWUBFW-2-1",
         "globalContext": {
-          "role" : "Admin"
-      },
+          "role": "Admin"
+        },
         "segmentId": "e3ab2e48-24f9-4602-ab92-b9f1f4343845"
       },
-      "propertyKey": "AP-8MF5LPSWUBFW-2-1",
       "category": "SEGMENT",
-      "name": "Linux User",
+      "event": "Linux User",
       "sentAt": "2022-10-12T13:53:28.376Z",
       "originalTimestamp": "2022-10-12T13:53:28.376Z"
     }
@@ -809,7 +807,7 @@
         "date": 1601303075964,
         "sessionId": "AP-8MF5LPSWUBFW-2-1601303023809-98881162",
         "globalContext": {
-            "role" : "Admin"
+          "role": "Admin"
         },
         "userType": "USER",
         "segmentId": "e3ab2e48-24f9-4602-ab92-b9f1f4343845",
@@ -817,7 +815,7 @@
       }
     },
     "output": {
-      "error":"Event type Unavailable not supported"
+      "error": "Event type Unavailable not supported"
     }
   },
   {
@@ -907,14 +905,14 @@
         "customAttributes": null,
         "parentGroupId": ""
       },
-      "event":{
+      "event": {
         "eventType": "SURVEY",
         "eventId": "c9883e3b-05d4-4f96-8b9c-e2ce10430493",
         "propertyKey": "AP-N6SV00EVMR1E-2-1",
         "date": 1601303075964,
         "sessionId": "AP-N6SV00EVMR1E-2-1605265939566-23853426",
         "globalContext": {
-            "role" : "Admin"
+          "role": "Admin"
         },
         "userType": "EMPTY_USER_TYPE",
         "contentType": "IN_APP_MULTIPLE_QUESTION_SURVEY",
@@ -931,11 +929,11 @@
         "questionHtml": "<div class=px-multi-survey-question>Favorite travel destinations</div>",
         "questionText": "Favorite travel destinations",
         "answers": [
-            {
+          {
             "answerId": "563e2103-2906-4088-869f-bcccd185f288",
             "answerHtml": "<div class=px-multi-survey-answer>Europe</div>",
             "answerText": "Europe"
-            }
+          }
         ]
       }
     },
@@ -973,7 +971,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -983,14 +981,15 @@
       },
       "type": "track",
       "properties": {
+        "propertyKey": "AP-N6SV00EVMR1E-2-1",
         "globalContext": {
-          "role" : "Admin"
-      },
+          "role": "Admin"
+        },
         "engagementId": "e5362226-75da-4ef6-999a-823727e3d7a7",
         "contentType": "IN_APP_MULTIPLE_QUESTION_SURVEY",
         "surveyType": "Multi Question",
         "interaction": "SINGLE_STEP_SURVEY_RESPONDED",
-        "survey":{
+        "survey": {
           "activation": "Auto",
           "questionType": "Multi choice",
           "score": 0,
@@ -998,18 +997,17 @@
           "questionHtml": "<div class=px-multi-survey-question>Favorite travel destinations</div>",
           "questionText": "Favorite travel destinations",
           "answers": [
-              {
+            {
               "answerId": "563e2103-2906-4088-869f-bcccd185f288",
               "answerHtml": "<div class=px-multi-survey-answer>Europe</div>",
               "answerText": "Europe"
-              }
+            }
           ]
         }
       },
-      "propertyKey": "AP-N6SV00EVMR1E-2-1",
       "userId": "New!",
       "category": "SURVEY",
-      "name": "Quarterly Survey",
+      "event": "Quarterly Survey",
       "sentAt": "2020-09-28T14:24:35.964Z",
       "originalTimestamp": "2020-09-28T14:24:35.964Z"
     }
@@ -1101,14 +1099,14 @@
         "customAttributes": null,
         "parentGroupId": ""
       },
-      "event":{
+      "event": {
         "eventType": "SURVEY",
         "eventId": "c9883e3b-05d4-4f96-8b9c-e2ce10430493",
         "propertyKey": "AP-N6SV00EVMR1E-2-1",
         "date": 1601303075964,
         "sessionId": "AP-N6SV00EVMR1E-2-1605265939566-23853426",
         "globalContext": {
-            "role" : "Admin"
+          "role": "Admin"
         },
         "userType": "EMPTY_USER_TYPE",
         "contentType": "IN_APP_MULTIPLE_QUESTION_SURVEY",
@@ -1162,7 +1160,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -1172,14 +1170,15 @@
       },
       "type": "track",
       "properties": {
+        "propertyKey": "AP-N6SV00EVMR1E-2-1",
         "globalContext": {
-          "role" : "Admin"
-      },
+          "role": "Admin"
+        },
         "engagementId": "e5362226-75da-4ef6-999a-823727e3d7a7",
         "contentType": "IN_APP_MULTIPLE_QUESTION_SURVEY",
         "surveyType": "Multi Question",
         "interaction": "SINGLE_STEP_SURVEY_RESPONDED",
-        "survey":{
+        "survey": {
           "activation": "Auto",
           "userInput": "I like new features",
           "questionType": "Open text question",
@@ -1188,10 +1187,9 @@
           "questionText": "How was your experience?"
         }
       },
-      "propertyKey": "AP-N6SV00EVMR1E-2-1",
       "userId": "New!",
       "category": "SURVEY",
-      "name": "Quarterly Survey",
+      "event": "Quarterly Survey",
       "sentAt": "2020-09-28T14:24:35.964Z",
       "originalTimestamp": "2020-09-28T14:24:35.964Z"
     }
@@ -1290,7 +1288,7 @@
         "date": 1605262539389,
         "sessionId": "AP-N6SV00EVMR1E-2-1605262502068-24197555",
         "globalContext": {
-            "role" : "Admin"
+          "role": "Admin"
         },
         "userType": "EMPTY_USER_TYPE",
         "contentType": "IN_APP_DIALOG",
@@ -1338,7 +1336,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -1348,22 +1346,22 @@
       },
       "type": "track",
       "properties": {
+        "propertyKey": "AP-N6SV00EVMR1E-2-1",
         "engagementId": "83c30d4e-88c3-4054-a0fa-33451a6ea7fc",
         "contentType": "IN_APP_DIALOG",
         "engagementType": "Dialog",
         "interaction": "VIEWED",
         "globalContext": {
-          "role" : "Admin"
-      },
-        "engagement":{
+          "role": "Admin"
+        },
+        "engagement": {
           "stepNumber": 1,
-        "activation": "Auto"
+          "activation": "Auto"
         }
       },
-      "propertyKey": "AP-N6SV00EVMR1E-2-1",
       "userId": "New!",
       "category": "ENGAGEMENT",
-      "name": "Release Announcement",
+      "event": "Release Announcement",
       "sentAt": "2020-11-13T10:15:39.389Z",
       "originalTimestamp": "2020-11-13T10:15:39.389Z"
     }
@@ -1493,8 +1491,8 @@
           "channel": "client",
           "groupId": "IBM"
         }
-    }
-  },
+      }
+    },
     "output": {
       "context": {
         "library": {
@@ -1529,7 +1527,7 @@
         },
         "externalId": [
           {
-            "type": "aptrinsicId",
+            "type": "gainsightpxAptrinsicId",
             "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
           }
         ]
@@ -1539,7 +1537,7 @@
       },
       "type": "track",
       "properties": {
-        "globalContext":{},
+        "propertyKey": "AP-EOXPSEZGC5LA-2-1",
         "pxPropertyKey": "AP-EOXPSEZGC5LA-2",
         "type": "group",
         "userId": "1001",
@@ -1559,23 +1557,21 @@
           }
         },
         "messageId": "ajs-next-69810a17571dc115ccead5281cc3fb7d",
-          "receivedAt": "2022-10-25T08:40:35.184Z",
-          "sentAt": "2022-10-25T08:40:34.809Z",
-          "timestamp": "2022-10-25T08:40:35.178Z",
-          "traits": {
-            "name": "International Business Machine"
-          },
-          "version": 2,
-          "channel": "client",
-          "groupId": "IBM"
+        "receivedAt": "2022-10-25T08:40:35.184Z",
+        "sentAt": "2022-10-25T08:40:34.809Z",
+        "timestamp": "2022-10-25T08:40:35.178Z",
+        "traits": {
+          "name": "International Business Machine"
         },
-      "propertyKey": "AP-EOXPSEZGC5LA-2-1",
+        "version": 2,
+        "channel": "client",
+        "groupId": "IBM"
+      },
       "userId": "New!",
       "category": "SEGMENT_IO",
-      "name": "SegmentIO Cloud Server",
+      "event": "SegmentIO Cloud Server",
       "sentAt": "2022-10-25T08:40:35.178Z",
       "originalTimestamp": "2022-10-25T08:40:35.178Z"
     }
   }
 ]
-

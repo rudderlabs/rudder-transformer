@@ -9,7 +9,7 @@
     },
     {
         "sourceKeys": "event.propertyKey",
-        "destKeys": "propertyKey"
+        "destKeys": "properties.propertyKey"
     },
     {
         "sourceKeys": "user.identifyId",
@@ -52,6 +52,6 @@
     },
     {
         "sourceKeys": "event.eventName",
-        "destKeys": "name"
+        "destKeys": "event"
     }
 ]

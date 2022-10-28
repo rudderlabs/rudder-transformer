@@ -1,5 +1,13 @@
+/* eslint-disable no-param-reassign */
 const { isDefinedAndNotNullAndNotEmpty } = require("../../util");
+const { traitsToDelete, accountTraitsToDelete } = require("./config");
 
+/**
+ * This function removes all those variables which are
+ * empty or undefined or null from all levels of object.
+ * @param {*} obj
+ * @returns payload without empty null or undefined variables
+ */
 const refinePayload = obj => {
   const refinedPayload = {};
   Object.keys(obj).forEach(ele => {
@@ -8,7 +16,10 @@ const refinePayload = obj => {
       typeof obj[ele] === "object" &&
       !Array.isArray(obj[ele])
     ) {
-      refinedPayload[ele] = refinePayload(obj[ele]);
+      const refinedObject = refinePayload(obj[ele]);
+      if (Object.keys(refinedObject).length !== 0) {
+        refinedPayload[ele] = refinePayload(obj[ele]);
+      }
     } else if (
       typeof obj[ele] === "boolean" ||
       // eslint-disable-next-line no-restricted-globals
@@ -21,27 +32,20 @@ const refinePayload = obj => {
   return refinedPayload;
 };
 
-const refineTraitPayload = event => {
-  const message = event;
-  delete message.traits?.identifyId;
-  delete message.traits?.location;
-  delete message.traits?.aptrinsicId;
-  delete message.traits?.signUpDate;
-  delete message.traits?.firstVisitDate;
-  delete message.traits?.accountID;
-  delete message.traits?.lastSeenDate;
-  delete message.traits?.countryName;
-  delete message.traits?.stateName;
-  delete message.traits?.coordinates;
-  delete message.traits?.lastVisitedUserAgentData;
-  delete message.traits?.account.propertyKeys;
-  delete message.traits?.createDate;
-  delete message.traits?.lastModifiedDate;
-  // deleting account.location as its will be least but can disturb many others
-  delete message.traits?.account?.location;
-  delete message.traits?.account?.createDate;
-  delete message.traits?.account?.lastModifiedDate;
-  delete message.traits?.account.lastSeenDate;
+/**
+ * Deletes the extra elements from traits and traits.account from message
+ * @param {*} message
+ * @returns message payload withoout redundancy
+ */
+const refineTraitPayload = message => {
+  traitsToDelete.forEach(ele => {
+    delete message.traits[ele];
+  });
+  if (message.traits?.account) {
+    accountTraitsToDelete.forEach(ele => {
+      delete message.traits.account[ele];
+    });
+  }
   return message;
 };
 

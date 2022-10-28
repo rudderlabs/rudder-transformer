@@ -20,7 +20,6 @@ const buildIdentifyPayload = event => {
   const ts = new Date(event.user.signUpDate).toISOString();
   message.setProperty("createdAt", ts);
   message.setProperty("originalTimestamp", ts);
-  // console.log(message);
   return message;
 };
 
@@ -49,7 +48,7 @@ const buildTrackPayload = event => {
       break;
     case "SEGMENT_IO":
       message.setPropertiesV2(event, segmentIoMapping);
-      message.name = "SegmentIO Cloud Server";
+      message.event = "SegmentIO Cloud Server";
       break;
     default:
       throw new CustomError(
@@ -69,7 +68,6 @@ const buildTrackPayload = event => {
 };
 
 function processEvent(event) {
-  // console.log(event);
   let message;
   if (event.event.eventType === "SIGN_UP") {
     message = buildIdentifyPayload(event);
@@ -78,8 +76,8 @@ function processEvent(event) {
   }
   const externalId = [];
   externalId.push({
-    type: "aptrinsicId",
-    id: event.user.aptrinsicId
+    type: "gainsightpxAptrinsicId",
+    id: event.user?.aptrinsicId
   });
   message.context.externalId = externalId;
   // setting anonymous id for failsafety from server

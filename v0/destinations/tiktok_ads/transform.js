@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
+const _ = require("lodash");
 const { SHA256 } = require("crypto-js");
 const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
-  getErrorRespEvents,
   CustomError,
   constructPayload,
   defaultRequestConfig,
@@ -14,7 +14,10 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  getHashFromArrayWithDuplicate,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const {
   trackMapping,
@@ -25,28 +28,16 @@ const {
 } = require("./config");
 
 function checkIfValidPhoneNumber(str) {
-  // Ref - https://ads.tiktok.com/marketing_api/docs?id=1701890979375106
+  // Ref - https://ads.tiktok.com/marketing_api/docs?id=1727541103358977
   // Regular expression to check whether it has country code
   // but should not include +86
-  const regexExp = /^(\+(?!86)\d{1,3}){0,1}[0-9]{10}$/gi;
+  const regexExp = /^(\+(?!86)\d{1,3})?\d{1,12}$/gi;
 
   return regexExp.test(str);
 }
 
-const trackResponseBuilder = async (message, { Config }) => {
+const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
-
-  let event = get(message, "event");
-  event = event ? event.trim().toLowerCase() : event;
-  if (!event) {
-    throw new CustomError("Event name is required", 400);
-  }
-
-  if (eventNameMapping[event] === undefined) {
-    throw new CustomError(`Event name (${event}) is not valid`, 400);
-  }
-  event = eventNameMapping[event];
-
   let payload = constructPayload(message, trackMapping);
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");
@@ -94,13 +85,12 @@ const trackResponseBuilder = async (message, { Config }) => {
         ).toString();
       } else {
         throw new CustomError(
-          "Invalid phone number. Include proper country code except +86. Aborting ",
+          "Invalid phone number. Include proper country code except +86 and the phone number length must be no longer than 15 digit. Aborting",
           400
         );
       }
     }
   }
-
   const response = defaultRequestConfig();
   response.headers = {
     "Access-Token": Config.accessToken,
@@ -110,7 +100,39 @@ const trackResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = TRACK_ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+
   return response;
+};
+
+const trackResponseBuilder = async (message, { Config }) => {
+  const { eventsToStandard } = Config;
+
+  let event = message.event?.toLowerCase().trim();
+  if (!event) {
+    throw new CustomError("Event name is required", 400);
+  }
+
+  const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
+
+  if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
+    throw new CustomError(`Event name (${event}) is not valid`, 400);
+  }
+
+  const responseList = [];
+  if (standardEventsMap[event]) {
+    Object.keys(standardEventsMap).forEach(key => {
+      if (key === event) {
+        standardEventsMap[event].forEach(eventName => {
+          responseList.push(getTrackResponse(message, Config, eventName));
+        });
+      }
+    });
+  } else {
+    event = eventNameMapping[event];
+    responseList.push(getTrackResponse(message, Config, event));
+  }
+
+  return responseList;
 };
 
 const process = async event => {
@@ -144,10 +166,12 @@ const process = async event => {
   return response;
 };
 
-function batchEvents(arrayChunks) {
+function batchEvents(eventsChunk) {
   const batchedResponseList = [];
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // transformed payload of (n) batch size
+  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
 
-  // list of chunks [ [..], [..] ]
   arrayChunks.forEach(chunk => {
     const batchResponseList = [];
     const metadata = [];
@@ -197,61 +221,63 @@ function batchEvents(arrayChunks) {
 }
 
 function getEventChunks(event, trackResponseList, eventsChunk) {
-  // Do not apply batching if the payload contains test_event_code
-  // which corresponds to track endpoint
-  if (event.message.body.JSON.test_event_code) {
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
-    delete message.body.JSON.type;
+  // only for already transformed payload
+  // eslint-disable-next-line no-param-reassign
+  event.message = Array.isArray(event.message)
+    ? event.message
+    : [event.message];
 
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
+  event.message.forEach(element => {
+    // Do not apply batching if the payload contains test_event_code
+    // which corresponds to track endpoint
+    if (element.body.JSON.test_event_code) {
+      const message = element;
+      const { metadata, destination } = event;
+      const endpoint = get(message, "endpoint");
+      delete message.body.JSON.type;
 
-    trackResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination
-      )
-    );
-  } else {
-    // build eventsChunk of MAX_BATCH_SIZE
-    eventsChunk.push(event);
-  }
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method =
+        defaultPostRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
+
+      trackResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination
+        )
+      );
+    } else {
+      eventsChunk.push({
+        message: element,
+        metadata: event.metadata,
+        destination: event.destination
+      });
+    }
+  });
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs, "TIKTOK_ADS");
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format
-  let eventsChunk = []; // temporary variable to divide payload into chunks
-  const arrayChunks = []; // transformed payload of (n) batch size
+  const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async (event, index) => {
+    inputs.map(async event => {
       try {
         if (event.message.statusCode) {
           // already transformed event
           getEventChunks(event, trackResponseList, eventsChunk);
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         } else {
           // if not transformed
           getEventChunks(
@@ -263,31 +289,21 @@ const processRouterDest = async inputs => {
             trackResponseList,
             eventsChunk
           );
-          // slice according to batch size
-          if (
-            eventsChunk.length &&
-            (eventsChunk.length >= MAX_BATCH_SIZE ||
-              index === inputs.length - 1)
-          ) {
-            arrayChunks.push(eventsChunk);
-            eventsChunk = [];
-          }
         }
       } catch (error) {
-        errorRespList.push(
-          getErrorRespEvents(
-            [event.metadata],
-            error.response ? error.response.status : 400,
-            error.message || "Error occurred while processing payload."
-          )
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          "TIKTOK_ADS"
         );
+        errorRespList.push(errRespEvent);
       }
     })
   );
 
   let batchedResponseList = [];
-  if (arrayChunks.length) {
-    batchedResponseList = await batchEvents(arrayChunks);
+  if (eventsChunk.length) {
+    batchedResponseList = await batchEvents(eventsChunk);
   }
   return [...batchedResponseList.concat(trackResponseList), ...errorRespList];
 };

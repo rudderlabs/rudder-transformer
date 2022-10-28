@@ -2,7 +2,12 @@ const get = require("get-value");
 const sha256 = require("sha256");
 const { logger } = require("handlebars");
 
-const { isDefinedAndNotNull } = require("../../util");
+const {
+  isDefinedAndNotNull,
+  getFieldValueFromMessage,
+  defaultBatchRequestConfig
+} = require("../../util");
+const { ENDPOINT } = require("./config");
 
 const channelMapping = {
   web: "WEB",
@@ -24,10 +29,12 @@ function getHashedValue(identifier) {
     }
     return identifier;
   }
+  return null;
 }
+
 function getNormalizedPhoneNumber(message) {
   const regexExp = /^[a-f0-9]{64}$/gi;
-  let phoneNumber = message?.context?.traits?.phone?.toString();
+  let phoneNumber = getFieldValueFromMessage(message, "phone");
   if (regexExp.test(phoneNumber)) {
     return phoneNumber;
   }
@@ -36,16 +43,17 @@ function getNormalizedPhoneNumber(message) {
     for (let i = 0; i < phoneNumber.length; i += 1) {
       if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], "");
-        i--;
+        i -= 1;
       } else if (phoneNumber[i] === "0" && leadingZero) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], "");
-        i--;
+        i -= 1;
       } else {
         leadingZero = false;
       }
     }
     return phoneNumber;
   }
+  return null;
 }
 
 function getDataUseValue(message) {
@@ -62,6 +70,7 @@ function getDataUseValue(message) {
     limitAdTracking = "['lmu']";
     return limitAdTracking;
   }
+  return null;
 }
 
 function getItemIds(message) {
@@ -97,6 +106,46 @@ function getPriceSum(message) {
   return String(priceSum);
 }
 
+/**
+ * Create Snapchat Batch payload based on the passed events
+ * @param {*} events
+ * @returns
+ */
+function generateBatchedPayloadForArray(events) {
+  const batchResponseList = [];
+  const metadata = [];
+
+  // extracting destination
+  // from the first event in a batch
+  const { destination } = events[0];
+  const { apiKey } = destination.Config;
+
+  let batchEventResponse = defaultBatchRequestConfig();
+
+  // Batch event into dest batch structure
+  events.forEach(ev => {
+    batchResponseList.push(ev.message.body.JSON);
+    metadata.push(ev.metadata);
+  });
+
+  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+    batch: JSON.stringify(batchResponseList)
+  };
+
+  batchEventResponse.batchedRequest.endpoint = ENDPOINT;
+  batchEventResponse.batchedRequest.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${apiKey}`
+  };
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination
+  };
+
+  return batchEventResponse;
+}
+
 module.exports = {
   msUnixTimestamp,
   getItemIds,
@@ -104,5 +153,6 @@ module.exports = {
   getDataUseValue,
   getNormalizedPhoneNumber,
   getHashedValue,
-  channelMapping
+  channelMapping,
+  generateBatchedPayloadForArray
 };

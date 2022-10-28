@@ -7,10 +7,9 @@ const {
   defaultRequestConfig,
   constructPayload,
   defaultPostRequestConfig,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   removeUndefinedAndNullValues,
-  CustomError
+  CustomError,
+  simpleProcessRouterDest
 } = require("../../util");
 const { errorHandler } = require("./util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
@@ -67,7 +66,7 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
-    throw CustomError("Unable to Create Contact", 400);
+    throw new CustomError("Unable to Create Contact", 400);
   }
   return createdContact.id;
 };
@@ -594,40 +593,10 @@ const process = async event => {
 };
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "active_campaign",
+    process
   );
   return respList;
 };

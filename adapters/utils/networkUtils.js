@@ -85,9 +85,9 @@ const getDynamicMeta = statusCode => {
   }
 };
 
-const parseDestResponse = (destResponse, destination) => {
+const parseDestResponse = (destResponse, destination = "") => {
   const statTags = {
-    destination,
+    destType: destination.toUpperCase(),
     stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
   };
@@ -135,7 +135,7 @@ const parseDestResponse = (destResponse, destination) => {
   };
 };
 
-// Function to process wrapped axioss response from internal http client compatible for response handlers
+// Function to process wrapped axios response from internal http client compatible for response handlers
 const processAxiosResponse = clientResponse => {
   if (!clientResponse.success) {
     const { response, code } = clientResponse.response;

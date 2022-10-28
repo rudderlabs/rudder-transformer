@@ -84,15 +84,27 @@ const aliasEndpoint = destConfig => {
   return retVal;
 };
 
-function getSessionId(payload) {
-  const sessionId = payload.session_id;
-  if (sessionId) {
-    if (typeof sessionId === "string") {
-      return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);
-    }
-    return sessionId;
+function handleSessionIdUnderRoot(message) {
+  const sessionId = get(message, "session_id");
+  if (typeof sessionId === "string") {
+    return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);
   }
-  return -1;
+  return sessionId;
+}
+
+function handleSessionIdUnderContext(message) {
+  let sessionId = get(message, "context.sessionId");
+  sessionId = Number(sessionId);
+  if (Number.isNaN(sessionId)) return -1;
+  return sessionId;
+}
+
+function getSessionId(message) {
+  return get(message, "session_id")
+    ? handleSessionIdUnderRoot(message)
+    : get(message, "context.sessionId")
+    ? handleSessionIdUnderContext(message)
+    : -1;
 }
 
 function addMinIdlength() {
@@ -464,7 +476,7 @@ function responseBuilderSimple(
       ) {
         payload.user_id = message.userId;
       }
-      payload.session_id = getSessionId(payload);
+      payload.session_id = getSessionId(message);
 
       updateConfigProperty(
         message,
@@ -602,7 +614,7 @@ function processSingleMessage(message, destination) {
             .setStatus(400)
             .setMessage("Group call parameters are not valid")
             .setStatTags({
-              destination: DESTINATION,
+              destType: DESTINATION,
               stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
               scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
               meta:
@@ -627,7 +639,7 @@ function processSingleMessage(message, destination) {
           .setStatus(400)
           .setMessage("message type not defined")
           .setStatTags({
-            destination: DESTINATION,
+            destType: DESTINATION,
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
             meta:
@@ -653,7 +665,7 @@ function processSingleMessage(message, destination) {
         .setStatus(400)
         .setMessage("message type not supported")
         .setStatTags({
-          destination: DESTINATION,
+          destType: DESTINATION,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:

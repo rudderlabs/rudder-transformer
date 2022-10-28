@@ -47,7 +47,7 @@ const responseWrapper = (payload, destination) => {
   // If the acount belongs to specific regional server,
   // we need to modify the url endpoint based on dest config.
   // Source: https://developer.clevertap.com/docs/idc
-  response.endpoint = getEndpoint(destination);
+  response.endpoint = getEndpoint(destination.Config);
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     "X-CleverTap-Account-Id": destination.Config.accountId,
@@ -98,6 +98,25 @@ const mapIdentifyPayload = (message, profile) => {
         profileData: profile,
         ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
         identity: getFieldValueFromMessage(message, "userId")
+      }
+    ]
+  };
+
+  // If timestamp is not in unix format
+  if (payload.d[0].ts && !Number(payload.d[0].ts)) {
+    payload.d[0].ts = toUnixTimestamp(payload.d[0].ts);
+  }
+  return payload;
+};
+
+const mapAliasPayload = message => {
+  const payload = {
+    d: [
+      {
+        type: "profile",
+        profileData: { identity: message.userId },
+        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
+        identity: message.previousId
       }
     ]
   };
@@ -202,6 +221,9 @@ const responseBuilderSimple = (message, category, destination) => {
     } else {
       payload = mapIdentifyPayload(message, profile);
     }
+  } else if (category.type === "alias") {
+    // const profile = getClevertapProfile(message, category);
+    payload = mapAliasPayload(message);
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
     // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
@@ -293,6 +315,9 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
+      break;
+    case EventType.ALIAS:
+      category = CONFIG_CATEGORIES.ALIAS;
       break;
     default:
       throw new CustomError("Message type not supported", 400);

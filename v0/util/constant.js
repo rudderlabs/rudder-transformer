@@ -12,6 +12,19 @@ const TRANSFORMER_METRIC = {
   MEASUREMENT: {
     INTEGRATION_ERROR_METRIC: "integration_error_metric"
   },
+  // The location at which the error stat was sent
+  ERROR_AT: {
+    // processor transformation
+    PROC: "proc",
+    // router transformation
+    RT: "rt",
+    // batch transformation
+    BATCH: "batch",
+    // /proxy endpoint(delivery to destination)
+    PROXY: "proxy",
+    // Default
+    UNKNOWN: "unknown"
+  },
   TRANSFORMER_STAGE: {
     TRANSFORM: "transform",
     RESPONSE_TRANSFORM: "responseTransform"
@@ -40,6 +53,9 @@ const TRANSFORMER_METRIC = {
     },
     EXCEPTION: {
       SCOPE: "exception"
+    },
+    CDK: {
+      SCOPE: "cdk"
     },
     DEFAULT: {
       SCOPE: "default"

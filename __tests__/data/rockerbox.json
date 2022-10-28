@@ -1,0 +1,357 @@
+[
+  {
+    "description": "Error flow - Message type not supported",
+    "input": {
+      "destination": {
+        "Config": {
+          "advertiserId": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        }
+      },
+      "message": {
+        "context": {
+          "traits": {
+            "homwTown": "kanpur",
+            "age": "24"
+          }
+        },
+        "type": "Identify",
+        "userId": "yash001",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Message type identify not supported",
+      "statTags": {
+        "destination": "rockerbox",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Error flow - Unassociated Event Type",
+    "input": {
+      "destination": {
+        "Config": {
+          "advertiserId": "test id",
+          "eventFilteringOption": "disable",
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eventsMap": [
+            {
+              "from": "Product Added To Cart",
+              "to": "conv.add_to_cart"
+            }
+          ],
+          "useNativeSDK": {
+            "web": false
+          },
+          "clientAuthId": {
+            "web": "test-client-auth-id"
+          },
+          "oneTrustCookieCategories": {
+            "web": [
+              {
+                "oneTrustCookieCategory": "Marketing Sample"
+              }
+            ]
+          },
+          "customDomain": {
+            "web": "https://cookiedomain.com"
+          },
+          "enableCookieSync": {
+            "web": true
+          }
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "Product Added",
+        "sentAt": "2022-08-07T20:02:19.352Z",
+        "userId": "userSampleX138",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "locale": "en-IN",
+          "screen": {
+            "width": 1440,
+            "height": 900,
+            "density": 2,
+            "innerWidth": 584,
+            "innerHeight": 789
+          },
+          "traits": {
+            "email": "userSampleX120@gmail.com",
+            "phone": "9878764736",
+            "last_name": "Stack",
+            "first_name": "Rudder",
+            "subscription": "youtube"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        },
+        "rudderId": "4a47e99b-2afc-45c6-b902-ed69282ca805",
+        "messageId": "1659902539347900-c622426c-a1dd-44c0-ac6d-d4dbee3f4a93",
+        "properties": {
+          "checkout_id": "12345",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+          "product_name": "Red T-shirt"
+        },
+        "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-08-07T20:02:19.347Z"
+      },
+      "writeKey": "2D0yaayoBD7bp8uFomnBONdedcA",
+      "requestIP": "[::1]",
+      "receivedAt": "2022-08-08T01:32:19.369+05:30"
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "The event is not associated to a RockerBox event. Aborting!",
+      "statTags": {
+        "destination": "rockerbox",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Track Call with a userId",
+    "input": {
+      "destination": {
+        "Config": {
+          "advertiserId": "test id",
+          "eventFilteringOption": "disable",
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eventsMap": [
+            {
+              "from": "Product Added",
+              "to": "conv.add_to_cart"
+            }
+          ],
+          "useNativeSDK": {
+            "web": false
+          },
+          "clientAuthId": {
+            "web": "test-client-auth-id"
+          },
+          "oneTrustCookieCategories": {
+            "web": [
+              {
+                "oneTrustCookieCategory": "Marketing Sample"
+              }
+            ]
+          },
+          "customDomain": {
+            "web": "https://cookiedomain.com"
+          },
+          "enableCookieSync": {
+            "web": true
+          }
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "Product Added",
+        "sentAt": "2022-08-07T20:02:19.352Z",
+        "userId": "userSampleX138",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "locale": "en-IN",
+          "traits": {
+            "email": "userSampleX120@gmail.com",
+            "phone": "9878764736",
+            "last_name": "Stack",
+            "first_name": "Rudder"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        },
+        "rudderId": "4a47e99b-2afc-45c6-b902-ed69282ca805",
+        "messageId": "1659902539347900-c622426c-a1dd-44c0-ac6d-d4dbee3f4a93",
+        "properties": {
+          "checkout_id": "12345",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+          "product_name": "Red T-shirt"
+        },
+        "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-08-07T20:02:19.347Z"
+      },
+      "writeKey": "2D0yaayoBD7bp8uFomnBONdedcA",
+      "requestIP": "[::1]",
+      "receivedAt": "2022-08-08T01:32:19.369+05:30"
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "email": "userSampleX120@gmail.com",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "phone": "9878764736",
+          "timestamp": 1659902539
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
+      "files": {},
+      "headers": {},
+      "method": "POST",
+      "params": {
+        "advertiser": "test id"
+      },
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Track Call with all properties",
+    "input": {
+      "destination": {
+        "Config": {
+          "advertiserId": "test id",
+          "eventFilteringOption": "disable",
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eventsMap": [
+            {
+              "from": "Product Added",
+              "to": "conv.add_to_cart"
+            }
+          ],
+          "useNativeSDK": {
+            "web": false
+          },
+          "clientAuthId": {
+            "web": "test-client-auth-id"
+          },
+          "oneTrustCookieCategories": {
+            "web": [
+              {
+                "oneTrustCookieCategory": "Marketing Sample"
+              }
+            ]
+          },
+          "customDomain": {
+            "web": "https://cookiedomain.com"
+          },
+          "enableCookieSync": {
+            "web": true
+          }
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "Product Added",
+        "sentAt": "2022-08-07T20:02:19.352Z",
+        "userId": "userSampleX138",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "locale": "en-IN",
+          "traits": {
+            "email": "userSampleX120@gmail.com",
+            "phone": "9878764736",
+            "last_name": "Stack",
+            "first_name": "Rudder"
+          },
+          "externalId": [
+            {
+              "type": "rockerboxExternalId",
+              "id": "rbUid"
+            }
+          ],
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        },
+        "rudderId": "4a47e99b-2afc-45c6-b902-ed69282ca805",
+        "messageId": "1659902539347900-c622426c-a1dd-44c0-ac6d-d4dbee3f4a93",
+        "properties": {
+          "checkout_id": "12345",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+          "product_name": "Red T-shirt",
+          "externalId": "rbUid",
+          "countryCode": "IN",
+          "listingId": "10101"
+        },
+        "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-08-07T20:02:19.347Z"
+      },
+      "writeKey": "2D0yaayoBD7bp8uFomnBONdedcA",
+      "requestIP": "[::1]",
+      "receivedAt": "2022-08-08T01:32:19.369+05:30"
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
+      "headers": {},
+      "params": {
+        "advertiser": "test id"
+      },
+      "body": {
+        "JSON": {
+          "customer_id": "userSampleX138",
+          "email": "userSampleX120@gmail.com",
+          "phone": "9878764736",
+          "timestamp": 1659902539,
+          "country_code": "IN",
+          "listing_id": "10101",
+          "conversion_source": "RudderStack",
+          "action": "conv.add_to_cart"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  }
+]

@@ -270,7 +270,7 @@
       "destType": "MARKETO",
       "stage": "transform",
       "scope": "api",
-      "meta": "abortable"
+      "meta": "unhandled"
     },
     "metadata": [
       {

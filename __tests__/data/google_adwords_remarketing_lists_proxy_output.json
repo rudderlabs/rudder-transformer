@@ -9,7 +9,7 @@
   {
     "output": {
       "status": 400,
-      "message": "[Error occurred while processing response for destination google_adwords_remarketing_lists]: Google_adwords_remarketing_list: Request contains an invalid argument. during ga_audience response transformation",
+      "message": "Google_adwords_remarketing_list: Request contains an invalid argument. during ga_audience response transformation",
       "destinationResponse": {
         "error": {
           "code": 400,

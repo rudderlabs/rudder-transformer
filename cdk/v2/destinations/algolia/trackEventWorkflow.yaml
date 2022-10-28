@@ -1,0 +1,86 @@
+bindings:
+  - path: ../../../../v0/destinations/algolia/util
+  - path: ../../../../v0/destinations/algolia/config
+  - path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      (
+        $assert($exists(message.event), "event is required for track call");
+      )
+  
+  - name: preparePayload
+    template: |
+      (
+        $eventTypeMap := $eventTypeMapping(destination.Config);
+        $event := message.event.$trim().$lowercase();
+        $eventType := $getValueFromMessage(message, "properties.eventType") ? $getValueFromMessage(message, "properties.eventType") : $lookup($eventTypeMap, $event);
+        $assert($exists($eventType), "eventType is mandatory for track call");
+        $setContext("payload", $constructPayload(message, $trackMapping));
+        $newPayload := $merge([$context.payload, { "eventName": $event, "eventType": $eventType }]);
+        $setContext("payload", $newPayload);
+        $setContext("payload", $genericpayloadValidator($context.payload));
+      )
+  
+  - name: populateProductsData
+    condition: $context.payload.eventName in ["product list viewed", "order completed"] and $exists(message.properties.products)
+    steps:
+    - name: populateForClickEvent
+      condition: $context.payload.eventType = "click"
+      template: |
+        (
+          $validProducts := message.properties.products[$exists(objectId) and $exists(position)]#$i[$i<20];
+          $objectAndPositionIds := {
+            "objectIDs": $validProducts.objectId,
+            "positions": $validProducts.position
+          };
+          $objLen := $count($validProducts.objectId);
+          $posLen := $count($validProducts.position);
+          $newPayload := $merge([$context.payload, $objectAndPositionIds]);
+          $setContext("payload", $clickPayloadValidator($newPayload))
+        )
+    - name: populateForOtherEvents
+      condition: $context.payload.eventType != "click"
+      template: |
+        (
+          $objectIDs := {
+            "objectIDs": message.properties.products.objectId#$i[$i<20]
+          };
+          $setContext("payload", $merge([$context.payload, $objectIDs]));
+        )
+
+  - name: validateDestPayload
+    template: |
+      (
+        $assert($context.payload.($not(filters and objectIDs)), "event can't have both objectIds and filters at the same time.");
+        $assert($context.payload.(filters or objectIDs), "Either filters or  objectIds is required.");
+      )
+
+  - name: prepareResponsePayloadForBatch
+    condition: $exists($context.batchMode)
+    template: |
+      $context.payload
+    onComplete: return
+
+  - name: prepareResponsePayload
+    condition: $not($exists($context.batchMode))
+    template: |
+      {
+        "body": {
+          "JSON": {"events": [$context.payload]},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": $ENDPOINT,
+        "headers": {
+          "X-Algolia-Application-Id": destination.Config.applicationId,
+          "X-Algolia-API-Key": destination.Config.apiKey
+        },
+        "params": {},
+        "files": {}
+      }

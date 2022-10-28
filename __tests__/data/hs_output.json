@@ -272,8 +272,7 @@
         "Authorization": "Bearer pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
         "Content-Type": "application/json"
       },
-      "params": {
-      },
+      "params": {},
       "body": {
         "JSON": {
           "properties": {
@@ -758,5 +757,8 @@
       "JSON_ARRAY": {}
     },
     "files": {}
+  },
+  {
+    "error": "[HS]:: rETL - Error during searching object record. 404 not found"
   }
 ]

@@ -7,7 +7,7 @@ const integration = "webhook";
 const name = "Webhook";
 
 const procWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.PROC);
-// const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
+const rtWorkflowEnginePromise = getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -44,13 +44,13 @@ describe(`${name} Tests`, () => {
     });
   });
 
-//   describe("Router Tests", () => {
-//     it("Payload", async () => {
-//       const rtWorkflowEngine = await rtWorkflowEnginePromise;
-//       const result = await rtWorkflowEngine.execute(inputRouterData);
-//       expect(JSON.parse(JSON.stringify(result.output))).toEqual(
-//         expectedRouterData
-//       );
-//     });
-//   });
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const rtWorkflowEngine = await rtWorkflowEnginePromise;
+      const result = await rtWorkflowEngine.execute(inputRouterData);
+      expect(JSON.parse(JSON.stringify(result.output))).toEqual(
+        expectedRouterData
+      );
+    });
+  });
 });

@@ -1,0 +1,32 @@
+steps:
+  - name: validateInput
+    template: |
+      (
+        $assert($type($) = "array" and $count($) > 0, "Invalid event array")
+      )
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+  - name: successfulEvents
+    template: |
+      (
+        $outputs.transform#$i.output.{
+            "batchedRequest": $,
+            "destination": $$[$i].destination,
+            "metadata": $$[$i].metadata,
+            "batched": false,
+            "statusCode": 200,
+        } ~> $toArray
+      )
+  - name: failedEvents
+    template: |
+      $outputs.transform#$i.error.{
+        "metadata": $toArray($$[$i].metadata),
+        "batched": false,
+        "statusCode": status,
+        "error": message
+      } ~> $toArray
+  - name: finalPayload
+    template: |
+      $toArray($outputs.($append(successfulEvents, failedEvents)))

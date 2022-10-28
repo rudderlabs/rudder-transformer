@@ -1,4 +1,5 @@
-[
+{
+  "output": [
     {
       "batchedRequest": {
         "version": "1",
@@ -36,14 +37,7 @@
         },
         "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 1
-        },
-        {
-          "jobId": 2
-        }
-      ],
+      "metadata": [{ "jobId": 1 }, { "jobId": 2 }],
       "batched": true,
       "statusCode": 200,
       "destination": {
@@ -74,7 +68,8 @@
               "cordova"
             ],
             "transformAt": "router",
-            "transformAtV1": "router"
+            "transformAtV1": "router",
+            "cdkV2TestThreshold": 1
           },
           "ResponseRules": {}
         },
@@ -82,14 +77,8 @@
           "apiKey": "apiKey",
           "applicationId": "appId",
           "eventTypeSettings": [
-            {
-              "from": "product clicked",
-              "to": "click"
-            },
-            {
-              "from": "product list viewed",
-              "to": "view"
-            }
+            { "from": "product clicked", "to": "click" },
+            { "from": "product list viewed", "to": "view" }
           ]
         },
         "Enabled": true,
@@ -98,4 +87,4 @@
       }
     }
   ]
-  
+}

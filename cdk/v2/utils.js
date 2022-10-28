@@ -49,7 +49,7 @@ async function getWorkflowPath(
 function getRootPathForDestination(destName) {
   // TODO: Resolve the CDK v2 destination directory
   // path from the root directory
-  return path.join(CDK_V2_ROOT_DIR, destName);
+  return path.join(CDK_V2_ROOT_DIR, "destinations", destName);
 }
 
 async function getPlatformBindingsPaths() {

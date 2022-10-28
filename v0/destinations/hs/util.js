@@ -263,7 +263,7 @@ const searchContacts = async (message, destination) => {
     getLookupFieldValue(message, "email");
   if (!lookupFieldInfo?.value) {
     throw new CustomError(
-      "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+      "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
       400
     );
   }

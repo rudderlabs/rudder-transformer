@@ -1224,10 +1224,12 @@ const handleDeletionOfUsers = async ctx => {
         }
       } catch (error) {
         // adding the status to the request
-        ctx.status = error.response ? error.response.status : 400;
+        const errorStatus = getErrorStatusCode(error);
+        ctx.status = errorStatus;
         const resp = {
-          statusCode: error.response ? error.response.status : 400,
+          statusCode: errorStatus,
           error: error.message || "Error occurred while processing"
+          // TODO: Add support to have an identifier for OAuth Token refresh
         };
         respList.push(resp);
         errNotificationClient.notify(error, "User Deletion", {

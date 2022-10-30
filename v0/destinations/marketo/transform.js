@@ -128,8 +128,8 @@ const createOrUpdateLead = async (
       clientResponse,
       "[Marketo Transformer]: During lookup lead",
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      authCache,
-      formattedDestination.ID
+      { destInfo: { authKey: formattedDestination.ID } },
+      authCache
     );
     if (data) {
       const { result } = data;
@@ -161,8 +161,8 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
       clientResponse,
       "[Marketo Transformer]: During lead look up using email",
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      authCache,
-      formattedDestination.ID
+      { destInfo: { authKey: formattedDestination.ID } },
+      authCache
     );
     if (data) {
       const { result } = data;
@@ -202,8 +202,8 @@ const lookupLeadUsingId = async (
       clientResponse,
       "[Marketo Transformer]: During lead look up using userId",
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      authCache,
-      formattedDestination.ID
+      { destInfo: { authKey: formattedDestination.ID } },
+      authCache
     );
     if (data) {
       const { result } = data;

@@ -34,7 +34,7 @@ function process(event) {
   const { message, destination } = event;
   const integrationsObj = getIntegrationsObj(message, "kafka");
   const { schemaId } = integrationsObj || {};
-  const topic = integrationsObj?.topic || destination.Config.topic;
+  const topic = integrationsObj?.topic || destination.Config?.topic;
   if (!topic) {
     throw new ErrorBuilder()
       .setStatus(400)

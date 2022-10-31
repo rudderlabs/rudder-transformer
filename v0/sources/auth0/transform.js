@@ -69,7 +69,7 @@ function process(events) {
   }
   eventList.forEach(event => {
     const resp = processEvent(event.data);
-    if (resp) {
+    if (resp && resp.userId && resp.userId !== "") {
       resp.properties.log_id = event.log_id;
       responses.push(removeUndefinedAndNullValues(resp));
     }

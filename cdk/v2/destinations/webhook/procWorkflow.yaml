@@ -9,10 +9,16 @@ steps:
         $assert(destination.Config.webhookUrl or false, "Invalid URL in destination config");
         $assert($exists(message.type), "message Type is not present. Aborting message.");
       )
+  - name: deduceMethod
+    template: |
+      (
+        $method := destination.Config.webhookMethod ? destination.Config.webhookMethod : 'POST';
+        $setContext("method", $method);
+      )  
   - name: buildHeaderBlock
     template: |
       (
-        $defaultHeaders := destination.Config.webhookMethod in ['POST', 'PUT', 'PATCH'] or $not($exists(destination.Config.webhookMethod)) ? {"content-type": "application/json"};
+        $defaultHeaders := $context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"};
         $finalHeaders := $merge([$defaultHeaders, $getHashFromArray(destination.Config.headers)]);
         $messageHeader := $type(message.header) = "object" ? message.header : {};
         $finalHeaders := $merge([$finalHeaders, $sift($messageHeader, function($v){(
@@ -30,12 +36,6 @@ steps:
         $finaleEndpoint := $finaleEndpoint & $messageAppendPath;
         $setContext("endpoint", $finaleEndpoint)
       )
-  - name: deduceMethod
-    template: |
-      (
-       $method := destination.Config.webhookMethod ? destination.Config.webhookMethod : 'POST';
-       $setContext("method", $method);
-      )  
   - name: prepareContext
     template: |
       (

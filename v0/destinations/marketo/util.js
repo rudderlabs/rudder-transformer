@@ -102,7 +102,7 @@ const marketoResponseHandler = (
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token) {
+    if (response && response.access_token && response.expires_in) {
       return response;
     }
     // marketo application level success
@@ -182,6 +182,21 @@ const responseHandler = (destinationResponse, destType) => {
   };
 };
 
+const getResponseHandlerData = (
+  clientResponse,
+  lookupMessage,
+  formattedDestination,
+  authCache
+) => {
+  return marketoResponseHandler(
+    clientResponse,
+    lookupMessage,
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    { destInfo: { authKey: formattedDestination.ID } },
+    authCache
+  );
+};
+
 const networkHandler = function() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
@@ -193,5 +208,6 @@ module.exports = {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest,
-  networkHandler
+  networkHandler,
+  getResponseHandlerData
 };

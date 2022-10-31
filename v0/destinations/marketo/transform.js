@@ -38,7 +38,8 @@ const {
 const {
   marketoResponseHandler,
   sendGetRequest,
-  sendPostRequest
+  sendPostRequest,
+  getResponseHandlerData
 } = require("./util");
 const logger = require("../../../logger");
 
@@ -124,11 +125,10 @@ const createOrUpdateLead = async (
         }
       }
     );
-    const data = marketoResponseHandler(
+    const data = getResponseHandlerData(
       clientResponse,
       "[Marketo Transformer]: During lookup lead",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      { destInfo: { authKey: formattedDestination.ID } },
+      formattedDestination,
       authCache
     );
     if (data) {
@@ -157,11 +157,10 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
         headers: { Authorization: `Bearer ${token}` }
       }
     );
-    const data = marketoResponseHandler(
+    const data = getResponseHandlerData(
       clientResponse,
       "[Marketo Transformer]: During lead look up using email",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      { destInfo: { authKey: formattedDestination.ID } },
+      formattedDestination,
       authCache
     );
     if (data) {
@@ -198,11 +197,10 @@ const lookupLeadUsingId = async (
         headers: { Authorization: `Bearer ${token}` }
       }
     );
-    const data = marketoResponseHandler(
+    const data = getResponseHandlerData(
       clientResponse,
       "[Marketo Transformer]: During lead look up using userId",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      { destInfo: { authKey: formattedDestination.ID } },
+      formattedDestination,
       authCache
     );
     if (data) {

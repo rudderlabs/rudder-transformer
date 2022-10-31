@@ -9,7 +9,6 @@ const {
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util/index");
 

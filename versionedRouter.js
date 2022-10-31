@@ -138,7 +138,11 @@ async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
     const startTime = Date.now();
     const cdkResult = await getCdkV2Result(destType, input, flowType);
     const cdkTime = Date.now() - startTime;
-    stats.gauge("cdk_live_compare_time_diff", cdkTime - v0Time, {
+    stats.gauge("v0_transformation_time", v0Time, {
+      destType,
+      flowType
+    });
+    stats.gauge("cdk_transformation_time", cdkTime, {
       destType,
       flowType
     });

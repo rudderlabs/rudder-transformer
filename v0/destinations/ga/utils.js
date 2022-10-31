@@ -27,20 +27,19 @@ const gaResponseHandler = gaResponse => {
     const isInvalidCredsError = response.error?.errors?.some(errObj => {
       return errObj.reason && errObj.reason === "invalidCredentials";
     });
-    if (isInvalidCredsError) {
+    if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
       throw new ErrorBuilder()
         .setMessage("[GA] invalid credentials")
         .setStatus(500)
         .setDestinationResponse(response)
         .setAuthErrorCategory(REFRESH_TOKEN)
         .build();
-    } else {
-      throw new ErrorBuilder()
-        .setMessage("[GA] Error occurred while completing deletion request")
-        .setStatus(status)
-        .setDestinationResponse(response)
-        .build();
     }
+    throw new ErrorBuilder()
+      .setMessage("[GA] Error occurred while completing deletion request")
+      .setStatus(status)
+      .setDestinationResponse(response)
+      .build();
   }
   return { response, status };
 };

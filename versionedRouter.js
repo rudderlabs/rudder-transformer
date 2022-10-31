@@ -1200,6 +1200,8 @@ const handleDeletionOfUsers = async ctx => {
 
   const { body } = ctx.request;
   const respList = [];
+  const rudderDestInfoHeader = ctx.get("x-rudder-dest-info");
+  const rudderDestInfo = JSON.parse(rudderDestInfoHeader);
   let response;
   await Promise.all(
     body.map(async b => {
@@ -1218,7 +1220,10 @@ const handleDeletionOfUsers = async ctx => {
       }
 
       try {
-        response = await destUserDeletionHandler.processDeleteUsers(b);
+        response = await destUserDeletionHandler.processDeleteUsers({
+          ...b,
+          rudderDestInfo
+        });
         if (response) {
           respList.push(response);
         }
@@ -1231,7 +1236,14 @@ const handleDeletionOfUsers = async ctx => {
           error: error.message || "Error occurred while processing"
           // TODO: Add support to have an identifier for OAuth Token refresh
         };
+        // Support for OAuth refresh
+        if (error.authErrorCategory) {
+          resp.authErrorCategory = error.authErrorCategory;
+        }
         respList.push(resp);
+        logger.error(
+          `Error Response List: ${JSON.stringify(respList, null, 2)}`
+        );
         errNotificationClient.notify(error, "User Deletion", {
           ...resp,
           ...getCommonMetadata(ctx),

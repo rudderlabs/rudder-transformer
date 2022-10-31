@@ -8,47 +8,58 @@ const { gaResponseHandler } = require("./utils");
  * This function will help to delete the users one by one from the userAttributes array.
  * @param {*} userAttributes Array of objects with userId, emaail and phone
  * @param {*} config Destination.Config provided in dashboard
+ * @param {Record<string, any> | undefined} rudderDestInfo contains information about the authorisation details to successfully send deletion request
  * @returns
  */
-const userDeletionHandler = async (userAttributes, config) => {
+const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
+  const { secret } = rudderDestInfo;
   // TODO: Should we do more validations ?
-  userAttributes.forEach(async userAttribute => {
-    if (!userAttribute.userId) {
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
-    }
-    // Reference for building userDeletionRequest
-    // Ref: https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest#resource
-    const reqBody = {
-      kind: "analytics#userDeletionRequest",
-      id: {
-        type: "USER_ID",
-        userId: userAttribute.userId
+  await Promise.all(
+    userAttributes.map(async userAttribute => {
+      if (!userAttribute.userId) {
+        throw new ErrorBuilder()
+          .setMessage("User id for deletion not present")
+          .setStatus(400)
+          .build();
       }
-    };
-    // TODO: Check with team if this condition needs to be handled
-    if (config.useNativeSDK) {
-      reqBody.propertyId = config.trackingID;
-    } else {
-      reqBody.webPropertyId = config.trackingID;
-    }
-    // TODO: Need to have access token information provided
-    const headers = {};
-    const response = await httpPOST(GA_USER_DELETION_ENDPOINT, reqBody, {
-      headers
-    });
-    // process the response to know about refreshing scenario
-    gaResponseHandler(response);
-  });
+      // Reference for building userDeletionRequest
+      // Ref: https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest#resource
+      const reqBody = {
+        kind: "analytics#userDeletionRequest",
+        id: {
+          type: "USER_ID",
+          userId: userAttribute.userId
+        }
+      };
+      // TODO: Check with team if this condition needs to be handled
+      if (config.useNativeSDK) {
+        reqBody.propertyId = config.trackingID;
+      } else {
+        reqBody.webPropertyId = config.trackingID;
+      }
+      const headers = {
+        Authorization: `Bearer ${secret?.access_token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      };
+      const response = await httpPOST(GA_USER_DELETION_ENDPOINT, reqBody, {
+        headers
+      });
+      // process the response to know about refreshing scenario
+      return gaResponseHandler(response);
+    })
+  );
   return { statusCode: 200, status: "successful" };
 };
 
-const processDeleteUsers = event => {
-  const { userAttributes, config } = event;
+const processDeleteUsers = async event => {
+  const { userAttributes, config, rudderDestInfo } = event;
   executeCommonValidations(userAttributes);
-  const resp = userDeletionHandler(userAttributes, config);
+  const resp = await userDeletionHandler(
+    userAttributes,
+    config,
+    rudderDestInfo
+  );
   return resp;
 };
 

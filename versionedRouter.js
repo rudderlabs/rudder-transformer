@@ -110,9 +110,7 @@ function getCommonMetadata(ctx) {
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
-    cdkResult.output = JSON.parse(
-      JSON.stringify(await processCdkV2Workflow(destName, event, flowType))
-    );
+    cdkResult.output = await processCdkV2Workflow(destName, event, flowType);
   } catch (error) {
     cdkResult.error = {
       message: error.message,
@@ -122,7 +120,7 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
-async function compareWithCdkV2(destType, input, flowType, v0Result) {
+async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
     let destThreshold = getCdkV2TestThreshold(input);
@@ -142,7 +140,13 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     if (shouldNotCompare) {
       return;
     }
+    const startTime = Date.now();
     const cdkResult = await getCdkV2Result(destType, input, flowType);
+    const cdkTime = Date.now() - startTime;
+    stats.gauge("cdk_live_compare_time_diff", cdkTime - v0Time, {
+      destType,
+      flowType
+    });
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
@@ -169,21 +173,24 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
 }
 
 async function handleV0Destination(destHandler, destType, input, flowType) {
-  const result = {};
+  const v0Result = {};
+  let v0Time = 0;
   try {
-    result.output = await destHandler(input);
-    return result.output;
+    const startTime = Date.now();
+    v0Result.output = await destHandler(input);
+    v0Time = Date.now() - startTime;
+    return v0Result.output;
   } catch (error) {
-    result.error = {
+    v0Result.error = {
       message: error.message,
       statusCode: getErrorStatusCode(error)
     };
     throw error;
   } finally {
     if (process.env.NODE_ENV === "test") {
-      await compareWithCdkV2(destType, input, flowType, result);
+      await compareWithCdkV2(destType, input, flowType, v0Result);
     } else {
-      compareWithCdkV2(destType, input, flowType, result);
+      compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
     }
   }
 }

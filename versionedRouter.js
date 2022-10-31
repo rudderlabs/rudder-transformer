@@ -178,7 +178,10 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     const startTime = Date.now();
     v0Result.output = await destHandler(input);
     v0Time = Date.now() - startTime;
-    return v0Result.output;
+    // Comparison is happening in async and after return from here
+    // this object is getting modified so comparison was failing to
+    // avoid that we are cloning it.
+    return _.cloneDeep(v0Result.output);
   } catch (error) {
     v0Result.error = {
       message: error.message,
@@ -187,7 +190,7 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     throw error;
   } finally {
     if (process.env.NODE_ENV === "test") {
-      await compareWithCdkV2(destType, input, flowType, v0Result);
+      await compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
     } else {
       compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
     }

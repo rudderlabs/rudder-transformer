@@ -580,7 +580,7 @@
     ]
   },
   {
-    "description": "",
+    "description": "Update tenant settings",
     "input": [
       {
         "log_id": "90020221031061527239169676960191065529099349299958906898",

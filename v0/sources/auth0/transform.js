@@ -38,43 +38,44 @@ const prepareGroupPayload = event => {
   return message;
 };
 
-function processEvent(event) {
-  // Dropping the event if type is not present
-  if (!event.type) {
-    return null;
-  }
-  const eventType = event.type;
-  // ss -> successful signup
-  if (eventType === "ss") {
-    return prepareIdentifyPayload(event);
-  }
-  // sapi -> Success API Operation
-  if (eventType === "sapi") {
-    if (
-      event.description &&
-      event.description === "Add members to an organization"
-    ) {
-      return prepareGroupPayload(event);
-    }
-    return prepareTrackPayload(event);
-  }
-  return prepareTrackPayload(event);
-}
-
-function process(events) {
+function processEvent(eventList) {
   const responses = [];
-  let eventList = events;
-  if (!Array.isArray(events)) {
-    eventList = events.logs ? events.logs : [events];
-  }
   eventList.forEach(event => {
-    const resp = processEvent(event.data);
-    if (resp && resp.userId && resp.userId !== "") {
-      resp.properties.log_id = event.log_id;
-      responses.push(removeUndefinedAndNullValues(resp));
+    let response = {};
+    const { data } = event;
+    // Dropping the event if type is not present
+    if (data.type) {
+      const eventType = data.type;
+      // ss -> successful signup
+      if (eventType === "ss") {
+        response = prepareIdentifyPayload(data);
+      } else if (
+        eventType === "sapi" &&
+        data.description === "Add members to an organization"
+      ) {
+        const payload = prepareGroupPayload(data);
+        // Dropping event if groupId is not present for group call
+        if (payload?.groupId) {
+          response = payload;
+        }
+      } else {
+        response = prepareTrackPayload(data);
+      }
+      if (response?.userId) {
+        response.properties.log_id = event.log_id;
+        responses.push(removeUndefinedAndNullValues(response));
+      }
     }
   });
   return responses;
+}
+
+function process(events) {
+  let eventList = events;
+  if (!Array.isArray(events)) {
+    eventList = events.logs || [events];
+  }
+  return processEvent(eventList);
 }
 
 exports.process = process;

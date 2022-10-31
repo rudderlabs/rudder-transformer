@@ -6,6 +6,7 @@
  * @param {*} event
  */
 const getGroupId = event => {
+  if (!event?.details?.request?.path) return "";
   const { path } = event.details.request;
   const pathArray = path.split("/");
   return pathArray[pathArray.length - 2];

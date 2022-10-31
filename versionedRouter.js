@@ -55,6 +55,7 @@ const proxyTestModeEnabled =
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
+const NS_PER_SEC = 1e9;
 
 const router = new Router();
 
@@ -135,9 +136,10 @@ async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
     ) {
       return;
     }
-    const startTime = Date.now();
+    const startTime = process.hrtime();
     const cdkResult = await getCdkV2Result(destType, input, flowType);
-    const cdkTime = Date.now() - startTime;
+    const diff = process.hrtime(startTime);
+    const cdkTime = diff[0] * NS_PER_SEC + diff[1];
     stats.gauge("v0_transformation_time", v0Time, {
       destType,
       flowType
@@ -175,9 +177,10 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
   const v0Result = {};
   let v0Time = 0;
   try {
-    const startTime = Date.now();
+    const startTime = process.hrtime();
     v0Result.output = await destHandler(input);
-    v0Time = Date.now() - startTime;
+    const diff = process.hrtime(startTime);
+    v0Time = diff[0] * NS_PER_SEC + diff[1];
     // Comparison is happening in async and after return from here
     // this object is getting modified so comparison was failing to
     // avoid that we are cloning it.

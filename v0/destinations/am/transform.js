@@ -891,6 +891,12 @@ function batch(destEvents) {
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {
+      const errorResponse = getErrorRespEvents(
+        metadata,
+        400,
+        "Both userId and deviceId cannot be undefined"
+      );
+      respList.push(errorResponse);
       return;
     }
     // check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or

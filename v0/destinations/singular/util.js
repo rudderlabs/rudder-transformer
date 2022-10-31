@@ -139,11 +139,6 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     } else {
       payload.dnt = 1;
     }
-    // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
-    payload.openuri = message.properties.url || "";
-    if (platform === "android" || platform === "Android") {
-      payload.install_source = message.properties.referring_application || "";
-    }
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(
@@ -168,6 +163,12 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     payload.c = "carrier";
   }
   payload = removeUndefinedAndNullValues(payload);
+
+  // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
+  payload.openuri = message.properties.url || "";
+  if (platform === "android" || platform === "Android") {
+    payload.install_source = message.properties.referring_application || "";
+  }
   return { payload, eventAttributes };
 };
 

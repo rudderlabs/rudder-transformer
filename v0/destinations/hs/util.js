@@ -9,7 +9,8 @@ const {
   CustomError,
   isEmpty,
   getHashFromArray,
-  getDestinationExternalIDInfoForRetl
+  getDestinationExternalIDInfoForRetl,
+  getValueFromMessage
 } = require("../../util");
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -206,6 +207,42 @@ const getEmailAndUpdatedProps = properties => {
 /* NEW API util functions */
 
 /**
+ * @param {*} message The entire message object
+ * @param {*} sourceKey the base object to search the lookup value from
+ * @param {*} lookupField destination.Config.lookupField or email
+ * @returns returns the lookup value
+ */
+const getMappingFieldValueFormMessage = (message, sourceKey, lookupField) => {
+  const baseObject = get(message, `${sourceKey}`);
+  const lookupValue = baseObject ? baseObject[`${lookupField}`] : null;
+  return lookupValue;
+};
+
+/**
+ * A function to retrieve lookup value by searching the lookup field in
+ * ["traits", "context.traits", "properties"]
+ * @param {*} message The message object
+ * @param {*} lookupField either destination.Config.lookupField or email
+ * @returns object containing the name of the lookupField and the lookup value
+ */
+const getLookupFieldValue = (message, lookupField) => {
+  const SOURCE_KEYS = ["traits", "context.traits", "properties"];
+  let value = getValueFromMessage(message, `${lookupField}`);
+  if (!value) {
+    // Check in free-flowing object level
+    SOURCE_KEYS.some(sourceKey => {
+      value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
+      if (value) {
+        return true;
+      }
+      return false;
+    });
+  }
+  const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
+  return lookupValueInfo;
+};
+
+/**
  * look for the contact in hubspot and extract its contactId for updation
  * Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
  * @param {*} destination
@@ -215,45 +252,18 @@ const searchContacts = async (message, destination) => {
   const { Config } = destination;
   let searchContactsResponse;
   let contactId;
-  const traits = getFieldValueFromMessage(message, "traits");
-  let propertyName;
-
-  if (!traits) {
+  if (!getFieldValueFromMessage(message, "traits") && !message.properties) {
     throw new CustomError(
       "[HS]:: Identify - Invalid traits value for lookup field",
       400
     );
   }
-
-  // lookupField key provided in Config.lookupField not found in traits
-  // then default it to email
-  if (!traits[`${Config.lookupField}`]) {
-    propertyName = "email";
-
-    if (!traits.email) {
-      throw new CustomError(
-        "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
-        400
-      );
-    }
-  } else {
-    // look for propertyName (key name) in traits
-    // Config.lookupField -> lookupField
-    // traits: { lookupField: email }
-    propertyName = traits[`${Config.lookupField}`];
-  }
-
-  // extract its value from the known propertyName (key name)
-  // if not found in our structure then look for it in traits
-  // Config.lookupField -> lookupField
-  // eg: traits: { lookupField: email, email: "test@test.com" }
-  const value =
-    getFieldValueFromMessage(message, propertyName) ||
-    traits[`${propertyName}`];
-
-  if (!value) {
+  const lookupFieldInfo =
+    getLookupFieldValue(message, Config.lookupField) ||
+    getLookupFieldValue(message, "email");
+  if (!lookupFieldInfo?.value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
+      "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
       400
     );
   }
@@ -263,15 +273,15 @@ const searchContacts = async (message, destination) => {
       {
         filters: [
           {
-            propertyName,
-            value,
+            propertyName: lookupFieldInfo.fieldName,
+            value: lookupFieldInfo.value,
             operator: "EQ"
           }
         ]
       }
     ],
     sorts: ["ascending"],
-    properties: [propertyName],
+    properties: [lookupFieldInfo.fieldName],
     limit: 2,
     after: 0
   };

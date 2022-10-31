@@ -15,9 +15,10 @@ steps:
       (
         $eventTypeMap := $eventTypeMapping(destination.Config);
         $event := message.event.$trim().$lowercase();
-        $eventType := $getValueFromMessage(message, "properties.eventType") ? $getValueFromMessage(message, "properties.eventType") : $lookup($eventTypeMap, $event);
-        $assert($exists($eventType), "eventType is mandatory for track call");
         $setContext("payload", $constructPayload(message, $trackMapping));
+        $eventType := $getValueFromMessage(message, "properties.eventType");
+        $not($exists($eventType)) ? $eventType := $lookup($eventTypeMap, $event);
+        $assert($exists($eventType), "eventType is mandatory for track call");
         $newPayload := $merge([$context.payload, { "eventName": $event, "eventType": $eventType }]);
         $setContext("payload", $newPayload);
         $setContext("payload", $genericpayloadValidator($context.payload));

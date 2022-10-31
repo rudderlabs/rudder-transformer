@@ -37,12 +37,8 @@ const { getIntegrations } = require("./routes/utils");
 const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
-const { getWorkflowEngine } = require("./cdk/v2/handler");
-const {
-  getErrorInfo,
-  isCdkV2Destination,
-  getCdkV2TestThreshold
-} = require("./cdk/v2/utils");
+const { isCdkV2Destination, getCdkV2TestThreshold } = require("./cdk/v2/utils");
+const { getWorkflowEngine, processCdkV2Workflow } = require("./cdk/v2/handler");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -111,23 +107,11 @@ function getCommonMetadata(ctx) {
   };
 }
 
-async function handleCdkV2(destType, parsedEvent, flowType) {
-  try {
-    const workflowEngine = await getWorkflowEngine(destType, flowType);
-
-    const result = await workflowEngine.execute(parsedEvent);
-    // TODO: Handle remaining output scenarios
-    return result.output;
-  } catch (error) {
-    throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
-  }
-}
-
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
     cdkResult.output = JSON.parse(
-      JSON.stringify(await handleCdkV2(destName, event, flowType))
+      JSON.stringify(await processCdkV2Workflow(destName, event, flowType))
     );
   } catch (error) {
     cdkResult.error = {
@@ -136,22 +120,6 @@ async function getCdkV2Result(destName, event, flowType) {
     };
   }
   return cdkResult;
-}
-
-function removeSensitiveData(result) {
-  const newResult = {};
-  Object.keys(result).forEach(key => {
-    if (
-      key.includes("metadata") ||
-      key.includes("error") ||
-      key.includes("statusCode")
-    ) {
-      newResult[key] = result[key];
-    } else {
-      newResult[key] = "***";
-    }
-  });
-  return newResult;
 }
 
 async function compareWithCdkV2(destType, input, flowType, v0Result) {
@@ -256,7 +224,7 @@ async function handleDest(ctx, version, destination) {
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
         if (isCdkV2Destination(parsedEvent)) {
-          respEvents = await handleCdkV2(
+          respEvents = await processCdkV2Workflow(
             destination,
             parsedEvent,
             TRANSFORMER_METRIC.ERROR_AT.PROC
@@ -428,47 +396,90 @@ async function handleValidation(ctx) {
   });
 }
 
-async function routerHandleDest(ctx) {
-  const { destType, input } = ctx.request.body;
-  const routerDestHandler = getDestHandler("v0", destType);
-  if (!routerDestHandler || !routerDestHandler.processRouterDest) {
-    ctx.status = 404;
-    ctx.body = `${destType} doesn't support router transform`;
-    return null;
+async function isValidRouterDest(event, destType) {
+  const isCdkV2Dest = isCdkV2Destination(event);
+  if (isCdkV2Dest) {
+    try {
+      await getWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
+  try {
+    const routerDestHandler = getDestHandler("v0", destType);
+    return routerDestHandler?.processRouterDest !== undefined;
+  } catch (error) {
+    return false;
+  }
+}
+async function routerHandleDest(ctx) {
   const respEvents = [];
-  const allDestEvents = _.groupBy(input, event => event.destination.ID);
-  await Promise.all(
-    Object.values(allDestEvents).map(async destInput => {
-      const newDestInput = processDynamicConfig(destInput, "router");
-      let listOutput;
-      if (isCdkV2Destination(newDestInput[0])) {
-        listOutput = await handleCdkV2(
-          destType,
-          newDestInput,
-          TRANSFORMER_METRIC.ERROR_AT.RT
+  let destType;
+  try {
+    const { input } = ctx.request.body;
+    destType = ctx.request.body.destType;
+    const isValidRTDest = await isValidRouterDest(input[0], destType);
+    if (!isValidRTDest) {
+      ctx.status = 404;
+      ctx.body = `${destType} doesn't support router transform`;
+      return null;
+    }
+    const allDestEvents = _.groupBy(input, event => event.destination.ID);
+    await Promise.all(
+      Object.values(allDestEvents).map(async destInputArray => {
+        const newDestInputArray = processDynamicConfig(
+          destInputArray,
+          "router"
         );
-      } else {
-        listOutput = await handleV0Destination(
-          routerDestHandler.processRouterDest,
-          destType,
-          newDestInput,
-          TRANSFORMER_METRIC.ERROR_AT.RT
-        );
+        let listOutput;
+        if (isCdkV2Destination(newDestInputArray[0])) {
+          listOutput = await processCdkV2Workflow(
+            destType,
+            newDestInputArray,
+            TRANSFORMER_METRIC.ERROR_AT.RT
+          );
+        } else {
+          const routerDestHandler = getDestHandler("v0", destType);
+          listOutput = await handleV0Destination(
+            routerDestHandler.processRouterDest,
+            destType,
+            newDestInputArray,
+            TRANSFORMER_METRIC.ERROR_AT.RT
+          );
+        }
+        respEvents.push(...listOutput);
+      })
+    );
+    respEvents
+      .filter(
+        resp =>
+          "error" in resp &&
+          _.isObject(resp.statTags) &&
+          !_.isEmpty(resp.statTags)
+      )
+      .forEach(resp => {
+        set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+      });
+  } catch (error) {
+    logger.error(error);
+    const errObj = generateErrorObject(
+      error,
+      destType,
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+    );
+
+    const resp = {
+      statusCode: errObj.status,
+      error: errObj.message || "Error occurred while processing the payload.",
+      statTags: {
+        ...errObj.statTags,
+        errorAt: TRANSFORMER_METRIC.ERROR_AT.RT
       }
-      respEvents.push(...listOutput);
-    })
-  );
-  respEvents
-    .filter(
-      resp =>
-        "error" in resp &&
-        _.isObject(resp.statTags) &&
-        !_.isEmpty(resp.statTags)
-    )
-    .forEach(resp => {
-      set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
-    });
+    };
+
+    respEvents.push(resp);
+  }
   ctx.body = { output: respEvents };
   return ctx.body;
 }

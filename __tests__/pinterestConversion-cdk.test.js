@@ -1,19 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
-const { getWorkflowEngine } = require("../cdk/v2/handler");
+const { processCdkV2Workflow } = require("../cdk/v2/handler");
 
 const integration = "pinterest_tag";
 const name = "Pinterest Conversion API";
-
-const procWorkflowEnginePromise = getWorkflowEngine(
-  integration,
-  TRANSFORMER_METRIC.ERROR_AT.PROC
-);
-const rtWorkflowEnginePromise = getWorkflowEngine(
-  integration,
-  TRANSFORMER_METRIC.ERROR_AT.RT
-);
 
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
@@ -29,9 +20,12 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
-          const procWorkflowEngine = await procWorkflowEnginePromise;
-          const result = await procWorkflowEngine.execute(input);
-          expect(result.output).toEqual(expected);
+          const output = await processCdkV2Workflow(
+            integration,
+            input,
+            TRANSFORMER_METRIC.ERROR_AT.PROC
+          );
+          expect(output).toEqual(expected);
         } catch (error) {
           expect(error.message).toEqual(expected.error);
         }
@@ -66,22 +60,32 @@ describe(`${name} Tests`, () => {
     const expectedRouterErrorData = JSON.parse(outputRouterErrorDataFile);
 
     it("Payload with error input", async () => {
-      const rtWorkflowEngine = await rtWorkflowEnginePromise;
-      const result = await rtWorkflowEngine.execute(inputRouterErrorData);
-      expect(result.output).toEqual(expectedRouterErrorData);
+      const output = await processCdkV2Workflow(
+        integration,
+        inputRouterErrorData,
+        TRANSFORMER_METRIC.ERROR_AT.RT
+      );
+      expect(output).toEqual(expectedRouterErrorData);
     });
 
     it("Payload with Default Batch size", async () => {
-      const rtWorkflowEngine = await rtWorkflowEnginePromise;
-      const result = await rtWorkflowEngine.execute(inputRouterData);
-      expect(result.output).toEqual(expectedRouterData);
+      const output = await processCdkV2Workflow(
+        integration,
+        inputRouterData,
+        TRANSFORMER_METRIC.ERROR_AT.RT
+      );
+      expect(output).toEqual(expectedRouterData);
     });
     it("Payload with Batch size 3", async () => {
-      const rtWorkflowEngine = await rtWorkflowEnginePromise;
-      const result = await rtWorkflowEngine.execute(inputRouterData, {
-        MAX_BATCH_SIZE: 3
-      });
-      expect(result.output).toEqual(expectedRouterBatchData);
+      const output = await processCdkV2Workflow(
+        integration,
+        inputRouterData,
+        TRANSFORMER_METRIC.ERROR_AT.RT,
+        {
+          MAX_BATCH_SIZE: 3
+        }
+      );
+      expect(output).toEqual(expectedRouterBatchData);
     });
   });
 });

@@ -4,7 +4,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  CustomError
 } = require("../../util");
 
 function responseBuilderSimple(payload, attributionConfig) {
@@ -28,7 +29,7 @@ function responseBuilderSimple(payload, attributionConfig) {
 
 function getTransformedJSON(message) {
   if (!message.type) {
-    throw new Error("Event type is required");
+    throw new CustomError("Event type is required");
   }
 
   const traits = getFieldValueFromMessage(message, "traits");
@@ -47,7 +48,7 @@ function getTransformedJSON(message) {
 function getAttributionConfig(destination) {
   const { writeKey } = destination.Config;
   if (!writeKey) {
-    throw new Error("No writeKey in config");
+    throw new CustomError("No writeKey in config");
   }
 
   return { writeKey };

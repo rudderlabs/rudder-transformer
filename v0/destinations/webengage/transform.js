@@ -102,7 +102,7 @@ const processEvent = (message, destination) => {
       message.event = eventName;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
-      throw new Error("[WEBENGAGE]: Message type not supported");
+      throw new CustomError("[WEBENGAGE]: Message type not supported");
   }
 };
 

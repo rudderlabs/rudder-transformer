@@ -27,11 +27,11 @@ function init() {
 }
 
 function notify(err, context, metadata) {
-  const deniedErrType = errorTypesDenyList.some(errType => {
+  const isDeniedErrType = errorTypesDenyList.some(errType => {
     return err instanceof errType;
   });
 
-  if (deniedErrType) return;
+  if (isDeniedErrType) return;
 
   // For errors thrown in the code using ErrorBuilder
   // TODO: This need to be cleaned up once the entire code base

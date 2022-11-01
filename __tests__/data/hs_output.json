@@ -530,7 +530,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
+    "error": "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -713,10 +713,6 @@
   {
     "statusCode": 400,
     "error": "[HS]:: Identify - Invalid traits value for lookup field"
-  },
-  {
-    "statusCode": 400,
-    "error": "[HS] Identify:: 'firstname' lookup field for contact lookup not found in traits"
   },
   {
     "statusCode": 400,

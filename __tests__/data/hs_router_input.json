@@ -12,8 +12,7 @@
         "traits": {
           "email": "noname@email.com",
           "firstname": "Test Hubspot22",
-          "anonymousId": "4444",
-          "lookupField": "email"
+          "anonymousId": "4444"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -57,7 +56,7 @@
         "hubID": "22315509",
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
@@ -133,8 +132,7 @@
         "traits": {
           "email": "noname@email.com",
           "firstname": "Test Hubspot44",
-          "anonymousId": "4444",
-          "lookupField": "email"
+          "anonymousId": "4444"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -178,7 +176,7 @@
         "hubID": "22315509",
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
@@ -345,8 +343,7 @@
         "traits": {
           "email": "testhubspot@email.com",
           "firstname": "Test Hubspot22",
-          "anonymousId": "4444",
-          "lookupField": "email"
+          "anonymousId": "4444"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -390,7 +387,7 @@
         "hubID": "22315509",
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
@@ -466,8 +463,7 @@
         "traits": {
           "email": "testhubspot@email.com",
           "firstname": "Test Hubspot44",
-          "anonymousId": "4444",
-          "lookupField": "email"
+          "anonymousId": "4444"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -511,7 +507,7 @@
         "hubID": "22315509",
         "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",

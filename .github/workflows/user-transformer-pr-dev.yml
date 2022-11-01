@@ -35,6 +35,7 @@ jobs:
         run: echo "##[set-output name=branch;]ut-$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
+
       - name: Docker build, tag, test and push images
         run: |
           docker build -t rudderlabs/develop-rudder-transformer:${{ steps.extract_branch.outputs.branch }} -f Dockerfile-ut-func . --build-arg version="${{ steps.extract_branch.outputs.branch }}" --build-arg GIT_COMMIT_SHA="${{ github.event.pull_request.head.sha }}"

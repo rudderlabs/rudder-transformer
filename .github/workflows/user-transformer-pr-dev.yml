@@ -11,6 +11,9 @@ on:
     branches:
       - "chore.userTransformDockerBuilds"
 
+env:
+
+
 jobs:
   docker-image-build:
     runs-on: ubuntu-latest
@@ -23,15 +26,10 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]ut-$(echo ${GITHUB_REF#refs/heads/})"
+        run: |
+          echo "##[set-output name=branch;]ut-$(echo ${GITHUB_REF#refs/heads/})"
+          echo ${{ secrets.GITHUB_TOKEN}}
         id: extract_branch
-      
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            name=rudderlabs/develop-rudder-transformer
       
       - name: Login to Docker Hub
         uses: docker/login-action@v2

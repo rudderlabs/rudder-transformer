@@ -3,7 +3,6 @@
   "properties.price": "af_price",
   "properties.product_id": "af_content_id",
   "properties.category": "af_content_type",
-  "properties.currency": "af_currency",
   "properties.quantity": "af_quantity",
   "properties.order_id": "af_order_id"
 }

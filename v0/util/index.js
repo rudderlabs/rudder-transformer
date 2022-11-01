@@ -21,6 +21,7 @@ const {
   DestCanonicalNames
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { TransformationError } = require("./errors");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -795,7 +796,7 @@ const handleMetadataForValue = (
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
         if (Number.isNaN(formattedVal)) {
-          throw new Error("Revenue is not in the correct format");
+          throw new TransformationError("Revenue is not in the correct format");
         }
         break;
       case "toString":
@@ -908,7 +909,7 @@ const handleMetadataForValue = (
     }
     if (!foundVal) {
       if (strictMultiMap) {
-        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
+        throw new TransformationError(`Invalid entry for key ${destKey}`, 400);
       } else {
         formattedVal = undefined;
       }
@@ -1036,8 +1037,9 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new Error(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
+        throw new TransformationError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`,
+          400
         );
       }
     });
@@ -1439,6 +1441,8 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 class CustomError extends Error {
   constructor(message, statusCode, metadata) {
     super(message);
+    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
+    // Apart from destination transformation
     this.response = { status: statusCode, metadata };
   }
 }
@@ -1464,6 +1468,14 @@ function generateErrorObject(error, destination = "", transformStage) {
   if (statTags.destination) {
     statTags.destType = statTags.destination;
     delete statTags.destination;
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.destType) {
+    statTags.destType = destination.toUpperCase();
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.stage) {
+    statTags.stage = transformStage;
   }
   if (statTags.destType) {
     // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
@@ -1738,6 +1750,7 @@ const flattenMultilevelPayload = payload => {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
+  TransformationError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,

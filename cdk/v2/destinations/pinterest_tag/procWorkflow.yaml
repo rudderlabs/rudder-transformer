@@ -1,24 +1,32 @@
 bindings:
   - name: EventType
-    path: ../../../constants
+    path: ../../../../constants
   - name: SourceKeys
-    path: ../../../v0/util/data/GenericFieldMapping.json
+    path: ../../../../v0/util/data/GenericFieldMapping.json
     exportAll: true
-  - path: ../../../v0/destinations/pinterest_tag/utils
+  - path: ../../../../v0/destinations/pinterest_tag/utils
   - name: ENDPOINT
-    path: ../../../v0/destinations/pinterest_tag/config
+    path: ../../../../v0/destinations/pinterest_tag/config
 steps:
+  - name: checkIfProcessed
+    condition: $exists(message.statusCode)
+    template: |
+      ($context.batchMode ? message.body.JSON : $)
+    onComplete: return
+  - name: messageType
+    template: |
+      $lowercase(message.type)
   - name: validateInput
     template: |
       (
         $assert(destination.Config.advertiserId or false, "Advertiser Id not found. Aborting");
-        $assert($exists(message.type), "Message type is not present. Aborting message.");
-        $assert(message.type in [$EventType.TRACK, $EventType.PAGE, $EventType.SCREEN], 
-          "message type " & message.type & " is not supported")
+        $assert($exists($outputs.messageType), "Message type is not present. Aborting message.");
+        $assert($outputs.messageType in [$EventType.TRACK, $EventType.PAGE, $EventType.SCREEN], 
+          "message type " & $outputs.messageType & " is not supported")
       )
   - name: validateInputForTrack
     description: Additional validation for Track events
-    condition: message.type = $EventType.TRACK
+    condition: $outputs.messageType = $EventType.TRACK
     template: |
       (
         $assert($exists(message.event) or $exists(message.name), 
@@ -103,7 +111,7 @@ steps:
             " pair of client_ip_address and client_user_agent.")
       )
   - name: ecomFields
-    condition: message.type = $EventType.TRACK
+    condition: $outputs.messageType = $EventType.TRACK
     steps:
       - name: customFields
         template: |
@@ -154,12 +162,12 @@ steps:
     steps:
       - name: eventNamesForPage
         description: Computes event name for page message type
-        condition: message.type = $EventType.PAGE
+        condition: $outputs.messageType = $EventType.PAGE
         template: |
           ($exists(message.category) ? [ "ViewCategory" ] : [ "PageVisit" ])
       - name: eventNamesForOthers
         description: Computes event name for other message types
-        condition: message.type != $EventType.PAGE
+        condition: $outputs.messageType != $EventType.PAGE
         template: |
           (
             $event := message.[event, name][0];

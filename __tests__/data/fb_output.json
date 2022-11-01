@@ -250,7 +250,7 @@
     "statusCode": 200
   },
   {
-    "message": "Extended device information i.e, \"context.device.type\" is required"
+    "message": "Platform is not defined"
   },
   {
     "version": "1",

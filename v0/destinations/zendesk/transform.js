@@ -151,6 +151,9 @@ async function getUserId(message, headers, type) {
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
   const userEmail = traits.email;
+  if (!userEmail) {
+    throw new CustomError("Email is required for group call", 400);
+  }
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };

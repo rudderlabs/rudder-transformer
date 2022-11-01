@@ -278,10 +278,8 @@
         "headers": {},
         "params": {
           "n": "myevent",
-          "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
           "p": "Android",
           "i": "com.rudderstack.demo.android",
-          "install_source": "2134dfg",
           "ip": "14.5.67.21",
           "is_revenue_event": true,
           "ve": "9",
@@ -329,10 +327,8 @@
         "headers": {},
         "params": {
           "n": "myevent",
-          "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
           "p": "Android",
           "i": "com.rudderstack.demo.android",
-          "install_source": "2134dfg",
           "ip": "14.5.67.21",
           "is_revenue_event": true,
           "ve": "9",
@@ -628,7 +624,7 @@
     }
   },
   {
-    "description": "(Android) Session Event with additional properties",
+    "description": "(Android) Event with additional properties",
     "input": {
       "destination": {
         "Config": {
@@ -736,10 +732,8 @@
       "headers": {},
       "params": {
         "n": "myevent",
-        "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
         "p": "Android",
         "i": "com.rudderstack.demo.android",
-        "install_source": "",
         "ip": "14.5.67.21",
         "ve": "9",
         "custom_user_id": "ruddersampleX5",
@@ -1531,7 +1525,6 @@
       "headers": {},
       "params": {
         "n": "myevent",
-        "openuri": "myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1",
         "p": "iOS",
         "i": "com.rudderstack.demo.android",
         "ip": "14.5.67.21",

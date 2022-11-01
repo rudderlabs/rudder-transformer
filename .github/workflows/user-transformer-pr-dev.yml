@@ -12,7 +12,7 @@ on:
       - "chore.userTransformDockerBuilds"
 
 env:
-
+  REPO_NAME: rudderlabs/develop-rudder-transformer
 
 jobs:
   docker-image-build:
@@ -43,7 +43,7 @@ jobs:
           context: .
           file: ./Dockerfile-ut-func
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
       
       - name: Run Tests
         run: |

@@ -1,6 +1,18 @@
 [
   [
     {
+      "metadata": [{ "jobId": 3 }],
+      "batched": false,
+      "statusCode": 400,
+      "error": "Missing required value from \"properties.index\"",
+      "statTags": {
+        "destType": "ALGOLIA",
+        "stage": "transform",
+        "scope": "transformation",
+        "meta": "handled"
+      }
+    },
+    {
       "batchedRequest": {
         "version": "1",
         "type": "REST",
@@ -37,14 +49,7 @@
         },
         "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 1
-        },
-        {
-          "jobId": 2
-        }
-      ],
+      "metadata": [{ "jobId": 1 }, { "jobId": 2 }],
       "batched": true,
       "statusCode": 200,
       "destination": {
@@ -83,14 +88,8 @@
           "apiKey": "apiKey",
           "applicationId": "appId",
           "eventTypeSettings": [
-            {
-              "from": "product clicked",
-              "to": "click"
-            },
-            {
-              "from": "product list viewed",
-              "to": "view"
-            }
+            { "from": "product clicked", "to": "click" },
+            { "from": "product list viewed", "to": "view" }
           ]
         },
         "Enabled": true,
@@ -100,12 +99,11 @@
     }
   ],
   {
-      "message": "Invalid event array",
-      "statusCode": 400
+    "message": "Invalid event array",
+    "statusCode": 400
   },
   {
     "message": "Invalid event array",
     "statusCode": 400
   }
 ]
-  

@@ -38,7 +38,7 @@ const prepareGroupPayload = event => {
   return message;
 };
 
-function processEvent(eventList) {
+function processEvents(eventList) {
   const responses = [];
   eventList.forEach(event => {
     let response = {};
@@ -75,7 +75,7 @@ function process(events) {
   if (!Array.isArray(events)) {
     eventList = events.logs || [events];
   }
-  return processEvent(eventList);
+  return processEvents(eventList);
 }
 
 exports.process = process;

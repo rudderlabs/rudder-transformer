@@ -21,12 +21,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v2
-
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
-
       - name: Extract branch name
         shell: bash
         run: |
@@ -59,7 +53,7 @@ jobs:
           context: .
           file: Dockerfile-ut-func
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
           build-args: |
             VERSION=${{ steps.extract_branch.outputs.branch }}
             COMMIT_HASH=${{ github.sha }}

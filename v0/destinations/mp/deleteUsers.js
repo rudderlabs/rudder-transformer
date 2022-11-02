@@ -20,33 +20,29 @@ const userDeletionHandler = async (userAttributes, config) => {
       .setStatus(400)
       .build();
   }
-  const params = {
-    data: {
-      $token: `${config.token}`,
-      $delete: null,
-      $ignore_alias: true
+  const endpoint = "https://api.mixpanel.com/engage#profile-delete";
+  const data = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      data.push({
+        $token: `${config.token}`,
+        $distinct_id: userAttribute.userId,
+        $delete: null,
+        $ignore_alias: true
+      });
     }
+  });
+  const headers = {
+    accept: "text/plain",
+    "content-type": "application/json"
   };
-  const endpoint =
-    config.dataResidency === "eu"
-      ? `https://api-eu.mixpanel.com/engage`
-      : `https://api.mixpanel.com/engage`;
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    if (!userAttributes[i].userId) {
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
-    }
-    params.data.$distinct_id = userAttributes[i].userId;
-    // eslint-disable-next-line no-await-in-loop
-    const response = await httpPOST(endpoint, null, { params });
-    if (!response || !response.response) {
-      throw new ErrorBuilder()
-        .setMessage("Could not get response")
-        .setStatus(500)
-        .build();
-    }
+  const response = await httpPOST(endpoint, data, headers);
+  if (!response || !response.response) {
+    throw new ErrorBuilder()
+      .setMessage("Could not get response")
+      .setStatus(500)
+      .build();
   }
   return { statusCode: 200, status: "successful" };
 };

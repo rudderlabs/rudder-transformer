@@ -30,23 +30,19 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const identity = [];
-    if (userAttributes[i].userId) {
-      identity.push(userAttributes[i].userId);
-    } else
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
-    // eslint-disable-next-line no-await-in-loop
-    const response = await httpPOST(endpoint, { identity }, { headers });
-    if (!response || !response.response) {
-      throw new ErrorBuilder()
-        .setMessage("Could not get response")
-        .setStatus(500)
-        .build();
+  const identity = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      identity.push(userAttribute.userId);
     }
+  });
+  const response = await httpPOST(endpoint, { identity }, { headers });
+  if (!response || !response.response) {
+    throw new ErrorBuilder()
+      .setMessage("Could not get response")
+      .setStatus(500)
+      .build();
   }
   return { statusCode: 200, status: "successful" };
 };

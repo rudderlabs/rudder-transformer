@@ -1198,10 +1198,22 @@ const handleDeletionOfUsers = async ctx => {
     return {};
   };
 
+  const getRudderDestInfo = () => {
+    try {
+      const rudderDestInfoHeader = ctx.get("x-rudder-dest-info");
+      const destInfoHeader = JSON.parse(rudderDestInfoHeader);
+      if (!Array.isArray(destInfoHeader)) {
+        return destInfoHeader;
+      }
+    } catch (error) {
+      logger.error(`Error while getting rudderDestInfo header value: ${error}`);
+    }
+    return {};
+  };
+
   const { body } = ctx.request;
   const respList = [];
-  const rudderDestInfoHeader = ctx.get("x-rudder-dest-info");
-  const rudderDestInfo = JSON.parse(rudderDestInfoHeader);
+  const rudderDestInfo = getRudderDestInfo();
   let response;
   await Promise.all(
     body.map(async b => {

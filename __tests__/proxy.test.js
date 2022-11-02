@@ -91,8 +91,11 @@ deleteUserDestinations.forEach(destination => {
   const expectedData = JSON.parse(outputDataFile);
 
   inputData.forEach((input, index) => {
-    it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
+    it(`DeleteUsers Tests: ${destination} - Payload ${index}`, async () => {
       try {
+        input.get = jest.fn((destInfoKey) => {
+          return input.getValue && input.getValue[destInfoKey]
+        });
         const output = await processDeleteUsers(input);
         expect(output).toEqual(expectedData[index]);
       } catch (error) {

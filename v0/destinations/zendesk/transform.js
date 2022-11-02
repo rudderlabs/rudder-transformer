@@ -150,7 +150,7 @@ async function getUserId(message, headers, type) {
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
-  const userEmail = traits.email;
+  const userEmail = traits?.email;
   if (!userEmail) {
     throw new CustomError("Email is required for group call", 400);
   }

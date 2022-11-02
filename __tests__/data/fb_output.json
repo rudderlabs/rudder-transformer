@@ -250,7 +250,7 @@
     "statusCode": 200
   },
   {
-    "message": "Platform is not defined"
+    "message": "Platform is not defined or is not a string"
   },
   {
     "version": "1",

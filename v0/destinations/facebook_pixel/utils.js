@@ -234,13 +234,12 @@ const deduceFbcParam = message => {
   if (!url) {
     return undefined;
   }
-  const URLRegex = new RegExp(
-    "^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"
-  );
-  if (!url.match(URLRegex)) {
+  let parseUrl;
+  try {
+    parseUrl = new URL(url);
+  } catch {
     throw new CustomError("url is not in correct format", 400);
   }
-  const parseUrl = new URL(url);
   const paramsList = new URLSearchParams(parseUrl.search);
   const fbclid = paramsList.get("fbclid");
 

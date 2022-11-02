@@ -1546,10 +1546,10 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  if (platform) {
+  if (platform && typeof platform === "string") {
     return appleOsNames.includes(platform?.toLowerCase());
   }
-  throw new CustomError("Platform is not defined", 400);
+  throw new CustomError("Platform is not defined or is not a string", 400);
 }
 
 function removeHyphens(str) {

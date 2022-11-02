@@ -934,7 +934,7 @@ function processSingleMessage(message, destination) {
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
         customParams.ni =
-          message?.properties.nonInteraction !== undefined
+          message?.properties?.nonInteraction !== undefined
             ? message.properties.nonInteraction
             : 1;
         customParams.ea = message.event;

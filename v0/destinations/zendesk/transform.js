@@ -46,6 +46,13 @@ function responseBuilder(message, headers, payload, endpoint) {
   return response;
 }
 
+/**
+ * Returns the payload for updating primary email of users.
+ * @param {*} userIdentityId -> userIdentity Id
+ * @param {*} userId -> userId of users
+ * @param {*} headers -> Authorizations for API's call
+ * @returns
+ */
 const responseBuilderToSetPrimaryAccount = (
   userIdentityId,
   userId,
@@ -64,6 +71,13 @@ const responseBuilderToSetPrimaryAccount = (
   return response;
 };
 
+/**
+ * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
+ * @param {*} userId -> userId of users
+ * @param {*} primaryEmail -> primary email passed in payload used to set this email as primary account.
+ * @param {*} headers -> Authorizations for API's call
+ * @returns it returns identityId or undefined if it gives error.
+ */
 const getUserIdentityId = async (userId, primaryEmail, headers) => {
   const url = `${endPoint}users/${userId}/identities`;
   const config = { headers };

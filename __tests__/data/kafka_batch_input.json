@@ -15,79 +15,18 @@
             "name": "http"
           }
         },
-        "rudderId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
         "messageId": "6f27a4da-cefb-4800-acf1-f467e8aab91c",
         "timestamp": "2020-02-02T00:23:09.544Z",
         "receivedAt": "2021-07-08T02:45:06.851+05:30",
         "request_ip": "[::1]",
         "anonymousId": "anon-id-new",
         "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-      }
+      },
+      "topic": "new-topic"
     },
     "metadata": {
-      "userId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-      "jobId": 9,
-      "sourceId": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-      "destinationId": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-      "attemptNum": 0,
-      "receivedAt": "2021-07-08T02:45:06.851+05:30",
-      "createdAt": "2021-07-07T21:15:17.412Z",
-      "firstAttemptedAt": "",
-      "transformAt": "processor",
-      "jobsT": {
-        "UUID": "b177df53-2c62-456e-a04d-24826161c9fc",
-        "JobID": 9,
-        "UserID": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-        "CreatedAt": "2021-07-07T21:15:17.412264Z",
-        "ExpireAt": "2021-07-07T21:15:17.412264Z",
-        "CustomVal": "KAFKA",
-        "EventPayload": {
-          "userId": "user1",
-          "message": {
-            "type": "identify",
-            "sentAt": "2021-07-08T02:45:11.329+05:30",
-            "userId": "user1",
-            "context": {
-              "ip": "14.5.67.21",
-              "traits": {
-                "trait1": "new-val"
-              },
-              "library": {
-                "name": "http"
-              }
-            },
-            "rudderId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-            "messageId": "6f27a4da-cefb-4800-acf1-f467e8aab91c",
-            "timestamp": "2020-02-02T00:23:09.544Z",
-            "receivedAt": "2021-07-08T02:45:06.851+05:30",
-            "request_ip": "[::1]",
-            "anonymousId": "anon-id-new",
-            "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-          }
-        },
-        "LastJobStatus": {
-          "JobID": 0,
-          "JobState": "",
-          "AttemptNum": 0,
-          "ExecTime": "0001-01-01T00:00:00Z",
-          "RetryTime": "0001-01-01T00:00:00Z",
-          "ErrorCode": "",
-          "ErrorResponse": null
-        },
-        "Parameters": {
-          "source_id": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-          "message_id": "6f27a4da-cefb-4800-acf1-f467e8aab91c",
-          "received_at": "2021-07-08T02:45:06.851+05:30",
-          "transform_at": "processor",
-          "source_job_id": "",
-          "destination_id": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-          "gateway_job_id": 3,
-          "source_task_id": "",
-          "source_batch_id": "",
-          "source_job_run_id": "",
-          "source_task_run_id": ""
-        }
-      }
+      "rudderId": "user1<<>>new-topic",
+      "jobId": 1
     },
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
@@ -162,79 +101,18 @@
             "name": "http"
           }
         },
-        "rudderId": "4e6fca3f-f55d-410e-8f5f-a651935fde23",
         "messageId": "fe182d9e-e86e-4db5-ae12-f4b399555fcc",
         "timestamp": "2020-02-02T00:23:09.544Z",
         "receivedAt": "2021-07-08T02:45:06.851+05:30",
         "request_ip": "[::1]",
         "anonymousId": "anon-id-new",
         "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-      }
+      },
+      "topic": "new-topic"
     },
     "metadata": {
-      "userId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-      "jobId": 10,
-      "sourceId": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-      "destinationId": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-      "attemptNum": 0,
-      "receivedAt": "2021-07-08T02:45:06.851+05:30",
-      "createdAt": "2021-07-07T21:15:17.412Z",
-      "firstAttemptedAt": "",
-      "transformAt": "processor",
-      "jobsT": {
-        "UUID": "0655b221-745e-4d2d-8b8c-8a2d8b4c8518",
-        "JobID": 10,
-        "UserID": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-        "CreatedAt": "2021-07-07T21:15:17.412264Z",
-        "ExpireAt": "2021-07-07T21:15:17.412264Z",
-        "CustomVal": "KAFKA",
-        "EventPayload": {
-          "userId": "user2",
-          "message": {
-            "type": "identify",
-            "sentAt": "2021-07-08T02:45:11.329+05:30",
-            "userId": "user2",
-            "context": {
-              "ip": "14.5.67.21",
-              "traits": {
-                "trait1": "new-val"
-              },
-              "library": {
-                "name": "http"
-              }
-            },
-            "rudderId": "4e6fca3f-f55d-410e-8f5f-a651935fde23",
-            "messageId": "fe182d9e-e86e-4db5-ae12-f4b399555fcc",
-            "timestamp": "2020-02-02T00:23:09.544Z",
-            "receivedAt": "2021-07-08T02:45:06.851+05:30",
-            "request_ip": "[::1]",
-            "anonymousId": "anon-id-new",
-            "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-          }
-        },
-        "LastJobStatus": {
-          "JobID": 0,
-          "JobState": "",
-          "AttemptNum": 0,
-          "ExecTime": "0001-01-01T00:00:00Z",
-          "RetryTime": "0001-01-01T00:00:00Z",
-          "ErrorCode": "",
-          "ErrorResponse": null
-        },
-        "Parameters": {
-          "source_id": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-          "message_id": "fe182d9e-e86e-4db5-ae12-f4b399555fcc",
-          "received_at": "2021-07-08T02:45:06.851+05:30",
-          "transform_at": "processor",
-          "source_job_id": "",
-          "destination_id": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-          "gateway_job_id": 3,
-          "source_task_id": "",
-          "source_batch_id": "",
-          "source_job_run_id": "",
-          "source_task_run_id": ""
-        }
-      }
+      "rudderId": "user2<<>>new-topic",
+      "jobId": 2
     },
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
@@ -309,79 +187,18 @@
             "name": "http"
           }
         },
-        "rudderId": "ac97cb0e-b1be-4296-a135-ba5ca5895fc1",
         "messageId": "2803e656-77ff-47ca-9606-90663f9aed38",
         "timestamp": "2020-02-02T00:23:09.544Z",
         "receivedAt": "2021-07-08T02:45:06.851+05:30",
         "request_ip": "[::1]",
         "anonymousId": "anon-id-new",
         "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-      }
+      },
+      "topic": "new-topic"
     },
     "metadata": {
-      "userId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-      "jobId": 11,
-      "sourceId": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-      "destinationId": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-      "attemptNum": 0,
-      "receivedAt": "2021-07-08T02:45:06.851+05:30",
-      "createdAt": "2021-07-07T21:15:17.412Z",
-      "firstAttemptedAt": "",
-      "transformAt": "processor",
-      "jobsT": {
-        "UUID": "09aa9264-da23-4e0f-bf62-def095595c3b",
-        "JobID": 11,
-        "UserID": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-        "CreatedAt": "2021-07-07T21:15:17.412264Z",
-        "ExpireAt": "2021-07-07T21:15:17.412264Z",
-        "CustomVal": "KAFKA",
-        "EventPayload": {
-          "userId": "user3",
-          "message": {
-            "type": "identify",
-            "sentAt": "2021-07-08T02:45:11.329+05:30",
-            "userId": "user3",
-            "context": {
-              "ip": "14.5.67.21",
-              "traits": {
-                "trait1": "new-val"
-              },
-              "library": {
-                "name": "http"
-              }
-            },
-            "rudderId": "ac97cb0e-b1be-4296-a135-ba5ca5895fc1",
-            "messageId": "2803e656-77ff-47ca-9606-90663f9aed38",
-            "timestamp": "2020-02-02T00:23:09.544Z",
-            "receivedAt": "2021-07-08T02:45:06.851+05:30",
-            "request_ip": "[::1]",
-            "anonymousId": "anon-id-new",
-            "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-          }
-        },
-        "LastJobStatus": {
-          "JobID": 0,
-          "JobState": "",
-          "AttemptNum": 0,
-          "ExecTime": "0001-01-01T00:00:00Z",
-          "RetryTime": "0001-01-01T00:00:00Z",
-          "ErrorCode": "",
-          "ErrorResponse": null
-        },
-        "Parameters": {
-          "source_id": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-          "message_id": "2803e656-77ff-47ca-9606-90663f9aed38",
-          "received_at": "2021-07-08T02:45:06.851+05:30",
-          "transform_at": "processor",
-          "source_job_id": "",
-          "destination_id": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-          "gateway_job_id": 3,
-          "source_task_id": "",
-          "source_batch_id": "",
-          "source_job_run_id": "",
-          "source_task_run_id": ""
-        }
-      }
+      "rudderId": "user3<<>>new-topic",
+      "jobId": 3
     },
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
@@ -456,79 +273,18 @@
             "name": "http"
           }
         },
-        "rudderId": "87926fae-02aa-4392-b7dd-1e2fab85472c",
         "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
         "timestamp": "2020-02-02T00:23:09.544Z",
         "receivedAt": "2021-07-08T02:45:06.851+05:30",
         "request_ip": "[::1]",
         "anonymousId": "anon-id-new",
         "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-      }
+      },
+      "topic": "new-topic"
     },
     "metadata": {
-      "userId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-      "jobId": 12,
-      "sourceId": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-      "destinationId": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-      "attemptNum": 0,
-      "receivedAt": "2021-07-08T02:45:06.851+05:30",
-      "createdAt": "2021-07-07T21:15:17.412Z",
-      "firstAttemptedAt": "",
-      "transformAt": "processor",
-      "jobsT": {
-        "UUID": "2f82a6eb-89fa-4b4e-8990-f1d8eba7752f",
-        "JobID": 12,
-        "UserID": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-        "CreatedAt": "2021-07-07T21:15:17.412264Z",
-        "ExpireAt": "2021-07-07T21:15:17.412264Z",
-        "CustomVal": "KAFKA",
-        "EventPayload": {
-          "userId": "user4",
-          "message": {
-            "type": "identify",
-            "sentAt": "2021-07-08T02:45:11.329+05:30",
-            "userId": "user4",
-            "context": {
-              "ip": "14.5.67.21",
-              "traits": {
-                "trait1": "new-val"
-              },
-              "library": {
-                "name": "http"
-              }
-            },
-            "rudderId": "87926fae-02aa-4392-b7dd-1e2fab85472c",
-            "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
-            "timestamp": "2020-02-02T00:23:09.544Z",
-            "receivedAt": "2021-07-08T02:45:06.851+05:30",
-            "request_ip": "[::1]",
-            "anonymousId": "anon-id-new",
-            "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
-          }
-        },
-        "LastJobStatus": {
-          "JobID": 0,
-          "JobState": "",
-          "AttemptNum": 0,
-          "ExecTime": "0001-01-01T00:00:00Z",
-          "RetryTime": "0001-01-01T00:00:00Z",
-          "ErrorCode": "",
-          "ErrorResponse": null
-        },
-        "Parameters": {
-          "source_id": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-          "message_id": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
-          "received_at": "2021-07-08T02:45:06.851+05:30",
-          "transform_at": "processor",
-          "source_job_id": "",
-          "destination_id": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-          "gateway_job_id": 3,
-          "source_task_id": "",
-          "source_batch_id": "",
-          "source_job_run_id": "",
-          "source_task_run_id": ""
-        }
-      }
+      "rudderId": "user4<<>>new-topic",
+      "jobId": 4
     },
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
@@ -593,7 +349,7 @@
       "message": {
         "type": "identify",
         "sentAt": "2021-07-08T02:45:11.329+05:30",
-        "userId": "user4",
+        "userId": "user5",
         "context": {
           "ip": "14.5.67.21",
           "traits": {
@@ -609,7 +365,6 @@
             "schemaId": "schema001"
           }
         },
-        "rudderId": "87926fae-02aa-4392-b7dd-1e2fab85472c",
         "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
         "timestamp": "2020-02-02T00:23:09.544Z",
         "receivedAt": "2021-07-08T02:45:06.851+05:30",
@@ -617,72 +372,472 @@
         "anonymousId": "anon-id-new",
         "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
       },
-      "schemaId": "schema001"
+      "schemaId": "schema001",
+      "topic": "new-topic"
     },
     "metadata": {
-      "userId": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-      "jobId": 12,
-      "sourceId": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-      "destinationId": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-      "attemptNum": 0,
-      "receivedAt": "2021-07-08T02:45:06.851+05:30",
-      "createdAt": "2021-07-07T21:15:17.412Z",
-      "firstAttemptedAt": "",
-      "transformAt": "processor",
-      "jobsT": {
-        "UUID": "2f82a6eb-89fa-4b4e-8990-f1d8eba7752f",
-        "JobID": 12,
-        "UserID": "9ee98f5f-3cd3-41b1-8053-63e24511126d",
-        "CreatedAt": "2021-07-07T21:15:17.412264Z",
-        "ExpireAt": "2021-07-07T21:15:17.412264Z",
-        "CustomVal": "KAFKA",
-        "EventPayload": {
-          "userId": "user4",
-          "message": {
-            "type": "identify",
-            "sentAt": "2021-07-08T02:45:11.329+05:30",
-            "userId": "user4",
-            "context": {
-              "ip": "14.5.67.21",
-              "traits": {
-                "trait1": "new-val"
-              },
-              "library": {
-                "name": "http"
-              }
-            },
-            "rudderId": "87926fae-02aa-4392-b7dd-1e2fab85472c",
-            "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
-            "timestamp": "2020-02-02T00:23:09.544Z",
-            "receivedAt": "2021-07-08T02:45:06.851+05:30",
-            "request_ip": "[::1]",
-            "anonymousId": "anon-id-new",
-            "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      "rudderId": "user5<<>>new-topic",
+      "jobId": 5
+    },
+    "destination": {
+      "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
+      "Name": "local-kafka-test",
+      "DestinationDefinition": {
+        "ID": "1c81NzcId5roSqvQ1R57zhIsC01",
+        "Name": "KAFKA",
+        "DisplayName": "Apache Kafka",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "hostName",
+              "port",
+              "topic",
+              "sslEnabled",
+              "caCertificate",
+              "useSASL",
+              "saslType",
+              "username",
+              "password"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["password"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "caCertificate": "caCertificate",
+        "hostName": "localhost",
+        "password": "password",
+        "port": "29092",
+        "saslType": "sha256",
+        "sslEnabled": true,
+        "topic": "new-topic",
+        "useSASL": true,
+        "username": "username"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "userId": "user6",
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-07-08T02:45:11.329+05:30",
+        "userId": "user6",
+        "context": {
+          "ip": "14.5.67.21",
+          "traits": {
+            "trait1": "new-val"
+          },
+          "library": {
+            "name": "http"
           }
         },
-        "LastJobStatus": {
-          "JobID": 0,
-          "JobState": "",
-          "AttemptNum": 0,
-          "ExecTime": "0001-01-01T00:00:00Z",
-          "RetryTime": "0001-01-01T00:00:00Z",
-          "ErrorCode": "",
-          "ErrorResponse": null
+        "integrations": {
+          "All": true,
+          "KAFKA": {
+            "topic": "topic-1"
+          }
         },
-        "Parameters": {
-          "source_id": "1qnLh7DzoXvevBhh5hNLwVZFod4",
-          "message_id": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
-          "received_at": "2021-07-08T02:45:06.851+05:30",
-          "transform_at": "processor",
-          "source_job_id": "",
-          "destination_id": "1uzGR4rn915R6Xts9KRfWAzmgGL",
-          "gateway_job_id": 3,
-          "source_task_id": "",
-          "source_batch_id": "",
-          "source_job_run_id": "",
-          "source_task_run_id": ""
-        }
-      }
+        "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2021-07-08T02:45:06.851+05:30",
+        "request_ip": "[::1]",
+        "anonymousId": "anon-id-new",
+        "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      },
+      "topic": "topic-1"
+    },
+    "metadata": {
+      "rudderId": "user6<<>>topic-1",
+      "jobId": 6
+    },
+    "destination": {
+      "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
+      "Name": "local-kafka-test",
+      "DestinationDefinition": {
+        "ID": "1c81NzcId5roSqvQ1R57zhIsC01",
+        "Name": "KAFKA",
+        "DisplayName": "Apache Kafka",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "hostName",
+              "port",
+              "topic",
+              "sslEnabled",
+              "caCertificate",
+              "useSASL",
+              "saslType",
+              "username",
+              "password"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["password"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "caCertificate": "caCertificate",
+        "hostName": "localhost",
+        "password": "password",
+        "port": "29092",
+        "saslType": "sha256",
+        "sslEnabled": true,
+        "topic": "new-topic",
+        "useSASL": true,
+        "username": "username"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "userId": "user7",
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-07-08T02:45:11.329+05:30",
+        "userId": "user7",
+        "context": {
+          "ip": "14.5.67.21",
+          "traits": {
+            "trait1": "new-val"
+          },
+          "library": {
+            "name": "http"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "KAFKA": {
+            "topic": "topic-1"
+          }
+        },
+        "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2021-07-08T02:45:06.851+05:30",
+        "request_ip": "[::1]",
+        "anonymousId": "anon-id-new",
+        "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      },
+      "topic": "topic-1"
+    },
+    "metadata": {
+      "rudderId": "user7<<>>topic-1",
+      "jobId": 7
+    },
+    "destination": {
+      "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
+      "Name": "local-kafka-test",
+      "DestinationDefinition": {
+        "ID": "1c81NzcId5roSqvQ1R57zhIsC01",
+        "Name": "KAFKA",
+        "DisplayName": "Apache Kafka",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "hostName",
+              "port",
+              "topic",
+              "sslEnabled",
+              "caCertificate",
+              "useSASL",
+              "saslType",
+              "username",
+              "password"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["password"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "caCertificate": "caCertificate",
+        "hostName": "localhost",
+        "password": "password",
+        "port": "29092",
+        "saslType": "sha256",
+        "sslEnabled": true,
+        "topic": "new-topic",
+        "useSASL": true,
+        "username": "username"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "userId": "user8",
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-07-08T02:45:11.329+05:30",
+        "userId": "user8",
+        "context": {
+          "ip": "14.5.67.21",
+          "traits": {
+            "trait1": "new-val"
+          },
+          "library": {
+            "name": "http"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "KAFKA": {
+            "topic": "topic-2"
+          }
+        },
+        "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2021-07-08T02:45:06.851+05:30",
+        "request_ip": "[::1]",
+        "anonymousId": "anon-id-new",
+        "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      },
+      "topic": "topic-2"
+    },
+    "metadata": {
+      "rudderId": "user8<<>>topic-2",
+      "jobId": 8
+    },
+    "destination": {
+      "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
+      "Name": "local-kafka-test",
+      "DestinationDefinition": {
+        "ID": "1c81NzcId5roSqvQ1R57zhIsC01",
+        "Name": "KAFKA",
+        "DisplayName": "Apache Kafka",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "hostName",
+              "port",
+              "topic",
+              "sslEnabled",
+              "caCertificate",
+              "useSASL",
+              "saslType",
+              "username",
+              "password"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["password"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "caCertificate": "caCertificate",
+        "hostName": "localhost",
+        "password": "password",
+        "port": "29092",
+        "saslType": "sha256",
+        "sslEnabled": true,
+        "topic": "new-topic",
+        "useSASL": true,
+        "username": "username"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "userId": "user8",
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-07-08T02:45:11.329+05:30",
+        "userId": "user8",
+        "context": {
+          "ip": "14.5.67.21",
+          "traits": {
+            "trait1": "new-val"
+          },
+          "library": {
+            "name": "http"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "KAFKA": {
+            "topic": "topic-2"
+          }
+        },
+        "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2021-07-08T02:45:06.851+05:30",
+        "request_ip": "[::1]",
+        "anonymousId": "anon-id-new",
+        "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      },
+      "topic": "topic-2"
+    },
+    "metadata": {
+      "rudderId": "user8<<>>topic-2",
+      "jobId": 9
+    },
+    "destination": {
+      "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
+      "Name": "local-kafka-test",
+      "DestinationDefinition": {
+        "ID": "1c81NzcId5roSqvQ1R57zhIsC01",
+        "Name": "KAFKA",
+        "DisplayName": "Apache Kafka",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "hostName",
+              "port",
+              "topic",
+              "sslEnabled",
+              "caCertificate",
+              "useSASL",
+              "saslType",
+              "username",
+              "password"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": ["password"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter"
+          ],
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "caCertificate": "caCertificate",
+        "hostName": "localhost",
+        "password": "password",
+        "port": "29092",
+        "saslType": "sha256",
+        "sslEnabled": true,
+        "topic": "new-topic",
+        "useSASL": true,
+        "username": "username"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "userId": "user8",
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-07-08T02:45:11.329+05:30",
+        "userId": "user8",
+        "context": {
+          "ip": "14.5.67.21",
+          "traits": {
+            "trait1": "new-val"
+          },
+          "library": {
+            "name": "http"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "KAFKA": {
+            "topic": "topic-3"
+          }
+        },
+        "messageId": "87c98fc2-561b-4631-8cd6-1d02cdd1429f",
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "receivedAt": "2021-07-08T02:45:06.851+05:30",
+        "request_ip": "[::1]",
+        "anonymousId": "anon-id-new",
+        "originalTimestamp": "2021-07-08T02:45:11.329+05:30"
+      },
+      "topic": "topic-3"
+    },
+    "metadata": {
+      "rudderId": "user8<<>>topic-3",
+      "jobId": 10
     },
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",

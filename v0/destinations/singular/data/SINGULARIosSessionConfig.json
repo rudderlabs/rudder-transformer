@@ -96,12 +96,18 @@
   {
     "destKey": "skan_first_call_timestamp",
     "sourceKeys": "properties.skan_first_call_timestamp",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "skan_last_call_timestamp",
     "sourceKeys": "properties.skan_last_call_timestamp",
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "bd",

@@ -82,10 +82,12 @@ const getUserIdentityId = async (userId, primaryEmail, headers) => {
         return identitiesDetails.id;
       } else {
         logger.debug(`${primaryEmail} not found`);
+        return undefined;
       }
     }
   } catch (error) {
     logger.debug("Error :", error.response ? error.response.data : error);
+    return undefined;
   }
 };
 
@@ -400,9 +402,11 @@ async function processIdentify(message, destinationConfig, headers) {
       primaryEmail,
       headers
     );
-    returnList.push(
-      responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
-    );
+    if (userIdentityId) {
+      returnList.push(
+        responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
+      );
+    }
   }
   if (
     traits.company &&

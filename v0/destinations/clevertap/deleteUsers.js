@@ -1,6 +1,9 @@
 const { httpPOST } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
 const { getEndpoint } = require("./config");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -37,11 +40,12 @@ const userDeletionHandler = async (userAttributes, config) => {
       identity.push(userAttribute.userId);
     }
   });
-  const response = await httpPOST(endpoint, { identity }, { headers });
-  if (!response || !response.response) {
+  const deletionRespone = await httpPOST(endpoint, { identity }, { headers });
+  const processedDeletionRespone = processAxiosResponse(deletionRespone);
+  if (processedDeletionRespone.status !== 200) {
     throw new ErrorBuilder()
-      .setMessage("Could not get response")
-      .setStatus(500)
+      .setMessage("[Mixpanel]::Deletion Request is not successful")
+      .setStatus(processedDeletionRespone.status)
       .build();
   }
   return { statusCode: 200, status: "successful" };

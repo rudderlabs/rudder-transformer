@@ -1,4 +1,7 @@
 const { httpPOST } = require("../../../adapters/network");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
 
 /**
@@ -37,11 +40,12 @@ const userDeletionHandler = async (userAttributes, config) => {
     accept: "text/plain",
     "content-type": "application/json"
   };
-  const response = await httpPOST(endpoint, data, headers);
-  if (!response || !response.response) {
+  const deletionRespone = await httpPOST(endpoint, data, headers);
+  const processedDeletionRespone = processAxiosResponse(deletionRespone);
+  if (processedDeletionRespone.status !== 200) {
     throw new ErrorBuilder()
-      .setMessage("Could not get response")
-      .setStatus(500)
+      .setMessage("[Mixpanel]::Deletion Request is not successful")
+      .setStatus(processedDeletionRespone.status)
       .build();
   }
   return { statusCode: 200, status: "successful" };

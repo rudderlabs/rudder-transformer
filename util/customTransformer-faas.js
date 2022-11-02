@@ -41,6 +41,7 @@ async function runOpenFaasUserTransform(
     generateFunctionName(userTransformation, testMode),
     events,
     userTransformation.code,
+    userTransformation.versionId,
     testMode
   );
 
@@ -60,7 +61,12 @@ async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
   const setupTime = new Date();
   const functionName = generateFunctionName(userTransformation, false);
 
-  await setupFunction(functionName, userTransformation.code, false);
+  await setupFunction(
+    functionName,
+    userTransformation.code,
+    userTransformation.versionId,
+    false
+  );
 
   stats.timing("faas_publish_time", setupTime, tags);
 

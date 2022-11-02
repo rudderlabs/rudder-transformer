@@ -92,13 +92,21 @@ function invokeFunction(functionName, payload, requestType) {
   );
 }
 
-async function deployFunction(imageName, functionName) {
+async function deployFunction(functionName, code, versionId, testMode) {
+  let envProcess = "python index.py";
+
+  if (!testMode) {
+    envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${process.env.CONFIG_BACKEND_URL}`;
+  } else {
+    envProcess = `${envProcess} --code "${code}"`;
+  }
+
   const payload = {
     service: functionName,
     name: functionName,
-    image: imageName,
+    image: FAAS_BASE_IMG,
     namespace: OPENFAAS_NAMESPACE,
-    envProcess: "python index.py",
+    envProcess,
     labels: {
       faas_function: functionName,
       "com.openfaas.scale.max": "100"
@@ -136,27 +144,17 @@ async function deployCode(functionName, code) {
   }
 }
 
-async function setupFunction(functionName, code, testMode) {
+async function setupFunction(functionName, code, versionId, testMode) {
   if (!testMode) {
     if (await isFunctionDeployed(functionName)) {
       await deleteFunction(functionName);
     }
   }
 
-  const imageName = buildImageName(functionName, testMode);
-
-  if (!testMode) {
-    await containerizeAndPush(imageName, functionName, code);
-  }
-
-  await deployFunction(imageName, functionName, testMode);
-
-  if (testMode) {
-    deployCode(functionName, code);
-  }
+  await deployFunction(functionName, code, versionId, testMode);
 }
 
-async function run(functionName, events, code, testMode) {
+async function run(functionName, events, code, versionId, testMode) {
   if (testMode) {
     if (!code) {
       throw new Error(
@@ -165,7 +163,7 @@ async function run(functionName, events, code, testMode) {
       );
     }
 
-    await setupFunction(functionName, code, testMode);
+    await setupFunction(functionName, code, versionId, testMode);
   }
 
   const response = await invokeFunction(

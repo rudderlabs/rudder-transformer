@@ -58,8 +58,6 @@ const Event = {
 
 const ENDPOINT = "https://api2.appsflyer.com/inappevent/";
 
-const identityFormat = "raw";
-
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const nameToEventMap = {};
@@ -69,10 +67,9 @@ events.forEach(event => {
 });
 
 module.exports = {
-  Event,
+  ConfigCategory,
   ENDPOINT,
+  Event,
   mappingConfig,
-  identityFormat,
-  nameToEventMap,
-  ConfigCategory
+  nameToEventMap
 };

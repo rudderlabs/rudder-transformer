@@ -44,7 +44,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   const processedDeletionRespone = processAxiosResponse(deletionRespone);
   if (processedDeletionRespone.status !== 200) {
     throw new ErrorBuilder()
-      .setMessage("[Mixpanel]::Deletion Request is not successful")
+      .setMessage("[Clevertap]::Deletion Request is not successful")
       .setStatus(processedDeletionRespone.status)
       .build();
   }

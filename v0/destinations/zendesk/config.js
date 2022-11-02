@@ -6,7 +6,8 @@ const ConfigCategory = {
     json_name: "user",
     userFieldsEndpoint: "user_fields.json",
     userFieldsJson: "user_fields",
-    createOrUpdateUserEndpoint: "users/create_or_update.json"
+    createOrUpdateUserEndpoint: "users/create_or_update.json",
+    makePrimaryEndpoint: "/make_primary"
   },
   GROUP: {
     name: "ZDGroupConfig",

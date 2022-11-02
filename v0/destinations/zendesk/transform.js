@@ -20,7 +20,8 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  defaultPutRequestConfig
 } = require("../../util");
 const logger = require("../../../logger");
 
@@ -44,6 +45,50 @@ function responseBuilder(message, headers, payload, endpoint) {
 
   return response;
 }
+
+const responseBuilderToSetPrimaryAccount = (
+  userIdentityId,
+  userId,
+  headers
+) => {
+  const response = defaultRequestConfig();
+  const updatedHeaders = {
+    ...headers,
+    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+  };
+  response.endpoint = `${endPoint}users/${userId}/identities/${userIdentityId}/make_primary`;
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.headers = updatedHeaders;
+  return response;
+};
+
+const getUserIdentityId = async (userId, primaryEmail, headers) => {
+  const url = `${endPoint}users/${userId}/identities`;
+  const config = { headers };
+  try {
+    const resp = await axios.get(url, config);
+    if (!resp || !resp.data || resp.data.count === 0) {
+      logger.debug("User not found");
+      return undefined;
+    }
+    const identities = get(resp.data, "identities");
+    if (identities && Array.isArray(identities)) {
+      const identitiesDetails = identities.find(
+        identitieslist => identitieslist.value === primaryEmail
+      );
+      if (identitiesDetails) {
+        return identitiesDetails.id;
+      } else {
+        logger.debug(`${primaryEmail} not found`);
+      }
+    }
+  } catch (error) {
+    logger.debug("Error :", error.response ? error.response.data : error);
+    console.log(error);
+  }
+};
 
 async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
@@ -150,7 +195,7 @@ async function getUserId(message, headers, type) {
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
-  const userEmail = traits.email;
+  const userEmail = traits.email || traits.primaryEmail;
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
@@ -348,6 +393,18 @@ async function processIdentify(message, destinationConfig, headers) {
   const returnList = [];
 
   const traits = getFieldValueFromMessage(message, "traits");
+  const userId = await getUserId(message, headers);
+  const primaryEmail = get(traits, "primaryEmail");
+  if (userId && primaryEmail) {
+    const userIdentityId = await getUserIdentityId(
+      userId,
+      primaryEmail,
+      headers
+    );
+    returnList.push(
+      responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
+    );
+  }
   if (
     traits.company &&
     traits.company.remove &&
@@ -355,7 +412,6 @@ async function processIdentify(message, destinationConfig, headers) {
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers);
     if (userId) {
       const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
       try {

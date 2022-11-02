@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile-ut-func
+          file: Dockerfile-ut-func
           load: true
           tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
       
@@ -54,7 +54,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile-ut-func
+          file: Dockerfile-ut-func
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |

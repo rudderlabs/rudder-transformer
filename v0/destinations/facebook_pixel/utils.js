@@ -238,7 +238,7 @@ const deduceFbcParam = message => {
   try {
     parseUrl = new URL(url);
   } catch {
-    throw new CustomError("url is not in correct format", 400);
+    return undefined;
   }
   const paramsList = new URLSearchParams(parseUrl.search);
   const fbclid = paramsList.get("fbclid");

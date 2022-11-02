@@ -459,7 +459,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Email is required for group call",
+    "error": "Email ID is required for getting zenuserId",
     "statTags": {
       "destination": "zendesk",
       "stage": "transform",

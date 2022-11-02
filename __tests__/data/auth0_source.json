@@ -235,6 +235,7 @@
         "userId": "auth0|*****",
         "context": {
           "traits": {
+            "userId": "auth0|*****",
             "user_name": "bhalalamark+21@gmail.com"
           },
           "library": {
@@ -276,6 +277,9 @@
           "library": {
             "name": "unknown",
             "version": "unknown"
+          },
+          "traits": {
+            "userId": "auth0|*****"
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
           "request_ip": "35.166.202.113",
@@ -530,6 +534,9 @@
           "library": {
             "name": "unknown",
             "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
           "request_ip": "35.167.74.121",
@@ -840,6 +847,9 @@
             "name": "unknown",
             "version": "unknown"
           },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
           "request_ip": "35.160.3.103",
           "integration": {
@@ -1048,6 +1058,9 @@
           "library": {
             "name": "unknown",
             "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
           },
           "request_ip": "35.160.3.103",
           "integration": {

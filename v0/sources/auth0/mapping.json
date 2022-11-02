@@ -49,7 +49,7 @@
   },
   {
     "sourceKeys": "user_id",
-    "destKeys": "userId"
+    "destKeys": ["context.traits.userId", "userId"]
   },
   {
     "sourceKeys": "connection",

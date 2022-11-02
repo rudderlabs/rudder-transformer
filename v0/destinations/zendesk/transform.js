@@ -86,7 +86,6 @@ const getUserIdentityId = async (userId, primaryEmail, headers) => {
     }
   } catch (error) {
     logger.debug("Error :", error.response ? error.response.data : error);
-    console.log(error);
   }
 };
 

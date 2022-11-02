@@ -1,0 +1,10 @@
+apiVersion: k6.io/v1alpha1
+kind: K6
+metadata:
+  name: k6-sample
+spec:
+  parallelism: 1
+  script:
+    configMap:
+      name: stress-test
+      file: archive.tar

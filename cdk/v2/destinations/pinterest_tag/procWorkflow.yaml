@@ -174,7 +174,7 @@ steps:
             $eventMap := destination.Config.eventsMapping.{from: to};
             $eventNames := $lookup($eventMap, $event);
             $count($eventNames) = 0 ? $eventNames := $ecomEventMaps[$lowercase($event) in src].dest;
-            $count($eventNames) = 0 ? $eventNames := [$event];
+            $count($eventNames) = 0 ? $eventNames := ["custom"];
             $eventNames
           )
   - name: destEvents

@@ -42,6 +42,7 @@ const {
   getResponseHandlerData
 } = require("./util");
 const logger = require("../../../logger");
+const { cloneDeep } = require("lodash");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -615,7 +616,6 @@ const processRouterDest = async inputs => {
   const respList = await Promise.all(
     inputs.map(async input => {
       try {
-        input.metadata.destInfo = { authKey: input.destination.ID };
         return getSuccessRespEvents(
           await processEvent(input.message, input.destination, token),
           [input.metadata],
@@ -641,4 +641,21 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, authCache };
+/**
+ * This function takes the input containing metadata and returns the updated metadata
+ * @param {*} input
+ * @returns {*} metadata
+ */
+function processMetadataForRouter(input) {
+  const { metadata, destination } = input;
+  const clonedMetadata = cloneDeep(metadata);
+  clonedMetadata.destInfo = { authKey: destination.ID };
+  return clonedMetadata;
+}
+
+module.exports = {
+  process,
+  processRouterDest,
+  processMetadataForRouter,
+  authCache
+};

@@ -59,12 +59,25 @@ const getProperty = (schema, element) => {
   let property;
   switch (schema) {
     case "email":
-      return element?.email;
+      property = element?.email || element?.EMAIL || element?.Email;
+      return property;
     case "phone":
-      property = element?.phone || element?.mobile;
+      property =
+        element?.phone ||
+        element?.Phone ||
+        element?.PHONE ||
+        element?.mobile ||
+        element?.Mobile ||
+        element?.MOBILE;
       return property;
     case "mobileAdId":
-      property = element?.mobileId || element?.mobileAdId || element?.mobile_id;
+      property =
+        element?.mobileId ||
+        element?.MOBILEID ||
+        element?.mobileAdId ||
+        element?.MOBILEADID ||
+        element?.mobile_id ||
+        element?.MOBILE_ID;
       return property;
     default:
       throw new CustomError("Invalid schema", 400);

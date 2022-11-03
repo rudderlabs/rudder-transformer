@@ -1,4 +1,4 @@
-const { cloneDeep } = require("lodash/cloneDeep");
+const cloneDeep = require("lodash/cloneDeep");
 const { getIntegrationsObj } = require("../../util");
 
 function process(event) {

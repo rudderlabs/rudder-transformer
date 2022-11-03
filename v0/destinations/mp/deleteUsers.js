@@ -1,8 +1,11 @@
+const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
+const { isHttpStatusSuccess } = require("../../util");
+const { maxBatchSize } = require("./config");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -23,16 +26,22 @@ const userDeletionHandler = async (userAttributes, config) => {
       .setStatus(400)
       .build();
   }
-  const endpoint = "https://api.mixpanel.com/engage#profile-delete";
+  const endpoint =
+    config.dataResidency === "eu"
+      ? "https://api-eu.mixpanel.com/engage"
+      : "https://api.mixpanel.com/engage";
   const data = [];
+  const defaultValues = {
+    $token: `${config.token}`,
+    $delete: null,
+    $ignore_alias: true
+  };
   userAttributes.forEach(userAttribute => {
     // Dropping the user if userId is not present
     if (userAttribute.userId) {
       data.push({
-        $token: `${config.token}`,
         $distinct_id: userAttribute.userId,
-        $delete: null,
-        $ignore_alias: true
+        ...defaultValues
       });
     }
   });
@@ -40,15 +49,24 @@ const userDeletionHandler = async (userAttributes, config) => {
     accept: "text/plain",
     "content-type": "application/json"
   };
-  const deletionRespone = await httpPOST(endpoint, data, headers);
-  const processedDeletionRespone = processAxiosResponse(deletionRespone);
-  if (processedDeletionRespone.status !== 200) {
-    throw new ErrorBuilder()
-      .setMessage("[Mixpanel]::Deletion Request is not successful")
-      .setStatus(processedDeletionRespone.status)
-      .build();
-  }
-  return { statusCode: 200, status: "successful" };
+
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // ref : https://help.mixpanel.com/hc/en-us/articles/115004565806-Delete-User-Profiles#:~:text=Bulk%20Delete%20Profiles,Please%20delete%20with%20caution!
+  const batchEvents = _.chunk(data, maxBatchSize);
+  batchEvents.forEach(async batchEvent => {
+    const deletionRespone = await httpPOST(endpoint, batchEvent, headers);
+    const processedDeletionRespone = processAxiosResponse(deletionRespone);
+    if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
+      throw new ErrorBuilder()
+        .setMessage("[Mixpanel]::Deletion Request is not successful")
+        .setStatus(processedDeletionRespone.status)
+        .build();
+    }
+  });
+  return {
+    statusCode: 200,
+    status: "successful"
+  };
 };
 
 const processDeleteUsers = event => {

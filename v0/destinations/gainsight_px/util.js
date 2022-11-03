@@ -52,7 +52,7 @@ const objectExists = async (id, Config, objectType) => {
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
-    throw new Error(err);
+    throw new CustomError(err);
   } catch (error) {
     return handleErrorResponse(
       error,
@@ -74,7 +74,7 @@ const createAccount = async (payload, Config) => {
     if (response && response.status === 201) {
       return { success: true, err: null };
     }
-    throw new Error("invalid response while creating account");
+    throw new CustomError("invalid response while creating account");
   } catch (error) {
     return handleErrorResponse(error, "error while creating account", 400);
   }
@@ -96,7 +96,7 @@ const updateAccount = async (accountId, payload, Config) => {
     if (response && response.status === 204) {
       return { success: true, err: null };
     }
-    throw new Error("invalid response while updating account");
+    throw new CustomError("invalid response while updating account");
   } catch (error) {
     return handleErrorResponse(error, "error while updating account", 400);
   }

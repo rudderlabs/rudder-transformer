@@ -74,7 +74,18 @@ const DestCanonicalNames = {
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   engage: ["engage", "Engage", "ENGAGE"],
   june: ["june", "JUNE", "June"],
-  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"]
+  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"],
+  snapchat_custom_audience: [
+    "snapchat custom audience",
+    "snap chat custom audience",
+    "snapchat_custom_audience",
+    "snapchatCustomAudience",
+    "Snapchat Custom Audience",
+    "snapchatcustomaudience",
+    "SNAPCHAT CUSTOM AUDIENCE",
+    "SNAPCHAT_CUSTOM_AUDIENCE",
+    "SNAPCHATCUSTOMAUDIENCE"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

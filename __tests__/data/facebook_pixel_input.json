@@ -1518,13 +1518,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1605,13 +1599,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -2440,10 +2428,7 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": [
-          "clothing",
-          "fishing"
-        ],
+        "category": ["clothing", "fishing"],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,
@@ -3140,7 +3125,209 @@
           "density": 2
         },
         "page": {
-            "url": "https://theminimstory.com/collections/summer-of-pearls?utm_source=facebook&utm_medium=paidsocial&utm_campaign=carousel&utm_content=ad1-jul&fbclid=IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI"
+          "url": "https://theminimstory.com/collections/summer-of-pearls?utm_source=facebook&utm_medium=paidsocial&utm_campaign=carousel&utm_content=ad1-jul&fbclid=IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI"
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "checkout started",
+      "properties": {
+        "currency": "CAD",
+        "category": "clothing",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "step": 1,
+        "paymentMethod": "Visa",
+        "testDimension": true,
+        "testMetric": true
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "url": "https://theminimstory.com/collections/summer-of-pearls?utm_source=facebook&utm_medium=paidsocial&utm_campaign=carousel&utm_content=ad1-jul&fbclid=IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI"
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": { "name": "checkout started" },
+      "properties": {
+        "currency": "CAD",
+        "category": "clothing",
+        "products": [
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product",
+            "sku": "p-298"
+          },
+          {
+            "quantity": 1,
+            "price": 24.75,
+            "name": "my product 2",
+            "sku": "p-299"
+          }
+        ],
+        "step": 1,
+        "paymentMethod": "Visa",
+        "testDimension": true,
+        "testMetric": true
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "url": "url in wrong format"
         }
       },
       "type": "track",

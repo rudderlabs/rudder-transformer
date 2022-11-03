@@ -1,0 +1,26 @@
+[
+  {
+    "getValue": {
+      "x-rudder-dest-info": "{\"secret\": { \"access_token\": \"valid_token\" }}"
+    },
+    "request": {
+      "body": [
+        {
+          "destType": "GA",
+          "userAttributes": [
+            {
+              "userId": "test_user_1"
+            },
+            {
+              "userId": "test_user_2"
+            }
+          ],
+          "config": {
+            "trackingID": "UA-12344-556790",
+            "useNativeSDK": false
+          }
+        }
+      ]
+    }
+  }
+]

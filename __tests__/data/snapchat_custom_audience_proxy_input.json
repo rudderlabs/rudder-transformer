@@ -1,0 +1,102 @@
+[
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd123",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/456/users",
+        "headers": {
+          "Authorization": "Bearer abcd123",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/789/users",
+        "headers": {
+          "Authorization": "Bearer abcd123",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "id": "123456",
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  }
+]

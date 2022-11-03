@@ -1,0 +1,53 @@
+[
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer abcd1234"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ],
+                "schema": ["EMAIL_SHA256"]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ],
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "developer_token": "ijkl9101",
+          "refresh_token": "efgh5678"
+        }
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "disableHashing": false,
+        "schema": "email",
+        "segmentId": "123"
+      }
+    }
+  }
+]

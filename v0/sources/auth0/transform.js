@@ -6,6 +6,7 @@ const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 const Message = require("../message");
+const { CustomError } = require("../../util");
 
 // Ref: https://auth0.com/docs/logs/references/log-event-type-codes
 const eventNameMap = JSON.parse(
@@ -50,7 +51,7 @@ function processEvent(event) {
     }
     return null;
   }
-  throw new Error("Unknwon event type from Auth0");
+  throw new CustomError("Unknwon event type from Auth0");
 }
 
 function process(events) {
@@ -74,7 +75,7 @@ function process(events) {
     }
   });
   if (responses.length === 0) {
-    throw new Error("All requests in the batch failed");
+    throw new CustomError("All requests in the batch failed");
   } else {
     return responses;
   }

@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const md5 = require("md5");
 const Message = require("../message");
+const { CustomError } = require("../../util");
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
@@ -11,7 +12,7 @@ const mapping = JSON.parse(
 function process(event) {
   // throw an error if (email, eventName) are not present
   if (!(event.email && event.eventName)) {
-    throw new Error("Unknwon event type from Iterable");
+    throw new CustomError("Unknwon event type from Iterable");
   }
   const message = new Message(`Iterable`);
 

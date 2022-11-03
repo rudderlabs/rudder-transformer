@@ -62,7 +62,7 @@ const userValidity = async (channel, Config, userId) => {
     ) {
       return response.data.length !== 0;
     }
-    throw new Error("Invalid response");
+    throw new CustomError("Invalid response");
   } catch (error) {
     let errMsg = "";
     let errStatus = 400;

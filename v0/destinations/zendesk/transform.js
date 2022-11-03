@@ -73,18 +73,26 @@ const responseBuilderToSetPrimaryAccount = (
 
 /**
  * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
+ * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#create-identity
+ * This function search identity from userId and fetch its details, if that identity doesn't exists
+ * then it will create the identity and takes the id for it.
  * @param {*} userId -> userId of users
  * @param {*} primaryEmail -> primary email passed in payload used to set this email as primary account.
  * @param {*} headers -> Authorizations for API's call
  * @returns it returns identityId or undefined if it gives error.
  */
-const getUserIdentityId = async (userId, primaryEmail, headers) => {
+const getUserIdentityId = async (
+  userId,
+  primaryEmail,
+  headers,
+  destinationConfig
+) => {
   const url = `${endPoint}users/${userId}/identities`;
   const config = { headers };
   try {
     const resp = await axios.get(url, config);
     if (!resp || !resp.data || resp.data.count === 0) {
-      logger.debug("User not found");
+      logger.debug("Failed in fetching Identity details");
       return undefined;
     }
     const identities = get(resp.data, "identities");
@@ -94,11 +102,24 @@ const getUserIdentityId = async (userId, primaryEmail, headers) => {
       );
       if (identitiesDetails) {
         return identitiesDetails.id;
-      } else {
-        logger.debug(`${primaryEmail} not found`);
-        return undefined;
       }
     }
+    // As Identity doesn't exists so it will create Identity.
+    const createIdentityUrl = `${endPoint}/users/${userId}/identities`;
+    const payloadBody = {
+      identity: {
+        type: "email",
+        value: primaryEmail
+      }
+    };
+    if (destinationConfig.createUsersAsVerified)
+      payloadBody.identity = { ...payloadBody.identity, verified: true };
+    const response = await axios.post(createIdentityUrl, payloadBody, config);
+    if (!response || !response.data || !response.data.identity) {
+      logger.debug("Failed in creating Identity.");
+      return undefined;
+    }
+    return response.data.identity.id;
   } catch (error) {
     logger.debug("Error :", error.response ? error.response.data : error);
     return undefined;
@@ -210,7 +231,7 @@ async function getUserId(message, headers, type) {
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
-  const userEmail = traits.email || traits.primaryEmail;
+  const userEmail = traits.email;
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
@@ -409,12 +430,13 @@ async function processIdentify(message, destinationConfig, headers) {
 
   const traits = getFieldValueFromMessage(message, "traits");
   const userId = await getUserId(message, headers);
-  const primaryEmail = get(traits, "primaryEmail");
-  if (userId && primaryEmail) {
+  const primaryEmail = traits.primaryEmail;
+  if (primaryEmail && userId) {
     const userIdentityId = await getUserIdentityId(
       userId,
       primaryEmail,
-      headers
+      headers,
+      destinationConfig
     );
     if (userIdentityId) {
       returnList.push(
@@ -422,6 +444,7 @@ async function processIdentify(message, destinationConfig, headers) {
       );
     }
   }
+
   if (
     traits.company &&
     traits.company.remove &&

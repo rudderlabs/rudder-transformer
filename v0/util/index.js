@@ -44,6 +44,15 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // GENERIC UTLITY
 // ========================================================================
 
+class CustomError extends Error {
+  constructor(message, statusCode, metadata) {
+    super(message);
+    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
+    // Apart from destination transformation
+    this.response = { status: statusCode || 400, metadata };
+  }
+}
+
 const getEventTime = message => {
   return new Date(message.timestamp).toISOString();
 };
@@ -228,7 +237,7 @@ const setValues = (payload, message, mappingJson) => {
         if (val) {
           set(payload, mapping.destKey, val);
         } else if (mapping.required) {
-          throw new Error(
+          throw new CustomError(
             `One of ${JSON.stringify(mapping.sourceKeys)} is required`
           );
         }
@@ -620,7 +629,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
     // TODO - think of a way to crash the pod
-    throw new Error("Wrong sourceKey type or blank sourceKey array");
+    throw new CustomError("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
 };
@@ -713,7 +722,7 @@ const handleMetadataForValue = (
     }
 
     if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new Error(
+      throw new CustomError(
         `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
       );
     }
@@ -740,7 +749,7 @@ const handleMetadataForValue = (
       }
 
       if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new Error(
+        throw new CustomError(
           `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
         );
       }
@@ -1439,15 +1448,6 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
   }
 };
 
-class CustomError extends Error {
-  constructor(message, statusCode, metadata) {
-    super(message);
-    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
-    // Apart from destination transformation
-    this.response = { status: statusCode, metadata };
-  }
-}
-
 /**
  * Used for generating error response with stats from native and built errors
  * @param {*} arg
@@ -1547,7 +1547,10 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform?.toLowerCase());
+  if (typeof platform === "string") {
+    return appleOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
 }
 
 function removeHyphens(str) {

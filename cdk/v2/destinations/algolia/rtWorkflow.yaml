@@ -1,5 +1,7 @@
 bindings:
 - path: ../../../../v0/destinations/algolia/config
+- name: handleRtTfSingleEventError
+  path: ../../../../v0/util/index
 
 steps:
   - name: validateInput
@@ -27,12 +29,10 @@ steps:
       } ~> $toArray
   - name: failedEvents
     template: |
-      $outputs.transform#$i.error.{
-        "metadata": $toArray($$[$i].metadata),
-        "batched": false,
-        "statusCode": status,
-        "error": message
-      } ~> $toArray
+      $outputs.transform#$i.error.(
+        $error := $exists(originalError) ? originalError : $;
+        $handleRtTfSingleEventError($$[$i], $error, "ALGOLIA")
+      ) ~> $toArray
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
@@ -65,4 +65,4 @@ steps:
       )
   - name: finalPayload
     template: |
-      $toArray($outputs.($append(batchSuccessfulEvents, failedEvents)))
+      $toArray($outputs.($append(failedEvents, batchSuccessfulEvents)))

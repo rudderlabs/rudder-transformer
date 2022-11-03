@@ -1,4 +1,8 @@
-const { getSuccessRespEvents, getErrorRespEvents } = require("../../util");
+const {
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  CustomError
+} = require("../../util");
 
 const { getTopic, createAttributesMetadata } = require("./util");
 
@@ -15,7 +19,7 @@ function process(event) {
       attributes
     };
   }
-  throw new Error("No topic set for this event");
+  throw new CustomError("No topic set for this event");
 }
 
 const processRouterDest = async inputs => {

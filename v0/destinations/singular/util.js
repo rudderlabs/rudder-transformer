@@ -102,7 +102,6 @@ const isSessionEvent = (Config, eventName) => {
  * @returns
  */
 const platformWisePayloadGenerator = (message, isSessionEvent) => {
-  let payload;
   let eventAttributes;
   let platform = getValueFromMessage(message, "context.os.name");
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
@@ -114,7 +113,7 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     throw new CustomError("[Singular] :: Platform is not supported");
   }
 
-  payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[
       CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name
@@ -167,7 +166,6 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   } else {
     payload.c = "carrier";
   }
-  payload = removeUndefinedAndNullValues(payload);
   return { payload, eventAttributes };
 };
 

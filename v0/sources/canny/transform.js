@@ -1,11 +1,12 @@
-const Message = require("../message");
 const sha256 = require("sha256");
+const Message = require("../message");
 const {
   voterMapping,
   authorMapping,
   checkForRequiredFields
 } = require("./util");
 const { logger } = require("../../../logger");
+const { CustomError } = require("../../util");
 
 const CannyOperation = {
   VOTE_CREATED: "vote.created",
@@ -38,7 +39,7 @@ function settingIds(message, event, typeOfUser) {
     }
   } catch (e) {
     logger?.error(`Missing essential fields from Canny. Error: (${e})`);
-    throw new Error(`Missing essential fields from Canny. Error: (${e})`);
+    throw new CustomError(`Missing essential fields from Canny. Error: (${e})`);
   }
 }
 

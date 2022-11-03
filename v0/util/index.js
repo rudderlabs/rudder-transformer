@@ -1546,7 +1546,10 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform?.toLowerCase());
+  if (typeof platform === "string") {
+    return appleOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
 }
 
 function removeHyphens(str) {

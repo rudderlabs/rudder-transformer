@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const Message = require("../message");
-const { generateUUID } = require("../../util");
+const { generateUUID, CustomError } = require("../../util");
 
 const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
@@ -76,7 +76,7 @@ function processEvent(event) {
 
     return message;
   }
-  throw new Error("Unknwon event type from Appsflyer");
+  throw new CustomError("Unknwon event type from Appsflyer");
 }
 
 function process(event) {

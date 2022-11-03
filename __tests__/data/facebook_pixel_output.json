@@ -648,15 +648,44 @@
     "headers": {},
     "params": {},
     "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {
-            "data": [
-                "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\",\"fbc\":\"fb.1.1567333011693.IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1567333011,\"event_source_url\":\"https://theminimstory.com/collections/summer-of-pearls?utm_source=facebook&utm_medium=paidsocial&utm_campaign=carousel&utm_content=ad1-jul&fbclid=IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI\",\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"custom_data\":{\"content_category\":\"clothing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"CAD\",\"value\":0,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}],\"num_items\":2}}"
-            ]
-        }
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\",\"fbc\":\"fb.1.1567333011693.IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1567333011,\"event_source_url\":\"https://theminimstory.com/collections/summer-of-pearls?utm_source=facebook&utm_medium=paidsocial&utm_campaign=carousel&utm_content=ad1-jul&fbclid=IwAR2SsDcjzd_TLZN-e93kxOeGBYO4pQ3AiyeXSheHW5emDeLw8uTvo6lTMPI\",\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"custom_data\":{\"content_category\":\"clothing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"CAD\",\"value\":0,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}],\"num_items\":2}}"
+        ]
+      }
     },
     "files": {}
-}
+  },
+  {
+    "statusCode": 400,
+    "error": "event name should be string",
+    "statTags": {
+      "destType": "FACEBOOK_PIXEL",
+      "stage": "transform",
+      "scope": "transformation",
+      "meta": "badEvent"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v13.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1567333011,\"event_source_url\":\"url in wrong format\",\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"custom_data\":{\"content_category\":\"clothing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"CAD\",\"value\":0,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}],\"num_items\":2}}"
+        ]
+      }
+    },
+    "files": {}
+  }
 ]

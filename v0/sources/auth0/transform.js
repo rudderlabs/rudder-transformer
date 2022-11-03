@@ -7,6 +7,7 @@ const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 const Message = require("../message");
+const { CustomError } = require("../../util");
 
 // Ref: https://auth0.com/docs/logs/references/log-event-type-codes
 const eventNameMap = JSON.parse(

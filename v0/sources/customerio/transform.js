@@ -17,7 +17,7 @@ function process(event) {
 
   let eventName = mappingConfig[event.object_type.toLowerCase()][event.metric];
   if (!eventName) {
-    // throw new Error("Metric not supported");
+    // throw new CustomError("Metric not supported");
     eventName = "Unknown Event";
   }
   message.setEventName(eventName);

@@ -443,6 +443,7 @@ async function processIdentify(message, destinationConfig, headers) {
         responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
       );
     }
+    delete traits.primaryEmail;
   }
 
   if (

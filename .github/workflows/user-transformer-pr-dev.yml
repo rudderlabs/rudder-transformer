@@ -47,13 +47,13 @@ jobs:
           docker run rudderlabs/develop-rudder-transformer:${{ steps.extract_branch.outputs.branch }} npm run testDestinations
           docker run rudderlabs/develop-rudder-transformer:${{ steps.extract_branch.outputs.branch }} npm run testVersionedRouter
 
-      # - name: Build and push
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     file: Dockerfile-ut-func
-      #     push: true
-      #     tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
-      #     build-args: |
-      #       VERSION=${{ steps.extract_branch.outputs.branch }}
-      #       COMMIT_HASH=${{ github.sha }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile-ut-func
+          push: true
+          tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
+          build-args: |
+            VERSION=${{ steps.extract_branch.outputs.branch }}
+            COMMIT_HASH=${{ github.sha }}

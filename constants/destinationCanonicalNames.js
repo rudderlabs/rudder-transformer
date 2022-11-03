@@ -41,6 +41,8 @@ const DestCanonicalNames = {
   mautic: ["MAUTIC", "mautic", "Mautic"],
   mailjet: ["MAILJET", "MailJet", "mailjet", "Mailjet"],
   kafka: ["KAFKA", "kafka", "Kafka"],
+  azure_event_hub: ["AZURE_EVENT_HUB", "azure_event_hub", "AzureEventHub"],
+  confluent_cloud: ["CONFLUENT_CLOUD", "confluent_cloud", "ConfluentCloud"],
   vero: ["vero", "Vero", "VERO"],
   pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],
   rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox", "rockerBox"],

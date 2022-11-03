@@ -117,7 +117,7 @@ const getData = (userArray, schema, disableHashing) => {
       hashedProperty = getHashedProperty(schema, hashedProperty);
     }
 
-    // ref: https://marketingapi.snapchat.com/docs/#update-an-audience-segment:~:text=via%20a%20LIST-,Identifiers%20should%20be%20grouped%20in%20batches%20of%20a%20maximum%20of%20100%2C000%20identifiers/request.,-Attributes
+    // ref : https://marketingapi.snapchat.com/docs/#update-an-audience-segment:~:text=via%20a%20LIST-,Identifiers%20should%20be%20grouped%20in%20batches%20of%20a%20maximum%20of%20100%2C000%20identifiers/request.,-Attributes
     if (data[index].length >= 100000) {
       data.push([]);
       index += 1;

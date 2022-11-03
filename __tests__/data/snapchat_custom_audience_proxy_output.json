@@ -24,7 +24,7 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
-      "message": "[Error occurred while processing response for destination snapchat_custom_audience]: snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorAt": "proxy",
@@ -37,7 +37,7 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
-      "message": "[Error occurred while processing response for destination snapchat_custom_audience]: snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorAt": "proxy",

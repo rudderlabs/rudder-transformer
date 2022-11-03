@@ -411,6 +411,13 @@ function validateUserId(message) {
 async function processIdentify(message, destinationConfig, headers) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let primaryEmail;
+  if (traits.primaryEmail) {
+    primaryEmail = traits.primaryEmail;
+    // deleting this primaryEmail from traits as it used only to set primary email
+    delete traits.primaryEmail;
+  }
   // create user fields if required
   await checkAndCreateUserFields(
     getFieldValueFromMessage(message, "traits"),
@@ -428,9 +435,8 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const traits = getFieldValueFromMessage(message, "traits");
   const userId = await getUserId(message, headers);
-  const primaryEmail = traits.primaryEmail;
+
   if (primaryEmail && userId) {
     const userIdentityId = await getUserIdentityId(
       userId,

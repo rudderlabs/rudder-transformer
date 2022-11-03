@@ -50,7 +50,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     "content-type": "application/json"
   };
 
-  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://help.mixpanel.com/hc/en-us/articles/115004565806-Delete-User-Profiles#:~:text=Bulk%20Delete%20Profiles,Please%20delete%20with%20caution!
   const batchEvents = _.chunk(data, maxBatchSize);
   batchEvents.forEach(async batchEvent => {

@@ -43,7 +43,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
 
-  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
   const batchEvents = _.chunk(identity, maxBatchSize);
   batchEvents.forEach(async batchEvent => {

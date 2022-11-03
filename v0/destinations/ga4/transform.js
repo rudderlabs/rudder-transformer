@@ -41,6 +41,11 @@ const responseBuilder = (message, { Config }) => {
   }
 
   // trim and replace spaces with "_"
+  if (typeof event !== "string") {
+    throw new CustomError(
+      "[Google Analytics 4] track:: event name should be string"
+    );
+  }
   event = event.trim().replace(/\s+/g, "_");
 
   // reserved event names are not allowed

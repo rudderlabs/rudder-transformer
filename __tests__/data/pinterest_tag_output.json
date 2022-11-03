@@ -330,7 +330,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "event_name": "custom event",
+          "event_name": "custom",
           "event_time": 1597383030,
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
           "app_id": "429047995",

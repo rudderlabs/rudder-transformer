@@ -145,7 +145,7 @@
   {
    "output": {
      "status": 400,
-     "message": "[Error occurred while processing response for destination marketo]: Error occurred during Marketo Response Handling -> problem",
+     "message": "Error occurred during Marketo Response Handling -> problem",
      "destinationResponse": {
        "response": {
          "requestId": "142e4#1835b117b76",
@@ -163,7 +163,7 @@
        "destType": "MARKETO",
        "stage": "responseTransform",
        "scope": "api",
-       "meta": "abortable",
+       "meta": "unhandled",
        "errorAt": "proxy"
      }
    }

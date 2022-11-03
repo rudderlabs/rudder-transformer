@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 401,
-      "message": "[Error occurred while processing response for destination google_adwords_enhanced_conversions]: Google_awordds_enhanced_conversion: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation",
+      "message": "Google_awordds_enhanced_conversion: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during Google_adwords_enhanced_conversions response transformation",
       "destinationResponse": [
         {
           "error": {

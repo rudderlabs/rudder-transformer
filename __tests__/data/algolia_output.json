@@ -109,5 +109,9 @@
   {
     "statusCode": "400",
     "message": "eventType is mandatory for track call"
+  },
+  {
+    "statusCode": "400",
+    "message": "Missing required value from \"properties.index\""
   }
 ]

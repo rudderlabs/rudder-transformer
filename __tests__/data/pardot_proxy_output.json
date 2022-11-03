@@ -352,7 +352,7 @@
   },
   {
     "output": {
-      "message": "[Error occurred while processing response for destination pardot]: Pardot: access_token is invalid, unknown, or malformed: Inactive token during Pardot response transformation",
+      "message": "Pardot: access_token is invalid, unknown, or malformed: Inactive token during Pardot response transformation",
       "status": 500,
       "destinationResponse": {
         "@attributes": {

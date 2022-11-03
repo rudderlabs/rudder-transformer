@@ -8,7 +8,8 @@ const destinations = [
   "pardot",
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions",
-  "facebook_pixel"
+  "facebook_pixel",
+  "snapchat_custom_audience"
 ];
 const deleteUserDestinations = [
   "am",

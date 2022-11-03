@@ -190,7 +190,8 @@ const deduceTrackScreenEventName = (message, Config) => {
   }
 
   /*
-  Step 3: In case both of the above stated cases fail, will mark the event as "custom"
+  Step 3: In case both of the above stated cases fail, will send the event name as it is.
+          This is going to be reflected as "unknown" event in conversion API dashboard.
  */
   return ["custom"];
 };

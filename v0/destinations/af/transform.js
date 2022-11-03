@@ -44,7 +44,7 @@ function responseBuilderSimple(payload, message, destination) {
   // else if (message.context.app.namespace) {
   //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   // } else {
-  //   throw new Error("Invalid app endpoint");
+  //   throw new CustomError("Invalid app endpoint");
   // }
   // const afId = message.integrations
   //   ? message.integrations.AF

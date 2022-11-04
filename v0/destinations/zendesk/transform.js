@@ -24,6 +24,7 @@ const {
   defaultPutRequestConfig
 } = require("../../util");
 const logger = require("../../../logger");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 
 let endPoint;
 
@@ -90,12 +91,17 @@ const getUserIdentityId = async (
   const url = `${endPoint}users/${userId}/identities`;
   const config = { headers };
   try {
-    const resp = await axios.get(url, config);
-    if (!resp || !resp.data || resp.data.count === 0) {
+    const res = await httpGET(url, config);
+    if (
+      res.success === false ||
+      !res.response ||
+      !res.response.data ||
+      res.response.data.count === 0
+    ) {
       logger.debug("Failed in fetching Identity details");
       return undefined;
     }
-    const identities = get(resp.data, "identities");
+    const identities = get(res.response.data, "identities");
     if (identities && Array.isArray(identities)) {
       const identitiesDetails = identities.find(
         identitieslist => identitieslist.value === primaryEmail
@@ -104,7 +110,7 @@ const getUserIdentityId = async (
         return identitiesDetails.id;
       }
     }
-    // As Identity doesn't exists so it will create Identity.
+    // If Identity doesn't exists then it will create the Identity.
     const createIdentityUrl = `${endPoint}/users/${userId}/identities`;
     const payloadBody = {
       identity: {
@@ -114,12 +120,21 @@ const getUserIdentityId = async (
     };
     if (destinationConfig.createUsersAsVerified)
       payloadBody.identity = { ...payloadBody.identity, verified: true };
-    const response = await axios.post(createIdentityUrl, payloadBody, config);
-    if (!response || !response.data || !response.data.identity) {
+    const responseIdentity = await httpPOST(
+      createIdentityUrl,
+      payloadBody,
+      config
+    );
+    if (
+      responseIdentity.success === false ||
+      !responseIdentity.response ||
+      !responseIdentity.response.data ||
+      !responseIdentity.response.data.identity
+    ) {
       logger.debug("Failed in creating Identity.");
       return undefined;
     }
-    return response.data.identity.id;
+    return responseIdentity.response.data?.identity?.id;
   } catch (error) {
     logger.debug("Error :", error.response ? error.response.data : error);
     return undefined;
@@ -449,7 +464,6 @@ async function processIdentify(message, destinationConfig, headers) {
         responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
       );
     }
-    delete traits.primaryEmail;
   }
 
   if (

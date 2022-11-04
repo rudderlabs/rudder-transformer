@@ -30,9 +30,6 @@
     },
     "metadata": [
       {
-        "destInfo": {
-          "authKey": "1mMy5cqbtfuaKZv1IhVQKnBdVwe"
-        },
         "jobId": 2
       }
     ],
@@ -152,9 +149,6 @@
     },
     "metadata": [
       {
-        "destInfo": {
-          "authKey": "1mMy5cqbtfuaKZv1IhVQKnBdVwe"
-        },
         "jobId": 2
       }
     ],
@@ -255,9 +249,6 @@
     },
     "metadata": [
       {
-        "destInfo": {
-          "authKey": "1mMy5cqbtfuaKZv1IhVQKnBdVke"
-        },
         "jobId": 3
       }
     ]
@@ -274,9 +265,6 @@
     },
     "metadata": [
       {
-        "destInfo": {
-          "authKey": "1mMy5cqbtfuaKZv1IhVQKnBdVke"
-        },
         "jobId": 4
       }
     ]
@@ -314,9 +302,6 @@
     },
     "metadata": [
       {
-        "destInfo": {
-          "authKey": "1mMy5cqbtfuaKZv1IhVQKnBdVke"
-        },
         "jobId": 5
       }
     ],

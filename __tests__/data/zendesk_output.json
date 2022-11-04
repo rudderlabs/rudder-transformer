@@ -457,6 +457,15 @@
     "files": {},
     "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },
+  {
+    "statusCode": 400,
+    "error": "Email ID is required for getting zenuserId",
+    "statTags": {
+      "destination": "zendesk",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
   [
     {
       "body": {
@@ -510,15 +519,5 @@
       },
       "files": {}
     }
-  ],
-  {
-    "statusCode": 400,
-    "error": "Email ID is required for getting zenuserId",
-    "statTags": {
-      "destination": "zendesk",
-      "stage": "transform",
-      "scope": "exception"
-    }
-  }
-
+  ]
 ]

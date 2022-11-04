@@ -41,7 +41,7 @@ function process(event) {
       );
     }
   } catch (error) {
-    throw new Error(
+    throw new CustomError(
       error.message || "EventBridge: Unknown error",
       error.status || 400
     );

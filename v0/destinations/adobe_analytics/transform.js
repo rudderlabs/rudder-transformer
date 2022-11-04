@@ -451,7 +451,7 @@ const process = async event => {
       payload = handleTrack(messageClone, formattedDestination);
       break;
     default:
-      throw new Error("Message type is not supported");
+      throw new CustomError("Message type is not supported");
   }
   if (payload) {
     const response = await responseBuilderSimple(

@@ -32,16 +32,16 @@ const formatRevenue = revenue => {
 };
 
 /**
-*
-* @param {*} message Rudder Payload
-* @param {*} defaultValue product / product_group
-* @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
-*
-* We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
-* If category is clothing it will be set to ["product"]
-* @return Content Type array as defined in:
-* - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
-*/
+ *
+ * @param {*} message Rudder Payload
+ * @param {*} defaultValue product / product_group
+ * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ *
+ * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
+ * If category is clothing it will be set to ["product"]
+ * @return Content Type array as defined in:
+ * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
+ */
 const getContentType = (message, defaultValue, categoryToContent) => {
   const { integrations } = message;
   if (
@@ -214,31 +214,34 @@ const transformedPayloadData = (
   return customData;
 };
 
-
 /**
- * 
- * @param {*} message 
+ *
+ * @param {*} message
  * @returns fbc parameter which is a combined string of the parameters below
- * 
+ *
  * version : "fb" (default)
- * 
+ *
  * subdomainIndex : 1 ( recommended by facebook, as well as our JS SDK sets cookies on the main domain, i.e "facebook.com")
- * 
+ *
  * creationTime : mapped to originalTimestamp converted in miliseconds
- * 
+ *
  * fbclid : deduced query paramter from context.page.url
- * 
+ *
  * ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc#fbc
  */
-const deduceFbcParam = (message) => {
-
+const deduceFbcParam = message => {
   const url = message.context?.page?.url;
   if (!url) {
     return undefined;
   }
-  let parseUrl = new URL(url)
-  let paramsList = new URLSearchParams(parseUrl.search);
-  const fbclid = paramsList.get('fbclid')
+  let parseUrl;
+  try {
+    parseUrl = new URL(url);
+  } catch {
+    return undefined;
+  }
+  const paramsList = new URLSearchParams(parseUrl.search);
+  const fbclid = paramsList.get("fbclid");
 
   if (!fbclid) {
     return undefined;

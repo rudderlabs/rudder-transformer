@@ -510,5 +510,15 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "error": "Email ID is required for getting zenuserId",
+    "statTags": {
+      "destination": "zendesk",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }
+
 ]

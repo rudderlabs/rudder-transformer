@@ -42,12 +42,12 @@ const MP_IDENTIFY_EXCLUSION_LIST = [
 ];
 
 const GEO_SOURCE_ALLOWED_VALUES = [null, "reverse_geocoding"];
-const maxBatchSize = 1000;
+const MAX_BATCH_SIZE = 1000;
 
 module.exports = {
-  maxBatchSize,
   mappingConfig,
   BASE_ENDPOINT,
+  MAX_BATCH_SIZE,
   ConfigCategory,
   BASE_ENDPOINT_EU,
   GEO_SOURCE_ALLOWED_VALUES,

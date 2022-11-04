@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
-const { getEndpoint, maxBatchSize } = require("./config");
+const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -45,7 +45,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = _.chunk(identity, maxBatchSize);
+  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
   batchEvents.forEach(async batchEvent => {
     const deletionRespone = await httpPOST(
       endpoint,

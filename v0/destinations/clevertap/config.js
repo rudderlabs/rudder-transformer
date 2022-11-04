@@ -42,13 +42,13 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "ts"
 ];
 
-const maxBatchSize = 1000;
+const MAX_BATCH_SIZE = 1000;
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   getEndpoint,
-  maxBatchSize,
+  MAX_BATCH_SIZE,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   CLEVERTAP_DEFAULT_EXCLUSION

@@ -5,7 +5,7 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const ErrorBuilder = require("../../util/error");
 const { isHttpStatusSuccess } = require("../../util");
-const { maxBatchSize } = require("./config");
+const { MAX_BATCH_SIZE } = require("./config");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -52,7 +52,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://help.mixpanel.com/hc/en-us/articles/115004565806-Delete-User-Profiles#:~:text=Bulk%20Delete%20Profiles,Please%20delete%20with%20caution!
-  const batchEvents = _.chunk(data, maxBatchSize);
+  const batchEvents = _.chunk(data, MAX_BATCH_SIZE);
   batchEvents.forEach(async batchEvent => {
     const deletionRespone = await httpPOST(endpoint, batchEvent, headers);
     const processedDeletionRespone = processAxiosResponse(deletionRespone);

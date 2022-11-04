@@ -773,7 +773,7 @@
     }
   },
   {
-    "description": "Track call with Ecom events (Added to Cartd)",
+    "description": "Track call with Ecom events (Added to Cart)",
     "input": {
       "destination": {
         "Config": {
@@ -841,7 +841,7 @@
           "categories": ["Fiction3", "Children3"],
           "checkout_url": "http://www.heythere.com",
           "item_names": ["book1", "book2"],
-          "items": [
+          "products": [
             {
               "product_id": "b1pid",
               "sku": "123x",

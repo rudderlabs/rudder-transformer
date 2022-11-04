@@ -154,9 +154,12 @@ const trackRequestHandler = (message, category, destination) => {
     );
 
     // products mapping using Items.json
-    if (message.properties.items && Array.isArray(message.properties.items)) {
+    if (
+      message.properties.products &&
+      Array.isArray(message.properties.products)
+    ) {
       const itemArr = [];
-      message.properties.items.forEach(key => {
+      message.properties.products.forEach(key => {
         let item = constructPayload(
           key,
           MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]

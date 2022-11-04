@@ -1,0 +1,975 @@
+[
+  {
+    "description": "adding user",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "removing user",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": true,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "remove": [
+              {
+                "email": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "id": "123",
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "adding and removing users",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ],
+            "remove": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "id": "123",
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "adding multiple users",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              },
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ],
+                  [
+                    "445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "removing multiple users",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "remove": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              },
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "id": "123",
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                  ],
+                  [
+                    "445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "message type is not audiencelist",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audience",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message Type audience not supported."
+    }
+  },
+  {
+    "description": "without message type",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "rohith@abc.com",
+                "phone": "@09432457768",
+                "firstName": "rohith",
+                "lastName": "kaza",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "without sending properties",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Message properties is not present. Aborting message."
+    }
+  },
+  {
+    "description": "without listData inside properties",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::listData is not present inside properties. Aborting message."
+    }
+  },
+  {
+    "description": "without add or remove lists inside listData",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "abc": "123"
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
+    }
+  },
+  {
+    "description": "not providing required field for chosen schema in all the cases",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "remove": [
+              {
+                "email": "",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              },
+              {
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[snapchat_custom_audience]::email is required for the chosen schema."
+    }
+  },
+  {
+    "description": "not providing required field for chosen schema in some cases",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "email"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "remove": [
+              {
+                "email": "abcd@abc.com",
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              },
+              {
+                "phone": "@09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "DELETE",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "id": "123",
+                "schema": ["EMAIL_SHA256"],
+                "data": [
+                  [
+                    "8c37cbc5d9abb3082303c6548571cfc7655a4546ddc1e943f041fc9126e7274a"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "schema= phone",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "phone"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "09432457768",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["PHONE_SHA256"],
+                "data": [
+                  [
+                    "0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "schema= mobileAdId",
+    "input": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl9101"
+        }
+      },
+      "destination": {
+        "Config": {
+          "segmentId": "123",
+          "disableHashing": false,
+          "schema": "mobileAdId"
+        }
+      },
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "sudip@abc.com",
+                "phone": "09432457768",
+                "mobileId": "1334",
+                "firstName": "sudip",
+                "lastName": "paul",
+                "country": "US",
+                "postalCode": "1245"
+              }
+            ]
+          },
+          "enablePartialFailure": true
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "users": [
+              {
+                "schema": ["MOBILE_AD_ID_SHA256"],
+                "data": [
+                  [
+                    "eb43272640b269219a01caf99c5a4122d6edc0916d45ac13c0ce80ca3ad2def0"
+                  ]
+                ]
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  }
+]

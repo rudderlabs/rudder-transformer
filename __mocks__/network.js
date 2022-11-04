@@ -18,6 +18,7 @@ const urlDirectoryMap = {
   "graph.facebook.com": "facebook_pixel",
   "api.wootric.com": "wootric",
   "api.mautic.com": "mautic",
+  "adsapi.snapchat.com": "snapchat_custom_audience"
 };
 
 function getData(url) {

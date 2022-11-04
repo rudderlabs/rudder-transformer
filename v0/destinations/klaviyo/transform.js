@@ -152,13 +152,12 @@ const trackRequestHandler = (message, category, destination) => {
       message.properties,
       MAPPING_CONFIG[categ.name]
     );
-
+    const itemArr = [];
     // products mapping using Items.json
     if (
       message.properties.products &&
       Array.isArray(message.properties.products)
     ) {
-      const itemArr = [];
       message.properties.products.forEach(key => {
         let item = constructPayload(
           key,
@@ -169,12 +168,28 @@ const trackRequestHandler = (message, category, destination) => {
           itemArr.push(item);
         }
       });
-      if (!payload.properties) {
-        payload.properties = {};
-      }
+    } else if (
+      // to be deprecated
+      message.properties.items &&
+      Array.isArray(message.properties.items)
+    ) {
+      message.properties.items.forEach(key => {
+        let item = constructPayload(
+          key,
+          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+        );
+        item = removeUndefinedAndNullValues(item);
+        if (!isEmptyObject(item)) {
+          itemArr.push(item);
+        }
+      });
+    }
+    if (!payload.properties) {
+      payload.properties = {};
+    }
+    if (itemArr.length > 0) {
       payload.properties.items = itemArr;
     }
-
     // all extra props passed is incorporated inside properties
     let customProperties = {};
     customProperties = extractCustomFields(

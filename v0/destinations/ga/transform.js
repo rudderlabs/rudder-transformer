@@ -27,6 +27,8 @@ const {
   handleRtTfSingleEventError
 } = require("../../util");
 
+const { isDefinedAndNotNull } = require("../../util");
+
 const gaDisplayName = "Google Analytics";
 
 function getParamsFromConfig(message, destination) {
@@ -933,10 +935,11 @@ function processSingleMessage(message, destination) {
           ? nameToEventMap[eventName].category
           : ConfigCategory.NON_ECOM;
         category.hitType = "event";
-        customParams.ni =
-          message?.properties.nonInteraction !== undefined
-            ? message.properties.nonInteraction
-            : 1;
+        customParams.ni = isDefinedAndNotNull(
+          message?.properties?.nonInteraction
+        )
+          ? message.properties.nonInteraction
+          : 1;
         customParams.ea = message.event;
         let eventValue;
         let setCategory;

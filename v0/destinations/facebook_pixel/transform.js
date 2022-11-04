@@ -588,6 +588,17 @@ const processEvent = (message, destination) => {
           })
           .build();
       }
+      if (typeof message.event !== "string") {
+        throw new ErrorBuilder()
+          .setMessage("event name should be string")
+          .setStatus(400)
+          .setStatTags({
+            ...statTags,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
       standard = eventsToEvents;
       if (standard) {
         standardTo = standard.reduce((filtered, standards) => {

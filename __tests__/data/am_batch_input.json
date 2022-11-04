@@ -91,7 +91,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
       "destination": {
@@ -135,7 +135,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
       "destination": {
@@ -180,7 +180,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
       "destination": {
@@ -225,7 +225,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
       "destination": {
@@ -254,7 +254,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/groupidentify"
+        "endpoint": "https://api2.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
       "destination": {
@@ -283,7 +283,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/usermap"
+        "endpoint": "https://api2.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
       "destination": {
@@ -339,7 +339,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
       "destination": {
@@ -381,7 +381,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
       "destination": {
@@ -423,7 +423,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
       "destination": {
@@ -466,7 +466,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
       "destination": {
@@ -509,7 +509,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
       "destination": {
@@ -538,7 +538,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/groupidentify"
+        "endpoint": "https://api2.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
       "destination": {
@@ -567,7 +567,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/usermap"
+        "endpoint": "https://api2.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
       "destination": {
@@ -617,7 +617,7 @@
         "userId": "anon_id",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": {
         "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
@@ -704,7 +704,7 @@
         "userId": "anon_id",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": {
         "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
@@ -791,7 +791,7 @@
         "userId": "anon_id",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": {
         "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
@@ -878,7 +878,7 @@
         "userId": "anon_id",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": {
         "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
@@ -965,7 +965,7 @@
         "userId": "anon_id",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": {
         "userId": "90ca6da0-292e-4e79-9880-f8009e0ae4a3",
@@ -1064,7 +1064,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
       "destination": {
@@ -1108,7 +1108,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
       "destination": {
@@ -1152,7 +1152,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
       "destination": {
@@ -1197,7 +1197,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
       "destination": {
@@ -1242,7 +1242,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
       "destination": {
@@ -1271,7 +1271,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/groupidentify"
+        "endpoint": "https://api2.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
       "destination": {
@@ -1300,7 +1300,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/usermap"
+        "endpoint": "https://api2.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
       "destination": {
@@ -1358,7 +1358,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 1 },
       "destination": {
@@ -1402,7 +1402,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 2 },
       "destination": {
@@ -1446,7 +1446,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 3 },
       "destination": {
@@ -1491,7 +1491,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 4 },
       "destination": {
@@ -1536,7 +1536,7 @@
         "userId": "my-anonymous-id-new",
         "headers": { "Content-Type": "application/json" },
         "version": "1",
-        "endpoint": "https://api.amplitude.com/2/httpapi"
+        "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
       "metadata": { "job_id": 5 },
       "destination": {
@@ -1565,7 +1565,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/groupidentify"
+        "endpoint": "https://api2.amplitude.com/groupidentify"
       },
       "metadata": { "job_id": 6 },
       "destination": {
@@ -1594,7 +1594,7 @@
         "userId": "my-anonymous-id-new",
         "headers": {},
         "version": "1",
-        "endpoint": "https://api.amplitude.com/usermap"
+        "endpoint": "https://api2.amplitude.com/usermap"
       },
       "metadata": { "job_id": 7 },
       "destination": {

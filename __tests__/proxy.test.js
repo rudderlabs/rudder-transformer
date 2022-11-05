@@ -11,17 +11,7 @@ const destinations = [
   "facebook_pixel",
   "snapchat_custom_audience"
 ];
-const deleteUserDestinations = [
-  "am",
-  "braze",
-  "intercom",
-  "mp",
-  "af",
-  "clevertap",
-  "engage"
-];
 const service = require("../versionedRouter").handleProxyRequest;
-const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));
 
@@ -72,36 +62,3 @@ destinations.forEach(destination => {
   });
 });
 // destination tests end
-
-// delete user tests
-
-deleteUserDestinations.forEach(destination => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `./data/${destination}_deleteUsers_proxy_input.json`
-    )
-  );
-  const outputDataFile = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `./data/${destination}_deleteUsers_proxy_output.json`
-    )
-  );
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
-
-  inputData.forEach((input, index) => {
-    it(`DeleteUsers Tests: ${destination} - Payload ${index}`, async () => {
-      try {
-        input.get = jest.fn((destInfoKey) => {
-          return input.getValue && input.getValue[destInfoKey]
-        });
-        const output = await processDeleteUsers(input);
-        expect(output).toEqual(expectedData[index]);
-      } catch (error) {
-        expect(error.message).toEqual(expectedData[index].error);
-      }
-    });
-  });
-});

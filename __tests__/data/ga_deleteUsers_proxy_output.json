@@ -4,5 +4,12 @@
       "statusCode": 200,
       "status": "successful"
     }
+  ],
+  [
+    {
+      "statusCode": 500,
+      "authErrorCategory": "REFRESH_TOKEN",
+      "error": "[GA] invalid credentials"
+    }
   ]
 ]

@@ -1,0 +1,125 @@
+const formAxiosMock = require("../__mocks__/gen-axios.mock");
+const responses = [
+  [
+    {
+      type: "get",
+      response: {
+        data: {
+          a: 1
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    },
+    {
+      type: "constructor",
+      response: {
+        data: {
+          b: 2
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    },
+    {
+      type: "post",
+      response: {
+        data: {
+          c: 3
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    }
+  ],
+  [
+    {
+      type: "get",
+      response: {
+        data: {
+          d: 4
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    },
+    {
+      type: "constructor",
+      response: {
+        data: {
+          e: 5
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    },
+    {
+      type: "post",
+      response: {
+        data: {
+          f: 6
+        },
+        status: 200,
+        statusText: "OK"
+      }
+    }
+  ]
+];
+formAxiosMock(responses);
+const { httpSend, httpGET, httpPOST } = require("../adapters/network");
+const axios = require("axios");
+
+const mockMethod1 = async () => {
+  // some random code execution before axios.get
+  const resp1 = await axios.get("http:///wwww.example.com/1");
+  // some random code execution before axios
+  const resp2 = await axios({
+    url: "http://www.example.com/2",
+    method: "post"
+  });
+  // some random code executed before axios.post
+  const resp3 = await axios.post("http://www.example.com/3")
+  return [
+    resp1,
+    resp2,
+    resp3
+  ];
+}
+const mockMethod2 = async () => {
+  // some random code executed before httpGET
+  const resp1 = await httpGET("http:///wwww.example.com/1");
+  // some random code executed before httpSend
+  const resp2 = await httpSend({
+    url: "http://www.example.com/2",
+    method: "post"
+  });
+  // some random executed before httpPOST call
+  const resp3 = await httpPOST("http://www.example.com/3")
+  return [
+    resp1,
+    resp2,
+    resp3
+  ];
+}
+
+
+describe("Testing gen-axios mocker", () => {
+  test("test mockMethod1", async () => {
+    const mockMethodResults = await mockMethod1();
+    mockMethodResults.forEach((result, index) => {
+      expect(result).toMatchObject(
+        expect.objectContaining(responses[0][index].response)
+      )
+    });
+  });
+
+  test('test mockMethod2', async () => {
+    const mockMethodResults = await mockMethod2();
+    mockMethodResults.forEach(({success, response}, index) => {
+      expect(success).toEqual(true);
+      expect(response).toMatchObject(
+        expect.objectContaining(responses[1][index].response)
+      )
+    })
+  })
+});

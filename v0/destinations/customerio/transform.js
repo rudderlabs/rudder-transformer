@@ -250,7 +250,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       // This will help in merging for subsequent calls
       const anonymousId = message.anonymousId ? message.anonymousId : undefined;
       if (!anonymousId) {
-        throw new Error("Anonymous id/ user id is required");
+        throw new CustomError("Anonymous id/ user id is required");
       } else {
         rawPayload.anonymous_id = anonymousId;
       }

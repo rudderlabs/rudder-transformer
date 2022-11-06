@@ -9,14 +9,16 @@ const {
   CustomError,
   isEmpty,
   getHashFromArray,
-  getDestinationExternalIDInfoForRetl
+  getDestinationExternalIDInfoForRetl,
+  getValueFromMessage
 } = require("../../util");
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
-  hsCommonConfigJson
+  hsCommonConfigJson,
+  DESTINATION
 } = require("./config");
 
 /**
@@ -205,6 +207,42 @@ const getEmailAndUpdatedProps = properties => {
 /* NEW API util functions */
 
 /**
+ * @param {*} message The entire message object
+ * @param {*} sourceKey the base object to search the lookup value from
+ * @param {*} lookupField destination.Config.lookupField or email
+ * @returns returns the lookup value
+ */
+const getMappingFieldValueFormMessage = (message, sourceKey, lookupField) => {
+  const baseObject = get(message, `${sourceKey}`);
+  const lookupValue = baseObject ? baseObject[`${lookupField}`] : null;
+  return lookupValue;
+};
+
+/**
+ * A function to retrieve lookup value by searching the lookup field in
+ * ["traits", "context.traits", "properties"]
+ * @param {*} message The message object
+ * @param {*} lookupField either destination.Config.lookupField or email
+ * @returns object containing the name of the lookupField and the lookup value
+ */
+const getLookupFieldValue = (message, lookupField) => {
+  const SOURCE_KEYS = ["traits", "context.traits", "properties"];
+  let value = getValueFromMessage(message, `${lookupField}`);
+  if (!value) {
+    // Check in free-flowing object level
+    SOURCE_KEYS.some(sourceKey => {
+      value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
+      if (value) {
+        return true;
+      }
+      return false;
+    });
+  }
+  const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
+  return lookupValueInfo;
+};
+
+/**
  * look for the contact in hubspot and extract its contactId for updation
  * Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
  * @param {*} destination
@@ -214,45 +252,18 @@ const searchContacts = async (message, destination) => {
   const { Config } = destination;
   let searchContactsResponse;
   let contactId;
-  const traits = getFieldValueFromMessage(message, "traits");
-  let propertyName;
-
-  if (!traits) {
+  if (!getFieldValueFromMessage(message, "traits") && !message.properties) {
     throw new CustomError(
       "[HS]:: Identify - Invalid traits value for lookup field",
       400
     );
   }
-
-  // lookupField key provided in Config.lookupField not found in traits
-  // then default it to email
-  if (!traits[`${Config.lookupField}`]) {
-    propertyName = "email";
-
-    if (!traits.email) {
-      throw new CustomError(
-        "[HS] Identify:: email i.e a deafult lookup field for contact lookup not found in traits",
-        400
-      );
-    }
-  } else {
-    // look for propertyName (key name) in traits
-    // Config.lookupField -> lookupField
-    // traits: { lookupField: email }
-    propertyName = traits[`${Config.lookupField}`];
-  }
-
-  // extract its value from the known propertyName (key name)
-  // if not found in our structure then look for it in traits
-  // Config.lookupField -> lookupField
-  // eg: traits: { lookupField: email, email: "test@test.com" }
-  const value =
-    getFieldValueFromMessage(message, propertyName) ||
-    traits[`${propertyName}`];
-
-  if (!value) {
+  const lookupFieldInfo =
+    getLookupFieldValue(message, Config.lookupField) ||
+    getLookupFieldValue(message, "email");
+  if (!lookupFieldInfo?.value) {
     throw new CustomError(
-      `[HS] Identify:: '${propertyName}' lookup field for contact lookup not found in traits`,
+      "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
       400
     );
   }
@@ -262,15 +273,15 @@ const searchContacts = async (message, destination) => {
       {
         filters: [
           {
-            propertyName,
-            value,
+            propertyName: lookupFieldInfo.fieldName,
+            value: lookupFieldInfo.value,
             operator: "EQ"
           }
         ]
       }
     ],
     sorts: ["ascending"],
-    properties: [propertyName],
+    properties: [lookupFieldInfo.fieldName],
     limit: 2,
     after: 0
   };
@@ -393,10 +404,12 @@ const getExistingData = async (inputs, destination) => {
   let identifierType = null;
 
   if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
       .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, "HS")
-      .identifierType;
+    identifierType = getDestinationExternalIDInfoForRetl(
+      firstMessage,
+      DESTINATION
+    ).identifierType;
     if (!objectType || !identifierType) {
       throw new CustomError("[HS]:: rETL - external Id not found.", 400);
     }
@@ -410,7 +423,7 @@ const getExistingData = async (inputs, destination) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
-      "HS"
+      DESTINATION
     );
     values.push(destinationExternalId);
   });
@@ -464,8 +477,8 @@ const getExistingData = async (inputs, destination) => {
 
     if (searchResponse.status !== 200) {
       throw new CustomError(
-        "[HS]:: rETL - Error during searching object record.",
-        400
+        `[HS]:: rETL - Error during searching object record. ${searchResponse.response?.message}`,
+        searchResponse.status || 400
       );
     }
 
@@ -493,7 +506,7 @@ const setHsSearchId = (input, id) => {
     externalIdArray.forEach(extIdObj => {
       const { type } = extIdObj;
       const extIdObjParam = extIdObj;
-      if (type.includes("HS")) {
+      if (type.includes(DESTINATION)) {
         extIdObjParam.hsSearchId = id;
       }
       resultExternalId.push(extIdObjParam);
@@ -519,7 +532,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     const inputParam = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
       message,
-      "HS"
+      DESTINATION
     );
 
     const filteredInfo = updateHubspotIds.filter(
@@ -548,7 +561,7 @@ const getHsSearchId = message => {
   if (externalIdArray) {
     externalIdArray.forEach(extIdObj => {
       const { type } = extIdObj;
-      if (type.includes("HS")) {
+      if (type.includes(DESTINATION)) {
         hsSearchId = extIdObj.hsSearchId;
       }
     });

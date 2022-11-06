@@ -18,7 +18,8 @@ const {
   CustomError,
   extractCustomFields,
   getValueFromMessage,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  toUnixTimestamp
 } = require("../../util");
 
 /*
@@ -101,7 +102,6 @@ const isSessionEvent = (Config, eventName) => {
  * @returns
  */
 const platformWisePayloadGenerator = (message, isSessionEvent) => {
-  let payload;
   let eventAttributes;
   let platform = getValueFromMessage(message, "context.os.name");
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
@@ -113,7 +113,7 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     throw new CustomError("[Singular] :: Platform is not supported");
   }
 
-  payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[
       CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name
@@ -138,6 +138,11 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
     } else {
       payload.dnt = 1;
     }
+    // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
+    payload.openuri = message.properties.url || "";
+    if (platform === "android" || platform === "Android") {
+      payload.install_source = message.properties.referring_application || "";
+    }
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(
@@ -161,7 +166,6 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   } else {
     payload.c = "carrier";
   }
-  payload = removeUndefinedAndNullValues(payload);
   return { payload, eventAttributes };
 };
 

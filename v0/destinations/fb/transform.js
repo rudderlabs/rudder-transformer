@@ -178,7 +178,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const { properties } = message;
   if (properties) {
     if (properties.revenue && !properties.currency) {
-      throw new Error(
+      throw new CustomError(
         "If properties.revenue is present, properties.currency is required."
       );
     }

@@ -21,7 +21,9 @@ const TRANSFORMER_METRIC = {
     // batch transformation
     BATCH: "batch",
     // /proxy endpoint(delivery to destination)
-    PROXY: "proxy"
+    PROXY: "proxy",
+    // Default
+    UNKNOWN: "unknown"
   },
   TRANSFORMER_STAGE: {
     TRANSFORM: "transform",
@@ -34,7 +36,12 @@ const TRANSFORMER_METRIC = {
         ABORTABLE: "abortable",
         RETRYABLE: "retryable",
         THROTTLED: "throttled",
-        SUCCESS: "success"
+        SUCCESS: "success",
+        /**
+         * This meta needs to be used when the response is not an expected one from the destination's API
+         * This can be during transformation or response handling(during delivery of event)
+         */
+        UNHANDLED: "unhandled"
       }
     },
     TRANSFORMATION: {
@@ -43,7 +50,12 @@ const TRANSFORMER_METRIC = {
         BAD_EVENT: "badEvent",
         BAD_PARAM: "badParam",
         INSTRUMENTATION: "instrumentation",
-        CONFIGURATION: "configuration"
+        CONFIGURATION: "configuration",
+        /**
+         * Basically this means that the error is an expected error(thrown during transformation)
+         * This meta will be used for CustomError thrown during transformations
+         */
+        HANDLED: "handled"
       }
     },
     AUTHENTICATION: {
@@ -51,6 +63,9 @@ const TRANSFORMER_METRIC = {
     },
     EXCEPTION: {
       SCOPE: "exception"
+    },
+    CDK: {
+      SCOPE: "cdk"
     },
     DEFAULT: {
       SCOPE: "default"

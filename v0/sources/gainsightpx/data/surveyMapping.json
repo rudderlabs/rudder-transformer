@@ -1,0 +1,117 @@
+[
+    {
+        "sourceKeys": "user",
+        "destKeys": "context.traits"
+    },
+    {
+        "sourceKeys": "event.attributes",
+        "destKeys": "properties"
+    },
+    {
+        "sourceKeys": "event.propertyKey",
+        "destKeys": "properties.propertyKey"
+    },
+    {
+        "sourceKeys": "user.identifyId",
+        "destKeys": "userId"
+    },
+    {
+        "sourceKeys": "event.remoteHost",
+        "destKeys": [
+            "context.ip",
+            "properties.ip"
+        ]
+    },
+    {
+        "sourceKeys": "event.globalContext",
+        "destKeys": "properties.globalContext"
+    },
+    {
+        "sourceKeys": "user.location.countryName",
+        "destKeys": "context.traits.country"
+    },
+    {
+        "sourceKeys": "user.location.stateName",
+        "destKeys": "context.traits.state"
+    },
+    {
+        "sourceKeys": "account",
+        "destKeys": "context.traits.account"
+    },
+    {
+        "sourceKeys": "user.lastVisitedUserAgentData",
+        "destKeys": "context.userAgent"
+    },
+    {
+        "sourceKeys": "event.url",
+        "destKeys": "properties.url"
+    },
+    {
+        "sourceKeys": "event.eventType",
+        "destKeys": "category"
+    },
+    {
+        "sourceKeys": "event.engagementName",
+        "destKeys": "event"
+    },
+    {
+        "sourceKeys": "event.engagementId",
+        "destKeys": "properties.engagementId"
+    },
+    {
+        "sourceKeys": "event.contentType",
+        "destKeys": "properties.contentType"
+    },
+    {
+        "sourceKeys": "event.surveyType",
+        "destKeys": "properties.surveyType"
+    },
+    {
+        "sourceKeys": "event.interaction",
+        "destKeys": "properties.interaction"
+    },
+    {
+        "sourceKeys": "event.score",
+        "destKeys": "properties.survey.score"
+    },
+    {
+        "sourceKeys": "event.scoreType",
+        "destKeys": "properties.survey.scoreType"
+    },
+    {
+        "sourceKeys": "event.stepNumber",
+        "destKeys": "properties.survey.stepNumber"
+    },
+    {
+        "sourceKeys": "event.activation",
+        "destKeys": "properties.survey.activation"
+    },
+    {
+        "sourceKeys": "event.userInput",
+        "destKeys": "properties.survey.userInput"
+    },
+    {
+        "sourceKeys": "event.questionType",
+        "destKeys": "properties.survey.questionType"
+    },
+    {
+        "sourceKeys": "event.contactMeAllowed",
+        "destKeys": "properties.survey.contactMeAllowed"
+    },
+    {
+        "sourceKeys": "event.questionHtml",
+        "destKeys": "properties.survey.questionHtml"
+    },
+    {
+        "sourceKeys": "event.questionText",
+        "destKeys": "properties.survey.questionText"
+    },
+    {
+        "sourceKeys": "event.questionId",
+        "destKeys": "properties.survey.questionId"
+    },
+    {
+        "sourceKeys": "event.answers",
+        "destKeys": "properties.survey.answers"
+    }
+]

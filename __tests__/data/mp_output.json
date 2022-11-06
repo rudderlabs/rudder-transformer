@@ -717,7 +717,9 @@
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$distinct_id": "hjikl",
           "$set": {
-            "company": ["testComp"]
+            "company": [
+              "testComp"
+            ]
           }
         }
       },
@@ -767,7 +769,9 @@
         "data": {
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$set": {
-            "company": ["testComp"]
+            "company": [
+              "testComp"
+            ]
           }
         }
       },
@@ -919,7 +923,9 @@
           "$screen_width": 1080,
           "$wifi": true,
           "anonymousId": "5094f5704b9cf2b3",
-          "$android_devices": ["test_device_token"],
+          "$android_devices": [
+            "test_device_token"
+          ],
           "$os": "Android",
           "$android_model": "Android SDK built for x86",
           "$android_os_version": "8.1.0",
@@ -954,7 +960,10 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
+          "$distinct_ids": [
+            "test_user_id",
+            "5094f5704b9cf2b3"
+          ],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1046,7 +1055,10 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
+          "$distinct_ids": [
+            "test_user_id",
+            "5094f5704b9cf2b3"
+          ],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1439,7 +1451,6 @@
     "statusCode": 400,
     "message": "message type not supported"
   },
-
   {
     "version": "1",
     "type": "REST",
@@ -1520,5 +1531,103 @@
   {
     "statusCode": 400,
     "message": "Unable to create the user."
-  }
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
+      },
+      "params": {
+        "data": {
+          "event": "Application Installed",
+          "properties": {
+            "$app_build_number": "4",
+            "$app_version_string": "1.0",
+            "$bluetooth_enabled": true,
+            "$carrier": "T-Mobile",
+            "$device": "emu64a",
+            "$insert_id": "168cf720-6227-4b56-a98e-c49bdc7279e9",
+            "$manufacturer": "Google",
+            "$model": "sdk_gphone64_arm64",
+            "$os": "Android",
+            "$os_version": "12",
+            "$screen_dpi": 560,
+            "$screen_height": 2984,
+            "$screen_width": 1440,
+            "$session_id": "1662363980",
+            "$wifi": true,
+            "anonymousId": "39da706ec83d0e90",
+            "build": 4,
+            "distinct_id": "39da706ec83d0e90",
+            "mp_device_model": "sdk_gphone64_arm64",
+            "mp_lib": "com.rudderstack.android.sdk.core",
+            "time": null,
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "version": "1.0"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "39da706ec83d0e90"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
+      },
+      "params": {
+        "data": {
+          "event": "Application Opened",
+          "properties": {
+            "$app_build_number": "4",
+            "$app_version_string": "1.0",
+            "$bluetooth_enabled": true,
+            "$carrier": "T-Mobile",
+            "$device": "emu64a",
+            "$insert_id": "168cf720-6227-4b56-a98e-c49bdc7279e9",
+            "$manufacturer": "Google",
+            "$model": "sdk_gphone64_arm64",
+            "$os": "Android",
+            "$os_version": "12",
+            "$screen_dpi": 560,
+            "$screen_height": 2984,
+            "$screen_width": 1440,
+            "$session_id": "1662363980",
+            "$wifi": true,
+            "anonymousId": "39da706ec83d0e90",
+            "build": 4,
+            "distinct_id": "39da706ec83d0e90",
+            "mp_device_model": "sdk_gphone64_arm64",
+            "mp_lib": "com.rudderstack.android.sdk.core",
+            "time": null,
+            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+            "version": "1.0"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "39da706ec83d0e90"
+    }
+  ]
 ]

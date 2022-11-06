@@ -44,7 +44,7 @@ function responseBuilderSimple(payload, message, destination) {
   // else if (message.context.app.namespace) {
   //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   // } else {
-  //   throw new Error("Invalid app endpoint");
+  //   throw new CustomError("Invalid app endpoint");
   // }
   // const afId = message.integrations
   //   ? message.integrations.AF
@@ -165,10 +165,8 @@ function processNonTrackEvents(message, eventName) {
 
 function processEventTypeTrack(message) {
   let isMultiSupport = true;
-  let isUnIdentifiedEvent = false;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
-  const eventName = evType.toLowerCase();
 
   switch (evType) {
     case Event.WISHLIST_PRODUCT_ADDED_TO_CART.name:
@@ -182,21 +180,16 @@ function processEventTypeTrack(message) {
       break;
     default: {
       isMultiSupport = false;
-      isUnIdentifiedEvent = true;
       break;
     }
   }
-  let payload;
-  if (isUnIdentifiedEvent) {
-    payload = getEventValueForUnIdentifiedTrackEvent(message);
-  } else {
-    payload = getEventValueMapFromMappingJson(
-      message,
-      mappingConfig[category.name],
-      isMultiSupport
-    );
-  }
-  payload.eventName = eventName;
+  const payload = getEventValueMapFromMappingJson(
+    message,
+    mappingConfig[category.name],
+    isMultiSupport
+  );
+  payload.eventName = message.event;
+  payload.eventCurrency = message?.properties?.currency;
 
   return payload;
 }

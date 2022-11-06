@@ -13,8 +13,7 @@ const {
   validatePriority,
   customFieldsBuilder,
   getListOfAssignees,
-  checkEventIfUIMapped,
-  removeUndefinedAndNullAndEmptyValues
+  checkEventIfUIMapped
 } = require("./util");
 const {
   CONFIG_CATEGORIES,

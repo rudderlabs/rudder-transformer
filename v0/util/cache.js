@@ -15,7 +15,7 @@ class Cache {
       return Promise.resolve(value);
     }
 
-    const result = await storeFunction();
+    const result = storeFunction ? await storeFunction() : undefined;
     // store in cache if the value is valid, else skip
     let retVal = result;
     if (result) {

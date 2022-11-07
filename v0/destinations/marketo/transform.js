@@ -642,14 +642,16 @@ const processRouterDest = async inputs => {
 };
 
 /**
- * This function takes the input containing metadata and returns the updated metadata
- * @param {*} input
+ * This function takes the transformed output containing metadata and returns the updated metadata
+ * @param {*} output
  * @returns {*} metadata
  */
-function processMetadataForRouter(input) {
-  const { metadata, destination } = input;
+function processMetadataForRouter(output) {
+  const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.destInfo = { authKey: destination.ID };
+  clonedMetadata.forEach(metadataElement => {
+    metadataElement.destInfo = { authKey: destination.ID };
+  });
   return clonedMetadata;
 }
 

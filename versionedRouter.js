@@ -426,9 +426,6 @@ async function routerHandleDest(ctx) {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
     const routerDestHandler = getDestHandler("v0", destType);
-    input[0].metadata = routerDestHandler.processMetadataForRouter
-      ? routerDestHandler.processMetadataForRouter(input[0])
-      : input[0].metadata;
     const isValidRTDest = await isValidRouterDest(input[0], destType);
     if (!isValidRTDest) {
       ctx.status = 404;
@@ -456,6 +453,13 @@ async function routerHandleDest(ctx) {
             newDestInputArray,
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
+        }
+        if (routerDestHandler.processMetadataForRouter) {
+          listOutput.forEach(output => {
+            output.metadata = routerDestHandler.processMetadataForRouter(
+              output
+            );
+          });
         }
         respEvents.push(...listOutput);
       })

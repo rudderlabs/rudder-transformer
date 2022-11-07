@@ -66,10 +66,11 @@ const responseBuilder = (message, { Config }) => {
       rawPayload.client_id =
         getDestinationExternalID(message, "ga4ClientId") ||
         get(message, "anonymousId") ||
+        get(message, "context.device.id") ||
         get(message, "messageId");
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
-          "ga4ClientId, anonymousId or messageId must be provided",
+          "ga4ClientId, anonymousId, context.device.id or messageId must be provided",
           400
         );
       }

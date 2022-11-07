@@ -975,9 +975,9 @@ possibleEnvs.forEach(envValue => {
             json: jest.fn().mockResolvedValue(respBody)
           });
 
-          await expect(async () => {
-            await userTransformHandler([inputData[0]], versionId, []);
-          }).rejects.toThrowError('Script execution timed out.');
+          userTransformHandler(inputData, versionId, []).catch(err => {
+            expect(err.message).toBe('Script execution timed out.');
+          });
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -1004,10 +1004,10 @@ possibleEnvs.forEach(envValue => {
             status: 200,
             json: jest.fn().mockResolvedValue(respBody)
           });
-
-          await expect(async () => {
-            await userTransformHandler(inputData, versionId, []);
-          }).rejects.toThrowError('Script execution timed out.');
+          
+          userTransformHandler(inputData, versionId, []).catch(err => {
+            expect(err.message).toBe('Script execution timed out.');
+          });
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

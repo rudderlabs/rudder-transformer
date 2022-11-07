@@ -154,10 +154,10 @@ const trackRequestHandler = (message, category, destination) => {
     );
 
     // products mapping using Items.json
-    // mapping properties.products to payload.properties.items and using properties.items as a fallback to properties.products
+    // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
     // properties.items is to be deprecated soon
     if (message.properties?.products || message.properties?.items) {
-      const items = message.properties.products || message.properties.items;
+      const items = message.properties.items || message.properties.products;
       const itemArr = [];
       if (Array.isArray(items)) {
         items.forEach(key => {

@@ -1,9 +1,4 @@
-const {
-  httpGET,
-  httpPOST,
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -140,34 +135,8 @@ const sendPostRequest = async (url, data, options) => {
   return processedResponse;
 };
 
-// eslint-disable-next-line no-unused-vars
-const responseHandler = (destinationResponse, _dest) => {
-  const message = `[Marketo Response Handler] - Request Processed Successfully`;
-  const { status } = destinationResponse;
-  // check for marketo application level failures
-  marketoResponseHandler(
-    destinationResponse,
-    "during Marketo Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-  );
-  // else successfully return status, message and original destination response
-  return {
-    status,
-    message,
-    destinationResponse
-  };
-};
-
-const networkHandler = function() {
-  this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
-  this.prepareProxy = prepareProxyRequest;
-  this.processAxiosResponse = processAxiosResponse;
-};
-
 module.exports = {
   marketoResponseHandler,
   sendGetRequest,
-  sendPostRequest,
-  networkHandler
+  sendPostRequest
 };

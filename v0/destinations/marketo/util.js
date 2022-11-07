@@ -1,9 +1,4 @@
-const {
-  httpGET,
-  httpPOST,
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse

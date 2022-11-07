@@ -42,28 +42,5 @@
         }
       ]
     }
-  },
-  {
-    "request": {
-      "body": [
-        {
-          "destType": "CLEVERTAP",
-          "userAttributes": [
-            {
-              "email": "testUser@testMail.com"
-            },
-            {
-              "userId": "user_sdk2"
-            }
-          ],
-          "config": {
-            "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-            "accountId": "476550467",
-            "trackAnonymous": true,
-            "enableObjectIdMapping": false
-          }
-        }
-      ]
-    }
   }
 ]

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 const { default: axios } = require("axios");
 const path = require("path");
+const url = require("url");
 const logger = require("../../logger");
 const stats = require("../stats");
 
@@ -96,7 +97,19 @@ async function deployFunction(functionName, code, versionId, testMode) {
   let envProcess = "python index.py";
 
   if (!testMode) {
-    envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${process.env.CONFIG_BACKEND_URL}`;
+    let configHost = process.env.CONFIG_BACKEND_URL;
+
+    const parsedUrl = url.parse(configHost);
+
+    if (
+      parsedUrl.hostname === "localhost" ||
+      parsedUrl.hostname === "127.0.0.1"
+    ) {
+      configHost = `http://host.docker.internal:${
+        parsedUrl.port ? parsedUrl.port : ""
+      }`;
+    }
+    envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${configHost}`;
   } else {
     envProcess = `${envProcess} --code "${code}"`;
   }

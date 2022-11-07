@@ -22,7 +22,7 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { faasInvocationHandler ,userTransformHandler } = require("./routerUtils");
+const { faasInvocationHandler, userTransformHandler, lambdaMigrationsHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
@@ -629,6 +629,17 @@ if (startDestTransformer) {
       stats.counter("user_transform_output_events", transformedEvents.length, {
         processSessions
       });
+    });
+
+    // Temp API for migrating lambdas to openfaas.
+    router.post("/transformer/migrate", async ctx => {
+      try {
+        await lambdaMigrationsHandler()();
+        ctx.status = 200;
+      } catch (error) {
+        ctx.body = { error: error.message };
+        ctx.status = 500;
+      }
     });
 
     router.post("/faas/python/invoke", async ctx => {

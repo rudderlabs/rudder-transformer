@@ -33,6 +33,13 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+const lambdaMigrationsHandler = () => {
+  if (functionsEnabled()) {
+    return require("./util/lambda/migration").lambdaMigrationsHandler;
+  }
+  throw new Error("Functions are not enabled");
+};
+
 async function sendToDestination(destination, payload) {
   let parsedResponse;
   logger.info("Request recieved for destination", destination);
@@ -73,5 +80,6 @@ module.exports = {
   sendToDestination,
   faasDeploymentHandler,
   faasInvocationHandler,
-  userTransformHandler
+  userTransformHandler,
+  lambdaMigrationsHandler
 };

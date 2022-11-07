@@ -977,7 +977,7 @@ possibleEnvs.forEach(envValue => {
 
           await expect(async () => {
             await userTransformHandler([inputData[0]], versionId, []);
-          }).rejects.toThrow();
+          }).rejects.toThrowError('Script execution timed out.');
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -1007,7 +1007,7 @@ possibleEnvs.forEach(envValue => {
 
           await expect(async () => {
             await userTransformHandler(inputData, versionId, []);
-          }).rejects.toThrow();
+          }).rejects.toThrowError('Script execution timed out.');
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

@@ -454,7 +454,7 @@ async function processIdentify(message, destinationConfig, headers) {
   const returnList = [];
 
   const userId = await getUserId(message, headers);
-
+  // If primaryEmail and userId both exists then it will set it as primary email.
   if (primaryEmail && userId) {
     const userIdentityId = await getUserIdentityId(
       userId,
@@ -466,6 +466,21 @@ async function processIdentify(message, destinationConfig, headers) {
       returnList.push(
         responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
       );
+    }
+  } else if (primaryEmail) {
+    // if only primaryEmail exists then in the payload it will pass as user.identities
+    // and it will set it as primary while creating the user.
+    const primaryEmailPayload = {
+      type: "email",
+      value: primaryEmail
+    };
+    if (payload.user.identities && payload.user.identities.length > 0) {
+      payload.user.identities.push({
+        ...payload.user.identities,
+        primaryEmailPayload
+      });
+    } else {
+      payload.user.identities = [primaryEmailPayload];
     }
   }
 

@@ -1,15 +1,12 @@
 name: Build transformer image
 on:
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - edited
-  #     - reopened
-  #     - converted_to_draft
-  #     - ready_for_review
-  push:
-    branches:
-      - "chore.userTransformDockerBuilds"
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - converted_to_draft
+      - ready_for_review
 env:
   REPO_NAME: rudderlabs/develop-rudder-transformer
 
@@ -25,7 +22,6 @@ jobs:
         shell: bash
         run: |
           echo "##[set-output name=branch;]ut-$(echo ${GITHUB_REF#refs/heads/})"
-          echo ${{ secrets.GITHUB_TOKEN}}
         id: extract_branch
       
       - name: Login to Docker Hub
@@ -57,35 +53,5 @@ jobs:
           build-args: |
             VERSION=${{ steps.extract_branch.outputs.branch }}
             COMMIT_HASH=${{ github.sha }}
-  transformer-build:
-    name: Build transformer image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            name=rudderlabs/develop-rudder-transformer
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: githubpublicrudderstack
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
-            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            COMMIT_HASH=${{ github.sha }}
-            REVISION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+  # TODO: Add Dest transformer build job after codebuild is removed

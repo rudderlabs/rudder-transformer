@@ -37,13 +37,12 @@ const {
 /**
  * Returns GA4 client_id
  * @param {*} message
- * @param {*} Config
+ * @param {*} clientIdFieldIdentifier
  * @returns
  */
-const getGA4ClientId = (message, Config) => {
+const getGA4ClientId = (message, { clientIdFieldIdentifier }) => {
   // first we will search from webapp
-  if (Config.clientIdFieldIdentifier) {
-    const { clientIdFieldIdentifier } = Config;
+  if (clientIdFieldIdentifier) {
     return get(message, clientIdFieldIdentifier);
   }
   // if we don't find it from the config then we will fall back to the default search

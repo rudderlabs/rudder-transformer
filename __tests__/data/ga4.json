@@ -128,7 +128,6 @@
           "device": {
             "adTrackingEnabled": "false",
             "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
             "manufacturer": "Google",
             "model": "AOSP on IA Emulator",
             "name": "generic_x86_arm",
@@ -228,7 +227,7 @@
       },
       "body": {
         "JSON": {
-          "client_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "events": [
@@ -9071,7 +9070,6 @@
           "device": {
             "adTrackingEnabled": "false",
             "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
             "manufacturer": "Google",
             "model": "AOSP on IA Emulator",
             "name": "generic_x86_arm",
@@ -9146,7 +9144,7 @@
         "JSON": {
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
-          "client_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
               "name": "page_view",
@@ -9180,7 +9178,6 @@
           "device": {
             "adTrackingEnabled": "false",
             "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
             "manufacturer": "Google",
             "model": "AOSP on IA Emulator",
             "name": "generic_x86_arm",
@@ -9259,7 +9256,7 @@
         "JSON": {
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
-          "client_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
               "name": "page_view",
@@ -10723,7 +10720,6 @@
           "device": {
             "adTrackingEnabled": "false",
             "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
             "manufacturer": "Google",
             "model": "AOSP on IA Emulator",
             "name": "generic_x86_arm",
@@ -10813,7 +10809,7 @@
         "JSON": {
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
-          "client_id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "events": [
             {
               "name": "page_view",

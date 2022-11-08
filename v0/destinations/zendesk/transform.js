@@ -246,9 +246,10 @@ async function getUserId(message, headers, type) {
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
-  const userEmail = traits?.email;
+  const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
-    throw new CustomError("Email ID is required for getting zenuserId", 400);
+    logger.debug("Email ID is required for getting zenuserId");
+    return undefined;
   }
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;

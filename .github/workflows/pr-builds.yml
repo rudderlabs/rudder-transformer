@@ -41,8 +41,8 @@ jobs:
       
       - name: Run Tests
         run: |
-          docker run rudderlabs/develop-rudder-transformer:${{ steps.extract_branch.outputs.branch }} npm run testDestinations
-          docker run rudderlabs/develop-rudder-transformer:${{ steps.extract_branch.outputs.branch }} npm run testVersionedRouter
+          docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run testDestinations
+          docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run testVersionedRouter
 
       - name: Build and push
         uses: docker/build-push-action@v3

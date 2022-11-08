@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - "rudder-saas"
-      - "chore.userTransformDockerBuilds"
 env:
   REPO_NAME: rudderlabs/rudder-transformer
 

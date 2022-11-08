@@ -474,11 +474,8 @@ async function processIdentify(message, destinationConfig, headers) {
       type: "email",
       value: primaryEmail
     };
-    if (payload.user.identities && payload.user.identities.length > 0) {
-      payload.user.identities.push({
-        ...payload.user.identities,
-        primaryEmailPayload
-      });
+    if (payload.user.identities && Array.isArray(payload.user.identities)) {
+      payload.user.identities.push(primaryEmailPayload);
     } else {
       payload.user.identities = [primaryEmailPayload];
     }

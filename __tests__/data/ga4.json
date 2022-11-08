@@ -10960,7 +10960,7 @@
     }
   },
   {
-    "description": "Configure client_id (properties.client_id)",
+    "description": "extract client_id from the path defined in the webapp config i.e (properties.client_id)",
     "input": {
       "message": {
         "channel": "web",

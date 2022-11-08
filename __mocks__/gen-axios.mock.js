@@ -4,7 +4,7 @@ jest.mock("axios");
 
 /**
  * Forms the mock axios client
- * @param {{type: 'constructor'|'get'|'post'|'delete', response: any }} responsesData
+ * @param {Array<{type: 'constructor'|'get'|'post'|'delete', response: any }>} responsesData
  * @returns
  */
 const formAxiosMock = responsesData => {

@@ -101,7 +101,7 @@ const getUserIdentityId = async (
       logger.debug("Failed in fetching Identity details");
       return undefined;
     }
-    const identities = get(res.response.data, "identities");
+    const { identities } = res.response?.data;
     if (identities && Array.isArray(identities)) {
       const identitiesDetails = identities.find(
         identitieslist => identitieslist.value === primaryEmail

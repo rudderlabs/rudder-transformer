@@ -1,6 +1,11 @@
+const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
-const { getEndpoint } = require("./config");
+const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -30,25 +35,40 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const identity = [];
-    if (userAttributes[i].userId) {
-      identity.push(userAttributes[i].userId);
-    } else
+  const identity = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      identity.push(userAttribute.userId);
+    }
+  });
+
+  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // ref : https://developer.clevertap.com/docs/disassociate-api
+  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
+  batchEvents.forEach(async batchEvent => {
+    const deletionRespone = await httpPOST(
+      endpoint,
+      {
+        identity: batchEvent
+      },
+      {
+        headers
+      }
+    );
+    const processedDeletionRespone = processAxiosResponse(deletionRespone);
+    if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
       throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
-    // eslint-disable-next-line no-await-in-loop
-    const response = await httpPOST(endpoint, { identity }, { headers });
-    if (!response || !response.response) {
-      throw new ErrorBuilder()
-        .setMessage("Could not get response")
-        .setStatus(500)
+        .setMessage("[Clevertap]::Deletion Request is not successful")
+        .setStatus(processedDeletionRespone.status)
         .build();
     }
-  }
-  return { statusCode: 200, status: "successful" };
+  });
+
+  return {
+    statusCode: 200,
+    status: "successful"
+  };
 };
 
 const processDeleteUsers = event => {

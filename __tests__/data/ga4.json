@@ -11260,7 +11260,7 @@
     }
   },
   {
-    "description": "client_id isn't send from the path defined in the webapp config, falling back to anonymousId",
+    "description": "client_id isn't sent from the path defined in the webapp config, falling back to default values i.e here it is anonymousId",
     "input": {
       "message": {
         "channel": "web",

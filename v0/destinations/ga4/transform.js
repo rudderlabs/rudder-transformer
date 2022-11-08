@@ -70,7 +70,7 @@ const responseBuilder = (message, { Config }) => {
         get(message, "messageId");
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
-          "ga4ClientId, anonymousId, context.device.id or messageId must be provided",
+          "[Google Analytics 4]: ga4ClientId, anonymousId, context.device.id or messageId must be provided",
           400
         );
       }

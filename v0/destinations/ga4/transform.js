@@ -40,13 +40,13 @@ const {
  * @param {*} Config
  * @returns
  */
-const getGa4ClientId = (message, Config) => {
+const getGA4ClientId = (message, Config) => {
   // first we will search from webapp
   if (Config.clientIdFieldIdentifier) {
     const { clientIdFieldIdentifier } = Config;
     return get(message, clientIdFieldIdentifier);
   }
-  // if we don't fount it then we will fallback to default search
+  // if we don't find it from the config then we will fall back to the default search
   const clientId =
     getDestinationExternalID(message, "ga4ClientId") ||
     get(message, "anonymousId") ||
@@ -90,7 +90,7 @@ const responseBuilder = (message, { Config }) => {
     case "gtag":
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGa4ClientId(message, Config);
+      rawPayload.client_id = getGA4ClientId(message, Config);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new CustomError(
           "[Google Analytics 4]: ga4ClientId, anonymousId, context.device.id or messageId must be provided",

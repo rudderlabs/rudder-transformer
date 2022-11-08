@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://api.amplitude.com/2/httpapi",
+        "endpoint": "https://api2.amplitude.com/2/httpapi",
         "headers": {
           "Content-Type": "application/json"
         },
@@ -78,7 +78,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://api.amplitude.com/2/httpapi",
+        "endpoint": "https://api2.amplitude.com/2/httpapi",
         "headers": {
           "Content-Type": "application/json"
         },

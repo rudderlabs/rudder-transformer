@@ -1252,7 +1252,6 @@ const handleDeletionOfUsers = async ctx => {
         const resp = {
           statusCode: errorStatus,
           error: error.message || "Error occurred while processing"
-          // TODO: Add support to have an identifier for OAuth Token refresh
         };
         // Support for OAuth refresh
         if (error.authErrorCategory) {

@@ -107,7 +107,7 @@ const Event = {
   }
 };
 
-const BASE_URL = "https://api.amplitude.com";
+const BASE_URL = "https://api2.amplitude.com";
 const BASE_URL_EU = "https://api.eu.amplitude.com";
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

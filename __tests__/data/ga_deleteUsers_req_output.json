@@ -1,0 +1,66 @@
+[
+  [
+    {
+      "body": {
+        "kind": "analytics#userDeletionRequest",
+        "id": {
+          "type": "USER_ID",
+          "userId": "test_user_1"
+        },
+        "webPropertyId": "UA-123456789-5"
+      },
+      "headers": {
+        "Authorization": "Bearer valid_token",
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    },
+    {
+      "body": {
+        "kind": "analytics#userDeletionRequest",
+        "id": {
+          "type": "USER_ID",
+          "userId": "test_user_2"
+        },
+        "webPropertyId": "UA-123456789-5"
+      },
+      "headers": {
+        "Authorization": "Bearer valid_token",
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    }
+  ],
+  [
+    {
+      "body": {
+        "kind": "analytics#userDeletionRequest",
+        "webPropertyId": "UA-123456789-6",
+        "id": {
+          "type": "USER_ID",
+          "userId": "test_user_3"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer expired_token",
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    },
+    {
+      "body": {
+        "kind": "analytics#userDeletionRequest",
+        "webPropertyId": "UA-123456789-6",
+        "id": {
+          "type": "USER_ID",
+          "userId": "test_user_4"
+        }
+      },
+      "headers": {
+        "Authorization": "Bearer expired_token",
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    }
+  ]
+]

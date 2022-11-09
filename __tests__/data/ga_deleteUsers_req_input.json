@@ -1,0 +1,40 @@
+[
+  {
+    "userAttributes": [
+      {
+        "userId": "test_user_1"
+      },
+      {
+        "userId": "test_user_2"
+      }
+    ],
+    "config": {
+      "trackingID": "UA-123456789-5",
+      "useNativeSDK": false
+    },
+    "destInfo": {
+      "secret": {
+        "access_token": "valid_token"
+      }
+    }
+  },
+  {
+    "userAttributes": [
+      {
+        "userId": "test_user_3"
+      },
+      {
+        "userId": "test_user_4"
+      }
+    ],
+    "config": {
+      "trackingID": "UA-123456789-6",
+      "useNativeSDK": false
+    },
+    "destInfo": {
+      "secret": {
+        "access_token": "expired_token"
+      }
+    }
+  }
+]

@@ -83,8 +83,7 @@ const responseWrapper = (payload, destination) => {
 const convertObjectAndArrayToString = payload => {
   const finalPayload = {};
   if (payload) {
-    const category = Object.keys(payload);
-    category.forEach(key => {
+    Object.keys(payload).forEach(key => {
       if (
         payload[key] &&
         (Array.isArray(payload[key]) || typeof payload[key] === "object")

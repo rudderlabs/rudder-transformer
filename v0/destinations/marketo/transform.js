@@ -2,7 +2,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
 const get = require("get-value");
-const cloneDeep = require("lodash/cloneDeep");
 const stats = require("../../../util/stats");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
@@ -39,8 +38,7 @@ const {
 const {
   marketoResponseHandler,
   sendGetRequest,
-  sendPostRequest,
-  getResponseHandlerData
+  sendPostRequest
 } = require("./util");
 const logger = require("../../../logger");
 
@@ -76,7 +74,7 @@ const getAuthToken = async formattedDestination => {
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return { value: data.access_token, age: data.expires_in };
+      return data.access_token;
     }
     stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
     return null;
@@ -126,11 +124,10 @@ const createOrUpdateLead = async (
         }
       }
     );
-    const data = getResponseHandlerData(
+    const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lookup lead",
-      formattedDestination,
-      authCache
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     );
     if (data) {
       const { result } = data;
@@ -158,11 +155,10 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
         headers: { Authorization: `Bearer ${token}` }
       }
     );
-    const data = getResponseHandlerData(
+    const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using email",
-      formattedDestination,
-      authCache
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     );
     if (data) {
       const { result } = data;
@@ -198,11 +194,10 @@ const lookupLeadUsingId = async (
         headers: { Authorization: `Bearer ${token}` }
       }
     );
-    const data = getResponseHandlerData(
+    const data = marketoResponseHandler(
       clientResponse,
       "[Marketo Transformer]: During lead look up using userId",
-      formattedDestination,
-      authCache
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
     );
     if (data) {
       const { result } = data;
@@ -641,23 +636,4 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-/**
- * This function takes the transformed output containing metadata and returns the updated metadata
- * @param {*} output
- * @returns {*} metadata
- */
-function processMetadataForRouter(output) {
-  const { metadata, destination } = output;
-  const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.forEach(metadataElement => {
-    metadataElement.destInfo = { authKey: destination.ID };
-  });
-  return clonedMetadata;
-}
-
-module.exports = {
-  process,
-  processRouterDest,
-  processMetadataForRouter,
-  authCache
-};
+module.exports = { process, processRouterDest };

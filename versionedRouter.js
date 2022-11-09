@@ -425,7 +425,6 @@ async function routerHandleDest(ctx) {
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
-    const routerDestHandler = getDestHandler("v0", destType);
     const isValidRTDest = await isValidRouterDest(input[0], destType);
     if (!isValidRTDest) {
       ctx.status = 404;
@@ -447,19 +446,13 @@ async function routerHandleDest(ctx) {
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
         } else {
+          const routerDestHandler = getDestHandler("v0", destType);
           listOutput = await handleV0Destination(
             routerDestHandler.processRouterDest,
             destType,
             newDestInputArray,
             TRANSFORMER_METRIC.ERROR_AT.RT
           );
-        }
-        if (routerDestHandler.processMetadataForRouter) {
-          listOutput.forEach(output => {
-            output.metadata = routerDestHandler.processMetadataForRouter(
-              output
-            );
-          });
         }
         respEvents.push(...listOutput);
       })
@@ -902,7 +895,7 @@ async function handleProxyRequest(destination, ctx) {
     return {};
   };
 
-  const { metadata, ...destinationRequest } = ctx.request.body;
+  const destinationRequest = ctx.request.body;
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
@@ -928,7 +921,7 @@ async function handleProxyRequest(destination, ctx) {
       destination
     });
     response = destNetworkHandler.responseHandler(
-      { ...processedProxyResponse, rudderJobMetadata: metadata },
+      processedProxyResponse,
       destination
     );
     stats.counter("tf_proxy_resp_handler_count", 1, {

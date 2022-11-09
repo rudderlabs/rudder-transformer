@@ -9,6 +9,7 @@ const path = require("path");
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
 
+
 // Processor Test files
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -29,15 +30,7 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-// Router Metadata Test files
-const inputRouterMetadataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_metadata_input.json`)
-);
-const outputRouterMetadataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_metadata_output.json`)
-);
-const inputRouterMetadata = JSON.parse(inputRouterMetadataFile);
-const expectedRouterMetadata = JSON.parse(outputRouterMetadataFile);
+
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -60,12 +53,5 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  describe("Router Metadata Tests", () => {
-    it("Payload", async () => {
-      const routerMetadataOutput = await transformer.processMetadataForRouter(
-        inputRouterMetadata
-      );
-      expect(routerMetadataOutput).toEqual(expectedRouterMetadata);
-    });
-  });
+
 });

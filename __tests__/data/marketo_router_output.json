@@ -363,7 +363,9 @@
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,

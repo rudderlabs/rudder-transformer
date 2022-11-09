@@ -212,7 +212,6 @@ const getClevertapProfile = (message, category) => {
     ["traits", "context.traits"],
     CLEVERTAP_DEFAULT_EXCLUSION
   );
-  profile = convertObjectAndArrayToString(profile);
 
   return removeUndefinedAndNullValues(profile);
 };

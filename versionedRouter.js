@@ -457,7 +457,7 @@ async function routerHandleDest(ctx) {
         if (routerDestHandler.processMetadataForRouter) {
           listOutput.forEach(output => {
             output.metadata = routerDestHandler.processMetadataForRouter(
-              output.metadata
+              output
             );
           });
         }

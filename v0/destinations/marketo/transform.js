@@ -646,10 +646,11 @@ const processRouterDest = async inputs => {
  * @param {*} output
  * @returns {*} metadata
  */
-function processMetadataForRouter(metadata) {
+function processMetadataForRouter(output) {
+  const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach(metadataElement => {
-    metadataElement.destInfo = { authKey: metadataElement?.destinationId };
+    metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;
 }

@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const _ = require("lodash");
+const { removeUndefinedAndNullValues } = require("../../util");
+const { getGroupId } = require("./util");
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
@@ -13,72 +14,69 @@ const eventNameMap = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./eventMapping.json"), "utf-8")
 );
 
-// ideally this should go under utils
-// we should move the utils class out of the destinations folder
-// and put under a common place so that both sources and destinations can use that
-// will take that in a separate PR
-const isDefined = x => !_.isUndefined(x);
-const isNotNull = x => x != null;
-const isDefinedAndNotNull = x => isDefined(x) && isNotNull(x);
-const removeUndefinedAndNullValues = obj => _.pickBy(obj, isDefinedAndNotNull);
+const prepareIdentifyPayload = event => {
+  const message = new Message("Auth0");
+  message.setEventType("identify");
+  message.setPropertiesV2(event, mapping);
+  return message;
+};
 
-function processEvent(event) {
-  const messageType = "track";
+const prepareTrackPayload = event => {
+  const message = new Message("Auth0");
+  message.setEventType("track");
+  const eventType = event.type;
+  const eventName = eventNameMap[eventType] || eventType;
+  message.setEventName(eventName);
+  message.setPropertiesV2(event, mapping);
+  return message;
+};
 
-  if (event.type) {
-    const eventType = event.type;
-    const message = new Message(`Auth0`);
+const prepareGroupPayload = event => {
+  const message = new Message("Auth0");
+  message.setEventType("group");
+  message.setPropertiesV2(event, mapping);
+  message.groupId = getGroupId(event);
+  return message;
+};
 
-    // since only email status events are supported, event type is always track
-    message.setEventType(messageType);
-
-    const eventName = eventNameMap[eventType] || eventType;
-    message.setEventName(eventName);
-
-    message.setProperties(event, mapping);
-
-    if (event.date) {
-      message.setProperty("originalTimestamp", event.date);
-      message.setProperty("sentAt", event.date);
+function processEvents(eventList) {
+  const responses = [];
+  eventList.forEach(event => {
+    let response = {};
+    const { data } = event;
+    // Dropping the event if type is not present
+    if (data.type) {
+      const eventType = data.type;
+      // ss -> successful signup
+      if (eventType === "ss") {
+        response = prepareIdentifyPayload(data);
+      } else if (
+        eventType === "sapi" &&
+        data.description === "Add members to an organization"
+      ) {
+        const payload = prepareGroupPayload(data);
+        // Dropping event if groupId is not present for group call
+        if (payload?.groupId) {
+          response = payload;
+        }
+      } else {
+        response = prepareTrackPayload(data);
+      }
+      if (response?.userId) {
+        response.properties.log_id = event.log_id;
+        responses.push(removeUndefinedAndNullValues(response));
+      }
     }
-
-    if (message.context && message.context.traits) {
-      message.userId = message.context.traits.userId;
-    }
-
-    if (message.userId && message.userId !== "") {
-      return message;
-    }
-    return null;
-  }
-  throw new CustomError("Unknwon event type from Auth0");
+  });
+  return responses;
 }
 
 function process(events) {
-  const responses = [];
   let eventList = events;
   if (!Array.isArray(events)) {
-    eventList = [events];
+    eventList = events.logs || [events];
   }
-  eventList.forEach(event => {
-    try {
-      const resp = processEvent(event);
-      if (resp) {
-        responses.push(removeUndefinedAndNullValues(resp));
-      }
-    } catch (error) {
-      // TODO: figure out a way to handle partial failures within batch
-      // responses.push({
-      //   statusCode: 400,
-      //   error: error.message || "Unknwon error"
-      // });
-    }
-  });
-  if (responses.length === 0) {
-    throw new CustomError("All requests in the batch failed");
-  } else {
-    return responses;
-  }
+  return processEvents(eventList);
 }
 
 exports.process = process;

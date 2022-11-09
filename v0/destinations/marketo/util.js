@@ -5,6 +5,7 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
+const v0Utils = require("../../util");
 const { ApiError } = require("../../util/errors");
 
 /**
@@ -72,7 +73,13 @@ const marketoApplicationErrorHandler = (
   }
 };
 
-const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
+const marketoResponseHandler = (
+  destResponse,
+  sourceMessage,
+  stage,
+  rudderJobMetadata,
+  authCache
+) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
@@ -90,7 +97,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token) {
+    if (response && response.access_token && response.expires_in) {
       return response;
     }
     // marketo application level success
@@ -99,6 +106,20 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     }
     // marketo application level failure
     if (response && !response.success) {
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      if (response.errors && rudderJobMetadata?.destInfo) {
+        const { authKey } = rudderJobMetadata.destInfo;
+        if (
+          authCache &&
+          authKey &&
+          response.errors.some(errorObj => {
+            return errorObj.code === "601" || errorObj.code === "602";
+          })
+        ) {
+          authCache.del(authKey);
+        }
+      }
       marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
     }
   }
@@ -135,8 +156,53 @@ const sendPostRequest = async (url, data, options) => {
   return processedResponse;
 };
 
+// eslint-disable-next-line no-unused-vars
+const responseHandler = (destinationResponse, destType) => {
+  const message = `[Marketo Response Handler] - Request Processed Successfully`;
+  const { status } = destinationResponse;
+  const authCache = v0Utils.getDestAuthCacheInstance(destType);
+  // check for marketo application level failures
+  marketoResponseHandler(
+    destinationResponse,
+    "during Marketo Response Handling",
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    destinationResponse?.rudderJobMetadata,
+    authCache
+  );
+  // else successfully return status, message and original destination response
+  return {
+    status,
+    message,
+    destinationResponse
+  };
+};
+
+const getResponseHandlerData = (
+  clientResponse,
+  lookupMessage,
+  formattedDestination,
+  authCache
+) => {
+  return marketoResponseHandler(
+    clientResponse,
+    lookupMessage,
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    { destInfo: { authKey: formattedDestination.ID } },
+    authCache
+  );
+};
+
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
+
 module.exports = {
   marketoResponseHandler,
   sendGetRequest,
-  sendPostRequest
+  sendPostRequest,
+  networkHandler,
+  getResponseHandlerData
 };

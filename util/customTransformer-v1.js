@@ -5,6 +5,11 @@ const { getFactory } = require("./ivmFactory");
 const { getMetadata } = require("./../v0/util");
 const logger = require("../logger");
 
+const userTransformTimeout = parseInt(
+  process.env.USER_TRANSFORM_TIMEOUT || "600000",
+  10
+);
+
 async function transform(isolatevm, events) {
   const transformationPayload = {};
   transformationPayload.events = events;
@@ -30,9 +35,18 @@ async function transform(isolatevm, events) {
       reject(error.message);
     }
   });
-  return executionPromise.catch(e => {
-    throw new Error(e);
+
+  let setTimeoutHandle;
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeoutHandle = setTimeout(() => {
+      reject(new Error("Timed out"));
+    }, userTransformTimeout);
   });
+  return Promise.race([executionPromise, timeoutPromise])
+    .catch(e => {
+      throw new Error(e);
+    })
+    .finally(() => clearTimeout(setTimeoutHandle));
 }
 
 function calculateMsFromIvmTime(value) {
@@ -50,7 +64,10 @@ async function userTransformHandlerV1(
   Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
   */
   if (userTransformation.versionId) {
-    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+    const metaTags =
+      events.length && events[0].metadata
+        ? getMetadata(events[0].metadata)
+        : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
       version: 1,

@@ -58,6 +58,45 @@ const responseWrapper = (payload, destination) => {
   return response;
 };
 
+/**
+ * Expected behaviours:                            
+    payload = {                                       "finalPayload": {
+      "device": {                                          "device": "{\"browser\":{\"name\":\"Chrome121\",\"version\":\"106.0.0.0\"},\"os\":{\"version\":\"10.15.7\"}}",
+        "browser": {                                       "name": "macOS",
+          "name": "Chrome121",                             "platform": "web"
+          "version": "106.0.0.0"                        }
+        },
+        "os": {
+          "version": "10.15.7"
+        }
+      },
+      "name": "macOS",
+      "platform": "web"
+    }                                        
+ *                                                    
+  }
+ * This function stringify the payload attributes if it's an array or objects.
+ * @param {*} payload
+ * @returns
+ * return the final payload after converting to the relevant data-types.
+ */
+const convertObjectAndArrayToString = payload => {
+  const finalPayload = {};
+  if (payload) {
+    Object.keys(payload).forEach(key => {
+      if (
+        payload[key] &&
+        (Array.isArray(payload[key]) || typeof payload[key] === "object")
+      ) {
+        finalPayload[key] = JSON.stringify(payload[key]);
+      } else {
+        finalPayload[key] = payload[key];
+      }
+    });
+  }
+  return finalPayload;
+};
+
 // generates clevertap identify payload with both objectId and identity
 const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
@@ -172,7 +211,7 @@ const getClevertapProfile = (message, category) => {
     ["traits", "context.traits"],
     CLEVERTAP_DEFAULT_EXCLUSION
   );
-
+  profile = convertObjectAndArrayToString(profile);
   return removeUndefinedAndNullValues(profile);
 };
 
@@ -267,6 +306,12 @@ const responseBuilderSimple = (message, category, destination) => {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
     eventPayload.type = "event";
+    // stringify the evtData if it's an Object or array.
+    if (eventPayload.evtData) {
+      eventPayload.evtData = convertObjectAndArrayToString(
+        eventPayload.evtData
+      );
+    }
 
     // setting identification for tracking payload here based on destination config
     if (destination.Config.enableObjectIdMapping) {

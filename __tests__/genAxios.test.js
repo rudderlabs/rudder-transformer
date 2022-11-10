@@ -1,4 +1,15 @@
 const formAxiosMock = require("../__mocks__/gen-axios.mock");
+const promiseAllRequests = [...Array(10).keys()];
+const promiseAllResponses = promiseAllRequests.map(reqId => ({
+  type: "get",
+  response: {
+    data: {
+      respId: `resp-${reqId}`
+    },
+    status: 200,
+    statusText: "OK"
+  }
+}))
 const responses = [
   [
     {
@@ -63,7 +74,8 @@ const responses = [
         statusText: "OK"
       }
     }
-  ]
+  ],
+  promiseAllResponses,
 ];
 formAxiosMock(responses);
 const { httpSend, httpGET, httpPOST } = require("../adapters/network");
@@ -103,6 +115,17 @@ const mockMethod2 = async () => {
 }
 
 
+const mockMethodWithPromiseAll = async () => {
+  const promiseAllResults = await Promise.all(
+    promiseAllRequests.map(async _reqId => {
+      const getRes = await httpGET("http://www.example.com/get");
+      return getRes.response;
+    })
+  )
+  return promiseAllResults;
+}
+
+
 describe("Testing gen-axios mocker", () => {
   test("test mockMethod1", async () => {
     const mockMethodResults = await mockMethod1();
@@ -122,4 +145,14 @@ describe("Testing gen-axios mocker", () => {
       )
     })
   })
+
+  test('testing mockMethodWithPromiseAll', async () => {
+    const promAllResults = await mockMethodWithPromiseAll();
+    promAllResults.forEach((result, index) => {
+      expect(result).toMatchObject(
+        expect.objectContaining(responses[2][index].response)
+      )
+    });
+  })
+
 });

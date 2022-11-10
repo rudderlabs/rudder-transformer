@@ -9,19 +9,28 @@ class Cache {
     });
   }
 
-  get(key, storeFunction) {
+  async get(key, storeFunction) {
     const value = this.cache.get(key);
     if (value) {
       return Promise.resolve(value);
     }
 
-    return storeFunction().then(result => {
-      // store in cache if the value is valid, else skip
-      if (result) {
+    const result = storeFunction ? await storeFunction() : undefined;
+    // store in cache if the value is valid, else skip
+    let retVal = result;
+    if (result) {
+      if (typeof result === "object" && "value" in result && "age" in result) {
+        this.cache.set(key, result.value, result.age);
+        retVal = result.value;
+      } else {
         this.cache.set(key, result);
       }
-      return result;
-    });
+    }
+    return retVal;
+  }
+
+  del(key) {
+    this.cache.del(key);
   }
 }
 

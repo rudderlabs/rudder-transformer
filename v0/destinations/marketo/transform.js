@@ -650,7 +650,7 @@ function processMetadataForRouter(output) {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach(metadataElement => {
-    metadataElement.destInfo = { authKey: destination.ID };
+    metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;
 }

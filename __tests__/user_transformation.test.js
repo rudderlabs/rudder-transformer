@@ -1004,9 +1004,9 @@ possibleEnvs.forEach(envValue => {
             status: 200,
             json: jest.fn().mockResolvedValue(respBody)
           });
-          
+
           await expect(async () => {
-            await userTransformHandler([inputData[0]], versionId, []);
+            await userTransformHandler(inputData, versionId, []);
           }).rejects.toThrow();
 
           expect(fetch).toHaveBeenCalledWith(

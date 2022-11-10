@@ -2,6 +2,7 @@ const { when } = require("jest-when");
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
 const { Response, Headers } = jest.requireActual("node-fetch");
+jest.useFakeTimers();
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
 const unsupportedFuncNames = [
@@ -975,9 +976,9 @@ possibleEnvs.forEach(envValue => {
             json: jest.fn().mockResolvedValue(respBody)
           });
 
-          userTransformHandler(inputData, versionId, []).catch(err => {
-            expect(err.message).toBe('Script execution timed out.');
-          });
+          await expect(async () => {
+            await userTransformHandler([inputData[0]], versionId, []);
+          }).rejects.toBe('Script execution timed out.');
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -1005,9 +1006,9 @@ possibleEnvs.forEach(envValue => {
             json: jest.fn().mockResolvedValue(respBody)
           });
           
-          userTransformHandler(inputData, versionId, []).catch(err => {
-            expect(err.message).toBe('Script execution timed out.');
-          });
+          await expect(async () => {
+            await userTransformHandler([inputData[0]], versionId, []);
+          }).rejects.toBe('Script execution timed out.');
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

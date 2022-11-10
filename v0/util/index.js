@@ -18,7 +18,8 @@ const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
 const {
-  DestCanonicalNames
+  DestCanonicalNames,
+  DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { TransformationError } = require("./errors");
@@ -762,9 +763,11 @@ const handleMetadataForValue = (
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
       case "secondTimestamp":
-        formattedVal = Math.floor(
-          formatTimeStamp(formattedVal, typeFormat) / 1000
-        );
+        if (!moment(formattedVal, "x", true).isValid()) {
+          formattedVal = Math.floor(
+            formatTimeStamp(formattedVal, typeFormat) / 1000
+          );
+        }
         break;
       case "microSecondTimestamp":
         formattedVal = moment.unix(moment(formattedVal).format("X"));
@@ -1747,6 +1750,31 @@ const flattenMultilevelPayload = payload => {
   return flattenedPayload;
 };
 
+/**
+ * Gets the destintion's transform.js file used for transformation
+ * **Note**: The transform.js file is imported from
+ *  `v0/destinations/${dest}/transform`
+ * @param {*} _version -> version for the transfor
+ * @param {*} dest destination name
+ * @returns
+ *  The transform.js instance used for destination transformation
+ */
+const getDestHandler = dest => {
+  const destName = DestHandlerMap[dest] || dest;
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  return require(`../destinations/${destName}/transform`);
+};
+
+/**
+ * Obtain the authCache instance used to store the access token information to send/get information to/from destination
+ * @param {string} destType destination name
+ * @returns {Cache | undefined} The instance of "v0/util/cache.js"
+ */
+const getDestAuthCacheInstance = destType => {
+  const destInf = getDestHandler(destType);
+  return destInf?.authCache || {};
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1835,5 +1863,6 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  getDestAuthCacheInstance
 };

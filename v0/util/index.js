@@ -763,9 +763,11 @@ const handleMetadataForValue = (
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
       case "secondTimestamp":
-        formattedVal = Math.floor(
-          formatTimeStamp(formattedVal, typeFormat) / 1000
-        );
+        if (!moment(formattedVal, "x", true).isValid()) {
+          formattedVal = Math.floor(
+            formatTimeStamp(formattedVal, typeFormat) / 1000
+          );
+        }
         break;
       case "microSecondTimestamp":
         formattedVal = moment.unix(moment(formattedVal).format("X"));

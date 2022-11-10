@@ -1229,8 +1229,8 @@ const handleDeletionOfUsers = async ctx => {
   const rudderDestInfo = getRudderDestInfo();
   let response;
   await Promise.all(
-    body.map(async b => {
-      const { destType } = b;
+    body.map(async reqBody => {
+      const { destType } = reqBody;
       const destUserDeletionHandler = getDeletionUserHandler(
         "v0",
         destType.toLowerCase()
@@ -1246,7 +1246,7 @@ const handleDeletionOfUsers = async ctx => {
 
       try {
         response = await destUserDeletionHandler.processDeleteUsers({
-          ...b,
+          ...reqBody,
           rudderDestInfo
         });
         if (response) {

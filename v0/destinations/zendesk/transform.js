@@ -20,9 +20,11 @@ const {
   constructPayload,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  CustomError,
+  defaultPutRequestConfig
 } = require("../../util");
 const logger = require("../../../logger");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 
 let endPoint;
 
@@ -44,6 +46,100 @@ function responseBuilder(message, headers, payload, endpoint) {
 
   return response;
 }
+
+/**
+ * Returns the payload for updating primary email of users.
+ * @param {*} userIdentityId -> userIdentity Id
+ * @param {*} userId -> userId of users
+ * @param {*} headers -> Authorizations for API's call
+ * @returns
+ */
+const responseBuilderToSetPrimaryAccount = (
+  userIdentityId,
+  userId,
+  headers
+) => {
+  const response = defaultRequestConfig();
+  const updatedHeaders = {
+    ...headers,
+    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
+    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
+    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+  };
+  response.endpoint = `${endPoint}users/${userId}/identities/${userIdentityId}/make_primary`;
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.headers = updatedHeaders;
+  return response;
+};
+
+/**
+ * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
+ * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#create-identity
+ * This function search identity from userId and fetch its details, if that identity doesn't exists
+ * then it will create the identity and takes the id for it.
+ * @param {*} userId -> userId of users
+ * @param {*} primaryEmail -> primary email passed in payload used to set this email as primary account.
+ * @param {*} headers -> Authorizations for API's call
+ * @returns it returns identityId or undefined if it gives error.
+ */
+const getUserIdentityId = async (
+  userId,
+  primaryEmail,
+  headers,
+  destinationConfig
+) => {
+  const url = `${endPoint}users/${userId}/identities`;
+  const config = { headers };
+  try {
+    const res = await httpGET(url, config);
+    if (
+      res.success === false ||
+      !res.response ||
+      !res.response.data ||
+      res.response.data.count === 0
+    ) {
+      logger.debug("Failed in fetching Identity details");
+      return undefined;
+    }
+    const { identities } = res.response?.data;
+    if (identities && Array.isArray(identities)) {
+      const identitiesDetails = identities.find(
+        identitieslist => identitieslist.value === primaryEmail
+      );
+      if (identitiesDetails) {
+        return identitiesDetails.id;
+      }
+    }
+    // If Identity doesn't exists then it will create the Identity.
+    const createIdentityUrl = `${endPoint}/users/${userId}/identities`;
+    const payloadBody = {
+      identity: {
+        type: "email",
+        value: primaryEmail
+      }
+    };
+    if (destinationConfig.createUsersAsVerified)
+      payloadBody.identity = { ...payloadBody.identity, verified: true };
+    const responseIdentity = await httpPOST(
+      createIdentityUrl,
+      payloadBody,
+      config
+    );
+    if (
+      responseIdentity.success === false ||
+      !responseIdentity.response ||
+      !responseIdentity.response.data ||
+      !responseIdentity.response.data.identity
+    ) {
+      logger.debug("Failed in creating Identity.");
+      return undefined;
+    }
+    return responseIdentity.response.data?.identity?.id;
+  } catch (error) {
+    logger.debug("Error :", error.response ? error.response.data : error);
+    return undefined;
+  }
+};
 
 async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
@@ -150,9 +246,10 @@ async function getUserId(message, headers, type) {
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
-  const userEmail = traits?.email;
+  const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
-    throw new CustomError("Email ID is required for getting zenuserId", 400);
+    logger.debug("Email ID is required for getting zenuserId");
+    return undefined;
   }
   const url = `${endPoint}users/search.json?query=${userEmail}`;
   // let url  = endPoint + `users/search.json?external_id=${externalId}`;
@@ -333,6 +430,13 @@ function validateUserId(message) {
 async function processIdentify(message, destinationConfig, headers) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
+  const traits = getFieldValueFromMessage(message, "traits");
+  let primaryEmail;
+  if (traits.primaryEmail) {
+    primaryEmail = traits.primaryEmail;
+    // deleting this primaryEmail from traits as it used only to set primary email
+    delete traits.primaryEmail;
+  }
   // create user fields if required
   await checkAndCreateUserFields(
     getFieldValueFromMessage(message, "traits"),
@@ -350,7 +454,34 @@ async function processIdentify(message, destinationConfig, headers) {
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const userId = await getUserId(message, headers);
+  // If primaryEmail and userId both exists then it will set it as primary email.
+  if (primaryEmail && userId) {
+    const userIdentityId = await getUserIdentityId(
+      userId,
+      primaryEmail,
+      headers,
+      destinationConfig
+    );
+    if (userIdentityId) {
+      returnList.push(
+        responseBuilderToSetPrimaryAccount(userIdentityId, userId, headers)
+      );
+    }
+  } else if (primaryEmail) {
+    // if only primaryEmail exists then in the payload it will pass as user.identities
+    // and it will set it as primary while creating the user.
+    const primaryEmailPayload = {
+      type: "email",
+      value: primaryEmail
+    };
+    if (payload.user.identities && Array.isArray(payload.user.identities)) {
+      payload.user.identities.push(primaryEmailPayload);
+    } else {
+      payload.user.identities = [primaryEmailPayload];
+    }
+  }
+
   if (
     traits.company &&
     traits.company.remove &&
@@ -358,7 +489,6 @@ async function processIdentify(message, destinationConfig, headers) {
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers);
     if (userId) {
       const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
       try {

@@ -34,8 +34,7 @@ const buildPrepareDeleteRequestTestCases = () => {
     }
     return acc;
   }, [])
-  .map(v => {
-    const { inputJson, outputJson, method, destination } = v;
+  .map(({ inputJson, outputJson, method, destination })  => {
     const cases = inputJson.map((reqInput, ind) => {
       
       return [

@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.5.0...v1.6.0) (2022-11-10)
+
+
+### Features
+
+* **destination:** skip unix timestamp conversion if already being sent from source ([#1560](https://github.com/rudderlabs/rudder-transformer/issues/1560)) ([a52cbd7](https://github.com/rudderlabs/rudder-transformer/commit/a52cbd797fa8a0ccec6589ff78b966da26040fbc))
+* **destination:** stringify the object and array for Clevertap ([#1554](https://github.com/rudderlabs/rudder-transformer/issues/1554)) ([1c7b459](https://github.com/rudderlabs/rudder-transformer/commit/1c7b459d74ae0b17360d0e49e9bc11557e6f4233))
+* **destination:** support custom mapping with client_id for ga4 destination ([#1553](https://github.com/rudderlabs/rudder-transformer/issues/1553)) ([e9f056b](https://github.com/rudderlabs/rudder-transformer/commit/e9f056bacad84d7e59e58904626c6eb7edcc4686))
+* **destination:** update identify call to set primary email for Zendesk([#1539](https://github.com/rudderlabs/rudder-transformer/issues/1539)) ([ed307a3](https://github.com/rudderlabs/rudder-transformer/commit/ed307a31ff46575f3a606a0894eeeaaec0b40c00))
+* **marketo:** add dynamic ttl & cache eviction support ([#1519](https://github.com/rudderlabs/rudder-transformer/issues/1519)) ([19f1081](https://github.com/rudderlabs/rudder-transformer/commit/19f1081cc32ba9798876dcb9d46d9d094c171e1d))
+* support custom webhooks in auth0 source transformer ([#1527](https://github.com/rudderlabs/rudder-transformer/issues/1527)) ([ebc005f](https://github.com/rudderlabs/rudder-transformer/commit/ebc005f84d3af4a7a32f362cc7ece842c8f269a1))
+
+
+### Bug Fixes
+
+* (marketo)- remove duplicate responseHandler from util and refactor ([#1557](https://github.com/rudderlabs/rudder-transformer/issues/1557)) ([144793e](https://github.com/rudderlabs/rudder-transformer/commit/144793eef2c83b9bc43b989b061c7c7a7c4f07fe))
+* amplitude http api version update ([#1538](https://github.com/rudderlabs/rudder-transformer/issues/1538)) ([0d5e2d4](https://github.com/rudderlabs/rudder-transformer/commit/0d5e2d469740b4fd02b1008dfa67d3bbe8a5542d))
+* **destination:** do not update event properties to lowercase in hubspot ([#1559](https://github.com/rudderlabs/rudder-transformer/issues/1559)) ([e41b37f](https://github.com/rudderlabs/rudder-transformer/commit/e41b37f38f1f9de87fa452ea30c6587d87a95a5d))
+* ecom events properties mapping correction ([#1549](https://github.com/rudderlabs/rudder-transformer/issues/1549)) ([0e9c816](https://github.com/rudderlabs/rudder-transformer/commit/0e9c816092c5fc777f2d472e13ec3aa94def2160))
+* incorrect lodash cloneDeep import ([#1545](https://github.com/rudderlabs/rudder-transformer/issues/1545)) ([5e70dca](https://github.com/rudderlabs/rudder-transformer/commit/5e70dcae665f3610ea6e65bb2d6303b9a547036e))
+* suppress cdk error types ([#1555](https://github.com/rudderlabs/rudder-transformer/issues/1555)) ([9215a7c](https://github.com/rudderlabs/rudder-transformer/commit/9215a7ca272122199202d26301f9515a1a3bd6b0))
+
+
+### Miscellaneous
+
+* **data-delivery:** decouple network handlers ([#1541](https://github.com/rudderlabs/rudder-transformer/issues/1541)) ([8a56fd5](https://github.com/rudderlabs/rudder-transformer/commit/8a56fd5c41b616f557a5f63aab55e3722158c182))
+* skip single commit checks in prs ([759f4d4](https://github.com/rudderlabs/rudder-transformer/commit/759f4d47ac048cd5a7c2ac2a7b562f268b95ee67))
+* sync master to saas ([#1546](https://github.com/rudderlabs/rudder-transformer/issues/1546)) ([e4e406e](https://github.com/rudderlabs/rudder-transformer/commit/e4e406e32b5998f19a72f2ec769d4b182740f56d))
+* **transformation:** adding user transformation builds separately ([#1515](https://github.com/rudderlabs/rudder-transformer/issues/1515)) ([f703801](https://github.com/rudderlabs/rudder-transformer/commit/f7038010279504ccfdf52f6a8b69a4ae80605ab7))
+* **transformation:** setting default timeout for user transformation ([#1421](https://github.com/rudderlabs/rudder-transformer/issues/1421)) ([eb676b8](https://github.com/rudderlabs/rudder-transformer/commit/eb676b869e9a86c1a532a206ab9fa959f7f466ad))
+
 ## [1.5.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.4.0...v1.5.0) (2022-11-03)
 
 

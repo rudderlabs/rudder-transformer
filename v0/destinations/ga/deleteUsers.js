@@ -3,7 +3,7 @@ const { httpPOST } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { GA_USER_DELETION_ENDPOINT } = require("./config");
-const { gaResponseHandler } = require("./utils");
+const { gaResponseHandler } = require("./networkHandler");
 
 /**
  * Prepare the delete users request

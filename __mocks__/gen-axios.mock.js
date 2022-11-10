@@ -4,6 +4,11 @@ jest.mock("axios");
 
 /**
  * Forms the mock axios client
+ * 
+ * **Note**:
+ *  This client is used in cases where each response is returned almost immediately
+ *  When there is a requirement of delays to the response, this mock client cannot be used preferrably
+ *
  * @param {Array<{type: 'constructor'|'get'|'post'|'delete', response: any }>} responsesData
  * @returns
  */

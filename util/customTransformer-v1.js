@@ -36,14 +36,17 @@ async function transform(isolatevm, events) {
     }
   });
 
+  let setTimeoutHandle;
   const timeoutPromise = new Promise((_, reject) => {
-    const wait = setTimeout(() => {
-      clearTimeout(wait);
+    setTimeoutHandle = setTimeout(() => {
       reject(new Error("Timed out"));
     }, userTransformTimeout);
   });
-  const result = await Promise.race([executionPromise, timeoutPromise]);
-  return result;
+  return Promise.race([executionPromise, timeoutPromise])
+    .catch(e => {
+      throw new Error(e);
+    })
+    .finally(() => clearTimeout(setTimeoutHandle));
 }
 
 function calculateMsFromIvmTime(value) {
@@ -61,7 +64,10 @@ async function userTransformHandlerV1(
   Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
   */
   if (userTransformation.versionId) {
-    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+    const metaTags =
+      events.length && events[0].metadata
+        ? getMetadata(events[0].metadata)
+        : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
       version: 1,

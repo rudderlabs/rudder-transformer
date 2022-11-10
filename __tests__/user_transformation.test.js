@@ -2,7 +2,6 @@ const { when } = require("jest-when");
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
 const { Response, Headers } = jest.requireActual("node-fetch");
-jest.useFakeTimers();
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
 const unsupportedFuncNames = [
@@ -978,7 +977,7 @@ possibleEnvs.forEach(envValue => {
 
           await expect(async () => {
             await userTransformHandler([inputData[0]], versionId, []);
-          }).rejects.toBe('Script execution timed out.');
+          }).rejects.toThrow();
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
@@ -1008,7 +1007,7 @@ possibleEnvs.forEach(envValue => {
           
           await expect(async () => {
             await userTransformHandler([inputData[0]], versionId, []);
-          }).rejects.toBe('Script execution timed out.');
+          }).rejects.toThrow();
 
           expect(fetch).toHaveBeenCalledWith(
             `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`

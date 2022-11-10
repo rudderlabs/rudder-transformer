@@ -139,7 +139,7 @@ const marketoResponseHandler = (
           authCache.del(authKey);
         }
       }
-      marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
+      marketoApplicationErrorHandler(destResponse, sourceMessage);
     }
   }
   // More readable error message

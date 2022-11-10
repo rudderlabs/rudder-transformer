@@ -1,6 +1,6 @@
 [
     {
-        "description": "adding and removing users",
+        "description": "adding and removing users and getting staticListId from externalId",
         "input": {
             "destination": {
                 "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
@@ -16,7 +16,7 @@
                     "clientId": "marketo_client_id_success",
                     "clientSecret": "marketo_client_secret_success",
                     "accountId": "marketo_acct_id_success",
-                    "staticListId": 1234
+                    "staticListId": 3421
                 },
                 "Enabled": true,
                 "Transformations": [],
@@ -58,7 +58,13 @@
                     "ip": "14.5.67.21",
                     "library": {
                         "name": "http"
-                    }
+                    },
+                    "externalId": [
+                        {
+                            "type": "marketoStaticListId",
+                            "id": 1234
+                        }
+                    ]
                 },
                 "timestamp": "2020-02-02T00:23:09.544Z"
             }

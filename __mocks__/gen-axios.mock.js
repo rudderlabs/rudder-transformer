@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../logger");
 const { isHttpStatusSuccess } = require("../v0/util");
 jest.mock("axios");
 
@@ -22,27 +23,32 @@ const formAxiosMock = responsesData => {
     }
   };
 
+
   if (Array.isArray(responsesData)) {
     const constructorMock = jest.fn();
     const postMock = jest.fn();
     const getMock = jest.fn();
     const deleteMock = jest.fn();
     responsesData.flat().forEach(resp => {
+      let mockInstance;
       switch (resp.type) {
         case "constructor":
-          returnVal({ resp, mockInstance: constructorMock });
+          mockInstance = constructorMock;
           break;
         case "get":
-          returnVal({ resp, mockInstance: getMock });
+          mockInstance = getMock;
           break;
         case "delete":
-          returnVal({ resp, mockInstance: deleteMock });
+          mockInstance = deleteMock;
           break;
 
         default:
-          returnVal({ resp, mockInstance: postMock });
+          mockInstance = postMock;
           break;
       }
+      let methodParams = { resp, mockInstance };
+      // validateMockClientReqParams(methodParams);
+      returnVal(methodParams);
     });
     axios.get = getMock;
     axios.post = postMock;
@@ -52,4 +58,31 @@ const formAxiosMock = responsesData => {
   return axios;
 };
 
-module.exports = formAxiosMock;
+const validateMockAxiosClientReqParams = ({ resp }) => {
+  let mockInstance;
+  switch (resp.type) {
+    case "constructor":
+      mockInstance = axios;
+      break;
+    case "get":
+      mockInstance = axios.get;
+      break;
+    case "delete":
+      mockInstance = axios.delete;
+      break;
+
+    default:
+      mockInstance = axios.post;
+      break;
+  }
+  if (Array.isArray(resp?.reqParams)) {
+    try {
+      expect(mockInstance).toHaveBeenCalled();
+      expect(mockInstance).toHaveBeenCalledWith(...resp.reqParams);
+    } catch (error) {
+      logger.error(`Validate request parameters error ${resp.type} for mock axios client: ${error}`)
+    }
+  }
+}
+
+module.exports = { formAxiosMock, validateMockAxiosClientReqParams };

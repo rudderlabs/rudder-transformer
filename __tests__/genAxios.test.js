@@ -1,4 +1,4 @@
-const formAxiosMock = require("../__mocks__/gen-axios.mock");
+const { formAxiosMock } = require("../__mocks__/gen-axios.mock");
 const promiseAllRequests = [...Array(10).keys()];
 const promiseAllResponses = promiseAllRequests.map(reqId => ({
   type: "get",

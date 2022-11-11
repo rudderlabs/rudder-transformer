@@ -1,7 +1,7 @@
 const name = "DeleteUsers";
 const logger = require("../logger");
 const { mockedAxiosClient } = require("../__mocks__/network");
-const formAxiosMock = require("../__mocks__/gen-axios.mock");
+const { formAxiosMock, validateMockAxiosClientReqParams } = require("../__mocks__/gen-axios.mock");
 const deleteUserDestinations = [
   "am",
   "braze",
@@ -21,8 +21,8 @@ const buildPrepareDeleteRequestTestCases = () => {
   .reduce((acc, currentVal) => {
     try {
       const delUsers = require(`../${version}/destinations/${currentVal}/deleteUsers`);
-      const inputJson = require(`./data/${currentVal}_deleteUsers_req_input.json`);
-      const outputJson = require(`./data/${currentVal}_deleteUsers_req_output.json`);
+      const inputJson = require(`./data/deleteUsers/${currentVal}/prepare_req_input.json`);
+      const outputJson = require(`./data/deleteUsers/${currentVal}/prepare_req_output.json`);
       acc.push({
         inputJson,
         outputJson,
@@ -72,18 +72,18 @@ describe("DeleteUsers request build tests", () => {
 
 // delete user tests
 deleteUserDestinations.forEach(destination => {
-  const inputData = require(`./data/${destination}_deleteUsers_proxy_input.json`);
-  const expectedData = require(`./data/${destination}_deleteUsers_proxy_output.json`);
+  const inputData = require(`./data/deleteUsers/${destination}/handler_input.json`);
+  const expectedData = require(`./data/deleteUsers/${destination}/handler_output.json`);
 
+  let axiosResponses;
   describe(`${name} Tests: ${destination}`, () => {
     beforeAll(() => {
-      let axiosResponses;
       try {
-        axiosResponses = require(`./data/${destination}_deleteUsers_response.json`);
+        axiosResponses = require(`./data/deleteUsers/${destination}/http_response.json`);
       } catch (error) {
         // Do nothing
         logger.error(
-          `Error while reading ${destination}_deleteUsers_response.json: ${error}`
+          `Error while reading /deleteUsers/${destination}/http_response.json: ${error}`
         );
       }
       if (Array.isArray(axiosResponses)) {
@@ -94,6 +94,7 @@ deleteUserDestinations.forEach(destination => {
         axios.mockImplementation(mockedAxiosClient);
       }
     });
+
     inputData.forEach((input, index) => {
       it(`Payload - ${index}`, async () => {
         try {
@@ -102,6 +103,17 @@ deleteUserDestinations.forEach(destination => {
           });
 
           const output = await handleDeletionOfUsers(input);
+          // validate the axios arguments
+          if (Array.isArray(axiosResponses) && Array.isArray(axiosResponses[index])) {
+            axiosResponses[index].forEach(axsRsp => {
+              validateMockAxiosClientReqParams({ 
+                resp: axsRsp
+              })
+              // if (axsRsp.type === "post") {
+              //   // logger.error("This is being called with ", JSON.stringify(axsRsp.reqParams));
+              // }
+            })
+          }
           expect(output).toEqual(expectedData[index]);
         } catch (error) {
           expect(error.message).toEqual(expectedData[index].error);

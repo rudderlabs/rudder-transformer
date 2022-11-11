@@ -1,15 +1,66 @@
-{
-  "client_id": "properties.client_id",
-  "client_name": "properties.client_name",
-  "details": "properties.details",
-  "auth0_client": "properties.auth0_client",
-  "log_id": "properties.log_id",
-  "isMobile": "properties.is_mobile",
-  "description": "properties.description",
-  "ip": "context.request_ip",
-  "details.auth.user.email": "context.traits.email",
-  "details.auth.user.name": "context.traits.name",
-  "user_name": "context.traits.user_name",
-  "user_agent": "context.userAgent",
-  "user_id": "context.traits.userId"
-}
+[
+  {
+    "sourceKeys": "client_id",
+    "destKeys": "properties.client_id"
+  },
+  {
+    "sourceKeys": "client_name",
+    "destKeys": "properties.client_name"
+  },
+  {
+    "sourceKeys": "details",
+    "destKeys": "properties.details"
+  },
+  {
+    "sourceKeys": "auth0_client",
+    "destKeys": "properties.auth0_client"
+  },
+  {
+    "sourceKeys": "log_id",
+    "destKeys": "properties.log_id"
+  },
+  {
+    "sourceKeys": "isMobile",
+    "destKeys": "properties.is_mobile"
+  },
+  {
+    "sourceKeys": "description",
+    "destKeys": "properties.description"
+  },
+  {
+    "sourceKeys": "ip",
+    "destKeys": "context.request_ip"
+  },
+  {
+    "sourceKeys": "details.auth.user.email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "details.auth.user.name",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "user_name",
+    "destKeys": "context.traits.user_name"
+  },
+  {
+    "sourceKeys": "user_agent",
+    "destKeys": "context.userAgent"
+  },
+  {
+    "sourceKeys": "user_id",
+    "destKeys": ["context.traits.userId", "userId"]
+  },
+  {
+    "sourceKeys": "connection",
+    "destKeys": "traits.connection"
+  },
+  {
+    "sourceKeys": "connection_id",
+    "destKeys": "traits.connection_id"
+  },
+  {
+    "sourceKeys": "date",
+    "destKeys": ["originalTimestamp", "sentAt"]
+  }
+]

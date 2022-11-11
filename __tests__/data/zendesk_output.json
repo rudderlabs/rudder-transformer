@@ -457,13 +457,91 @@
     "files": {},
     "userId": "297b0750-934b-4411-b66c-9b418cdbc0c9"
   },
-  {
-    "statusCode": 400,
-    "error": "Email ID is required for getting zenuserId",
-    "statTags": {
-      "destination": "zendesk",
-      "stage": "transform",
-      "scope": "exception"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "name": "abcd124",
+            "external_id": "abcd-124",
+            "user_fields": {
+              "id": "abcd-124"
+            },
+            "verified": true
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "ba1bb99c-a979-45dc-93f0-7b0f2343ad4a"
     }
-  }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "PUT",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-App-Id": "263241",
+        "X-Zendesk-Marketplace-Organization-Id": "3339"
+      },
+      "version": "1",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7534173321117/make_primary"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json",
+      "headers": {
+        "Authorization": "Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+        "Content-Type": "application/json",
+        "X-Zendesk-Marketplace-Name": "RudderStack",
+        "X-Zendesk-Marketplace-Organization-Id": "3339",
+        "X-Zendesk-Marketplace-App-Id": "263241"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "user": {
+            "email": "example124@email.com",
+            "name": "name_abcd144",
+            "external_id": "abcd-144",
+            "user_fields": {
+              "id": "abcd-144"
+            },
+            "verified": true
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ]
 ]

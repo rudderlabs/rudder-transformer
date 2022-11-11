@@ -1,7 +1,7 @@
 const name = "DeleteUsers";
-const logger = require("../logger");
-const { mockedAxiosClient } = require("../__mocks__/network");
-const { formAxiosMock, validateMockAxiosClientReqParams } = require("../__mocks__/gen-axios.mock");
+const logger = require("../../logger");
+const { mockedAxiosClient } = require("../../__mocks__/network");
+const { formAxiosMock, validateMockAxiosClientReqParams } = require("../../__mocks__/gen-axios.mock");
 const deleteUserDestinations = [
   "am",
   "braze",
@@ -12,17 +12,18 @@ const deleteUserDestinations = [
   "engage",
   "ga"
 ];
-const { handleDeletionOfUsers } = require("../versionedRouter");
+const { handleDeletionOfUsers } = require("../../versionedRouter");
 const { default: axios } = require("axios");
 const version = "v0";
+const d = require("../../v0/destinations/am/deleteUsers");
 
 const buildPrepareDeleteRequestTestCases = () => {
   const testCases = deleteUserDestinations
   .reduce((acc, currentVal) => {
     try {
-      const delUsers = require(`../${version}/destinations/${currentVal}/deleteUsers`);
-      const inputJson = require(`./data/deleteUsers/${currentVal}/prepare_req_input.json`);
-      const outputJson = require(`./data/deleteUsers/${currentVal}/prepare_req_output.json`);
+      const delUsers = require(`../../${version}/destinations/${currentVal}/deleteUsers`);
+      const inputJson = require(`./data/${currentVal}/prepare_req_input.json`);
+      const outputJson = require(`./data/${currentVal}/prepare_req_output.json`);
       acc.push({
         inputJson,
         outputJson,
@@ -72,18 +73,18 @@ describe("DeleteUsers request build tests", () => {
 
 // delete user tests
 deleteUserDestinations.forEach(destination => {
-  const inputData = require(`./data/deleteUsers/${destination}/handler_input.json`);
-  const expectedData = require(`./data/deleteUsers/${destination}/handler_output.json`);
+  const inputData = require(`./data/${destination}/handler_input.json`);
+  const expectedData = require(`./data/${destination}/handler_output.json`);
 
   let axiosResponses;
   describe(`${name} Tests: ${destination}`, () => {
     beforeAll(() => {
       try {
-        axiosResponses = require(`./data/deleteUsers/${destination}/nw_client_data.json`);
+        axiosResponses = require(`./data/${destination}/nw_client_data.json`);
       } catch (error) {
         // Do nothing
         logger.error(
-          `Error while reading /deleteUsers/${destination}/nw_client_data.json: ${error}`
+          `Error while reading /${destination}/nw_client_data.json: ${error}`
         );
       }
       if (Array.isArray(axiosResponses)) {

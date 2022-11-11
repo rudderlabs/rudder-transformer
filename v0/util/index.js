@@ -17,6 +17,7 @@ const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
+const ErrorBuilder = require("./error");
 const {
   DestCanonicalNames,
   DestHandlerMap
@@ -79,6 +80,32 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
+const validateMessageType = (message, allowedTypes, DESTINATION) => {
+  if (!message.type) {
+    throw new ErrorBuilder()
+      .setMessage("Message Type is not present. Aborting message.")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  if (!allowedTypes.includes(message.type.toLowerCase())) {
+    throw new ErrorBuilder()
+      .setMessage(`${message.type} call is not supported.`)
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+};
 /**
  *
  * @param {*} arg
@@ -1864,5 +1891,6 @@ module.exports = {
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
   getErrorStatusCode,
-  getDestAuthCacheInstance
+  getDestAuthCacheInstance,
+  validateMessageType
 };

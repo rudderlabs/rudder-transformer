@@ -15,7 +15,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
-  TransformationError
+  TransformationError,
+  validateMessageType
 } = require("../../util");
 const {
   FETCH_TOKEN_METRIC,
@@ -55,15 +56,15 @@ const getAuthToken = async formattedDestination => {
 };
 
 const responseBuilder = (endPoint, leadIds, operation, token) => {
-  let endpoint = endPoint;
+  let updatedEndpoint = endPoint;
   if (leadIds.length > 0) {
     leadIds.forEach(id => {
-      endpoint = `${endpoint}id=${id}&`;
+      updatedEndpoint = `${updatedEndpoint}id=${id}&`;
     });
   }
-  endpoint = endpoint.slice(0, -1);
+  updatedEndpoint = updatedEndpoint.slice(0, -1);
   const response = defaultRequestConfig();
-  response.endpoint = endpoint;
+  response.endpoint = updatedEndpoint;
   if (operation === "add") {
     response.method = defaultPostRequestConfig.requestMethod;
   } else {
@@ -106,30 +107,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
 
 const processEvent = (message, destination, token) => {
   const { Config } = destination;
-  if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
-  if (message.type.toLowerCase() !== "audiencelist") {
-    throw new ErrorBuilder()
-      .setMessage(`${message.type} call is not supported.`)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
+  validateMessageType(message, ["audiencelist"], DESTINATION);
   const response = [];
   if (message.properties?.listData?.add) {
     const payload = batchResponseBuilder(
@@ -139,7 +117,9 @@ const processEvent = (message, destination, token) => {
       getIds(message.properties.listData.add),
       "add"
     );
-    response.push(...payload);
+    if (payload) {
+      response.push(...payload);
+    }
   }
   if (message.properties?.listData?.remove) {
     const payload = batchResponseBuilder(
@@ -149,7 +129,9 @@ const processEvent = (message, destination, token) => {
       getIds(message.properties.listData.remove),
       "remove"
     );
-    response.push(...payload);
+    if (payload) {
+      response.push(...payload);
+    }
   }
   return response;
 };
@@ -204,7 +186,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        logger.error("Router transformation Error for Marketo:");
+        logger.error("Router transformation Error for Marketo Static List:");
         const errObj = generateErrorObject(
           error,
           DESTINATION,

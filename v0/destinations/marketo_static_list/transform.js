@@ -176,7 +176,7 @@ const processRouterDest = async inputs => {
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
   } catch (error) {
-    logger.error("Router Transformation problem+1:");
+    logger.error("Router Transformation problem:");
     const errObj = generateErrorObject(
       error,
       DESTINATION,

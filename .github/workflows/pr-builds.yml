@@ -22,7 +22,7 @@ jobs:
       - name: Extract branch name
         shell: bash
         run: |
-          echo "##[set-output name=branch;]ut-$(echo ${{ github.head_ref }})"
+          echo "##[set-output name=branch;]ut-$(echo ${{ github.head_ref }} | tr "/" .)"
         id: extract_branch
       
       - name: Login to Docker Hub

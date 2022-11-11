@@ -109,9 +109,6 @@ deleteUserDestinations.forEach(destination => {
               validateMockAxiosClientReqParams({ 
                 resp: axsRsp
               })
-              // if (axsRsp.type === "post") {
-              //   // logger.error("This is being called with ", JSON.stringify(axsRsp.reqParams));
-              // }
             })
           }
           expect(output).toEqual(expectedData[index]);

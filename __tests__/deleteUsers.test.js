@@ -79,11 +79,11 @@ deleteUserDestinations.forEach(destination => {
   describe(`${name} Tests: ${destination}`, () => {
     beforeAll(() => {
       try {
-        axiosResponses = require(`./data/deleteUsers/${destination}/http_response.json`);
+        axiosResponses = require(`./data/deleteUsers/${destination}/nw_client_data.json`);
       } catch (error) {
         // Do nothing
         logger.error(
-          `Error while reading /deleteUsers/${destination}/http_response.json: ${error}`
+          `Error while reading /deleteUsers/${destination}/nw_client_data.json: ${error}`
         );
       }
       if (Array.isArray(axiosResponses)) {

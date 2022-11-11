@@ -77,7 +77,6 @@ const validateMockAxiosClientReqParams = ({ resp }) => {
   }
   if (Array.isArray(resp?.reqParams)) {
     try {
-      expect(mockInstance).toHaveBeenCalled();
       expect(mockInstance).toHaveBeenCalledWith(...resp.reqParams);
     } catch (error) {
       logger.error(`Validate request parameters error ${resp.type} for mock axios client: ${error}`)

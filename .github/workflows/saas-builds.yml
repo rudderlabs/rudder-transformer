@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "rudder-saas"
+      - "fix/buildActionFix"
 env:
   REPO_NAME: rudderlabs/rudder-transformer
 

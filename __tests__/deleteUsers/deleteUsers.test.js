@@ -14,62 +14,6 @@ const deleteUserDestinations = [
 ];
 const { handleDeletionOfUsers } = require("../../versionedRouter");
 const { default: axios } = require("axios");
-const version = "v0";
-const d = require("../../v0/destinations/am/deleteUsers");
-
-const buildPrepareDeleteRequestTestCases = () => {
-  const testCases = deleteUserDestinations
-  .reduce((acc, currentVal) => {
-    try {
-      const delUsers = require(`../../${version}/destinations/${currentVal}/deleteUsers`);
-      const inputJson = require(`./data/${currentVal}/prepare_req_input.json`);
-      const outputJson = require(`./data/${currentVal}/prepare_req_output.json`);
-      acc.push({
-        inputJson,
-        outputJson,
-        destination: currentVal,
-        method: delUsers?.prepareDeleteRequest
-      });
-    } catch (error) {
-      // Do nothing
-    }
-    return acc;
-  }, [])
-  .map(({ inputJson, outputJson, method, destination })  => {
-    const cases = inputJson.map((reqInput, ind) => {
-      
-      return [
-        destination,
-        {
-          input: reqInput,
-          prepareDeleteRequest: method,
-          expected: outputJson[ind],
-          index: ind
-        }
-      ];
-    });
-    return cases;
-  }).flat();
-  return testCases;
-}
-const reqBuildTestCases = buildPrepareDeleteRequestTestCases();
-
-describe("DeleteUsers request build tests", () => {
-  describe.each(reqBuildTestCases)(
-    ".prepareDeleteRequest(%s)",
-    (_destination, { input, prepareDeleteRequest, expected, index }) => {
-      test(`Payload - ${index}`, () => {
-        expect(
-          prepareDeleteRequest?.(
-            input.userAttributes,
-            input.config,
-            input.destInfo
-          )
-        ).toEqual(expected);
-      });
-    }
-  );
-});
 
 // delete user tests
 deleteUserDestinations.forEach(destination => {

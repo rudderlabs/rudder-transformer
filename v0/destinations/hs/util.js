@@ -375,7 +375,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   }
 
   // 2. fetch event properties from webapp config
-  eventProperties = getHashFromArray(eventProperties);
+  eventProperties = getHashFromArray(eventProperties, ...Array(2), false);
 
   Object.keys(eventProperties).forEach(key => {
     const value = get(message, `properties.${key}`);

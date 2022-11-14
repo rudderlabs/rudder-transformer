@@ -1367,5 +1367,64 @@
       },
       "originalTimestamp": "2020-03-17T12:16:56.002Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60",
+        "createUsersAsVerified": true,
+        "domain": "rudderlabshelp",
+        "email": "prabrisha@rudderlabs.com",
+        "password": "Ey!i@2tn6YhSDpx",
+        "removeUsersFromOrganization": true,
+        "sendGroupCallsWithoutUserId": true
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Zendesk",
+        "ID": "1YknZ1ENqB8UurJQJE2VrEA61tr",
+        "Name": "ZENDESK"
+      },
+      "Enabled": true,
+      "ID": "1Z3zFXE6zwvNJBVOUzCuJxeO51P",
+      "Name": "zendesk",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "0bab70e8-bf2f-449a-a19b-ca6e3bfed9b7",
+      "request_ip": "[::1]:51573",
+      "type": "identify",
+      "userId": "abcd-144",
+      "traits": {
+        "email": "example124@email.com",
+        "primaryEmail": "example115@email.com",
+        "name": "name_abcd144"
+      }
+    }
   }
 ]

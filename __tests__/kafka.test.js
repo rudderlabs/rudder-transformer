@@ -13,6 +13,12 @@ const batchOutputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_batch_output.json`)
 );
 
+const dataWithMetadata = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_with_metadata.json`)
+)
+
+
+
 describe("Tests", () => {
   test(`${name} Tests`, () => {
     const inputDataFile = fs.readFileSync(
@@ -36,4 +42,17 @@ describe("Tests", () => {
     expect(Array.isArray(output)).toEqual(true);
     expect(output).toEqual(batchExpectedData);
   });
+
+  test(`${name} Metadata parse test`, done => {
+    const inputData = JSON.parse(dataWithMetadata);
+    inputData.forEach(async (data, _) => {
+      try {
+        const output = transformer.processMetadata(data.input);
+        expect(output).toEqual(data.output);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  })
 });

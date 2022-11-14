@@ -10962,5 +10962,472 @@
         "scope": "exception"
       }
     }
+  },
+  {
+    "description": "extract client_id from the path defined in the webapp config i.e (properties.client_id)",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "product added",
+        "properties": {
+          "currency": "USD",
+          "price": 2.4,
+          "quantity": 2,
+          "client_id": "client@1234",
+          "products": [
+            {
+              "product_id": "507f1f77bcf86cd799439011",
+              "name": "Monopoly: 3rd Edition",
+              "coupon": "SUMMER_FUN",
+              "category": "Apparel",
+              "brand": "Google",
+              "variant": "green",
+              "price": "19",
+              "quantity": "2",
+              "position": "1",
+              "affiliation": "Google Merchandise Store",
+              "currency": "USD",
+              "discount": 2.22,
+              "item_category2": "Adult",
+              "item_category3": "Shirts",
+              "item_category4": "Crew",
+              "item_category5": "Short sleeve",
+              "item_list_id": "related_products",
+              "item_list_name": "Related Products",
+              "location_id": "L_12345"
+            }
+          ]
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWKGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6BET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "enableServerSideIdentify": true,
+          "sendLoginSignup": true,
+          "newOrExistingUserTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": true,
+          "generateLeadValueTrait": "value",
+          "generateLeadCurrencyTrait": "currency",
+          "clientIdFieldIdentifier": "properties.client_id"
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "add_to_cart",
+              "params": {
+                "items": [
+                  {
+                    "index": 1,
+                    "price": 19,
+                    "coupon": "SUMMER_FUN",
+                    "item_id": "507f1f77bcf86cd799439011",
+                    "currency": "USD",
+                    "discount": 2.22,
+                    "quantity": 2,
+                    "item_name": "Monopoly: 3rd Edition",
+                    "item_brand": "Google",
+                    "affiliation": "Google Merchandise Store",
+                    "location_id": "L_12345",
+                    "item_list_id": "related_products",
+                    "item_variant": "green",
+                    "item_category": "Apparel",
+                    "item_category2": "Adult",
+                    "item_category3": "Shirts",
+                    "item_category4": "Crew",
+                    "item_category5": "Short sleeve",
+                    "item_list_name": "Related Products"
+                  }
+                ],
+                "price": 2.4,
+                "value": 4.8,
+                "currency": "USD",
+                "quantity": 2,
+                "client_id": "client@1234",
+                "engagement_time_msec": 1
+              }
+            }
+          ],
+          "client_id": "client@1234",
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWKGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6BET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
+    }
+  },
+  {
+    "description": "[Error] GA4: client_id not found in all four path",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "product added",
+        "properties": {
+          "currency": "USD",
+          "price": 2.4,
+          "quantity": 2,
+          "products": [
+            {
+              "product_id": "507f1f77bcf86cd799439011",
+              "name": "Monopoly: 3rd Edition",
+              "coupon": "SUMMER_FUN",
+              "category": "Apparel",
+              "brand": "Google",
+              "variant": "green",
+              "price": "19",
+              "quantity": "2",
+              "position": "1",
+              "affiliation": "Google Merchandise Store",
+              "currency": "USD",
+              "discount": 2.22,
+              "item_category2": "Adult",
+              "item_category3": "Shirts",
+              "item_category4": "Crew",
+              "item_category5": "Short sleeve",
+              "item_list_id": "related_products",
+              "item_list_name": "Related Products",
+              "location_id": "L_12345"
+            }
+          ]
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWKGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6BET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "enableServerSideIdentify": true,
+          "sendLoginSignup": true,
+          "newOrExistingUserTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": true,
+          "generateLeadValueTrait": "value",
+          "generateLeadCurrencyTrait": "currency",
+          "clientIdFieldIdentifier": "properties.client_id"
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[Google Analytics 4]: properties.client_id, ga4ClientId, anonymousId or messageId must be provided",
+      "statTags": {
+        "destination": "ga4",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "client_id isn't sent from the path defined in the webapp config, falling back to default values i.e here it is anonymousId",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "product added",
+        "properties": {
+          "currency": "USD",
+          "price": 2.4,
+          "quantity": 2,
+          "products": [
+            {
+              "product_id": "507f1f77bcf86cd799439011",
+              "name": "Monopoly: 3rd Edition",
+              "coupon": "SUMMER_FUN",
+              "category": "Apparel",
+              "brand": "Google",
+              "variant": "green",
+              "price": "19",
+              "quantity": "2",
+              "position": "1",
+              "affiliation": "Google Merchandise Store",
+              "currency": "USD",
+              "discount": 2.22,
+              "item_category2": "Adult",
+              "item_category3": "Shirts",
+              "item_category4": "Crew",
+              "item_category5": "Short sleeve",
+              "item_list_id": "related_products",
+              "item_list_name": "Related Products",
+              "location_id": "L_12345"
+            }
+          ]
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWKGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6BET4",
+          "firebaseAppId": "",
+          "blockPageViewEvent": false,
+          "typesOfClient": "gtag",
+          "extendPageViewParams": false,
+          "sendUserId": false,
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "enableServerSideIdentify": true,
+          "sendLoginSignup": true,
+          "newOrExistingUserTrait": "firstLogin",
+          "loginSignupMethod": "method",
+          "generateLead": true,
+          "generateLeadValueTrait": "value",
+          "generateLeadCurrencyTrait": "currency",
+          "clientIdFieldIdentifier": "properties.client_id"
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "add_to_cart",
+              "params": {
+                "items": [
+                  {
+                    "index": 1,
+                    "price": 19,
+                    "coupon": "SUMMER_FUN",
+                    "item_id": "507f1f77bcf86cd799439011",
+                    "currency": "USD",
+                    "discount": 2.22,
+                    "quantity": 2,
+                    "item_name": "Monopoly: 3rd Edition",
+                    "item_brand": "Google",
+                    "affiliation": "Google Merchandise Store",
+                    "location_id": "L_12345",
+                    "item_list_id": "related_products",
+                    "item_variant": "green",
+                    "item_category": "Apparel",
+                    "item_category2": "Adult",
+                    "item_category3": "Shirts",
+                    "item_category4": "Crew",
+                    "item_category5": "Short sleeve",
+                    "item_list_name": "Related Products"
+                  }
+                ],
+                "price": 2.4,
+                "value": 4.8,
+                "currency": "USD",
+                "quantity": 2,
+                "engagement_time_msec": 1
+              }
+            }
+          ],
+          "client_id": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWKGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6BET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
+    }
   }
 ]

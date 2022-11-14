@@ -17,7 +17,6 @@ const moment = require("moment-timezone");
 const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
-const ErrorBuilder = require("./error");
 const {
   DestCanonicalNames,
   DestHandlerMap

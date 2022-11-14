@@ -341,7 +341,6 @@ const processRouterDest = async inputs => {
           });
         }
         // if not transformed
-        // if not transformed
         const transformedPayload = {
           message: await process(event),
           metadata: event.metadata,

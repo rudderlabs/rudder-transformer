@@ -79,7 +79,6 @@ const isPrimitive = arg => {
   return arg == null || (type !== "object" && type !== "function");
 };
 
-
 /**
  *
  * @param {*} arg

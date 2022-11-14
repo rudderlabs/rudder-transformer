@@ -1,0 +1,50 @@
+[
+  {
+    "getValue": {
+      "x-rudder-dest-info": "{\"secret\": { \"access_token\": \"valid_token\" }}"
+    },
+    "request": {
+      "body": [
+        {
+          "destType": "GA",
+          "userAttributes": [
+            {
+              "userId": "test_user_1"
+            },
+            {
+              "userId": "test_user_2"
+            }
+          ],
+          "config": {
+            "trackingID": "UA-123456789-5",
+            "useNativeSDK": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "getValue": {
+      "x-rudder-dest-info": "{\"secret\": { \"access_token\": \"expired_token\" }}"
+    },
+    "request": {
+      "body": [
+        {
+          "destType": "GA",
+          "userAttributes": [
+            {
+              "userId": "test_user_3"
+            },
+            {
+              "userId": "test_user_4"
+            }
+          ],
+          "config": {
+            "trackingID": "UA-123456789-6",
+            "useNativeSDK": false
+          }
+        }
+      ]
+    }
+  }
+]

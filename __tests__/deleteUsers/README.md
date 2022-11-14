@@ -5,29 +5,11 @@ All the tests data for deleteUsers are to be present in __tests__/data/deleteUse
 ### Files and their significance
   - __`handler_input.json`__ - Input data for  `handleDeletionOfUsers` function in `versionedRouter.js`(alias for `_deleteUsers_proxy_input.json`)
   - __`handler_output.json`__ - Output of `handleDeletionOfUsers` function in `versionedRouter.js`(alias for `_deleteUsers_proxy_output.json`)
-  - __`prepare_req_input.json`__ - Input data for `prepareDeleteRequest` function exported from the destination's `deleteUsers.js` (An example can be seen in the case of `ga`)
-  - __`prepare_req_output.json`__ - Output of `prepareDeleteRequest` function exported from the destination's `deleteUsers.js` (An example can be seen in the case of `ga`)
-  - __`http_response.json`__ - the mock http responses(An example can be seen in the case of `ga`)
+  - __`nw_client_data.json`__ - the mock http responses(An example can be seen in the case of `ga`)
 
 ### Fields in new files
 
-#### prepare_req_input.json
-
-- Type: Array<object>
-- Each object contains below fields
-  - userAttributes
-    - This will be sent by the caller of `/deleteUsers` endpoint
-    - Contains the user details whose details are to be delete or suppressed
-  - config
-    - This will be sent by the caller of `/deleteUsers` endpoint
-    - Contains the destination configuration
-  - rudderDestInfo
-    - This will be sent by the caller of `/deleteUsers` endpoint
-    - Contains the extra information needed by the destination to send user deletion request
-    - *Note*: Currently this field is being used in destination which require OAuth in user-deletion
-
-
-#### http_response.json
+#### nw_client_data.json
 
 - Type: Array<Array<object>>
 - The array of object is how many responses have to be sent back
@@ -45,7 +27,7 @@ All the tests data for deleteUsers are to be present in __tests__/data/deleteUse
      - Type: Array<any>
      - Optional
      - Indicates the expected arguments that are to be sent to the http client instance
-     - We would `recommend` to also add this as part of your `http_response.json`
+     - We would `recommend` to also add this as part of your `nw_client_data.json`
    - response:
      - Type: object
      - Required

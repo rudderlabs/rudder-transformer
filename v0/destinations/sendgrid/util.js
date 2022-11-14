@@ -479,6 +479,11 @@ const getContactListIds = (message, destination) => {
   return contactListIds.toString();
 };
 
+/**
+ * Returns the list of custom_fields
+ * @param {*} destination
+ * @returns
+ */
 const fetchCustomFields = async destination => {
   const { apiKey } = destination.Config;
   return customFieldsCache.get(apiKey, async () => {

@@ -6,14 +6,14 @@ const { GA_USER_DELETION_ENDPOINT } = require("./config");
 const { gaResponseHandler } = require("./networkHandler");
 
 /**
- * This function will help to delete the users one by one from the userAttributes array.
+ * Prepare the delete users request
  *
  * @param {*} userAttributes Array of objects with userId, emaail and phone
  * @param {*} config Destination.Config provided in dashboard
  * @param {Record<string, any> | undefined} rudderDestInfo contains information about the authorisation details to successfully send deletion request
  * @returns
  */
-const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
+const prepareDeleteRequest = (userAttributes, config, rudderDestInfo) => {
   const { secret } = rudderDestInfo;
   // TODO: Should we do more validations ?
   if (secret && isEmpty(secret)) {
@@ -28,37 +28,64 @@ const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
       .setStatus(500)
       .build();
   }
+  const requests = userAttributes.map(userAttribute => {
+    if (!userAttribute.userId) {
+      throw new ErrorBuilder()
+        .setMessage("User id for deletion not present")
+        .setStatus(400)
+        .build();
+    }
+    // Reference for building userDeletionRequest
+    // Ref: https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest#resource
+    const reqBody = {
+      kind: "analytics#userDeletionRequest",
+      id: {
+        type: "USER_ID",
+        userId: userAttribute.userId
+      }
+    };
+    // TODO: Check with team if this condition needs to be handled
+    if (config.useNativeSDK) {
+      reqBody.propertyId = config.trackingID;
+    } else {
+      reqBody.webPropertyId = config.trackingID;
+    }
+    const headers = {
+      Authorization: `Bearer ${secret?.access_token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    };
+    return {
+      body: reqBody,
+      headers
+    };
+  });
+  return requests;
+};
+
+/**
+ * This function will help to delete the users one by one from the userAttributes array.
+ *
+ * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} config Destination.Config provided in dashboard
+ * @param {Record<string, any> | undefined} rudderDestInfo contains information about the authorisation details to successfully send deletion request
+ * @returns {Array<{ body: any, headers: any }>}
+ */
+const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
+  const userDeleteRequests = prepareDeleteRequest(
+    userAttributes,
+    config,
+    rudderDestInfo
+  );
   await Promise.all(
-    userAttributes.map(async userAttribute => {
-      if (!userAttribute.userId) {
-        throw new ErrorBuilder()
-          .setMessage("User id for deletion not present")
-          .setStatus(400)
-          .build();
-      }
-      // Reference for building userDeletionRequest
-      // Ref: https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest#resource
-      const reqBody = {
-        kind: "analytics#userDeletionRequest",
-        id: {
-          type: "USER_ID",
-          userId: userAttribute.userId
+    userDeleteRequests.map(async userDeleteRequest => {
+      const response = await httpPOST(
+        GA_USER_DELETION_ENDPOINT,
+        userDeleteRequest.body,
+        {
+          headers: userDeleteRequest.headers
         }
-      };
-      // TODO: Check with team if this condition needs to be handled
-      if (config.useNativeSDK) {
-        reqBody.propertyId = config.trackingID;
-      } else {
-        reqBody.webPropertyId = config.trackingID;
-      }
-      const headers = {
-        Authorization: `Bearer ${secret?.access_token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      };
-      const response = await httpPOST(GA_USER_DELETION_ENDPOINT, reqBody, {
-        headers
-      });
+      );
       // process the response to know about refreshing scenario
       return gaResponseHandler(response);
     })
@@ -77,4 +104,4 @@ const processDeleteUsers = async event => {
   return resp;
 };
 
-module.exports = { processDeleteUsers };
+module.exports = { processDeleteUsers, prepareDeleteRequest };

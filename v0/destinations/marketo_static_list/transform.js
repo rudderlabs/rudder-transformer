@@ -4,10 +4,8 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig
 } = require("../../util");
-
-const stats = require("../../../util/stats");
 const { TRANSFORMER_METRIC, AUTH_CACHE_TTL } = require("../../util/constant");
-const { marketoResponseHandler, sendGetRequest, getIds } = require("./util");
+const { getIds, validateMessageType } = require("./util");
 const ErrorBuilder = require("../../util/error");
 const {
   getDestinationExternalID,
@@ -15,45 +13,14 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
-  TransformationError,
-  validateMessageType
+  TransformationError
 } = require("../../util");
-const {
-  FETCH_TOKEN_METRIC,
-  DESTINATION,
-  formatConfig,
-  MAX_LEAD_IDS_SIZE
-} = require("./config");
+const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
 const logger = require("../../../logger");
+const { getAuthToken } = require("../marketo/transform");
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
-const getAuthToken = async formattedDestination => {
-  return authCache.get(formattedDestination.ID, async () => {
-    const { accountId, clientId, clientSecret } = formattedDestination;
-    const clientResponse = await sendGetRequest(
-      `https://${accountId}.mktorest.com/identity/oauth/token`,
-      {
-        params: {
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: "client_credentials"
-        }
-      }
-    );
-    const data = marketoResponseHandler(
-      clientResponse,
-      "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
-    if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
-      return { value: data.access_token, age: data.expires_in };
-    }
-    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
-    return null;
-  });
-};
 
 const responseBuilder = (endPoint, leadIds, operation, token) => {
   let updatedEndpoint = endPoint;
@@ -107,7 +74,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
 
 const processEvent = (message, destination, token) => {
   const { Config } = destination;
-  validateMessageType(message, ["audiencelist"], DESTINATION);
+  validateMessageType(message, ["audiencelist"]);
   const response = [];
   if (message.properties?.listData?.add) {
     const payload = batchResponseBuilder(

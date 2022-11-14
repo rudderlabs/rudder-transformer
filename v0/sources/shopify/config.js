@@ -23,7 +23,7 @@ const RUDDER_ECOM_MAP = {
 };
 
 const SHOPIFY_TRACK_MAP = {
-  checkout_delete: "Checkout Deleted",
+  checkouts_delete: "Checkout Deleted",
   carts_create: "Cart Create",
   carts_update: "Cart Update",
   fulfillments_create: "Fulfillments Create",

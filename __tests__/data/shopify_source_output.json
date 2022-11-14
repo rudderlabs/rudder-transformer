@@ -638,5 +638,8 @@
         "zip": "700025"
       }
     }
+  },
+  {
+    "error": "event type checkout_delete not supported"
   }
 ]

@@ -24,7 +24,7 @@ const MARKETO_ABORTABLE_CODES = [
 ];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
-const { logger } = require("../../../logger");
+const logger = require("../../../logger");
 
 // handles marketo application level failures
 const marketoApplicationErrorHandler = (
@@ -144,6 +144,7 @@ const marketoResponseHandler = (
 const sendGetRequest = async (url, options) => {
   const clientResponse = await httpGET(url, options);
   const processedResponse = processAxiosResponse(clientResponse);
+  processedResponse.response.access_token = "dfdf";
   return processedResponse;
 };
 

@@ -8,9 +8,9 @@ const { getIntegrationsObj, getHashFromArray } = require("../../util");
 
 const filterConfigTopics = (message, destination) => {
   const { Config } = destination;
-  if (Config.enableMultiTopic) {
-    const eventTypeTopicMap = getHashFromArray(Config.eventTypeToTopicMap);
-    const eventNameTopicMap = getHashFromArray(Config.eventToTopicMap);
+  if (Config?.enableMultiTopic) {
+    const eventTypeTopicMap = getHashFromArray(Config?.eventTypeToTopicMap);
+    const eventNameTopicMap = getHashFromArray(Config?.eventToTopicMap);
     switch (message.type) {
       case "identify":
         return eventTypeTopicMap.identify;

@@ -144,7 +144,6 @@ const marketoResponseHandler = (
 const sendGetRequest = async (url, options) => {
   const clientResponse = await httpGET(url, options);
   const processedResponse = processAxiosResponse(clientResponse);
-  processedResponse.response.access_token = "dfdf";
   return processedResponse;
 };
 

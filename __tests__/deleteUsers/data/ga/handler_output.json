@@ -11,5 +11,11 @@
       "authErrorCategory": "REFRESH_TOKEN",
       "error": "[GA] invalid credentials"
     }
+  ],
+  [
+    {
+      "statusCode": 403,
+      "error": "[GA] Error occurred while completing deletion request: [dummy response] The parameter used to query is not correct"
+    }
   ]
 ]

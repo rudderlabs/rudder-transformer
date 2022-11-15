@@ -134,5 +134,183 @@
         "statusText": "OK"
       }
     }
+  ],
+  [
+    {
+      "type": "post",
+      "reqParams": [
+        "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert",
+        {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_5"
+          },
+          "webPropertyId": "UA-123456789-7"
+        },
+        {
+          "headers": {
+            "Authorization": "Bearer valid_token_1",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+      ],
+      "response": {
+        "data": {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_5"
+          },
+          "webPropertyId": "UA-123456789-7",
+          "deletionRequestTime": "2022-11-04T10:39:57.933Z"
+        },
+        "status": 200,
+        "statusText": "OK"
+      }
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert",
+        {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_6"
+          },
+          "webPropertyId": "UA-123456789-7"
+        },
+        {
+          "headers": {
+            "Authorization": "Bearer valid_token_1",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+      ],
+      "response": {
+        "data": {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_6"
+          },
+          "webPropertyId": "UA-123456789-7",
+          "deletionRequestTime": "2022-11-04T10:39:57.933Z"
+        },
+        "status": 200,
+        "statusText": "OK"
+      }
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert",
+        {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_7"
+          },
+          "webPropertyId": "UA-123456789-7"
+        },
+        {
+          "headers": {
+            "Authorization": "Bearer valid_token_1",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "error": {
+              "errors": [
+                {
+                  "domain": "global",
+                  "reason": "invalidParameter",
+                  "message": "[dummy response] The parameter used to query is not correct"
+                }
+              ],
+              "code": 403,
+              "message": "[dummy response] The parameter used to query is not correct"
+            }
+          },
+          "status": 403,
+          "statusText": "Bad Request"
+        }
+      }
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert",
+        {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_8"
+          },
+          "webPropertyId": "UA-123456789-7"
+        },
+        {
+          "headers": {
+            "Authorization": "Bearer valid_token_1",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+      ],
+      "response": {
+        "data": {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_8"
+          },
+          "webPropertyId": "UA-123456789-7",
+          "deletionRequestTime": "2022-11-04T10:39:57.933Z"
+        },
+        "status": 200,
+        "statusText": "OK"
+      }
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert",
+        {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_9"
+          },
+          "webPropertyId": "UA-123456789-7"
+        },
+        {
+          "headers": {
+            "Authorization": "Bearer valid_token_1",
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        }
+      ],
+      "response": {
+        "data": {
+          "kind": "analytics#userDeletionRequest",
+          "id": {
+            "type": "USER_ID",
+            "userId": "test_user_9"
+          },
+          "webPropertyId": "UA-123456789-7",
+          "deletionRequestTime": "2022-11-04T10:39:57.933Z"
+        },
+        "status": 200,
+        "statusText": "OK"
+      }
+    }
   ]
 ]

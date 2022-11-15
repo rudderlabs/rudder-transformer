@@ -34,7 +34,9 @@ const gaResponseHandler = gaResponse => {
         .build();
     }
     throw new ErrorBuilder()
-      .setMessage("[GA] Error occurred while completing deletion request")
+      .setMessage(
+        `[GA] Error occurred while completing deletion request: ${response.error?.message}`
+      )
       .setStatus(status)
       .setDestinationResponse(response)
       .build();

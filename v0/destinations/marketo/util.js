@@ -72,7 +72,13 @@ const marketoApplicationErrorHandler = (
   }
 };
 
-const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
+const marketoResponseHandler = (
+  destResponse,
+  sourceMessage,
+  stage,
+  rudderJobMetadata,
+  authCache
+) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
@@ -90,7 +96,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token) {
+    if (response && response.access_token && response.expires_in) {
       return response;
     }
     // marketo application level success
@@ -99,6 +105,20 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     }
     // marketo application level failure
     if (response && !response.success) {
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      if (response.errors && rudderJobMetadata?.destInfo) {
+        const { authKey } = rudderJobMetadata.destInfo;
+        if (
+          authCache &&
+          authKey &&
+          response.errors.some(errorObj => {
+            return errorObj.code === "601" || errorObj.code === "602";
+          })
+        ) {
+          authCache.del(authKey);
+        }
+      }
       marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
     }
   }
@@ -135,8 +155,24 @@ const sendPostRequest = async (url, data, options) => {
   return processedResponse;
 };
 
+const getResponseHandlerData = (
+  clientResponse,
+  lookupMessage,
+  formattedDestination,
+  authCache
+) => {
+  return marketoResponseHandler(
+    clientResponse,
+    lookupMessage,
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    { destInfo: { authKey: formattedDestination.ID } },
+    authCache
+  );
+};
+
 module.exports = {
   marketoResponseHandler,
   sendGetRequest,
-  sendPostRequest
+  sendPostRequest,
+  getResponseHandlerData
 };

@@ -1,0 +1,58 @@
+name: Build transformer image
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - converted_to_draft
+      - ready_for_review
+      - synchronize
+env:
+  REPO_NAME: rudderlabs/develop-rudder-transformer
+
+jobs:
+  user-transformer-build:
+    name: Build user transformer image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: |
+          echo "##[set-output name=branch;]ut-$(echo ${{ github.head_ref }} | tr "/" .)"
+        id: extract_branch
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: githubpublicrudderstack
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile-ut-func
+          load: true
+          tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
+      
+      - name: Run Tests
+        run: |
+          docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run testDestinations
+          docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run testVersionedRouter
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile-ut-func
+          push: true
+          tags: ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
+          build-args: |
+            VERSION=${{ steps.extract_branch.outputs.branch }}
+            COMMIT_HASH=${{ github.sha }}
+
+  # TODO: Add Dest transformer build job after codebuild is removed

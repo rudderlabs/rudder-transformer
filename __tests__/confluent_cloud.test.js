@@ -14,6 +14,10 @@ const outputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_output.json`)
 );
 
+const dataWithMetadata = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_with_metadata.json`)
+);
+
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
@@ -24,6 +28,19 @@ inputData.forEach((input, index) => {
       expect(output).toEqual(expectedData[index]);
     } catch (error) {
       expect(error.message).toEqual(expectedData[index].message);
+    }
+  });
+});
+
+test(`${name} Metadata parse test`, done => {
+  const inputData = JSON.parse(dataWithMetadata);
+  inputData.forEach(async (data, _) => {
+    try {
+      const output = transformer.processMetadata(data.input);
+      expect(output).toEqual(data.output);
+      done();
+    } catch (error) {
+      done(error);
     }
   });
 });

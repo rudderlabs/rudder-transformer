@@ -179,14 +179,18 @@ async function run(functionName, events, code, versionId, testMode) {
     await setupFunction(functionName, code, versionId, testMode);
   }
 
-  const response = await invokeFunction(
-    functionName,
-    events,
-    FUNCTION_REQUEST_TYPES.event
-  );
+  let response;
 
-  if (testMode) {
-    deleteFunction(functionName).catch(_e => {});
+  try {
+    response = await invokeFunction(
+      functionName,
+      events,
+      FUNCTION_REQUEST_TYPES.event
+    );
+  } finally {
+    if (testMode) {
+      deleteFunction(functionName).catch(_e => {});
+    }
   }
 
   return Promise.resolve(response);

@@ -2,11 +2,42 @@
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
 // const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { getIntegrationsObj } = require("../../util");
+const { getIntegrationsObj, getHashFromArray } = require("../../util");
 // const { TRANSFORMER_METRIC } = require("../../util/constant");
 // const ErrorBuilder = require("../../util/error");
 
-function batch(destEvents) {
+const filterConfigTopics = (message, destination) => {
+  const { Config } = destination;
+  if (Config.enableMultiTopic) {
+    const eventTypeTopicMap = getHashFromArray(Config.eventTypeToTopicMap);
+    const eventNameTopicMap = getHashFromArray(Config.eventToTopicMap);
+    switch (message.type) {
+      case "identify":
+        return eventTypeTopicMap.identify;
+      case "screen":
+        return eventTypeTopicMap.screen;
+      case "page":
+        return eventTypeTopicMap.page;
+      case "group":
+        return eventTypeTopicMap.group;
+      case "alias":
+        return eventTypeTopicMap.alias;
+      case "track":
+        {
+          const { event: eventName } = message;
+          if (eventName) {
+            return eventNameTopicMap[eventName];
+          }
+        }
+        break;
+      default:
+        return null;
+    }
+  }
+  return null;
+};
+
+const batch = destEvents => {
   const respList = [];
 
   // Grouping the events by topic
@@ -28,14 +59,19 @@ function batch(destEvents) {
   }
 
   return respList;
-}
+};
 
-function process(event) {
+const process = event => {
   const { message, destination } = event;
   const integrationsObj = getIntegrationsObj(message, "kafka");
   const { schemaId } = integrationsObj || {};
-  const topic = integrationsObj?.topic || destination.Config?.topic;
-  // TODO: Remove commented lines after server release
+
+  const topic =
+    integrationsObj?.topic ||
+    filterConfigTopics(message, destination) ||
+    destination.Config?.topic;
+
+  // TODO: uncomment this when v.1.3.0 of server is avialble in all envs
   // if (!topic) {
   //   throw new ErrorBuilder()
   //     .setStatus(400)
@@ -49,6 +85,7 @@ function process(event) {
   //     })
   //     .build();
   // }
+
   const userId = message.userId || message.anonymousId;
   if (schemaId) {
     return {
@@ -63,7 +100,7 @@ function process(event) {
     userId,
     topic
   };
-}
+};
 
 /**
  * This functions takes event matadata and updates it based on the transformed and raw paylaod
@@ -71,7 +108,7 @@ function process(event) {
  * @param {*} input
  * @returns {*} metadata
  */
-function processMetadata(input) {
+const processMetadata = input => {
   const { metadata, outputEvent } = input;
   const clonedMetadata = cloneDeep(metadata);
   const { topic } = outputEvent;
@@ -79,6 +116,6 @@ function processMetadata(input) {
     clonedMetadata.rudderId = `${clonedMetadata.rudderId}<<>>${topic}`;
   }
   return clonedMetadata;
-}
+};
 
 module.exports = { process, batch, processMetadata };

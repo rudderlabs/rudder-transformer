@@ -575,7 +575,17 @@ if (startDestTransformer) {
             } catch (error) {
               logger.error(error);
               let status = 400;
-              const errorString = error.toString();
+
+              let errorString = error.toString();
+
+              if (
+                error.response &&
+                error.response.data &&
+                error.response.data.error
+              ) {
+                errorString = error.response.data.error;
+              }
+
               if (error instanceof RetryRequestError) {
                 ctxStatusCode = error.statusCode;
               }
@@ -716,7 +726,13 @@ if (transformerTestModeEnabled) {
       ctx.body = res;
     } catch (error) {
       ctx.status = 400;
-      ctx.body = { error: error.message };
+
+      let errorString = error.message;
+      if (error.response && error.response.data && error.response.data.error) {
+        errorString = error.response.data.error;
+      }
+
+      ctx.body = { error: errorString };
     }
   });
 

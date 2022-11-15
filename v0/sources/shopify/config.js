@@ -26,6 +26,8 @@ const SHOPIFY_TRACK_MAP = {
   checkouts_delete: "Checkout Deleted",
   carts_create: "Cart Create",
   carts_update: "Cart Update",
+  customers_enable: "Customer Enabled",
+  customers_disable: "Customer Disabled",
   fulfillments_create: "Fulfillments Create",
   fulfillments_update: "Fulfillments Update",
   orders_delete: "Order Deleted",
@@ -86,7 +88,7 @@ const PRODUCT_MAPPING_EXCLUSION_FIELDS = [
 const SUPPORTED_TRACK_EVENTS = [
   "checkouts_delete",
   "checkouts_update",
-  "customers_disabled",
+  "customers_disable",
   "customers_enable",
   "carts_create",
   "carts_update",

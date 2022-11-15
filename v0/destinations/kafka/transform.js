@@ -2,7 +2,11 @@
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
 // const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { getIntegrationsObj, getHashFromArray } = require("../../util");
+const {
+  getIntegrationsObj,
+  getHashFromArray,
+  removeUndefinedAndNullValues
+} = require("../../util");
 // const { TRANSFORMER_METRIC } = require("../../util/constant");
 // const ErrorBuilder = require("../../util/error");
 
@@ -10,7 +14,12 @@ const filterConfigTopics = (message, destination) => {
   const { Config } = destination;
   if (Config?.enableMultiTopic) {
     const eventTypeTopicMap = getHashFromArray(Config?.eventTypeToTopicMap);
-    const eventNameTopicMap = getHashFromArray(Config?.eventToTopicMap);
+    const eventNameTopicMap = getHashFromArray(
+      Config?.eventToTopicMap,
+      "from",
+      "to",
+      false
+    );
     switch (message.type) {
       case "identify":
         return eventTypeTopicMap.identify;
@@ -87,19 +96,22 @@ const process = event => {
   // }
 
   const userId = message.userId || message.anonymousId;
+  let outputEvent;
   if (schemaId) {
-    return {
+    outputEvent = {
       message,
       userId,
       schemaId,
       topic
     };
+  } else {
+    outputEvent = {
+      message,
+      userId,
+      topic
+    };
   }
-  return {
-    message,
-    userId,
-    topic
-  };
+  return removeUndefinedAndNullValues(outputEvent);
 };
 
 /**

@@ -202,7 +202,22 @@
     "endpoint": "https://api.aptrinsic.com/v1/events/custom"
   },
   {
-    "error": "aborting group call: {\"status\":\"NOT_FOUND\",\"message\":\"User was not found for parameters {id=absent-id}\",\"debugMessage\":null,\"subErrors\":null}"
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.aptrinsic.com/v1/users/absent-id",
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": { "accountId": "ecorp-id" },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "body": {

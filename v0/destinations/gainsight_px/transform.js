@@ -107,25 +107,10 @@ const groupResponseBuilder = async (message, { Config }) => {
     throw new CustomError("userId or anonymousId is required for group", 400);
   }
 
-  const { success: isPresent, err: e } = await objectExists(
-    userId,
-    Config,
-    "user"
-  );
-  if (!isPresent) {
-    throw new CustomError(`aborting group call: ${e}`, 400);
-  }
-
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
     throw new CustomError("groupId is required for group", 400);
   }
-
-  const { success: accountIsPresent } = await objectExists(
-    groupId,
-    Config,
-    "account"
-  );
 
   let payload = constructPayload(message, groupMapping);
   let customAttributes = {};
@@ -152,26 +137,30 @@ const groupResponseBuilder = async (message, { Config }) => {
   };
   payload = removeUndefinedAndNullValues(payload);
 
-  if (accountIsPresent) {
-    // update account
-    const { success: updateSuccess, err } = await updateAccount(
-      groupId,
-      payload,
-      Config
-    );
-    if (!updateSuccess) {
-      throw new CustomError(`failed to update account for group: ${err}`, 400);
-    }
-  } else {
+  // update account
+  const { success: updateSuccess, err } = await updateAccount(
+    groupId,
+    payload,
+    Config
+  );
+  // will not throw error if it is due to unavailable accounts
+  if (!updateSuccess && err === null) {
     // create account
     payload.id = groupId;
-    const { success: createSuccess, err } = await createAccount(
+    const { success: createSuccess, error } = await createAccount(
       payload,
       Config
     );
     if (!createSuccess) {
-      throw new CustomError(`failed to create account for group: ${err}`, 400);
+      throw new CustomError(
+        `failed to create account for group: ${error}`,
+        400
+      );
     }
+  }
+  // throwing error only when it is not due to unavailable contacts
+  if (err) {
+    throw new CustomError(`failed to update account for group: ${err}`, 400);
   }
 
   // add accountId to user object

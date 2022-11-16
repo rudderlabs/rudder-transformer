@@ -85,6 +85,14 @@ const DestCanonicalNames = {
     "SNAPCHAT CUSTOM AUDIENCE",
     "SNAPCHAT_CUSTOM_AUDIENCE",
     "SNAPCHATCUSTOMAUDIENCE"
+  ],
+  CAMPAIGN_MANAGER: [
+    "campaign manager",
+    "campain Manager",
+    "CAMPAIGN MANAGER",
+    "campaignManager",
+    "campaign_manager",
+    "CAMPAIGN_MANAGER"
   ]
 };
 

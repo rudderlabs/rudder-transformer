@@ -12,11 +12,13 @@ const deleteUserDestinations = [
   "engage",
   "ga"
 ];
+// Note: Useful for troubleshooting not to be used in production
+const exclusionDestList = [];
 const { handleDeletionOfUsers } = require("../../versionedRouter");
 const { default: axios } = require("axios");
 
 // delete user tests
-deleteUserDestinations.forEach(destination => {
+deleteUserDestinations.filter(d => !exclusionDestList.includes(d)).forEach(destination => {
   const inputData = require(`./data/${destination}/handler_input.json`);
   const expectedData = require(`./data/${destination}/handler_output.json`);
 

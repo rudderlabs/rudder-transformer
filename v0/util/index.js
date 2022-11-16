@@ -757,8 +757,8 @@ const handleMetadataForValue = (
   }
 
   // handle type and format
-  if (type) {
-    switch (type) {
+  function formatValues(formatingType) {
+    switch (formatingType) {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
@@ -853,8 +853,22 @@ const handleMetadataForValue = (
           logger.debug("Boolean value missing, so dropping it");
         }
         break;
+      case "trim":
+        if (typeof formattedVal === "string") {
+          formattedVal = formattedVal.trim();
+        }
+        break;
       default:
         break;
+    }
+  }
+  if (type) {
+    if (Array.isArray(type)) {
+      type.forEach(eachType => {
+        formatValues(eachType);
+      });
+    } else {
+      formatValues(type);
     }
   }
 

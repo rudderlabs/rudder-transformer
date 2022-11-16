@@ -1,7 +1,11 @@
 const _ = require("lodash");
 const { httpDELETE } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
-const { MAX_BATCH_SIZE, DESTINATION } = require("./config");
+const {
+  MAX_BATCH_SIZE,
+  DESTINATION,
+  DELETE_CONTACTS_ENDPOINT
+} = require("./config");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -42,7 +46,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       .build();
   }
 
-  let endpoint = "https://api.sendgrid.com/v3/marketing/contacts";
+  let endpoint = DELETE_CONTACTS_ENDPOINT;
   const requestOptions = {
     headers: {
       Authorization: `Bearer ${apiKey}`

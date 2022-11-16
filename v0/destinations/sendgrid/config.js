@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const ENDPOINT = "https://api.sendgrid.com/v3/mail/send";
+const BASE_ENDPOINT = "https://api.sendgrid.com/v3";
 const MIN_POOL_LENGTH = 2;
 const MAX_POOL_LENGTH = 64;
 
@@ -8,12 +8,12 @@ const CONFIG_CATEGORIES = {
   TRACK: {
     name: "SendgridTrack",
     type: "track",
-    endpoint: "https://api.sendgrid.com/v3/mail/send"
+    endpoint: `${BASE_ENDPOINT}/mail/send`
   },
   IDENTIFY: {
     name: "SendgridIdentify",
     type: "identify",
-    endpoint: "https://api.sendgrid.com/v3/marketing/contacts"
+    endpoint: `${BASE_ENDPOINT}/marketing/contacts`
   }
 };
 
@@ -38,16 +38,16 @@ const TRACK_EXCLUSION_FIELDS = [
   "trackingSettings"
 ];
 
+const DELETE_CONTACTS_ENDPOINT = `${BASE_ENDPOINT}/marketing/contacts`;
 const MAX_BATCH_SIZE = 30000;
 
 module.exports = {
-  ENDPOINT,
-  TRACK_EXCLUSION_FIELDS,
+  MAPPING_CONFIG,
+  MAX_BATCH_SIZE,
   MAX_POOL_LENGTH,
   MIN_POOL_LENGTH,
-  MAX_BATCH_SIZE,
-  MAPPING_CONFIG,
   CONFIG_CATEGORIES,
+  TRACK_EXCLUSION_FIELDS,
   DESTINATION: "SENDGRID",
-  trackMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
+  DELETE_CONTACTS_ENDPOINT
 };

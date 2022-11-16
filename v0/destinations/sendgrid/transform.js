@@ -14,8 +14,7 @@ const {
   removeUndefinedAndNullValues
 } = require("../../util");
 const {
-  ENDPOINT,
-  trackMapping,
+  MAPPING_CONFIG,
   MAX_BATCH_SIZE,
   MIN_POOL_LENGTH,
   MAX_POOL_LENGTH,
@@ -24,10 +23,10 @@ const {
 } = require("./config");
 const {
   createList,
-  isValidEvent,
   payloadValidator,
   createMailSettings,
   createTrackSettings,
+  validateTrackPayload,
   requiredFieldValidator,
   validateIdentifyPayload,
   generatePayloadFromConfig,
@@ -75,34 +74,12 @@ const identifyResponseBuilder = async (message, destination) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  let event = getValueFromMessage(message, "event");
-  if (!event) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Event is required for track call")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
-  event = event.trim().toLowerCase();
-  if (!isValidEvent(Config, event)) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Event not configured on dashboard")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
-  }
+  validateTrackPayload(message, Config);
   let payload = {};
-  payload = constructPayload(message, trackMapping);
+  payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
+  );
   if (!payload.personalizations) {
     if (Config.mailFromTraits) {
       // if enabled then we look for email in traits and if found we create personalizations object
@@ -168,7 +145,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   payload = payloadValidator(payload);
   const method = defaultPostRequestConfig.requestMethod;
-  const endpoint = ENDPOINT;
+  const { endpoint } = CONFIG_CATEGORIES.TRACK;
   const { apiKey } = Config;
   return responseBuilder(payload, method, endpoint, apiKey);
 };

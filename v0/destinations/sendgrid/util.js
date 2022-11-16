@@ -7,6 +7,7 @@ const {
   getHashFromArray,
   constructPayload,
   isHttpStatusSuccess,
+  getValueFromMessage,
   defaultPutRequestConfig,
   getFieldValueFromMessage,
   getDestinationExternalID,
@@ -27,6 +28,55 @@ const customFieldsCache = new Cache(AUTH_CACHE_TTL);
 const isValidBase64 = content => {
   const re = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
   return re.test(String(content));
+};
+
+const isValidEvent = (Config, event) => {
+  let flag = false;
+  Config.eventNamesSettings.some(eventName => {
+    if (
+      eventName.event &&
+      eventName.event.trim().length !== 0 &&
+      eventName.event.trim().toLowerCase() === event
+    ) {
+      flag = true;
+      return true;
+    }
+  });
+  return flag;
+};
+
+/**
+ * Validation for track call
+ * @param {*} message
+ * @returns
+ */
+const validateTrackPayload = (message, Config) => {
+  let event = getValueFromMessage(message, "event");
+  if (!event) {
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Event is required for track call")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  event = event.trim().toLowerCase();
+  if (!isValidEvent(Config, event)) {
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Event not configured on dashboard")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
 };
 
 const requiredFieldValidator = payload => {
@@ -148,21 +198,6 @@ const payloadValidator = payload => {
     delete updatedPayload.asm;
   }
   return updatedPayload;
-};
-
-const isValidEvent = (Config, event) => {
-  let flag = false;
-  Config.eventNamesSettings.some(eventName => {
-    if (
-      eventName.event &&
-      eventName.event.trim().length !== 0 &&
-      eventName.event.trim().toLowerCase() === event
-    ) {
-      flag = true;
-      return true;
-    }
-  });
-  return flag;
 };
 
 const createList = Config => {
@@ -414,7 +449,7 @@ const generatePayloadFromConfig = (payload, Config) => {
 };
 
 /**
- * Validation for an email
+ * Validation for an identify call
  * @param {*} message
  * @returns
  */
@@ -476,7 +511,7 @@ const getContactListIds = (message, destination) => {
   if (listIds && typeof listIds === "object" && listIds.length > 0) {
     contactListIds.push(...listIds);
   }
-  return contactListIds.toString();
+  return contactListIds.sort().toString();
 };
 
 /**
@@ -486,7 +521,7 @@ const getContactListIds = (message, destination) => {
  */
 const fetchCustomFields = async destination => {
   const { apiKey } = destination.Config;
-  return customFieldsCache.get(apiKey, async () => {
+  return customFieldsCache.get(destination.ID, async () => {
     const requestOptions = {
       headers: {
         "Content-Type": "application/json",
@@ -501,10 +536,10 @@ const fetchCustomFields = async destination => {
       const { custom_fields: customFields } = processedResponse.response;
       return customFields;
     }
+
+    const { message } = processedResponse.response.errors[0];
     throw new ErrorBuilder()
-      .setMessage(
-        "[SendGrid] :: Error while fetching custom_fields, please try after sometime"
-      )
+      .setMessage(message)
       .setStatus(400)
       .setStatTags({
         destType: DESTINATION,
@@ -525,9 +560,7 @@ const fetchCustomFields = async destination => {
  */
 const getCustomFields = async (message, destination) => {
   const customFields = {};
-  const traits = getFieldValueFromMessage(message, "traits");
-  const contextTraits = get(message, "context.traits");
-  const payload = { ...traits, ...contextTraits };
+  const payload = get(message, "context.traits");
   const { customFieldsMapping } = destination.Config;
   const fieldsMapping = getHashFromArray(
     customFieldsMapping,
@@ -590,6 +623,7 @@ module.exports = {
   payloadValidator,
   createMailSettings,
   createTrackSettings,
+  validateTrackPayload,
   requiredFieldValidator,
   validateIdentifyPayload,
   generatePayloadFromConfig,

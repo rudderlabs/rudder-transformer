@@ -23,7 +23,6 @@ const {
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { TransformationError } = require("./errors");
-const { format } = require("path");
 // ========================================================================
 // INLINERS
 // ========================================================================

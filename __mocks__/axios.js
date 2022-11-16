@@ -45,7 +45,8 @@ const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
-  "ruddertest2.mautic.net": "mautic"
+  "ruddertest2.mautic.net": "mautic",
+  "api.criteo.com/oauth2": "criteo_audience"
 };
 
 const fs = require("fs");

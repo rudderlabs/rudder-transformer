@@ -55,7 +55,12 @@ const responseBuilder = async (message, destination, accessToken) => {
       CRITEO_REMOVE_USER,
       Config
     );
-    responseArray.push(criteoRemovePayload, audienceId, accessToken);
+    responseArray.push(
+      prepareResponse(criteoRemovePayload, audienceId, accessToken)
+    );
+  }
+  if (responseArray.length === 1) {
+    return responseArray[0];
   }
   return responseArray;
 };

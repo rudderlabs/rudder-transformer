@@ -41,7 +41,10 @@ const getAccessToken = async destination => {
         400
       );
     }
-    return criteoAuthorizationResponse.response?.data?.access_token;
+    return {
+      value: criteoAuthorizationResponse.response?.data?.access_token,
+      age: criteoAuthorizationResponse.response?.data?.expires_in
+    };
   });
 };
 
@@ -66,6 +69,7 @@ const populateAttributes = (audienceList, operationType, Config) => {
   attributes.operation = operationType;
   attributes.identifierType = audienceType;
   attributes.identifiers = populateIdentifiers(audienceList, audienceType);
+  attributes.internalIdentifiers = false;
   if (audienceType === "gum") {
     if (!isDefinedAndNotNullAndNotEmpty(gumCallerId)) {
       throw new CustomError(

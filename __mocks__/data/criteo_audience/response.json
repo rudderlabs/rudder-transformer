@@ -1,0 +1,8 @@
+{
+  "https://api.criteo.com/oauth2/token": {
+    "access_token": "success_access_token",
+    "token_type": "Bearer",
+    "refresh_token": null,
+    "expires_in": 900
+  }
+}

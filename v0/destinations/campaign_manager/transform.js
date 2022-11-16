@@ -6,7 +6,9 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   CustomError,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  removeUndefinedAndNullValues,
+  toUnixTimestamp
 } = require("../../util");
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
@@ -23,7 +25,7 @@ const getAccessToken = ({ secret }) => {
 };
 
 // build final response
-function buildResponse(requestJson, metadata, endpointUrl) {
+function buildResponse(requestJson, metadata, endpointUrl, requestType) {
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.headers = {
@@ -32,13 +34,13 @@ function buildResponse(requestJson, metadata, endpointUrl) {
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.kind =
-    requestJson.messageType === "batchinsert"
+    requestType === "batchinsert"
       ? "dfareporting#conversionsBatchInsertRequest"
-      : "dfareporting#conversionsBatchInsertRequest";
-  response.body.JSON.encryptionInfo = requestJson.encryptionInfo;
+      : "dfareporting#conversionsBatchUpdateRequest";
+  response.body.JSON.encryptionInfo = requestJson.encryptionInfo || {};
   delete requestJson.kind;
   delete requestJson.encryptionInfo;
-  response.body.JSON.conversions = [requestJson];
+  response.body.JSON.conversions = [removeUndefinedAndNullValues(requestJson)];
   return response;
 }
 
@@ -61,31 +63,25 @@ function processTrack(message, metadata, destination) {
   requestJson.nonPersonalizedAd =
     requestJson.nonPersonalizedAd || destination.nonPersonalizedAd;
   const endpointUrl = prepareUrl(message);
-  return buildResponse(requestJson, metadata, endpointUrl);
+  // to unix epoc micro seconds
+  requestJson.timestampMicros = (
+    toUnixTimestamp(requestJson.timestampMicros) * 1000000
+  ).toString();
+  return buildResponse(
+    requestJson,
+    metadata,
+    endpointUrl,
+    message.properties.requestType
+  );
 }
 
 function validateRequest(message) {
-  if (
-    !message.properties.encryptedUserId &&
-    !message.properties.dclid &&
-    !message.properties.encryptedUserIdCandidates &&
-    !message.properties.gclid &&
-    !message.properties.matchId &&
-    !message.properties.mobileDeviceId
-  ) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: One of encryptedUserId, dclid, encryptedUserIdCandidates, gclid" +
-        "matchId, mobileDeviceId is mandatory.",
-      400
-    );
-  }
-
   if (
     message.properties.requestType !== "batchinsert" &&
     message.properties.requestType !== "batchupdate"
   ) {
     throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: properties.kind must be one of batchinsert or batchupdate.",
+      "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.",
       400
     );
   }

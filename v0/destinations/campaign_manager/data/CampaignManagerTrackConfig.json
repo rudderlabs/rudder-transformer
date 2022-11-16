@@ -11,8 +11,8 @@
   },
   {
     "destKey": "timestampMicros",
-    "sourceKeys": "message.originalTimestamp",
-    "required": false
+    "sourceKeys": "originalTimestamp",
+    "required": true
   },
   {
     "destKey": "floodlightActivityId",
@@ -30,13 +30,8 @@
     "required": false
   },
   {
-    "destKey": "value",
-    "sourceKeys": "properties.value",
-    "required": false
-  },
-  {
     "destKey": "quantity",
-    "sourceKeys": "properties.quantity  ",
+    "sourceKeys": "properties.quantity",
     "required": false
   },
   {

@@ -6,7 +6,7 @@ const BASE_URL =
 const ConfigCategories = {
   TRACK: {
     type: "track",
-    name: "DCMTrackConfig"
+    name: "CampaignManagerTrackConfig"
   }
 };
 

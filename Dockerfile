@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.3
+# syntax=docker/dockerfile:1.4
 FROM node:14.20-alpine3.15
 
 RUN apk update

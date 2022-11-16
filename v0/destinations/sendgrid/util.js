@@ -508,7 +508,7 @@ const getContactListIds = (message, destination) => {
     contactListIds.push(listIds);
   }
 
-  if (listIds && typeof listIds === "object" && listIds.length > 0) {
+  if (listIds && Array.isArray(listIds)) {
     contactListIds.push(...listIds);
   }
   return contactListIds.sort().toString();

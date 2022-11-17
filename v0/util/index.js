@@ -260,7 +260,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = ".") {
+function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
   let l;
 
@@ -271,7 +271,11 @@ function flattenJson(data, separator = ".") {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (i = 0, l = cur.length; i < l; i += 1) {
-        recurse(cur[i], `${prop}[${i}]`);
+        if (mode === "strict") {
+          recurse(cur[i], `${prop}${separator}${i}`);
+        } else {
+          recurse(cur[i], `${prop}[${i}]`);
+        }
       }
       if (l === 0) {
         result[prop] = [];

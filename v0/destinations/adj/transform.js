@@ -20,7 +20,8 @@ function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { appToken, customMappings, environment } = destination.Config;
   const platform = get(message, "context.device.type");
-  if (!platform || !get(message, "context.device.id")) {
+  const id = get(message, "context.device.id");
+  if (!(typeof platform === "string") || !id) {
     throw new CustomError("Device type/id  not present", 400);
   }
   if (platform.toLowerCase() === "android") {

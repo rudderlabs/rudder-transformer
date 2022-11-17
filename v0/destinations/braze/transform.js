@@ -276,7 +276,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
   if (
     messageType === EventType.TRACK &&
-    eventName &&
+    typeof eventName === "string" &&
     eventName.toLowerCase() === "order completed"
   ) {
     const purchaseObjs = getPurchaseObjs(message);

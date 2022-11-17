@@ -24,7 +24,8 @@ const {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
   eventNameMapping,
-  MAX_BATCH_SIZE
+  MAX_BATCH_SIZE,
+  PARTNER_NAME
 } = require("./config");
 
 function checkIfValidPhoneNumber(str) {
@@ -102,7 +103,7 @@ const getTrackResponse = (message, Config, event) => {
   // add partner name
   response.body.JSON = removeUndefinedAndNullValues({
     ...payload,
-    partner_name: "RudderStack"
+    partner_name: PARTNER_NAME
   });
   return response;
 };
@@ -199,7 +200,7 @@ function batchEvents(eventsChunk) {
 
     batchEventResponse.batchedRequest.body.JSON = {
       pixel_code: pixelCode,
-      partner_name: "RudderStack",
+      partner_name: PARTNER_NAME,
       batch: batchResponseList
     };
 

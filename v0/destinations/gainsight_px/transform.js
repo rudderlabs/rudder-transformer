@@ -12,7 +12,8 @@ const {
   getFieldValueFromMessage,
   getValueFromMessage,
   CustomError,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  getIntegrationsObj
 } = require("../../util");
 const {
   renameCustomFields,
@@ -336,8 +337,9 @@ const process = async event => {
   const messageType = message.type.toLowerCase();
 
   // vairable used for less API calls in group
-  const limitAPIForGroup =
-    message?.integrations?.GAINSIGHT_PX?.limitAPIForGroup;
+  const limitAPIForGroup = getIntegrationsObj(message, "gainsight_px")
+    ?.limitAPIForGroup;
+
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:

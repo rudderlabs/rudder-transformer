@@ -61,13 +61,16 @@ const getConversionActionId = async (method, headers, params) => {
     const response = await httpSend(requestBody);
     if (
       !response.success &&
-      !isHttpStatusSuccess(response.response.response.status)
+      !isHttpStatusSuccess(get(response, "response.response.status"))
     ) {
       throw new ErrorBuilder()
-        .setStatus(response.response.response.status)
-        .setDestinationResponse(response.response.response.data)
+        .setStatus(get(response, "response.response.status"))
+        .setDestinationResponse(get(response, "response.response.data"))
         .setMessage(
-          `Google_awordds_enhanced_conversion: ${response.response.response.data[0].error.message} during Google_adwords_enhanced_conversions response transformation`
+          `Google_awordds_enhanced_conversion: ${get(
+            response,
+            "response.response.data[0].error.message"
+          )} during Google_adwords_enhanced_conversions response transformation`
         )
         .setAuthErrorCategory(
           getAuthErrCategory(
@@ -133,11 +136,12 @@ const responseHandler = destinationResponse => {
   }
   // else successfully return status, message and original destination response
   const { response } = destinationResponse;
+  const errMessage = get(response, "error.message") || "";
   throw new ErrorBuilder()
     .setStatus(status)
     .setDestinationResponse(response)
     .setMessage(
-      `Google_awordds_enhanced_conversion: ${response.error.message} during Google_adwords_enhanced_conversions response transformation`
+      `Google_awordds_enhanced_conversion: ${errMessage} during Google_adwords_enhanced_conversions response transformation`
     )
     .setAuthErrorCategory(getAuthErrCategory(status, response))
     .build();

@@ -12,20 +12,6 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
-const faasDeploymentHandler = () => {
-  if (functionsEnabled()) {
-    return require("./util/faas-core").faasDeploymentHandler;
-  }
-  throw new Error("Functions are not enabled");
-};
-
-const faasInvocationHandler = () => {
-  if (functionsEnabled()) {
-    return require("./util/faas-core").faasInvocationHandler;
-  }
-  throw new Error("Functions are not enabled");
-};
-
 const userTransformHandler = () => {
   if (functionsEnabled()) {
     return require("./util/customTransformer").userTransformHandler;
@@ -35,7 +21,7 @@ const userTransformHandler = () => {
 
 const lambdaMigrationsHandler = () => {
   if (functionsEnabled()) {
-    return require("./util/lambda/migration").lambdaMigrationsHandler;
+    return require("./util/openfaas/migration").lambdaMigrationsHandler;
   }
   throw new Error("Functions are not enabled");
 };
@@ -78,8 +64,6 @@ async function sendToDestination(destination, payload) {
 
 module.exports = {
   sendToDestination,
-  faasDeploymentHandler,
-  faasInvocationHandler,
   userTransformHandler,
   lambdaMigrationsHandler
 };

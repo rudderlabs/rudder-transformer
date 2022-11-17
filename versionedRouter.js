@@ -22,7 +22,10 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const { faasInvocationHandler, userTransformHandler, lambdaMigrationsHandler } = require("./routerUtils");
+const {
+  userTransformHandler,
+  lambdaMigrationsHandler
+} = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
@@ -641,7 +644,7 @@ if (startDestTransformer) {
       });
     });
 
-    // Temp API for migrating lambdas to openfaas.
+    // API for migrating available lambdas to openfaas.
     router.post("/transformer/migrate", async ctx => {
       try {
         await lambdaMigrationsHandler()();
@@ -651,51 +654,6 @@ if (startDestTransformer) {
         ctx.status = 500;
       }
     });
-
-    router.post("/faas/python/invoke", async ctx => {
-      try {
-        const {
-          functionName,
-          transformationName,
-          code,
-          versionId = "testVersionId",
-          events = [],
-          override = false
-        } = ctx.request.body;
-
-        if (!functionName && (!transformationName || !code)) {
-          throw new Error(
-            "Invalid Request. Missing parameters in transformation code block"
-          );
-        }
-
-        if (!events || events.length === 0) {
-          throw new Error("Invalid request. Missing events");
-        }
-
-        const startTime = new Date();
-
-        const transformedEvents = await faasInvocationHandler()(
-          functionName,
-          transformationName,
-          code,
-          versionId,
-          events,
-          versionId === "testVersionId",
-          override
-        );
-
-        stats.timing("python_faas_invocation_latency", startTime);
-
-        ctx.body = transformedEvents.data;
-        ctx.status = 200;
-      } catch (error) {
-        logger.error(`Error invoking faas function: ${error} - ${error.message}`);
-        ctx.body = { error: error.message };
-        ctx.status = 400;
-      }
-    });
-  }
 }
 
 if (transformerTestModeEnabled) {

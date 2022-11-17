@@ -5,14 +5,10 @@ const url = require("url");
 const logger = require("../../logger");
 const stats = require("../stats");
 
+const { RespStatusError, RetryRequestError } = require("../utils");
+
 const FAAS_BASE_IMG = "rudderlabs/develop-openfaas-flask:latest";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
-
-const FUNCTION_REQUEST_TYPE_HEADER = "X-REQUEST-TYPE";
-const FUNCTION_REQUEST_TYPES = {
-  code: "CODE",
-  event: "EVENT"
-};
 
 function deleteFunction(functionName) {
   return axios.delete(
@@ -44,18 +40,12 @@ async function isFunctionDeployed(functionName) {
   return matchFound;
 }
 
-function invokeFunction(functionName, payload, requestType) {
-  const headers = {};
-  headers[FUNCTION_REQUEST_TYPE_HEADER] = requestType;
-
+function invokeFunction(functionName, payload) {
   return axios.post(
     new URL(
       path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
     ).toString(),
-    payload,
-    {
-      headers
-    }
+    payload
   );
 }
 
@@ -111,38 +101,51 @@ async function deployFunction(functionName, code, versionId, testMode) {
 }
 
 async function setupFunction(functionName, code, versionId, testMode) {
-  if (!testMode) {
-    if (await isFunctionDeployed(functionName)) {
-      await deleteFunction(functionName);
+  try {
+    if (!testMode) {
+      if (await isFunctionDeployed(functionName)) {
+        return;
+      }
     }
-  }
 
-  await deployFunction(functionName, code, versionId, testMode);
+    await deployFunction(functionName, code, versionId, testMode);
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.status === 500 &&
+      error.response.data.includes("already exists")
+    ) {
+      logger.error(error.response.data);
+      throw new RetryRequestError("Conflict while trying to deploy function");
+    }
+    throw error;
+  }
 }
 
 async function run(functionName, events, code, versionId, testMode) {
   if (testMode) {
     if (!code) {
-      throw new Error(
-        "Code not found for invoking test function: ",
-        functionName
+      throw RespStatusError(
+        `Code not found for invoking test function: ${functionName}`,
+        400
       );
     }
-
-    await setupFunction(functionName, code, versionId, testMode);
   }
+
+  await setupFunction(functionName, code, versionId, testMode);
 
   let response;
 
   try {
-    response = await invokeFunction(
-      functionName,
-      events,
-      FUNCTION_REQUEST_TYPES.event
-    );
+    response = await invokeFunction(functionName, events);
   } finally {
     if (testMode) {
-      deleteFunction(functionName).catch(_e => {});
+      deleteFunction(functionName).catch(error => {
+        logger.error(
+          `Error while trying to delete test function: ${functionName}`,
+          error
+        );
+      });
     }
   }
 

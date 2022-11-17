@@ -43,5 +43,3 @@ function processMetadata(input) {
   return clonedMetadata;
 }
 module.exports = { process, processMetadata };
-
-exports.process = process;

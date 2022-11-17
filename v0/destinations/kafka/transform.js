@@ -2,11 +2,47 @@
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
 // const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
-const { getIntegrationsObj } = require("../../util");
+const {
+  getIntegrationsObj,
+  getHashFromArray,
+  removeUndefinedAndNullValues
+} = require("../../util");
 // const { TRANSFORMER_METRIC } = require("../../util/constant");
 // const ErrorBuilder = require("../../util/error");
 
-function batch(destEvents) {
+const filterConfigTopics = (message, destination) => {
+  const { Config } = destination;
+  if (Config?.enableMultiTopic) {
+    const eventTypeTopicMap = getHashFromArray(Config?.eventTypeToTopicMap);
+    const eventNameTopicMap = getHashFromArray(
+      Config?.eventToTopicMap,
+      "from",
+      "to",
+      false
+    );
+    switch (message.type) {
+      case "identify":
+      case "screen":
+      case "page":
+      case "group":
+      case "alias":
+        return eventTypeTopicMap[message.type];
+      case "track":
+        {
+          const { event: eventName } = message;
+          if (eventName) {
+            return eventNameTopicMap[eventName];
+          }
+        }
+        break;
+      default:
+        return null;
+    }
+  }
+  return null;
+};
+
+const batch = destEvents => {
   const respList = [];
 
   // Grouping the events by topic
@@ -28,14 +64,19 @@ function batch(destEvents) {
   }
 
   return respList;
-}
+};
 
-function process(event) {
+const process = event => {
   const { message, destination } = event;
   const integrationsObj = getIntegrationsObj(message, "kafka");
   const { schemaId } = integrationsObj || {};
-  const topic = integrationsObj?.topic || destination.Config?.topic;
-  // TODO: Remove commented lines after server release
+
+  const topic =
+    integrationsObj?.topic ||
+    filterConfigTopics(message, destination) ||
+    destination.Config?.topic;
+
+  // TODO: uncomment this when v.1.3.0 of server is avialble in all envs
   // if (!topic) {
   //   throw new ErrorBuilder()
   //     .setStatus(400)
@@ -49,21 +90,25 @@ function process(event) {
   //     })
   //     .build();
   // }
+
   const userId = message.userId || message.anonymousId;
+  let outputEvent;
   if (schemaId) {
-    return {
+    outputEvent = {
       message,
       userId,
       schemaId,
       topic
     };
+  } else {
+    outputEvent = {
+      message,
+      userId,
+      topic
+    };
   }
-  return {
-    message,
-    userId,
-    topic
-  };
-}
+  return removeUndefinedAndNullValues(outputEvent);
+};
 
 /**
  * This functions takes event matadata and updates it based on the transformed and raw paylaod
@@ -71,7 +116,7 @@ function process(event) {
  * @param {*} input
  * @returns {*} metadata
  */
-function processMetadata(input) {
+const processMetadata = input => {
   const { metadata, outputEvent } = input;
   const clonedMetadata = cloneDeep(metadata);
   const { topic } = outputEvent;
@@ -79,6 +124,6 @@ function processMetadata(input) {
     clonedMetadata.rudderId = `${clonedMetadata.rudderId}<<>>${topic}`;
   }
   return clonedMetadata;
-}
+};
 
 module.exports = { process, batch, processMetadata };

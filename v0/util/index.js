@@ -260,7 +260,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = ".") {
+function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
   let l;
 
@@ -271,7 +271,11 @@ function flattenJson(data, separator = ".") {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (i = 0, l = cur.length; i < l; i += 1) {
-        recurse(cur[i], `${prop}[${i}]`);
+        if (mode === "strict") {
+          recurse(cur[i], `${prop}${separator}${i}`);
+        } else {
+          recurse(cur[i], `${prop}[${i}]`);
+        }
       }
       if (l === 0) {
         result[prop] = [];
@@ -757,8 +761,8 @@ const handleMetadataForValue = (
   }
 
   // handle type and format
-  if (type) {
-    switch (type) {
+  function formatValues(formatingType) {
+    switch (formatingType) {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
@@ -853,8 +857,22 @@ const handleMetadataForValue = (
           logger.debug("Boolean value missing, so dropping it");
         }
         break;
+      case "trim":
+        if (typeof formattedVal === "string") {
+          formattedVal = formattedVal.trim();
+        }
+        break;
       default:
         break;
+    }
+  }
+  if (type) {
+    if (Array.isArray(type)) {
+      type.forEach(eachType => {
+        formatValues(eachType);
+      });
+    } else {
+      formatValues(type);
     }
   }
 

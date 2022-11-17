@@ -85,6 +85,15 @@ const DestCanonicalNames = {
     "SNAPCHAT CUSTOM AUDIENCE",
     "SNAPCHAT_CUSTOM_AUDIENCE",
     "SNAPCHATCUSTOMAUDIENCE"
+  ],
+  criteo_audience: [
+    "criteo audience",
+    "criteoAudience",
+    "Criteo Audience",
+    "criteoaudience",
+    "CRITEO AUDIENCE",
+    "CRITEO_AUDIENCE",
+    "CRITEOAUDIENCE"
   ]
 };
 

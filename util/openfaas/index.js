@@ -5,8 +5,7 @@ const url = require("url");
 const logger = require("../../logger");
 const stats = require("../stats");
 
-const FUNCTION_REPOSITORY = "rudderlabs/user-functions-test";
-const FAAS_BASE_IMG = "rudderlabs/user-functions-test:flask-plain-handler";
+const FAAS_BASE_IMG = "rudderlabs/develop-openfaas-flask:latest";
 const OPENFAAS_NAMESPACE = "openfaas-fn";
 
 const FUNCTION_REQUEST_TYPE_HEADER = "X-REQUEST-TYPE";
@@ -14,39 +13,6 @@ const FUNCTION_REQUEST_TYPES = {
   code: "CODE",
   event: "EVENT"
 };
-
-function buildImageName(functionName, testMode) {
-  if (testMode) return FAAS_BASE_IMG;
-
-  return `${FUNCTION_REPOSITORY}:${functionName}`;
-}
-
-async function containerizeAndPush(imageName, functionName, code) {
-  const startTime = new Date();
-
-  logger.info("Build OCI Image.");
-  const response = await axios.post(
-    new URL(
-      path.join(
-        process.env.OCI_IMAGE_BUILDER_URL,
-        "api/v1/podman/faas/build-push/"
-      )
-    ).toString(),
-    {
-      imageName,
-      code
-    }
-  );
-
-  if (![200, 201, 204].includes(response.status)) {
-    throw Error(`Build/Push for image ${imageName} failed.`);
-  }
-
-  stats.timing("faas_image_build_push_duration", startTime, {
-    imageName,
-    functionName
-  });
-}
 
 function deleteFunction(functionName) {
   return axios.delete(
@@ -140,19 +106,6 @@ async function deployFunction(functionName, code, versionId, testMode) {
     );
   } catch (error) {
     logger.error(`Error trying to deploy function ${functionName}: `, error);
-    throw error;
-  }
-}
-
-async function deployCode(functionName, code) {
-  try {
-    await invokeFunction(functionName, { code }, FUNCTION_REQUEST_TYPES.code);
-  } catch (error) {
-    logger.error(
-      `Error trying to deploy code to function ${functionName}: `,
-      error
-    );
-
     throw error;
   }
 }

@@ -40,8 +40,8 @@
   {
     "destKey": "value",
     "sourceKeys": [
-      "properties.total",
       "properties.value",
+      "properties.total",
       "properties.revenue"
     ],
     "metadata": {

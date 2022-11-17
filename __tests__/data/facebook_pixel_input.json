@@ -26,7 +26,7 @@
           "density": 50
         },
         "traits": {
-          "email": "abc@gmail.com",
+          "email": "    aBc@gmail.com   ",
           "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
@@ -156,8 +156,8 @@
         "traits": {
           "name": "Ruchira Moitra",
           "email": "abc@gmail.com",
-          "firstname": "Ruchira",
-          "lastname": "Moitra",
+          "firstname": "Ruchira  ",
+          "lastname": "  Moitra",
           "phone": 9000000000,
           "gender": "female"
         },

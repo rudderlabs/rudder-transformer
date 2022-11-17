@@ -1,3 +1,4 @@
+const get = require("get-value");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require("./config");
 const {
@@ -18,12 +19,8 @@ const rejectParams = ["revenue", "currency"];
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const { appToken, customMappings, environment } = destination.Config;
-  const platform = message.context.device.type;
-  if (
-    !message.context.device ||
-    !message.context.device.type ||
-    !message.context.device.id
-  ) {
+  const platform = get(message, "context.device.type");
+  if (!platform || !get(message, "context.device.id")) {
     throw new CustomError("Device type/id  not present", 400);
   }
   if (platform.toLowerCase() === "android") {
@@ -52,8 +49,9 @@ function responseBuilderSimple(message, category, destination) {
       payload.partner_params = {};
       Object.keys(partnerParamsKeysMap).forEach(key => {
         if (message.properties[key]) {
-          payload.partner_params[partnerParamsKeysMap[key]] =
-            message.properties[key].toString();
+          payload.partner_params[
+            partnerParamsKeysMap[key]
+          ] = message.properties[key].toString();
         }
       });
     }
@@ -140,6 +138,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
+          // eslint-disable-next-line no-nested-ternary
           error.response
             ? error.response.status
             : error.code

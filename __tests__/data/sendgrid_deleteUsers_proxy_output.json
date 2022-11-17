@@ -1,0 +1,12 @@
+[
+  [
+    {
+      "statusCode": 400,
+      "error": "[SendGrid] :: apiKey is required for deleting user"
+    },
+    {
+      "statusCode": 400,
+      "error": "[SendGrid] :: userAttributes is not an array"
+    }
+  ]
+]

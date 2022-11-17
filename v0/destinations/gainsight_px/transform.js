@@ -102,14 +102,34 @@ const identifyResponseBuilder = async (message, { Config }) => {
  * Associates a User with an Account.
  */
 const groupResponseBuilder = async (message, { Config }) => {
+  // vairable used for less API calls
+  const limitAPIForGroup =
+    message?.integrations?.GAINSIGHT_PX?.limitAPIForGroup;
+
   const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
     throw new CustomError("userId or anonymousId is required for group", 400);
   }
 
+  if (!limitAPIForGroup) {
+    const { success: isPresent, err: e } = await objectExists(
+      userId,
+      Config,
+      "user"
+    );
+    if (!isPresent) {
+      throw new CustomError(`aborting group call: ${e}`, 400);
+    }
+  }
+
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
     throw new CustomError("groupId is required for group", 400);
+  }
+  let accountIsPresent;
+  if (!limitAPIForGroup) {
+    const { success } = await objectExists(groupId, Config, "account");
+    accountIsPresent = success;
   }
 
   let payload = constructPayload(message, groupMapping);
@@ -137,30 +157,60 @@ const groupResponseBuilder = async (message, { Config }) => {
   };
   payload = removeUndefinedAndNullValues(payload);
 
-  // update account
-  const { success: updateSuccess, err } = await updateAccount(
-    groupId,
-    payload,
-    Config
-  );
-  // will not throw error if it is due to unavailable accounts
-  if (!updateSuccess && err === null) {
-    // create account
-    payload.id = groupId;
-    const { success: createSuccess, error } = await createAccount(
+  if (!limitAPIForGroup) {
+    if (accountIsPresent) {
+      // update account
+      const { success: updateSuccess, err } = await updateAccount(
+        groupId,
+        payload,
+        Config
+      );
+      if (!updateSuccess) {
+        throw new CustomError(
+          `failed to update account for group: ${err}`,
+          400
+        );
+      }
+    } else {
+      // create account
+      payload.id = groupId;
+      const { success: createSuccess, err } = await createAccount(
+        payload,
+        Config
+      );
+      if (!createSuccess) {
+        throw new CustomError(
+          `failed to create account for group: ${err}`,
+          400
+        );
+      }
+    }
+  } else {
+    // update account
+    const { success: updateSuccess, err } = await updateAccount(
+      groupId,
       payload,
       Config
     );
-    if (!createSuccess) {
-      throw new CustomError(
-        `failed to create account for group: ${error}`,
-        400
+    // will not throw error if it is due to unavailable accounts
+    if (!updateSuccess && err === null) {
+      // create account
+      payload.id = groupId;
+      const { success: createSuccess, error } = await createAccount(
+        payload,
+        Config
       );
+      if (!createSuccess) {
+        throw new CustomError(
+          `failed to create account for group: ${error}`,
+          400
+        );
+      }
     }
-  }
-  // throwing error only when it is not due to unavailable contacts
-  if (err) {
-    throw new CustomError(`failed to update account for group: ${err}`, 400);
+    // throwing error only when it is not due to unavailable contacts
+    if (err) {
+      throw new CustomError(`failed to update account for group: ${err}`, 400);
+    }
   }
 
   // add accountId to user object

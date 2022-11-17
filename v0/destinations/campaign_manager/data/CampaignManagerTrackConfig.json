@@ -12,7 +12,10 @@
   {
     "destKey": "timestampMicros",
     "sourceKeys": "originalTimestamp",
-    "required": true
+    "required": true,
+    "metadata": {
+      "type": "microSecondTimestamp"
+    }
   },
   {
     "destKey": "floodlightActivityId",
@@ -36,7 +39,14 @@
   },
   {
     "destKey": "value",
-    "sourceKeys": "properties.value",
+    "sourceKeys": [
+      "properties.total",
+      "properties.value",
+      "properties.revenue"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
     "required": false
   },
   {
@@ -82,16 +92,6 @@
   {
     "destKey": "nonPersonalizedAd",
     "sourceKeys": "properties.nonPersonalizedAd",
-    "required": false
-  },
-  {
-    "destKey": "kind",
-    "sourceKeys": "properties.kind",
-    "required": false
-  },
-  {
-    "destKey": "encryptionInfo",
-    "sourceKeys": "properties.encryptionInfo",
     "required": false
   }
 ]

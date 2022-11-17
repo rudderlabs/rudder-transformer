@@ -44,9 +44,9 @@ function checkIfFailuresAreRetryable(response) {
         response.status[0].errors[0].code !== "INVALID_ARGUMENT"
       );
     }
-    return false;
+    return true;
   } catch (e) {
-    return false;
+    return true;
   }
 }
 

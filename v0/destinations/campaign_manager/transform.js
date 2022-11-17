@@ -7,8 +7,7 @@ const {
   getErrorRespEvents,
   CustomError,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues,
-  toUnixTimestamp
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
@@ -25,7 +24,13 @@ const getAccessToken = ({ secret }) => {
 };
 
 // build final response
-function buildResponse(requestJson, metadata, endpointUrl, requestType) {
+function buildResponse(
+  requestJson,
+  metadata,
+  endpointUrl,
+  requestType,
+  encryptionInfo
+) {
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.headers = {
@@ -37,15 +42,16 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType) {
     requestType === "batchinsert"
       ? "dfareporting#conversionsBatchInsertRequest"
       : "dfareporting#conversionsBatchUpdateRequest";
-  response.body.JSON.encryptionInfo = requestJson.encryptionInfo || {};
-  delete requestJson.kind;
-  delete requestJson.encryptionInfo;
+  response.body.JSON.encryptionInfo = encryptionInfo || {};
   response.body.JSON.conversions = [removeUndefinedAndNullValues(requestJson)];
   return response;
 }
 
-function prepareUrl(message) {
-  return `${BASE_URL}/${message.properties.profileId}/conversions/${message.properties.requestType}`;
+function prepareUrl(message, destination) {
+  const profileId = message.properties.profileId
+    ? Number(message.properties.profileId)
+    : Number(destination.Config.profileId);
+  return `${BASE_URL}/${profileId}/conversions/${message.properties.requestType}`;
 }
 
 // process track call
@@ -55,27 +61,33 @@ function processTrack(message, metadata, destination) {
     mappingConfig[ConfigCategories.TRACK.name]
   );
   requestJson.limitAdTracking =
-    requestJson.limitAdTracking || destination.limitAdTracking;
+    requestJson.limitAdTracking || destination.Config.limitAdTracking;
   requestJson.treatmentForUnderage =
-    requestJson.treatmentForUnderage || destination.treatmentForUnderage;
+    requestJson.treatmentForUnderage || destination.Config.treatmentForUnderage;
   requestJson.childDirectedTreatment =
-    requestJson.childDirectedTreatment || destination.childDirectedTreatment;
+    requestJson.childDirectedTreatment ||
+    destination.Config.childDirectedTreatment;
   requestJson.nonPersonalizedAd =
-    requestJson.nonPersonalizedAd || destination.nonPersonalizedAd;
-  const endpointUrl = prepareUrl(message);
-  // to unix epoc micro seconds
-  requestJson.timestampMicros = (
-    toUnixTimestamp(requestJson.timestampMicros) * 1000000
-  ).toString();
+    requestJson.nonPersonalizedAd || destination.Config.nonPersonalizedAd;
+  requestJson.timestampMicros = requestJson.timestampMicros.toString();
+  const endpointUrl = prepareUrl(message, destination);
   return buildResponse(
     requestJson,
     metadata,
     endpointUrl,
-    message.properties.requestType
+    message.properties.requestType,
+    message.properties.encryptionInfo
   );
 }
 
 function validateRequest(message) {
+  if (!message.properties) {
+    throw new CustomError(
+      "[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message",
+      400
+    );
+  }
+
   if (
     message.properties.requestType !== "batchinsert" &&
     message.properties.requestType !== "batchupdate"
@@ -92,13 +104,6 @@ function validateRequest(message) {
   ) {
     throw new CustomError(
       "[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId is used.",
-      400
-    );
-  }
-
-  if (!message.properties.profileId) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: properties.profileID is a required field. Aborting Message.",
       400
     );
   }

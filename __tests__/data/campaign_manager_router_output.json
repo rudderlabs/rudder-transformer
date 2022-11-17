@@ -21,6 +21,8 @@
           },
           "conversions": [
             {
+              "nonPersonalizedAd": false,
+              "treatmentForUnderage": false,
               "timestampMicros": "1668624722000000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
@@ -88,6 +90,8 @@
           },
           "conversions": [
             {
+              "nonPersonalizedAd": false,
+              "treatmentForUnderage": false,
               "timestampMicros": "1668624722000000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",

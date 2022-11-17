@@ -61,11 +61,11 @@ const getConversionActionId = async (method, headers, params) => {
     const response = await httpSend(requestBody);
     if (
       !response.success &&
-      !isHttpStatusSuccess(get(response, "response.response.status"))
+      !isHttpStatusSuccess(response.response?.response?.status)
     ) {
       throw new ErrorBuilder()
-        .setStatus(get(response, "response.response.status"))
-        .setDestinationResponse(get(response, "response.response.data"))
+        .setStatus(response.response?.response?.status)
+        .setDestinationResponse(response.response?.response?.data)
         .setMessage(
           `Google_awordds_enhanced_conversion: ${get(
             response,

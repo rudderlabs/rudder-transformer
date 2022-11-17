@@ -93,6 +93,14 @@ const DestCanonicalNames = {
     "campaignManager",
     "campaign_manager",
     "CAMPAIGN_MANAGER"
+  ],
+  gainsight_px: [
+    "GAINSIGHT_PX",
+    "GAINSIGHTPX",
+    "gainsightPx",
+    "Gainsight PX",
+    "gainsight px",
+    "Gainsight Px"
   ]
 };
 

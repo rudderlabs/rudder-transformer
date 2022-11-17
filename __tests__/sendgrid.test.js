@@ -1,51 +1,58 @@
-const integration = "sendgrid";
-const name = "sendgrid";
-
 const fs = require("fs");
 const path = require("path");
+
+const integration = "sendgrid";
+const name = "SendGrid";
 const version = "v0";
 
 const transformer = require(`../${version}/destinations/${integration}/transform`);
-const inputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_input.json`)
-);
-const outputDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_output.json`)
-);
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
 
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}.json`)
+);
+const testData = JSON.parse(testDataFile);
 
-const inputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_input.json`)
+// Router Test files
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./data/${integration}_router_output.json`)
+const routerTestData = JSON.parse(routerTestDataFile);
+
+// Batch test files
+const batchDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_batch.json`)
 );
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const batchData = JSON.parse(batchDataFile);
 
 describe(`${name} Tests`, () => {
-    describe("Processor Tests", () => {
-      inputData.forEach((input, index) => {
-        it(`${name} - payload: ${index}`, async () => {
-          try {
-            const output = await transformer.process(input);
-            //console.log(output.body);
-            expect(output).toEqual(expectedData[index]);
-          } catch (error) {
-            expect(error.message).toEqual(expectedData[index].error);
-          }
-        });
+  describe("Processor", () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        try {
+          const output = await transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
+        } catch (error) {
+          expect(error.message).toEqual(dataPoint.output.error);
+        }
       });
     });
-    
-    describe("Router Tests", () => {
-      it("Payload", async () => {
-        const routerOutput = await transformer.processRouterDest(inputRouterData);
-        expect(routerOutput).toEqual(expectedRouterData);
-      });
-    });
-    
   });
-  
+
+  describe("Router Tests", () => {
+    routerTestData.forEach(dataPoint => {
+      it("SendGrid router test case", async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
+    });
+  });
+
+  describe("Batching", () => {
+    batchData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
+    });
+  });
+});

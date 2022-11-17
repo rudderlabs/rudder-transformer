@@ -13,6 +13,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "batch": [
             {
               "event": "CompletePayment",
@@ -231,6 +232,7 @@
           "event": "AddToWishlist",
           "event_id": "1616318632825_357",
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "properties": {
             "contents": [
               {

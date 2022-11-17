@@ -18,9 +18,11 @@ const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
 const {
-  DestCanonicalNames
+  DestCanonicalNames,
+  DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
+const { TransformationError } = require("./errors");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -41,6 +43,15 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
+
+class CustomError extends Error {
+  constructor(message, statusCode, metadata) {
+    super(message);
+    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
+    // Apart from destination transformation
+    this.response = { status: statusCode || 400, metadata };
+  }
+}
 
 const getEventTime = message => {
   return new Date(message.timestamp).toISOString();
@@ -226,7 +237,7 @@ const setValues = (payload, message, mappingJson) => {
         if (val) {
           set(payload, mapping.destKey, val);
         } else if (mapping.required) {
-          throw new Error(
+          throw new CustomError(
             `One of ${JSON.stringify(mapping.sourceKeys)} is required`
           );
         }
@@ -249,7 +260,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = ".") {
+function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
   let l;
 
@@ -260,7 +271,11 @@ function flattenJson(data, separator = ".") {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (i = 0, l = cur.length; i < l; i += 1) {
-        recurse(cur[i], `${prop}[${i}]`);
+        if (mode === "strict") {
+          recurse(cur[i], `${prop}${separator}${i}`);
+        } else {
+          recurse(cur[i], `${prop}[${i}]`);
+        }
       }
       if (l === 0) {
         result[prop] = [];
@@ -618,7 +633,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
     // TODO - think of a way to crash the pod
-    throw new Error("Wrong sourceKey type or blank sourceKey array");
+    throw new CustomError("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
 };
@@ -711,7 +726,7 @@ const handleMetadataForValue = (
     }
 
     if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new Error(
+      throw new CustomError(
         `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
       );
     }
@@ -738,7 +753,7 @@ const handleMetadataForValue = (
       }
 
       if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new Error(
+        throw new CustomError(
           `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
         );
       }
@@ -746,15 +761,17 @@ const handleMetadataForValue = (
   }
 
   // handle type and format
-  if (type) {
-    switch (type) {
+  function formatValues(formatingType) {
+    switch (formatingType) {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
       case "secondTimestamp":
-        formattedVal = Math.floor(
-          formatTimeStamp(formattedVal, typeFormat) / 1000
-        );
+        if (!moment(formattedVal, "x", true).isValid()) {
+          formattedVal = Math.floor(
+            formatTimeStamp(formattedVal, typeFormat) / 1000
+          );
+        }
         break;
       case "microSecondTimestamp":
         formattedVal = moment.unix(moment(formattedVal).format("X"));
@@ -795,7 +812,7 @@ const handleMetadataForValue = (
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
         if (Number.isNaN(formattedVal)) {
-          throw new Error("Revenue is not in the correct format");
+          throw new TransformationError("Revenue is not in the correct format");
         }
         break;
       case "toString":
@@ -840,8 +857,22 @@ const handleMetadataForValue = (
           logger.debug("Boolean value missing, so dropping it");
         }
         break;
+      case "trim":
+        if (typeof formattedVal === "string") {
+          formattedVal = formattedVal.trim();
+        }
+        break;
       default:
         break;
+    }
+  }
+  if (type) {
+    if (Array.isArray(type)) {
+      type.forEach(eachType => {
+        formatValues(eachType);
+      });
+    } else {
+      formatValues(type);
     }
   }
 
@@ -908,7 +939,7 @@ const handleMetadataForValue = (
     }
     if (!foundVal) {
       if (strictMultiMap) {
-        throw new CustomError(`Invalid entry for key ${destKey}`, 400);
+        throw new TransformationError(`Invalid entry for key ${destKey}`, 400);
       } else {
         formattedVal = undefined;
       }
@@ -1036,8 +1067,9 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new Error(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
+        throw new TransformationError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`,
+          400
         );
       }
     });
@@ -1436,13 +1468,6 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
   }
 };
 
-class CustomError extends Error {
-  constructor(message, statusCode, metadata) {
-    super(message);
-    this.response = { status: statusCode, metadata };
-  }
-}
-
 /**
  * Used for generating error response with stats from native and built errors
  * @param {*} arg
@@ -1464,6 +1489,14 @@ function generateErrorObject(error, destination = "", transformStage) {
   if (statTags.destination) {
     statTags.destType = statTags.destination;
     delete statTags.destination;
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.destType) {
+    statTags.destType = destination.toUpperCase();
+  }
+  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
+  if (!statTags.stage) {
+    statTags.stage = transformStage;
   }
   if (statTags.destType) {
     // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
@@ -1534,7 +1567,10 @@ const isOAuthSupported = (destination, destHandler) => {
 
 function isAppleFamily(platform) {
   const appleOsNames = ["ios", "watchos", "ipados", "tvos"];
-  return appleOsNames.includes(platform?.toLowerCase());
+  if (typeof platform === "string") {
+    return appleOsNames.includes(platform?.toLowerCase());
+  }
+  return false;
 }
 
 function removeHyphens(str) {
@@ -1732,12 +1768,38 @@ const flattenMultilevelPayload = payload => {
   return flattenedPayload;
 };
 
+/**
+ * Gets the destintion's transform.js file used for transformation
+ * **Note**: The transform.js file is imported from
+ *  `v0/destinations/${dest}/transform`
+ * @param {*} _version -> version for the transfor
+ * @param {*} dest destination name
+ * @returns
+ *  The transform.js instance used for destination transformation
+ */
+const getDestHandler = dest => {
+  const destName = DestHandlerMap[dest] || dest;
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  return require(`../destinations/${destName}/transform`);
+};
+
+/**
+ * Obtain the authCache instance used to store the access token information to send/get information to/from destination
+ * @param {string} destType destination name
+ * @returns {Cache | undefined} The instance of "v0/util/cache.js"
+ */
+const getDestAuthCacheInstance = destType => {
+  const destInf = getDestHandler(destType);
+  return destInf?.authCache || {};
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
   CustomError,
+  TransformationError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -1819,5 +1881,6 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  getDestAuthCacheInstance
 };

@@ -154,22 +154,29 @@ const trackRequestHandler = (message, category, destination) => {
     );
 
     // products mapping using Items.json
-    if (message.properties.items && Array.isArray(message.properties.items)) {
+    // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
+    // properties.items is to be deprecated soon
+    if (message.properties?.products || message.properties?.items) {
+      const items = message.properties.items || message.properties.products;
       const itemArr = [];
-      message.properties.items.forEach(key => {
-        let item = constructPayload(
-          key,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
-        );
-        item = removeUndefinedAndNullValues(item);
-        if (!isEmptyObject(item)) {
-          itemArr.push(item);
-        }
-      });
+      if (Array.isArray(items)) {
+        items.forEach(key => {
+          let item = constructPayload(
+            key,
+            MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
+          );
+          item = removeUndefinedAndNullValues(item);
+          if (!isEmptyObject(item)) {
+            itemArr.push(item);
+          }
+        });
+      }
       if (!payload.properties) {
         payload.properties = {};
       }
-      payload.properties.items = itemArr;
+      if (itemArr.length > 0) {
+        payload.properties.items = itemArr;
+      }
     }
 
     // all extra props passed is incorporated inside properties

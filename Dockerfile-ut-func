@@ -1,0 +1,30 @@
+FROM ubuntu:20.04
+
+RUN apt-get update \
+  && apt-get install -y curl make g++ \
+  && curl -sL https://deb.nodesource.com/setup_14.x | bash \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists.d/* \
+  && apt-get autoremove \
+  && apt-get clean \
+  && apt-get autoclean
+
+RUN adduser --disabled-password --gecos "" --uid 1000 node
+
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app && mkdir -p /home/node/.npm &&  chown -R node:node /home/node/.npm
+
+# Create app directory
+WORKDIR /home/node/app
+USER node
+
+ARG version
+ENV transformer_build_version=$version
+COPY package*.json ./
+RUN npm install
+
+COPY --chown=node:node . .
+
+CMD [ "npm", "start" ]
+
+EXPOSE 9090/tcp

@@ -1210,7 +1210,7 @@
         "hubID": "6405167",
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
@@ -1241,8 +1241,7 @@
         "traits": {
           "email": "nonamess@email.com",
           "firstname": "Jhon",
-          "anonymousId": "12345",
-          "lookupField": "firstname"
+          "anonymousId": "12345"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1283,7 +1282,7 @@
         "hubID": "6405167",
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "firstname",
         "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
@@ -1339,7 +1338,7 @@
       "properties": {
         "user_actual_role": "system_admin, system_user",
         "user_actual_id": 12345,
-        "revenue": 100
+        "Revenue": 100
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
@@ -1872,7 +1871,7 @@
       },
       "event": "Purchase",
       "properties": {
-        "revenue": "name1"
+        "Revenue": "name1"
       }
     },
     "destination": {
@@ -2283,8 +2282,7 @@
         "traits": {
           "email": "noname@email.com",
           "firstname": "Test Hubspot",
-          "anonymousId": "12345",
-          "lookupField": "email"
+          "anonymousId": "12345"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2325,7 +2323,7 @@
         "hubID": "6405167",
         "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
         "apiVersion": "newApi",
-        "lookupField": "lookupField",
+        "lookupField": "email",
         "hubspotEvents": [],
         "eventFilteringOption": "disable",
         "blacklistedEvents": [
@@ -2492,71 +2490,6 @@
     "description": "[HS] (New API v3) - (newPrivateAppApi) Identify: traits is not supplied",
     "message": {
       "type": "identify",
-      "context": {
-        "mappedToDestination": false
-      }
-    },
-    "destination": {
-      "Config": {
-        "authorizationType": "newPrivateAppApi",
-        "hubID": "",
-        "apiKey": "",
-        "accessToken": "pat-na1-6f0a6b6d-f623-4e0e-8a51-1a810f31ea37",
-        "apiVersion": "newApi",
-        "lookupField": "lookupField",
-        "hubspotEvents": [
-          {
-            "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
-            "eventProperties": [
-              {
-                "from": "Revenue",
-                "to": "value"
-              },
-              {
-                "from": "Price",
-                "to": "cost"
-              }
-            ]
-          },
-          {
-            "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
-            "eventProperties": [
-              {
-                "from": "firstName",
-                "to": "first_name"
-              },
-              {
-                "from": "lastName",
-                "to": "last_name"
-              }
-            ]
-          }
-        ],
-        "eventFilteringOption": "disable",
-        "blacklistedEvents": [
-          {
-            "eventName": ""
-          }
-        ],
-        "whitelistedEvents": [
-          {
-            "eventName": ""
-          }
-        ]
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "description": "[HS] (New API v3) - (newPrivateAppApi) Identify: traits is not supplied",
-    "message": {
-      "type": "identify",
-      "traits": {
-        "email": "noname@email.com",
-        "lookupField": "firstname"
-      },
       "context": {
         "mappedToDestination": false
       }
@@ -2918,6 +2851,89 @@
         "apiVersion": "legacyApi"
       },
       "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "mappedToDestination": true,
+        "externalId": [
+          {
+            "identifierType": "email",
+            "id": "testhubspot2@email.com",
+            "type": "HS-lead"
+          }
+        ],
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        }
+      },
+      "type": "identify",
+      "traits": {
+        "firstname": "Test Hubspot",
+        "anonymousId": "12345",
+        "country": "India"
+      },
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2019-10-15T09:35:31.288Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "rate-limit-id",
+        "hubID": "6405167"
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "name": "Hubspot",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+      "deleted": false,
+      "createdAt": "2020-12-30T08:39:32.005Z",
+      "updatedAt": "2021-02-03T16:22:31.374Z",
+      "destinationDefinition": {
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "HS",
+        "displayName": "Hubspot",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
     }
   }
 ]

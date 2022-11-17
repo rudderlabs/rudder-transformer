@@ -1,9 +1,11 @@
 const { WorkflowEngineFactory } = require("rudder-workflow-engine");
 
 const {
+  getErrorInfo,
   getRootPathForDestination,
   getWorkflowPath,
-  getPlatformBindingsPaths
+  getPlatformBindingsPaths,
+  isCdkV2Destination
 } = require("./utils");
 
 async function getWorkflowEngineInternal(destName, flowType) {
@@ -33,6 +35,24 @@ function getWorkflowEngine(destName, flowType) {
   return workflowEnginePromiseMap[destName][flowType];
 }
 
+async function processCdkV2Workflow(
+  destType,
+  parsedEvent,
+  flowType,
+  bindings = {}
+) {
+  try {
+    const workflowEngine = await getWorkflowEngine(destType, flowType);
+
+    const result = await workflowEngine.execute(parsedEvent, bindings);
+    // TODO: Handle remaining output scenarios
+    return result.output;
+  } catch (error) {
+    throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
+  }
+}
+
 module.exports = {
-  getWorkflowEngine
+  getWorkflowEngine,
+  processCdkV2Workflow
 };

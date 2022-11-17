@@ -30,33 +30,28 @@ inputData.forEach((input, index) => {
   });
 });
 
-const batchInputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
+const routerInputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
 );
-const batchOutputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
+const routerInputData = JSON.parse(routerInputDataFile);
+const routerOutputDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
 );
+const routerOutputData = JSON.parse(routerOutputDataFile);
 
-// const batchInputData = JSON.parse(batchInputDataFile);
-// const batchExpectedData = JSON.parse(batchOutputDataFile);
-
-// batchInputData.forEach((input, index) => {
-//   test(`${name} Batching ${index}`, () => {
-//     const output = transformer.batch(input);
-//     //console.log(output);
-//     expect(Array.isArray(output)).toEqual(true);
-//     expect(output.length).toEqual(batchExpectedData[index].length);
-//     output.forEach((input, indexInner) => {
-//       expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
-//     })
-//   });
-// });
-
-// Batching using routerTransform
-test('Batching', async () => {
-  const batchInputData = JSON.parse(batchInputDataFile);
-  const batchExpectedData = JSON.parse(batchOutputDataFile);
-  const output = await transformer.processRouterDest(batchInputData);
-  expect(Array.isArray(output)).toEqual(true);
-  expect(output).toEqual(batchExpectedData);
+describe('Router Tests', () => {
+  routerInputData.forEach((input, index) => {
+    it(`${name} Tests: payload - ${index}`, async () => {
+      let output, expected;
+      try {
+        output = await transformer.processRouterDest(input);
+        expected = routerOutputData[index]
+      } catch (error) {
+        output = error.message;
+        // console.log(output);
+        expected = routerOutputData[index].message;
+      }
+      expect(output).toEqual(expected);
+    });
+  });
 });

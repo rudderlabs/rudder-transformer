@@ -13,6 +13,8 @@ const ConfigCategory = {
   }
 };
 
+const PARTNER_NAME = "RudderStack";
+
 const eventNameMapping = {
   "product added to wishlist": "AddToWishlist",
   "product added": "AddToCart",
@@ -36,6 +38,7 @@ module.exports = {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
   MAX_BATCH_SIZE,
+  PARTNER_NAME,
   trackMapping: mappingConfig[ConfigCategory.TRACK.name],
   eventNameMapping
 };

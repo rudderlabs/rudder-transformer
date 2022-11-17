@@ -22,15 +22,11 @@ const filterConfigTopics = (message, destination) => {
     );
     switch (message.type) {
       case "identify":
-        return eventTypeTopicMap.identify;
       case "screen":
-        return eventTypeTopicMap.screen;
       case "page":
-        return eventTypeTopicMap.page;
       case "group":
-        return eventTypeTopicMap.group;
       case "alias":
-        return eventTypeTopicMap.alias;
+        return eventTypeTopicMap[message.type];
       case "track":
         {
           const { event: eventName } = message;

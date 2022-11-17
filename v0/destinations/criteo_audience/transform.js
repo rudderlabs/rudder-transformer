@@ -59,6 +59,12 @@ const responseBuilder = async (message, destination, accessToken) => {
       prepareResponse(criteoRemovePayload, audienceId, accessToken)
     );
   }
+  if (responseArray.length === 0) {
+    throw new CustomError(
+      `[Criteo_Audience]:: Payload could not be populated`,
+      400
+    );
+  }
   if (responseArray.length === 1) {
     return responseArray[0];
   }

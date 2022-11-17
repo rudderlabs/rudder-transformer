@@ -1,11 +1,11 @@
 const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
-const { ACCESS_TOKEN_CACHE_TTL } = require("./config.js");
+const { CRITEO_AUDIENCE_AUTH_CACHE_TTL } = require("./config.js");
 
 const Cache = require("../../util/cache");
 const { httpPOST, getFormData } = require("../../../adapters/network");
 
-const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
+const ACCESS_TOKEN_CACHE = new Cache(CRITEO_AUDIENCE_AUTH_CACHE_TTL);
 
 const getAccessToken = async destination => {
   const { clientId, clientSecret } = destination.Config;
@@ -41,10 +41,7 @@ const getAccessToken = async destination => {
         400
       );
     }
-    return {
-      value: criteoAuthorizationResponse.response?.data?.access_token,
-      age: criteoAuthorizationResponse.response?.data?.expires_in
-    };
+    return criteoAuthorizationResponse.response?.data?.access_token;
   });
 };
 

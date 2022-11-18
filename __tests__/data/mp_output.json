@@ -1629,5 +1629,59 @@
       "files": {},
       "userId": "39da706ec83d0e90"
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$distinct_id": "hjikl",
+          "$set": {
+            "groupId": [
+              "testGroupId"
+            ]
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$group_id": "groupIdInTraits",
+          "$group_key": "groupId",
+          "$set": {
+            "company": "testComp",
+            "groupId": "groupIdInTraits"
+          },
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
   ]
 ]

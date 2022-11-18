@@ -747,6 +747,7 @@ if (startDestTransformer) {
         ctx.status = 500;
       }
     });
+  }
 }
 
 if (transformerTestModeEnabled) {

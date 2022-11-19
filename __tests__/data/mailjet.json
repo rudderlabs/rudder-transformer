@@ -26,7 +26,7 @@
       }
     },
     "output": {
-      "error": "[MailJet] :: Message Type is not present. Aborting message."
+      "error": "Message Type is not present. Aborting message."
     }
   },
   {
@@ -58,7 +58,7 @@
       }
     },
     "output": {
-      "error": "[MailJet] :: Message type trackuser not supported."
+      "error": "Message type trackuser not supported."
     }
   },
   {

@@ -1,13 +1,13 @@
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   removeUndefinedAndNullValues,
   getErrorRespEvents,
   getSuccessRespEvents,
   getDestinationExternalID,
   defaultPostRequestConfig,
-  defaultPatchRequestConfig
+  defaultPatchRequestConfig,
+  TransformationError
 } = require("../../util");
 
 const {
@@ -20,8 +20,14 @@ const {
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
-const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
+const {
+  BASE_URL,
+  mappingConfig,
+  ConfigCategories,
+  DESTINATION
+} = require("./config");
 
 const responseBuilder = async (
   payload,
@@ -32,7 +38,15 @@ const responseBuilder = async (
 ) => {
   const { userName, password } = Config;
   if (messageType === EventType.IDENTIFY && !payload) {
-    throw new CustomError("Payload could not be constructed", 400);
+    throw new TransformationError(
+      "Payload could not be constructed",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   } else {
     const response = defaultRequestConfig();
     if (messageType === EventType.IDENTIFY) {
@@ -72,24 +86,44 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
       groupClass = "companies";
       break;
     default:
-      throw new CustomError(
+      throw new TransformationError(
         "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns.",
-        400
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
       );
   }
   let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
     const contacts = await searchContactIds(message, Config, endPoint);
-    if (!contacts || contacts.length==0) {
-      throw new CustomError(
+    if (!contacts || contacts.length === 0) {
+      throw new TransformationError(
         "Could not find any contact Id for the given lookup Field or email.",
-        400
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        },
+        DESTINATION
       );
     }
     if (contacts.length > 1) {
-      throw new CustomError(
+      throw new TransformationError(
         "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue.",
-        400
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        },
+        DESTINATION
       );
     }
     if (contacts.length === 1) {
@@ -103,8 +137,14 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     message.traits.operation !== "remove" &&
     message.traits.operation !== "add"
   ) {
-    throw new CustomError(
-      `${message.traits.operation} is invalid for Operation field. Available are add or remove.`
+    throw new TransformationError(
+      `${message.traits.operation} is invalid for Operation field. Available are add or remove.`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
     );
   }
   const operation = message.traits.operation || "add";
@@ -170,20 +210,36 @@ const process = async event => {
   const { password, subDomainName, userName } = destination.Config;
   const endpoint = `${BASE_URL.replace("subDomainName", subDomainName)}`;
   if (!password) {
-    throw new CustomError("Password field can not be empty.", 400);
+    throw new TransformationError("Password field can not be empty.", 400);
   }
   if (!subDomainName) {
-    throw new CustomError("Sub-Domain Name field can not be empty.", 400);
+    throw new TransformationError(
+      "Sub-Domain Name field can not be empty.",
+      400
+    );
   }
   if (!validateEmail(userName)) {
-    throw new CustomError("User Name is not Valid.", 400);
+    throw new TransformationError(
+      "User Name is not Valid.",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
 
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new CustomError(
+    throw new TransformationError(
       "Message Type is not present. Aborting message.",
-      400
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
     );
   }
   const messageType = message.type.toLowerCase();
@@ -204,7 +260,16 @@ const process = async event => {
       );
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported.`, 400);
+      throw new TransformationError(
+        `Message type ${messageType} not supported.`,
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
+      );
   }
   return response;
 };

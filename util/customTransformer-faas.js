@@ -6,9 +6,10 @@ const { logger } = require("handlebars");
 
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
-    return `fn-${userTransformation.testName
+    const funcName = `fn-${userTransformation.testName
       .replace("_", "-")
       .toLowerCase()}-${uuidv4()}`;
+    return funcName.substring(0, 63);
   }
 
   return `fn-${userTransformation.workspaceId.toLowerCase()}-${userTransformation.versionId.toLowerCase()}`;

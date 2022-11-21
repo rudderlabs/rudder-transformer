@@ -6,7 +6,9 @@ const { setupUserTransformHandler } = require("../customTransformer");
 
 async function getAllHandles() {
   return axios.get(
-    new URL(path.join(process.env.CONFIG_BACKEND_URL, "/handles")).toString()
+    new URL(
+      path.join(process.env.CONFIG_BACKEND_URL, "/transformationHandles")
+    ).toString()
   );
 }
 
@@ -37,7 +39,7 @@ async function migrate(versionId) {
 }
 
 async function lambdaMigrationsHandler() {
-  const handles = (await getAllHandles()).data.TransformationHandles;
+  const handles = (await getAllHandles()).data.transformationHandles;
 
   const promises = [];
 

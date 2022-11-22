@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM ubuntu:20.04
 
 RUN apt-get update \
@@ -24,6 +25,9 @@ COPY package*.json ./
 RUN npm install
 
 COPY --chown=node:node . .
+
+HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
+    CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
 CMD [ "npm", "start" ]
 

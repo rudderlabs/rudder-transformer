@@ -29,40 +29,41 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { getAccessToken } = require("./utils");
 
-// Utility method to construct the header to be used for SFDC API calls
-// The "Authorization: Bearer <token>" header element needs to be passed for
-// authentication for all SFDC REST API calls
-async function getSFDCHeader(destination) {
-  let SF_TOKEN_URL;
-  if (destination.Config.sandbox) {
-    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
-  } else {
-    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
-  }
-  const authUrl = `${SF_TOKEN_URL}?username=${
-    destination.Config.userName
-  }&password=${encodeURIComponent(
-    destination.Config.password
-  )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-    destination.Config.consumerKey
-  }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  const sfAuthResponse = await httpPOST(authUrl, {});
-  const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
-  if (processedsfAuthResponse.status !== 200) {
-    throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${JSON.stringify(
-        processedsfAuthResponse.response
-      )}`,
-      processedsfAuthResponse.status
-    );
-  }
-
-  return {
-    token: `Bearer ${processedsfAuthResponse.response.access_token}`,
-    instanceUrl: processedsfAuthResponse.response.instance_url
-  };
-}
+// async function getSFDCHeader(destination) {
+//   let SF_TOKEN_URL;
+//   if (destination.Config.sandbox) {
+//     SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
+//   } else {
+//     SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
+//   }
+//   const authUrl = `${SF_TOKEN_URL}?username=${
+//     destination.Config.userName
+//   }&password=${encodeURIComponent(
+//     destination.Config.password
+//   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+//     destination.Config.consumerKey
+//   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
+//   const sfAuthResponse = await httpPOST(authUrl, {});
+//   const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
+//   if (processedsfAuthResponse.status !== 200) {
+//     throw new CustomError(
+//       `SALESFORCE AUTH FAILED: ${JSON.stringify(
+//         processedsfAuthResponse.response
+//       )}`,
+//       processedsfAuthResponse.status
+//     );
+//   }
+//   console.log(
+//     `${destination.Config.initialAccessToken} | ${destination.Config.consumerKey} | ${destination.Config.consumerSecret}`
+//   );
+//   console.log(`Bearer ${processedsfAuthResponse.response.access_token}`);
+//   return {
+//     token: `Bearer ${processedsfAuthResponse.response.access_token}`,
+//     instanceUrl: processedsfAuthResponse.response.instance_url
+//   };
+// }
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -366,7 +367,7 @@ async function processSingleMessage(message, authorizationData, destination) {
 
 async function process(event) {
   // Get the authorization header if not available
-  const authorizationData = await getSFDCHeader(event.destination);
+  const authorizationData = await getAccessToken(event.destination);
   const response = await processSingleMessage(
     event.message,
     authorizationData,
@@ -383,7 +384,7 @@ const processRouterDest = async inputs => {
 
   let authorizationData;
   try {
-    authorizationData = await getSFDCHeader(inputs[0].destination);
+    authorizationData = await getAccessToken(inputs[0].destination);
   } catch (error) {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),

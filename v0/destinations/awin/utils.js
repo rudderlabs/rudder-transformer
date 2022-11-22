@@ -14,6 +14,10 @@ let orderReference;
 let testMode;
 let cks;
 
+/**
+ * Used to set params
+ * @param {*} message 
+ */
 const setParams = message => {
   const properties = message?.properties;
   if (isDefinedAndNotNullAndNotEmpty(properties)) {
@@ -44,14 +48,20 @@ const setParams = message => {
     cks = properties.cks || properties.awc || "awc";
   }
 };
-
+/**
+ * This function will return params
+ * @param {*} paramsIds 
+ * @param {*} paramsValues 
+ * @returns actual params to be passed
+ */
 const generateParams = (paramsIds, paramsValues) => {
   const params = {};
+  let paramsValue;
   for (let i = 0; i < paramsIds.length; i++) {
     if (isDefinedAndNotNull(paramsValues[i])) {
-      let paramsValue = String(paramsValues[i]);
+      paramsValue = String(paramsValues[i]);
       if (paramsIds[i] === "parts") {
-          // if totalAmount is defined and not null
+        // if totalAmount is defined and not null
         if (isDefinedAndNotNull(paramsValues[3])) {
           params[paramsIds[i]] = paramsValue;
         }
@@ -63,6 +73,12 @@ const generateParams = (paramsIds, paramsValues) => {
   return params;
 };
 
+/**
+ * Used to retrieve the params
+ * @param {*} message 
+ * @param {*} advertiserId 
+ * @returns params
+ */
 const getParams = (message, advertiserId) => {
   setParams(message);
   const paramsIds = [

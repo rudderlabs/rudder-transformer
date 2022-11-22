@@ -15,7 +15,7 @@ const testData = JSON.parse(testDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
-    testData.forEach(async (dataPoint, index) => {
+    testData.forEach((dataPoint, index) => {
       it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
         try {
           const output = await transformer.process(dataPoint.input);

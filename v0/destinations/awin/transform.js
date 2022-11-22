@@ -1,4 +1,4 @@
-const { BASE_URL, DESTINATION } = require("./config");
+const { BASE_URL } = require("./config");
 const {
   defaultRequestConfig,
   CustomError,

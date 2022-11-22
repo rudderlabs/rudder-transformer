@@ -3,6 +3,8 @@ const {
   isDefinedAndNotNull
 } = require("../../util");
 
+const tt = "ss";
+const tv = "2";
 let totalAmount;
 const channel = "aw";
 let commissionGroup;
@@ -43,25 +45,30 @@ const setParams = message => {
   }
 };
 
-const generateEndpoint = (endpoint, paramsIds, paramsValues) => {
+const generateParams = (paramsIds, paramsValues) => {
+  const params = {};
   for (let i = 0; i < paramsIds.length; i++) {
     if (isDefinedAndNotNull(paramsValues[i])) {
       let paramsValue = String(paramsValues[i]);
       if (paramsIds[i] === "parts") {
-        if (isDefinedAndNotNull(paramsValues[0])) {
-          endpoint = endpoint.concat(`&${paramsIds[i]}=${paramsValue}`);
+          // if totalAmount is defined and not null
+        if (isDefinedAndNotNull(paramsValues[3])) {
+          params[paramsIds[i]] = paramsValue;
         }
       } else {
-        endpoint = endpoint.concat(`&${paramsIds[i]}=${paramsValue}`);
+        params[paramsIds[i]] = paramsValue;
       }
     }
   }
-  return endpoint;
+  return params;
 };
 
-const getEndpoint = (message, endpoint) => {
+const getParams = (message, advertiserId) => {
   setParams(message);
   const paramsIds = [
+    "tt",
+    "tv",
+    "merchant",
     "amount",
     "ch",
     "parts",
@@ -72,6 +79,9 @@ const getEndpoint = (message, endpoint) => {
     "cks"
   ];
   const paramsValues = [
+    tt,
+    tv,
+    advertiserId,
     totalAmount,
     channel,
     `${commissionGroup}:${totalAmount}`,
@@ -81,9 +91,9 @@ const getEndpoint = (message, endpoint) => {
     testMode,
     cks
   ];
-  return generateEndpoint(endpoint, paramsIds, paramsValues);
+  return generateParams(paramsIds, paramsValues);
 };
 
 module.exports = {
-  getEndpoint
+  getParams
 };

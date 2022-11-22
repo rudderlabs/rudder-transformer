@@ -1,4 +1,4 @@
-const BASE_URL = "https://www.awin1.com/sread.php?tt=ss&tv=2";
+const BASE_URL = "https://www.awin1.com/sread.php";
 
 const DESTINATION = "awin";
 

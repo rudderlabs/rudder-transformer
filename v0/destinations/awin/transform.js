@@ -1,23 +1,25 @@
-const {
-  BASE_URL,
-  DESTINATION
-} = require("./config");
+const { BASE_URL, DESTINATION } = require("./config");
 const {
   defaultRequestConfig,
   CustomError,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
-  checkInvalidRtTfEvents
+  simpleProcessRouterDest
 } = require("../../util");
 
-const { getEndpoint } = require("./utils");
+const { getParams } = require("./utils");
 
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack } = Config;
-  let endpoint = BASE_URL.concat("&merchant=", advertiserId);
-  // if the event is present in eventsToTrack List
-  if (eventsToTrack.includes(message.event)) {
-    endpoint = getEndpoint(message, endpoint);
+
+  const eventsList = [];
+
+  eventsToTrack.forEach(object => {
+    eventsList.push(object.eventName);
+  });
+
+  let params;
+  // if the event is present in eventsList
+  if (eventsList.includes(message.event)) {
+    params = getParams(message, advertiserId);
   } else {
     throw new CustomError(
       "Event is not present in 'Events to Track' list. Aborting message.",
@@ -25,7 +27,8 @@ const responseBuilder = (message, { Config }) => {
     );
   }
   const response = defaultRequestConfig();
-  response.endpoint = endpoint;
+  response.params = params;
+  response.endpoint = BASE_URL;
 
   return response;
 };
@@ -60,27 +63,7 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
-        return getSuccessRespEvents(
-          message,
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, DESTINATION);
-      }
-    })
-  );
+  const respList = await simpleProcessRouterDest(inputs, "AWIN", process);
   return respList;
 };
 

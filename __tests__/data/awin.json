@@ -5,7 +5,17 @@
       "destination": {
         "Config": {
           "advertiserId": "1234",
-          "eventsToTrack": ["abc"]
+          "eventsToTrack": [
+            {
+              "eventName": "abc"
+            },
+            {
+              "eventName": "prop2"
+            },
+            {
+              "eventName": "prop3"
+            }
+          ]
         }
       },
       "message": {
@@ -76,9 +86,18 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://www.awin1.com/sread.php?tt=ss&tv=2&merchant=1234&ch=aw&vc=1bcu1&cr=INR&testmode=0&cks=awc",
+      "endpoint": "https://www.awin1.com/sread.php",
       "headers": {},
-      "params": {},
+      "params": {
+        "ch": "aw",
+        "cr": "INR",
+        "tt": "ss",
+        "tv": "2",
+        "vc": "1bcu1",
+        "cks": "awc",
+        "merchant": "1234",
+        "testmode": "0"
+      },
       "body": {
         "JSON": {},
         "JSON_ARRAY": {},

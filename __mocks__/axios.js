@@ -36,6 +36,7 @@ const {
   freshsalesGetRequestHandler,
   freshsalesPostRequestHandler
 } = require("./freshsales.mock");
+const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -45,7 +46,8 @@ const urlDirectoryMap = {
   "active.campaigns.rudder.com": "active_campaigns",
   "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
-  "ruddertest2.mautic.net": "mautic"
+  "ruddertest2.mautic.net": "mautic",
+  "api.sendgrid.com": "sendgrid"
 };
 
 const fs = require("fs");
@@ -140,6 +142,9 @@ function get(url, options) {
   }
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
     return Promise.resolve(freshsalesGetRequestHandler(url));
+  }
+  if (url.includes("https://api.sendgrid.com/v3/marketing/field_definitions")) {
+    return Promise.resolve(sendgridGetRequestHandler(url));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

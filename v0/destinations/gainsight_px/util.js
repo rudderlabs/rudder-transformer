@@ -98,6 +98,13 @@ const updateAccount = async (accountId, payload, Config) => {
     }
     throw new CustomError("invalid response while updating account");
   } catch (error) {
+    // it will only occur if the user does not exist
+    if (
+      error.response?.status === 404 &&
+      error.response?.data?.externalapierror?.status === "NOT_FOUND"
+    ) {
+      return { success: false, err: null };
+    }
     return handleErrorResponse(error, "error while updating account", 400);
   }
 };

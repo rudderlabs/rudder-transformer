@@ -19,7 +19,8 @@ const deleteUserDestinations = [
   "mp",
   "af",
   "clevertap",
-  "engage"
+  "engage",
+  "sendgrid"
 ];
 const service = require("../versionedRouter").handleProxyRequest;
 const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;

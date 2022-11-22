@@ -1,45 +1,85 @@
-/* eslint-disable object-shorthand */
+const _ = require("lodash");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
-  getValueFromMessage,
-  getErrorRespEvents,
-  getSuccessRespEvents,
-  removeUndefinedAndNullValues,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
   isEmptyObject,
+  constructPayload,
+  getErrorRespEvents,
   extractCustomFields,
-  constructPayload
+  getValueFromMessage,
+  defaultRequestConfig,
+  getSuccessRespEvents,
+  defaultPutRequestConfig,
+  defaultPostRequestConfig,
+  defaultBatchRequestConfig,
+  removeUndefinedAndNullValues
 } = require("../../util");
 const {
-  ENDPOINT,
-  TRACK_EXCLUSION_FIELDS,
+  MAPPING_CONFIG,
+  MAX_BATCH_SIZE,
   MIN_POOL_LENGTH,
   MAX_POOL_LENGTH,
-  trackMapping
+  CONFIG_CATEGORIES,
+  TRACK_EXCLUSION_FIELDS
 } = require("./config");
 const {
-  payloadValidator,
-  isValidEvent,
   createList,
+  payloadValidator,
   createMailSettings,
   createTrackSettings,
+  validateTrackPayload,
+  requiredFieldValidator,
+  validateIdentifyPayload,
   generatePayloadFromConfig,
-  requiredFieldValidator
+  createOrUpdateContactPayloadBuilder
 } = require("./util");
+const ErrorBuilder = require("../../util/error");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { DESTINATION } = require("./config");
 
-const trackResponseBuilder = (message, { Config }) => {
-  let event = getValueFromMessage(message, "event");
-  if (!event) {
-    throw new CustomError("event is required for track call", 400);
+const responseBuilder = (payload, method, endpoint, apiKey) => {
+  if (payload) {
+    const response = defaultRequestConfig();
+    response.headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`
+    };
+    response.method = method;
+    response.endpoint = endpoint;
+    response.body.JSON = removeUndefinedAndNullValues(payload);
+    return response;
   }
-  event = event.trim().toLowerCase();
-  if (!isValidEvent(Config, event)) {
-    throw new CustomError("event not configured on dashboard", 400);
-  }
+
+  // fail-safety for developer error
+  throw new ErrorBuilder()
+    .setMessage("[SendGrid] :: Payload could not be constructed")
+    .setStatus(400)
+    .setStatTags({
+      destType: DESTINATION,
+      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    })
+    .build();
+};
+
+const identifyResponseBuilder = async (message, destination) => {
+  validateIdentifyPayload(message);
+  const builder = await createOrUpdateContactPayloadBuilder(
+    message,
+    destination
+  );
+  const { payload, method, endpoint } = builder;
+  const { apiKey } = destination.Config;
+  return responseBuilder(payload, method, endpoint, apiKey);
+};
+
+const trackResponseBuilder = async (message, { Config }) => {
+  validateTrackPayload(message, Config);
   let payload = {};
-  payload = constructPayload(message, trackMapping);
+  payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
+  );
   if (!payload.personalizations) {
     if (Config.mailFromTraits) {
       // if enabled then we look for email in traits and if found we create personalizations object
@@ -48,12 +88,21 @@ const trackResponseBuilder = (message, { Config }) => {
         "context.traits.email"
       ]);
       if (email) {
-        payload.personalizations = [{ to: [{ email: email }] }];
+        payload.personalizations = [{ to: [{ email }] }];
       } else {
-        throw new CustomError(
-          "Either email not found in traits or personalizations field is missing/empty",
-          400
-        );
+        throw new ErrorBuilder()
+          .setMessage(
+            "[SendGrid] :: Either email not found in traits or personalizations field is missing/empty"
+          )
+          .setStatus(400)
+          .setStatTags({
+            destType: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+          })
+          .build();
       }
     }
   }
@@ -95,40 +144,157 @@ const trackResponseBuilder = (message, { Config }) => {
     }
   }
   payload = payloadValidator(payload);
-  payload = removeUndefinedAndNullValues(payload);
-  const response = defaultRequestConfig();
-  response.headers = {
-    Authorization: `Bearer ${Config.apiKey}`,
-    "Content-Type": "application/json"
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ENDPOINT;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  const method = defaultPostRequestConfig.requestMethod;
+  const { endpoint } = CONFIG_CATEGORIES.TRACK;
+  const { apiKey } = Config;
+  return responseBuilder(payload, method, endpoint, apiKey);
 };
-const process = event => {
-  const { message, destination } = event;
+
+const processEvent = async (message, destination) => {
+  // Validating if message type is even given or not
   if (!message.type) {
-    throw new CustomError(
-      "message Type is not present. Aborting message.",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Message Type is not present. Aborting message")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Invalid Api Key", 400);
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Invalid Api Key")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      })
+      .build();
   }
-  const messageType = message.type.toLowerCase();
 
+  const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
+    case EventType.IDENTIFY:
+      response = await identifyResponseBuilder(message, destination);
+      break;
     case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
+      response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new ErrorBuilder()
+        .setMessage(`[SendGrid] :: Message type ${messageType} not supported`)
+        .setStatus(400)
+        .setStatTags({
+          destType: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        })
+        .build();
   }
   return response;
+};
+
+const process = event => {
+  return processEvent(event.message, event.destination);
+};
+
+const generateBatchedPaylaodForArray = (events, combination) => {
+  let batchEventResponse = defaultBatchRequestConfig();
+  const metadata = [];
+  // extracting destination from the first event in a batch
+  const { destination } = events[0];
+  const { apiKey } = destination.Config;
+  const Contacts = [];
+  // Batch event into destination batch structure
+  events.forEach(event => {
+    Contacts.push(event.message.body.JSON.contactDetails);
+    metadata.push(event.metadata);
+  });
+  const contactListIds = combination.split(",");
+  // if contactListId is not given then all contacts will fall back to general
+  batchEventResponse.batchedRequest.body.JSON = combination
+    ? {
+        list_ids: contactListIds,
+        contacts: Contacts
+      }
+    : {
+        contacts: Contacts
+      };
+  batchEventResponse.batchedRequest.endpoint =
+    CONFIG_CATEGORIES.IDENTIFY.endpoint;
+
+  batchEventResponse.batchedRequest.method =
+    defaultPutRequestConfig.requestMethod;
+
+  batchEventResponse.batchedRequest.headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${apiKey}`
+  };
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination
+  };
+  return batchEventResponse;
+};
+
+const batchEvents = successRespList => {
+  const batchedResponseList = [];
+  const identifyCalls = [];
+  // Filtering out identify calls to process batching
+  successRespList.forEach(resp => {
+    if (resp.message.endpoint === CONFIG_CATEGORIES.TRACK.endpoint) {
+      batchedResponseList.push(
+        getSuccessRespEvents(resp.message, [resp.metadata], resp.destination)
+      );
+    } else {
+      identifyCalls.push(resp);
+    }
+  });
+
+  if (identifyCalls.length > 0) {
+    /*
+  ------------- eventGroups ---------------------
+  "contactListIds1" : [{message : {}, metadata : {}, destination: {}}],
+  "contactListIds2": [{message : {}, metadata : {}, destination: {}}],
+  "contactListIds3": [{message : {}, metadata : {}, destination: {}}],
+  "contactListIds4": [{message : {}, metadata : {}, destination: {}}]
+  */
+    const eventGroups = _.groupBy(
+      identifyCalls,
+      event => event.message.body.JSON.contactListIds
+    );
+
+    Object.keys(eventGroups).forEach(combination => {
+      const eventChunks = _.chunk(eventGroups[combination], MAX_BATCH_SIZE);
+      // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+      eventChunks.forEach(chunk => {
+        const batchEventResponse = generateBatchedPaylaodForArray(
+          chunk,
+          combination
+        );
+        batchedResponseList.push(
+          getSuccessRespEvents(
+            batchEventResponse.batchedRequest,
+            batchEventResponse.metadata,
+            batchEventResponse.destination,
+            true
+          )
+        );
+      });
+    });
+  }
+  return batchedResponseList;
 };
 
 const processRouterDest = async inputs => {
@@ -136,29 +302,44 @@ const processRouterDest = async inputs => {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const successRespList = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async event => {
       try {
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
+        if (event.message.statusCode) {
+          // already transformed event
+          successRespList.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination
+          });
+        }
+        // if not transformed
+        const transformedPayload = {
+          message: await process(event),
+          metadata: event.metadata,
+          destination
+        };
+        successRespList.push(transformedPayload);
       } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
+        batchErrorRespList.push(
+          getErrorRespEvents(
+            [event.metadata],
+            error.response ? error.response.status : 400,
+            error.message || "Error occurred while processing payload."
+          )
         );
       }
     })
   );
-  return respList;
+
+  if (successRespList.length > 0) {
+    batchResponseList = batchEvents(successRespList);
+  }
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

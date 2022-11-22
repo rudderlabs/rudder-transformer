@@ -246,7 +246,7 @@ const getItemList = (message, isItemsRequired = false) => {
         GA4_ITEM_EXCLUSION
       );
       if (!isEmptyObject(itemProperties)) {
-        itemProperties = flattenJson(itemProperties);
+        itemProperties = flattenJson(itemProperties, "_", "strict");
         element = { ...element, ...itemProperties };
       }
 
@@ -338,7 +338,7 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
   );
   // append in the params if any custom fields are passed after flattening the JSON
   if (!isEmptyObject(customParameters)) {
-    customParameters = flattenJson(customParameters, "_");
+    customParameters = flattenJson(customParameters, "_", "strict");
     // eslint-disable-next-line no-param-reassign
     payload.params = {
       ...payload.params,

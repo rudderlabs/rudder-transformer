@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM node:14.20-alpine3.15
 
 RUN apk update
@@ -29,6 +30,10 @@ RUN npm install
 COPY --chown=node:node . .
 
 ENTRYPOINT ["/sbin/tini", "--"]
+
+HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
+    CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+
 CMD [ "npm", "start" ]
 
 

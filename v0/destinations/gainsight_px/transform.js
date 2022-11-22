@@ -12,7 +12,8 @@ const {
   getFieldValueFromMessage,
   getValueFromMessage,
   CustomError,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  getIntegrationsObj
 } = require("../../util");
 const {
   renameCustomFields,
@@ -95,6 +96,87 @@ const identifyResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINTS.USERS_ENDPOINT;
   response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+};
+
+/**
+ * Updated group call with less number of API calls.
+ * Pros: Will make atleast 2 API call and at most 3 API calls
+ * Cons: There might be some unwanted accounts
+ */
+const newGroupResponseBuilder = async (message, { Config }) => {
+  const userId = getFieldValueFromMessage(message, "userId");
+  if (!userId) {
+    throw new CustomError("userId or anonymousId is required for group", 400);
+  }
+
+  const groupId = getFieldValueFromMessage(message, "groupId");
+  if (!groupId) {
+    throw new CustomError("groupId is required for group", 400);
+  }
+
+  let payload = constructPayload(message, groupMapping);
+  let customAttributes = {};
+  customAttributes = extractCustomFields(
+    message,
+    customAttributes,
+    ["traits"],
+    ACCOUNT_EXCLUSION_FIELDS
+  );
+
+  const accountFieldsMap = getHashFromArray(
+    Config.accountAttributeMap,
+    "from",
+    "to",
+    false
+  );
+  customAttributes = renameCustomFields(customAttributes, accountFieldsMap);
+  payload = {
+    ...payload,
+    customAttributes: !isEmptyObject(customAttributes)
+      ? customAttributes
+      : null,
+    propertyKeys: [Config.productTagKey]
+  };
+  payload = removeUndefinedAndNullValues(payload);
+
+  // update account
+  const { success: updateSuccess, err } = await updateAccount(
+    groupId,
+    payload,
+    Config
+  );
+  // will not throw error if it is due to unavailable accounts
+  if (!updateSuccess && err === null) {
+    // create account
+    payload.id = groupId;
+    const { success: createSuccess, error } = await createAccount(
+      payload,
+      Config
+    );
+    if (!createSuccess) {
+      throw new CustomError(
+        `failed to create account for group: ${error}`,
+        400
+      );
+    }
+  }
+  // throwing error only when it is not due to unavailable contacts
+  if (err) {
+    throw new CustomError(`failed to update account for group: ${err}`, 400);
+  }
+
+  // add accountId to user object
+  const response = defaultRequestConfig();
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.headers = {
+    "X-APTRINSIC-API-KEY": Config.apiKey,
+    "Content-Type": "application/json"
+  };
+  response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
+  response.body.JSON = {
+    accountId: groupId
+  };
   return response;
 };
 
@@ -254,6 +336,10 @@ const process = async event => {
 
   const messageType = message.type.toLowerCase();
 
+  // vairable used for less API calls in group
+  const limitAPIForGroup = getIntegrationsObj(message, "gainsight_px")
+    ?.limitAPIForGroup;
+
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -263,7 +349,11 @@ const process = async event => {
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.GROUP:
-      response = await groupResponseBuilder(message, destination);
+      if (limitAPIForGroup) {
+        response = await newGroupResponseBuilder(message, destination);
+      } else {
+        response = await groupResponseBuilder(message, destination);
+      }
       break;
     default:
       throw new CustomError(`message type ${messageType} not supported`, 400);

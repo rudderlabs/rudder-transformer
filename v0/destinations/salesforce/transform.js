@@ -1,9 +1,8 @@
 const get = require("get-value");
+const cloneDeep = require("lodash/cloneDeep");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
-  SF_TOKEN_REQUEST_URL,
-  SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
@@ -24,46 +23,12 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
-const { httpGET, httpPOST } = require("../../../adapters/network");
+const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { getAccessToken } = require("./utils");
-
-// async function getSFDCHeader(destination) {
-//   let SF_TOKEN_URL;
-//   if (destination.Config.sandbox) {
-//     SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
-//   } else {
-//     SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
-//   }
-//   const authUrl = `${SF_TOKEN_URL}?username=${
-//     destination.Config.userName
-//   }&password=${encodeURIComponent(
-//     destination.Config.password
-//   )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-//     destination.Config.consumerKey
-//   }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-//   const sfAuthResponse = await httpPOST(authUrl, {});
-//   const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
-//   if (processedsfAuthResponse.status !== 200) {
-//     throw new CustomError(
-//       `SALESFORCE AUTH FAILED: ${JSON.stringify(
-//         processedsfAuthResponse.response
-//       )}`,
-//       processedsfAuthResponse.status
-//     );
-//   }
-//   console.log(
-//     `${destination.Config.initialAccessToken} | ${destination.Config.consumerKey} | ${destination.Config.consumerSecret}`
-//   );
-//   console.log(`Bearer ${processedsfAuthResponse.response.access_token}`);
-//   return {
-//     token: `Bearer ${processedsfAuthResponse.response.access_token}`,
-//     instanceUrl: processedsfAuthResponse.response.instance_url
-//   };
-// }
+const { getAccessToken, processResponseHandler } = require("./util");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -142,7 +107,8 @@ async function getSaleforceIdForRecord(
   authorizationData,
   objectType,
   identifierType,
-  identifierValue
+  identifierValue,
+  destination
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
   const sfSearchResponse = await httpGET(objSearchUrl, {
@@ -150,11 +116,13 @@ async function getSaleforceIdForRecord(
   });
   const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
-    throw new CustomError(
+    processResponseHandler(
+      processedsfSearchResponse,
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedsfSearchResponse.response
       )}`,
-      processedsfSearchResponse.status
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      { authKey: destination.ID }
     );
   }
   return get(processedsfSearchResponse.response, "searchRecords.0.Id");
@@ -226,7 +194,8 @@ async function getSalesforceIdFromPayload(
         authorizationData,
         objectType,
         identifierType,
-        id
+        id,
+        destination
       );
     }
 
@@ -249,7 +218,6 @@ async function getSalesforceIdFromPayload(
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
-
     // request configuration will be conditional
     const leadQueryResponse = await httpGET(leadQueryUrl, {
       headers: { Authorization: authorizationData.token }
@@ -257,11 +225,13 @@ async function getSalesforceIdFromPayload(
     const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {
-      throw new CustomError(
+      processResponseHandler(
+        processedLeadQueryResponse,
         `During Lead Query: ${JSON.stringify(
           processedLeadQueryResponse.response
         )}`,
-        processedLeadQueryResponse.status
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        { authKey: destination.ID }
       );
     }
 
@@ -429,4 +399,18 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+/**
+ * This function takes the transformed output containing metadata and returns the updated metadata
+ * @param {*} output
+ * @returns {*} metadata
+ */
+function processMetadataForRouter(output) {
+  const { metadata, destination } = output;
+  const clonedMetadata = cloneDeep(metadata);
+  clonedMetadata.forEach(metadataElement => {
+    metadataElement.destInfo = { authKey: destination?.ID };
+  });
+  return clonedMetadata;
+}
+
+module.exports = { process, processRouterDest, processMetadataForRouter };

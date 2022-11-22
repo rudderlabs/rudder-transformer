@@ -5,7 +5,26 @@ const {
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { responseHandler } = require("./utils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { processResponseHandler } = require("./util");
+
+const responseHandler = (destinationResponse, destType) => {
+  const { status } = destinationResponse;
+  const message = `Request for destination: ${destType} Processed Successfully`;
+
+  processResponseHandler(
+    destinationResponse,
+    "during Salesforce Response Handling",
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
+    destinationResponse?.rudderJobMetadata
+  );
+
+  return {
+    status,
+    message,
+    destinationResponse
+  };
+};
 
 class networkHandler {
   constructor() {

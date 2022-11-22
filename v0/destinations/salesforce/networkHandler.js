@@ -6,7 +6,7 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { processResponseHandler } = require("./util");
+const { processResponseHandler } = require("./utils");
 
 const responseHandler = (destinationResponse, destType) => {
   const { status } = destinationResponse;

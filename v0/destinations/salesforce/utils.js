@@ -1,9 +1,10 @@
-const { logger } = require("handlebars");
+const { logger } = require("../../../logger");
 const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse,
   getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
 const Cache = require("../../util/cache");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { ApiError } = require("../../util/errors");
@@ -13,8 +14,6 @@ const {
   SF_TOKEN_REQUEST_URL,
   DESTINATION
 } = require("./config");
-
-const { isHttpStatusSuccess } = require("../../util");
 
 const DESTINATION_NAME = "salesforce";
 
@@ -49,7 +48,7 @@ const getAccessToken = async destination => {
       const { error } = salesforceAuthorisationData.response.response.data;
       throw new ApiError(
         `Request Failed for Salesforce, access token could not be generated due to ${error}`,
-        500,
+        400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
@@ -67,48 +66,82 @@ const getAccessToken = async destination => {
   });
 };
 
-const processResponse = destResponse => {
+const processResponseHandler = (
+  destResponse,
+  sourceMessage,
+  stage,
+  authKey
+) => {
   const { status, response } = destResponse;
+
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
+    if (status === 401 && authKey) {
+      if (
+        response &&
+        Array.isArray(response) &&
+        response[0].errorCode === "INVALID_SESSION_ID"
+      ) {
+        // checking for invalid/expired token errors and evicting cache in that case
+        // rudderJobMetadata contains some destination info which is being used to evict the cache
+        ACCESS_TOKEN_CACHE.del(authKey);
+        throw new ApiError(
+          `Request Failed for Salesforce due to ${response[0].message}, (Retryable).${sourceMessage}`,
+          500,
+          {
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+          },
+          sourceMessage,
+          undefined,
+          DESTINATION
+        );
+      }
+    }
+    let errorMessage = "";
+    if (response && Array.isArray(response)) {
+      errorMessage = response[0].message;
+    }
+
     throw new ApiError(
-      `[Salesforce Response Handler] - Request failed  with status: ${status}`,
+      `[Salesforce Response Handler] - Request failed  with status: ${status} due to ${errorMessage}`,
       status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: getDynamicMeta(status)
       },
-      destResponse,
+      400,
       undefined,
       DESTINATION
     );
   }
-
-  if (response && !response.success) {
+  if (isHttpStatusSuccess(status)) {
     // checking for invalid/expired token errors and evicting cache in that case
     // rudderJobMetadata contains some destination info which is being used to evict the cache
-    if (response.errors) {
-      //   const { authKey } = rudderJobMetadata?.destInfo;
-      if (ACCESS_TOKEN_CACHE && response.message === "INVALID_SESSION_ID") {
-        console.log(
-          `[Salesforce] Cache token evicting due to invalid/expired access_token for destinationId (1234)`
-        );
-        // ACCESS_TOKEN_CACHE.del(authKey);
-      }
+    if (
+      response &&
+      Array.isArray(response) &&
+      response[0].errorCode === "INVALID_SESSION_ID" &&
+      authKey &&
+      ACCESS_TOKEN_CACHE
+    ) {
+      logger.info(
+        `[Salesforce] Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`
+      );
+      ACCESS_TOKEN_CACHE.del(authKey);
+      throw new ApiError(
+        `Request Failed for Salesforce, (Retryable).${sourceMessage}`,
+        500,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+        },
+        sourceMessage,
+        undefined,
+        DESTINATION
+      );
     }
   }
 };
 
-const responseHandler = respTransformPayload => {
-  const { response, status } = respTransformPayload;
-
-  processResponse(respTransformPayload, {
-    destInfo: { authKey: respTransformPayload.ID }
-  });
-  return {
-    status,
-    destinationResponse: response,
-    message: "Request Processed Successfully"
-  };
-};
-
-module.exports = { getAccessToken, responseHandler };
+module.exports = { getAccessToken, processResponseHandler };

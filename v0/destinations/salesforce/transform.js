@@ -28,7 +28,7 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { getAccessToken, processResponseHandler } = require("./util");
+const { getAccessToken, processResponseHandler } = require("./utils");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated

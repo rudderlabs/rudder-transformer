@@ -44,6 +44,7 @@
     "FACEBOOK_OFFLINE_CONVERSIONS": true,
     "MAILJET": true,
     "SNAPCHAT_CUSTOM_AUDIENCE": true,
+    "CAMPAIGN_MANAGER": true,
     "SENDGRID": true
   }
 }

@@ -276,5 +276,23 @@
     },
     "version": "1",
     "endpoint": "https://api.aptrinsic.com/v1/users"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://api.aptrinsic.com/v1/users/absent-id",
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": { "accountId": "ecorp-id" },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

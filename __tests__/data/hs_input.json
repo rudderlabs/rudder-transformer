@@ -1338,7 +1338,7 @@
       "properties": {
         "user_actual_role": "system_admin, system_user",
         "user_actual_id": 12345,
-        "revenue": 100
+        "Revenue": 100
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
@@ -1871,7 +1871,7 @@
       },
       "event": "Purchase",
       "properties": {
-        "revenue": "name1"
+        "Revenue": "name1"
       }
     },
     "destination": {

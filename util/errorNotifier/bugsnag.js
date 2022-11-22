@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
 const Bugsnag = require("@bugsnag/js");
+const {
+  CustomError: CDKCustomError,
+  DataValidationError
+} = require("rudder-transformer-cdk/build/error/index");
 const pkg = require("../../package.json");
 const { CustomError } = require("../../v0/util");
 const { ApiError, TransformationError } = require("../../v0/util/errors");
@@ -9,7 +13,13 @@ const {
   transformer_build_version: imageVersion
 } = process.env;
 
-const errorTypesDenyList = [CustomError, ApiError, TransformationError];
+const errorTypesDenyList = [
+  CustomError,
+  ApiError,
+  TransformationError,
+  CDKCustomError,
+  DataValidationError
+];
 
 function init() {
   Bugsnag.start({

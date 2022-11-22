@@ -18,7 +18,8 @@ const sha256 = require("sha256");
 const logger = require("../../logger");
 const stats = require("../../util/stats");
 const {
-  DestCanonicalNames
+  DestCanonicalNames,
+  DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
 const { TransformationError } = require("./errors");
@@ -259,7 +260,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = ".") {
+function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
   let l;
 
@@ -270,7 +271,11 @@ function flattenJson(data, separator = ".") {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       for (i = 0, l = cur.length; i < l; i += 1) {
-        recurse(cur[i], `${prop}[${i}]`);
+        if (mode === "strict") {
+          recurse(cur[i], `${prop}${separator}${i}`);
+        } else {
+          recurse(cur[i], `${prop}[${i}]`);
+        }
       }
       if (l === 0) {
         result[prop] = [];
@@ -756,15 +761,17 @@ const handleMetadataForValue = (
   }
 
   // handle type and format
-  if (type) {
-    switch (type) {
+  function formatValues(formatingType) {
+    switch (formatingType) {
       case "timestamp":
         formattedVal = formatTimeStamp(formattedVal, typeFormat);
         break;
       case "secondTimestamp":
-        formattedVal = Math.floor(
-          formatTimeStamp(formattedVal, typeFormat) / 1000
-        );
+        if (!moment(formattedVal, "x", true).isValid()) {
+          formattedVal = Math.floor(
+            formatTimeStamp(formattedVal, typeFormat) / 1000
+          );
+        }
         break;
       case "microSecondTimestamp":
         formattedVal = moment.unix(moment(formattedVal).format("X"));
@@ -850,8 +857,22 @@ const handleMetadataForValue = (
           logger.debug("Boolean value missing, so dropping it");
         }
         break;
+      case "trim":
+        if (typeof formattedVal === "string") {
+          formattedVal = formattedVal.trim();
+        }
+        break;
       default:
         break;
+    }
+  }
+  if (type) {
+    if (Array.isArray(type)) {
+      type.forEach(eachType => {
+        formatValues(eachType);
+      });
+    } else {
+      formatValues(type);
     }
   }
 
@@ -1747,6 +1768,31 @@ const flattenMultilevelPayload = payload => {
   return flattenedPayload;
 };
 
+/**
+ * Gets the destintion's transform.js file used for transformation
+ * **Note**: The transform.js file is imported from
+ *  `v0/destinations/${dest}/transform`
+ * @param {*} _version -> version for the transfor
+ * @param {*} dest destination name
+ * @returns
+ *  The transform.js instance used for destination transformation
+ */
+const getDestHandler = dest => {
+  const destName = DestHandlerMap[dest] || dest;
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  return require(`../destinations/${destName}/transform`);
+};
+
+/**
+ * Obtain the authCache instance used to store the access token information to send/get information to/from destination
+ * @param {string} destType destination name
+ * @returns {Cache | undefined} The instance of "v0/util/cache.js"
+ */
+const getDestAuthCacheInstance = destType => {
+  const destInf = getDestHandler(destType);
+  return destInf?.authCache || {};
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1835,5 +1881,6 @@ module.exports = {
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
   handleRtTfSingleEventError,
-  getErrorStatusCode
+  getErrorStatusCode,
+  getDestAuthCacheInstance
 };

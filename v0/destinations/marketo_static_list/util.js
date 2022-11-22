@@ -16,23 +16,16 @@ const ErrorBuilder = require("../../util/error");
  * @returns array of Ids
  */
 const getIds = array => {
-  if (Array.isArray(array) && array.length > 0) {
+  if (Array.isArray(array)) {
     const leadIds = [];
-    array.forEach(object => {
-      leadIds.push(object?.id);
-    });
+    if (array.length > 0) {
+      array.forEach(object => {
+        leadIds.push(object?.id);
+      });
+    }
     return leadIds;
   }
-  throw new ErrorBuilder()
-    .setMessage(`Invalid leadIds format or no leadIds.`)
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-    })
-    .build();
+  return null;
 };
 
 /**
@@ -50,7 +43,7 @@ const validateMessageType = (message, allowedTypes) => {
         destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
       })
       .build();
   }
@@ -62,7 +55,7 @@ const validateMessageType = (message, allowedTypes) => {
         destType: DESTINATION,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
       })
       .build();
   }

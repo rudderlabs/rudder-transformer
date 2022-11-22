@@ -144,7 +144,7 @@
         "error": "track call is not supported.",
         "statTags": {
             "destType": "MARKETO",
-            "meta": "badParam",
+            "meta": "badEvent",
             "scope": "transformation",
             "stage": "transform"
         }

@@ -13,7 +13,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
-  TransformationError
+  TransformationError,
+  handleRtTfSingleEventError
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
@@ -72,33 +73,60 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
   return response;
 };
 
-const processEvent = (message, destination, token) => {
+const processEvent = (event, token) => {
+  const { message, destination } = event;
   const { Config } = destination;
   validateMessageType(message, ["audiencelist"]);
   const response = [];
+  let toAdd;
+  let toRemove;
   if (message.properties?.listData?.add) {
-    const payload = batchResponseBuilder(
-      message,
-      Config,
-      token,
-      getIds(message.properties.listData.add),
-      "add"
-    );
-    if (payload) {
-      response.push(...payload);
-    }
+    toAdd = getIds(message.properties.listData.add);
   }
   if (message.properties?.listData?.remove) {
-    const payload = batchResponseBuilder(
-      message,
-      Config,
-      token,
-      getIds(message.properties.listData.remove),
-      "remove"
-    );
-    if (payload) {
-      response.push(...payload);
+    toRemove = getIds(message.properties.listData.remove);
+  }
+  if (
+    (Array.isArray(toAdd) && toAdd.length > 0) ||
+    (Array.isArray(toRemove) && toRemove.length > 0)
+  ) {
+    if (Array.isArray(toAdd) && toAdd.length > 0) {
+      const payload = batchResponseBuilder(
+        message,
+        Config,
+        token,
+        toAdd,
+        "add"
+      );
+      if (payload) {
+        response.push(...payload);
+      }
     }
+    if (Array.isArray(toRemove) && toRemove.length > 0) {
+      const payload = batchResponseBuilder(
+        message,
+        Config,
+        token,
+        toRemove,
+        "remove"
+      );
+      if (payload) {
+        response.push(...payload);
+      }
+    }
+  } else {
+    throw new ErrorBuilder()
+      .setMessage(
+        `Invalid leadIds format or no leadIds found neither to add nor to remove.`
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
   return response;
 };
@@ -115,7 +143,7 @@ const process = async event => {
       DESTINATION
     );
   }
-  const response = processEvent(event.message, event.destination, token);
+  const response = processEvent(event, token);
   return response;
 };
 const processRouterDest = async inputs => {
@@ -124,7 +152,27 @@ const processRouterDest = async inputs => {
   let token;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
+    if (!token) {
+      const errResp = {
+        status: 400,
+        message: "Authorisation failed",
+        responseTransformFailure: true,
+        statTags: {
+          destType: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
+        }
+      };
+      const respEvents = getErrorRespEvents(
+        inputs.map(input => input.metadata),
+        errResp.status,
+        errResp.message,
+        errResp.statTags
+      );
+      return [respEvents];
+    }
   } catch (error) {
+    // Not using handleRtTfSingleEventError here as this is for multiple events
     logger.error("Router Transformation problem:");
     const errObj = generateErrorObject(
       error,
@@ -148,24 +196,12 @@ const processRouterDest = async inputs => {
     inputs.map(async input => {
       try {
         return getSuccessRespEvents(
-          processEvent(input.message, input.destination, token),
+          processEvent(input, token),
           [input.metadata],
           input.destination
         );
       } catch (error) {
-        logger.error("Router transformation Error for Marketo Static List:");
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        logger.error(errObj);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 500,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
+        return handleRtTfSingleEventError(input, error, DESTINATION);
       }
     })
   );

@@ -1,11 +1,10 @@
 /* eslint-disable gaurd-for-in */
 const cluster = require("cluster");
 const gracefulShutdown = require("http-graceful-shutdown");
-const numCPUs = require("os").cpus().length;
 const util = require("util");
 const logger = require("../logger");
 
-const numWorkers = process.env.NUM_PROCS || numCPUs;
+const numWorkers = process.env.NUM_PROCS || 1;
 
 function processInfo() {
   return {

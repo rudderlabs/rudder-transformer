@@ -12,7 +12,7 @@
   {
     "output": {
       "status": 500,
-      "message": "[Salesforce Response Handler] - Request failed  with status: 500 due to ",
+      "message": "Request Failed for Salesforce: 500 due to , Aborted.",
       "destinationResponse": 400,
       "statTags": {
         "destType": "SALESFORCE",

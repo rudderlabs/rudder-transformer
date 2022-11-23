@@ -26,12 +26,12 @@ const responseBuilder = (message, { Config }) => {
     // if the event is present in eventsList
     if (eventsList.includes(message.event)) {
       params = getParams(payload.params, advertiserId);
+    } else {
+      throw new CustomError(
+        "Event is not present in 'Events to Track' list. Aborting message.",
+        400
+      );
     }
-  } else {
-    throw new CustomError(
-      "Event is not present in 'Events to Track' list. Aborting message.",
-      400
-    );
   }
   const response = defaultRequestConfig();
   response.params = params;

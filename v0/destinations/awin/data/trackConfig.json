@@ -12,7 +12,7 @@
   {
     "destKey": "params.commissionGroup",
     "sourceKeys": [
-      "properties.commissionGroup ",
+      "properties.commissionGroup",
       "properties.commission_group"
     ],
     "required": false

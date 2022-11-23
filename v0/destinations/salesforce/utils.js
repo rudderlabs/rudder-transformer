@@ -15,8 +15,6 @@ const {
   DESTINATION
 } = require("./config");
 
-const DESTINATION_NAME = "salesforce";
-
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
 // Utility method to construct the header to be used for SFDC API calls
@@ -55,7 +53,7 @@ const getAccessToken = async destination => {
         },
         salesforceAxiosResponse.response,
         undefined,
-        DESTINATION_NAME
+        DESTINATION
       );
     }
     const token = salesforceAuthorisationData.response.data;
@@ -98,13 +96,14 @@ const processResponseHandler = (
         );
       }
     }
+    // check the error message
     let errorMessage = "";
     if (response && Array.isArray(response)) {
       errorMessage = response[0].message;
     }
 
     throw new ApiError(
-      `[Salesforce Response Handler] - Request failed  with status: ${status} due to ${errorMessage}`,
+      `Request Failed for ${DESTINATION}: ${status} due to ${errorMessage}, Aborted.`,
       status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,

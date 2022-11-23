@@ -1,0 +1,26 @@
+[
+  {
+    "output": {
+      "status": 204,
+      "message": "Request for destination: salesforce Processed Successfully",
+      "destinationResponse": {
+        "response": "",
+        "status": 204
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "[Salesforce Response Handler] - Request failed  with status: 500 due to ",
+      "destinationResponse": 400,
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorAt": "proxy",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "retryable"
+      }
+    }
+  }
+]

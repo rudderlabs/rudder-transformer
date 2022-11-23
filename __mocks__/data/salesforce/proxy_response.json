@@ -5,5 +5,13 @@
     },
     "status": 204,
     "statusText": "No Content"
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3": {
+    "response": [
+      {
+        "message": "Session expired or invalid",
+        "errorCode": "INVALID_SESSION_ID"
+      }
+    ]
   }
 }

@@ -1,4 +1,7 @@
-const { WorkflowEngineFactory } = require("rudder-workflow-engine");
+const {
+  WorkflowEngineFactory,
+  TemplateType
+} = require("rudder-workflow-engine");
 
 const {
   getErrorInfo,
@@ -12,11 +15,10 @@ async function getWorkflowEngineInternal(destName, flowType) {
   const destRootDir = getRootPathForDestination(destName);
   const workflowPath = await getWorkflowPath(destRootDir, flowType);
   const platformBindingsPaths = await getPlatformBindingsPaths();
-  return WorkflowEngineFactory.createFromFilePath(
-    workflowPath,
-    destRootDir,
-    platformBindingsPaths
-  );
+  return WorkflowEngineFactory.createFromFilePath(workflowPath, destRootDir, {
+    bindingsPaths: platformBindingsPaths,
+    templateType: TemplateType.JSONATA
+  });
 }
 
 const workflowEnginePromiseMap = new Map();

@@ -2,7 +2,7 @@
     {
         "output": {
             "status": 500,
-            "message": "Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Response Handling",
+            "message": "Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Static List Response Handling",
             "destinationResponse": {
                 "response": {
                     "requestId": "68d8#1846058ee27",
@@ -17,7 +17,7 @@
                 "status": 200
             },
             "statTags": {
-                "destType": "MARKETO",
+                "destType": "MARKETO STATIC LIST",
                 "stage": "responseTransform",
                 "scope": "api",
                 "meta": "retryable",

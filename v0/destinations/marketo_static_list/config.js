@@ -1,7 +1,5 @@
-const ACTIVITY_METRIC = "marketo_activity";
-const FETCH_TOKEN_METRIC = "marketo_fetch_token";
 const MAX_LEAD_IDS_SIZE = 300;
-const DESTINATION = "marketo";
+const DESTINATION = "Marketo Static List";
 
 const formatConfig = destination => {
   return {
@@ -11,8 +9,6 @@ const formatConfig = destination => {
 };
 
 module.exports = {
-  ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
   DESTINATION,
   formatConfig,
   MAX_LEAD_IDS_SIZE

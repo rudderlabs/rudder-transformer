@@ -1,5 +1,5 @@
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { marketoResponseHandler } = require("./util");
+const { marketoResponseHandler } = require("../marketo/util");
 const {
   proxyRequest,
   prepareProxyRequest
@@ -8,6 +8,7 @@ const v0Utils = require("../../util");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const { DESTINATION } = require("./config");
 
 // eslint-disable-next-line no-unused-vars
 const responseHandler = (destinationResponse, destType) => {
@@ -17,10 +18,11 @@ const responseHandler = (destinationResponse, destType) => {
   // check for marketo application level failures
   marketoResponseHandler(
     destinationResponse,
-    "during Marketo Response Handling",
+    "during Marketo Static List Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     destinationResponse?.rudderJobMetadata,
-    authCache
+    authCache,
+    DESTINATION
   );
   // else successfully return status, message and original destination response
   return {

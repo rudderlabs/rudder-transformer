@@ -10,11 +10,10 @@ const ErrorBuilder = require("../../util/error");
 const {
   getDestinationExternalID,
   defaultRequestConfig,
-  getSuccessRespEvents,
   getErrorRespEvents,
   generateErrorObject,
   TransformationError,
-  handleRtTfSingleEventError
+  simpleProcessRouterDest
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
@@ -73,7 +72,8 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
   return response;
 };
 
-const processEvent = (event, token) => {
+const processEvent = input => {
+  const { token, ...event } = input;
   const { message, destination } = event;
   const { Config } = destination;
   validateMessageType(message, ["audiencelist"]);
@@ -143,7 +143,7 @@ const process = async event => {
       DESTINATION
     );
   }
-  const response = processEvent(event, token);
+  const response = processEvent({ ...event, token });
   return response;
 };
 const processRouterDest = async inputs => {
@@ -192,18 +192,13 @@ const processRouterDest = async inputs => {
   // Checking previous status Code. Initially setting to false.
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        return getSuccessRespEvents(
-          processEvent(input, token),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, DESTINATION);
-      }
-    })
+  const tokenisedInputs = inputs.map(input => {
+    return { ...input, token };
+  });
+  const respList = await simpleProcessRouterDest(
+    tokenisedInputs,
+    DESTINATION,
+    processEvent
   );
   return respList;
 };

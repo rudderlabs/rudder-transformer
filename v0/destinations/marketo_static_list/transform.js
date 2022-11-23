@@ -73,8 +73,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
 };
 
 const processEvent = input => {
-  const { token, ...event } = input;
-  const { message, destination } = event;
+  const { token, message, destination } = input;
   const { Config } = destination;
   validateMessageType(message, ["audiencelist"]);
   const response = [];

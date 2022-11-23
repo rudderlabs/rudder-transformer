@@ -24,7 +24,7 @@ const validatePriority = priority => {
     priority === 0
   ) {
     throw new TransformationError(
-      "Invalid Priority. Value must be Integer and in range [1,4]",
+      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -43,7 +43,7 @@ const validatePhoneWithCountryCode = phone => {
   const regex = /^\+(?:[{0-9] ?){6,14}[0-9]$/;
   if (!regex.test(phone)) {
     throw new TransformationError(
-      "Invalid Phone Number",
+      "The provided phone number is invalid",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -62,7 +62,7 @@ const validateEmail = email => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!regex.test(email)) {
     throw new TransformationError(
-      "Invalid Email",
+      "The provided email is invalid",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -81,7 +81,7 @@ const validateUrl = url => {
   const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   if (!regex.test(url)) {
     throw new TransformationError(
-      "Invalid URL",
+      "The provided url is invalid",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -101,7 +101,7 @@ const validateLocation = location => {
   const lng = location?.lng;
   if (lat && !(lat >= -90 && lat <= 90)) {
     throw new TransformationError(
-      "Invalid Latitude. Latitude must be in range [-90, 90]",
+      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -112,7 +112,7 @@ const validateLocation = location => {
   }
   if (lng && !(lng >= -180 && lng <= 180)) {
     throw new TransformationError(
-      "Invalid Longitude. Longitude must be in range [-180, 180]",
+      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -132,7 +132,7 @@ const validateRating = (customField, rating) => {
   const count = customField?.type_config?.count;
   if (rating && !(rating >= 0 && rating <= count)) {
     throw new TransformationError(
-      `Invalid Rating. Value must be in range [0,${count}]`,
+      `Invalid value specified for rating. Value must be in range "[0,${count}]"`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -269,9 +269,9 @@ const retrieveCustomFields = async (listId, apiToken) => {
 
   if (processedCustomFieldsResponse.status !== 200) {
     throw new ApiError(
-      `Unable to retrieve available custom fields due to ${JSON.stringify(
+      `Failed to fetch available custom fields due to "${JSON.stringify(
         processedCustomFieldsResponse.response
-      )}`,
+      )}"`,
       processedCustomFieldsResponse.status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -391,7 +391,7 @@ const checkEventIfUIMapped = (message, destination) => {
     );
     if (!allowEvent) {
       throw new TransformationError(
-        "Event Discarded. To allow this event, add this in Allowlist",
+        "The event was discarded as it was not allow listed in the destination configuration",
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,

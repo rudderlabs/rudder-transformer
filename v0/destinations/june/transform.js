@@ -27,7 +27,7 @@ const responseBuilder = (payload, endpoint, destination) => {
   }
   // fail-safety for developer error
   throw new TransformationError(
-    "Payload could not be constructed",
+    "Something went wrong while constructing the payload",
     400,
     {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -78,12 +78,13 @@ const groupResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new TransformationError(
-      "Message Type is not present. Aborting message.",
+      "Event type is required",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      }
+      },
+      DESTINATION
     );
   }
 
@@ -101,12 +102,13 @@ const processEvent = (message, destination) => {
       break;
     default:
       throw new TransformationError(
-        `Message type ${messageType} not supported.`,
+        `Event type "${messageType}" is not supported`,
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
         },
         DESTINATION
       );

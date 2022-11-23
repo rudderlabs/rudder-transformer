@@ -17,7 +17,7 @@ const validatePayload = message => {
   const email = getFieldValueFromMessage(message, "email");
   if (!userId && !email) {
     throw new TransformationError(
-      "at least one param userId or email is required",
+      "At least one of `userId` or `email` is required",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,

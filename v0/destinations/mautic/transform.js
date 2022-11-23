@@ -39,7 +39,7 @@ const responseBuilder = async (
   const { userName, password } = Config;
   if (messageType === EventType.IDENTIFY && !payload) {
     throw new TransformationError(
-      "Payload could not be constructed",
+      "Something went wrong while constructing the payload",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -87,7 +87,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
       break;
     default:
       throw new TransformationError(
-        "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns.",
+        `Grouping type "${message.traits?.type?.toLowerCase()}" is not supported. Only "Segments", "Companies", and "Campaigns" are supported`,
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -102,7 +102,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     const contacts = await searchContactIds(message, Config, endPoint);
     if (!contacts || contacts.length === 0) {
       throw new TransformationError(
-        "Could not find any contact Id for the given lookup Field or email.",
+        "Could not find any contact ID on lookup",
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -115,7 +115,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     }
     if (contacts.length > 1) {
       throw new TransformationError(
-        "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue.",
+        "Found more than one contact on lookup",
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -138,7 +138,7 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     message.traits.operation !== "add"
   ) {
     throw new TransformationError(
-      `${message.traits.operation} is invalid for Operation field. Available are add or remove.`,
+      `Invalid value specified for operation "${message.traits.operation}". Only "add" and "remove" are supported`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -210,21 +210,35 @@ const process = async event => {
   const { password, subDomainName, userName } = destination.Config;
   const endpoint = `${BASE_URL.replace("subDomainName", subDomainName)}`;
   if (!password) {
-    throw new TransformationError("Password field can not be empty.", 400);
+    throw new TransformationError(
+      "Invalid password value specified in the destination configuration",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      }
+    );
   }
   if (!subDomainName) {
     throw new TransformationError(
-      "Sub-Domain Name field can not be empty.",
-      400
+      "Invalid sub-domain value specified in the destination configuration",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      }
     );
   }
   if (!validateEmail(userName)) {
     throw new TransformationError(
-      "User Name is not Valid.",
+      "Invalid user name provided in the destination configuration",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
       },
       DESTINATION
     );
@@ -233,7 +247,7 @@ const process = async event => {
   // Validating if message type is even given or not
   if (!message.type) {
     throw new TransformationError(
-      "Message Type is not present. Aborting message.",
+      "Event type is required",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -261,12 +275,13 @@ const process = async event => {
       break;
     default:
       throw new TransformationError(
-        `Message type ${messageType} not supported.`,
+        `Event type "${messageType}" is not supported`,
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
         },
         DESTINATION
       );

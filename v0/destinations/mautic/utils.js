@@ -120,7 +120,7 @@ const deduceStateField = payload => {
 const validatePayload = payload => {
   if (payload.phone && !validatePhone(payload.phone)) {
     throw new TransformationError(
-      "Invalid Phone No. Provided.",
+      "The provided phone number is invalid",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -132,7 +132,7 @@ const validatePayload = payload => {
 
   if (payload.email && !validateEmail(payload.email)) {
     throw new TransformationError(
-      "Invalid Email Provided.",
+      "The provided email is invalid",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -152,7 +152,7 @@ const validateGroupCall = message => {
   const type = getFieldValueFromMessage(message, "traits")?.type;
   if (!type) {
     throw new TransformationError(
-      "Type of group not mentioned inside traits",
+      "`type` is missing in the traits",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -163,7 +163,7 @@ const validateGroupCall = message => {
   }
   if (!message?.groupId) {
     throw new TransformationError(
-      "Group Id is not provided.",
+      "`groupId` is missing in the event",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -188,7 +188,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
     throw new TransformationError(
-      "Invalid traits value for lookup field",
+      "Traits are missing in the event",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -199,11 +199,12 @@ const searchContactIds = async (message, Config, baseUrl) => {
   }
   if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
     throw new TransformationError(
-      "lookup Field is not supported",
+      `Lookup field "${lookUpField}" specified in the destination configuration is not supported`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
       },
       DESTINATION
     );
@@ -226,9 +227,9 @@ const searchContactIds = async (message, Config, baseUrl) => {
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
     throw new ApiError(
-      `Failed to get Mautic contacts: ${JSON.stringify(
+      `Failed to fetch contacts: "${JSON.stringify(
         searchContactsResponse.response
-      )}`,
+      )}"`,
       searchContactsResponse.status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,

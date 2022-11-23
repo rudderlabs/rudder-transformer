@@ -55,6 +55,7 @@ const proxyTestModeEnabled =
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === "true"
   : false;
+const NS_PER_SEC = 1e9;
 
 const router = new Router();
 
@@ -110,9 +111,7 @@ function getCommonMetadata(ctx) {
 async function getCdkV2Result(destName, event, flowType) {
   const cdkResult = {};
   try {
-    cdkResult.output = JSON.parse(
-      JSON.stringify(await processCdkV2Workflow(destName, event, flowType))
-    );
+    cdkResult.output = await processCdkV2Workflow(destName, event, flowType);
   } catch (error) {
     cdkResult.error = {
       message: error.message,
@@ -122,7 +121,7 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
-async function compareWithCdkV2(destType, input, flowType, v0Result) {
+async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
     let destThreshold = getCdkV2TestThreshold(input);
@@ -137,7 +136,18 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
     ) {
       return;
     }
+    const startTime = process.hrtime();
     const cdkResult = await getCdkV2Result(destType, input, flowType);
+    const diff = process.hrtime(startTime);
+    const cdkTime = diff[0] * NS_PER_SEC + diff[1];
+    stats.gauge("v0_transformation_time", v0Time, {
+      destType,
+      flowType
+    });
+    stats.gauge("cdk_transformation_time", cdkTime, {
+      destType,
+      flowType
+    });
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
@@ -164,21 +174,28 @@ async function compareWithCdkV2(destType, input, flowType, v0Result) {
 }
 
 async function handleV0Destination(destHandler, destType, input, flowType) {
-  const result = {};
+  const v0Result = {};
+  let v0Time = 0;
   try {
-    result.output = await destHandler(input);
-    return result.output;
+    const startTime = process.hrtime();
+    v0Result.output = await destHandler(input);
+    const diff = process.hrtime(startTime);
+    v0Time = diff[0] * NS_PER_SEC + diff[1];
+    // Comparison is happening in async and after return from here
+    // this object is getting modified so comparison was failing to
+    // avoid that we are cloning it.
+    return _.cloneDeep(v0Result.output);
   } catch (error) {
-    result.error = {
+    v0Result.error = {
       message: error.message,
       statusCode: getErrorStatusCode(error)
     };
     throw error;
   } finally {
     if (process.env.NODE_ENV === "test") {
-      await compareWithCdkV2(destType, input, flowType, result);
+      await compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
     } else {
-      compareWithCdkV2(destType, input, flowType, result);
+      compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
     }
   }
 }

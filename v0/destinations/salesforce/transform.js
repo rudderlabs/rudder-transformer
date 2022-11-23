@@ -404,13 +404,13 @@ const processRouterDest = async inputs => {
  * @param {*} output
  * @returns {*} metadata
  */
-function processMetadataForRouter(output) {
+const processMetadataForRouter = output => {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach(metadataElement => {
     metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;
-}
+};
 
 module.exports = { process, processRouterDest, processMetadataForRouter };

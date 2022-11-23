@@ -64,7 +64,7 @@ const getAccessToken = async destination => {
   });
 };
 
-const processResponseHandler = (
+const salesforceResponseHandler = (
   destResponse,
   sourceMessage,
   stage,
@@ -114,33 +114,6 @@ const processResponseHandler = (
       DESTINATION
     );
   }
-  if (isHttpStatusSuccess(status)) {
-    // checking for invalid/expired token errors and evicting cache in that case
-    // rudderJobMetadata contains some destination info which is being used to evict the cache
-    if (
-      response &&
-      Array.isArray(response) &&
-      response[0].errorCode === "INVALID_SESSION_ID" &&
-      authKey &&
-      ACCESS_TOKEN_CACHE
-    ) {
-      logger.info(
-        `[Salesforce] Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`
-      );
-      ACCESS_TOKEN_CACHE.del(authKey);
-      throw new ApiError(
-        `Request Failed for Salesforce, (Retryable).${sourceMessage}`,
-        500,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-        },
-        sourceMessage,
-        undefined,
-        DESTINATION
-      );
-    }
-  }
 };
 
-module.exports = { getAccessToken, processResponseHandler };
+module.exports = { getAccessToken, salesforceResponseHandler };

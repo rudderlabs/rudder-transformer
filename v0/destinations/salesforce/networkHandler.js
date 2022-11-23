@@ -6,13 +6,13 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { processResponseHandler } = require("./utils");
+const { salesforceResponseHandler } = require("./utils");
 
 const responseHandler = (destinationResponse, destType) => {
   const { status } = destinationResponse;
   const message = `Request for destination: ${destType} Processed Successfully`;
 
-  processResponseHandler(
+  salesforceResponseHandler(
     destinationResponse,
     "during Salesforce Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,

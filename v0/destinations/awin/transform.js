@@ -1,6 +1,7 @@
-const { BASE_URL } = require("./config");
+const { BASE_URL, ConfigCategory, mappingConfig } = require("./config");
 const {
   defaultRequestConfig,
+  constructPayload,
   CustomError,
   simpleProcessRouterDest
 } = require("../../util");
@@ -10,16 +11,22 @@ const { getParams } = require("./utils");
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack } = Config;
 
-  const eventsList = [];
+  const payload = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.TRACK.name]
+  );
 
-  eventsToTrack.forEach(object => {
-    eventsList.push(object.eventName);
-  });
+  let params = {};
+  if (Array.isArray(eventsToTrack)) {
+    const eventsList = [];
+    eventsToTrack.forEach(object => {
+      eventsList.push(object.eventName);
+    });
 
-  let params;
-  // if the event is present in eventsList
-  if (eventsList.includes(message.event)) {
-    params = getParams(message, advertiserId);
+    // if the event is present in eventsList
+    if (eventsList.includes(message.event)) {
+      params = getParams(payload.params, advertiserId);
+    }
   } else {
     throw new CustomError(
       "Event is not present in 'Events to Track' list. Aborting message.",

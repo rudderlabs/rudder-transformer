@@ -92,7 +92,8 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
         },
         DESTINATION
       );
@@ -142,7 +143,9 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+            .INSTRUMENTATION
       },
       DESTINATION
     );

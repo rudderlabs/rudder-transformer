@@ -1,0 +1,97 @@
+[
+  {
+    "destKey": "floodlightConfigurationId",
+    "sourceKeys": "properties.floodlightConfigurationId",
+    "required": true
+  },
+  {
+    "destKey": "ordinal",
+    "sourceKeys": "properties.ordinal",
+    "required": true
+  },
+  {
+    "destKey": "timestampMicros",
+    "sourceKeys": "originalTimestamp",
+    "required": true,
+    "metadata": {
+      "type": "microSecondTimestamp"
+    }
+  },
+  {
+    "destKey": "floodlightActivityId",
+    "sourceKeys": "properties.floodlightActivityId",
+    "required": true
+  },
+  {
+    "destKey": "customVariables",
+    "sourceKeys": "properties.customVariables",
+    "required": false
+  },
+  {
+    "destKey": "mobileDeviceId",
+    "sourceKeys": "properties.mobileDeviceId",
+    "required": false
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": "properties.quantity",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.value",
+      "properties.total",
+      "properties.revenue"
+    ],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "encryptedUserIdCandidates",
+    "sourceKeys": "properties.encryptedUserIdCandidates",
+    "required": false
+  },
+  {
+    "destKey": "gclid",
+    "sourceKeys": "properties.gclid",
+    "required": false
+  },
+  {
+    "destKey": "matchId",
+    "sourceKeys": "properties.matchId",
+    "required": false
+  },
+  {
+    "destKey": "dclid",
+    "sourceKeys": "properties.dclid",
+    "required": false
+  },
+  {
+    "destKey": "impressionId",
+    "sourceKeys": "properties.impressionId",
+    "required": false
+  },
+  {
+    "destKey": "limitAdTracking",
+    "sourceKeys": "properties.limitAdTracking",
+    "required": false
+  },
+  {
+    "destKey": "treatmentForUnderage",
+    "sourceKeys": "properties.treatmentForUnderage",
+    "required": false
+  },
+  {
+    "destKey": "childDirectedTreatment",
+    "sourceKeys": "properties.childDirectedTreatment",
+    "required": false
+  },
+  {
+    "destKey": "nonPersonalizedAd",
+    "sourceKeys": "properties.nonPersonalizedAd",
+    "required": false
+  }
+]

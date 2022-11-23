@@ -83,6 +83,9 @@ const responseBuilderSimple = (message, category, destination) => {
     // fail-safety for developer error
     throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
   }
+  if(!payload.timestamp && isDefinedAndNotNull(payload.properties['$timestamp'])) {
+    payload.timestamp = payload.properties['$timestamp']
+  }
 
   payload.properties = {
     ...generatePropertyDefination(message),

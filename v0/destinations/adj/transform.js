@@ -21,7 +21,7 @@ function responseBuilderSimple(message, category, destination) {
   const { appToken, customMappings, environment } = destination.Config;
   const platform = get(message, "context.device.type");
   const id = get(message, "context.device.id");
-  if (!(typeof platform === "string") || !id) {
+  if (typeof platform !== "string" || !platform || !id) {
     throw new CustomError("Device type/id  not present", 400);
   }
   if (platform.toLowerCase() === "android") {
@@ -139,12 +139,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error?.response?.status || error?.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

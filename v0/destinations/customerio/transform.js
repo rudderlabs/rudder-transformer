@@ -245,8 +245,8 @@ function responseBuilder(message, evType, evName, destination, messageType) {
         )} Screen`;
       } else {
         if (!evName) {
-          logger.error(`could not determine eventName`);
-          throw new CustomError(`could not determine eventName`, 400);
+          logger.error(`Could not determine event name`);
+          throw new CustomError(`Could not determine event name`, 400);
         }
         trimmedEvName = truncate(evName, 100);
       }

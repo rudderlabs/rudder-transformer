@@ -1,35 +1,137 @@
+const get = require("get-value");
 const logger = require("../../../logger");
 const {
-  CustomError,
+  isEmpty,
   isObject,
   isEmptyObject,
+  getHashFromArray,
+  constructPayload,
+  isHttpStatusSuccess,
+  getValueFromMessage,
+  defaultPutRequestConfig,
+  getFieldValueFromMessage,
+  getDestinationExternalID,
   removeUndefinedAndNullValues,
-  removeUndefinedAndNullAndEmptyValues,
-  isEmpty
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
+const Cache = require("../../util/cache");
+const ErrorBuilder = require("../../util/error");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { httpGET } = require("../../../adapters/network");
+const { AUTH_CACHE_TTL, TRANSFORMER_METRIC } = require("../../util/constant");
+const { MAPPING_CONFIG, CONFIG_CATEGORIES, DESTINATION } = require("./config");
+
+const customFieldsCache = new Cache(AUTH_CACHE_TTL);
 
 const isValidBase64 = content => {
   const re = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
   return re.test(String(content));
 };
 
+const isValidEvent = (Config, event) => {
+  let flag = false;
+  Config.eventNamesSettings.some(eventName => {
+    if (
+      eventName.event &&
+      eventName.event.trim().length !== 0 &&
+      eventName.event.trim().toLowerCase() === event
+    ) {
+      flag = true;
+      return true;
+    }
+  });
+  return flag;
+};
+
+/**
+ * Validation for track call
+ * @param {*} message
+ * @returns
+ */
+const validateTrackPayload = (message, Config) => {
+  let event = getValueFromMessage(message, "event");
+  if (!event) {
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Event is required for track call")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+  event = event.trim().toLowerCase();
+  if (!isValidEvent(Config, event)) {
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Event not configured on dashboard")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+};
+
 const requiredFieldValidator = payload => {
   if (!payload.template_id) {
     if (!payload.content || (payload.content && isEmpty(payload.content))) {
-      throw new CustomError("Either template id or content is required.", 400);
+      throw new ErrorBuilder()
+        .setMessage("[SendGrid] :: Either template id or content is required")
+        .setStatus(400)
+        .setStatTags({
+          destType: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
     }
   }
   if (!payload.personalizations || isEmpty(payload.personalizations)) {
-    throw new CustomError(
-      "personalizations field cannot be missing or empty",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage(
+        "[SendGrid] :: Personalizations field cannot be missing or empty"
+      )
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   if (!payload.from) {
-    throw new CustomError("from is required field", 400);
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: From is required field")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
   if (payload.from && !payload.from.email) {
-    throw new CustomError("email inside from object is required", 400);
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Email inside from object is required")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   }
 };
 
@@ -96,21 +198,6 @@ const payloadValidator = payload => {
     delete updatedPayload.asm;
   }
   return updatedPayload;
-};
-
-const isValidEvent = (Config, event) => {
-  let flag = false;
-  Config.eventNamesSettings.some(eventName => {
-    if (
-      eventName.event &&
-      eventName.event.trim().length !== 0 &&
-      eventName.event.trim().toLowerCase() === event
-    ) {
-      flag = true;
-      return true;
-    }
-  });
-  return flag;
 };
 
 const createList = Config => {
@@ -361,12 +448,184 @@ const generatePayloadFromConfig = (payload, Config) => {
   return updatedPayload;
 };
 
+/**
+ * Validation for an identify call
+ * @param {*} message
+ * @returns
+ */
+const validateIdentifyPayload = message => {
+  const email = getFieldValueFromMessage(message, "email");
+  if (!email) {
+    throw new ErrorBuilder()
+      .setMessage("[SendGrid] :: Parameter mail is required")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
+  }
+};
+
+/**
+ * Returns address in string format
+ * @param {*} address
+ * @returns
+ */
+const flattenAddress = address => {
+  const addressType = typeof address;
+  let companyAddress = "";
+  if (addressType === "object") {
+    const keys = Object.keys(address);
+    keys.forEach(key => {
+      companyAddress += `${address[key]} `;
+    });
+  } else {
+    companyAddress = address;
+  }
+  return companyAddress.trim();
+};
+
+/**
+ * Returns contactListIds in string format
+ * contactListIds : it's a string created from an array
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
+const getContactListIds = (message, destination) => {
+  const { Config } = destination;
+  const contactListIds = [];
+  const listIds = getDestinationExternalID(message, "listIds");
+
+  if (Config.listId) {
+    contactListIds.push(Config.listId);
+  }
+
+  if (listIds && typeof listIds === "string") {
+    contactListIds.push(listIds);
+  }
+
+  if (listIds && Array.isArray(listIds)) {
+    contactListIds.push(...listIds);
+  }
+  return contactListIds.sort().toString();
+};
+
+/**
+ * Returns the list of custom_fields
+ * @param {*} destination
+ * @returns
+ */
+const fetchCustomFields = async destination => {
+  const { apiKey } = destination.Config;
+  return customFieldsCache.get(destination.ID, async () => {
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      }
+    };
+    const endpoint = "https://api.sendgrid.com/v3/marketing/field_definitions";
+
+    const resonse = await httpGET(endpoint, requestOptions);
+    const processedResponse = processAxiosResponse(resonse);
+    if (isHttpStatusSuccess(processedResponse.status)) {
+      const { custom_fields: customFields } = processedResponse.response;
+      return customFields;
+    }
+
+    const { message } = processedResponse.response.errors[0];
+    throw new ErrorBuilder()
+      .setMessage(message)
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
+  });
+};
+
+/**
+ * Returns customField object
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} contactDetails
+ * @returns
+ */
+const getCustomFields = async (message, destination) => {
+  const customFields = {};
+  const payload = get(message, "context.traits");
+  const { customFieldsMapping } = destination.Config;
+  const fieldsMapping = getHashFromArray(
+    customFieldsMapping,
+    "from",
+    "to",
+    false
+  );
+  const fields = Object.keys(fieldsMapping);
+  if (fields.length > 0) {
+    const destinationCustomFields = await fetchCustomFields(destination);
+    const customFieldNameToIdMapping = {};
+    const customFieldNamesArray = destinationCustomFields.map(
+      destinationCustomField => {
+        const { id, name } = destinationCustomField;
+        customFieldNameToIdMapping[name] = id;
+        return name;
+      }
+    );
+
+    fields.forEach(field => {
+      if (payload[field]) {
+        const customFieldName = fieldsMapping[field];
+        if (customFieldNamesArray.includes(customFieldName)) {
+          const customFieldId = customFieldNameToIdMapping[customFieldName];
+          customFields[customFieldId] = payload[field];
+        }
+      }
+    });
+  }
+  return customFields;
+};
+
+/**
+ * Returns Create Or Update Contact Payload
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
+const createOrUpdateContactPayloadBuilder = async (message, destination) => {
+  const contactDetails = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+  );
+  if (contactDetails.address_line_1) {
+    contactDetails.address_line_1 = flattenAddress(
+      contactDetails.address_line_1
+    );
+  }
+  const contactListIds = getContactListIds(message, destination);
+  contactDetails.custom_fields = await getCustomFields(message, destination);
+  const payload = { contactDetails, contactListIds };
+  const { endpoint } = CONFIG_CATEGORIES.IDENTIFY;
+  const method = defaultPutRequestConfig.requestMethod;
+  return { payload, method, endpoint };
+};
+
 module.exports = {
-  payloadValidator,
-  isValidEvent,
   createList,
+  isValidEvent,
+  payloadValidator,
   createMailSettings,
   createTrackSettings,
+  validateTrackPayload,
+  requiredFieldValidator,
+  validateIdentifyPayload,
   generatePayloadFromConfig,
-  requiredFieldValidator
+  createOrUpdateContactPayloadBuilder
 };

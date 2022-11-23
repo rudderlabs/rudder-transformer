@@ -24,7 +24,8 @@ const {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
   eventNameMapping,
-  MAX_BATCH_SIZE
+  MAX_BATCH_SIZE,
+  PARTNER_NAME
 } = require("./config");
 
 function checkIfValidPhoneNumber(str) {
@@ -99,8 +100,11 @@ const getTrackResponse = (message, Config, event) => {
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = TRACK_ENDPOINT;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-
+  // add partner name
+  response.body.JSON = removeUndefinedAndNullValues({
+    ...payload,
+    partner_name: PARTNER_NAME
+  });
   return response;
 };
 
@@ -187,6 +191,8 @@ function batchEvents(eventsChunk) {
     chunk.forEach(ev => {
       // Pixel code must be added above "batch": [..]
       delete ev.message.body.JSON.pixel_code;
+      // Partner name must be added above "batch": [..]
+      delete ev.message.body.JSON.partner_name;
       ev.message.body.JSON.type = "track";
       batchResponseList.push(ev.message.body.JSON);
       metadata.push(ev.metadata);
@@ -194,6 +200,7 @@ function batchEvents(eventsChunk) {
 
     batchEventResponse.batchedRequest.body.JSON = {
       pixel_code: pixelCode,
+      partner_name: PARTNER_NAME,
       batch: batchResponseList
     };
 

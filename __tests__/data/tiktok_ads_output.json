@@ -13,6 +13,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "CompletePayment",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -72,6 +73,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "InitiateCheckout",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -131,6 +133,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "AddToWishlist",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -198,6 +201,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "AddToWishlist",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -258,6 +262,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "AddToWishlist",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -327,6 +332,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "AddPaymentInfo",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -404,6 +410,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "AddPaymentInfo",
           "event_id": "1616318632825_357",
           "context": {
@@ -462,6 +469,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "SubmitForm",
           "event_id": "16163186328257",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -521,6 +529,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "SubmitForm",
           "event_id": "16163186328257",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -562,6 +571,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "Contact",
           "event_id": "16163186328257",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -630,6 +640,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "CompletePayment",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -689,6 +700,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "PlaceAnOrder",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -748,6 +760,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "Subscribe",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -808,6 +821,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "Subscribe",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -868,6 +882,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "CompletePayment",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -927,6 +942,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "download",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -984,6 +1000,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "search",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -1052,6 +1069,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "download",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -1111,6 +1129,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "download",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",
@@ -1170,6 +1189,7 @@
       "body": {
         "JSON": {
           "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "partner_name": "RudderStack",
           "event": "download",
           "event_id": "1616318632825_357",
           "timestamp": "2020-09-17T19:49:27Z",

@@ -85,6 +85,22 @@ const DestCanonicalNames = {
     "SNAPCHAT CUSTOM AUDIENCE",
     "SNAPCHAT_CUSTOM_AUDIENCE",
     "SNAPCHATCUSTOMAUDIENCE"
+  ],
+  CAMPAIGN_MANAGER: [
+    "campaign manager",
+    "campain Manager",
+    "CAMPAIGN MANAGER",
+    "campaignManager",
+    "campaign_manager",
+    "CAMPAIGN_MANAGER"
+  ],
+  gainsight_px: [
+    "GAINSIGHT_PX",
+    "GAINSIGHTPX",
+    "gainsightPx",
+    "Gainsight PX",
+    "gainsight px",
+    "Gainsight Px"
   ]
 };
 

@@ -1228,12 +1228,26 @@ const handleDeletionOfUsers = async ctx => {
     return {};
   };
 
+  const getRudderDestInfo = () => {
+    try {
+      const rudderDestInfoHeader = ctx.get("x-rudder-dest-info");
+      const destInfoHeader = JSON.parse(rudderDestInfoHeader);
+      if (!Array.isArray(destInfoHeader)) {
+        return destInfoHeader;
+      }
+    } catch (error) {
+      logger.error(`Error while getting rudderDestInfo header value: ${error}`);
+    }
+    return {};
+  };
+
   const { body } = ctx.request;
   const respList = [];
+  const rudderDestInfo = getRudderDestInfo();
   let response;
   await Promise.all(
-    body.map(async b => {
-      const { destType } = b;
+    body.map(async reqBody => {
+      const { destType } = reqBody;
       const destUserDeletionHandler = getDeletionUserHandler(
         "v0",
         destType.toLowerCase()
@@ -1248,18 +1262,29 @@ const handleDeletionOfUsers = async ctx => {
       }
 
       try {
-        response = await destUserDeletionHandler.processDeleteUsers(b);
+        response = await destUserDeletionHandler.processDeleteUsers({
+          ...reqBody,
+          rudderDestInfo
+        });
         if (response) {
           respList.push(response);
         }
       } catch (error) {
         // adding the status to the request
-        ctx.status = error.response ? error.response.status : 400;
+        const errorStatus = getErrorStatusCode(error);
+        ctx.status = errorStatus;
         const resp = {
-          statusCode: error.response ? error.response.status : 400,
+          statusCode: errorStatus,
           error: error.message || "Error occurred while processing"
         };
+        // Support for OAuth refresh
+        if (error.authErrorCategory) {
+          resp.authErrorCategory = error.authErrorCategory;
+        }
         respList.push(resp);
+        logger.error(
+          `Error Response List: ${JSON.stringify(respList, null, 2)}`
+        );
         errNotificationClient.notify(error, "User Deletion", {
           ...resp,
           ...getCommonMetadata(ctx),

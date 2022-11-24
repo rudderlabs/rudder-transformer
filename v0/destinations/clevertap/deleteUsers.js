@@ -6,6 +6,7 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -15,12 +16,6 @@ const { isHttpStatusSuccess } = require("../../util");
  */
 const userDeletionHandler = async (userAttributes, config) => {
   const { accountId, passcode } = config;
-  if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("userAttributes is not an array")
-      .setStatus(400)
-      .build();
-  }
 
   if (!accountId || !passcode) {
     throw new ErrorBuilder()
@@ -73,6 +68,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
 const processDeleteUsers = event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);
   return resp;
 };

@@ -795,12 +795,7 @@ if (transformerTestModeEnabled) {
       ctx.body = res;
     } catch (error) {
       ctx.status = 400;
-
-      let errorString = error.message;
-      if (error.response && error.response.data && error.response.data.error) {
-        errorString = error.response.data.error;
-      }
-
+      const errorString = error.response?.data?.error || error.message;
       ctx.body = { error: errorString };
     }
   });
@@ -841,6 +836,9 @@ if (transformerTestModeEnabled) {
       );
       if (!trRevCode.versionId) {
         trRevCode.versionId = "testVersionId";
+      }
+      if (!trRevCode.workspaceId) {
+        trRevCode.workspaceId = "workspaceId";
       }
       const res = await setupUserTransformHandler(
         trRevCode,

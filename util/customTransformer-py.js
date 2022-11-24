@@ -8,25 +8,20 @@ const {
   runOpenFaasUserTransform
 } = require("./customTransformer-faas");
 
-const DEFAULT_PYTHON_TRANSFORMATION_HANDLER_TYPE = "openfaas";
+const OPENFAAS = "openfaas";
+const handler = process.env.PYTHON_TRANSFORMATION_HANDLER || OPENFAAS;
 
-// add identifier in constructor to route to set & run functions in future
 const pyUserTransformHandler = () => {
-  const handlerType =
-    process.env.PYTHON_TRANSFORMATION_HANDLER_TYPE ||
-    DEFAULT_PYTHON_TRANSFORMATION_HANDLER_TYPE;
-
   const transformHandler = {
     setUserTransform: async (userTransformation, testWithPublish) => {
-      if (handlerType === "openfaas") {
-        if (!testWithPublish) return { success: true };
+      if (handler === OPENFAAS) {
         return setOpenFaasUserTransform(userTransformation, testWithPublish);
       }
-
       return setLambdaUserTransform(userTransformation, testWithPublish);
     },
+
     runUserTransfrom: async (events, userTransformation, testMode) => {
-      if (handlerType === "openfaas") {
+      if (handler === OPENFAAS) {
         return runOpenFaasUserTransform(events, userTransformation, testMode);
       }
       return runLambdaUserTransform(events, userTransformation, testMode);

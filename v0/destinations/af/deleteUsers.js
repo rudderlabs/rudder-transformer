@@ -3,6 +3,7 @@
 const { httpPOST } = require("../../../adapters/network");
 const { generateUUID } = require("../../util");
 const ErrorBuilder = require("../../util/error");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function is making the ultimate call to delete the user
@@ -28,12 +29,6 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
-  if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("userAttributes is not an array")
-      .setStatus(400)
-      .build();
-  }
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
     throw new ErrorBuilder()
       .setMessage(
@@ -151,6 +146,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
 const processDeleteUsers = event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);
   return resp;
 };

@@ -6,6 +6,7 @@ const {
 const ErrorBuilder = require("../../util/error");
 const { isHttpStatusSuccess } = require("../../util");
 const { MAX_BATCH_SIZE } = require("./config");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -14,12 +15,6 @@ const { MAX_BATCH_SIZE } = require("./config");
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
-  if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("userAttributes is not an array")
-      .setStatus(400)
-      .build();
-  }
   if (!config?.token) {
     throw new ErrorBuilder()
       .setMessage("API Token is a required field for user deletion")
@@ -71,6 +66,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
 const processDeleteUsers = event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);
   return resp;
 };

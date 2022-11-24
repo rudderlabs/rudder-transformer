@@ -21,8 +21,8 @@ const processEvent = event => {
 
 const process = event => {
   const response = processEvent(event);
-  const returnValue = refinePayload(response);
-  return returnValue;
+  const refinedResponse = refinePayload(response);
+  return refinedResponse;
 };
 
 exports.process = process;

@@ -187,5 +187,7 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   nameToEventMap,
-  DESTINATION
+  DESTINATION,
+  GA_USER_DELETION_ENDPOINT:
+    "https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert"
 };

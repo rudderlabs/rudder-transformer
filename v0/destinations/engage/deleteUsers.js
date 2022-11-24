@@ -1,5 +1,6 @@
 const { httpDELETE } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -9,12 +10,6 @@ const ErrorBuilder = require("../../util/error");
  */
 // Engage Doc Ref: https://engage.so/docs/api/users
 const userDeletionHandler = async (userAttributes, config) => {
-  if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("userAttributes is not an array")
-      .setStatus(400)
-      .build();
-  }
   const { publicKey, privateKey } = config;
   if (!publicKey) {
     throw new ErrorBuilder()
@@ -59,6 +54,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
 const processDeleteUsers = event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);
   return resp;
 };

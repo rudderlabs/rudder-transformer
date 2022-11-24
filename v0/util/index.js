@@ -1813,7 +1813,6 @@ const refinePayload = obj => {
       }
     } else if (
       typeof obj[ele] === "boolean" ||
-      // eslint-disable-next-line no-restricted-globals
       typeof obj[ele] === "number" ||
       isDefinedAndNotNullAndNotEmpty(obj[ele])
     ) {

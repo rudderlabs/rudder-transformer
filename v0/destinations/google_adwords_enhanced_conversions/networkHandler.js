@@ -4,7 +4,6 @@ const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const ErrorBuilder = require("../../util/error");
 const {
-  DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require("./config.js");
@@ -29,8 +28,6 @@ const getAuthErrCategory = (code, response) => {
     case 401:
       if (!get(response, "error.details")) return REFRESH_TOKEN;
       return "";
-    case 403: // Access Denied
-      return DISABLE_DEST;
     default:
       return "";
   }

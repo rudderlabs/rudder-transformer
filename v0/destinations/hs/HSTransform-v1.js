@@ -144,6 +144,14 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
  */
 const processLegacyTrack = async (message, destination, propertyMap) => {
   const { Config } = destination;
+
+  if (!Config.hubID) {
+    throw new CustomError(
+      "Invalid hub id value provided in the destination configuration",
+      400
+    );
+  }
+
   const parameters = {
     _a: Config.hubID,
     _n: message.event,
@@ -173,8 +181,6 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
 
   // choosing API Type
   if (Config.authorizationType === "newPrivateAppApi") {
-    // eslint-disable-next-line no-underscore-dangle
-    delete params._a;
     response.headers = {
       ...response.headers,
       Authorization: `Bearer ${Config.accessToken}`

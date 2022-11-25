@@ -5,14 +5,13 @@ const {
   defaultRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  TransformationError
 } = require("../../util");
 
-const { MAX_BATCH_SIZE } = require("./config");
+const { MAX_BATCH_SIZE, DESTINATION } = require("./config");
 
-const ErrorBuilder = require("../../util/error");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
 const { EventType } = require("../../../constants");
 const { createOrUpdateContactResponseBuilder } = require("./utils");
 
@@ -28,16 +27,15 @@ const responseBuilder = payload => {
     };
   }
   // fail-safety for developer error
-  throw new ErrorBuilder()
-    .setMessage(`[MailJet] :: Payload could not be constructed`)
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  throw new TransformationError(
+    "Something went wrong while constructing the payload",
+    400,
+    {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
       meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    })
-    .build();
+    },
+    DESTINATION
+  );
 };
 
 const identifyResponseBuilder = (message, destination) => {
@@ -48,16 +46,15 @@ const identifyResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage(`[MailJet] :: Message Type is not present. Aborting message.`)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    throw new TransformationError(
+      "Event type is required",
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+      },
+      DESTINATION
+    );
   }
   const messageType = message.type.toLowerCase();
 
@@ -65,16 +62,16 @@ const processEvent = (message, destination) => {
     return identifyResponseBuilder(message, destination);
   }
 
-  throw new ErrorBuilder()
-    .setMessage(`[MailJet] :: Message type ${messageType} not supported.`)
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  throw new TransformationError(
+    `Event type "${messageType}" is not supported`,
+    400,
+    {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    })
-    .build();
+      meta:
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.INSTRUMENTATION
+    },
+    DESTINATION
+  );
 };
 
 const process = event => {

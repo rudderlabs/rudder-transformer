@@ -64,7 +64,7 @@ const getConversionActionId = async (method, headers, params) => {
         .setStatus(response.response?.response?.status)
         .setDestinationResponse(response.response?.response?.data)
         .setMessage(
-          `Google_awordds_enhanced_conversion: "${get(
+          `Google_adwords_enhanced_conversion: "${get(
             response,
             "response.response.data[0].error.message",
             ""
@@ -139,7 +139,7 @@ const responseHandler = destinationResponse => {
     .setStatus(status)
     .setDestinationResponse(response)
     .setMessage(
-      `Google_awordds_enhanced_conversion: "${errMessage}" during Google_adwords_enhanced_conversions response transformation`
+      `Google_adwords_enhanced_conversion: "${errMessage}" during Google_adwords_enhanced_conversions response transformation`
     )
     .setAuthErrorCategory(getAuthErrCategory(status, response))
     .build();

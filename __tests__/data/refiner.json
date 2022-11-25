@@ -40,7 +40,7 @@
       }
     },
     "output": {
-      "error": "[Refiner] :: Message Type is not present. Aborting message"
+      "error": "Event type is required"
     }
   },
   {
@@ -85,7 +85,7 @@
       }
     },
     "output": {
-      "error": "[Refiner] :: Message type alias not supported"
+      "error": "Event type \"alias\" is not supported"
     }
   },
   {
@@ -128,7 +128,7 @@
       }
     },
     "output": {
-      "error": "[Refiner] :: at least one param userId or email is required"
+      "error": "At least one of `userId` or `email` is required"
     }
   },
   {
@@ -212,7 +212,7 @@
       }
     },
     "output": {
-      "error": "[Refiner]:: parameter event is required"
+      "error": "Event name is required"
     }
   },
   {

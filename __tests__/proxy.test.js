@@ -11,6 +11,7 @@ const destinations = [
   "facebook_pixel",
   "snapchat_custom_audience",
   "salesforce"
+  "marketo_static_list"
 ];
 const service = require("../versionedRouter").handleProxyRequest;
 

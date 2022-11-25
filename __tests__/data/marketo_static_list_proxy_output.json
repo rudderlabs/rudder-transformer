@@ -1,0 +1,57 @@
+[
+    {
+        "output": {
+            "status": 500,
+            "message": "Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Static List Response Handling",
+            "destinationResponse": {
+                "response": {
+                    "requestId": "68d8#1846058ee27",
+                    "success": false,
+                    "errors": [
+                        {
+                            "code": "601",
+                            "message": "Access token invalid"
+                        }
+                    ]
+                },
+                "status": 200
+            },
+            "statTags": {
+                "destType": "MARKETO STATIC LIST",
+                "stage": "responseTransform",
+                "scope": "api",
+                "meta": "retryable",
+                "errorAt": "proxy"
+            }
+        }
+    },
+    {
+        "output": {
+            "status": 200,
+            "message": "[Marketo Static List Response Handler] - Request Processed Successfully",
+            "destinationResponse": {
+                "response": {
+                    "requestId": "12d3c#1846057dce2",
+                    "success": true,
+                    "result": [
+                        {
+                            "id": 1,
+                            "status": "added"
+                        },
+                        {
+                            "id": 2,
+                            "status": "skipped",
+                            "reasons": [
+                                {
+                                    "code": "1004",
+                                    "message": "Lead not found"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "status": 200
+            }
+        }
+    }
+]

@@ -233,8 +233,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @param {*} headers headers for authorizations
  * @returns
  */
-const getUserIdByExternalId = async (message, headers) => {
-  const traits = getFieldValueFromMessage(message, "traits");
+const getUserIdByExternalId = async (message, headers, traits) => {
   const externalId =
     get(traits, "userId") || get(traits, "id") || message.userId;
   if (!externalId) {
@@ -477,7 +476,7 @@ async function processIdentify(message, destinationConfig, headers) {
   let userId;
 
   if (destinationConfig.searchByExternalId) {
-    userId = await getUserIdByExternalId(message, headers);
+    userId = await getUserIdByExternalId(message, headers, traits);
     if (userId) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         message,

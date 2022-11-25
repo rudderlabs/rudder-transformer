@@ -256,10 +256,7 @@ const getUserIdByExternalId = async (message, headers) => {
       logger.debug("Failed in fetching User details");
       return undefined;
     }
-    let zendeskUserId;
-    if (resp.response.data?.users[0].id) {
-      zendeskUserId = resp.response.data?.users[0].id;
-    }
+    const zendeskUserId = get(resp, "response.data.users.0.id");
     return zendeskUserId;
   } catch (error) {
     logger.debug(
@@ -477,12 +474,10 @@ async function processIdentify(message, destinationConfig, headers) {
   );
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
-  let userId = await getUserId(message, headers);
-  if (!userId) {
-    userId = await getUserIdByExternalId(message, headers);
-  }
+  let userId;
 
   if (destinationConfig.searchByExternalId) {
+    userId = await getUserIdByExternalId(message, headers);
     if (userId) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         message,
@@ -492,6 +487,8 @@ async function processIdentify(message, destinationConfig, headers) {
       if (payloadForUpdatingEmail && !isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);
     }
+  } else {
+    userId = await getUserId(message, headers);
   }
 
   if (

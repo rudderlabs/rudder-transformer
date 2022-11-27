@@ -1,156 +1,129 @@
-/* eslint-disable no-unused-vars */
-const { default: axios } = require("axios");
-const path = require("path");
-const url = require("url");
+const NodeCache = require("node-cache");
+const {
+  getFunction,
+  deleteFunction,
+  deployFunction,
+  invokeFunction
+} = require("./faasApi");
 const logger = require("../../logger");
-const stats = require("../stats");
-
-const { RespStatusError, RetryRequestError } = require("../utils");
+const { RetryRequestError } = require("../utils");
 
 const FAAS_BASE_IMG = "rudderlabs/develop-openfaas-flask:latest";
-const OPENFAAS_NAMESPACE = "openfaas-fn";
+const CONFIG_BACKEND_URL =
+  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 
-function deleteFunction(functionName) {
-  return axios.delete(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
-    ).toString(),
-    {
-      data: {
-        functionName
-      }
-    }
-  );
-}
+const functionListCache = new NodeCache();
+const FUNC_LIST_KEY = "fn-list";
 
-async function isFunctionDeployed(functionName) {
-  logger.info("Is function deployed?.");
-  const deployedFunctions = await axios.get(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
-    ).toString()
-  );
+const delayInMs = async (ms = 2000) =>
+  new Promise(resolve => setTimeout(resolve, ms));
 
-  let matchFound = false;
-
-  deployedFunctions.data.forEach(deployedFunction => {
-    if (deployedFunction.name === functionName) matchFound = true;
-  });
-
-  return matchFound;
-}
-
-function invokeFunction(functionName, payload) {
-  return axios.post(
-    new URL(
-      path.join(process.env.OPENFAAS_GATEWAY_URL, "function", functionName)
-    ).toString(),
-    payload
-  );
-}
-
-async function deployFunction(functionName, code, versionId, testMode) {
-  let envProcess = "python index.py";
-
-  if (!testMode) {
-    let configHost = process.env.CONFIG_BACKEND_URL;
-
-    const parsedUrl = url.parse(configHost);
-
-    if (
-      parsedUrl.hostname === "localhost" ||
-      parsedUrl.hostname === "127.0.0.1"
-    ) {
-      configHost = `http://host.docker.internal:${
-        parsedUrl.port ? parsedUrl.port : ""
-      }`;
-    }
-    envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${configHost}`;
-  } else {
-    envProcess = `${envProcess} --code "${code}"`;
-  }
-
-  const payload = {
-    service: functionName,
-    name: functionName,
-    image: FAAS_BASE_IMG,
-    namespace: OPENFAAS_NAMESPACE,
-    envProcess,
-    labels: {
-      faas_function: functionName,
-      "com.openfaas.scale.max": "100"
-    },
-    annotations: {
-      "prometheus.io.scrape": "false"
-    }
-  };
-
-  logger.info("Attempting to deploy function.");
-
+const callWithRetry = async (fn, count = 0, ...args) => {
   try {
-    await axios.post(
-      new URL(
-        path.join(process.env.OPENFAAS_GATEWAY_URL, "/system/functions")
-      ).toString(),
-      payload
-    );
+    return await fn(...args);
+  } catch (err) {
+    if (count > 2) {
+      throw err;
+    }
+    await delayInMs();
+    return callWithRetry(fn, count + 1);
+  }
+};
+
+const isFunctionDeployed = functionName => {
+  const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  return funcList.includes(functionName);
+};
+
+const deployFaasFunction = async (functionName, code, versionId, testMode) => {
+  try {
+    logger.debug("[Faas] Deploying a faas function");
+    let envProcess = "python index.py";
+
+    if (!testMode) {
+      envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL}`;
+    } else {
+      envProcess = `${envProcess} --code "${code}"`;
+    }
+    // TODO: investigate and add more required labels and annotations
+    const payload = {
+      service: functionName,
+      name: functionName,
+      image: FAAS_BASE_IMG,
+      envProcess,
+      labels: {
+        faas_function: functionName,
+        "com.openfaas.scale.max": "100"
+      },
+      annotations: {
+        "prometheus.io.scrape": "true"
+      }
+    };
+
+    await deployFunction(payload);
+    logger.debug("[Faas] Deployed a faas function");
   } catch (error) {
-    logger.error(`Error trying to deploy function ${functionName}: `, error);
+    logger.error(
+      `[Faas] Error while deploying ${functionName}: ${error.message}`
+    );
+    // To handle concurrent create requests,
+    // throw retry error if already exists so that request can be retried
+    if (error.message.includes("already exists")) {
+      throw new RetryRequestError(`${functionName} already exists`);
+    }
     throw error;
   }
-}
+};
 
-async function setupFunction(functionName, code, versionId, testMode) {
+async function setupFaasFunction(functionName, code, versionId, testMode) {
   try {
     if (!testMode) {
-      if (await isFunctionDeployed(functionName)) {
+      if (isFunctionDeployed(functionName)) {
+        logger.debug(`[Faas] Function ${functionName} already deployed`);
         return;
       }
     }
+    // deploy faas function
+    await deployFaasFunction(functionName, code, versionId, testMode);
 
-    await deployFunction(functionName, code, versionId, testMode);
+    // check if function is spinned
+    await callWithRetry(getFunction, 0, functionName);
+
+    const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+    funcList.push(functionName);
+    functionListCache.set(FUNC_LIST_KEY, funcList);
+    logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
   } catch (error) {
-    if (
-      error.response &&
-      error.response.status === 500 &&
-      error.response.data.includes("already exists")
-    ) {
-      logger.error(error.response.data);
-      throw new RetryRequestError("Conflict while trying to deploy function");
-    }
+    logger.error(
+      `[Faas] Error while setting function ${functionName}: ${error.message}`
+    );
     throw error;
   }
 }
 
-async function run(functionName, events, code, versionId, testMode) {
-  if (testMode) {
-    if (!code) {
-      throw RespStatusError(
-        `Code not found for invoking test function: ${functionName}`,
-        400
-      );
-    }
-  }
-
-  await setupFunction(functionName, code, versionId, testMode);
-
-  let response;
-
+const executeFaasFunction = async (functionName, events, testMode) => {
   try {
-    response = await invokeFunction(functionName, events);
+    logger.debug("[Faas] Invoking faas function");
+    const res = await invokeFunction(functionName, events);
+    logger.debug("[Faas] Invoked faas function");
+    return res;
+  } catch (error) {
+    logger.error(
+      `[Faas] Error while invoking ${functionName}: ${error.message}`
+    );
+    throw error;
   } finally {
     if (testMode) {
-      deleteFunction(functionName).catch(error => {
+      deleteFunction(functionName).catch(err => {
         logger.error(
-          `Error while trying to delete test function: ${functionName}`,
-          error
+          `[Faas] Error while deleting ${functionName}: ${err.message}`
         );
       });
     }
   }
+};
 
-  return Promise.resolve(response);
-}
-
-exports.run = run;
-exports.setupFunction = setupFunction;
+module.exports = {
+  executeFaasFunction,
+  setupFaasFunction
+};

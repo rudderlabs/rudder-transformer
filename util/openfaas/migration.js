@@ -1,53 +1,28 @@
-const { default: axios } = require("axios");
-const path = require("path");
 const logger = require("../../logger");
-
-const { setupUserTransformHandler } = require("../customTransformer");
-
-async function getAllHandles() {
-  return axios.get(
-    new URL(
-      path.join(process.env.CONFIG_BACKEND_URL, "/transformationHandles")
-    ).toString()
-  );
-}
-
-async function getTransformationByVersionId(versionId) {
-  return axios.get(
-    new URL(
-      path.join(
-        process.env.CONFIG_BACKEND_URL,
-        `/transformation/getByVersionId?versionId=${versionId}`
-      )
-    ).toString()
-  );
-}
+const { setOpenFaasUserTransform } = require("../customTransformer-faas");
+const { getTransformationCode } = require("../customTransforrmationsStore");
+const {
+  getAllTransformationHandles
+} = require("../customTransforrmationsStore-v1");
 
 async function migrate(versionId) {
-  const transformation = (await getTransformationByVersionId(versionId)).data;
-
-  return setupUserTransformHandler(
-    {
-      code: transformation.code,
-      language: transformation.language,
-      workspaceId: transformation.workspaceId,
-      versionId
-    },
-    [],
-    true
-  );
+  const transformation = await getTransformationCode(versionId);
+  return setOpenFaasUserTransform(transformation, true);
 }
 
 async function lambdaMigrationsHandler() {
-  const handles = (await getAllHandles()).data.transformationHandles;
+  const { transformationHandles } = await getAllTransformationHandles();
+  logger.debug(
+    `Fetched all transformation handles: ${transformationHandles.length}`
+  );
 
-  const promises = [];
+  await Promise.all(
+    transformationHandles.map(async handle => {
+      await migrate(handle.versionId);
+    })
+  );
 
-  handles.forEach(handle => {
-    promises.push(migrate(handle.versionId));
-  });
-
-  return Promise.all(promises);
+  return { success: true };
 }
 
 exports.lambdaMigrationsHandler = lambdaMigrationsHandler;

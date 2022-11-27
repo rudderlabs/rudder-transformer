@@ -13,10 +13,10 @@ class RetryRequestError extends RespStatusError {
   }
 }
 
-const responseStatusHandler = (status, entity, id, url) => {
+const responseStatusHandler = (status, entity, url, id = "") => {
   if (status >= 500) {
     throw new RetryRequestError(
-      `Error occurred while fetching ${entity} :: ${id}`
+      `Error occurred while fetching ${entity} ${id}`
     );
   } else if (status !== 200) {
     throw new RespStatusError(`${entity} not found at ${url}`, status);

@@ -7,7 +7,7 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedNullEmptyExclBoolInt,
-  CustomError
+  TransformationError
 } = require("../../util");
 const {
   validatePriority,
@@ -18,8 +18,10 @@ const {
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  createTaskEndPoint
+  createTaskEndPoint,
+  DESTINATION
 } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const responseBuilder = async (payload, listId, apiToken) => {
   if (payload) {
@@ -34,7 +36,15 @@ const responseBuilder = async (payload, listId, apiToken) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("[ CLICKUP ]:: Payload could not be constructed", 400);
+  throw new TransformationError(
+    "Something went wrong while constructing the payload",
+    400,
+    {
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    },
+    DESTINATION
+  );
 };
 
 const trackResponseBuilder = async (message, destination) => {
@@ -64,9 +74,14 @@ const trackResponseBuilder = async (message, destination) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "[ CLICKUP ]:: Message Type is not present. Aborting message.",
-      400
+    throw new TransformationError(
+      "Event type is required",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
     );
   }
 
@@ -76,7 +91,17 @@ const processEvent = async (message, destination) => {
   if (messageType === EventType.TRACK) {
     return trackResponseBuilder(message, destination);
   }
-  throw new CustomError("[ CLICKUP ]:: Message type not supported", 400);
+
+  throw new TransformationError(
+    `Event type "${messageType}" is not supported`,
+    400,
+    {
+      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+      meta:
+        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.INSTRUMENTATION
+    },
+    DESTINATION
+  );
 };
 
 const process = async event => {

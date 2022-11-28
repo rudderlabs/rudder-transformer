@@ -3,11 +3,9 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { CustomError } = require("../../util");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 const userDeletionHandler = async (userAttributes, config) => {
-  if (!userAttributes) {
-    throw new CustomError("userAttributes for deletion not present", 400);
-  }
   if (!config) {
     throw new CustomError("Config for deletion not present", 400);
   }
@@ -45,6 +43,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 };
 const processDeleteUsers = async event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };

@@ -10,7 +10,6 @@ const {
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
-  DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const ErrorBuilder = require("../../util/error");
@@ -35,10 +34,6 @@ const getAuthErrCategory = code => {
   switch (code) {
     case 184:
       return REFRESH_TOKEN;
-    case 49: // Access Denied
-    case 46: // Lack of permissions
-    case 119: // https://community.auth0.com/t/cant-generate-refresh-token-for-salesforce-authentication-provider/32949
-      return DISABLE_DEST;
     default:
       return "";
   }

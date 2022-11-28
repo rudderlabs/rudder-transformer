@@ -21,7 +21,7 @@
   {
     "output": {
       "status": 500,
-      "message": "Request Failed for Marketo, Access token invalid (Retryable).during Marketo Response Handling",
+      "message": "Request Failed for marketo, Access token invalid (Retryable).during Marketo Response Handling",
       "destinationResponse": {
         "response": {
           "requestId": "a61c#17daea5968a",
@@ -47,7 +47,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Request Failed for Marketo, Requested resource not found (Aborted).during Marketo Response Handling",
+      "message": "Request Failed for marketo, Requested resource not found (Aborted).during Marketo Response Handling",
       "destinationResponse": {
         "response": {
           "requestId": "a61c#17daea5968a",
@@ -73,7 +73,7 @@
   {
     "output": {
       "status": 413,
-      "message": "[Marketo Response Handler] - Request failed  with status: 413",
+      "message": "[marketo Response Handler] - Request failed  with status: 413",
       "destinationResponse": {
         "response": {
           "code": 413,
@@ -94,7 +94,7 @@
   {
     "output": {
       "status": 500,
-      "message": "[Marketo Response Handler] - Request failed  with status: 500",
+      "message": "[marketo Response Handler] - Request failed  with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500
@@ -111,7 +111,7 @@
   {
     "output": {
       "status": 500,
-      "message": "[Marketo Response Handler] - Request failed  with status: 500",
+      "message": "[marketo Response Handler] - Request failed  with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500
@@ -128,7 +128,7 @@
   {
     "output": {
       "status": 400,
-      "message": "[Marketo Response Handler] - Request failed  with status: 400",
+      "message": "[marketo Response Handler] - Request failed  with status: 400",
       "destinationResponse": {
         "response": "[[ENOTFOUND] :: DNS lookup failed]",
         "status": 400

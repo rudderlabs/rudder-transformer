@@ -28,7 +28,10 @@ const CONFIG_CATEGORIES = {
 
 const SUPPORTED_PLATFORM = {
   android: "ANDROID",
-  ios: "IOS"
+  ios: "IOS",
+  ipados: "IOS",
+  watchos: "IOS",
+  tvos: "IOS"
 };
 
 const SINGULAR_SESSION_ANDROID_EXCLUSION = [

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require("../../util");
 
-const ACCESS_TOKEN_CACHE_TTL = process.env.ACESS_TOKEN_CACHE_TTL
+const ACCESS_TOKEN_CACHE_TTL = process.env.ACCESS_TOKEN_CACHE_TTL
   ? parseInt(process.env.ACCESS_TOKEN_CACHE_TTL, 10)
   : 0;
 

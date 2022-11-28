@@ -28,7 +28,7 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { getAccessToken, processResponseHandler } = require("./utils");
+const { getAccessToken, salesforceResponseHandler } = require("./utils");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -116,7 +116,7 @@ async function getSaleforceIdForRecord(
   });
   const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
-    processResponseHandler(
+    salesforceResponseHandler(
       processedsfSearchResponse,
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedsfSearchResponse.response
@@ -225,7 +225,7 @@ async function getSalesforceIdFromPayload(
     const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {
-      processResponseHandler(
+      salesforceResponseHandler(
         processedLeadQueryResponse,
         `During Lead Query: ${JSON.stringify(
           processedLeadQueryResponse.response

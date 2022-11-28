@@ -1,8 +1,6 @@
-const { logger } = require("../../../logger");
 const { httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse,
-  getDynamicMeta
+  processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const Cache = require("../../util/cache");
@@ -45,11 +43,11 @@ const getAccessToken = async destination => {
     if (salesforceAuthorisationData.success === false) {
       const { error } = salesforceAuthorisationData.response.response.data;
       throw new ApiError(
-        `Request Failed for Salesforce, access token could not be generated due to ${error}`,
+        `${DESTINATION} Request Failed: access token could not be generated due to ${error}`,
         400,
         {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
         },
         salesforceAxiosResponse.response,
         undefined,
@@ -84,11 +82,12 @@ const salesforceResponseHandler = (
         // rudderJobMetadata contains some destination info which is being used to evict the cache
         ACCESS_TOKEN_CACHE.del(authKey);
         throw new ApiError(
-          `Request Failed for Salesforce due to ${response[0].message}, (Retryable).${sourceMessage}`,
+          `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
           500,
           {
             scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
+            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
+            stage
           },
           sourceMessage,
           undefined,
@@ -103,13 +102,14 @@ const salesforceResponseHandler = (
     }
 
     throw new ApiError(
-      `Request Failed for ${DESTINATION}: ${status} due to ${errorMessage}, Aborted.`,
+      `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, Aborted.`,
       status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE,
+        stage
       },
-      400,
+      destResponse,
       undefined,
       DESTINATION
     );

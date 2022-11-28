@@ -1,3 +1,5 @@
+options:
+  templateType: jsontemplate
 bindings:
 - name: EventType
   path: ../../../../constants
@@ -6,14 +8,13 @@ steps:
   - name: validateInput
     template: |
       (
-        $assert($exists(message.type), "message Type is not present. Aborting message.");
-        $assert($exists(destination.Config.apiKey), "Invalid Api Key");
-        $assert($exists(destination.Config.applicationId), "Invalid Application Id");
-        $assert(message.type in [$EventType.TRACK], 
-          "message type " & message.type & " not supported")
+        $.assert(.message.type, "message Type is not present. Aborting message.");
+        $.assert(.destination.Config.apiKey, "Invalid Api Key");
+        $.assert(.destination.Config.applicationId, "Invalid Application Id");
+        $.assert(.message.type === $.EventType.TRACK, 
+          "message type " + .message.type + " not supported")
       )
   - name: trackEventWorkflow
-    condition: message.type = $EventType.TRACK
     externalWorkflow:
       path: ./trackEventWorkflow.yaml
 

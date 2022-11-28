@@ -1,3 +1,5 @@
+options:
+  templateType: jsontemplate
 bindings:
 - path: ../../../../v0/destinations/algolia/config
 - name: handleRtTfSingleEventError
@@ -6,13 +8,11 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      (
-        $assert($type($) = "array" and $count($) > 0, "Invalid event array")
-      )
+      $.assert(Array.isArray(^) && ^[].length > 0, "Invalid event array")
 
   - name: prepareContext
     template:
-      $setContext("batchMode", true)
+      $.context.batchMode = true
 
   - name: transform
     externalWorkflow:
@@ -21,27 +21,24 @@ steps:
 
   - name: successfulEvents
     template: |
-      $outputs.transform#$i.output.{
-          "output": $,
-          /* $$ refers to input (root of the document) */
-          "destination": $$[$i].destination,
-          "metadata": $$[$i].metadata
-      } ~> $toArray
+      $.outputs.transform#idx.output.({
+        "output": .,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata
+      })[]
   - name: failedEvents
     template: |
-      $outputs.transform#$i.error.(
-        $error := $exists(originalError) ? originalError : $;
-        $handleRtTfSingleEventError($$[$i], $error, "ALGOLIA")
-      ) ~> $toArray
+      $.outputs.transform#idx.error.(
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., "ALGOLIA")
+      )[]
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      (
-        $batches := $chunk($outputs.successfulEvents, $MAX_BATCH_SIZE);
-        $batches.{
+        let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+        batches@batch.({
           "batchedRequest": {
             "body": {
-              "JSON": {"events": output},
+              "JSON": {"events": batch.output[]},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -49,20 +46,19 @@ steps:
             "version": "1",
             "type": "REST",
             "method": "POST",
-            "endpoint": $ENDPOINT,
-          "headers": $[0].destination.Config.{
-            "X-Algolia-Application-Id": applicationId,
-            "X-Algolia-API-Key": apiKey
-          },
+            "endpoint": $.ENDPOINT,
+            "headers": batch[0].destination.Config.({
+              "X-Algolia-Application-Id": .applicationId,
+              "X-Algolia-API-Key": .apiKey
+            }),
             "params": {},
             "files": {}
           },
-          "metadata": metadata,
+          "metadata": batch.metadata[],
           "batched": true,
           "statusCode": 200,
-          "destination": $[0].destination
-        } ~> $toArray;
-      )
+          "destination": batch[0].destination
+        })[];
   - name: finalPayload
     template: |
-      $toArray($outputs.($append(failedEvents, batchSuccessfulEvents)))
+      $.outputs["failedEvents", "batchSuccessfulEvents"].flat()

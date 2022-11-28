@@ -239,7 +239,7 @@
     "previous_page": null,
     "count": 2
   },
-  "https://rudderstack6787.zendesk.com/api/v2/search.json?query=abcd-144": {
+  "https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=abcd-144": {
     "results": [
       {
         "id": 10865192864273,

@@ -233,9 +233,8 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @param {*} headers headers for authorizations
  * @returns
  */
-const getUserIdByExternalId = async (message, headers, traits) => {
-  const externalId =
-    get(traits, "userId") || get(traits, "id") || message.userId;
+const getUserIdByExternalId = async (message, headers) => {
+  const externalId = getFieldValueFromMessage(message, "userIdOnly");
   if (!externalId) {
     logger.debug("externalId is required for getting zenuserId");
     return undefined;
@@ -473,21 +472,18 @@ async function processIdentify(message, destinationConfig, headers) {
   );
   const url = endPoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
-  let userId;
 
   if (destinationConfig.searchByExternalId) {
-    userId = await getUserIdByExternalId(message, headers, traits);
-    if (userId) {
+    const userIdByExternalId = await getUserIdByExternalId(message, headers);
+    if (userIdByExternalId) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         message,
-        userId,
+        userIdByExternalId,
         headers
       );
       if (payloadForUpdatingEmail && !isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);
     }
-  } else {
-    userId = await getUserId(message, headers);
   }
 
   if (
@@ -497,6 +493,7 @@ async function processIdentify(message, destinationConfig, headers) {
     traits.company.id
   ) {
     const orgId = traits.company.id;
+    const userId = await getUserId(message, headers);
     if (userId) {
       const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
       try {

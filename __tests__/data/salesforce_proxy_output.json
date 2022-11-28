@@ -12,14 +12,17 @@
   {
     "output": {
       "status": 500,
-      "message": "Request Failed for Salesforce: 500 due to , Aborted.",
-      "destinationResponse": 400,
+      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
       "statTags": {
         "destType": "SALESFORCE",
         "errorAt": "proxy",
         "scope": "api",
         "stage": "responseTransform",
-        "meta": "retryable"
+        "meta": "abortable"
       }
     }
   }

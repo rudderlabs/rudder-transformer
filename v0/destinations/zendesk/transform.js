@@ -53,6 +53,7 @@ function responseBuilder(message, headers, payload, endpoint) {
  * @param {*} userIdentityId -> userIdentity Id
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
+ * @param {*} email -> email of user
  * @returns
  */
 const responseBuilderToUpdatePrimaryAccount = (
@@ -82,13 +83,11 @@ const responseBuilderToUpdatePrimaryAccount = (
 
 /**
  * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
- * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#create-identity
- * This function search identity from userId and fetch its details, if that identity doesn't exists
- * then it will create the identity and takes the id for it.
+ * This function search id of primary email from userId and fetch its details.
  * @param {*} message -> message
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
- * @returns it returns identityId or undefined if it gives error.
+ * @returns it return payloadbuilder for updating email
  */
 const payloadBuilderforUpdatingEmail = async (message, userId, headers) => {
   // url for list all identities of user

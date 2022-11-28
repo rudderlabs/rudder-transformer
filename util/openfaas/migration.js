@@ -18,7 +18,7 @@ async function lambdaMigrationsHandler() {
 
   await Promise.all(
     transformationHandles.map(async handle => {
-      await migrate(handle.versionId);
+      await migrate(handle.transformerVersionId);
     })
   );
 

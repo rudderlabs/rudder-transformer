@@ -240,9 +240,9 @@
     "count": 2
   },
   "https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=abcd-144": {
-    "results": [
+    "users": [
       {
-        "id": 10865192864273,
+        "id": 900113780483,
         "url": "https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json",
         "name": "name-1000 user",
         "email": "test1000@email.com",

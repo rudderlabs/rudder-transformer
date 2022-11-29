@@ -1357,5 +1357,8 @@ module.exports = {
   handleDeletionOfUsers,
   fileUpload,
   pollStatus,
-  getJobStatus
+  getJobStatus,
+  processCdkV2Workflow,
+  handleV0Destination,
+  getDestHandler
 };

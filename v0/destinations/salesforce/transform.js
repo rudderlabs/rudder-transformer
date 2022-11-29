@@ -21,15 +21,11 @@ const {
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError,
-  handleHttpRequest
+  handleRtTfSingleEventError
 } = require("../../util");
-const { httpGET } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { getAccessToken, salesforceResponseHandler } = require("./utils");
+const { handleHttpRequest } = require("../../../adapters/network");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated

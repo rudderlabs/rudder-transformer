@@ -1,8 +1,5 @@
-const { httpPOST, httpGET } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess, handleHttpRequest } = require("../../util");
+const { handleHttpRequest } = require("../../../adapters/network");
+const { isHttpStatusSuccess } = require("../../util");
 const Cache = require("../../util/cache");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { ApiError } = require("../../util/errors");

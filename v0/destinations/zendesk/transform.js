@@ -95,32 +95,25 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
   const config = { headers };
   try {
     const res = await httpGET(url, config);
-    if (
-      res.success === false ||
-      !res.response ||
-      !res.response.data ||
-      res.response.data.count === 0
-    ) {
-      logger.debug("Failed in fetching Identity details");
-      return {};
-    }
-    const { identities } = res.response?.data;
-    if (identities && Array.isArray(identities)) {
-      const identitiesDetails = identities.find(
-        identitieslist =>
-          identitieslist.primary === true && identitieslist.value !== userEmail
-      );
-
-      if (identitiesDetails?.id && userEmail) {
-        return responseBuilderToUpdatePrimaryAccount(
-          identitiesDetails.id,
-          userId,
-          headers,
-          userEmail
+    if (res?.response?.data?.count > 0) {
+      const { identities } = res.response.data;
+      if (identities && Array.isArray(identities)) {
+        const identitiesDetails = identities.find(
+          identitieslist =>
+            identitieslist.primary === true &&
+            identitieslist.value !== userEmail
         );
+        if (identitiesDetails?.id && userEmail) {
+          return responseBuilderToUpdatePrimaryAccount(
+            identitiesDetails.id,
+            userId,
+            headers,
+            userEmail
+          );
+        }
       }
     }
-    // return responseIdentity.response.data?.identity?.id;
+    logger.debug("Failed in fetching Identity details");
   } catch (error) {
     logger.debug("Error :", error.response ? error.response.data : error);
   }
@@ -244,17 +237,11 @@ const getUserIdByExternalId = async (message, headers) => {
   try {
     const resp = await httpGET(url, config);
 
-    if (
-      resp.success === false ||
-      !resp.response ||
-      !resp.response.data ||
-      resp.response.data.count === 0
-    ) {
-      logger.debug("Failed in fetching User details");
-      return undefined;
+    if (resp?.response?.data?.count > 0) {
+      const zendeskUserId = get(resp, "response.data.users.0.id");
+      return zendeskUserId;
     }
-    const zendeskUserId = get(resp, "response.data.users.0.id");
-    return zendeskUserId;
+    logger.debug("Failed in fetching User details");
   } catch (error) {
     logger.debug(
       `Cannot get userId for externalId : ${externalId}`,
@@ -481,7 +468,7 @@ async function processIdentify(message, destinationConfig, headers) {
         headers,
         userEmail
       );
-      if (payloadForUpdatingEmail && !isEmptyObject(payloadForUpdatingEmail))
+      if (!isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);
     }
   }

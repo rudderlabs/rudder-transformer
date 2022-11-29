@@ -132,13 +132,15 @@ async function runDataset(suitDesc, input, intg, params) {
           if (benchmarkType === "Operations") {
             logger.info(
               `-> "${result.end.name}" is faster by ${(
-                result.end.stats.n / results[impl].stats.n
+                result.end.stats.n /
+                result.end.stats.mean /
+                (results[impl].stats.n / result.end.stats.mean)
               ).toFixed(1)} times to "${impl}"`
             );
           } else {
             logger.info(
               `-> "${result.end.name}" consumed ${(
-                result.end.stats.n / results[impl].stats.n
+                result.end.stats.mean / results[impl].stats.mean
               ).toFixed(1)} times memory compared to "${impl}"`
             );
           }

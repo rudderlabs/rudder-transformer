@@ -55,9 +55,15 @@ const destinationsList = cmdOpts.destinations
   .filter(x => x !== "");
 logger.info("Destinations selected: ", destinationsList);
 const destTestSet = getTestData(destinationsList, "_input");
+
 const nativeDestHandlers = {};
+const destCdKWorkflowEngines = {};
 destinationsList.forEach(dest => {
   nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest);
+  destCdKWorkflowEngines[dest] = cdkV2Handler.getWorkflowEngine(
+    dest,
+    TRANSFORMER_METRIC.ERROR_AT.PROC
+  );
 });
 
 const sourcesList = cmdOpts.sources
@@ -135,11 +141,7 @@ async function runDataset(desc, input, intg) {
 
   suite.add("CDK 2.0", async function() {
     try {
-      await cdkV2Handler.processCdkV2Workflow(
-        intg,
-        input,
-        TRANSFORMER_METRIC.ERROR_AT.PROC
-      );
+      await cdkV2Handler.process(destCdKWorkflowEngines[intg], input);
     } catch (err) {
       // logger.info(err);
       // Do nothing

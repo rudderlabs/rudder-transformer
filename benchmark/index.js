@@ -10,10 +10,14 @@ const Benchmark = require("benchmark-suite");
 const fs = require("fs");
 const path = require("path");
 const Commander = require("commander");
+const logger = require("./metaLogger");
 const versionedRouter = require("../versionedRouter");
 const cdkV2Handler = require("../cdk/v2/handler");
-const logger = require("./metaLogger");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
+
+const supportedDestinations = ["algolia", "pinterest_tag"];
+
+logger.info();
 
 const command = new Commander.Command();
 command
@@ -21,56 +25,68 @@ command
   .option(
     "-d, --destinations <string>",
     "Enter destination names separated by comma",
-    "algolia,pinterest_tag"
+    supportedDestinations.toString()
   )
-  .option("-s, --sources <string>", "Enter source names separated by comma", "")
+  .option(
+    "-bt, --benchmarktype <string>",
+    "Enter the benchmark type (Operations or Memory)",
+    "Operations"
+  )
   .parse();
+
+const testDataDir = path.join(__dirname, "./../__tests__/data");
+const getTestData = (intgList, fileNameSuffixes) => {
+  const intgTestData = {};
+  intgList.forEach(intg => {
+    // Use the last valid test data file
+    fileNameSuffixes.forEach(fileNameSuffix => {
+      try {
+        intgTestData[intg] = JSON.parse(
+          fs.readFileSync(
+            path.join(testDataDir, `${intg}${fileNameSuffix}.json`),
+            {
+              encoding: "utf-8"
+            }
+          )
+        );
+      } catch (err) {
+        // logger.error(
+        //   `Unable to load the data for: "${intg}" suffix: "${fileNameSuffix}"`
+        // );
+        // logger.error(`Raw error: "${err}"`);
+      }
+    });
+  });
+  return intgTestData;
+};
 
 const cmdOpts = command.opts();
 
-const testDataDir = path.join(__dirname, "./../__tests__/data");
-const getTestData = (intgList, fileNameSuffix) => {
-  const intgTestSet = {};
-  intgList.forEach(intg => {
-    try {
-      intgTestSet[intg] = JSON.parse(
-        fs.readFileSync(
-          path.join(testDataDir, `${intg}${fileNameSuffix}.json`),
-          {
-            encoding: "utf-8"
-          }
-        )
-      );
-    } catch (err) {
-      logger.error(`Unable to load the data for: ${intg}`);
-      logger.error(`Raw error: ${err}`);
-    }
-  });
-  return intgTestSet;
-};
-
+// Initialize data for destinations
 const destinationsList = cmdOpts.destinations
   .split(",")
   .map(x => x.trim())
   .filter(x => x !== "");
 logger.info("Destinations selected: ", destinationsList);
-const destTestSet = getTestData(destinationsList, "_input");
+logger.info();
+const destDataset = getTestData(destinationsList, ["_input", ""]);
 
 const nativeDestHandlers = {};
 const destCdKWorkflowEngines = {};
 
-
-const sourcesList = cmdOpts.sources
-  .split(",")
-  .map(x => x.trim())
-  .filter(x => x !== "");
-logger.info("Sources selected: ", sourcesList);
-const srcTestSet = getTestData(sourcesList, "_source");
+const benchmarkType = cmdOpts.benchmarktype.trim();
 
 async function initializeHandlers() {
   for (const idx in destinationsList) {
     const dest = destinationsList[idx];
-    nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest);
+
+    // Native destination handler
+    nativeDestHandlers[dest] = versionedRouter.getDestHandler(
+      "v0",
+      dest
+    ).process;
+
+    // Get the CDK 2.0 workflow engine instance
     destCdKWorkflowEngines[dest] = await cdkV2Handler.getWorkflowEngine(
       dest,
       TRANSFORMER_METRIC.ERROR_AT.PROC
@@ -78,81 +94,25 @@ async function initializeHandlers() {
   }
 }
 
-async function run() {
-  await initializeHandlers();
-
-  for (const dest in destTestSet) {
-    for (const td in destTestSet[dest]) {
-      const curTcData = destTestSet[dest][td];
-      let tcInput;
-      let tcDesc;
-      if (
-        "description" in curTcData &&
-        "input" in curTcData &&
-        "output" in curTcData
-      ) {
-        tcInput = curTcData.input;
-        tcDesc = `Destination - ${dest} - "${curTcData.description}"`;
-      } else {
-        tcInput = curTcData;
-        tcDesc = `Destination - ${dest} - "${td}"`;
-      }
-
-      await runDataset(tcDesc, tcInput, dest);
-    }
-  }
-
-  for (const src in srcTestSet) {
-    for (const td in srcTestSet[src]) {
-      const curTcData = srcTestSet[src][td];
-      let tcInput;
-      let tcDesc;
-      if (
-        "description" in curTcData &&
-        "input" in curTcData &&
-        "output" in curTcData
-      ) {
-        tcInput = curTcData.input;
-        tcDesc = `Source - ${src} - "${curTcData.description}"`;
-      } else {
-        tcInput = curTcData;
-        tcDesc = `Source - ${src} - "${td}"`;
-      }
-
-      await runDataset(tcDesc, tcInput, src);
-    }
-  }
-}
-
-async function runDataset(desc, input, intg) {
-  const suiteName = desc;
+async function runDataset(suitDesc, input, intg, params) {
   logger.info("==========================================");
-  logger.info(suiteName);
+  logger.info(suitDesc);
   logger.info("==========================================");
+
   const results = {};
-  const suite = new Benchmark(suiteName, "Operations");
+  const suite = new Benchmark(suitDesc, benchmarkType);
 
-  suite.add("native", async function() {
-    try {
-      await versionedRouter.handleV0Destination(
-        nativeDestHandlers[intg].process,
-        intg,
-        input,
-        TRANSFORMER_METRIC.ERROR_AT.PROC
-      );
-    } catch (err) {
-      // logger.info(err);
-      // Do nothing
-    }
-  });
-
-  suite.add("CDK 2.0", async function() {
-    try {
-      await cdkV2Handler.process(destCdKWorkflowEngines[intg], input);
-    } catch (err) {
-      // logger.info(err);
-      // Do nothing
-    }
+  Object.keys(params).forEach(opName => {
+    suite.add(opName, async function() {
+      try {
+        await params[opName].caller(
+          ...params[opName].argsResolver(intg, input)
+        );
+      } catch (err) {
+        // logger.info(err);
+        // Do nothing
+      }
+    });
   });
 
   suite
@@ -161,28 +121,80 @@ async function runDataset(desc, input, intg) {
     })
     .on("complete", function(result) {
       logger.info(
-        "Fastest: ",
-        result.end.name,
-        result.end.stats.n,
-        result.end.stats.mean.toFixed(4)
+        benchmarkType === "Operations" ? "Fastest: " : "Memory intensive: ",
+        `"${result.end.name}"`
       );
       logger.info();
       Object.keys(results).forEach(impl => {
-        logger.info(
-          impl,
-          results[impl].stats.n,
-          results[impl].stats.mean.toFixed(4)
-        );
-        logger.info(
-          `"${result.end.name}" is faster by ${(
-            result.end.stats.n / results[impl].stats.n
-          ).toFixed(1)} times to "${impl}"`
-        );
+        logger.info(`"${impl}" - `, suite.formatStats(results[impl].stats));
+
+        if (result.end.name !== impl) {
+          if (benchmarkType === "Operations") {
+            logger.info(
+              `-> "${result.end.name}" is faster by ${(
+                result.end.stats.n / results[impl].stats.n
+              ).toFixed(1)} times to "${impl}"`
+            );
+          } else {
+            logger.info(
+              `"${result.end.name}" consumed ${(
+                result.end.stats.n / results[impl].stats.n
+              ).toFixed(1)} times memory compared to "${impl}"`
+            );
+          }
+        }
+
         logger.info();
       });
     });
 
   await suite.run({ time: 1000 });
+}
+
+async function runIntgDataset(dataset, type, params) {
+  for (const intg in dataset) {
+    for (const tc in dataset[intg]) {
+      const curTcData = dataset[intg][tc];
+      let tcInput;
+      let tcDesc;
+      // New test data file structure
+      if (
+        "description" in curTcData &&
+        "input" in curTcData &&
+        "output" in curTcData
+      ) {
+        tcInput = curTcData.input;
+        tcDesc = `${type} - ${intg} - "${curTcData.description}"`;
+      } else {
+        tcInput = curTcData;
+        tcDesc = `${type} - ${intg} - "${tc}"`;
+      }
+
+      await runDataset(tcDesc, tcInput, intg, params);
+    }
+  }
+}
+
+async function run() {
+  // Initialize CDK and native handlers
+  await initializeHandlers();
+
+  // Destinations
+  await runIntgDataset(destDataset, "Destination", {
+    native: {
+      caller: versionedRouter.handleV0Destination,
+      argsResolver: (intg, input) => [
+        nativeDestHandlers[intg],
+        intg,
+        input,
+        TRANSFORMER_METRIC.ERROR_AT.PROC
+      ]
+    },
+    "CDK 2.0": {
+      caller: cdkV2Handler.process,
+      argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input]
+    }
+  });
 }
 
 // Start suites

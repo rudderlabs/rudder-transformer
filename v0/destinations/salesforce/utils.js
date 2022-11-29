@@ -1,8 +1,8 @@
-const { httpPOST } = require("../../../adapters/network");
+const { httpPOST, httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess } = require("../../util");
+const { isHttpStatusSuccess, handleHttpRequest } = require("../../util");
 const Cache = require("../../util/cache");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { ApiError } = require("../../util/errors");
@@ -35,13 +35,16 @@ const getAccessToken = async destination => {
     )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
       destination.Config.consumerKey
     }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-    const salesforceAuthorisationData = await httpPOST(authUrl, {});
-    const salesforceAxiosResponse = processAxiosResponse(
-      salesforceAuthorisationData
+    const { httpResponse, processedResponse } = await handleHttpRequest(
+      "post",
+      [authUrl, {}]
     );
+    // const salesforceAxiosResponse = processAxiosResponse(
+    //   salesforceAuthorisationData
+    // );
     // If the request fails, throwing error.
-    if (!salesforceAuthorisationData.success) {
-      const { error } = salesforceAuthorisationData.response.response.data;
+    if (!httpResponse.success) {
+      const { error } = httpResponse.response.response.data;
       throw new ApiError(
         `${DESTINATION} Request Failed: access token could not be generated due to ${error}`,
         400,
@@ -49,12 +52,12 @@ const getAccessToken = async destination => {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
         },
-        salesforceAxiosResponse.response,
+        processedResponse.response,
         undefined,
         DESTINATION
       );
     }
-    const token = salesforceAuthorisationData.response.data;
+    const token = httpResponse.response.data;
     return {
       token: `Bearer ${token.access_token}`,
       instanceUrl: token.instance_url

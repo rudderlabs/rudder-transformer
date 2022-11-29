@@ -1,8 +1,16 @@
 import { client } from "../util/errorNotifier";
 import { isCdkV2Destination } from "../cdk/v2/utils";
 import { isCdkDestination } from "../v0/util";
+import { DestHandlerMap } from "../constants/destinationCanonicalNames";
 
 export class MiscService {
+  public static getDestHandler(version: string, dest: string) {
+    if (DestHandlerMap.hasOwnProperty(dest)) {
+      return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
+    }
+    return require(`../${version}/destinations/${dest}/transform`);
+  }
+
   public static bugSnagNotify(
     resp: any,
     error: any,

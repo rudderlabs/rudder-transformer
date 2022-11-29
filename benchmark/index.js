@@ -32,7 +32,13 @@ command
     "Enter the benchmark type (Operations or Memory)",
     "Operations"
   )
+  .option("-f, --feature <string>", "Enter feature name (proc or rt)", "proc")
   .parse();
+
+const getTestFileName = (intg, testSufix) => {
+  const featureSufix = cmdOpts.feature === "rt" ? "_router" : "";
+  return `${intg}${featureSufix}${testSufix}.json`;
+};
 
 const testDataDir = path.join(__dirname, "./../__tests__/data");
 const getTestData = (intgList, fileNameSuffixes) => {
@@ -43,7 +49,7 @@ const getTestData = (intgList, fileNameSuffixes) => {
       try {
         intgTestData[intg] = JSON.parse(
           fs.readFileSync(
-            path.join(testDataDir, `${intg}${fileNameSuffix}.json`),
+            path.join(testDataDir, getTestFileName(intg, fileNameSuffix)),
             {
               encoding: "utf-8"
             }
@@ -67,7 +73,7 @@ const destinationsList = cmdOpts.destinations
   .split(",")
   .map(x => x.trim())
   .filter(x => x !== "");
-logger.info("Destinations selected: ", destinationsList);
+logger.info("Destinations:", destinationsList, "feature:", cmdOpts.feature);
 logger.info();
 const destDataset = getTestData(destinationsList, ["_input", ""]);
 
@@ -155,8 +161,8 @@ async function runIntgDataset(dataset, type, params) {
   for (const intg in dataset) {
     for (const tc in dataset[intg]) {
       const curTcData = dataset[intg][tc];
-      let tcInput;
-      let tcDesc;
+      let tcInput = curTcData;
+      let tcDesc = `${type} - ${intg} - ${cmdOpts.feature} - ${tc}`;
       // New test data file structure
       if (
         "description" in curTcData &&
@@ -164,10 +170,7 @@ async function runIntgDataset(dataset, type, params) {
         "output" in curTcData
       ) {
         tcInput = curTcData.input;
-        tcDesc = `${type} - ${intg} - "${curTcData.description}"`;
-      } else {
-        tcInput = curTcData;
-        tcDesc = `${type} - ${intg} - "${tc}"`;
+        tcDesc += ` - "${curTcData.description}"`;
       }
 
       await runDataset(tcDesc, tcInput, intg, params);

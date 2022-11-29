@@ -7,13 +7,11 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      (
-        $.assert(.message.type, "message Type is not present. Aborting message.");
-        $.assert(.destination.Config.apiKey, "Invalid Api Key");
-        $.assert(.destination.Config.applicationId, "Invalid Application Id");
-        $.assert(.message.type === $.EventType.TRACK, 
-          "message type " + .message.type + " not supported")
-      )
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.destination.Config.apiKey, "Invalid Api Key");
+      $.assert(.destination.Config.applicationId, "Invalid Application Id");
+      $.assert(.message.type === {{$.EventType.TRACK}}, 
+        "message type " + .message.type + " not supported")
   - name: trackEventWorkflow
     externalWorkflow:
       path: ./trackEventWorkflow.yaml

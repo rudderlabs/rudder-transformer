@@ -16,7 +16,7 @@ steps:
       let event = .message.event.trim().toLowerCase();
       let eventType = .message.properties.eventType ?? eventTypeMap[event];
       $.assert(eventType, "eventType is mandatory for track call");
-      let payload = $.constructPayload(.message, $.trackMapping);
+      let payload = $.constructPayload(.message, {{$.trackMapping}});
       payload.eventName = event;
       payload.eventType = eventType;
       $.context.payload = $.genericpayloadValidator(payload);      
@@ -60,7 +60,7 @@ steps:
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": $.ENDPOINT,
+        "endpoint": {{$.ENDPOINT}},
         "headers": {
           "X-Algolia-Application-Id": .destination.Config.applicationId,
           "X-Algolia-API-Key": .destination.Config.apiKey

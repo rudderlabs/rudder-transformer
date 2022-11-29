@@ -1,5 +1,6 @@
 const { httpSend } = require("../../../adapters/network");
 const { CustomError } = require("../../util");
+const { executeCommonValidations } = require("../../util/regulation-api");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -64,6 +65,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 };
 const processDeleteUsers = async event => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };

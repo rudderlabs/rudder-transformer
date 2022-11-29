@@ -20,7 +20,10 @@ const MARKETO_ABORTABLE_CODES = [
   "609",
   "610",
   "612",
-  "1006"
+  "1006",
+  "1013",
+  "1004",
+  "1001"
 ];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
@@ -30,13 +33,13 @@ const logger = require("../../../logger");
 const marketoApplicationErrorHandler = (
   marketoResponse,
   sourceMessage,
-  stage
+  destination
 ) => {
   const { response } = marketoResponse;
   const { errors } = response;
   if (errors && MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Aborted).${sourceMessage}`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -44,11 +47,11 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined, // represents authErrorCategory
-      DESTINATION
+      destination
     );
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Throttled).${sourceMessage}`,
       429,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -56,11 +59,11 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined,
-      DESTINATION
+      destination
     );
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -68,7 +71,7 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined,
-      DESTINATION
+      destination
     );
   }
 };
@@ -78,13 +81,14 @@ const marketoResponseHandler = (
   sourceMessage,
   stage,
   rudderJobMetadata,
-  authCache
+  authCache,
+  destination = DESTINATION
 ) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ApiError(
-      `[Marketo Response Handler] - Request failed  with status: ${status}`,
+      `[${destination} Response Handler] - Request failed  with status: ${status}`,
       status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -118,12 +122,12 @@ const marketoResponseHandler = (
           })
         ) {
           logger.info(
-            `[Marketo] Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`
+            `${destination} Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`
           );
           authCache.del(authKey);
         }
       }
-      marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
+      marketoApplicationErrorHandler(destResponse, sourceMessage, destination);
     }
   }
   // More readable error message

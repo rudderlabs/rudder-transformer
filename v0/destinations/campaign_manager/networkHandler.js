@@ -5,7 +5,6 @@ const {
 const { isHttpStatusSuccess } = require("../../util/index");
 const ErrorBuilder = require("../../util/error");
 const {
-  DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 
@@ -26,8 +25,6 @@ const getAuthErrCategory = code => {
   switch (code) {
     case 401:
       return REFRESH_TOKEN;
-    case 403: // Access Denied
-      return DISABLE_DEST;
     default:
       return "";
   }

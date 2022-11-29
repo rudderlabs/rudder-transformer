@@ -1,4 +1,4 @@
-/* eslint-disable no-nested-ternary */
+/* eslint-disable no-nested-ternary,no-param-reassign */
 const get = require("get-value");
 
 const { EventType, MappedToDestinationKey } = require("../../../constants");
@@ -88,6 +88,7 @@ function setExternalIdOrAliasObject(payload, message) {
     return setExternalId(payload, message);
   }
 
+  // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
   return setAliasObjectWithAnonId(payload, message);
 }
@@ -275,6 +276,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
   if (
     messageType === EventType.TRACK &&
+    typeof eventName === "string" &&
     eventName.toLowerCase() === "order completed"
   ) {
     const purchaseObjs = getPurchaseObjs(message);

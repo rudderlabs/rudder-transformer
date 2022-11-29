@@ -6,31 +6,35 @@ const levelWarn = 2; // Logs about warnings which dont immediately halt the appl
 const levelError = 3; // Logs about errors which dont immediately halt the application
 // any value greater than levelError will work as levelNone
 
-const logLevel = process.env.LOG_LEVEL
+let logLevel = process.env.LOG_LEVEL
   ? parseInt(process.env.LOG_LEVEL, 10)
   : levelInfo;
 
-const debug = (msg, ...optionalParams) => {
+const setLogLevel = (level) => {
+  logLevel = level || logLevel;
+}
+
+const debug = (...args) => {
   if (levelDebug >= logLevel) {
-    console.debug(msg, optionalParams);
+    console.debug(...args);
   }
 };
 
-const info = (msg, ...optionalParams) => {
+const info = (...args) => {
   if (levelInfo >= logLevel) {
-    console.info(msg, optionalParams);
+    console.info(...args);
   }
 };
 
-const warn = (msg, ...optionalParams) => {
+const warn = (...args) => {
   if (levelWarn >= logLevel) {
-    console.warn(msg, optionalParams);
+    console.warn(...args);
   }
 };
 
-const error = (msg, ...optionalParams) => {
+const error = (...args) => {
   if (levelError >= logLevel) {
-    console.error(msg, optionalParams);
+    console.error(...args);
   }
 };
 
@@ -38,5 +42,10 @@ module.exports = {
   debug,
   info,
   warn,
-  error
+  error,
+  setLogLevel,
+  levelDebug,
+  levelInfo,
+  levelWarn,
+  levelError
 };

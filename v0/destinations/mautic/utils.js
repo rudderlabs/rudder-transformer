@@ -1,11 +1,15 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require("get-value");
-const { CustomError, getFieldValueFromMessage } = require("../../util");
-const { lookupFieldMap } = require("./config");
+const { TransformationError, getFieldValueFromMessage } = require("../../util");
+const { lookupFieldMap, DESTINATION } = require("./config");
 const { httpGET } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { ApiError } = require("../../util/errors");
+
 /**
  * @param {*} propertyName
  * @param {*} value
@@ -115,11 +119,27 @@ const deduceStateField = payload => {
  */
 const validatePayload = payload => {
   if (payload.phone && !validatePhone(payload.phone)) {
-    throw new CustomError("Invalid Phone No. Provided.", 400);
+    throw new TransformationError(
+      "The provided phone number is invalid",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
 
   if (payload.email && !validateEmail(payload.email)) {
-    throw new CustomError("Invalid Email Provided.", 400);
+    throw new TransformationError(
+      "The provided email is invalid",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
   return true;
 };
@@ -131,10 +151,26 @@ const validatePayload = payload => {
 const validateGroupCall = message => {
   const type = getFieldValueFromMessage(message, "traits")?.type;
   if (!type) {
-    throw new CustomError("Type of group not mentioned inside traits", 400);
+    throw new TransformationError(
+      "`type` is missing in the traits",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
   if (!message?.groupId) {
-    throw new CustomError("Group Id is not provided.", 400);
+    throw new TransformationError(
+      "`groupId` is missing in the event",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
 };
 
@@ -151,10 +187,27 @@ const searchContactIds = async (message, Config, baseUrl) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError("Invalid traits value for lookup field", 400);
+    throw new TransformationError(
+      "Traits are missing in the event",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
   if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
-    throw new CustomError("lookup Field is not supported", 400);
+    throw new TransformationError(
+      `Lookup field "${lookUpField}" specified in the destination configuration is not supported`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      },
+      DESTINATION
+    );
   }
   const { field, fieldValue } = getFieldForLookup(message, lookUpField);
   if (!field) {
@@ -173,11 +226,18 @@ const searchContactIds = async (message, Config, baseUrl) => {
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
-    throw new CustomError(
-      `Failed to get Mautic contacts: ${JSON.stringify(
+    throw new ApiError(
+      `Failed to fetch contacts: "${JSON.stringify(
         searchContactsResponse.response
-      )}`,
-      searchContactsResponse.status
+      )}"`,
+      searchContactsResponse.status,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(searchContactsResponse.statuss)
+      },
+      searchContactsResponse.response,
+      undefined,
+      DESTINATION
     );
   }
   const { contacts } = searchContactsResponse?.response;

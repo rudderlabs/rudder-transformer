@@ -4,7 +4,6 @@ const { httpPOST } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const {
-  DISABLE_DEST,
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { SEARCH_STREAM, CONVERSION_ACTION_ID_CACHE_TTL } = require("./config");
@@ -60,9 +59,6 @@ const getAuthErrCategory = status => {
     case 401:
       // UNAUTHORIZED
       return REFRESH_TOKEN;
-    case 403:
-      // PERMISSION_DENIED
-      return DISABLE_DEST;
     default:
       return "";
   }

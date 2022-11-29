@@ -103,7 +103,7 @@ const salesforceResponseHandler = (
 
     throw new ApiError(
       `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, Aborted.`,
-      status,
+      400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE,

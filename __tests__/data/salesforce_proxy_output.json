@@ -11,7 +11,7 @@
   },
   {
     "output": {
-      "status": 500,
+      "status": 400,
       "message": "Salesforce Request Failed: 500 due to , Aborted.",
       "destinationResponse": {
         "response": "",

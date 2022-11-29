@@ -26,14 +26,12 @@ const responseHandler = (destinationResponse, destType) => {
   };
 };
 
-class networkHandler {
-  constructor() {
-    this.responseHandler = responseHandler;
-    this.proxy = proxyRequest;
-    this.prepareProxy = prepareProxyRequest;
-    this.processAxiosResponse = processAxiosResponse;
-  }
-}
+const networkHandler = function() {
+  this.responseHandler = responseHandler;
+  this.proxy = proxyRequest;
+  this.prepareProxy = prepareProxyRequest;
+  this.processAxiosResponse = processAxiosResponse;
+};
 
 module.exports = {
   networkHandler

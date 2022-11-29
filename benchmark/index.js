@@ -12,7 +12,7 @@ const path = require("path");
 const Commander = require("commander");
 const versionedRouter = require("../versionedRouter");
 const cdkV2Handler = require("../cdk/v2/handler");
-const logger = require("../logger");
+const logger = require("./metaLogger");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 
 const command = new Commander.Command();

@@ -58,13 +58,7 @@ const destTestSet = getTestData(destinationsList, "_input");
 
 const nativeDestHandlers = {};
 const destCdKWorkflowEngines = {};
-destinationsList.forEach(dest => {
-  nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest);
-  destCdKWorkflowEngines[dest] = cdkV2Handler.getWorkflowEngine(
-    dest,
-    TRANSFORMER_METRIC.ERROR_AT.PROC
-  );
-});
+
 
 const sourcesList = cmdOpts.sources
   .split(",")
@@ -73,7 +67,20 @@ const sourcesList = cmdOpts.sources
 logger.info("Sources selected: ", sourcesList);
 const srcTestSet = getTestData(sourcesList, "_source");
 
+async function initializeHandlers() {
+  for (const idx in destinationsList) {
+    const dest = destinationsList[idx];
+    nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest);
+    destCdKWorkflowEngines[dest] = await cdkV2Handler.getWorkflowEngine(
+      dest,
+      TRANSFORMER_METRIC.ERROR_AT.PROC
+    );
+  }
+}
+
 async function run() {
+  await initializeHandlers();
+
   for (const dest in destTestSet) {
     for (const td in destTestSet[dest]) {
       const curTcData = destTestSet[dest][td];

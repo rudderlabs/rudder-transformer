@@ -89,7 +89,7 @@ const responseBuilderToUpdatePrimaryAccount = (
  * @param {*} headers -> Authorizations for API's call
  * @returns it return payloadbuilder for updating email
  */
-const payloadBuilderforUpdatingEmail = async (message, userId, headers) => {
+const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
   // url for list all identities of user
   const url = `${endPoint}users/${userId}/identities`;
   const config = { headers };
@@ -107,11 +107,11 @@ const payloadBuilderforUpdatingEmail = async (message, userId, headers) => {
     const { identities } = res.response?.data;
     if (identities && Array.isArray(identities)) {
       const identitiesDetails = identities.find(
-        identitieslist => identitieslist.primary === true
+        identitieslist =>
+          identitieslist.primary === true && identitieslist.value !== userEmail
       );
-      const traits = getFieldValueFromMessage(message, "traits");
-      const userEmail = traits?.email;
-      if (identitiesDetails.id && userEmail) {
+
+      if (identitiesDetails?.id && userEmail) {
         return responseBuilderToUpdatePrimaryAccount(
           identitiesDetails.id,
           userId,
@@ -474,11 +474,12 @@ async function processIdentify(message, destinationConfig, headers) {
 
   if (destinationConfig.searchByExternalId) {
     const userIdByExternalId = await getUserIdByExternalId(message, headers);
-    if (userIdByExternalId) {
+    const userEmail = traits?.email;
+    if (userIdByExternalId && userEmail) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
-        message,
         userIdByExternalId,
-        headers
+        headers,
+        userEmail
       );
       if (payloadForUpdatingEmail && !isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);

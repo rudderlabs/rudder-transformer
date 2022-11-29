@@ -9,7 +9,8 @@ const destinations = [
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
-  "snapchat_custom_audience"
+  "snapchat_custom_audience",
+  "marketo_static_list"
 ];
 const service = require("../versionedRouter").handleProxyRequest;
 

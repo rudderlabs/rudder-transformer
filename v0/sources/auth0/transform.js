@@ -44,7 +44,7 @@ function processEvents(eventList) {
     let response = {};
     const { data } = event;
     // Dropping the event if type is not present
-    if (data.type) {
+    if (data && data.type) {
       const eventType = data.type;
       // ss -> successful signup
       if (eventType === "ss") {

@@ -47,8 +47,8 @@
       "Config": {
         "lookUpField": "email",
         "password": "m3dG325C51C1RPq",
-            "subDomainName": "ruddertest2",
-     "userName": "anantjain45823@gmail.com"
+        "subDomainName": "ruddertest2",
+        "userName": "anantjain45823@gmail.com"
       }
     }
   },
@@ -60,7 +60,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "User Name is not Valid."
+    "error": "Invalid user name provided in the destination configuration"
   },
   {
     "batchedRequest": {
@@ -92,8 +92,8 @@
       "Config": {
         "lookUpField": "lastName",
         "password": "m3dG325C51C1RPq",
-         "subDomainName": "ruddertest2",
-     "userName": "anantjain45823@gmail.com"
+        "subDomainName": "ruddertest2",
+        "userName": "anantjain45823@gmail.com"
       }
     }
   }

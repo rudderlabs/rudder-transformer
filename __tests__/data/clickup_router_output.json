@@ -221,7 +221,7 @@
   },
   {
     "batched": false,
-    "error": "[ CLICKUP ]:: Invalid Latitude. Latitude must be in range [-90, 90]",
+    "error": "Invalid value specified for latitude. Latitude must be in range \"[-90, 90]\"",
     "metadata": [
       {
         "jobId": 4

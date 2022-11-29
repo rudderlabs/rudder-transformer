@@ -144,11 +144,11 @@ const getUserIdentityId = async (
 async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
-  fieldJson = fieldJson.slice(0, -1);
+  const fieldJsonSliced = fieldJson.slice(0, -1);
   newFields.forEach(async field => {
     // create payload for each new user field
     fieldData = {
-      [fieldJson]: {
+      [fieldJsonSliced]: {
         title: field,
         active: true,
         key: field,
@@ -335,7 +335,7 @@ async function getUserMembershipPayload(
   let zendeskUserID = await getUserId(message, headers, "group");
   const traits = get(message, "context.traits");
   if (!zendeskUserID) {
-    if (traits.name && traits.email) {
+    if (traits && traits.name && traits.email) {
       const { zendeskUserId } = await createUser(
         message,
         headers,
@@ -542,7 +542,7 @@ async function processTrack(message, destinationConfig, headers) {
   let url = `${endPoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   const userResponse = await axios.get(url, config);
-  if (!userResponse || !userResponse.data || userResponse.data.count === 0) {
+  if (!get(userResponse, "data.users.0.id") || userResponse.data.count === 0) {
     const { zendeskUserId, email } = await createUser(
       message,
       headers,
@@ -558,7 +558,6 @@ async function processTrack(message, destinationConfig, headers) {
     userEmail = email;
   }
   zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
-  userEmail = userEmail || userResponse.data.users[0].email;
 
   const eventObject = {};
   eventObject.description = message.event;

@@ -13,7 +13,6 @@ const Commander = require("commander");
 const logger = require("./metaLogger");
 const versionedRouter = require("../versionedRouter");
 const cdkV2Handler = require("../cdk/v2/handler");
-const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 
 const supportedDestinations = ["algolia", "pinterest_tag"];
 
@@ -82,20 +81,27 @@ const destCdKWorkflowEngines = {};
 
 const benchmarkType = cmdOpts.benchmarktype.trim();
 
+const getNativeHandleName = () => {
+  let handleName = "process";
+  if (cmdOpts.feature === "rt") {
+    handleName = "processRouterDest";
+  }
+  return handleName;
+};
+
 async function initializeHandlers() {
   for (const idx in destinationsList) {
     const dest = destinationsList[idx];
 
     // Native destination handler
-    nativeDestHandlers[dest] = versionedRouter.getDestHandler(
-      "v0",
-      dest
-    ).process;
+    nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest)[
+      getNativeHandleName()
+    ];
 
     // Get the CDK 2.0 workflow engine instance
     destCdKWorkflowEngines[dest] = await cdkV2Handler.getWorkflowEngine(
       dest,
-      TRANSFORMER_METRIC.ERROR_AT.PROC
+      cmdOpts.feature
     );
   }
 }

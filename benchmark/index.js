@@ -105,9 +105,8 @@ async function runDataset(suitDesc, input, intg, params) {
   Object.keys(params).forEach(opName => {
     suite.add(opName, async function() {
       try {
-        await params[opName].caller(
-          ...params[opName].argsResolver(intg, input)
-        );
+        const handler = params[opName].handlerResolver(intg);
+        await handler(...params[opName].argsResolver(intg, input));
       } catch (err) {
         // logger.info(err);
         // Do nothing
@@ -182,7 +181,7 @@ async function run() {
   // Destinations
   await runIntgDataset(destDataset, "Destination", {
     native: {
-      caller: versionedRouter.handleV0Destination,
+      handlerResolver: intg => nativeDestHandlers[intg],
       argsResolver: (intg, input) => [
         nativeDestHandlers[intg],
         intg,
@@ -191,7 +190,7 @@ async function run() {
       ]
     },
     "CDK 2.0": {
-      caller: cdkV2Handler.process,
+      handlerResolver: () => cdkV2Handler.process,
       argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input]
     }
   });

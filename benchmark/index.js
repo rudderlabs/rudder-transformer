@@ -32,7 +32,13 @@ command
     "Enter the benchmark type (Operations or Memory)",
     "Operations"
   )
+  .option("-f, --feature <string>", "Enter feature name (proc or rt)", "proc")
   .parse();
+
+const getTestFileName = (intg, testSufix) => {
+  const featureSufix = cmdOpts.feature === "rt" ? "_router" : "";
+  return `${intg}${featureSufix}${testSufix}.json`;
+};
 
 const testDataDir = path.join(__dirname, "./../__tests__/data");
 const getTestData = (intgList, fileNameSuffixes) => {
@@ -43,7 +49,7 @@ const getTestData = (intgList, fileNameSuffixes) => {
       try {
         intgTestData[intg] = JSON.parse(
           fs.readFileSync(
-            path.join(testDataDir, `${intg}${fileNameSuffix}.json`),
+            path.join(testDataDir, getTestFileName(intg, fileNameSuffix)),
             {
               encoding: "utf-8"
             }
@@ -67,7 +73,7 @@ const destinationsList = cmdOpts.destinations
   .split(",")
   .map(x => x.trim())
   .filter(x => x !== "");
-logger.info("Destinations selected: ", destinationsList);
+logger.info("Destinations:", destinationsList, "feature:", cmdOpts.feature);
 logger.info();
 const destDataset = getTestData(destinationsList, ["_input", ""]);
 
@@ -103,11 +109,11 @@ async function runDataset(suitDesc, input, intg, params) {
   const suite = new Benchmark(suitDesc, benchmarkType);
 
   Object.keys(params).forEach(opName => {
+    const handler = params[opName].handlerResolver(intg);
+    const args = params[opName].argsResolver(intg, input);
     suite.add(opName, async function() {
       try {
-        await params[opName].caller(
-          ...params[opName].argsResolver(intg, input)
-        );
+        await handler(...args);
       } catch (err) {
         // logger.info(err);
         // Do nothing
@@ -132,9 +138,7 @@ async function runDataset(suitDesc, input, intg, params) {
           if (benchmarkType === "Operations") {
             logger.info(
               `-> "${result.end.name}" is faster by ${(
-                result.end.stats.n /
-                result.end.stats.mean /
-                (results[impl].stats.n / results[impl].stats.mean)
+                results[impl].stats.mean / result.end.stats.mean
               ).toFixed(1)} times to "${impl}"`
             );
           } else {
@@ -157,8 +161,8 @@ async function runIntgDataset(dataset, type, params) {
   for (const intg in dataset) {
     for (const tc in dataset[intg]) {
       const curTcData = dataset[intg][tc];
-      let tcInput;
-      let tcDesc;
+      let tcInput = curTcData;
+      let tcDesc = `${type} - ${intg} - ${cmdOpts.feature} - ${tc}`;
       // New test data file structure
       if (
         "description" in curTcData &&
@@ -166,10 +170,7 @@ async function runIntgDataset(dataset, type, params) {
         "output" in curTcData
       ) {
         tcInput = curTcData.input;
-        tcDesc = `${type} - ${intg} - "${curTcData.description}"`;
-      } else {
-        tcInput = curTcData;
-        tcDesc = `${type} - ${intg} - "${tc}"`;
+        tcDesc += ` - "${curTcData.description}"`;
       }
 
       await runDataset(tcDesc, tcInput, intg, params);
@@ -184,16 +185,11 @@ async function run() {
   // Destinations
   await runIntgDataset(destDataset, "Destination", {
     native: {
-      caller: versionedRouter.handleV0Destination,
-      argsResolver: (intg, input) => [
-        nativeDestHandlers[intg],
-        intg,
-        input,
-        TRANSFORMER_METRIC.ERROR_AT.PROC
-      ]
+      handlerResolver: intg => nativeDestHandlers[intg],
+      argsResolver: (_intg, input) => [input]
     },
     "CDK 2.0": {
-      caller: cdkV2Handler.process,
+      handlerResolver: () => cdkV2Handler.process,
       argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input]
     }
   });

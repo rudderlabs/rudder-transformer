@@ -103,10 +103,11 @@ async function runDataset(suitDesc, input, intg, params) {
   const suite = new Benchmark(suitDesc, benchmarkType);
 
   Object.keys(params).forEach(opName => {
+    const handler = params[opName].handlerResolver(intg);
+    const args = params[opName].argsResolver(intg, input);
     suite.add(opName, async function() {
       try {
-        const handler = params[opName].handlerResolver(intg);
-        await handler(...params[opName].argsResolver(intg, input));
+        await handler(...args);
       } catch (err) {
         // logger.info(err);
         // Do nothing
@@ -182,12 +183,7 @@ async function run() {
   await runIntgDataset(destDataset, "Destination", {
     native: {
       handlerResolver: intg => nativeDestHandlers[intg],
-      argsResolver: (intg, input) => [
-        nativeDestHandlers[intg],
-        intg,
-        input,
-        TRANSFORMER_METRIC.ERROR_AT.PROC
-      ]
+      argsResolver: (_intg, input) => [input]
     },
     "CDK 2.0": {
       handlerResolver: () => cdkV2Handler.process,

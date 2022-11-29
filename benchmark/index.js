@@ -103,11 +103,11 @@ async function runDataset(suitDesc, input, intg, params) {
   const suite = new Benchmark(suitDesc, benchmarkType);
 
   Object.keys(params).forEach(opName => {
+    const handler = params[opName].handlerResolver(intg);
+    const args = params[opName].argsResolver(intg, input);
     suite.add(opName, async function() {
       try {
-        await params[opName].caller(
-          ...params[opName].argsResolver(intg, input)
-        );
+        await handler(...args);
       } catch (err) {
         // logger.info(err);
         // Do nothing
@@ -132,9 +132,7 @@ async function runDataset(suitDesc, input, intg, params) {
           if (benchmarkType === "Operations") {
             logger.info(
               `-> "${result.end.name}" is faster by ${(
-                result.end.stats.n /
-                result.end.stats.mean /
-                (results[impl].stats.n / results[impl].stats.mean)
+                results[impl].stats.mean / result.end.stats.mean
               ).toFixed(1)} times to "${impl}"`
             );
           } else {
@@ -184,16 +182,11 @@ async function run() {
   // Destinations
   await runIntgDataset(destDataset, "Destination", {
     native: {
-      caller: versionedRouter.handleV0Destination,
-      argsResolver: (intg, input) => [
-        nativeDestHandlers[intg],
-        intg,
-        input,
-        TRANSFORMER_METRIC.ERROR_AT.PROC
-      ]
+      handlerResolver: intg => nativeDestHandlers[intg],
+      argsResolver: (_intg, input) => [input]
     },
     "CDK 2.0": {
-      caller: cdkV2Handler.process,
+      handlerResolver: () => cdkV2Handler.process,
       argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input]
     }
   });

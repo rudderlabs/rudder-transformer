@@ -40,7 +40,7 @@ const getAccessToken = async destination => {
       salesforceAuthorisationData
     );
     // If the request fails, throwing error.
-    if (salesforceAuthorisationData.success === false) {
+    if (!salesforceAuthorisationData.success) {
       const { error } = salesforceAuthorisationData.response.response.data;
       throw new ApiError(
         `${DESTINATION} Request Failed: access token could not be generated due to ${error}`,
@@ -72,28 +72,28 @@ const salesforceResponseHandler = (
 
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
-    if (status === 401 && authKey) {
-      if (
-        response &&
-        Array.isArray(response) &&
-        response[0].errorCode === "INVALID_SESSION_ID"
-      ) {
-        // checking for invalid/expired token errors and evicting cache in that case
-        // rudderJobMetadata contains some destination info which is being used to evict the cache
-        ACCESS_TOKEN_CACHE.del(authKey);
-        throw new ApiError(
-          `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
-          500,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
-            stage
-          },
-          sourceMessage,
-          undefined,
-          DESTINATION
-        );
-      }
+    const isTokenExpiredError =
+      response &&
+      Array.isArray(response) &&
+      response?.some(resp => {
+        return resp.errorCode === "INVALID_SESSION_ID";
+      });
+    if (status === 401 && authKey && isTokenExpiredError) {
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      ACCESS_TOKEN_CACHE.del(authKey);
+      throw new ApiError(
+        `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
+        500,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
+          stage
+        },
+        response,
+        undefined,
+        DESTINATION
+      );
     }
     // check the error message
     let errorMessage = "";

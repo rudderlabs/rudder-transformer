@@ -13,6 +13,7 @@ const Commander = require("commander");
 const versionedRouter = require("../versionedRouter");
 const cdkV2Handler = require("../cdk/v2/handler");
 const logger = require("../logger");
+const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 
 const command = new Commander.Command();
 command
@@ -124,7 +125,7 @@ async function runDataset(desc, input, intg) {
         nativeDestHandlers[intg].process,
         intg,
         input,
-        "proc"
+        TRANSFORMER_METRIC.ERROR_AT.PROC
       );
     } catch (err) {
       // logger.info(err);
@@ -134,7 +135,11 @@ async function runDataset(desc, input, intg) {
 
   suite.add("CDK 2.0", async function() {
     try {
-      await cdkV2Handler.processCdkV2Workflow(intg, input, "proc");
+      await cdkV2Handler.processCdkV2Workflow(
+        intg,
+        input,
+        TRANSFORMER_METRIC.ERROR_AT.PROC
+      );
     } catch (err) {
       // logger.info(err);
       // Do nothing

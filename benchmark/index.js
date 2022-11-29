@@ -137,7 +137,7 @@ async function runDataset(suitDesc, input, intg, params) {
             );
           } else {
             logger.info(
-              `"${result.end.name}" consumed ${(
+              `-> "${result.end.name}" consumed ${(
                 result.end.stats.n / results[impl].stats.n
               ).toFixed(1)} times memory compared to "${impl}"`
             );

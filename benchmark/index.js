@@ -173,11 +173,13 @@ async function runDataset(desc, input, intg) {
           results[impl].stats.n,
           results[impl].stats.mean.toFixed(4)
         );
-        logger.info(
-          `"${result.end.name}" is faster by ${(
-            result.end.stats.n / results[impl].stats.n
-          ).toFixed(1)} times to "${impl}"`
-        );
+       if(result.end.name !==  results[impl].name){
+          logger.info(
+            `"${result.end.name}" is faster by ${(
+              result.end.stats.n / results[impl].stats.n
+            ).toFixed(1)} times to "${impl}"`
+          );
+        }
         logger.info();
       });
     });

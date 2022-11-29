@@ -21,7 +21,8 @@ const {
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  handleHttpRequest
 } = require("../../util");
 const { httpGET } = require("../../../adapters/network");
 const {
@@ -111,10 +112,15 @@ async function getSaleforceIdForRecord(
   destination
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-  const sfSearchResponse = await httpGET(objSearchUrl, {
-    headers: { Authorization: authorizationData.token }
-  });
-  const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
+  const {
+    processedResponse: processedsfSearchResponse
+  } = await handleHttpRequest("get", [
+    objSearchUrl,
+    {
+      headers: { Authorization: authorizationData.token }
+    }
+  ]);
+  // const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
       processedsfSearchResponse,
@@ -219,10 +225,15 @@ async function getSalesforceIdFromPayload(
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
     // request configuration will be conditional
-    const leadQueryResponse = await httpGET(leadQueryUrl, {
-      headers: { Authorization: authorizationData.token }
-    });
-    const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
+    const {
+      processedResponse: processedLeadQueryResponse
+    } = await handleHttpRequest("get", [
+      leadQueryUrl,
+      {
+        headers: { Authorization: authorizationData.token }
+      }
+    ]);
+    // const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {
       salesforceResponseHandler(

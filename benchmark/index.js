@@ -134,7 +134,7 @@ async function runDataset(suitDesc, input, intg, params) {
               `-> "${result.end.name}" is faster by ${(
                 result.end.stats.n /
                 result.end.stats.mean /
-                (results[impl].stats.n / result.end.stats.mean)
+                (results[impl].stats.n / results[impl].stats.mean)
               ).toFixed(1)} times to "${impl}"`
             );
           } else {

@@ -11,7 +11,6 @@ const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
-const getTransformationHandlesUrl = `${CONFIG_BACKEND_URL}/transformationHandles`;
 
 // Gets the transformation from config backend.
 // Stores the transformation object in memory with time to live after which it expires.
@@ -28,7 +27,7 @@ async function getTransformationCodeV1(versionId) {
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 
-    responseStatusHandler(response.status, "Transformation", url, versionId);
+    responseStatusHandler(response.status, "Transformation", versionId, url);
     stats.increment("get_transformation_code.success", tags);
     stats.timing("get_transformation_code", startTime, tags);
     const myJson = await response.json();
@@ -56,8 +55,8 @@ async function getLibraryCodeV1(versionId) {
     responseStatusHandler(
       response.status,
       "Transformation Library",
-      url,
-      versionId
+      versionId,
+      url
     );
     stats.increment("get_libraries_code.success", tags);
     stats.timing("get_libraries_code", startTime, tags);
@@ -71,25 +70,4 @@ async function getLibraryCodeV1(versionId) {
   }
 }
 
-async function getAllTransformationHandles() {
-  try {
-    const url = getTransformationHandlesUrl();
-    const startTime = new Date();
-    const response = await fetchWithProxy(url);
-
-    responseStatusHandler(response.status, "Transformation Handle", url);
-    stats.timing("get_transformation_handles", startTime);
-    const myJson = await response.json();
-    return myJson;
-  } catch (error) {
-    logger.error(error);
-    stats.increment("get_transformation_handles.error");
-    throw error;
-  }
-}
-
-module.exports = {
-  getTransformationCodeV1,
-  getLibraryCodeV1,
-  getAllTransformationHandles
-};
+module.exports = { getTransformationCodeV1, getLibraryCodeV1 };

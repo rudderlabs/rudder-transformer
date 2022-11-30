@@ -10,8 +10,7 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage,
-  getIntegrationsObj
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   ENDPOINT,
@@ -323,11 +322,6 @@ const responseBuilder = (message, { Config }) => {
         mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
       )
     };
-  }
-
-  const integrationsObj = getIntegrationsObj(message, "ga4");
-  if (integrationsObj && integrationsObj.sessionId) {
-    payload.params.session_id = integrationsObj.sessionId;
   }
 
   removeReservedParameterPrefixNames(payload.params);

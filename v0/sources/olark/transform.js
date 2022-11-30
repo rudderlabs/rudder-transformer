@@ -23,7 +23,7 @@ const prepareTrackPayload = event => {
   message.traits = removeUndefinedAndNullValues(message.traits);
   message.properties = removeUndefinedAndNullValues(message.properties);
 
-  if (event.visitor.browser) {
+  if (event.visitor?.browser) {
     const browser = getBrowserInfo(event.visitor.browser);
     set(message.context, "browser.name", browser.name);
     set(message.context, "browser.version", browser.version);

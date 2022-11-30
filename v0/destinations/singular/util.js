@@ -19,7 +19,7 @@ const {
   extractCustomFields,
   getValueFromMessage,
   isDefinedAndNotNull,
-  toUnixTimestamp
+  isAppleFamily
 } = require("../../util");
 
 /*
@@ -107,6 +107,11 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
   if (!platform) {
     throw new CustomError("[Singular] :: Platform name is missing", 400);
+  }
+  // checking if the os is one of ios, ipados, watchos, tvos
+  if (typeof platform === "string" && isAppleFamily(platform.toLowerCase())) {
+    message.context.os.name = "iOS";
+    platform = "iOS";
   }
   platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {

@@ -6,7 +6,7 @@ const { setupFaasFunction, executeFaasFunction } = require("./openfaas");
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
     const funcName = `fn-test-
-      -${userTransformation.testName.replace("_", "-")}
+      -${userTransformation.testName?.replace("_", "-")}
       -${uuidv4()}`;
     return funcName.substring(0, 63).toLowerCase();
   }

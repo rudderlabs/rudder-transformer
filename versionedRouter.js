@@ -23,10 +23,7 @@ const {
 } = require("./v0/util");
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
-const {
-  userTransformHandler,
-  lambdaMigrationsHandler
-} = require("./routerUtils");
+const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
@@ -688,17 +685,7 @@ if (startDestTransformer) {
             } catch (error) {
               logger.error(error);
               let status = 400;
-
-              let errorString = error.toString();
-
-              if (
-                error.response &&
-                error.response.data &&
-                error.response.data.error
-              ) {
-                errorString = error.response.data.error;
-              }
-
+              const errorString = error.toString();
               if (error instanceof RetryRequestError) {
                 ctxStatusCode = error.statusCode;
               }
@@ -753,17 +740,6 @@ if (startDestTransformer) {
         processSessions
       });
     });
-
-    // API for migrating available lambdas to openfaas.
-    router.post("/transformer/migrate", async ctx => {
-      try {
-        await lambdaMigrationsHandler()();
-        ctx.status = 200;
-      } catch (error) {
-        ctx.body = { error: error.message };
-        ctx.status = 500;
-      }
-    });
   }
 }
 
@@ -795,8 +771,7 @@ if (transformerTestModeEnabled) {
       ctx.body = res;
     } catch (error) {
       ctx.status = 400;
-      const errorString = error.response?.data?.error || error.message;
-      ctx.body = { error: errorString };
+      ctx.body = { error: error.message };
     }
   });
 

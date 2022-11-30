@@ -27,7 +27,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
         const startTime = new Date();
         const response = await fetchWithProxy(url);
 
-        responseStatusHandler(response.status, "Tracking plan", tpId, url);
+        responseStatusHandler(response.status, "Tracking plan", url, tpId);
         stats.timing("get_tracking_plan", startTime);
         const myJson = await response.json();
         tpCache.set(`${tpId}::${version}`, myJson);

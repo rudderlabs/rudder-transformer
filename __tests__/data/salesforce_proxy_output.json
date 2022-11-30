@@ -25,5 +25,39 @@
         "meta": "abortable"
       }
     }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorAt": "proxy",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorAt": "proxy",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "abortable"
+      }
+    }
   }
 ]

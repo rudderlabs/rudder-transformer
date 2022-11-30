@@ -113,7 +113,6 @@ async function getSaleforceIdForRecord(
   } = await handleHttpRequest("get", objSearchUrl, {
     headers: { Authorization: authorizationData.token }
   });
-  // const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
       processedsfSearchResponse,
@@ -121,7 +120,7 @@ async function getSaleforceIdForRecord(
         processedsfSearchResponse.response
       )}`,
       TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      { authKey: destination.ID }
+      destination.ID
     );
   }
   return get(processedsfSearchResponse.response, "searchRecords.0.Id");
@@ -223,7 +222,6 @@ async function getSalesforceIdFromPayload(
     } = await handleHttpRequest("get", leadQueryUrl, {
       headers: { Authorization: authorizationData.token }
     });
-    // const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {
       salesforceResponseHandler(
@@ -232,7 +230,7 @@ async function getSalesforceIdFromPayload(
           processedLeadQueryResponse.response
         )}`,
         TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        { authKey: destination.ID }
+        destination.ID
       );
     }
 
@@ -409,6 +407,7 @@ const processMetadataForRouter = output => {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach(metadataElement => {
+    // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;

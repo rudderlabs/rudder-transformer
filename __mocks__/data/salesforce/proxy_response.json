@@ -13,5 +13,22 @@
         "errorCode": "INVALID_SESSION_ID"
       }
     ]
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2": {
+    "response": [
+      {
+        "message": "INVALID_HEADER_TYPE",
+        "errorCode": "INVALID_AUTH_HEADER"
+      }
+    ]
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4": {
+    "response": [
+      {
+        "message": "",
+        "errorCode": "REQUEST_LIMIT_EXCEEDED"
+      }
+    ],
+    "status": 403
   }
 }

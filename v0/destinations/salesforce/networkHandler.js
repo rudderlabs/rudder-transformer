@@ -16,7 +16,7 @@ const responseHandler = (destinationResponse, destType) => {
     destinationResponse,
     "during Salesforce Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-    destinationResponse?.rudderJobMetadata
+    destinationResponse?.rudderJobMetadata?.destInfo?.authKey
   );
 
   return {

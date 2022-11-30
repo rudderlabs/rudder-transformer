@@ -62,7 +62,13 @@ const getAccessToken = async destination => {
     };
   });
 };
-
+/**
+ * handles Salesforce application level failures
+ * @param {*} destResponse
+ * @param {*} sourceMessage
+ * @param {*} stage
+ * @param {String} authKey
+ */
 const salesforceResponseHandler = (
   destResponse,
   sourceMessage,
@@ -72,14 +78,14 @@ const salesforceResponseHandler = (
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error
-  if (!isHttpStatusSuccess(status)) {
-    const isTokenExpiredError =
+  if (!isHttpStatusSuccess(status) && status >= 400) {
+    const matchErrorCode = errorCode =>
       response &&
       Array.isArray(response) &&
-      response?.some(resp => {
-        return resp.errorCode === "INVALID_SESSION_ID";
+      response.some(resp => {
+        return resp.errorCode === errorCode;
       });
-    if (status === 401 && authKey && isTokenExpiredError) {
+    if (status === 401 && authKey && matchErrorCode("INVALID_SESSION_ID")) {
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
       ACCESS_TOKEN_CACHE.del(authKey);
@@ -91,7 +97,36 @@ const salesforceResponseHandler = (
           meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
           stage
         },
-        response,
+        destResponse,
+        undefined,
+        DESTINATION
+      );
+    } else if (status === 403 && matchErrorCode("REQUEST_LIMIT_EXCEEDED")) {
+      // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
+      throw new ApiError(
+        `${DESTINATION} Request Failed - due to ${response[0].message}, (Throttled).${sourceMessage}`,
+        429,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED,
+          stage
+        },
+        destResponse,
+        undefined,
+        DESTINATION
+      );
+    } else if (status === 503) {
+      // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
+      // for maintenance or is currently overloaded.
+      throw new ApiError(
+        `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
+        500,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
+          stage
+        },
+        destResponse,
         undefined,
         DESTINATION
       );

@@ -62,6 +62,7 @@ const getAccessToken = async destination => {
     };
   });
 };
+
 /**
  * handles Salesforce application level failures
  * @param {*} destResponse

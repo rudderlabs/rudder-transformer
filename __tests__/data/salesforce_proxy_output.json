@@ -5,17 +5,59 @@
       "message": "Request for destination: salesforce Processed Successfully",
       "destinationResponse": {
         "response": "",
-        "status": 204
+        "status": 204,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Salesforce Request Failed - due to Session expired or invalid, (Retryable).during Salesforce Response Handling",
+      "destinationResponse": {
+        "response": [
+          {
+            "message": "Session expired or invalid",
+            "errorCode": "INVALID_SESSION_ID"
+          }
+        ],
+        "status": 401,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorAt": "proxy",
+        "scope": "api",
+        "stage": "responseTransform",
+        "meta": "retryable"
       }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "message": "Salesforce Request Failed: 401 due to INVALID_HEADER_TYPE, Aborted.",
       "destinationResponse": {
-        "response": "",
-        "status": 500
+        "response": [
+          {
+            "message": "INVALID_HEADER_TYPE",
+            "errorCode": "INVALID_AUTH_HEADER"
+          }
+        ],
+        "status": 401,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
       },
       "statTags": {
         "destType": "SALESFORCE",
@@ -28,35 +70,55 @@
   },
   {
     "output": {
-      "status": 400,
-      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "status": 429,
+      "message": "Salesforce Request Failed - due to Request limit exceeded, (Throttled).during Salesforce Response Handling",
       "destinationResponse": {
-        "response": "",
-        "status": 500
+        "response": [
+          {
+            "message": "Request limit exceeded",
+            "errorCode": "REQUEST_LIMIT_EXCEEDED"
+          }
+        ],
+        "status": 403,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
       },
       "statTags": {
         "destType": "SALESFORCE",
         "errorAt": "proxy",
         "scope": "api",
         "stage": "responseTransform",
-        "meta": "abortable"
+        "meta": "throttled"
       }
     }
   },
   {
     "output": {
-      "status": 400,
-      "message": "Salesforce Request Failed: 500 due to , Aborted.",
+      "status": 500,
+      "message": "Salesforce Request Failed - due to Server Unavailable, (Retryable).during Salesforce Response Handling",
       "destinationResponse": {
-        "response": "",
-        "status": 500
+        "response": [
+          {
+            "message": "Server Unavailable",
+            "errorCode": "SERVER_UNAVAILABLE"
+          }
+        ],
+        "status": 503,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
       },
       "statTags": {
         "destType": "SALESFORCE",
         "errorAt": "proxy",
         "scope": "api",
         "stage": "responseTransform",
-        "meta": "abortable"
+        "meta": "retryable"
       }
     }
   }

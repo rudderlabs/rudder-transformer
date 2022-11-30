@@ -22,7 +22,7 @@ async function getTransformationCode(versionId) {
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 
-    responseStatusHandler(response.status, "Transformation", versionId, url);
+    responseStatusHandler(response.status, "Transformation", url, versionId);
     stats.increment("get_transformation_code.success");
     stats.timing("get_transformation_code", startTime, { versionId });
     const myJson = await response.json();

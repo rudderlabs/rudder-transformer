@@ -19,6 +19,13 @@ const userTransformHandler = () => {
   throw new Error("Functions are not enabled");
 };
 
+const lambdaMigrationsHandler = () => {
+  if (functionsEnabled()) {
+    return require("./util/openfaas/migration").lambdaMigrationsHandler;
+  }
+  throw new Error("Functions are not enabled");
+};
+
 async function sendToDestination(destination, payload) {
   let parsedResponse;
   logger.info("Request recieved for destination", destination);
@@ -57,5 +64,6 @@ async function sendToDestination(destination, payload) {
 
 module.exports = {
   sendToDestination,
-  userTransformHandler
+  userTransformHandler,
+  lambdaMigrationsHandler
 };

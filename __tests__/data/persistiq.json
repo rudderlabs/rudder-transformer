@@ -28,7 +28,8 @@
         },
         "traits": {
           "linkedinUrl": "www.google.com",
-          "dup": "update"
+          "dup": "update",
+          "status": "open"
         }
       },
       "destination": {
@@ -58,7 +59,8 @@
             "last_name": "rudderstack",
             "linkedin": "www.google.com",
             "phone": "9225467887"
-          }
+          },
+          "status": "open"
         },
         "JSON_ARRAY": {},
         "XML": {}
@@ -257,8 +259,7 @@
         "timestamp": "2015-02-23T22:28:55.111Z",
         "traits": {
           "email": "business@rudderstack.com",
-          "plan": "premium",
-          "logins": 5
+          "mailbox_id": "mbid1"
         },
         "type": "group",
         "userId": "user@123"
@@ -274,7 +275,8 @@
         "XML": {},
         "FORM": {},
         "JSON": {
-          "lead_id": "lel1c5u1wuk8"
+          "lead_id": "lel1c5u1wuk8",
+          "mailbox_id": "mbid1"
         },
         "JSON_ARRAY": {}
       },

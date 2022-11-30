@@ -47,6 +47,9 @@ const identifyResponseBuilder = (message, Config, leadId) => {
     // updating existing lead
     endpoint = `${configCategories.Update.endpoint.replace("leadId", leadId)}`;
     method = configCategories.Update.method;
+    if (traits?.status) {
+      set(payload, "status", traits.status);
+    }
     set(payload, "data", leadInfo);
     // check for status and status Id
   }
@@ -110,10 +113,10 @@ const groupResponseBuilder = (message, Config, leadId) => {
   let { endpoint } = configCategories.Group.add;
   endpoint = endpoint.replace(":campaign_id", groupId);
   const payload = {};
-  set(payload, "lead_id", leadId);
-  if (traits?.status) {
-    set(payload, "status", traits.status);
+  if (traits?.mailbox_id) {
+    set(payload, "mailbox_id", traits.mailbox_id);
   }
+  set(payload, "lead_id", leadId);
   return responseBuilder(payload, endpoint, method, Config);
 };
 const process = event => {

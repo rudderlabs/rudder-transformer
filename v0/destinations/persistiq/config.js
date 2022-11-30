@@ -46,7 +46,7 @@ const configCategories = {
 const fileConfigCategories = {
   IDENTIFY: {
     type: "identify",
-    name: "piqIdentifyConfig"
+    name: "persistIqIdentifyConfig"
   }
 };
 const mappingConfig = getMappingConfig(fileConfigCategories, __dirname);

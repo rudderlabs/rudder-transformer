@@ -34,7 +34,8 @@ const getAccessToken = async destination => {
     }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
     const { httpResponse, processedResponse } = await handleHttpRequest(
       "post",
-      [authUrl, {}]
+      authUrl,
+      {}
     );
     // const salesforceAxiosResponse = processAxiosResponse(
     //   salesforceAuthorisationData

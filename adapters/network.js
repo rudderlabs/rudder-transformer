@@ -276,24 +276,22 @@ const proxyRequest = async request => {
  *  - __httpResponse__: indicates the response we get from httpGET or httpPOST methods
  *  - __processedResponse__: indicates a wrapeed response object returned from processedAxiosResponse
  * @example
- *  handleHttpRequest("post", ["https://example.com", {}])
- *  handleHttpRequest("constructor", [
- *    {
-        method: "post",
-        url: "https://myapi.com/api/2/deletions/users",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic sdineciuneu839eu3i9/=`
-        },
-        data: {
-          // some random data
-          "key": 1,
-          "ke": 2
-        }
+ *  handleHttpRequest("post", "https://example.com", {})
+ *  handleHttpRequest("constructor",{
+      method: "post",
+      url: "https://myapi.com/api/2/deletions/users",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic sdineciuneu839eu3i9/=`
+      },
+      data: {
+        // request body data
+        "key": 1,
+        "ke": 2
       }
-    ])
+    })
  */
-const handleHttpRequest = async (requestType = "post", httpArgs) => {
+const handleHttpRequest = async (requestType = "post", ...httpArgs) => {
   let httpWrapperMethod;
   switch (requestType.toLowerCase()) {
     case "get":

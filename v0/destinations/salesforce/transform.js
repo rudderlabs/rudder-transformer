@@ -110,12 +110,9 @@ async function getSaleforceIdForRecord(
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
   const {
     processedResponse: processedsfSearchResponse
-  } = await handleHttpRequest("get", [
-    objSearchUrl,
-    {
-      headers: { Authorization: authorizationData.token }
-    }
-  ]);
+  } = await handleHttpRequest("get", objSearchUrl, {
+    headers: { Authorization: authorizationData.token }
+  });
   // const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
@@ -223,12 +220,9 @@ async function getSalesforceIdFromPayload(
     // request configuration will be conditional
     const {
       processedResponse: processedLeadQueryResponse
-    } = await handleHttpRequest("get", [
-      leadQueryUrl,
-      {
-        headers: { Authorization: authorizationData.token }
-      }
-    ]);
+    } = await handleHttpRequest("get", leadQueryUrl, {
+      headers: { Authorization: authorizationData.token }
+    });
     // const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {

@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "responder_uuid",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "created_at",
+    "destKeys": "originalTimestamp"
+  }
+]

@@ -76,5 +76,6 @@ module.exports = {
   BASE_URL,
   mappingConfig,
   ConfigCategories,
-  lookupFieldMap
+  lookupFieldMap,
+  DESTINATION: "MAUTIC"
 };

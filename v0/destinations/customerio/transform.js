@@ -2,6 +2,7 @@ const get = require("get-value");
 const set = require("set-value");
 const btoa = require("btoa");
 const truncate = require("truncate-utf8-bytes");
+const { isAppleFamily } = require("rudder-transformer-cdk/build/utils");
 const {
   EventType,
   SpecedTraits,
@@ -30,7 +31,6 @@ const {
   MERGE_USER_ENDPOINT
 } = require("./config");
 const logger = require("../../../logger");
-const { isAppleFamily } = require("rudder-transformer-cdk/build/utils");
 
 const deviceRelatedEventNames = [
   "Application Installed",
@@ -244,6 +244,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
           86
         )} Screen`;
       } else {
+        if (!evName) {
+          logger.error(`Could not determine event name`);
+          throw new CustomError(`Could not determine event name`, 400);
+        }
         trimmedEvName = truncate(evName, 100);
       }
       // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked

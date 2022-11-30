@@ -37,9 +37,6 @@ const getAccessToken = async destination => {
       authUrl,
       {}
     );
-    // const salesforceAxiosResponse = processAxiosResponse(
-    //   salesforceAuthorisationData
-    // );
     // If the request fails, throwing error.
     if (!httpResponse.success) {
       const { error } = httpResponse.response.response.data;
@@ -64,6 +61,7 @@ const getAccessToken = async destination => {
 };
 
 /**
+ * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
  * handles Salesforce application level failures
  * @param {*} destResponse
  * @param {*} sourceMessage

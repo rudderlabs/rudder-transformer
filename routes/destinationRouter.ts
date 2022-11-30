@@ -7,3 +7,5 @@ router.post(
   "/:version/destinations/:destination",
   DestinationController.destinationVanillaTransformAtProcessor
 );
+
+export const destinationRoutes = router.routes();

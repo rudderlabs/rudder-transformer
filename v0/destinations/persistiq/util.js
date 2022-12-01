@@ -69,8 +69,7 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
   return { ...data, ...remainingAttributes };
 };
 
-const buildIdentifyPayload = (message, Config) => {
-  const traits = getIdentifyTraits(message);
+const buildLeadPayload = (message, traits, Config) => {
   if (!traits) {
     throw new ErrorBuilder()
       .setMessage("Traits not Provided")
@@ -99,4 +98,4 @@ const buildIdentifyPayload = (message, Config) => {
   );
   return { ...configPayload, ...customPersistIqAttributes };
 };
-module.exports = { getIdentifyTraits, buildIdentifyPayload };
+module.exports = { getIdentifyTraits, buildLeadPayload };

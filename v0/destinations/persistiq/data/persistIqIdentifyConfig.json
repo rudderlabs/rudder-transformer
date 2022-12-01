@@ -97,7 +97,7 @@
     },
     {
         "destKey": "company_name",
-        "sourceKeys": "company",
+        "sourceKeys": ["conapny.name", "company"],
         "required": false
     }
 ]

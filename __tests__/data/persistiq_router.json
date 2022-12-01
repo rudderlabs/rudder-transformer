@@ -190,7 +190,7 @@
                 },
                 "batched": false,
                 "statusCode": 400,
-                "error": "Lead Id from externalId is not found. please provide one."
+                "error": "Lead Id from externalId is not found."
             }
         ]
     }

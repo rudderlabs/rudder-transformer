@@ -8,7 +8,7 @@ const {
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const ErrorBuilder = require("../../util/error");
 const { DESTINATION, configCategories } = require("./config");
-const { buildIdentifyPayload, getIdentifyTraits } = require("./util");
+const { buildLeadPayload, getIdentifyTraits } = require("./util");
 const { EventType } = require("../../../constants");
 
 const responseBuilder = (payload, endpoint, method, Config) => {
@@ -25,14 +25,14 @@ const responseBuilder = (payload, endpoint, method, Config) => {
 
 const identifyResponseBuilder = (message, Config, leadId) => {
   const traits = getIdentifyTraits(message);
-
   let endpoint;
   let method;
   const payload = {};
-  const leadInfo = buildIdentifyPayload(message, Config);
+  const leadInfo = buildLeadPayload(message, traits, Config);
   if (!leadId) {
     // creating new Lead
     set(payload, "leads", [leadInfo]);
+
     // Adding some traits at root level of payload
     if (traits?.dup) {
       set(payload, "dup", traits.dup);
@@ -47,11 +47,12 @@ const identifyResponseBuilder = (message, Config, leadId) => {
     // updating existing lead
     endpoint = `${configCategories.Update.endpoint.replace("leadId", leadId)}`;
     method = configCategories.Update.method;
+
     if (traits?.status) {
       set(payload, "status", traits.status);
     }
+
     set(payload, "data", leadInfo);
-    // check for status and status Id
   }
   return responseBuilder(payload, endpoint, method, Config);
 };
@@ -72,7 +73,7 @@ const groupResponseBuilder = (message, Config, leadId) => {
   }
   if (!leadId) {
     throw new ErrorBuilder()
-      .setMessage("Lead Id from externalId is not found. please provide one.")
+      .setMessage("Lead Id from externalId is not found.")
       .setStatus(400)
       .setStatTags({
         destType: DESTINATION,
@@ -100,8 +101,7 @@ const groupResponseBuilder = (message, Config, leadId) => {
       })
       .build();
   }
-  const operation = traits.operation ? traits.operation : "add";
-  if (operation === "remove") {
+  if (traits.operation === "remove") {
     const { method } = configCategories.Group.remove;
     let { endpoint } = configCategories.Group.remove;
     endpoint = endpoint
@@ -113,9 +113,11 @@ const groupResponseBuilder = (message, Config, leadId) => {
   let { endpoint } = configCategories.Group.add;
   endpoint = endpoint.replace(":campaign_id", groupId);
   const payload = {};
+
   if (traits?.mailbox_id) {
     set(payload, "mailbox_id", traits.mailbox_id);
   }
+
   set(payload, "lead_id", leadId);
   return responseBuilder(payload, endpoint, method, Config);
 };

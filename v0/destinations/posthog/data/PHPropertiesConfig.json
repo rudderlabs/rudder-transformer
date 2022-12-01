@@ -160,5 +160,9 @@
   {
     "destKey": "$performance_page_loaded",
     "sourceKeys": "context.page.loaded"
+  },
+  {
+    "destKey": "$set",
+    "sourceKeys": "context.traits"
   }
 ]

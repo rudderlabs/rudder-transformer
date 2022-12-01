@@ -44,7 +44,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Salesforce Request Failed: 401 due to INVALID_HEADER_TYPE, Aborted.",
+      "message": "Salesforce Request Failed: 401 due to INVALID_HEADER_TYPE, (Aborted). during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {

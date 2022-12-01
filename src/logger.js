@@ -10,9 +10,9 @@ let logLevel = process.env.LOG_LEVEL
   ? parseInt(process.env.LOG_LEVEL, 10)
   : levelInfo;
 
-const setLogLevel = (level) => {
+const setLogLevel = level => {
   logLevel = level || logLevel;
-}
+};
 
 const debug = (...args) => {
   if (levelDebug >= logLevel) {

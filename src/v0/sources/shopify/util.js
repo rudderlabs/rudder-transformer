@@ -100,7 +100,9 @@ const setAnonymousId = message => {
       message.setProperty(
         "anonymousId",
         message.properties?.id
-          ? sha256(message.properties.id).toString().substring(0, 36)
+          ? sha256(message.properties.id)
+              .toString()
+              .substring(0, 36)
           : generateUUID()
       );
       break;
@@ -117,7 +119,9 @@ const setAnonymousId = message => {
       message.setProperty(
         "anonymousId",
         message.properties?.cart_token
-          ? sha256(message.properties.cart_token).toString().substring(0, 36)
+          ? sha256(message.properties.cart_token)
+              .toString()
+              .substring(0, 36)
           : generateUUID()
       );
       break;

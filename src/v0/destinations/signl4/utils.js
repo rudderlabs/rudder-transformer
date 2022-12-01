@@ -31,13 +31,13 @@ const populatePayload = (message, Config) => {
   payload = { ...payload, ...properties };
 
   // Overriding event name with Customizable Title if avaiblable
-  if(eventToTitleMapping){
-  eventToTitleMapping.forEach(mapping => {
-    if (mapping.from === event) {
-      payload.Title = mapping.to;
-    }
-  });
-}
+  if (eventToTitleMapping) {
+    eventToTitleMapping.forEach(mapping => {
+      if (mapping.from === event) {
+        payload.Title = mapping.to;
+      }
+    });
+  }
 
   // Populating the payload with the fields(properties) taken from UI
   Object.keys(propertyMappingObj).forEach(element => {

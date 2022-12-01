@@ -226,7 +226,13 @@ function setDataFromInputAndComputeColumnTypes(
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach(key => {
     if (
-      isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)
+      isValidJsonPathKey(
+        eventType,
+        `${prefix + key}`,
+        input[key],
+        level,
+        options.jsonKeys
+      )
     ) {
       if (isBlank(input[key])) {
         return;

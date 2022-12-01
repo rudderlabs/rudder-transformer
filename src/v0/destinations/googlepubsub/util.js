@@ -9,7 +9,7 @@ const {
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
 const stringifyValue = val => {
   return typeof val === "string" ? val : JSON.stringify(val);
-}
+};
 
 /**
  * Returns Topic ID
@@ -107,8 +107,8 @@ const createAttributesMetadata = (message, { Config }) => {
   attributeKeys.forEach(key => {
     const val = getAttributeValueOrNull(key);
     if (isDefinedAndNotNull(val)) {
-      const splitKeysArray = key.split(".")
-      const refinedKey = splitKeysArray[splitKeysArray.length - 1]
+      const splitKeysArray = key.split(".");
+      const refinedKey = splitKeysArray[splitKeysArray.length - 1];
       attrMetadata[refinedKey] = val;
     }
   });

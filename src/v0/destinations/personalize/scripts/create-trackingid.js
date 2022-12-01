@@ -138,4 +138,3 @@ schema += '], "version": "1.0"}';
 })().then(result => {
   console.log(result);
 });
-

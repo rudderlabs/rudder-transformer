@@ -76,9 +76,7 @@ async function runUserTransform(
         const err = JSON.parse(
           JSON.stringify(error, Object.getOwnPropertyNames(error))
         );
-        reject.applyIgnored(undefined, [
-          new ivm.ExternalCopy(err).copyInto()
-        ]);
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
     })
   );

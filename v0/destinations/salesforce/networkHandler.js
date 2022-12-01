@@ -9,7 +9,6 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { salesforceResponseHandler } = require("./utils");
 
 const responseHandler = (destinationResponse, destType) => {
-  let { status } = destinationResponse;
   const message = `Request for destination: ${destType} Processed Successfully`;
 
   salesforceResponseHandler(
@@ -20,9 +19,8 @@ const responseHandler = (destinationResponse, destType) => {
   );
 
   // else successfully return status as 200, message and original destination response
-  status = 200;
   return {
-    status,
+    status: 200,
     message,
     destinationResponse
   };

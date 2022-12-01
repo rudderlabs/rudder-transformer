@@ -773,7 +773,152 @@
     }
   },
   {
-    "description": "Track call with Ecom events (Added to Cartd)",
+    "description": "Track call with Ecom events (Added to Cart) with properties.products",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "product added",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "10"
+          },
+          "app": {
+            "name": "KlaviyoTest",
+            "build": "1",
+            "version": "1.0",
+            "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+          },
+          "device": {
+            "id": "9c6bd77ea9da3e68",
+            "name": "raphaelin",
+            "type": "android",
+            "model": "Redmi K20 Pro",
+            "manufacturer": "Xiaomi"
+          },
+          "locale": "en-IN",
+          "screen": {
+            "width": 1080,
+            "height": 2210,
+            "density": 440
+          },
+          "traits": {
+            "id": "utsabc",
+            "age": "22",
+            "name": "Utsab",
+            "email": "utsab@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "description": "Sample description"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.2"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "airtel",
+            "cellular": true,
+            "bluetooth": false
+          },
+          "timezone": "Asia/Kolkata",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.4.0.QFKINXM)"
+        },
+        "rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+        "messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+        "properties": {
+          "order_id": "1234",
+          "value": 12.12,
+          "categories": ["Fiction3", "Children3"],
+          "checkout_url": "http://www.heythere.com",
+          "item_names": ["book1", "book2"],
+          "products": [
+            {
+              "product_id": "b1pid",
+              "sku": "123x",
+              "name": "book1",
+              "url": "heyther.com",
+              "price": 12.0
+            },
+            {
+              "product_id": "b2pid",
+              "sku": "123x",
+              "name": "book2",
+              "url": "heyther2.com",
+              "price": 14.0
+            }
+          ]
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "text/html"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event": "Added to Cart",
+          "token": "WJqij9",
+          "customer_properties": {
+            "$id": "sajal12",
+            "$email": "utsab@rudderstack.com",
+            "$phone_number": "9112340375",
+            "age": "22",
+            "name": "Utsab",
+            "description": "Sample description"
+          },
+          "properties": {
+            "$value": 12.12,
+            "AddedItemCategories": ["Fiction3", "Children3"],
+            "ItemNames": ["book1", "book2"],
+            "CheckoutURL": "http://www.heythere.com",
+            "items": [
+              {
+                "ProductID": "b1pid",
+                "SKU": "123x",
+                "ProductName": "book1",
+                "ItemPrice": 12,
+                "ProductURL": "heyther.com"
+              },
+              {
+                "ProductID": "b2pid",
+                "SKU": "123x",
+                "ProductName": "book2",
+                "ItemPrice": 14,
+                "ProductURL": "heyther2.com"
+              }
+            ]
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track call with Ecom events (Added to Cart) with properties.items",
     "input": {
       "destination": {
         "Config": {

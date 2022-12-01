@@ -5,11 +5,11 @@ const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  getDestinationExternalID
+  getDestinationExternalID,
+  TransformationError
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
 const { DESTINATION } = require("./config");
 
 const responseBuilder = (payload, endpoint, destination) => {
@@ -26,16 +26,15 @@ const responseBuilder = (payload, endpoint, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new ErrorBuilder()
-    .setMessage("Payload could not be constructed")
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  throw new TransformationError(
+    "Something went wrong while constructing the payload",
+    400,
+    {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-    })
-    .build();
+      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+    },
+    DESTINATION
+  );
 };
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20users,-You%20can%20use
@@ -78,16 +77,15 @@ const groupResponseBuilder = (message, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    throw new TransformationError(
+      "Event type is required",
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
 
   const messageType = message.type.toLowerCase();
@@ -103,17 +101,17 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`Message type ${messageType} not supported.`)
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      throw new TransformationError(
+        `Event type "${messageType}" is not supported`,
+        400,
+        {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
+        },
+        DESTINATION
+      );
   }
   return response;
 };

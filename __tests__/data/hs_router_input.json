@@ -254,7 +254,7 @@
       },
       "event": "Purchase",
       "properties": {
-        "revenue": "name1"
+        "Revenue": "name1"
       }
     },
     "metadata": {

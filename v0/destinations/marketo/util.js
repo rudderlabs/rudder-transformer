@@ -1,9 +1,4 @@
-const {
-  httpGET,
-  httpPOST,
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   getDynamicMeta,
   processAxiosResponse
@@ -25,22 +20,26 @@ const MARKETO_ABORTABLE_CODES = [
   "609",
   "610",
   "612",
-  "1006"
+  "1006",
+  "1013",
+  "1004",
+  "1001"
 ];
 const MARKETO_THROTTLED_CODES = ["502", "606", "607", "608", "615"];
 const { DESTINATION } = require("./config");
+const logger = require("../../../logger");
 
 // handles marketo application level failures
 const marketoApplicationErrorHandler = (
   marketoResponse,
   sourceMessage,
-  stage
+  destination
 ) => {
   const { response } = marketoResponse;
   const { errors } = response;
   if (errors && MARKETO_ABORTABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Aborted).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Aborted).${sourceMessage}`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -48,11 +47,11 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined, // represents authErrorCategory
-      DESTINATION
+      destination
     );
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Throttled).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Throttled).${sourceMessage}`,
       429,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -60,11 +59,11 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined,
-      DESTINATION
+      destination
     );
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new ApiError(
-      `Request Failed for Marketo, ${errors[0].message} (Retryable).${sourceMessage}`,
+      `Request Failed for ${destination}, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -72,17 +71,24 @@ const marketoApplicationErrorHandler = (
       },
       marketoResponse,
       undefined,
-      DESTINATION
+      destination
     );
   }
 };
 
-const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
+const marketoResponseHandler = (
+  destResponse,
+  sourceMessage,
+  stage,
+  rudderJobMetadata,
+  authCache,
+  destination = DESTINATION
+) => {
   const { status, response } = destResponse;
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new ApiError(
-      `[Marketo Response Handler] - Request failed  with status: ${status}`,
+      `[${destination} Response Handler] - Request failed  with status: ${status}`,
       status,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -95,7 +101,7 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token) {
+    if (response && response.access_token && response.expires_in) {
       return response;
     }
     // marketo application level success
@@ -104,7 +110,24 @@ const marketoResponseHandler = (destResponse, sourceMessage, stage) => {
     }
     // marketo application level failure
     if (response && !response.success) {
-      marketoApplicationErrorHandler(destResponse, sourceMessage, stage);
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      if (response.errors && rudderJobMetadata?.destInfo) {
+        const { authKey } = rudderJobMetadata.destInfo;
+        if (
+          authCache &&
+          authKey &&
+          response.errors.some(errorObj => {
+            return errorObj.code === "601" || errorObj.code === "602";
+          })
+        ) {
+          logger.info(
+            `${destination} Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`
+          );
+          authCache.del(authKey);
+        }
+      }
+      marketoApplicationErrorHandler(destResponse, sourceMessage, destination);
     }
   }
   // More readable error message
@@ -140,34 +163,24 @@ const sendPostRequest = async (url, data, options) => {
   return processedResponse;
 };
 
-// eslint-disable-next-line no-unused-vars
-const responseHandler = (destinationResponse, _dest) => {
-  const message = `[Marketo Response Handler] - Request Processed Successfully`;
-  const { status } = destinationResponse;
-  // check for marketo application level failures
-  marketoResponseHandler(
-    destinationResponse,
-    "during Marketo Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+const getResponseHandlerData = (
+  clientResponse,
+  lookupMessage,
+  formattedDestination,
+  authCache
+) => {
+  return marketoResponseHandler(
+    clientResponse,
+    lookupMessage,
+    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    { destInfo: { authKey: formattedDestination.ID } },
+    authCache
   );
-  // else successfully return status, message and original destination response
-  return {
-    status,
-    message,
-    destinationResponse
-  };
-};
-
-const networkHandler = function() {
-  this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
-  this.prepareProxy = prepareProxyRequest;
-  this.processAxiosResponse = processAxiosResponse;
 };
 
 module.exports = {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest,
-  networkHandler
+  getResponseHandlerData
 };

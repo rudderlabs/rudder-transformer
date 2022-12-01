@@ -1,4 +1,7 @@
-const { WorkflowEngineFactory } = require("rudder-workflow-engine");
+const {
+  WorkflowEngineFactory,
+  TemplateType
+} = require("rudder-workflow-engine");
 
 const {
   getErrorInfo,
@@ -12,11 +15,10 @@ async function getWorkflowEngineInternal(destName, flowType) {
   const destRootDir = getRootPathForDestination(destName);
   const workflowPath = await getWorkflowPath(destRootDir, flowType);
   const platformBindingsPaths = await getPlatformBindingsPaths();
-  return WorkflowEngineFactory.createFromFilePath(
-    workflowPath,
-    destRootDir,
-    platformBindingsPaths
-  );
+  return WorkflowEngineFactory.createFromFilePath(workflowPath, destRootDir, {
+    bindingsPaths: platformBindingsPaths,
+    templateType: TemplateType.JSONATA
+  });
 }
 
 const workflowEnginePromiseMap = new Map();
@@ -35,15 +37,8 @@ function getWorkflowEngine(destName, flowType) {
   return workflowEnginePromiseMap[destName][flowType];
 }
 
-async function processCdkV2Workflow(
-  destType,
-  parsedEvent,
-  flowType,
-  bindings = {}
-) {
+async function process(workflowEngine, parsedEvent, bindings = {}) {
   try {
-    const workflowEngine = await getWorkflowEngine(destType, flowType);
-
     const result = await workflowEngine.execute(parsedEvent, bindings);
     // TODO: Handle remaining output scenarios
     return result.output;
@@ -52,7 +47,22 @@ async function processCdkV2Workflow(
   }
 }
 
+async function processCdkV2Workflow(
+  destType,
+  parsedEvent,
+  flowType,
+  bindings = {}
+) {
+  try {
+    const workflowEngine = await getWorkflowEngine(destType, flowType);
+    return process(workflowEngine, parsedEvent, bindings);
+  } catch (error) {
+    throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
+  }
+}
+
 module.exports = {
   getWorkflowEngine,
-  processCdkV2Workflow
+  processCdkV2Workflow,
+  process
 };

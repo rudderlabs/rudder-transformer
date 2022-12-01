@@ -1,29 +1,23 @@
 const integration = "auth0";
-const name = "Auth0";
 
 const fs = require("fs");
 const path = require("path");
-const version = "v0";
 
-const transformer = require(`../${version}/sources/${integration}/transform`);
+const transformer = require(`../v0/sources/${integration}/transform`);
 
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_source_input.json`)
-);
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_source_output.json`)
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_source.json`)
 );
 
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
+const testData = JSON.parse(testDataFile);
 
-inputData.forEach((input, index) => {
-  it(`${name} Tests: payload: ${index}`, async () => {
+testData.forEach((data, index) => {
+  it(`${index}. ${integration} - ${data.description}`, () => {
     try {
-      const output = await transformer.process(input);
-      expect(output).toEqual(expectedData[index]);
+      const output = transformer.process(data.input);
+      expect(output).toEqual(data.output);
     } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
+      expect(error.message).toEqual(data.output.message);
     }
   });
 });

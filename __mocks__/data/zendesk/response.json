@@ -205,6 +205,38 @@
     "next_page": null,
     "previous_page": null,
     "count": 1
+  },
+  "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities": {
+    "identities": [
+      {
+        "url": "https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7535981118877.json",
+        "id": 7535981118877,
+        "user_id": 900113780483,
+        "type": "email",
+        "value": "example119@email.com",
+        "verified": false,
+        "primary": true,
+        "created_at": "2022-11-02T08:03:28Z",
+        "updated_at": "2022-11-02T10:23:28Z",
+        "undeliverable_count": 0,
+        "deliverable_state": "deliverable"
+      },
+      {
+        "url": "https://rudderlabshelp.zendesk.com/api/v2/users/7533979645597/identities/7534173321117.json",
+        "id": 7534173321117,
+        "user_id": 900113780483,
+        "type": "email",
+        "value": "example115@email.com",
+        "verified": true,
+        "primary": false,
+        "created_at": "2022-11-02T04:23:46Z",
+        "updated_at": "2022-11-02T10:23:28Z",
+        "undeliverable_count": 0,
+        "deliverable_state": "deliverable"
+      }
+    ],
+    "next_page": null,
+    "previous_page": null,
+    "count": 2
   }
 }
-

@@ -624,7 +624,7 @@
     }
   },
   {
-    "description": "(Android) Session Event with additional properties",
+    "description": "(Android) Event with additional properties",
     "input": {
       "destination": {
         "Config": {
@@ -1330,7 +1330,7 @@
             "content": "some content"
           },
           "os": {
-            "name": "iOS",
+            "name": "ipados",
             "version": "9"
           },
           "screen": {
@@ -1348,8 +1348,8 @@
           "affiliation": "Apple Store",
           "receipt_signature": "1234dfghnh",
           "purchase_transaction_id": "2134dfg",
-          "skan_last_call_timestamp": "1654532056",
-          "skan_first_call_timestamp": "1651853656",
+          "skan_last_call_timestamp": "2021-09-05T15:46:51.000Z",
+          "skan_first_call_timestamp": "2021-09-05T12:46:10.000Z",
           "skan_conversion_value": "2",
           "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
           "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
@@ -1398,8 +1398,8 @@
         "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
         "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
         "skan_conversion_value": "2",
-        "skan_first_call_timestamp": "1651853656",
-        "skan_last_call_timestamp": "1654532056",
+        "skan_first_call_timestamp": 1630845970,
+        "skan_last_call_timestamp": 1630856811,
         "bd": "1",
         "dnt": 0,
         "install": "SM-G935F",
@@ -1495,8 +1495,8 @@
           "affiliation": "Apple Store",
           "receipt_signature": "1234dfghnh",
           "purchase_transaction_id": "2134dfg",
-          "skan_last_call_timestamp": "1654532056",
-          "skan_first_call_timestamp": "1651853656",
+          "skan_last_call_timestamp": "2021-09-08T12:16:11.000Z",
+          "skan_first_call_timestamp": "2021-09-05T15:46:51.000Z",
           "skan_conversion_value": "2",
           "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
           "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
@@ -1534,8 +1534,8 @@
         "custom_user_id": "ruddersampleX5",
         "utime": 1630511211,
         "skan_conversion_value": "2",
-        "skan_first_call_timestamp": "1651853656",
-        "skan_last_call_timestamp": "1654532056",
+        "skan_first_call_timestamp": 1630856811,
+        "skan_last_call_timestamp": 1631103371,
         "cur": "USD",
         "amt": 20,
         "purchase_product_id": "123",
@@ -1650,9 +1650,6 @@
           "affiliation": "Apple Store",
           "receipt_signature": "1234dfghnh",
           "purchase_transaction_id": "2134dfg",
-          "skan_last_call_timestamp": "1654532056",
-          "skan_first_call_timestamp": "1651853656",
-          "skan_conversion_value": "2",
           "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
           "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
           "install_receipt": "MIISqwYJKoZIcNqts0jvcNvPcK7yuj0KhJ9nTTQ54kDKfReihzc6aw==",
@@ -1700,9 +1697,6 @@
         "apns_token": "bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1",
         "ua": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)",
         "attribution_token": "G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=",
-        "skan_conversion_value": "2",
-        "skan_first_call_timestamp": "1651853656",
-        "skan_last_call_timestamp": "1654532056",
         "bd": "1",
         "install": "SM-G935F",
         "idfa": "8ecd7512-2864-440c-93f3-a3cabe62525b",

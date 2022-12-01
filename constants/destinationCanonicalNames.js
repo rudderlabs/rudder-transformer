@@ -41,6 +41,8 @@ const DestCanonicalNames = {
   mautic: ["MAUTIC", "mautic", "Mautic"],
   mailjet: ["MAILJET", "MailJet", "mailjet", "Mailjet"],
   kafka: ["KAFKA", "kafka", "Kafka"],
+  azure_event_hub: ["AZURE_EVENT_HUB", "azure_event_hub", "AzureEventHub"],
+  confluent_cloud: ["CONFLUENT_CLOUD", "confluent_cloud", "ConfluentCloud"],
   vero: ["vero", "Vero", "VERO"],
   pinterest: ["pinterest", "Pinterest", "PINTEREST", "pinterestConversion"],
   rockerbox: ["rockerbox", "ROCKERBOX", "Rockerbox", "RockerBox", "rockerBox"],
@@ -72,7 +74,34 @@ const DestCanonicalNames = {
   user: ["user", "USER", "User", "User.com", "user.com", "USER.com"],
   engage: ["engage", "Engage", "ENGAGE"],
   june: ["june", "JUNE", "June"],
-  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"]
+  factorsai: ["FACTORSAI", "factorsAI", "FactorsAi", "factorsAi"],
+  snapchat_custom_audience: [
+    "snapchat custom audience",
+    "snap chat custom audience",
+    "snapchat_custom_audience",
+    "snapchatCustomAudience",
+    "Snapchat Custom Audience",
+    "snapchatcustomaudience",
+    "SNAPCHAT CUSTOM AUDIENCE",
+    "SNAPCHAT_CUSTOM_AUDIENCE",
+    "SNAPCHATCUSTOMAUDIENCE"
+  ],
+  CAMPAIGN_MANAGER: [
+    "campaign manager",
+    "campain Manager",
+    "CAMPAIGN MANAGER",
+    "campaignManager",
+    "campaign_manager",
+    "CAMPAIGN_MANAGER"
+  ],
+  gainsight_px: [
+    "GAINSIGHT_PX",
+    "GAINSIGHTPX",
+    "gainsightPx",
+    "Gainsight PX",
+    "gainsight px",
+    "Gainsight Px"
+  ]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

@@ -19,7 +19,7 @@
     "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "toLower", "hashToSha256"]
     }
   },
   {
@@ -58,7 +58,7 @@
     ],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "toLower", "hashToSha256"]
     }
   },
   {
@@ -73,7 +73,7 @@
     ],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["trim", "toLower", "hashToSha256"]
     }
   },
   {
@@ -86,7 +86,7 @@
     "sourceKeys": ["traits.address.city", "context.traits.address.city"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["toLower", "hashToSha256"]
     }
   },
   {
@@ -94,7 +94,7 @@
     "sourceKeys": ["traits.address.state", "context.traits.address.state"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["toLower", "hashToSha256"]
     }
   },
   {
@@ -102,7 +102,7 @@
     "sourceKeys": ["traits.address.zip", "context.traits.address.zip"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["toLower", "hashToSha256"]
     }
   },
   {
@@ -110,7 +110,7 @@
     "sourceKeys": ["traits.address.country", "context.traits.address.country"],
     "required": false,
     "metadata": {
-      "type": "hashToSha256"
+      "type": ["toLower", "hashToSha256"]
     }
   },
   {
@@ -149,4 +149,3 @@
     "required": false
   }
 ]
-

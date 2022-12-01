@@ -19,7 +19,7 @@ const {
   extractCustomFields,
   getValueFromMessage,
   isDefinedAndNotNull,
-  toUnixTimestamp
+  isAppleFamily
 } = require("../../util");
 
 /*
@@ -102,19 +102,23 @@ const isSessionEvent = (Config, eventName) => {
  * @returns
  */
 const platformWisePayloadGenerator = (message, isSessionEvent) => {
-  let payload;
   let eventAttributes;
   let platform = getValueFromMessage(message, "context.os.name");
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
   if (!platform) {
     throw new CustomError("[Singular] :: Platform name is missing", 400);
   }
+  // checking if the os is one of ios, ipados, watchos, tvos
+  if (typeof platform === "string" && isAppleFamily(platform.toLowerCase())) {
+    message.context.os.name = "iOS";
+    platform = "iOS";
+  }
   platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {
     throw new CustomError("[Singular] :: Platform is not supported");
   }
 
-  payload = constructPayload(
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[
       CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name
@@ -167,7 +171,6 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   } else {
     payload.c = "carrier";
   }
-  payload = removeUndefinedAndNullValues(payload);
   return { payload, eventAttributes };
 };
 

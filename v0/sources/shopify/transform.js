@@ -154,7 +154,6 @@ const processEvent = inputEvent => {
     name: "RudderStack Shopify Cloud",
     version: "1.0.0"
   });
-  // adding the subscribed topic inside context.topic
   message.setProperty("context.topic", shopifyTopic);
   message = removeUndefinedAndNullValues(message);
   return message;

@@ -35,7 +35,7 @@
   {
     "destKey": "quantity",
     "sourceKeys": "properties.quantity",
-    "required": false
+    "required": true
   },
   {
     "destKey": "value",

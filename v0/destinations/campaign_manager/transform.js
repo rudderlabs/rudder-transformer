@@ -3,11 +3,11 @@ const { EventType } = require("../../../constants");
 const {
   constructPayload,
   defaultRequestConfig,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   CustomError,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNull,
+  simpleProcessRouterDest
 } = require("../../util");
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
@@ -42,7 +42,9 @@ function buildResponse(
     requestType === "batchinsert"
       ? "dfareporting#conversionsBatchInsertRequest"
       : "dfareporting#conversionsBatchUpdateRequest";
-  response.body.JSON.encryptionInfo = encryptionInfo || {};
+  if (isDefinedAndNotNull(encryptionInfo)) {
+    response.body.JSON.encryptionInfo = encryptionInfo;
+  }
   response.body.JSON.conversions = [removeUndefinedAndNullValues(requestJson)];
   return response;
 }
@@ -60,15 +62,19 @@ function processTrack(message, metadata, destination) {
     message,
     mappingConfig[ConfigCategories.TRACK.name]
   );
-  requestJson.limitAdTracking =
-    requestJson.limitAdTracking || destination.Config.limitAdTracking;
-  requestJson.treatmentForUnderage =
-    requestJson.treatmentForUnderage || destination.Config.treatmentForUnderage;
-  requestJson.childDirectedTreatment =
-    requestJson.childDirectedTreatment ||
-    destination.Config.childDirectedTreatment;
   requestJson.nonPersonalizedAd =
-    requestJson.nonPersonalizedAd || destination.Config.nonPersonalizedAd;
+      requestJson.nonPersonalizedAd != null ? requestJson.nonPersonalizedAd : destination.Config.nonPersonalizedAd;
+  requestJson.treatmentForUnderage =
+      requestJson.treatmentForUnderage != null ? requestJson.treatmentForUnderage : destination.Config.treatmentForUnderage;
+  requestJson.childDirectedTreatment =
+      requestJson.childDirectedTreatment != null ? requestJson.childDirectedTreatment : destination.Config.childDirectedTreatment;
+  requestJson.limitAdTracking =
+      requestJson.limitAdTracking != null ? requestJson.limitAdTracking : destination.Config.limitAdTracking;
+  // updating these values is not allowed
+  if (message.properties.requestType == "batchupdate") {
+    delete requestJson.childDirectedTreatment;
+    delete requestJson.limitAdTracking;
+  }
   requestJson.timestampMicros = requestJson.timestampMicros.toString();
   const endpointUrl = prepareUrl(message, destination);
   return buildResponse(
@@ -132,42 +138,11 @@ function process(event) {
 }
 
 const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+  return simpleProcessRouterDest(
+      inputs,
+      "CAMPAIGN_MANAGER",
+      process
   );
-  return respList;
-};
+}
 
 module.exports = { process, processRouterDest };

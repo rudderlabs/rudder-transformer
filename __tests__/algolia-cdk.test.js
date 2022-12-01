@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const { TRANSFORMER_METRIC } = require("../v0/util/constant");
-const { processCdkV2Workflow } = require("../cdk/v2/handler");
+const { TRANSFORMER_METRIC } = require("../src/v0/util/constant");
+const { processCdkV2Workflow } = require("../src/cdk/v2/handler");
 
 const integration = "algolia";
 const name = "Algolia";

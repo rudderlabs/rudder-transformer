@@ -1,5 +1,5 @@
 const name = "DeleteUsers";
-const logger = require("../../logger");
+const logger = require("../../src/logger");
 const { mockedAxiosClient } = require("../../__mocks__/network");
 const { formAxiosMock, validateMockAxiosClientReqParams } = require("../../__mocks__/gen-axios.mock");
 const deleteUserDestinations = [
@@ -14,7 +14,7 @@ const deleteUserDestinations = [
 ];
 // Note: Useful for troubleshooting not to be used in production
 const exclusionDestList = [];
-const { handleDeletionOfUsers } = require("../../versionedRouter");
+const { handleDeletionOfUsers } = require("../../src/versionedRouter");
 const { default: axios } = require("axios");
 
 // delete user tests

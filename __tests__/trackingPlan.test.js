@@ -1,8 +1,8 @@
 jest.mock("node-fetch");
 
 const fetch = require("node-fetch", () => jest.fn());
-const { getEventSchema, getTrackingPlan } = require("../util/trackingPlan");
-const { validate } = require("../util/eventValidation");
+const { getEventSchema, getTrackingPlan } = require("../src/util/trackingPlan");
+const { validate } = require("../src/util/eventValidation");
 
 const trackingPlan = {
   rules: {

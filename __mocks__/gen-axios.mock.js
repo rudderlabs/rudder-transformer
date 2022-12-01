@@ -1,6 +1,6 @@
 const axios = require("axios");
-const logger = require("../logger");
-const { isHttpStatusSuccess } = require("../v0/util");
+const logger = require("../src/logger");
+const { isHttpStatusSuccess } = require("../src/v0/util");
 jest.mock("axios");
 
 /**

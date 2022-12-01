@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { handleTestEvent } = require("../testRouter");
+const { handleTestEvent } = require("../src/testRouter");
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, "./data/test_router_input.json")

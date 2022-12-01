@@ -4,7 +4,7 @@ const name = "Kafka";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/destinations/${integration}/transform`);
+const transformer = require(`../src/v0/destinations/${integration}/transform`);
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)

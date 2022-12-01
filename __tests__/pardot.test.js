@@ -3,10 +3,10 @@ const name = "pardot";
 
 const fs = require("fs");
 const path = require("path");
-const { defaultRequestConfig } = require("../v0/util");
+const { defaultRequestConfig } = require("../src/v0/util");
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 //for router test
 const inputRouterDataFile = fs.readFileSync(

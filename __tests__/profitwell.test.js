@@ -6,7 +6,7 @@ const version = "v0";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 // Processor Test files
 const inputDataFile = fs.readFileSync(
@@ -28,8 +28,8 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
-jest.mock("../adapters/network", () => {
-  const originalModule = jest.requireActual("../adapters/network");
+jest.mock("../src/adapters/network", () => {
+  const originalModule = jest.requireActual("../src/adapters/network");
 
   //Mock the default export and named export 'send'
   return {

@@ -1,5 +1,5 @@
-const {getDataType} = require("../warehouse/index")
-const {getDataTypeOverride} = require("../v0/destinations/postgres/transform")
+const {getDataType} = require("../src/warehouse/index")
+const {getDataTypeOverride} = require("../src/v0/destinations/postgres/transform")
 
 var testCases = [
     {

@@ -7,9 +7,9 @@ const path = require("path");
 const version = "v0";
 
 const axios = require("axios");
-const { handleProxyRequest } = require("../versionedRouter");
+const { handleProxyRequest } = require("../src/versionedRouter");
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 jest.mock("axios");
 

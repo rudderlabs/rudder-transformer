@@ -7,7 +7,7 @@ const mockedEnv = require('mocked-env')
 
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
 const inputDataFile = fs.readFileSync(
@@ -76,7 +76,7 @@ test(`test batching ${batchInputData.length - 2}`, () => {
   // reset module and load in new transformer with added env
   jest.resetModules()
   expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
-  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
+  const transformerNew = require(`../src/${version}/destinations/${integration}/transform`);
   const output = transformerNew.batch(batchInputData[batchInputData.length - 2]);
   expect(Array.isArray(output)).toEqual(true)
   expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 2].length)
@@ -94,7 +94,7 @@ test(`test batching ${batchInputData.length - 1}`, () => {
   // reset module and load in new transformer with added env
   jest.resetModules()
   expect(process.env.BATCH_NOT_MET_CRITERIA_USER).toEqual("true")
-  const transformerNew = require(`../${version}/destinations/${integration}/transform`);
+  const transformerNew = require(`../src/${version}/destinations/${integration}/transform`);
   const output = transformerNew.batch(batchInputData[batchInputData.length - 1]);
   expect(Array.isArray(output)).toEqual(true)
   expect(output.length).toEqual(batchExpectedData[batchExpectedData.length - 1].length)

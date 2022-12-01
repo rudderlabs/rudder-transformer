@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)

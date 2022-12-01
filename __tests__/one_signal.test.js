@@ -5,7 +5,7 @@ const integration = "one_signal";
 const name = "OneSignal";
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 // Processor Test Data
 const testDataFile = fs.readFileSync(

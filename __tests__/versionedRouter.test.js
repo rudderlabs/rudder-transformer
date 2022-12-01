@@ -1,4 +1,4 @@
-const vRouter = require("../versionedRouter");
+const vRouter = require("../src/versionedRouter");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";

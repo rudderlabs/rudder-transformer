@@ -3,7 +3,7 @@ const integration = "auth0";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/sources/${integration}/transform`);
+const transformer = require(`../src/v0/sources/${integration}/transform`);
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_source.json`)

@@ -78,7 +78,7 @@ const responses = [
   promiseAllResponses,
 ];
 formAxiosMock(responses);
-const { httpSend, httpGET, httpPOST } = require("../adapters/network");
+const { httpSend, httpGET, httpPOST } = require("../src/adapters/network");
 const axios = require("axios");
 
 const mockMethod1 = async () => {

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { isHttpStatusSuccess } = require("../v0/util");
+const { isHttpStatusSuccess } = require("../src/v0/util");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",

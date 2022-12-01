@@ -12,7 +12,7 @@ const destinations = [
   "snapchat_custom_audience",
   "marketo_static_list"
 ];
-const service = require("../versionedRouter").handleProxyRequest;
+const service = require("../src/versionedRouter").handleProxyRequest;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));
 

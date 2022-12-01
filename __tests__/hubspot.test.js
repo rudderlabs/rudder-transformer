@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 // Processor Test files
 const inputDataFile = fs.readFileSync(

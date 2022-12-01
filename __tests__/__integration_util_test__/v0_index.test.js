@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const { getFormData } = require("../../adapters/network");
-const utilObj = require("../../v0/util");
+const { getFormData } = require("../../src/adapters/network");
+const utilObj = require("../../src/v0/util");
 
 const functionsToTest = [
   "handleSourceKeysOperation",

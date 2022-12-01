@@ -4,7 +4,7 @@ const name = "Shopify";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/sources/${integration}/transform`);
+const transformer = require(`../src/v0/sources/${integration}/transform`);
 
 describe(`${name} Tests`, () => {
   const inputDataFile = fs.readFileSync(

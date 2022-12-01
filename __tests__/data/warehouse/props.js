@@ -1,11 +1,11 @@
 const util = require("util");
-const whDefaultColumnMapping = require("../../../warehouse/config/WHDefaultConfig.js");
-const whTrackColumnMapping = require("../../../warehouse/config/WHTrackConfig.js");
-const whUserColumnMapping = require("../../../warehouse/config/WHUserConfig.js");
-const whPageColumnMapping = require("../../../warehouse/config/WHPageConfig.js");
-const whScreenColumnMapping = require("../../../warehouse/config/WHScreenConfig.js");
-const whGroupColumnMapping = require("../../../warehouse/config/WHGroupConfig.js");
-const whAliasColumnMapping = require("../../../warehouse/config/WHAliasConfig.js");
+const whDefaultColumnMapping = require("../../../src/warehouse/config/WHDefaultConfig.js");
+const whTrackColumnMapping = require("../../../src/warehouse/config/WHTrackConfig.js");
+const whUserColumnMapping = require("../../../src/warehouse/config/WHUserConfig.js");
+const whPageColumnMapping = require("../../../src/warehouse/config/WHPageConfig.js");
+const whScreenColumnMapping = require("../../../src/warehouse/config/WHScreenConfig.js");
+const whGroupColumnMapping = require("../../../src/warehouse/config/WHGroupConfig.js");
+const whAliasColumnMapping = require("../../../src/warehouse/config/WHAliasConfig.js");
 
 const rudderProperties = {
   default: Object.keys(whDefaultColumnMapping),

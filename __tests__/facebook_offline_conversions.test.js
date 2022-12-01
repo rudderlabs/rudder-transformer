@@ -5,7 +5,7 @@ const integration = "facebook_offline_conversions";
 const name = "facebook_offline_conversions";
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../src/${version}/destinations/${integration}/transform`);
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)

@@ -13,14 +13,14 @@ const unsupportedFuncNames = [
   "reverse",
   "split"
 ];
-const { userTransformHandler } = require("../util/customTransformer");
+const { userTransformHandler } = require("../src/util/customTransformer");
 const integration = "user_transformation";
 const name = "User Transformations";
 
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
-const { parserForImport } = require("../util/parser");
+const { parserForImport } = require("../src/util/parser");
 
 const randomID = () =>
   Math.random()
@@ -161,7 +161,6 @@ possibleEnvs.forEach(envValue => {
         .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
         .mockRejectedValue(new Error("Timed Out"));
 
-
       const output = await userTransformHandler(inputData, versionId, []);
       expect(fetch).toHaveBeenCalledWith(transformerUrl);
       expect(fetch).toHaveBeenCalledWith(dummyUrl);
@@ -253,7 +252,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -316,7 +315,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -338,7 +337,7 @@ possibleEnvs.forEach(envValue => {
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
 
-      const x = _.cloneDeep(expectedData)
+      const x = _.cloneDeep(expectedData);
       x[0] = {
         error:
           "returned event in events array from transformBatch(events) is not an object",
@@ -382,7 +381,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -441,7 +440,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -508,7 +507,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -576,7 +575,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -638,7 +637,7 @@ possibleEnvs.forEach(envValue => {
         });
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -730,7 +729,10 @@ possibleEnvs.forEach(envValue => {
         });
 
       const lodashCode = `
-        ${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
+        ${fs.readFileSync(
+          path.resolve(__dirname, "../src/util/lodash-es-core.js"),
+          "utf8"
+        )};
         ;
         // Not exporting the unsupported functions
         export {${Object.keys(lodashCore).filter(
@@ -788,9 +790,8 @@ possibleEnvs.forEach(envValue => {
           status: 200,
           json: jest.fn().mockResolvedValue(respBody)
         });
-
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -868,7 +869,7 @@ possibleEnvs.forEach(envValue => {
       };
 
       const urlCode = `${fs.readFileSync(
-        "./util/url-search-params.min.js",
+        path.resolve(__dirname, "../src/util/url-search-params.min.js"),
         "utf8"
       )};
       export default self;
@@ -882,7 +883,13 @@ possibleEnvs.forEach(envValue => {
           json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
         });
 
-      const output = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId], trRevCode, true);
+      const output = await userTransformHandler(
+        inputData,
+        trRevCode.versionId,
+        [libraryVersionId],
+        trRevCode,
+        true
+      );
 
       expect(fetch).toHaveBeenCalledWith(libraryUrl);
 
@@ -912,7 +919,13 @@ possibleEnvs.forEach(envValue => {
         versionId: "testVersionId"
       };
 
-      const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
+      const output = await userTransformHandler(
+        inputData,
+        trRevCode.versionId,
+        [],
+        trRevCode,
+        true
+      );
       expect(output).toEqual(expectedData);
     });
 

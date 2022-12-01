@@ -1,5 +1,5 @@
-const {getDataType} = require("../warehouse/index")
-const {getDataTypeOverride} = require("../v0/destinations/azure_synapse/transform")
+const {getDataType} = require("../src/warehouse/index")
+const {getDataTypeOverride} = require("../src/v0/destinations/azure_synapse/transform")
 
 var testCases = [
     {

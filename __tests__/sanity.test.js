@@ -131,7 +131,7 @@ const destinationConfig = JSON.parse(
 // Iterating each of the destinations
 integrations.forEach(intg => {
   // Getting the transformation object
-  const transformer = require(`../${version}/destinations/${intg}/transform`);
+  const transformer = require(`../src/${version}/destinations/${intg}/transform`);
   // Getting the config for this particular destination
   const { config } = destinationConfig[`${intg}`];
   // Where the ransformation is done at (processor, router ..)

@@ -9,8 +9,8 @@ const {
   largeNoOfColumnsevent
 } = require(`./data/warehouse/event_columns_length`);
 const { rudderProperties } = require(`./data/warehouse/props.js`);
-const reservedANSIKeywordsMap = require("../warehouse/config/ReservedKeywords.json");
-const { fullEventColumnTypeByProvider } = require("../warehouse/index.js");
+const reservedANSIKeywordsMap = require("../src/warehouse/config/ReservedKeywords.json");
+const { fullEventColumnTypeByProvider } = require("../src/warehouse/index.js");
 
 const version = "v0";
 const integrations = [
@@ -24,7 +24,7 @@ const integrations = [
   "s3_datalake"
 ];
 const transformers = integrations.map(integration =>
-  require(`../${version}/destinations/${integration}/transform`)
+  require(`../src/${version}/destinations/${integration}/transform`)
 );
 const eventTypes = ["track", "identify", "page", "screen", "group", "alias"];
 // get key of user set properties in the event
@@ -323,7 +323,7 @@ describe("handle reserved words", () => {
   it("prepend underscore", () => {
     // re-import transformer modules so that new env values are used
     const transformers = integrations.map(integration =>
-      require(`../${version}/destinations/${integration}/transform`)
+      require(`../src/${version}/destinations/${integration}/transform`)
     );
     eventTypes.forEach(evType => {
       let i = input(evType);

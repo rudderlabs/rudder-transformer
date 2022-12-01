@@ -23,8 +23,8 @@ Key aspects covered:
 
 const {
   setDataFromInputAndComputeColumnTypes
-} = require("../warehouse/index.js");
-const { getVersionedUtils } = require("../warehouse/util.js");
+} = require("../src/warehouse/index.js");
+const { getVersionedUtils } = require("../src/warehouse/util.js");
 const {
   fInput,
   fOutput
@@ -34,7 +34,7 @@ const version = "v0";
 const whSchemaVersion = "v1";
 const integrations = ["postgres", "rs", "bq"];
 const transformers = integrations.map(integration =>
-  require(`../${version}/destinations/${integration}/transform`)
+  require(`../src/${version}/destinations/${integration}/transform`)
 );
 const eventType = "track";
 const utils = getVersionedUtils(whSchemaVersion);

@@ -1,5 +1,5 @@
-const {getDataType} = require("../warehouse/index")
-const {getDataTypeOverride} = require("../v0/destinations/clickhouse/transform")
+const {getDataType} = require("../src/warehouse/index")
+const {getDataTypeOverride} = require("../src/v0/destinations/clickhouse/transform")
 
 var testCases = [
     {

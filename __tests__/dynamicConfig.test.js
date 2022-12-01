@@ -1,7 +1,7 @@
 const integration = "dynamicConfig";
 const name = "dynamicConfig";
-const vRouter = require("../versionedRouter");
-const { processDynamicConfig } = require("./../util/dynamicConfig");
+const vRouter = require("../src/versionedRouter");
+const { processDynamicConfig } = require("../src/util/dynamicConfig");
 
 const fs = require("fs");
 const path = require("path");

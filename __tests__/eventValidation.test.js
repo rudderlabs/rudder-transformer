@@ -1,7 +1,7 @@
 jest.mock("node-fetch");
 const fetch = require("node-fetch", () => jest.fn());
 
-const {isEventTypeSupported, handleValidation, violationTypes} = require("../util/eventValidation");
+const {isEventTypeSupported, handleValidation, violationTypes} = require("../src/util/eventValidation");
 
 const trackingPlan = {
     rules: {

@@ -89,7 +89,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not supported. Aborting message.",
+    "error": "Message Type identify is not supported. Aborting message.",
     "statTags": {
       "category": "",
       "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",

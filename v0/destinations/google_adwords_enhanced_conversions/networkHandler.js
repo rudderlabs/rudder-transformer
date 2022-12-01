@@ -62,7 +62,7 @@ const getConversionActionId = async (method, headers, params) => {
       !isHttpStatusSuccess(response.response?.response?.status)
     ) {
       throw new ApiError(
-        `Google_adwords_enhanced_conversion: "${get(
+        `"${get(
           response,
           "response.response.data[0].error.message",
           ""
@@ -85,7 +85,7 @@ const getConversionActionId = async (method, headers, params) => {
     );
     if (!conversionActionId) {
       throw new ApiError(
-        `Google_adwords_enhanced_conversions: Unable to find conversionActionId for conversion:${params.event}`,
+        `Unable to find conversionActionId for conversion:${params.event}`,
         400,
         {
           meta: getDynamicMeta(400)
@@ -127,7 +127,7 @@ const ProxyRequest = async request => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Google_adwords_enhanced_conversions Response Handler] - Request Processed Successfully`;
+  const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx
@@ -141,7 +141,7 @@ const responseHandler = destinationResponse => {
   const { response } = destinationResponse;
   const errMessage = get(response, "error.message", "");
   throw new ApiError(
-    `Google_adwords_enhanced_conversion: "${errMessage}" during Google_adwords_enhanced_conversions response transformation`,
+    `"${errMessage}" during Google_adwords_enhanced_conversions response transformation`,
     status,
     {
       meta: getDynamicMeta(status)

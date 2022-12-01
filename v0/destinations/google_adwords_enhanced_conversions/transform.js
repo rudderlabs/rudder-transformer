@@ -86,7 +86,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
       throw new TransformationError(
-        `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`,
+        `loginCustomerId is required as subAccount is true.`,
         400,
         undefined,
         DEST_TYPE
@@ -104,7 +104,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   }
   if (event === undefined || event === "" || flag === 0) {
     throw new TransformationError(
-      `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`,
+      `Conversion named ${event} is not exist in rudderstack dashboard`,
       400,
       undefined,
       DEST_TYPE
@@ -122,7 +122,7 @@ const processTrackEvent = async (metadata, message, destination) => {
     payload = constructPayload(message, updatedMapping);
   } catch (e) {
     throw new TransformationError(
-      `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`,
+      `${e.message} for ${event} event.`,
       400,
       undefined,
       DEST_TYPE
@@ -132,7 +132,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
     throw new TransformationError(
-      `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
+      `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
       400,
       undefined,
       DEST_TYPE
@@ -152,7 +152,7 @@ const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
     throw new TransformationError(
-      "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present",
+      "Invalid payload. Message Type is not present",
       400,
       undefined,
       DEST_TYPE
@@ -160,7 +160,7 @@ const processEvent = async (metadata, message, destination) => {
   }
   if (type.toLowerCase() !== "track") {
     throw new TransformationError(
-      `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`,
+      `Message Type ${type} is not supported. Aborting message.`,
       400,
       undefined,
       DEST_TYPE

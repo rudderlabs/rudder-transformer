@@ -495,7 +495,12 @@
       "body": {
         "XML": {},
         "FORM": {},
-        "JSON": {},
+        "JSON": {
+          "identity": {
+            "type": "email",
+            "value": "example124@email.com"
+          }
+        },
         "JSON_ARRAY": {}
       },
       "type": "REST",
@@ -510,7 +515,7 @@
         "X-Zendesk-Marketplace-Organization-Id": "3339"
       },
       "version": "1",
-      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7534173321117/make_primary"
+      "endpoint": "https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7535981118877"
     },
     {
       "version": "1",

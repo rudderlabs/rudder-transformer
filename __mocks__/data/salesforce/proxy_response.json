@@ -1,10 +1,11 @@
 {
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {
     "response": {
-      "data": ""
-    },
-    "status": 204,
-    "statusText": "No Content"
+      "data": {
+        "statusText": "No Content"
+      },
+      "status": 204
+    }
   },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3": {
     "response": {

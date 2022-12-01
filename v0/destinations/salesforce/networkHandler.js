@@ -9,7 +9,7 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { salesforceResponseHandler } = require("./utils");
 
 const responseHandler = (destinationResponse, destType) => {
-  const { status } = destinationResponse;
+  let { status } = destinationResponse;
   const message = `Request for destination: ${destType} Processed Successfully`;
 
   salesforceResponseHandler(
@@ -19,6 +19,8 @@ const responseHandler = (destinationResponse, destType) => {
     destinationResponse?.rudderJobMetadata?.destInfo?.authKey
   );
 
+  // else successfully return status as 200, message and original destination response
+  status = 200;
   return {
     status,
     message,

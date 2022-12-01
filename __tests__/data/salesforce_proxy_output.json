@@ -1,10 +1,12 @@
 [
   {
     "output": {
-      "status": 204,
+      "status": 200,
       "message": "Request for destination: salesforce Processed Successfully",
       "destinationResponse": {
-        "response": "",
+        "response": {
+          "statusText": "No Content"
+        },
         "status": 204,
         "rudderJobMetadata": {
           "destInfo": {

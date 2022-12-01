@@ -66,9 +66,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]:: Conversion named Checkout Started is not exist in rudderstack dashboard",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   },
   {
@@ -82,9 +83,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   },
   {
@@ -151,9 +153,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   },
   {
@@ -167,9 +170,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not supported. Aborting message.",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   },
   {
@@ -179,9 +183,10 @@
     "statusCode": 400,
     "error": "Empty/Invalid access token",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "INVALID_OR_EMPTY_TOKEN",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "api",
+      "meta": "retryable"
     }
   },
   {
@@ -195,9 +200,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]:: Conversion named Product Viewed is not exist in rudderstack dashboard",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   },
   {
@@ -323,9 +329,10 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]::Missing required value from [\"properties.orderId\",\"properties.order_id\"] for Page View event.",
     "statTags": {
-      "destination": "google_adwords_enhanced_conversions",
-      "stage": "transform",
-      "scope": "exception"
+      "category": "",
+      "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+      "scope": "transformation",
+      "meta": "handled"
     }
   }
 ]

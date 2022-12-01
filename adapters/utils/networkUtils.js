@@ -72,7 +72,20 @@ const nodeSysErrorToStatus = code => {
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
 
-// Returns dynamic Meta based on Status Code as Input
+/**
+ * Returns dynamic Meta based on Status Code as Input
+ * **Conditions**:
+ * - 500 <= statusCode < 600 -> RETRYABLE
+ * - 429 -> THROTTLED
+ * - all other status-code -> ABORTABLE
+ *
+ * __Notes__:
+ * - Use this function only for error kind of status
+ * - Any implementation specific to a destination has to be handled individually
+ *
+ * @param {number} statusCode - Http status-code
+ * @returns {string} error meta value based on the http status-code
+ */
 const getDynamicMeta = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
     return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;

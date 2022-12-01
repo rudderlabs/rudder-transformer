@@ -91,9 +91,11 @@
     "statusCode": 400,
     "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not supported. Aborting message.",
     "statTags": {
+      "category": "",
       "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
-      "scope": "exception",
-      "stage": "transform"
+      "scope": "transformation",
+      "stage": "transform",
+      "meta": "handled"
     }
   },
   {
@@ -106,9 +108,11 @@
     "statusCode": 500,
     "error": "Empty/Invalid access token",
     "statTags": {
+      "category": "INVALID_OR_EMPTY_TOKEN",
       "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
-      "scope": "exception",
-      "stage": "transform"
+      "scope": "api",
+      "stage": "transform",
+      "meta": "retryable"
     }
   }
 ]

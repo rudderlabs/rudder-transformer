@@ -13,7 +13,8 @@ class RudderErrorBase extends Error {
         statTags?.destType || statTags?.destination || defaults?.destType,
       stage: statTags?.stage || defaults?.stage,
       scope: statTags?.scope || defaults?.scope,
-      meta: statTags?.meta || defaults?.meta
+      meta: statTags?.meta || defaults?.meta,
+      category: statTags?.category || defaults?.category || ""
     };
   }
 }

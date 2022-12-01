@@ -15,7 +15,8 @@ class ApiError extends RudderErrorBase {
     const finalStatTags = RudderErrorBase.populateStatTags(statTags, {
       meta: defMeta,
       scope: defScope,
-      destType: destination
+      destType: destination,
+      category: authErrCategory
     });
 
     super(message, statusCode, finalStatTags, destResponse, authErrCategory);

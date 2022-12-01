@@ -3,15 +3,20 @@
 const get = require("get-value");
 const { cloneDeep } = require("lodash");
 const {
+  INVALID_OR_EMPTY_TOKEN
+} = require("../../../adapters/networkhandler/authConstants");
+const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
+const {
   constructPayload,
   defaultRequestConfig,
   getValueFromMessage,
   removeHyphens,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  TransformationError
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const { ApiError } = require("../../util/errors");
 
-const { trackMapping, BASE_ENDPOINT } = require("./config");
+const { trackMapping, BASE_ENDPOINT, DEST_TYPE } = require("./config");
 
 /**
  * This function is helping to update the mappingJson.
@@ -48,10 +53,16 @@ const getAccessToken = metadata => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
+    throw new ApiError(
+      "Empty/Invalid access token",
+      500,
+      {
+        meta: getDynamicMeta(500)
+      },
+      undefined,
+      INVALID_OR_EMPTY_TOKEN,
+      DEST_TYPE
+    );
   }
   return secret.access_token;
 };
@@ -74,12 +85,12 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
-      throw new ErrorBuilder()
-        .setMessage(
-          `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`
-        )
-        .setStatus(400)
-        .build();
+      throw new TransformationError(
+        `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`,
+        400,
+        undefined,
+        DEST_TYPE
+      );
   return response;
 };
 
@@ -92,12 +103,12 @@ const processTrackEvent = async (metadata, message, destination) => {
     flag = 1;
   }
   if (event === undefined || event === "" || flag === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
-      )
-      .setStatus(400)
-      .build();
+    throw new TransformationError(
+      `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`,
+      400,
+      undefined,
+      DEST_TYPE
+    );
   }
   const { requireHash } = destination.Config;
   let updatedMapping = cloneDeep(trackMapping);
@@ -110,22 +121,22 @@ const processTrackEvent = async (metadata, message, destination) => {
   try {
     payload = constructPayload(message, updatedMapping);
   } catch (e) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`
-      )
-      .setStatus(400)
-      .build();
+    throw new TransformationError(
+      `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`,
+      400,
+      undefined,
+      DEST_TYPE
+    );
   }
 
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
-      )
-      .setStatus(400)
-      .build();
+    throw new TransformationError(
+      `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
+      400,
+      undefined,
+      DEST_TYPE
+    );
   }
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
@@ -140,20 +151,20 @@ const processTrackEvent = async (metadata, message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present"
-      )
-      .setStatus(400)
-      .build();
+    throw new TransformationError(
+      "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present",
+      400,
+      undefined,
+      DEST_TYPE
+    );
   }
   if (type.toLowerCase() !== "track") {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`
-      )
-      .setStatus(400)
-      .build();
+    throw new TransformationError(
+      `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`,
+      400,
+      undefined,
+      DEST_TYPE
+    );
   } else {
     return processTrackEvent(metadata, message, destination);
   }

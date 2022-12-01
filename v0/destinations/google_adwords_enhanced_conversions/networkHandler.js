@@ -2,19 +2,20 @@ const { get, set } = require("lodash");
 const sha256 = require("sha256");
 const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const { CONVERSION_ACTION_ID_CACHE_TTL } = require("./config.js");
+const { CONVERSION_ACTION_ID_CACHE_TTL, DEST_TYPE } = require("./config.js");
 const Cache = require("../../util/cache");
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
 const { BASE_ENDPOINT } = require("./config");
+const { ApiError } = require("../../util/errors");
 /**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -60,35 +61,39 @@ const getConversionActionId = async (method, headers, params) => {
       !response.success &&
       !isHttpStatusSuccess(response.response?.response?.status)
     ) {
-      throw new ErrorBuilder()
-        .setStatus(response.response?.response?.status)
-        .setDestinationResponse(response.response?.response?.data)
-        .setMessage(
-          `Google_adwords_enhanced_conversion: "${get(
-            response,
-            "response.response.data[0].error.message",
-            ""
-          )}" during Google_adwords_enhanced_conversions response transformation`
-        )
-        .setAuthErrorCategory(
-          getAuthErrCategory(
-            get(response, "response.response.status"),
-            get(response, "response.response.data[0]")
-          )
-        )
-        .build();
+      throw new ApiError(
+        `Google_adwords_enhanced_conversion: "${get(
+          response,
+          "response.response.data[0].error.message",
+          ""
+        )}" during Google_adwords_enhanced_conversions response transformation`,
+        response.response?.response?.data,
+        {
+          meta: getDynamicMeta(response.response?.response?.status)
+        },
+        response.response?.response?.data,
+        getAuthErrCategory(
+          get(response, "response.response.status"),
+          get(response, "response.response.data[0]")
+        ),
+        DEST_TYPE
+      );
     }
     const conversionActionId = get(
       response,
       "response.data[0].results[0].conversionAction.id"
     );
     if (!conversionActionId) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `Google_adwords_enhanced_conversions: Unable to find conversionActionId for conversion:${params.event}`
-        )
-        .build();
+      throw new ApiError(
+        `Google_adwords_enhanced_conversions: Unable to find conversionActionId for conversion:${params.event}`,
+        400,
+        {
+          meta: getDynamicMeta(400)
+        },
+        response.response?.response?.data,
+        undefined,
+        DEST_TYPE
+      );
     }
     return conversionActionId;
   });
@@ -135,14 +140,16 @@ const responseHandler = destinationResponse => {
   // else successfully return status, message and original destination response
   const { response } = destinationResponse;
   const errMessage = get(response, "error.message", "");
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Google_adwords_enhanced_conversion: "${errMessage}" during Google_adwords_enhanced_conversions response transformation`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
-    .build();
+  throw new ApiError(
+    `Google_adwords_enhanced_conversion: "${errMessage}" during Google_adwords_enhanced_conversions response transformation`,
+    status,
+    {
+      meta: getDynamicMeta(status)
+    },
+    response,
+    getAuthErrCategory(status, response),
+    DEST_TYPE
+  );
 };
 // eslint-disable-next-line func-names
 class networkHandler {

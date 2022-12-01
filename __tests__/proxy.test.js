@@ -10,17 +10,7 @@ const destinations = [
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
   "snapchat_custom_audience",
-  "clevertap"
-];
-const deleteUserDestinations = [
-  "am",
-  "braze",
-  "intercom",
-  "mp",
-  "af",
   "clevertap",
-  "engage",
-  "sendgrid",
   "marketo_static_list"
 ];
 const service = require("../versionedRouter").handleProxyRequest;

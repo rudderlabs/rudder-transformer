@@ -1,9 +1,54 @@
 {
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {
     "response": {
-      "data": ""
-    },
-    "status": 204,
-    "statusText": "No Content"
+      "data": {
+        "statusText": "No Content"
+      },
+      "status": 204
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3": {
+    "response": {
+      "data": [
+        {
+          "message": "Session expired or invalid",
+          "errorCode": "INVALID_SESSION_ID"
+        }
+      ],
+      "status": 401
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2": {
+    "response": {
+      "data": [
+        {
+          "message": "INVALID_HEADER_TYPE",
+          "errorCode": "INVALID_AUTH_HEADER"
+        }
+      ],
+      "status": 401
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4": {
+    "response": {
+      "data": [
+        {
+          "message": "Request limit exceeded",
+          "errorCode": "REQUEST_LIMIT_EXCEEDED"
+        }
+      ],
+      "status": 403
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5": {
+    "response": {
+      "data": [
+        {
+          "message": "Server Unavailable",
+          "errorCode": "SERVER_UNAVAILABLE"
+        }
+      ],
+      "status": 503
+    }
   }
 }

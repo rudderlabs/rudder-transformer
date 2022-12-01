@@ -28,6 +28,16 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+// Router Metadata Test files
+const inputRouterMetadataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_metadata_input.json`)
+);
+const outputRouterMetadataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_metadata_output.json`)
+);
+const inputRouterMetadata = JSON.parse(inputRouterMetadataFile);
+const expectedRouterMetadata = JSON.parse(outputRouterMetadataFile);
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     inputData.forEach(async (input, index) => {
@@ -46,6 +56,15 @@ describe(`${name} Tests`, () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
+    });
+  });
+
+  describe("Router Metadata Tests", () => {
+    it("Payload", async () => {
+      const routerMetadataOutput = await transformer.processMetadataForRouter(
+        inputRouterMetadata
+      );
+      expect(routerMetadataOutput).toEqual(expectedRouterMetadata);
     });
   });
 });

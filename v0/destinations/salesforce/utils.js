@@ -12,54 +12,6 @@ const {
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
-// Utility method to construct the header to be used for SFDC API calls
-// The "Authorization: Bearer <token>" header element needs to be passed for
-// authentication for all SFDC REST API calls
-const getAccessToken = async destination => {
-  const accessTokenKey = destination.ID;
-
-  return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
-    let SF_TOKEN_URL;
-    if (destination.Config.sandbox) {
-      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
-    } else {
-      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
-    }
-    const authUrl = `${SF_TOKEN_URL}?username=${
-      destination.Config.userName
-    }&password=${encodeURIComponent(
-      destination.Config.password
-    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-      destination.Config.consumerKey
-    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-    const { httpResponse, processedResponse } = await handleHttpRequest(
-      "post",
-      authUrl,
-      {}
-    );
-    // If the request fails, throwing error.
-    if (!httpResponse.success) {
-      const { error } = httpResponse.response.response.data;
-      throw new ApiError(
-        `${DESTINATION} Request Failed: access token could not be generated due to ${error}`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-        },
-        processedResponse.response,
-        undefined,
-        DESTINATION
-      );
-    }
-    const token = httpResponse.response.data;
-    return {
-      token: `Bearer ${token.access_token}`,
-      instanceUrl: token.instance_url
-    };
-  });
-};
-
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
  * handles Salesforce application level failures
@@ -137,7 +89,7 @@ const salesforceResponseHandler = (
     }
 
     throw new ApiError(
-      `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, Aborted.`,
+      `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, (Aborted). ${sourceMessage}`,
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
@@ -149,6 +101,53 @@ const salesforceResponseHandler = (
       DESTINATION
     );
   }
+};
+
+/**
+ * Utility method to construct the header to be used for SFDC API calls
+ * The "Authorization: Bearer <token>" header element needs to be passed
+ * for authentication for all SFDC REST API calls
+ * @param {*} destination
+ * @returns
+ */
+const getAccessToken = async destination => {
+  const accessTokenKey = destination.ID;
+
+  return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
+    let SF_TOKEN_URL;
+    if (destination.Config.sandbox) {
+      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
+    } else {
+      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
+    }
+    const authUrl = `${SF_TOKEN_URL}?username=${
+      destination.Config.userName
+    }&password=${encodeURIComponent(
+      destination.Config.password
+    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
+      destination.Config.consumerKey
+    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
+    const { httpResponse, processedResponse } = await handleHttpRequest(
+      "post",
+      authUrl,
+      {}
+    );
+    // If the request fails, throwing error.
+    if (!httpResponse.success) {
+      const { error } = httpResponse.response.response.data;
+      salesforceResponseHandler(
+        processedResponse.response,
+        `access token could not be generated due to ${error}`,
+        undefined,
+        accessTokenKey
+      );
+    }
+    const token = httpResponse.response.data;
+    return {
+      token: `Bearer ${token.access_token}`,
+      instanceUrl: token.instance_url
+    };
+  });
 };
 
 module.exports = { getAccessToken, salesforceResponseHandler };

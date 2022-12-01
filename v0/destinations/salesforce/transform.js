@@ -6,7 +6,8 @@ const {
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
-  ignoredContactTraits
+  ignoredContactTraits,
+  DESTINATION
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -17,11 +18,11 @@ const {
   getFirstAndLastName,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  TransformationError
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { getAccessToken, salesforceResponseHandler } = require("./utils");
@@ -177,9 +178,16 @@ async function getSalesforceIdFromPayload(
       !identifierType ||
       !type.toLowerCase().includes("salesforce")
     ) {
-      throw new CustomError(
+      throw new TransformationError(
         "Invalid externalId. id, type, identifierType must be provided",
-        400
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        },
+        DESTINATION
       );
     }
 
@@ -212,7 +220,16 @@ async function getSalesforceIdFromPayload(
     const email = getFieldValueFromMessage(message, "email");
 
     if (!email) {
-      throw new CustomError("Invalid Email address for Lead Objet", 400);
+      throw new TransformationError(
+        "Invalid Email address for Lead Objet",
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
+      );
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
@@ -240,9 +257,29 @@ async function getSalesforceIdFromPayload(
       const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
-          throw new CustomError("The contact has been deleted.", 400);
+          throw new TransformationError(
+            "The contact has been deleted.",
+            400,
+            {
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            },
+            DESTINATION
+          );
         } else {
-          throw new CustomError("The lead has been deleted.", 400);
+          throw new TransformationError(
+            "The lead has been deleted.",
+            400,
+            {
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            },
+            DESTINATION
+          );
         }
       }
       if (record.IsConverted && destination.Config.useContactId) {
@@ -275,9 +312,15 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError(
+    throw new TransformationError(
       "PROCESS IDENTIFY: Invalid traits for Salesforce request",
-      400
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      },
+      DESTINATION
     );
   }
 
@@ -329,7 +372,15 @@ async function processSingleMessage(message, authorizationData, destination) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, destination);
   } else {
-    throw new CustomError(`message type ${message.type} is not supported`, 400);
+    throw new TransformationError(
+      `message type ${message.type} is not supported`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
   return response;
 }

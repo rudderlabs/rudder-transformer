@@ -2,8 +2,9 @@
   {
     "destKey": "params.amount",
     "sourceKeys": [
-      "properties.revenue",
       "properties.amount",
+      "properties.revenue",
+      "properties.total",
       "properties.totalAmount",
       "properties.total_amount"
     ],
@@ -11,10 +12,7 @@
   },
   {
     "destKey": "params.commissionGroup",
-    "sourceKeys": [
-      "properties.commissionGroup",
-      "properties.commission_group"
-    ],
+    "sourceKeys": ["properties.commissionGroup", "properties.commission_group"],
     "required": false
   },
   {

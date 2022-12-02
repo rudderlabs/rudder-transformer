@@ -19,9 +19,6 @@ const getParams = (params, advertiserId) => {
     );
     delete params.commissionGroup;
   }
-  if (!params.cks) {
-    params.cks = "awc";
-  }
   if (!params.testmode) {
     params.testmode = "0";
   }

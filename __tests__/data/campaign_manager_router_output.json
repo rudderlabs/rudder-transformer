@@ -26,16 +26,12 @@
               "timestampMicros": "1668624722000000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
+              "quantity": "455678",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "value": 7,
               "encryptedUserIdCandidates": [
                 "dfghjbnm"
               ],
-              "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string",
               "limitAdTracking": true,
               "childDirectedTreatment": true
             }
@@ -95,18 +91,12 @@
               "timestampMicros": "1668624722000000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
+              "quantity": "455678",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "value": 7,
               "encryptedUserIdCandidates": [
                 "dfghjbnm"
-              ],
-              "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string",
-              "limitAdTracking": true,
-              "childDirectedTreatment": true
+              ]
             }
           ]
         },
@@ -149,6 +139,11 @@
            }
          }
        ],
-     "statusCode": 400
-   }
+     "statusCode": 400,
+       "statTags":  {
+         "destType": "CAMPAIGN_MANAGER",
+         "scope": "exception",
+         "stage": "transform"
+      }
+}
 ]

@@ -353,6 +353,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "123456",
             "library": "rudderstack",
             "user_properties": {
@@ -393,6 +394,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "123456",
             "session_id": "1598597129",
             "event_type": "$identify",
@@ -435,6 +437,7 @@
           {
             "device_id": "123456",
             "session_id": 1598597129,
+            "platform": "Server",
             "event_type": "$identify",
             "library": "rudderstack",
             "user_properties": {
@@ -473,6 +476,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "123456",
             "session_id": -1,
             "event_type": "$identify",
@@ -637,6 +641,7 @@
           {
             "os_name": "Android",
             "os_version": "9",
+            "platform": "Server",
             "library": "rudderstack",
             "device_id": "0572f78fa49c648e",
             "insert_id": "1600355223510-93e866a7-dc74-4256-a5f4-a41f54532466",
@@ -932,6 +937,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Order Completed",
@@ -984,6 +990,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
@@ -1030,6 +1037,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "library": "rudderstack",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "event_type": "Product Purchased",
@@ -1075,6 +1083,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "library": "rudderstack",
             "event_type": "Order Completed",
@@ -1148,6 +1157,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Order Completed",
@@ -1199,6 +1209,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
@@ -1246,6 +1257,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
@@ -1293,6 +1305,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Order Completed",
@@ -1364,6 +1377,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
@@ -1411,6 +1425,7 @@
           "api_key": "abcde",
           "events": [
             {
+              "platform": "Server",
               "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
               "library": "rudderstack",
               "event_type": "Product Purchased",
@@ -1457,6 +1472,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "library": "rudderstack",
             "event_type": "Order Completed",
@@ -1509,6 +1525,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "library": "rudderstack",
             "event_type": "Order Completed",
@@ -1561,6 +1578,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "library": "rudderstack",
             "event_type": "Order Completed",
@@ -1613,6 +1631,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
             "library": "rudderstack",
             "event_type": "Order Completed",
@@ -2875,6 +2894,7 @@
         "api_key": "abcde",
         "events": [
           {
+            "platform": "Server",
             "os_name": "Android",
             "os_version": "9",
             "library": "rudderstack",

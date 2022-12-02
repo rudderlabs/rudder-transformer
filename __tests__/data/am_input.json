@@ -682,9 +682,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": [
-          "Comapny-ABC"
-        ]
+        "value_trait": ["Comapny-ABC"]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -2821,7 +2819,7 @@
       "event": "Sample track event BEFORE IDENTIFY1**",
       "sentAt": "2020-09-17T15:07:13.171Z",
       "userId": "0572f78fa49c648e",
-      "channel": "mobile",
+      "channel": "server",
       "context": {
         "device": {
           "brand": "testBrand",

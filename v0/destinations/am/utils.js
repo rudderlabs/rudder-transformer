@@ -55,12 +55,19 @@ function getDeviceManufacturer(payload, sourceKey) {
 }
 
 function getPlatform(payload, sourceKey) {
-  const payloadVal = get(payload, sourceKey);
-  return payload.channel
-    ? payload.channel.toLowerCase() === "web"
-      ? "Web"
-      : payloadVal
-    : payloadVal;
+  let payloadVal = get(payload, sourceKey);
+  if (!payloadVal) {
+    payloadVal = "Server";
+  }
+
+  switch (payload.channel) {
+    case "web":
+      return "Web";
+    case "server":
+      return "Server";
+    default:
+      return payloadVal;
+  }
 }
 
 function getBrand(payload, sourceKey, Config) {

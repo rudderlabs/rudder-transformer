@@ -7,6 +7,7 @@ const https = require("https");
 const axios = require("axios");
 const log = require("../logger");
 const { removeUndefinedValues } = require("../v0/util");
+const { processAxiosResponse } = require("./utils/networkUtils");
 
 const MAX_CONTENT_LENGTH =
   parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
@@ -266,6 +267,57 @@ const proxyRequest = async request => {
   return response;
 };
 
+/**
+ * handles http request and sends the response in a simple format that is followed in transformer
+ *
+ * @param {string} requestType - http request type like post, get etc,.
+ * @param {any} httpArgs - arguments that should be sent to the request. This is a variadic argument(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
+ * @returns {{httpResponse: any, processedResponse: any}}
+ *  - __httpResponse__: indicates the response we get from httpGET or httpPOST methods
+ *  - __processedResponse__: indicates a wrapeed response object returned from processedAxiosResponse
+ * @example
+ *  handleHttpRequest("post", "https://example.com", {})
+ *  handleHttpRequest("constructor",{
+      method: "post",
+      url: "https://myapi.com/api/2/deletions/users",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic sdineciuneu839eu3i9/=`
+      },
+      data: {
+        // request body data
+        "key": 1,
+        "ke": 2
+      }
+    })
+ */
+const handleHttpRequest = async (requestType = "post", ...httpArgs) => {
+  let httpWrapperMethod;
+  switch (requestType.toLowerCase()) {
+    case "get":
+      httpWrapperMethod = httpGET;
+      break;
+    case "put":
+      httpWrapperMethod = httpPUT;
+      break;
+    case "patch":
+      httpWrapperMethod = httpPATCH;
+      break;
+    case "delete":
+      httpWrapperMethod = httpDELETE;
+      break;
+    case "constructor":
+      httpWrapperMethod = httpSend;
+      break;
+    default:
+      httpWrapperMethod = httpPOST;
+      break;
+  }
+  const httpResponse = await httpWrapperMethod(...httpArgs);
+  const processedResponse = processAxiosResponse(httpResponse);
+  return { httpResponse, processedResponse };
+};
+
 module.exports = {
   httpSend,
   httpGET,
@@ -276,5 +328,6 @@ module.exports = {
   proxyRequest,
   prepareProxyRequest,
   getPayloadData,
-  getFormData
+  getFormData,
+  handleHttpRequest
 };

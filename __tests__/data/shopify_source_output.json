@@ -10,7 +10,8 @@
       },
       "integration": {
         "name": "SHOPIFY"
-      }
+      },
+      "topic": "customers_create"
     },
     "integrations": {
       "SHOPIFY": true
@@ -91,7 +92,8 @@
       },
       "integration": {
         "name": "SHOPIFY"
-      }
+      },
+      "topic": "orders_updated"
     },
     "integrations": {
       "SHOPIFY": true
@@ -380,7 +382,8 @@
       },
       "integration": {
         "name": "SHOPIFY"
-      }
+      },
+      "topic": "fulfillments_update"
     },
     "integrations": {
       "SHOPIFY": true
@@ -496,7 +499,8 @@
       },
       "integration": {
         "name": "SHOPIFY"
-      }
+      },
+      "topic": "fulfillments_update"
     },
     "integrations": {
       "SHOPIFY": true

@@ -1,39 +1,58 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "transformer",
-            "type": "node",
-            "request": "launch",
-            "args": [
-                "${workspaceRoot}/destTransformer.js",
-            ],
-            "runtimeArgs": [
-                "--nolazy"
-            ],
-            "sourceMaps": true,
-            "runtimeExecutable":"/usr/local/bin/node"
-        },
-        {
-            "runtimeExecutable":"/usr/local/bin/node",
-            "type": "node",
-            "request": "launch",
-            "name": "Jest Current File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": [
-                "${fileBasenameNoExtension}",
-                "--config",
-                "jest.config.js"
-            ],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-            }
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "transformer",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/destTransformer.js",
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": true,
+      "runtimeExecutable": "/usr/local/bin/node"
+    },
+    {
+      "name": "benchmark",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/benchmark",
+      "args": [
+        "--destinations=${input:destinations}",
+        "--feature=${input:feature}"
+      ],
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": true,
+      "runtimeExecutable": "/usr/local/bin/node"
+    },
+    {
+      "runtimeExecutable": "/usr/local/bin/node",
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Current File",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "destinations",
+      "type": "promptString",
+      "description": "Enter destinations",
+      "default": "algolia"
+    },
+    {
+      "id": "feature",
+      "type": "promptString",
+      "description": "Enter Feature",
+      "default": "proc"
+    }
+  ]
 }

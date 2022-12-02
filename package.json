@@ -25,7 +25,8 @@
     "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
     "testTestRouter": "npx jest testRouter",
-    "test": "npm run testDestinations && npm run testVersioned && npm run testTestRouter"
+    "test": "npm run testDestinations && npm run testVersioned && npm run testTestRouter",
+    "test:benchmark": "node benchmark/index.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
@@ -80,6 +81,8 @@
   },
   "devDependencies": {
     "acorn": "^7.4.0",
+    "benchmark-suite": "^0.1.8",
+    "commander": "^9.4.1",
     "eslint": "7.2.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.10.1",

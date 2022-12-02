@@ -1,0 +1,98 @@
+{
+  "batchedRequest": {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 00D2v000002lXbX!ARcA12345.MbUdtmlREscrN_nmytokenAzNkhT1XZIF0yPqyCQSnezWO3osqwerty12O7q41E9.LvedWY"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "Email": "peter.gibbons@initech.com",
+        "Phone": "570-690-4150",
+        "Rating": "Hot",
+        "Title": "VP of Derp",
+        "FirstName": "Peter",
+        "LastName": "Gibbons",
+        "PostalCode": "94115",
+        "City": "east greenwich",
+        "Country": "USA",
+        "State": "California",
+        "Street": "19123 forest lane",
+        "Company": "Initech"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  "metadata": [
+    {
+      "jobId": 1
+    },
+    {
+      "jobId": 2
+    },
+    {
+      "jobId": 3
+    }
+  ],
+  "batched": false,
+  "statusCode": 200,
+  "destination": {
+    "Config": {
+      "initialAccessToken": "9f58ryaInitToken1343dsu73",
+      "password": "myPa#swd123",
+      "userName": "sampathvinayak1453@gmail.com"
+    },
+    "secretConfig": {},
+    "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+    "name": "Marketo",
+    "enabled": true,
+    "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+    "deleted": false,
+    "createdAt": "2020-12-30T08:39:32.005Z",
+    "updatedAt": "2021-02-03T16:22:31.374Z",
+    "destinationDefinition": {
+      "config": {
+        "supportsVisualMapper": true,
+        "transformAt": "router",
+        "transformAtV1": "router",
+        "saveDestinationResponse": true,
+        "includeKeys": [],
+        "excludeKeys": [],
+        "supportedSourceTypes": [
+          "android",
+          "ios",
+          "web",
+          "unity",
+          "amp",
+          "cloud",
+          "warehouse",
+          "reactnative",
+          "flutter",
+          "cordova"
+        ],
+        "supportedMessageTypes": ["identify"],
+        "destConfig": {
+          "defaultConfig": [
+            "userName",
+            "password",
+            "initialAccessToken",
+            "mapProperties",
+            "sandbox",
+            "useContactId"
+          ]
+        },
+        "secretKeys": ["password", "initialAccessToken"]
+      }
+    },
+    "transformations": [],
+    "isConnectionEnabled": true,
+    "isProcessorEnabled": true
+  }
+}

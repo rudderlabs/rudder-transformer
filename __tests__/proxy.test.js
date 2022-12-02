@@ -10,6 +10,7 @@ const destinations = [
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
   "snapchat_custom_audience",
+  "salesforce",
   "marketo_static_list"
 ];
 const service = require("../versionedRouter").handleProxyRequest;

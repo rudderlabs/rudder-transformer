@@ -274,35 +274,5 @@
         "files": {}
       }
     }
-  },
-  {
-    "request": {
-      "body": {
-        "type": "REST",
-        "files": {},
-        "method": "POST",
-        "params": {},
-        "userId": "",
-        "headers": {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer 00A7g1234553sZ3!AQsAQAADPNb4QWb2ZFGpWA2KD22sZ8rXKxELhpFu28v_uylzpsybJUlY0aoqFJFAo2cbzu.zCUbAItPgcDQ94Iyfr4QbA4Lg"
-        },
-        "version": "1",
-        "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1",
-        "body": {
-          "XML": {},
-          "FORM": {},
-          "JSON": {
-            "Email": "denis.kornilov@sbermarket.ru",
-            "Company": "sbermarket.ru",
-            "LastName": "Корнилов",
-            "FirstName": "Денис",
-            "LeadSource": "App Signup",
-            "account_type__c": "free_trial"
-          },
-          "JSON_ARRAY": {}
-        }
-      }
-    }    
   }
 ]

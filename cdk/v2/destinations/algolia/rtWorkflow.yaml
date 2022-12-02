@@ -1,5 +1,3 @@
-options:
-  templateType: jsontemplate
 bindings:
 - path: ../../../../v0/destinations/algolia/config
 - name: handleRtTfSingleEventError
@@ -8,15 +6,14 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      $.assert(Array.isArray(^) && ^[].length > 0, "Invalid event array")
-
-  - name: prepareContext
-    template:
-      $.context.batchMode = true
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
   - name: transform
     externalWorkflow:
       path: ./procWorkflow.yaml
+      bindings:
+        - name: batchMode
+          value: true
     loopOverInput: true
 
   - name: successfulEvents
@@ -38,7 +35,7 @@ steps:
         batches@batch.({
           "batchedRequest": {
             "body": {
-              "JSON": {"events": batch.output[]},
+              "JSON": {"events": ~r batch.output[]},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -46,19 +43,19 @@ steps:
             "version": "1",
             "type": "REST",
             "method": "POST",
-            "endpoint": $.ENDPOINT,
-            "headers": batch[0].destination.Config.({
+            "endpoint": {{$.ENDPOINT}},
+            "headers": batch[0].destination.Config.().({
               "X-Algolia-Application-Id": .applicationId,
               "X-Algolia-API-Key": .apiKey
             }),
             "params": {},
             "files": {}
           },
-          "metadata": batch.metadata[],
+          "metadata": ~r batch.metadata[],
           "batched": true,
           "statusCode": 200,
           "destination": batch[0].destination
         })[];
   - name: finalPayload
     template: |
-      $.outputs["failedEvents", "batchSuccessfulEvents"].flat()
+      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

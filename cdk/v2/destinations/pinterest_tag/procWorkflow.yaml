@@ -1,19 +1,18 @@
-options:
-  templateType: jsontemplate
 bindings:
   - name: EventType
     path: ../../../../constants
-  - name: SourceKeys
-    path: ../../../../v0/util/data/GenericFieldMapping.json
+  - path: ../../bindings/jsontemplate
     exportAll: true
   - path: ../../../../v0/destinations/pinterest_tag/utils
   - name: ENDPOINT
     path: ../../../../v0/destinations/pinterest_tag/config
+  - name: removeUndefinedValues
+    path: ../../../../v0/util
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
     template: |
-      $.context.batchMode ? .message.body.JSON : .message
+      $.batchMode ? .message.body.JSON : .message
     onComplete: return
   - name: messageType
     template: |
@@ -23,165 +22,178 @@ steps:
       let messageType = $.outputs.messageType;
       $.assert(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
       $.assert(messageType, "Message type is not present. Aborting message.");
-      $.assert(messageType in $.EventType.([.TRACK, .PAGE, .SCREEN]), 
+      $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
       
   - name: validateInputForTrack
     description: Additional validation for Track events
-    condition: $.outputs.messageType === $.EventType.TRACK
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
-        .message.($.assert(.event || .name, "event_name could not be mapped. Aborting."))
+        $.assert(.message.event || .message.name, "event_name could not be mapped. Aborting.")
   - name: commonFields
     description: |
       Builds common fields in destination payload.
       ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
     template: |
-      .message.({
-        "event_time": $floor($getByPaths($, $SourceKeys.timestamp)[0].$toMillis()/1000),
-        "event_source_url": (
-          $url := $getByPaths($, $SourceKeys.pageUrl)[0];
-          $length($url) > 0 ? $url;
-        ),
+      let commonFields = .message.().({
+        "event_time": $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
+        "event_source_url": {{{{$.getGenericPaths("pageUrl")}}}} || undefined,
         "action_source": .traits.action_source ?? 
                          .context.traits.action_source ?? 
                          .traits.actionSource ??
                          .context.traits.actionSource ??
-                         .properties.(.action_source ?? .actionSource)
+                         .properties.action_source ??
+                         .properties.actionSource ??
                          .channel,
         "app_name": .properties.appName ?? .context.app.name,
         "app_version" : .properties.appVersion ?? .context.app.version,
         "device_brand": .properties.manufacturer ?? .context.device.manufacturer,
-        "device_model": .properties.deviceModel ?? context.device.model,
-        "device_type": .properties.deviceType ?? context.device.type,
+        "device_model": .properties.deviceModel ?? .context.device.model,
+        "device_type": .properties.deviceType ?? .context.device.type,
         "os_version": .context.os.version,
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
-        "opt_out": !.context.device.adTrackingEnabled,
-        "event_id":[$getByPaths($, ^.destination.Config.deduplicationKey), messageId][0],
+        "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
+        "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId
-      })
+      });
+      $.removeUndefinedValues(commonFields)
+
   - name: validateCommonFields
     template: |
-      let {event_time, action_source} = $.outputs.commonFields.{["event_time", "action_source"]};
-      $.assert(event_time, "event_time is required");
-      $.assert(action_source, "action_source is required");
-      $.assert(action_source in $.VALID_ACTION_SOURCES, 
-          "Action source must be one of " + $.VALID_ACTION_SOURCES.join(", "))
+      const evenTime = $.outputs.commonFields.event_time;
+      const actionSource = $.outputs.commonFields.action_source;
+      $.assert(evenTime, "event_time is required");
+      $.assert(actionSource, "action_source is required");
+      $.assert(actionSource in {{$.VALID_ACTION_SOURCES}}, 
+          {{"Action source must be one of " + $.VALID_ACTION_SOURCES.join(", ")}})
   - name: userFields
     description: Personally identifiable fields
     template: |
-        let gender = .message.(.traits.gender ?? .context.traits.gender);
+        let gender = .message.traits.gender ?? .message.context.traits.gender;
         gender = gender && (
                   (gender in ["f", "F", "Female", "female", "FEMALE"] ? "f") ??
                   (gender in ["m", "M", "Male", "male", "MALE"] ? "m": gender)
                 );
-        let userFields = .message.{
-          "em": $getByPaths($, $SourceKeys.email)[0],
-          "ph": $getByPaths($, $SourceKeys.phone)[0],
+        let userFields = .message.().({
+          "em": {{{{$.getGenericPaths("email")}}}},
+          "ph": {{{{$.getGenericPaths("phone")}}}},
           "ge": gender,
-          "db": $getByPaths($, $SourceKeys.birthday)[0],
-          "ln": $getByPaths($, $SourceKeys.lastName)[0],
-          "fn": $getByPaths($, $SourceKeys.firstName)[0],
+          "db": {{{{$.getGenericPaths("birthday")}}}},
+          "ln": {{{{$.getGenericPaths("lastName")}}}},
+          "fn": {{{{$.getGenericPaths("firstName")}}}},
           "ct": (.traits.address.city ?? .context.traits.address.city).toLowerCase(),
           "st": (.traits.address.state ?? .context.traits.address.state).toLowerCase(),
-          "zip": (.traits.address.zip ?? .context.traits.address.zip).toLowerCase(),
+          "zp": .traits.address.zip ?? .context.traits.address.zip,
           "country": (.traits.address.country ?? .context.traits.address.country).toLowerCase(),
-          "hashed_maids": context.device.advertisingId,
+          "hashed_maids": .context.device.advertisingId,
           "client_ip_address": .context.ip ?? .request_ip,
           "client_user_agent": .context.userAgent
-        };
+        });
+        userFields = $.removeUndefinedValues(userFields);
         .destination.Config.sendingUnHashedData ? 
           $.processUserPayload(userFields) :
           $.processHashedUserPayload(userFields, .message)
   - name: validateUserFields
     template: |
-      const requiredFieldsCondition = $.outputs.userFields.(.em || .hashed_maids || (.client_ip_address && .client_user_agent));
+      const requiredFieldsCondition = $.outputs.userFields.().(.em || .hashed_maids || (.client_ip_address && .client_user_agent));
       $.assert(requiredFieldsCondition, "It is required at least one of em, hashed_maids or" +
             " pair of client_ip_address and client_user_agent.")
       
   - name: ecomFields
-    condition: $outputs.messageType = $EventType.TRACK
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
     steps:
       - name: customFields
         template: |
-          .message.{
+          const customFields = .message.().({
             "currency": .properties.currency,
-            "value": .properties.(.value ?? .total ?? .revenue),
-            "num_items": Number(.properties.numOfItems),
+            "value": .properties.value ?? 
+                     .properties.total ?? 
+                     .properties.revenue,
+            "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query
-          }
+          });
+          $.removeUndefinedValues(customFields)
+
       - name: productFields
         condition: .message.properties.products
         description: When event contains multiple products
         template: |
+          let products = .message.properties.products;
           {
-             "num_items": $sum(message.properties.products.quantity.$number()),
-             "content_ids": .message.properties.products.(.product_id ?? .sku ?? .id),
-             "contents": message.properties@prop.products.({
-               "quantity": Number(.quantity ?? prop.quantity ?? 1),
-               "item_price": String(.price ?? prop.price)
-             })
-           }
+            "num_items": $.sum(products.quantity.(Number(.))),
+            "content_ids": products.(.product_id ?? .sku ?? .id)[],
+            "contents": .message.properties@prop.products.({
+              "quantity": Number(.quantity ?? prop.quantity ?? 1),
+              "item_price": String(.price ?? prop.price)
+            })[]
+          }
         else: 
           name: singleProductFields
           template: |
-            message.properties.{
-              "num_items": $number(.quantity),
-              "content_ids": (.product_id ?? .sku ? .id)[],
-              "contents": [{
-                "quantity": Number(.quantity ?? 1),
-                "item_price": String(.price)
-              }]
-            }
+            const props = .message.properties;
+            const output = {
+              "num_items": Number(props.quantity),
+              "content_ids": (props.product_id ?? props.sku ?? props.id)[],
+              "contents": {
+                "quantity": Number(props.quantity) || 1,
+                "item_price": String(props.price)
+              }[]
+            };
       - name: combineAllEcomFields
         template: |
-          $outputs.ecomFields.(Object.assign(.productFields, .customFields))
+          {...$.outputs.ecomFields.productFields, ...$.outputs.ecomFields.customFields}
   - name: basePayload
     template: |
-      $.outputs.({
-        ...(.commonFields),
-        "user_data": .userFields, 
-        "custom_data": .ecomFields
-      })
+      const payload = $.outputs.commonFields;
+      payload.user_data = $.outputs.userFields;
+      $.outputs.ecomFields ? payload.custom_data = $.outputs.ecomFields;
+      payload
+
   - name: eventNames
     description: Event names for page message type
-    condition: $.outputs.messageType === $.EventType.PAGE
+    condition: $.outputs.messageType === {{$.EventType.PAGE}}
     template: |
-      .message.category ? [ "ViewCategory" ] : [ "PageVisit" ])
+      .message.category ? [ "ViewCategory" ] : [ "PageVisit" ]
     else:
       name: eventNamesForOthers
       template: |
-        (
-          $event := message.[event, name][0];
-          $eventMap := destination.Config.eventsMapping.{from: to};
-          $eventNames := $lookup($eventMap, $event);
-          $count($eventNames) = 0 ? $eventNames := $ecomEventMaps[$lowercase($event) in src].dest;
-          $count($eventNames) = 0 ? $eventNames := [$event];
-          $eventNames
-        )
-  - name: destEvents
+        let event = .message.event ?? .message.name;
+        let eventInLowerCase = event.toLowerCase();
+        let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
+        eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
+        eventNames.length === 0 ? eventNames = [event];
+        eventNames
+
+  - name: payload
     template: |
-      $outputs.eventNames.($merge([%.basePayload, {"event_name": $}])) ~> $toArray
+      $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
+  
   - name: buildResponse
-    condition: $not($exists($context.batchMode))
+    description: In batchMode we return payload directly
+    condition: $.batchMode
     template: |
-      $outputs.destEvents.{
-        "body": {
-          "JSON": $,
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": $ENDPOINT,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {},
-        "files": {}
-      } ~> $toArray
+      $.outputs.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        $.outputs.payload.().({
+          "body": {
+            "JSON": .,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": {{$.ENDPOINT}},
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "params": {},
+          "files": {}
+        })[]

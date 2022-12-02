@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { TRANSFORMER_METRIC } = require("../v0/util/constant");
-const { processCdkV2Workflow } = require("../cdk/v2/handler");
+const { processCdkV2Workflow, getWorkflowEngine, process } = require("../cdk/v2/handler");
 
 const integration = "pinterest_tag";
 const name = "Pinterest Conversion API";
@@ -68,24 +68,31 @@ describe(`${name} Tests`, () => {
       expect(output).toEqual(expectedRouterErrorData);
     });
 
-    it("Payload with Default Batch size", async () => {
-      const output = await processCdkV2Workflow(
-        integration,
-        inputRouterData,
-        TRANSFORMER_METRIC.ERROR_AT.RT
-      );
-      expect(output).toEqual(expectedRouterData);
+    describe("Default Batch size", () => {
+      inputRouterData.forEach((input, index) => {
+        it(`Payload: ${index}`, async () => {
+          const output = await processCdkV2Workflow(
+            integration,
+            input,
+            TRANSFORMER_METRIC.ERROR_AT.RT
+          );
+          expect(output).toEqual(expectedRouterData[index]);
+        });
+      });
     });
-    it("Payload with Batch size 3", async () => {
-      const output = await processCdkV2Workflow(
-        integration,
-        inputRouterData,
-        TRANSFORMER_METRIC.ERROR_AT.RT,
-        {
-          MAX_BATCH_SIZE: 3
-        }
-      );
-      expect(output).toEqual(expectedRouterBatchData);
+    describe("Batch size 3", () => {
+      inputRouterData.forEach((input, index) => {
+        it(`Payload: ${index}`, async () => {
+          const workflowEngine = await getWorkflowEngine(integration, TRANSFORMER_METRIC.ERROR_AT.RT, {
+            MAX_BATCH_SIZE: 3
+          });
+          const output = await process(
+            workflowEngine,
+            input,            
+          );
+          expect(output).toEqual(expectedRouterBatchData[index]);
+        });
+      });
     });
   });
 });

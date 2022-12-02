@@ -34,7 +34,7 @@ ENTRYPOINT ["/sbin/tini", "--"]
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
     CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "start:clinic-doctor" ]
 
 
 EXPOSE 9090/tcp

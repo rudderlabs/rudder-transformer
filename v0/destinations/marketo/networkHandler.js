@@ -20,7 +20,8 @@ const responseHandler = (destinationResponse, destType) => {
     "during Marketo Response Handling",
     TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     destinationResponse?.rudderJobMetadata,
-    authCache
+    authCache,
+    "marketo"
   );
   // else successfully return status, message and original destination response
   return {

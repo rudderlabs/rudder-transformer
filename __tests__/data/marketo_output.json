@@ -122,7 +122,7 @@
   },
   {
     "statusCode": 500,
-    "error": "Request Failed for Marketo, Access Token Expired (Retryable).During fetching auth token"
+    "error": "Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token"
   },
   {
     "statusCode": 400,

@@ -2,7 +2,8 @@ const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  TransformationError
 } = require("../../util");
 const {
   validatePayload,
@@ -12,7 +13,6 @@ const {
   identifyUserPayloadBuilder
 } = require("./utils");
 const { DESTINATION } = require("./config");
-const ErrorBuilder = require("../../util/error");
 const { EventType } = require("../../../constants");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 
@@ -30,16 +30,15 @@ const responseBuilder = (payload, endpoint, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new ErrorBuilder()
-    .setMessage("[Refiner] :: Payload could not be constructed")
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+  throw new TransformationError(
+    "Something went wrong while constructing the payload",
+    400,
+    {
       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
       meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    })
-    .build();
+    },
+    DESTINATION
+  );
 };
 
 const identifyResponseBuilder = (message, destination) => {
@@ -52,16 +51,15 @@ const identifyResponseBuilder = (message, destination) => {
 const trackResponseBuilder = (message, destination) => {
   validatePayload(message);
   if (!message.event) {
-    throw new ErrorBuilder()
-      .setMessage("[Refiner]:: parameter event is required")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    throw new TransformationError(
+      "Event name is required",
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+      },
+      DESTINATION
+    );
   }
   const builder = trackEventPayloadBuilder(message);
   const { payload, endpoint } = builder;
@@ -85,16 +83,15 @@ const groupResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("[Refiner] :: Message Type is not present. Aborting message")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+    throw new TransformationError(
+      "Event type is required",
+      400,
+      {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
         meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+      },
+      DESTINATION
+    );
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -112,17 +109,17 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`[Refiner] :: Message type ${messageType} not supported`)
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      throw new TransformationError(
+        `Event type "${messageType}" is not supported`,
+        400,
+        {
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
           meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .INSTRUMENTATION
+        },
+        DESTINATION
+      );
   }
   return response;
 };

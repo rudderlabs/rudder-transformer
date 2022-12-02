@@ -27,7 +27,7 @@ jobs:
             chore
             refactor
             exp
-            doc
+            docs
             test
           requireScope: false
           subjectPattern: ^(?![A-Z]).+$

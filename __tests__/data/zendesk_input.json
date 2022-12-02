@@ -1377,7 +1377,8 @@
         "email": "prabrisha@rudderlabs.com",
         "password": "Ey!i@2tn6YhSDpx",
         "removeUsersFromOrganization": true,
-        "sendGroupCallsWithoutUserId": true
+        "sendGroupCallsWithoutUserId": true,
+        "searchByExternalId": true
       },
       "DestinationDefinition": {
         "DisplayName": "Zendesk",
@@ -1422,7 +1423,6 @@
       "userId": "abcd-144",
       "traits": {
         "email": "example124@email.com",
-        "primaryEmail": "example115@email.com",
         "name": "name_abcd144"
       }
     }

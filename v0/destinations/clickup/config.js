@@ -25,6 +25,7 @@ module.exports = {
   VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
+  DESTINATION: "CLICKUP",
   createTaskEndPoint,
   getCustomFieldsEndPoint
 };

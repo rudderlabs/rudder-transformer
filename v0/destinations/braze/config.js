@@ -17,6 +17,10 @@ function getTrackEndPoint(endPoint) {
   return `${endPoint}/users/track`;
 }
 
+function getSubscriptionGroupEndPoint(endPoint) {
+  return `${endPoint}/subscription/status/set`;
+}
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const BRAZE_PARTNER_NAME = "RudderStack";
@@ -33,6 +37,7 @@ module.exports = {
   mappingConfig,
   getIdentifyEndpoint,
   getTrackEndPoint,
+  getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,

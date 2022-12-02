@@ -1665,7 +1665,7 @@
       "headers": {},
       "params": {
         "data": {
-          "$group_id": "groupIdInTraits",
+          "$group_id": "testGroupId",
           "$group_key": "groupId",
           "$set": {
             "company": "testComp",

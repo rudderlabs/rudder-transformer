@@ -338,7 +338,7 @@ const processGroupEvents = (message, type, destination) => {
         const groupParameters = {
           $token: destination.Config.token,
           $group_key: groupKey,
-          $group_id: get(message.traits, groupKey),
+          $group_id: groupKeyVal,
           $set: {
             ...message.traits
           }

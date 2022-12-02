@@ -352,7 +352,7 @@ function processGroup(message, destination) {
       .build();
   }
   if (destination.Config.enableSubscriptionGroupInGroupCall) {
-    if (!message.traits) {
+    if (!(message.traits && (message.traits.phone || message.traits.email))) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage(
@@ -376,7 +376,7 @@ function processGroup(message, destination) {
       throw new ErrorBuilder()
         .setStatus(400)
         .setMessage(
-          "You must provide a subscription state that is either subscribed or unsubscribed. Aborting message."
+          "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
         )
         .setStatTags({
           destType: DESTINATION,
@@ -389,10 +389,12 @@ function processGroup(message, destination) {
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
     subscriptionGroup.external_id = [message.userId || message.anonymousId];
-    if (getFieldValueFromMessage(message, "phone")) {
-      subscriptionGroup.phone = [getFieldValueFromMessage(message, "phone")];
-    } else if (getFieldValueFromMessage(message, "email")) {
-      subscriptionGroup.email = [getFieldValueFromMessage(message, "email")];
+    const phone = getFieldValueFromMessage(message, "phone");
+    const email = getFieldValueFromMessage(message, "email");
+    if (phone) {
+      subscriptionGroup.phone = phone;
+    } else if (email) {
+      subscriptionGroup.email = email;
     }
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(

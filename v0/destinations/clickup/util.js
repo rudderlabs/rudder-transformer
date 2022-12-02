@@ -1,14 +1,17 @@
 const { httpGET } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicMeta
 } = require("../../../adapters/utils/networkUtils");
 const {
   getHashFromArray,
   getHashFromArrayWithValueAsObject,
   formatTimeStamp,
-  CustomError
+  TransformationError
 } = require("../../util");
-const { getCustomFieldsEndPoint } = require("./config");
+const { getCustomFieldsEndPoint, DESTINATION } = require("./config");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { ApiError } = require("../../util/errors");
 
 /**
  * Validates priority
@@ -20,9 +23,14 @@ const validatePriority = priority => {
       !(Number.isInteger(priority) && priority >= 1 && priority <= 4)) ||
     priority === 0
   ) {
-    throw new CustomError(
-      "[ CLICKUP ]:: Invalid Priority. Value must be Integer and in range [1,4]",
-      400
+    throw new TransformationError(
+      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
     );
   }
 };
@@ -34,7 +42,15 @@ const validatePriority = priority => {
 const validatePhoneWithCountryCode = phone => {
   const regex = /^\+(?:[{0-9] ?){6,14}[0-9]$/;
   if (!regex.test(phone)) {
-    throw new CustomError("[ CLICKUP ]:: Invalid Phone Number", 400);
+    throw new TransformationError(
+      "The provided phone number is invalid",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
 };
 
@@ -45,7 +61,15 @@ const validatePhoneWithCountryCode = phone => {
 const validateEmail = email => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!regex.test(email)) {
-    throw new CustomError("[ CLICKUP ]:: Invalid Email", 400);
+    throw new TransformationError(
+      "The provided email is invalid",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
 };
 
@@ -56,7 +80,15 @@ const validateEmail = email => {
 const validateUrl = url => {
   const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   if (!regex.test(url)) {
-    throw new CustomError("[ CLICKUP ]:: Invalid URL", 400);
+    throw new TransformationError(
+      "The provided url is invalid",
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
+    );
   }
 };
 
@@ -68,15 +100,25 @@ const validateLocation = location => {
   const lat = location?.lat;
   const lng = location?.lng;
   if (lat && !(lat >= -90 && lat <= 90)) {
-    throw new CustomError(
-      "[ CLICKUP ]:: Invalid Latitude. Latitude must be in range [-90, 90]",
-      400
+    throw new TransformationError(
+      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
     );
   }
   if (lng && !(lng >= -180 && lng <= 180)) {
-    throw new CustomError(
-      "[ CLICKUP ]:: Invalid Longitude. Longitude must be in range [-180, 180]",
-      400
+    throw new TransformationError(
+      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
     );
   }
 };
@@ -89,9 +131,14 @@ const validateLocation = location => {
 const validateRating = (customField, rating) => {
   const count = customField?.type_config?.count;
   if (rating && !(rating >= 0 && rating <= count)) {
-    throw new CustomError(
-      `[ CLICKUP ]:: Invalid Rating. Value must be in range [0,${count}]`,
-      400
+    throw new TransformationError(
+      `Invalid value specified for rating. Value must be in range "[0,${count}]"`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      },
+      DESTINATION
     );
   }
 };
@@ -221,11 +268,18 @@ const retrieveCustomFields = async (listId, apiToken) => {
   );
 
   if (processedCustomFieldsResponse.status !== 200) {
-    throw new CustomError(
-      `[ClickUp]:: Unable to retrieve available custom fields due to ${JSON.stringify(
+    throw new ApiError(
+      `Failed to fetch available custom fields due to "${JSON.stringify(
         processedCustomFieldsResponse.response
-      )}`,
-      processedCustomFieldsResponse.status
+      )}"`,
+      processedCustomFieldsResponse.status,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
+        meta: getDynamicMeta(processedCustomFieldsResponse.status)
+      },
+      processedCustomFieldsResponse.response,
+      undefined,
+      DESTINATION
     );
   }
 
@@ -336,9 +390,16 @@ const checkEventIfUIMapped = (message, destination) => {
         whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
     );
     if (!allowEvent) {
-      throw new CustomError(
-        "[ CLICKUP ]:: Event Discarded. To allow this event, add this in Allowlist",
-        400
+      throw new TransformationError(
+        "The event was discarded as it was not allow listed in the destination configuration",
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        },
+        DESTINATION
       );
     }
   }

@@ -1,0 +1,38 @@
+{
+    "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3": {
+        "data": {
+            "requestId": "68d8#1846058ee27",
+            "success": false,
+            "errors": [
+                {
+                    "code": "601",
+                    "message": "Access token invalid"
+                }
+            ]
+        },
+        "status": 200
+    },
+    "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2": {
+        "data": {
+            "requestId": "12d3c#1846057dce2",
+            "result": [
+                {
+                    "id": 1,
+                    "status": "added"
+                },
+                {
+                    "id": 2,
+                    "status": "skipped",
+                    "reasons": [
+                        {
+                            "code": "1004",
+                            "message": "Lead not found"
+                        }
+                    ]
+                }
+            ],
+            "success": true
+        },
+        "status": 200
+    }
+}

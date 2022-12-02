@@ -28,15 +28,10 @@
               "ordinal": "string",
               "quantity": "455678",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "value": 7,
               "encryptedUserIdCandidates": [
                 "dfghjbnm"
               ],
-              "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string",
               "limitAdTracking": true,
               "childDirectedTreatment": true
             }
@@ -98,15 +93,10 @@
               "ordinal": "string",
               "quantity": "455678",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "value": 7,
               "encryptedUserIdCandidates": [
                 "dfghjbnm"
-              ],
-              "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string"
+              ]
             }
           ]
         },

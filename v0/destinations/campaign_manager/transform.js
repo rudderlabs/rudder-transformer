@@ -10,7 +10,14 @@ const {
   simpleProcessRouterDest
 } = require("../../util");
 
-const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
+const {
+  ConfigCategories,
+  mappingConfig,
+  BASE_URL,
+  EncryptionEntityType,
+  EncryptionSource
+} = require("./config");
+
 const ErrorBuilder = require("../../util/error");
 
 const getAccessToken = ({ secret }) => {
@@ -22,22 +29,6 @@ const getAccessToken = ({ secret }) => {
   }
   return secret.access_token;
 };
-
-const EncryptionEntityType = [
-  "ENCRYPTION_ENTITY_TYPE_UNKNOWN",
-  "DCM_ACCOUNT",
-  "DCM_ADVERTISER",
-  "DBM_PARTNER",
-  "DBM_ADVERTISER",
-  "ADWORDS_CUSTOMER",
-  "DFP_NETWORK_CODE"
-];
-
-const EncryptionSource = [
-  "ENCRYPTION_SCOPE_UNKNOWN",
-  "AD_SERVING",
-  "DATA_TRANSFER"
-];
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -171,7 +162,6 @@ function validateRequest(message) {
 }
 
 function postValidateRequest(response) {
-  // response.body.JSON.conversion[0]
   if (
     (response.body.JSON.conversions[0].encryptedUserId ||
       response.body.JSON.conversions[0].encryptedUserIdCandidates) &&
@@ -183,19 +173,35 @@ function postValidateRequest(response) {
     );
   }
 
-  if (
-    !(
-      response.body.JSON.conversions[0].gclid ||
-      response.body.JSON.conversions[0].dclid ||
-      response.body.JSON.conversions[0].encryptedUserId ||
-      response.body.JSON.conversions[0].encryptedUserIdCandidates ||
-      response.body.JSON.conversions[0].matchId ||
-      response.body.JSON.conversions[0].mobileDeviceId ||
-      response.body.JSON.conversions[0].impressionId
-    )
-  ) {
+  let count = 0;
+
+  if (response.body.JSON.conversions[0].gclid) {
+    count += 1;
+  }
+
+  if (response.body.JSON.conversions[0].dclid) {
+    count += 1;
+  }
+
+  if (response.body.JSON.conversions[0].encryptedUserId) {
+    count += 1;
+  }
+
+  if (response.body.JSON.conversions[0].encryptedUserIdCandidates) {
+    count += 1;
+  }
+
+  if (response.body.JSON.conversions[0].mobileDeviceId) {
+    count += 1;
+  }
+
+  if (response.body.JSON.conversions[0].impressionId) {
+    count += 1;
+  }
+
+  if (count !== 1) {
     throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId, matchId, mobileDeviceId, gclid, dclid, impressionId.",
+      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.",
       400
     );
   }

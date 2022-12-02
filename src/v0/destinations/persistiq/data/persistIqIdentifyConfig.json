@@ -1,0 +1,103 @@
+[
+    {
+        "destKey": "email",
+        "sourceKeys": "email",
+        "required": true,
+        "sourceFromGenericMap": true
+    },
+    {
+        "destKey": "phone",
+        "sourceKeys": "phone",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "sourceKeys": "title",
+        "destKey": "title",
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "strictMultiMap": [
+                {
+                    "sourceVal": [
+                        "Mr",
+                        "Mr.",
+                        "mr",
+                        "MR"
+                    ],
+                    "destVal": "Mr"
+                },
+                {
+                    "sourceVal": [
+                        "Mrs",
+                        "Mrs.",
+                        "mrs",
+                        "MRS"
+                    ],
+                    "destVal": "Mrs"
+                },
+                {
+                    "sourceVal": [
+                        "Miss",
+                        "Miss.",
+                        "miss",
+                        "MISS"
+                    ],
+                    "destVal": "Miss"
+                }
+            ]
+        }
+    },
+    {
+        "destKey": "first_name",
+        "sourceKeys": "firstName",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "destKey": "last_name",
+        "sourceKeys": "lastName",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "destKey": "city",
+        "sourceKeys": "city",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "destKey": "country",
+        "sourceKeys": "country",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "destKey": "linkedin",
+        "sourceKeys": [
+            "traits.linkedinUrl",
+            "context.traits.linkedinUrl"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "twitter",
+        "sourceKeys": [
+            "traits.twitterUrl",
+            "context.traits.twitterUrl"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "facebook",
+        "sourceKeys": [
+            "traits.facebookUrl",
+            "context.traits.facebookUrl"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "company_name",
+        "sourceKeys": ["conapny.name", "company"],
+        "required": false
+    }
+]

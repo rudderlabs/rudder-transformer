@@ -14,7 +14,8 @@ const {
   getValuesAsArrayFromConfig,
   isHttpStatusSuccess,
   removeUndefinedValues,
-  toUnixTimestamp
+  toUnixTimestamp,
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   ConfigCategory,
@@ -314,13 +315,16 @@ const processGroupEvents = (message, type, destination) => {
   let groupKeyVal;
   if (groupKeys.length > 0) {
     groupKeys.forEach(groupKey => {
-      groupKeyVal = get(message.traits, groupKey);
+      groupKeyVal =
+        groupKey === "groupId"
+          ? getFieldValueFromMessage(message, "groupId")
+          : get(message.traits, groupKey);
       if (groupKeyVal) {
         const parameters = {
           $token: destination.Config.token,
           $distinct_id: message.userId || message.anonymousId,
           $set: {
-            [groupKey]: [get(message.traits, groupKey)]
+            [groupKey]: [groupKeyVal]
           }
         };
         const response = responseBuilderSimple(
@@ -334,7 +338,7 @@ const processGroupEvents = (message, type, destination) => {
         const groupParameters = {
           $token: destination.Config.token,
           $group_key: groupKey,
-          $group_id: get(message.traits, groupKey),
+          $group_id: groupKeyVal,
           $set: {
             ...message.traits
           }

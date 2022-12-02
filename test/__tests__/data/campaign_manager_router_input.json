@@ -67,24 +67,17 @@
         "profileId": 437689,
         "floodlightConfigurationId": "213123123",
         "ordinal": "string",
+        "quantity": "455678",
         "floodlightActivityId": "456543345245",
-        "mobileDeviceId": "string",
         "value": 7,
         "encryptedUserIdCandidates": [
           "dfghjbnm"
         ],
-        "gclid": "string",
-        "matchId": "string",
-        "dclid": "string",
-        "impressionId": "string",
         "limitAdTracking": true,
         "childDirectedTreatment": true,
-        "encryptionInfo": {
-          "kind": "dfareporting#encryptionInfo",
-          "encryptionSource": "AD_SERVING",
-          "encryptionEntityId": "3564523",
-          "encryptionEntityType": "DCM_ACCOUNT"
-        },
+        "encryptionSource": "AD_SERVING",
+        "encryptionEntityId": "3564523",
+        "encryptionEntityType": "DCM_ACCOUNT",
         "requestType": "batchinsert"
       },
       "type": "track",
@@ -166,23 +159,16 @@
         "floodlightConfigurationId": "213123123",
         "ordinal": "string",
         "floodlightActivityId": "456543345245",
-        "mobileDeviceId": "string",
+        "quantity": "455678",
         "value": 7,
         "encryptedUserIdCandidates": [
           "dfghjbnm"
         ],
-        "gclid": "string",
-        "matchId": "string",
-        "dclid": "string",
-        "impressionId": "string",
         "limitAdTracking": true,
         "childDirectedTreatment": true,
-        "encryptionInfo": {
-          "kind": "dfareporting#encryptionInfo",
           "encryptionSource": "AD_SERVING",
           "encryptionEntityId": "3564523",
-          "encryptionEntityType": "DCM_ACCOUNT"
-        },
+          "encryptionEntityType": "DCM_ACCOUNT",
         "requestType": "batchupdate"
       },
       "type": "track",
@@ -272,6 +258,7 @@
         "gclid": "string",
         "matchId": "string",
         "dclid": "string",
+        "quantity": "455678",
         "impressionId": "string",
         "limitAdTracking": true,
         "childDirectedTreatment": true,

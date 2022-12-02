@@ -184,16 +184,18 @@ function postValidateRequest(response) {
   }
 
   if (
-    !response.body.JSON.conversions[0].gclid &&
-    !response.body.JSON.conversions[0].dclid &&
-    !response.body.JSON.conversions[0].encryptedUserId &&
-    !response.body.JSON.conversions[0].encryptedUserIdCandidates &&
-    !response.body.JSON.conversions[0].matchId &&
-    !response.body.JSON.conversions[0].mobileDeviceId &&
-    !response.body.JSON.conversions[0].impressionId
+    !(
+      response.body.JSON.conversions[0].gclid ||
+      response.body.JSON.conversions[0].dclid ||
+      response.body.JSON.conversions[0].encryptedUserId ||
+      response.body.JSON.conversions[0].encryptedUserIdCandidates ||
+      response.body.JSON.conversions[0].matchId ||
+      response.body.JSON.conversions[0].mobileDeviceId ||
+      response.body.JSON.conversions[0].impressionId
+    )
   ) {
     throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need anyone of encryptedUserId, matchId, mobileDeviceId, gclid, dclid, impressionId.",
+      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId, matchId, mobileDeviceId, gclid, dclid, impressionId.",
       400
     );
   }

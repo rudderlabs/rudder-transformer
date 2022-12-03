@@ -1,5 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { ProcessorRequest } from "../types/procRequestT";
+import { ProcessorRequest } from "../types/types";
 
 /* eslint-disable no-param-reassign */
 const get = require("get-value");

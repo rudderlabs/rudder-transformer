@@ -83,6 +83,7 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
+    "@types/node": "^18.11.10",
     "acorn": "^7.4.0",
     "benchmark-suite": "^0.1.8",
     "commander": "^9.4.1",
@@ -96,7 +97,8 @@
     "jest-when": "^2.7.2",
     "mocked-env": "^1.3.2",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "typescript": "^4.9.3"
   },
   "precommit": {
     "run": "lint, testDestinations, testVersioned, testTestRouter"

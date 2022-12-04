@@ -14,13 +14,14 @@ const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
 const PORT = 9090;
 const app = new Koa();
 addPrometheusMiddleware(app);
-addRoutes(app);
+
 app.use(
   bodyParser({
     jsonLimit: "200mb"
   })
 );
 
+addRoutes(app);
 app.use(router.routes()).use(router.allowedMethods());
 app.use(testRouter.routes()).use(testRouter.allowedMethods());
 

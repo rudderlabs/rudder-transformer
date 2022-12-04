@@ -39,6 +39,14 @@
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch TS",
+      "program": "${workspaceFolder}/destTransformer.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     }
   ],
   "inputs": [

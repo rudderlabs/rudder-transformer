@@ -1,7 +1,8 @@
 import { ObjectType, ProcessorRequest } from "../types/types";
+import { MiscService } from "./misc.service";
+import VanillaWorkflowService from "./vanillaWorkflow.service";
 import CDKV1Service from "./cdkV1Workflow.service";
 import CDKV2Service from "./cdkV2Workflow.service";
-import { MiscService } from "./misc.service";
 
 export class WorkFlowSelectorService {
   private static destHandlerMap: Map<string, any> = new Map();
@@ -20,7 +21,7 @@ export class WorkFlowSelectorService {
           this.worflowServiceMap.set("CDKV2", new CDKV2Service());
           break;
         default:
-          this.worflowServiceMap.set("Vanilla", new CDKV1Service());
+          this.worflowServiceMap.set("Vanilla", new VanillaWorkflowService());
       }
       workflow = this.worflowServiceMap.get(workflowType);
     }
@@ -33,7 +34,7 @@ export class WorkFlowSelectorService {
       destinationHandler = this.destHandlerMap.get(dest);
     } else {
       destinationHandler = MiscService.getDestHandler(dest, version);
-      destinationHandler = this.destHandlerMap.set(dest, destinationHandler);
+      this.destHandlerMap.set(dest, destinationHandler);
     }
     return destinationHandler;
   }

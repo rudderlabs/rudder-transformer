@@ -4,7 +4,7 @@ import { isCdkDestination } from "../v0/util";
 import { DestHandlerMap } from "../constants/destinationCanonicalNames";
 
 export class MiscService {
-  public static getDestHandler(version: string, dest: string) {
+  public static getDestHandler(dest: string, version: string) {
     if (DestHandlerMap.hasOwnProperty(dest)) {
       return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
     }

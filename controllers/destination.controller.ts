@@ -17,6 +17,8 @@ export class DestinationController {
     );
     const resplist = await workFlowService.processorWorkflow(events, destination, destinationHandler);
     ctx.body = resplist.flat();
+    // TEMP
+    ctx.set("apiVersion", "2");
     return ctx.body;
   }
 

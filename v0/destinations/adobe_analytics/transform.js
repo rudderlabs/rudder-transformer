@@ -393,7 +393,7 @@ const handleTrack = (message, destination) => {
           get(message, "properties.purchaseId") ||
           get(message, "properties.order_id"),
         transactionID:
-          get(message, "properties.transactionID") ||
+          get(message, "properties.transactionId") ||
           get(message, "properties.order_id")
       });
       break;
@@ -408,7 +408,7 @@ const handleTrack = (message, destination) => {
           get(message, "properties.purchaseId") ||
           get(message, "properties.order_id"),
         transactionID:
-          get(message, "properties.transactionID") ||
+          get(message, "properties.transactionId") ||
           get(message, "properties.order_id")
       });
       break;

@@ -72,6 +72,7 @@ async function runOpenFaasUserTransform(
 }
 
 module.exports = {
+  generateFunctionName,
   runOpenFaasUserTransform,
   setOpenFaasUserTransform
 };

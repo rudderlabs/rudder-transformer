@@ -1,9 +1,10 @@
 [
     {
         "destKey": "email",
-        "sourceKeys": "email",
-        "required": true,
-        "sourceFromGenericMap": true
+        "sourceKeys": [
+            "traits.email",
+            "context.traits.email"
+        ]
     },
     {
         "destKey": "phone",
@@ -97,7 +98,10 @@
     },
     {
         "destKey": "company_name",
-        "sourceKeys": ["conapny.name", "company"],
+        "sourceKeys": [
+            "conapny.name",
+            "company"
+        ],
         "required": false
     }
 ]

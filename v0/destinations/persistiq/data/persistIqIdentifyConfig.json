@@ -99,8 +99,10 @@
     {
         "destKey": "company_name",
         "sourceKeys": [
-            "conapny.name",
-            "company"
+            "traits.company.name",
+            "context.traits.company.name",
+            "traits.company",
+            "context.traits.company"
         ],
         "required": false
     }

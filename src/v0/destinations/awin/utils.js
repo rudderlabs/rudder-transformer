@@ -4,7 +4,8 @@
  * @param {*} advertiserId
  * @returns params
  */
-const getParams = (params, advertiserId) => {
+const getParams = (parameters, advertiserId) => {
+  const params = parameters || {};
   params.tt = "ss";
   params.tv = "2";
   params.merchant = advertiserId;

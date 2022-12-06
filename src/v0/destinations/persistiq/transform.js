@@ -31,6 +31,19 @@ const identifyResponseBuilder = (message, Config, leadId) => {
   const leadInfo = buildLeadPayload(message, traits, Config);
   if (!leadId) {
     // creating new Lead
+    if (!leadInfo?.email) {
+      throw new ErrorBuilder()
+        .setMessage("Email is required for new lead.")
+        .setStatus(400)
+        .setStatTags({
+          destType: DESTINATION,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
+    }
     set(payload, "leads", [leadInfo]);
 
     // Adding some traits at root level of payload

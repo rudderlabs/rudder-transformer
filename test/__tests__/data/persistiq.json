@@ -1,13 +1,12 @@
 [
   {
-    "description": "[::IDENTIFY::]-> Update call with leadId in externalId",
+    "description": "[::IDENTIFY::]-> Update call with leadId in externalId and no email",
     "input": {
       "message": {
         "userId": "test@16",
         "type": "identify",
         "context": {
           "traits": {
-            "email": "test@rudderstack.com",
             "firstName": "test",
             "lastName": "rudderstack",
             "age": 15,
@@ -29,7 +28,10 @@
         "traits": {
           "linkedinUrl": "www.google.com",
           "dup": "update",
-          "status": "open"
+          "status": "open",
+          "company": {
+            "name": "abc123"
+          }
         }
       },
       "destination": {
@@ -49,7 +51,6 @@
         "FORM": {},
         "JSON": {
           "data": {
-            "email": "test@rudderstack.com",
             "age": 15,
             "country": "india",
             "extra": "extraVal",
@@ -58,7 +59,8 @@
             "Snippet": "extra value",
             "last_name": "rudderstack",
             "linkedin": "www.google.com",
-            "phone": "9225467887"
+            "phone": "9225467887",
+            "company_name": "abc123"
           },
           "status": "open"
         },
@@ -77,7 +79,7 @@
     }
   },
   {
-    "description": "[::IDENTIFY::]-> Create new call",
+    "description": "[::IDENTIFY::]-> Create new call with company name",
     "input": {
       "message": {
         "userId": "test@16",
@@ -98,7 +100,8 @@
             "useroccupation": "software engineer",
             "Snippet": "extra value",
             "extra": "extraVal",
-            "creator_id": "mVEv91Y3oW5o3PnBOyKw"
+            "creator_id": "mVEv91Y3oW5o3PnBOyKw",
+            "company":"abc1234"
           }
         },
         "traits": {
@@ -135,6 +138,7 @@
               "last_name": "rudderstack",
               "linkedin": "www.google.com",
               "phone": "9225467887",
+              "company_name":"abc1234",
               "cityName": "Delhi",
               "country": "India"
             }
@@ -336,6 +340,51 @@
       },
       "version": "1",
       "endpoint": "https://api.persistiq.com/v1/campaigns/testgroup1/leads/lel1c5u1wuk8"
+    }
+  },
+  {
+    "description": "[::IDENTIFY::]-> Create new call",
+    "input": {
+      "message": {
+        "userId": "test@16",
+        "type": "identify",
+        "context": {
+          "traits": {
+            "address": {
+              "cityName": "Delhi",
+              "country": "India"
+            },
+            "firstName": "test",
+            "lastName": "rudderstack",
+            "age": 15,
+            "dup": "update",
+            "gender": "male",
+            "phone": "9225467887",
+            "useroccupation": "software engineer",
+            "Snippet": "extra value",
+            "extra": "extraVal",
+            "creator_id": "mVEv91Y3oW5o3PnBOyKw"
+          }
+        },
+        "traits": {
+          "linkedinUrl": "www.google.com",
+          "dup": "update"
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+          "persistIqAttributesMapping": [
+            {
+              "from": "useroccupation",
+              "to": "occupation"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "error": "Email is required for new lead."
     }
   }
 ]

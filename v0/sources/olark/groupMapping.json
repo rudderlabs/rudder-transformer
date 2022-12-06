@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "visitor.id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "operators",
+    "destKeys": "traits.operators"
+  }
+]

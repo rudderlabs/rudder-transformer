@@ -1,13 +1,13 @@
 const get = require("get-value");
+const cloneDeep = require("lodash/cloneDeep");
 const { EventType, MappedToDestinationKey } = require("../../../constants");
 const {
   SF_API_VERSION,
-  SF_TOKEN_REQUEST_URL,
-  SF_TOKEN_REQUEST_URL_SANDBOX,
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
-  ignoredContactTraits
+  ignoredContactTraits,
+  DESTINATION
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -18,51 +18,15 @@ const {
   getFirstAndLastName,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  TransformationError
 } = require("../../util");
-const { httpGET, httpPOST } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-
-// Utility method to construct the header to be used for SFDC API calls
-// The "Authorization: Bearer <token>" header element needs to be passed for
-// authentication for all SFDC REST API calls
-async function getSFDCHeader(destination) {
-  let SF_TOKEN_URL;
-  if (destination.Config.sandbox) {
-    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
-  } else {
-    SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
-  }
-  const authUrl = `${SF_TOKEN_URL}?username=${
-    destination.Config.userName
-  }&password=${encodeURIComponent(
-    destination.Config.password
-  )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-    destination.Config.consumerKey
-  }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-  const sfAuthResponse = await httpPOST(authUrl, {});
-  const processedsfAuthResponse = processAxiosResponse(sfAuthResponse);
-  if (processedsfAuthResponse.status !== 200) {
-    throw new CustomError(
-      `SALESFORCE AUTH FAILED: ${JSON.stringify(
-        processedsfAuthResponse.response
-      )}`,
-      processedsfAuthResponse.status
-    );
-  }
-
-  return {
-    token: `Bearer ${processedsfAuthResponse.response.access_token}`,
-    instanceUrl: processedsfAuthResponse.response.instance_url
-  };
-}
+const { getAccessToken, salesforceResponseHandler } = require("./utils");
+const { handleHttpRequest } = require("../../../adapters/network");
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value prepopulated
@@ -141,19 +105,23 @@ async function getSaleforceIdForRecord(
   authorizationData,
   objectType,
   identifierType,
-  identifierValue
+  identifierValue,
+  destination
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-  const sfSearchResponse = await httpGET(objSearchUrl, {
+  const {
+    processedResponse: processedsfSearchResponse
+  } = await handleHttpRequest("get", objSearchUrl, {
     headers: { Authorization: authorizationData.token }
   });
-  const processedsfSearchResponse = processAxiosResponse(sfSearchResponse);
   if (processedsfSearchResponse.status !== 200) {
-    throw new CustomError(
+    salesforceResponseHandler(
+      processedsfSearchResponse,
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedsfSearchResponse.response
       )}`,
-      processedsfSearchResponse.status
+      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+      destination.ID
     );
   }
   return get(processedsfSearchResponse.response, "searchRecords.0.Id");
@@ -210,9 +178,16 @@ async function getSalesforceIdFromPayload(
       !identifierType ||
       !type.toLowerCase().includes("salesforce")
     ) {
-      throw new CustomError(
+      throw new TransformationError(
         "Invalid externalId. id, type, identifierType must be provided",
-        400
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+              .CONFIGURATION
+        },
+        DESTINATION
       );
     }
 
@@ -225,7 +200,8 @@ async function getSalesforceIdFromPayload(
         authorizationData,
         objectType,
         identifierType,
-        id
+        id,
+        destination
       );
     }
 
@@ -244,23 +220,34 @@ async function getSalesforceIdFromPayload(
     const email = getFieldValueFromMessage(message, "email");
 
     if (!email) {
-      throw new CustomError("Invalid Email address for Lead Objet", 400);
+      throw new TransformationError(
+        "Invalid Email address for Lead Objet",
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
+      );
     }
 
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
-
     // request configuration will be conditional
-    const leadQueryResponse = await httpGET(leadQueryUrl, {
+    const {
+      processedResponse: processedLeadQueryResponse
+    } = await handleHttpRequest("get", leadQueryUrl, {
       headers: { Authorization: authorizationData.token }
     });
-    const processedLeadQueryResponse = processAxiosResponse(leadQueryResponse);
 
     if (processedLeadQueryResponse.status !== 200) {
-      throw new CustomError(
+      salesforceResponseHandler(
+        processedLeadQueryResponse,
         `During Lead Query: ${JSON.stringify(
           processedLeadQueryResponse.response
         )}`,
-        processedLeadQueryResponse.status
+        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        destination.ID
       );
     }
 
@@ -270,9 +257,29 @@ async function getSalesforceIdFromPayload(
       const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
-          throw new CustomError("The contact has been deleted.", 400);
+          throw new TransformationError(
+            "The contact has been deleted.",
+            400,
+            {
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            },
+            DESTINATION
+          );
         } else {
-          throw new CustomError("The lead has been deleted.", 400);
+          throw new TransformationError(
+            "The lead has been deleted.",
+            400,
+            {
+              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+              meta:
+                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
+                  .CONFIGURATION
+            },
+            DESTINATION
+          );
         }
       }
       if (record.IsConverted && destination.Config.useContactId) {
@@ -305,9 +312,15 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new CustomError(
+    throw new TransformationError(
       "PROCESS IDENTIFY: Invalid traits for Salesforce request",
-      400
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      },
+      DESTINATION
     );
   }
 
@@ -359,14 +372,22 @@ async function processSingleMessage(message, authorizationData, destination) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, destination);
   } else {
-    throw new CustomError(`message type ${message.type} is not supported`, 400);
+    throw new TransformationError(
+      `message type ${message.type} is not supported`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
   }
   return response;
 }
 
 async function process(event) {
   // Get the authorization header if not available
-  const authorizationData = await getSFDCHeader(event.destination);
+  const authorizationData = await getAccessToken(event.destination);
   const response = await processSingleMessage(
     event.message,
     authorizationData,
@@ -383,7 +404,7 @@ const processRouterDest = async inputs => {
 
   let authorizationData;
   try {
-    authorizationData = await getSFDCHeader(inputs[0].destination);
+    authorizationData = await getAccessToken(inputs[0].destination);
   } catch (error) {
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
@@ -428,4 +449,19 @@ const processRouterDest = async inputs => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+/**
+ * This function takes the transformed output containing metadata and returns the updated metadata
+ * @param {*} output
+ * @returns {*} metadata
+ */
+const processMetadataForRouter = output => {
+  const { metadata, destination } = output;
+  const clonedMetadata = cloneDeep(metadata);
+  clonedMetadata.forEach(metadataElement => {
+    // eslint-disable-next-line no-param-reassign
+    metadataElement.destInfo = { authKey: destination?.ID };
+  });
+  return clonedMetadata;
+};
+
+module.exports = { process, processRouterDest, processMetadataForRouter };

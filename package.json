@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -25,7 +25,8 @@
     "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; jest --runInBand --detectOpenHandles --coverage --notify || exit 1",
     "testTestRouter": "npx jest testRouter",
-    "test": "npm run testDestinations && npm run testVersioned && npm run testTestRouter"
+    "test": "npm run testDestinations && npm run testVersioned && npm run testTestRouter",
+    "test:benchmark": "node benchmark/index.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
@@ -68,7 +69,7 @@
     "pprof": "^3.2.0",
     "prom-client": "^14.0.1",
     "rudder-transformer-cdk": "^1.4.3",
-    "rudder-workflow-engine": "^0.2.5",
+    "rudder-workflow-engine": "^0.3.0",
     "set-value": "^4.0.1",
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.4",
@@ -80,6 +81,8 @@
   },
   "devDependencies": {
     "acorn": "^7.4.0",
+    "benchmark-suite": "^0.1.8",
+    "commander": "^9.4.1",
     "eslint": "7.2.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.10.1",

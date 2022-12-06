@@ -9,20 +9,12 @@ const destinations = [
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
-  "snapchat_custom_audience"
-];
-const deleteUserDestinations = [
-  "am",
-  "braze",
-  "intercom",
-  "mp",
-  "af",
+  "snapchat_custom_audience",
   "clevertap",
-  "engage",
-  "sendgrid"
+  "salesforce",
+  "marketo_static_list"
 ];
 const service = require("../versionedRouter").handleProxyRequest;
-const processDeleteUsers = require("../versionedRouter").handleDeletionOfUsers;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));
 
@@ -73,33 +65,3 @@ destinations.forEach(destination => {
   });
 });
 // destination tests end
-
-// delete user tests
-
-deleteUserDestinations.forEach(destination => {
-  const inputDataFile = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `./data/${destination}_deleteUsers_proxy_input.json`
-    )
-  );
-  const outputDataFile = fs.readFileSync(
-    path.resolve(
-      __dirname,
-      `./data/${destination}_deleteUsers_proxy_output.json`
-    )
-  );
-  const inputData = JSON.parse(inputDataFile);
-  const expectedData = JSON.parse(outputDataFile);
-
-  inputData.forEach((input, index) => {
-    it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
-      try {
-        const output = await processDeleteUsers(input);
-        expect(output).toEqual(expectedData[index]);
-      } catch (error) {
-        expect(error.message).toEqual(expectedData[index].error);
-      }
-    });
-  });
-});

@@ -1,4 +1,4 @@
-/* eslint-disable no-nested-ternary */
+/* eslint-disable no-nested-ternary,no-param-reassign */
 const get = require("get-value");
 
 const { EventType, MappedToDestinationKey } = require("../../../constants");
@@ -22,6 +22,7 @@ const {
   mappingConfig,
   getIdentifyEndpoint,
   getTrackEndPoint,
+  getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
@@ -88,6 +89,7 @@ function setExternalIdOrAliasObject(payload, message) {
     return setExternalId(payload, message);
   }
 
+  // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
   return setAliasObjectWithAnonId(payload, message);
 }
@@ -275,6 +277,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
   if (
     messageType === EventType.TRACK &&
+    typeof eventName === "string" &&
     eventName.toLowerCase() === "order completed"
   ) {
     const purchaseObjs = getPurchaseObjs(message);
@@ -335,7 +338,6 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 // Ex: If the groupId is 1234, we'll add a attribute to the user object with the
 // key `ab_rudder_group_1234` with the value `true`
 function processGroup(message, destination) {
-  const groupAttribute = {};
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
     throw new ErrorBuilder()
@@ -349,6 +351,66 @@ function processGroup(message, destination) {
       })
       .build();
   }
+  if (destination.Config.enableSubscriptionGroupInGroupCall) {
+    if (!(message.traits && (message.traits.phone || message.traits.email))) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(
+          "Message should have traits with subscriptionState, email or phone"
+        )
+        .setStatTags({
+          destType: DESTINATION,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
+    }
+    const subscriptionGroup = {};
+    subscriptionGroup.subscription_group_id = groupId;
+    if (
+      message.traits.subscriptionState !== "subscribed" &&
+      message.traits.subscriptionState !== "unsubscribed"
+    ) {
+      throw new ErrorBuilder()
+        .setStatus(400)
+        .setMessage(
+          "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
+        )
+        .setStatTags({
+          destType: DESTINATION,
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+        })
+        .build();
+    }
+    subscriptionGroup.subscription_state = message.traits.subscriptionState;
+    subscriptionGroup.external_id = [message.userId || message.anonymousId];
+    const phone = getFieldValueFromMessage(message, "phone");
+    const email = getFieldValueFromMessage(message, "email");
+    if (phone) {
+      subscriptionGroup.phone = phone;
+    } else if (email) {
+      subscriptionGroup.email = email;
+    }
+    const response = defaultRequestConfig();
+    response.endpoint = getSubscriptionGroupEndPoint(
+      destination.Config.endPoint
+    );
+    response.body.JSON = removeUndefinedValues(subscriptionGroup);
+    return {
+      ...response,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${destination.Config.restApiKey}`
+      }
+    };
+  }
+  const groupAttribute = {};
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
   return buildResponse(

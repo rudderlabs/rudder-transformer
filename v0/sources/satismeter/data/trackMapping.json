@@ -1,0 +1,66 @@
+[
+    {
+        "sourceKeys": "traits",
+        "destKeys": "context.traits"
+    },
+    {
+        "sourceKeys": "response.user.userId",
+        "destKeys": "userId"
+    },
+    {
+        "sourceKeys": "response.user.id",
+        "destKeys": "anonymousId"
+    },
+    {
+        "sourceKeys": "response.answers",
+        "destKeys": "properties.answers"
+    },
+    {
+        "sourceKeys": "response.pending",
+        "destKeys": "properties.surveyPending"
+    },
+    {
+        "sourceKeys": "response.dismissed",
+        "destKeys": "properties.surveyDismissed"
+    },
+    {
+        "sourceKeys": "response.created",
+        "destKeys": "properties.receivedAt"
+    },
+    {
+        "sourceKeys": "campaign",
+        "destKeys": "context.campaign"
+    },
+    {
+        "sourceKeys": "response.category",
+        "destKeys": "properties.category"
+    },
+    {
+        "sourceKeys": "response.location",
+        "destKeys": "context.location"
+    },
+    {
+        "sourceKeys": "response.user.deleted",
+        "destKeys": "context.traits.userDeleted"
+    },
+    {
+        "sourceKeys": "response.user.groups",
+        "destKeys": "traits.groups"
+    },
+    {
+        "sourceKeys": "response.device",
+        "destKeys": "context.device"
+    },
+    {
+        "sourceKeys": "response.language",
+        "destKeys": "context.locale"
+    },
+    {
+        "sourceKeys": "response.language",
+        "destKeys": "context.locale"
+    },
+    {
+        "sourceKeys": "response.referrer",
+        "destKeys": "context.page.referrer"
+    }
+]

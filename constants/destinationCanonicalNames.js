@@ -101,7 +101,8 @@ const DestCanonicalNames = {
     "Gainsight PX",
     "gainsight px",
     "Gainsight Px"
-  ]
+  ],
+  awin: ["awin", "Awin", "AWIN"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

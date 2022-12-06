@@ -212,7 +212,7 @@
       }
     },
     "output": {
-      "error": "User Name is not Valid."
+      "error": "Invalid user name provided in the destination configuration"
     }
   },
   {
@@ -250,7 +250,7 @@
       }
     },
     "output": {
-      "error": "Password field can not be empty."
+      "error": "Invalid password value specified in the destination configuration"
     }
   },
   {
@@ -300,7 +300,7 @@
       }
     },
     "output": {
-      "error": "Sub-Domain Name field can not be empty."
+      "error": "Invalid sub-domain value specified in the destination configuration"
     }
   },
   {
@@ -336,7 +336,7 @@
       }
     },
     "output": {
-      "error": "Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -373,7 +373,7 @@
       }
     },
     "output": {
-      "error": "Message type alias not supported."
+      "error": "Event type \"alias\" is not supported"
     }
   },
   {
@@ -447,7 +447,7 @@
       }
     },
     "output": {
-      "error": "Invalid Phone No. Provided."
+      "error": "The provided phone number is invalid"
     }
   },
   {
@@ -561,35 +561,35 @@
       "error": "Invalid entry for key subscription_status"
     }
   },
-{
-  "description": " Invalid email",
-  "input": {
-    "message": {
-      "anonymousId": "anon-id-new",
-      "context": {
-        "ip": "14.5.67.21",
-        "library": {
-          "name": "http"
+  {
+    "description": " Invalid email",
+    "input": {
+      "message": {
+        "anonymousId": "anon-id-new",
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          },
+          "traits": {
+            "email": "abc123"
+          }
         },
-        "traits" :  {
-          "email":"abc123"
-        }
+        "type": "identify"
       },
-      "type": "identify"
-    },
-    "destination": {
-      "Config": {
-        "lookUpField": "email",
-        "password": "m3dG325C51C1RPq",
-        "subDomainName": "testapi3",
-        "userName": "anantjain45823@gmail.com"
+      "destination": {
+        "Config": {
+          "lookUpField": "email",
+          "password": "m3dG325C51C1RPq",
+          "subDomainName": "testapi3",
+          "userName": "anantjain45823@gmail.com"
+        }
       }
+    },
+    "output": {
+      "error": "The provided email is invalid"
     }
   },
-  "output": {
-    "error": "Invalid Email Provided."
-  }
-},
   {
     "description": " Invalid POC",
     "input": {
@@ -830,7 +830,7 @@
       }
     },
     "output": {
-      "error": "Group Id is not provided."
+      "error": "`groupId` is missing in the event"
     }
   },
   {
@@ -956,7 +956,7 @@
       }
     },
     "output": {
-      "error": "Type of group not mentioned inside traits"
+      "error": "`type` is missing in the traits"
     }
   },
   {
@@ -988,7 +988,7 @@
       }
     },
     "output": {
-      "error": "This grouping is not supported. Supported Groupings : Segments, Companies, Campaigns."
+      "error": "Grouping type \"alias\" is not supported. Only \"Segments\", \"Companies\", and \"Campaigns\" are supported"
     }
   },
   {
@@ -1035,7 +1035,7 @@
       "files": {}
     }
   },
-  
+
   {
     "description": " Group contact with campaign with contactId found by lookUpField with no operation field",
     "input": {
@@ -1058,7 +1058,7 @@
       }
     },
     "output": {
-      "error": "Found more than one Contacts for the given lookupField or email. Retry with unique lookupfield and lookupValue."
+      "error": "Found more than one contact on lookup"
     }
   },
   {
@@ -1083,7 +1083,7 @@
       }
     },
     "output": {
-      "error": "Could not find any contact Id for the given lookup Field or email."
+      "error": "Could not find any contact ID on lookup"
     }
   }
 ]

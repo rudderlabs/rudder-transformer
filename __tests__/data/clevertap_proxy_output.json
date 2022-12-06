@@ -1,0 +1,58 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "[CleverTap Response Handler] - Request Processed Successfully",
+      "destinationResponse": {
+        "response": {
+          "status": "success",
+          "processed": 1,
+          "unprocessed": []
+        },
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 401,
+      "message": "[CleverTap Response Handler] - Request failed  with status: 401",
+      "destinationResponse": {
+        "response": {
+          "status": "fail",
+          "error": "Invalid Credentials",
+          "code": 401
+        },
+        "status": 401
+      },
+      "statTags": {
+        "destType": "CLEVERTAP",
+        "errorAt": "proxy",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "abortable"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "[CleverTap Response Handler] - Request failed  with status: 200",
+      "destinationResponse": {
+        "response": {
+          "status": "fail",
+          "processed": 0,
+          "unprocessed": []
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "CLEVERTAP",
+        "errorAt": "proxy",
+        "meta": "abortable",
+        "scope": "api",
+        "stage": "responseTransform"
+      }
+    }
+  }
+]

@@ -54,25 +54,15 @@
           "floodlightConfigurationId": "213123123",
           "ordinal": "string",
           "floodlightActivityId": "456543345245",
-          "mobileDeviceId": "string",
           "value": "756",
           "encryptedUserIdCandidates": [
             "dfghjbnm"
           ],
           "quantity": "455678",
-          "gclid": "string",
-          "matchId": "string",
-          "dclid": "string",
-          "impressionId": "string",
-          "limitAdTracking": true,
-          "childDirectedTreatment": true,
-          "encryptionInfo": {
-            "kind": "dfareporting#encryptionInfo",
-            "encryptionSource": "AD_SERVING",
-            "encryptionEntityId": "3564523",
-            "encryptionEntityType": "DCM_ACCOUNT"
-          },
-          "requestType": "batchupdate"
+          "encryptionSource": "AD_SERVING",
+          "encryptionEntityId": "3564523",
+          "encryptionEntityType": "DCM_ACCOUNT",
+          "requestType": "batchinsert"
         },
         "type": "track",
         "event": "event test",
@@ -107,7 +97,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/34245/conversions/batchupdate",
+      "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/34245/conversions/batchinsert",
       "headers": {
         "Authorization": "Bearer abcd1234",
         "Content-Type": "application/json"
@@ -115,7 +105,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "kind": "dfareporting#conversionsBatchUpdateRequest",
+          "kind": "dfareporting#conversionsBatchInsertRequest",
           "encryptionInfo": {
             "kind": "dfareporting#encryptionInfo",
             "encryptionSource": "AD_SERVING",
@@ -128,18 +118,13 @@
               "ordinal": "string",
               "timestampMicros": "1668624722000000",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "quantity": "455678",
               "value": 756,
               "encryptedUserIdCandidates": [
                 "dfghjbnm"
               ],
-              "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string",
-              "limitAdTracking": true,
-              "childDirectedTreatment": true,
+              "limitAdTracking": false,
+              "childDirectedTreatment": false,
               "treatmentForUnderage": false,
               "nonPersonalizedAd": false
             }
@@ -207,24 +192,12 @@
           "floodlightConfigurationId": "213123123",
           "ordinal": "string",
           "floodlightActivityId": "456543345245",
-          "mobileDeviceId": "string",
           "value": "756",
-          "encryptedUserIdCandidates": [
-            "dfghjbnm"
-          ],
           "quantity": "455678",
           "gclid": "string",
-          "matchId": "string",
-          "dclid": "string",
-          "impressionId": "string",
-          "limitAdTracking": true,
-          "childDirectedTreatment": true,
-          "encryptionInfo": {
-            "kind": "dfareporting#encryptionInfo",
             "encryptionSource": "AD_SERVING",
             "encryptionEntityId": "3564523",
-            "encryptionEntityType": "DCM_ACCOUNT"
-          },
+            "encryptionEntityType": "DCM_ACCOUNT",
           "requestType": "batchupdate"
         },
         "type": "track",
@@ -269,30 +242,15 @@
       "body": {
         "JSON": {
           "kind": "dfareporting#conversionsBatchUpdateRequest",
-          "encryptionInfo": {
-            "kind": "dfareporting#encryptionInfo",
-            "encryptionSource": "AD_SERVING",
-            "encryptionEntityId": "3564523",
-            "encryptionEntityType": "DCM_ACCOUNT"
-          },
           "conversions": [
             {
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
               "timestampMicros": "1668624722000000",
               "floodlightActivityId": "456543345245",
-              "mobileDeviceId": "string",
               "quantity": "455678",
               "value": 756,
-              "encryptedUserIdCandidates": [
-                "dfghjbnm"
-              ],
               "gclid": "string",
-              "matchId": "string",
-              "dclid": "string",
-              "impressionId": "string",
-              "limitAdTracking": true,
-              "childDirectedTreatment": true,
               "treatmentForUnderage": false,
               "nonPersonalizedAd": false
             }
@@ -304,5 +262,109 @@
       },
       "files": {}
     }
-  }
+  },
+  {
+    "description": "Track - batch insert Call",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "id": "0572f78fa49c648e",
+            "name": "generic_x86_arm",
+            "type": "Android",
+            "model": "AOSP on IA Emulator",
+            "manufacturer": "Google",
+            "adTrackingEnabled": true,
+            "advertisingId": "44c97318-9040-4361-8bc7-4eb30f665ca8"
+          },
+          "traits": {
+            "email": "alex@example.com",
+            "phone": "+1-202-555-0146",
+            "firstName": "John",
+            "lastName": "Gomes",
+            "city": "London",
+            "state": "England",
+            "countryCode": "GB",
+            "postalCode": "EC3M",
+            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "event": "Promotion Clicked",
+        "type": "track",
+        "originalTimestamp": "2022-11-17T00:22:02.903+05:30",
+        "properties": {
+          "profileId": "34245",
+          "floodlightConfigurationId": "213123123",
+          "ordinal": "string",
+          "floodlightActivityId": "456543345245",
+          "mobileDeviceId": "string",
+          "value": "756",
+          "encryptedUserIdCandidates": [
+            "dfghjbnm"
+          ],
+          "quantity": "455678",
+          "gclid": "string",
+          "matchId": "string",
+          "dclid": "string",
+          "impressionId": "string",
+          "requestType": "batchinsert"
+        },
+        "type": "track",
+        "event": "event test",
+        "anonymousId": "randomId",
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "profileId": "5343234",
+          "treatmentForUnderage": false,
+          "limitAdTracking": false,
+          "childDirectedTreatment": false,
+          "nonPersonalizedAd": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output":
+    { "statusCode": 400,
+    "error": "[CAMPAIGN MANAGER (DCM)]: If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId",
+    "statTags": {
+      "destination": "blueshift",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  }}
 ]

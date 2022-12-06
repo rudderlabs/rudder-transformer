@@ -752,11 +752,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.status || 400,

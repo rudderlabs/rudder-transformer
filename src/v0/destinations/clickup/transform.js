@@ -6,8 +6,7 @@ const {
   getDestinationExternalID,
   constructPayload,
   defaultPostRequestConfig,
-  removeUndefinedNullEmptyExclBoolInt,
-  TransformationError
+  removeUndefinedNullEmptyExclBoolInt
 } = require("../../util");
 const {
   validatePriority,
@@ -18,10 +17,12 @@ const {
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  createTaskEndPoint,
-  DESTINATION
+  createTaskEndPoint
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = async (payload, listId, apiToken) => {
   if (payload) {
@@ -37,13 +38,7 @@ const responseBuilder = async (payload, listId, apiToken) => {
   }
   // fail-safety for developer error
   throw new TransformationError(
-    "Something went wrong while constructing the payload",
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    },
-    DESTINATION
+    "Something went wrong while constructing the payload"
   );
 };
 
@@ -74,15 +69,7 @@ const trackResponseBuilder = async (message, destination) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   checkEventIfUIMapped(message, destination);
@@ -92,15 +79,8 @@ const processEvent = async (message, destination) => {
     return trackResponseBuilder(message, destination);
   }
 
-  throw new TransformationError(
-    `Event type "${messageType}" is not supported`,
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta:
-        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.INSTRUMENTATION
-    },
-    DESTINATION
+  throw new InstrumentationError(
+    `Event type "${messageType}" is not supported`
   );
 };
 

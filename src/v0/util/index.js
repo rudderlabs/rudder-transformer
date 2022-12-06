@@ -22,7 +22,8 @@ const {
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const { TransformationError } = require("./errors");
+const { InstrumentationError, DefaultError } = require("./errorTypes");
+const tags = require("./tags");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -812,7 +813,9 @@ const handleMetadataForValue = (
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
         if (Number.isNaN(formattedVal)) {
-          throw new TransformationError("Revenue is not in the correct format");
+          throw new InstrumentationError(
+            "Revenue is not in the correct format"
+          );
         }
         break;
       case "toString":
@@ -939,7 +942,7 @@ const handleMetadataForValue = (
     }
     if (!foundVal) {
       if (strictMultiMap) {
-        throw new TransformationError(`Invalid entry for key ${destKey}`, 400);
+        throw new InstrumentationError(`Invalid entry for key ${destKey}`);
       } else {
         formattedVal = undefined;
       }
@@ -1067,9 +1070,8 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new TransformationError(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`,
-          400
+        throw new InstrumentationError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`
         );
       }
     });
@@ -1470,49 +1472,22 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 
 /**
  * Used for generating error response with stats from native and built errors
- * @param {*} arg
- * @param {*} destination
- * @param {*} transformStage
  */
-function generateErrorObject(error, destination = "", transformStage) {
-  const { message, destinationResponse } = error;
-  let { statTags } = error;
-  if (!statTags) {
-    statTags = {
-      destType: destination,
-      stage: transformStage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-    };
+function generateErrorObject(error, defTags = {}) {
+  let errObject = error;
+  if (!(error instanceof DefaultError)) {
+    errObject = new DefaultError(error.message, getErrorStatusCode(error), {
+      [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.TRANSFORMATION
+    });
   }
-  // In previous versions of cdk, we had destination tag
-  // This block is mainly to support it and also for backward for non-cdk destinations
-  if (statTags.destination) {
-    statTags.destType = statTags.destination;
-    delete statTags.destination;
-  }
-  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
-  if (!statTags.destType) {
-    statTags.destType = destination.toUpperCase();
-  }
-  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
-  if (!statTags.stage) {
-    statTags.stage = transformStage;
-  }
-  if (statTags.destType) {
-    // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
-    statTags.destType = statTags.destType.toUpperCase();
-  }
-  const response = {
-    status: getErrorStatusCode(error),
-    message: message || "Error occurred while processing the payload.",
-    destinationResponse,
-    statTags
+
+  // Add higher level default tags
+  errObject.statTags = {
+    ...errObject.statTags,
+    ...defTags
   };
-  // Extra Params needed for OAuth destinations' Response handling
-  if (error.authErrorCategory) {
-    response.authErrorCategory = error.authErrorCategory || "";
-  }
-  return response;
+
+  return errObject;
 }
 /**
  * Returns true for http status code in range of 200 to 300
@@ -1648,12 +1623,9 @@ function getValidDynamicFormConfig(
  * @param {string} destType - destination name
  * @returns
  */
-const handleRtTfSingleEventError = (input, error, destType) => {
-  const errObj = generateErrorObject(
-    error,
-    destType, // Preference is destination definition name
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-  );
+const handleRtTfSingleEventError = (input, error) => {
+  const errObj = generateErrorObject(error);
+
   return getErrorRespEvents(
     [input.metadata],
     errObj.status,
@@ -1828,7 +1800,6 @@ const refinePayload = obj => {
 // keep it sorted to find easily
 module.exports = {
   CustomError,
-  TransformationError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,

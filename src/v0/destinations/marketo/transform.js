@@ -27,8 +27,7 @@ const {
   getErrorRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
-  checkInvalidRtTfEvents,
-  TransformationError
+  checkInvalidRtTfEvents
 } = require("../../util");
 const Cache = require("../../util/cache");
 const {
@@ -43,6 +42,11 @@ const {
   getResponseHandlerData
 } = require("./util");
 const logger = require("../../../logger");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  InvalidAuthTokenError
+} = require("../../util/errorTypes");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -265,16 +269,8 @@ const getLeadId = async (message, formattedDestination, token) => {
         message.anonymousId
       );
     } else {
-      throw new TransformationError(
-        "Lead creation is turned off on the dashboard",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
+      throw new ConfigurationError(
+        "Lead creation is turned off on the dashboard"
       );
     }
   }
@@ -286,16 +282,8 @@ const getLeadId = async (message, formattedDestination, token) => {
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-    throw new TransformationError(
-      "lookup failure - either anonymousId or userId or both fields are not created in marketo",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-            .INSTRUMENTATION
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "lookup failure - either anonymousId or userId or both fields are not created in marketo"
     );
   }
 
@@ -319,15 +307,7 @@ const processIdentify = async (message, formattedDestination, token) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new TransformationError(
-      "Invalid traits value for Marketo",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Invalid traits value for Marketo");
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -414,30 +394,14 @@ const processTrack = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!(trackAnonymousEvents || userId)) {
-    throw new TransformationError(
-      "Anonymous event tracking is turned off and invalid userId",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
+    throw new ConfigurationError(
+      "Anonymous event tracking is turned off and invalid userId"
     );
   }
 
   const activityTypeId = customActivityEventMap[message.event];
   if (!activityTypeId) {
-    throw new TransformationError(
-      "Event is not mapped to Custom Activity",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new ConfigurationError("Event is not mapped to Custom Activity");
   }
 
   const primaryKeyPropName = customActivityPrimaryKeyMap[message.event];
@@ -446,16 +410,7 @@ const processTrack = async (message, formattedDestination, token) => {
     `properties.${primaryKeyPropName}`
   );
   if (!primaryAttributeValue) {
-    throw new TransformationError(
-      "Primary Key value is invalid for the event",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new ConfigurationError("Primary Key value is invalid for the event");
   }
 
   // get leadId
@@ -508,14 +463,8 @@ const responseWrapper = response => {
 
 const processEvent = async (message, destination, token) => {
   if (!message.type) {
-    throw new TransformationError(
-      "Message Type is not present. Aborting message.",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -530,16 +479,7 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new TransformationError(
-        "Message type not supported",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        },
-        DESTINATION
-      );
+      throw new InstrumentationError("Message type not supported");
   }
 
   // wrap response for router processing
@@ -549,14 +489,7 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new TransformationError(
-      "Authorisation failed",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      },
-      DESTINATION
-    );
+    throw new InvalidAuthTokenError("Authorization failed");
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;
@@ -574,11 +507,7 @@ const processRouterDest = async inputs => {
     token = await getAuthToken(formatConfig(inputs[0].destination));
   } catch (error) {
     logger.error("Router Transformation problem:");
-    const errObj = generateErrorObject(
-      error,
-      DESTINATION,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
+    const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
@@ -623,11 +552,7 @@ const processRouterDest = async inputs => {
         );
       } catch (error) {
         logger.error("Router transformation Error for Marketo:");
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
+        const errObj = generateErrorObject(error);
         logger.error(errObj);
         return getErrorRespEvents(
           [input.metadata],

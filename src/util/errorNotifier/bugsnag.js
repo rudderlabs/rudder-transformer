@@ -6,7 +6,22 @@ const {
 } = require("rudder-transformer-cdk/build/error/index");
 const pkg = require("../../../package.json");
 const { CustomError } = require("../../v0/util");
-const { ApiError, TransformationError } = require("../../v0/util/errors");
+const {
+  DefaultError,
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+  OAuthSecretError,
+  NetworkError,
+  ThrottledError,
+  RetryableError,
+  InvalidAuthTokenError,
+  AbortedError,
+  UnhandledStatusCodeError,
+  UnauthorizedError,
+  NetworkInstrumentationError
+} = require("../../v0/util/errorTypes");
 
 const {
   BUGSNAG_API_KEY: apiKey,
@@ -15,8 +30,20 @@ const {
 
 const errorTypesDenyList = [
   CustomError,
-  ApiError,
+  DefaultError,
   TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+  OAuthSecretError,
+  NetworkError,
+  ThrottledError,
+  RetryableError,
+  InvalidAuthTokenError,
+  AbortedError,
+  UnhandledStatusCodeError,
+  UnauthorizedError,
+  NetworkInstrumentationError,
   CDKCustomError,
   DataValidationError
 ];

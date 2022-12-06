@@ -2,8 +2,7 @@ const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig,
-  TransformationError
+  defaultPostRequestConfig
 } = require("../../util");
 const {
   validatePayload,
@@ -12,9 +11,11 @@ const {
   trackEventPayloadBuilder,
   identifyUserPayloadBuilder
 } = require("./utils");
-const { DESTINATION } = require("./config");
 const { EventType } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -31,13 +32,7 @@ const responseBuilder = (payload, endpoint, destination) => {
   }
   // fail-safety for developer error
   throw new TransformationError(
-    "Something went wrong while constructing the payload",
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    },
-    DESTINATION
+    "Something went wrong while constructing the payload"
   );
 };
 
@@ -51,15 +46,7 @@ const identifyResponseBuilder = (message, destination) => {
 const trackResponseBuilder = (message, destination) => {
   validatePayload(message);
   if (!message.event) {
-    throw new TransformationError(
-      "Event name is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event name is required");
   }
   const builder = trackEventPayloadBuilder(message);
   const { payload, endpoint } = builder;
@@ -83,15 +70,7 @@ const groupResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -109,16 +88,8 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new TransformationError(
-        `Event type "${messageType}" is not supported`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
       );
   }
   return response;

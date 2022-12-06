@@ -10,6 +10,7 @@ const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 const { client: errNotificationClient } = require("./util/errorNotifier");
+const tags = require("./v0/util/tags");
 
 const {
   isNonFuncObject,
@@ -293,28 +294,30 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        const errObj = generateErrorObject(
-          error,
-          destination,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        const resp = {
-          metadata: event.metadata,
-          statusCode: errObj.status,
-          error:
-            errObj.message || "Error occurred while processing the payload.",
-          statTags: {
-            errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
-            ...errObj.statTags
-          }
-        };
 
+        let implementation = tags.IMPLEMENTATIONS.NATIVE;
         let errCtx = "Destination Transformation";
         if (isCdkV2Destination(event)) {
           errCtx = `CDK V2 - ${errCtx}`;
+          implementation = tags.IMPLEMENTATIONS.CDK_V2;
         } else if (isCdkDestination(event)) {
           errCtx = `CDK - ${errCtx}`;
+          implementation = tags.IMPLEMENTATIONS.CDK_V1;
         }
+
+        const errObj = generateErrorObject(error, {
+          [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.IMPLEMENTATION]: implementation,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.PROCESSOR
+        });
+
+        const resp = {
+          metadata: event.metadata,
+          statusCode: errObj.status,
+          error: errObj.message,
+          statTags: errObj.statTags
+        };
 
         errNotificationClient.notify(error, errCtx, {
           ...resp,
@@ -439,9 +442,16 @@ async function isValidRouterDest(event, destType) {
 async function routerHandleDest(ctx) {
   const respEvents = [];
   let destType;
+  let defTags;
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
+    defTags = {
+      [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.ROUTER
+    };
+
     const routerDestHandler = getDestHandler("v0", destType);
     const isValidRTDest = await isValidRouterDest(input[0], destType);
     if (!isValidRTDest) {
@@ -481,6 +491,8 @@ async function routerHandleDest(ctx) {
         respEvents.push(...listOutput);
       })
     );
+
+    // Add default stat tags
     respEvents
       .filter(
         resp =>
@@ -489,23 +501,17 @@ async function routerHandleDest(ctx) {
           !_.isEmpty(resp.statTags)
       )
       .forEach(resp => {
-        set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+        resp.statTags = { ...resp.statTags, ...defTags };
       });
   } catch (error) {
     logger.error(error);
-    const errObj = generateErrorObject(
-      error,
-      destType,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
+
+    const errObj = generateErrorObject(error, defTags);
 
     const resp = {
       statusCode: errObj.status,
-      error: errObj.message || "Error occurred while processing the payload.",
-      statTags: {
-        ...errObj.statTags,
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.RT
-      }
+      error: errObj.message,
+      statTags: errObj.statTags
     };
 
     respEvents.push(resp);
@@ -869,10 +875,27 @@ async function handleSource(ctx, version, source) {
         }
       } catch (error) {
         logger.error(error);
+
+        // TODO: Update the data contact for source transformation
+        // and then send the following additional information
+        // const errObj = generateErrorObject(error, {
+        //   [tags.TAG_NAMES.SRC_TYPE]: source.toUpperCase(),
+        //   [tags.TAG_NAMES.MODULE]: tags.MODULES.SOURCE,
+        //   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+        //   [tags.TAG_NAMES.FEATURE]: tags.FEATURES.PROCESSOR
+        // });
+
+        // const resp = {
+        //   statusCode: errObj.status,
+        //   error: errObj.message,
+        //   statTags: errObj.statTags
+        // };
+
         const resp = {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         };
+
         respList.push(resp);
         stats.counter("source_transform_errors", events.length, {
           source,
@@ -960,18 +983,26 @@ async function handleProxyRequest(destination, ctx) {
   } catch (err) {
     logger.error("Error occurred while completing proxy request:");
     logger.error(err);
-    response = generateErrorObject(
-      err,
-      destination,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-    );
-    response.statTags = {
-      errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
-      ...response.statTags
+
+    const errObj = generateErrorObject(err, {
+      [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
+    });
+
+    response = {
+      status: errObj.status,
+      authErrorCategory: errObj.authErrorCategory,
+      destinationResponse: errObj.destinationResponse,
+      message: errObj.message,
+      statTags: errObj.statTags
     };
+
     stats.counter("tf_proxy_err_count", 1, {
       destination
     });
+
     errNotificationClient.notify(err, "Data Delivery", {
       ...response,
       ...getCommonMetadata(ctx),
@@ -1070,11 +1101,12 @@ const batchHandler = ctx => {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
-      const errorObj = generateErrorObject(
-        error,
-        destType,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
+      const errorObj = generateErrorObject(error, {
+        [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+        [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+        [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.BATCH
+      });
       const errResp = getErrorRespEvents(
         destEvents.map(d => d.metadata),
         500,

@@ -173,11 +173,7 @@ const processRouterDest = async inputs => {
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
     logger.error("Router Transformation problem:");
-    const errObj = generateErrorObject(
-      error,
-      DESTINATION,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
+    const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),

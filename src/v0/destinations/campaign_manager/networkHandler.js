@@ -11,8 +11,7 @@ const {
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { ApiError } = require("../../util/errors");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { AbortedError, RetryableError } = require("../../util/errorTypes");
 
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -54,29 +53,19 @@ const responseHandler = destinationResponse => {
     // check for Failures
     if (response.hasFailures === true) {
       if (checkIfFailuresAreRetryable(response)) {
-        throw new ApiError(
+        throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-          },
-          destinationResponse,
           undefined,
-          "CAMPAIGN_MANAGER"
+          destinationResponse
         );
       } else {
         // abort message
-        throw new ApiError(
+        throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-          },
-          destinationResponse,
           undefined,
-          "CAMPAIGN_MANAGER"
+          destinationResponse
         );
       }
     }

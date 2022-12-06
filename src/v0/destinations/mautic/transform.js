@@ -6,8 +6,7 @@ const {
   getSuccessRespEvents,
   getDestinationExternalID,
   defaultPostRequestConfig,
-  defaultPatchRequestConfig,
-  TransformationError
+  defaultPatchRequestConfig
 } = require("../../util");
 
 const {
@@ -20,14 +19,13 @@ const {
 } = require("./utils");
 
 const { EventType } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 
 const {
-  BASE_URL,
-  mappingConfig,
-  ConfigCategories,
-  DESTINATION
-} = require("./config");
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = async (
   payload,
@@ -39,13 +37,7 @@ const responseBuilder = async (
   const { userName, password } = Config;
   if (messageType === EventType.IDENTIFY && !payload) {
     throw new TransformationError(
-      "Something went wrong while constructing the payload",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+      "Something went wrong while constructing the payload"
     );
   } else {
     const response = defaultRequestConfig();
@@ -86,46 +78,18 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
       groupClass = "companies";
       break;
     default:
-      throw new TransformationError(
-        `Grouping type "${message.traits?.type?.toLowerCase()}" is not supported. Only "Segments", "Companies", and "Campaigns" are supported`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        `Grouping type "${message.traits?.type?.toLowerCase()}" is not supported. Only "Segments", "Companies", and "Campaigns" are supported`
       );
   }
   let contactId = getDestinationExternalID(message, "mauticContactId");
   if (!contactId) {
     const contacts = await searchContactIds(message, Config, endPoint);
     if (!contacts || contacts.length === 0) {
-      throw new TransformationError(
-        "Could not find any contact ID on lookup",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
-      );
+      throw new ConfigurationError("Could not find any contact ID on lookup");
     }
     if (contacts.length > 1) {
-      throw new TransformationError(
-        "Found more than one contact on lookup",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
-      );
+      throw new ConfigurationError("Found more than one contact on lookup");
     }
     if (contacts.length === 1) {
       const [first] = contacts;
@@ -138,16 +102,8 @@ const groupResponseBuilder = async (message, Config, endPoint) => {
     message.traits.operation !== "remove" &&
     message.traits.operation !== "add"
   ) {
-    throw new TransformationError(
-      `Invalid value specified for operation "${message.traits.operation}". Only "add" and "remove" are supported`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-            .INSTRUMENTATION
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `Invalid value specified for operation "${message.traits.operation}". Only "add" and "remove" are supported`
     );
   }
   const operation = message.traits.operation || "add";
@@ -213,51 +169,24 @@ const process = async event => {
   const { password, subDomainName, userName } = destination.Config;
   const endpoint = `${BASE_URL.replace("subDomainName", subDomainName)}`;
   if (!password) {
-    throw new TransformationError(
-      "Invalid password value specified in the destination configuration",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      }
+    throw new ConfigurationError(
+      "Invalid password value specified in the destination configuration"
     );
   }
   if (!subDomainName) {
-    throw new TransformationError(
-      "Invalid sub-domain value specified in the destination configuration",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      }
+    throw new ConfigurationError(
+      "Invalid sub-domain value specified in the destination configuration"
     );
   }
   if (!validateEmail(userName)) {
-    throw new TransformationError(
-      "Invalid user name provided in the destination configuration",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
+    throw new ConfigurationError(
+      "Invalid user name provided in the destination configuration"
     );
   }
 
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -277,16 +206,8 @@ const process = async event => {
       );
       break;
     default:
-      throw new TransformationError(
-        `Event type "${messageType}" is not supported`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
       );
   }
   return response;

@@ -9,6 +9,7 @@ const {
 } = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const ErrorBuilder = require("../../v0/util/error");
+const tags = require("../../v0/util/tags");
 
 const nodeSysErrorToStatus = code => {
   const sysErrorToStatusMap = {
@@ -75,13 +76,13 @@ const nodeSysErrorToStatus = code => {
 // Returns dynamic Meta based on Status Code as Input
 const getDynamicMeta = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
-    return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE;
+    return tags.ERROR_TYPES.RETRYABLE;
   }
   switch (statusCode) {
     case 429:
-      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED;
+      return tags.ERROR_TYPES.THROTTLED;
     default:
-      return TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE;
+      return tags.ERROR_TYPES.ABORTED;
   }
 };
 

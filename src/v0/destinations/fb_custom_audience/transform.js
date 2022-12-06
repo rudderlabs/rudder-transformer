@@ -429,11 +429,7 @@ const processRouterDest = inputs => {
       });
       return responseList;
     } catch (error) {
-      const errObj = generateErrorObject(
-        error,
-        "FB_CUSTOM_AUDIENCE", // Preference is destination definition name
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
+      const errObj = generateErrorObject(error);
       return getErrorRespEvents(
         [input.metadata],
         400,

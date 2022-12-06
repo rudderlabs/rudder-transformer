@@ -1,0 +1,52 @@
+[
+    {
+      "message": {
+        "request_ip": "192.168.1.1",
+        "anonymousId": "anon1",
+        "channel": "channel",
+        "event": "event1",
+        "messageId": "m1",
+        "randomId": "r1",
+        "type": "sample_type",
+        "userId": "sample_user_id"
+      },
+      "metadata": {
+        "workspaceId": "workspaceId",
+        "jobId": 1
+      },
+      "destination": {
+        "Transformations": [
+          {
+            "VersionID": "versionId",
+            "ID": "ID",
+            "Config": {}
+          }
+        ]
+      }
+    },
+    {
+      "message": {
+        "request_ip": "192.168.1.2",
+        "anonymousId": "anon2",
+        "channel": "channel",
+        "event": "event2",
+        "messageId": "m2",
+        "randomId": "r2",
+        "type": "sample_type",
+        "userId": "sample_user_id"
+      },
+      "metadata": {
+        "workspaceId": "workspaceId",
+        "jobId": 1
+      },
+      "destination": {
+        "Transformations": [
+          {
+            "VersionID": "versionId",
+            "ID": "ID",
+            "Config": {}
+          }
+        ]
+      }
+    }
+  ]

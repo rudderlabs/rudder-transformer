@@ -5,9 +5,10 @@ const { setupFaasFunction, executeFaasFunction } = require("./openfaas");
 
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
-    const funcName = `fn-test-
-      -${userTransformation.testName?.replace("_", "-")}
-      -${uuidv4()}`;
+    const funcName = `fn-test-${userTransformation.testName?.replace(
+      "_",
+      "-"
+    )}-${uuidv4()}`;
     return funcName.substring(0, 63).toLowerCase();
   }
 
@@ -16,7 +17,12 @@ function generateFunctionName(userTransformation, testMode) {
     .toLowerCase();
 }
 
-async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
+async function setOpenFaasUserTransform(
+  userTransformation,
+  testWithPublish,
+  pregeneratedFnName,
+  testMode = false
+) {
   if (!testWithPublish) {
     return { success: true };
   }
@@ -27,14 +33,15 @@ async function setOpenFaasUserTransform(userTransformation, testWithPublish) {
     identifier: "openfaas",
     publish: testWithPublish
   };
-  const functionName = generateFunctionName(userTransformation, false);
+  const functionName =
+    pregeneratedFnName || generateFunctionName(userTransformation, testMode);
   const setupTime = new Date();
 
   await setupFaasFunction(
     functionName,
     userTransformation.code,
     userTransformation.versionId,
-    false
+    testMode
   );
 
   stats.timing("faas_publish_time", setupTime, tags);
@@ -62,10 +69,16 @@ async function runOpenFaasUserTransform(
   }
 
   // check and deploy faas function if not exists
-  await setOpenFaasUserTransform(userTransformation, true);
+  const functionName = generateFunctionName(userTransformation, testMode);
+  await setOpenFaasUserTransform(
+    userTransformation,
+    true,
+    functionName,
+    testMode
+  );
 
   const invokeTime = new Date();
-  const functionName = generateFunctionName(userTransformation, testMode);
+
   const result = await executeFaasFunction(functionName, events, testMode);
   stats.timing("faas_invoke_time", invokeTime, tags);
   return result;

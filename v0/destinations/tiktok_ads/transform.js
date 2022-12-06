@@ -37,9 +37,38 @@ function checkIfValidPhoneNumber(str) {
   return regexExp.test(str);
 }
 
+const getContents = (message, payload) => {
+  let contents = payload.properties?.contents || [];
+  // if contents is not an Array
+  if (!Array.isArray(contents)) {
+    contents = [contents];
+  }
+  let products = message.properties.products;
+  if (products && Array.isArray(products) && products.length > 0) {
+    let singleProduct = {};
+    products.forEach(product => {
+      singleProduct.content_type = product.content_type || "product";
+      singleProduct.content_id = product.product_id;
+      singleProduct.content_category = product.category;
+      singleProduct.content_name = product.name;
+      singleProduct.price = product.price;
+      singleProduct.quantity = product.quantity;
+      singleProduct.description = product.description;
+
+      contents.push(removeUndefinedAndNullValues(singleProduct));
+      singleProduct = {};
+    });
+  }
+  return contents;
+};
+
 const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
   let payload = constructPayload(message, trackMapping);
+
+  if (payload.properties) {
+    payload.properties.contents = getContents(message, payload);
+  }
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
-// const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
+// const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
   getIntegrationsObj,
   getHashFromArray,
@@ -86,7 +86,7 @@ const process = event => {
   //       destType: "KAFKA",
   //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
   //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       meta: getDynamicMeta(400)
+  //       meta: getDynamicErrorType(400)
   //     })
   //     .build();
   // }

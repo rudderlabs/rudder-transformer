@@ -1,6 +1,6 @@
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
@@ -82,7 +82,7 @@ const marketoResponseHandler = (
       `[${destination} Response Handler] - Request failed  with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicMeta(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
       },
       destResponse
     );

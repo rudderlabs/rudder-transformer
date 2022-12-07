@@ -3,7 +3,7 @@ const { isHttpStatusSuccess } = require("../../v0/util/index");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const { proxyRequest, prepareProxyRequest } = require("../network");
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../utils/networkUtils");
 
@@ -36,7 +36,7 @@ const responseHandler = (destinationResponse, dest) => {
         destType: dest,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
+        meta: getDynamicErrorType(status)
       })
       .build();
   }

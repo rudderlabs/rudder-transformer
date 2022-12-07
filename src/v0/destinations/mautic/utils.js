@@ -5,7 +5,7 @@ const { lookupFieldMap } = require("./config");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse,
-  getDynamicMeta
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   NetworkError,
@@ -189,7 +189,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
       )}"`,
       searchContactsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicMeta(
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
           searchContactsResponse.status
         )
       },

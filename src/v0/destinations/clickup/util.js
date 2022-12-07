@@ -1,7 +1,7 @@
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse,
-  getDynamicMeta
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   getHashFromArray,
@@ -229,7 +229,7 @@ const retrieveCustomFields = async (listId, apiToken) => {
       )}"`,
       processedCustomFieldsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicMeta(
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
           processedCustomFieldsResponse.status
         )
       },

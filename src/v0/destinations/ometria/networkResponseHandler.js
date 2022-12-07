@@ -1,5 +1,5 @@
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   trimResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isDefinedAndNotNull, ErrorBuilder } = require("../../util");
@@ -29,7 +29,7 @@ const responseTransform = destResponse => {
         destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.Status || 400)
+        meta: getDynamicErrorType(destResponse.Status || 400)
       })
       .build();
   } else if (respBody && !respBody.success) {
@@ -41,7 +41,7 @@ const responseTransform = destResponse => {
         destType: DESTINATION,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.Status || 400)
+        meta: getDynamicErrorType(destResponse.Status || 400)
       })
       .build();
   }

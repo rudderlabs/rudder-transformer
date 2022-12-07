@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const getValue = require("get-value");
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const {
@@ -121,7 +121,7 @@ const processResponse = ({ dresponse, status } = {}) => {
           destType: DESTINATION_NAME,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          meta: getDynamicMeta(trStatus)
+          meta: getDynamicErrorType(trStatus)
         })
         .build();
     } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
@@ -136,7 +136,7 @@ const processResponse = ({ dresponse, status } = {}) => {
           destType: DESTINATION_NAME,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          meta: getDynamicMeta(temp.status || 400)
+          meta: getDynamicErrorType(temp.status || 400)
         })
         .build();
     }

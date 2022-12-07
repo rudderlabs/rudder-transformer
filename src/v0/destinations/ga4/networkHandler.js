@@ -3,7 +3,7 @@ const {
   prepareProxyRequest
 } = require("../../../adapters/network");
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const {
@@ -49,7 +49,7 @@ const responseHandler = (destinationResponse, dest) => {
           destType: dest,
           stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
           scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: getDynamicMeta(status)
+          meta: getDynamicErrorType(status)
         })
         .build();
     }
@@ -68,7 +68,7 @@ const responseHandler = (destinationResponse, dest) => {
         destType: dest,
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
+        meta: getDynamicErrorType(status)
       })
       .build();
   }

@@ -74,7 +74,7 @@ const nodeSysErrorToStatus = code => {
 };
 
 // Returns dynamic Meta based on Status Code as Input
-const getDynamicMeta = statusCode => {
+const getDynamicErrorType = statusCode => {
   if (isHttpStatusRetryable(statusCode)) {
     return tags.ERROR_TYPES.RETRYABLE;
   }
@@ -172,7 +172,7 @@ const processAxiosResponse = clientResponse => {
 
 module.exports = {
   nodeSysErrorToStatus,
-  getDynamicMeta,
+  getDynamicErrorType,
   parseDestResponse,
   processAxiosResponse
 };

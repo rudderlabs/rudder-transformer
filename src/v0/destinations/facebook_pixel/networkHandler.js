@@ -1,7 +1,7 @@
 const { isEmpty } = require("lodash");
 const {
   processAxiosResponse,
-  getDynamicMeta
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   prepareProxyRequest,
@@ -108,7 +108,7 @@ const getStatusAndStats = error => {
     errorStatus = 500;
     statTags = {
       ...statTags,
-      meta: getDynamicMeta(errorStatus)
+      meta: getDynamicErrorType(errorStatus)
     };
   }
 
@@ -116,7 +116,7 @@ const getStatusAndStats = error => {
     errorStatus = 429;
     statTags = {
       ...statTags,
-      meta: getDynamicMeta(errorStatus)
+      meta: getDynamicErrorType(errorStatus)
     };
   }
 

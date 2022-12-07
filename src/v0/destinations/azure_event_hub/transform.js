@@ -15,7 +15,7 @@ function process(event) {
   //       destType: "AZURE_EVENT_HUB",
   //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
   //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       meta: getDynamicMeta(400)
+  //       meta: getDynamicErrorType(400)
   //     })
   //     .build();
   // }

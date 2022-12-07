@@ -504,7 +504,7 @@ async function routerHandleDest(ctx) {
         resp.statTags = {
           ...resp.statTags,
           ...defTags,
-          [tags.TAG_NAMES.DESTINATION_ID]: resp.metadata?[0]?.destinationId
+          [tags.TAG_NAMES.DESTINATION_ID]: resp.metadata[0]?.destinationId
         };
       });
   } catch (error) {

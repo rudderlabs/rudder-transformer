@@ -9,7 +9,9 @@ const TAG_NAMES = {
   SRC_TYPE: "srcType",
   CLUSTER: "cluster",
   NAMESPACE: "namespace",
-  CUSTOMER: "customer"
+  CUSTOMER: "customer",
+  DESTINATION_ID: "destinationId",
+  SOURCE_ID: "sourceId"
 };
 
 const MODULES = {

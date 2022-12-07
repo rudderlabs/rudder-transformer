@@ -1,7 +1,7 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class AbortedError extends DefaultError {
+class AbortedError extends BaseError {
   constructor(message, statusCode = 400, destResponse, authErrCategory) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,

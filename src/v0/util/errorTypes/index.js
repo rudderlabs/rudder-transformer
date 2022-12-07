@@ -1,4 +1,4 @@
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 const TransformationError = require("./transformationError");
 const ConfigurationError = require("./configurationError");
 const InstrumentationError = require("./instrumentationError");
@@ -14,7 +14,7 @@ const UnauthorizedError = require("./unauthorizedError");
 const NetworkInstrumentationError = require("./networkInstrumentationError");
 
 module.exports = {
-  DefaultError,
+  BaseError,
   TransformationError,
   ConfigurationError,
   InstrumentationError,

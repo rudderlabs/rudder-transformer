@@ -1,7 +1,7 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class NetworkError extends DefaultError {
+class NetworkError extends BaseError {
   constructor(
     message,
     statusCode = 400,

@@ -1,4 +1,4 @@
-class DefaultError extends Error {
+class BaseError extends Error {
   constructor(
     message = "",
     statusCode = 400,
@@ -24,4 +24,4 @@ class DefaultError extends Error {
   }
 }
 
-module.exports = { DefaultError };
+module.exports = { BaseError };

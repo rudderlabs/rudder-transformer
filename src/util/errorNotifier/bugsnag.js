@@ -7,7 +7,7 @@ const {
 const pkg = require("../../../package.json");
 const { CustomError } = require("../../v0/util");
 const {
-  DefaultError,
+  BaseError,
   TransformationError,
   ConfigurationError,
   InstrumentationError,
@@ -30,7 +30,7 @@ const {
 
 const errorTypesDenyList = [
   CustomError,
-  DefaultError,
+  BaseError,
   TransformationError,
   ConfigurationError,
   InstrumentationError,

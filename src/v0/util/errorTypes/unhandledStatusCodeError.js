@@ -1,7 +1,7 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class UnhandledStatusCodeError extends DefaultError {
+class UnhandledStatusCodeError extends BaseError {
   constructor(message, destResponse) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,

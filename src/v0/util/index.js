@@ -22,7 +22,7 @@ const {
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const { InstrumentationError, DefaultError } = require("./errorTypes");
+const { InstrumentationError, BaseError } = require("./errorTypes");
 const tags = require("./tags");
 // ========================================================================
 // INLINERS
@@ -1475,8 +1475,8 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
  */
 function generateErrorObject(error, defTags = {}) {
   let errObject = error;
-  if (!(error instanceof DefaultError)) {
-    errObject = new DefaultError(error.message, getErrorStatusCode(error), {
+  if (!(error instanceof BaseError)) {
+    errObject = new BaseError(error.message, getErrorStatusCode(error), {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.TRANSFORMATION
     });
   }

@@ -1,7 +1,7 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class InstrumentationError extends DefaultError {
+class InstrumentationError extends BaseError {
   constructor(message) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,

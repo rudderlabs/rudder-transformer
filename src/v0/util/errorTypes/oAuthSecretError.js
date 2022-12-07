@@ -1,14 +1,14 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class OAuthSecretError extends DefaultError {
+class OAuthSecretError extends BaseError {
   constructor(message) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.PLATFORM,
       [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.OAUTH_SECRET
     };
 
-    super(message, 400, finalStatTags);
+    super(message, 500, finalStatTags);
   }
 }
 

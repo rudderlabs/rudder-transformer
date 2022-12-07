@@ -1,7 +1,7 @@
 const tags = require("../tags");
-const { DefaultError } = require("./default");
+const { BaseError } = require("./base");
 
-class InvalidAuthTokenError extends DefaultError {
+class InvalidAuthTokenError extends BaseError {
   constructor(message, statusCode = 500, destResponse, authErrCategory) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,

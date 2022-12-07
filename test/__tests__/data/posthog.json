@@ -56,6 +56,13 @@
       "body": {
         "JSON": {
           "properties": {
+            "$set": {
+              "address": {
+                "city": "Dhaka",
+                "country": "Bangladesh"
+              },
+              "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+            },
             "$os": "android",
             "$time": "2020-11-04T13:21:09.712Z",
             "$device_id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -176,6 +183,13 @@
           "event": "Product Brought",
           "messageId": "e4408cb8-16dd-41e9-a313-a7a9cdc4bac5",
           "properties": {
+            "$set": {
+              "address": {
+                "city": "Dhaka",
+                "country": "Bangladesh"
+              },
+              "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+            },
             "$os": "android",
             "$time": "2020-11-04T13:21:09.712Z",
             "$device_id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -348,6 +362,14 @@
           "event": "order completed",
           "messageId": "07cd68e5-9ad9-4a79-af51-f7118bc9ed71",
           "properties": {
+            "$set": {
+              "name": "Shehan Study",
+              "category": "SampleIdentify",
+              "email": "chandra+r1@rudderlabs.com",
+              "plan": "Open source",
+              "logins": 5,
+              "createdAt": 1599264000
+            },
             "$current_url": "http://localhost:1112/Rectified.html",
             "$pathname": "/Rectified.html",
             "$lib": "RudderLabs JavaScript SDK",
@@ -510,6 +532,30 @@
       "body": {
         "JSON": {
           "properties": {
+            "$set": {
+              "id": "sajal",
+              "age": "30",
+              "name": "User_id_identify",
+              "email": "identify@test.com",
+              "phone": "9112340345",
+              "price": "56.0",
+              "userId": "sajal",
+              "address": {
+                "city": "KOlkata",
+                "state": "West bengal",
+                "street": "Park Street",
+                "country": "India",
+                "postalcode": "700096"
+              },
+              "birthday": "2020-11-13",
+              "lastname": "Mohanta",
+              "quantity": "5",
+              "username": "Samle_putUserName",
+              "createdat": "18th March 2020",
+              "firstname": "Sajal",
+              "anonymousId": "9c6bd77ea9da3e68",
+              "description": "Sample description"
+            },
             "$os": "Android",
             "$screen_height": 2210,
             "$screen_width": 1080,
@@ -819,6 +865,14 @@
           "event": "order completed",
           "messageId": "07cd68e5-9ad9-4a79-af51-f7118bc9ed71",
           "properties": {
+            "$set": {
+              "name": "Shehan Study",
+              "category": "SampleIdentify",
+              "email": "chandra+r1@rudderlabs.com",
+              "plan": "Open source",
+              "logins": 5,
+              "createdAt": 1599264000
+            },
             "$current_url": "http://localhost:1112/Rectified.html",
             "$pathname": "/Rectified.html",
             "$lib": "RudderLabs JavaScript SDK",
@@ -997,6 +1051,14 @@
           "event": "order completed",
           "messageId": "07cd68e5-9ad9-4a79-af51-f7118bc9ed71",
           "properties": {
+            "$set": {
+              "name": "Shehan Study",
+              "category": "SampleIdentify",
+              "email": "chandra+r1@rudderlabs.com",
+              "plan": "Open source",
+              "logins": 5,
+              "createdAt": 1599264000
+            },
             "$current_url": "http://localhost:1112/Rectified.html",
             "$pathname": "/Rectified.html",
             "$lib": "RudderLabs JavaScript SDK",
@@ -1165,6 +1227,14 @@
           },
           "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
           "properties": {
+            "$set": {
+              "name": "Shehan Study",
+              "category": "SampleIdentify",
+              "email": "chandra+r@rudderlabs.com",
+              "plan": "Open source",
+              "logins": 5,
+              "createdAt": 1599264000
+            },
             "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
             "$pathname": "/destinations/amplitude",
             "$lib": "RudderLabs JavaScript SDK",
@@ -1281,6 +1351,14 @@
       "body": {
         "JSON": {
           "properties": {
+            "$set": {
+              "name": "Shehan Study",
+              "category": "SampleIdentify",
+              "email": "chandra+r@rudderlabs.com",
+              "plan": "Open source",
+              "logins": 5,
+              "createdAt": 1599264000
+            },
             "$current_url": "https://docs.rudderstack.com/destinations/amplitude",
             "$pathname": "/destinations/amplitude",
             "$lib": "RudderLabs JavaScript SDK",
@@ -1513,6 +1591,13 @@
           "messageId": "07cde5-9ad9-4a79-af51-f71bc9ed71",
           "distinct_id": "uid-1234",
           "properties": {
+            "$set": {
+              "name": "Rudder Usr",
+              "category": "SampleIdentify",
+              "email": "mihirb@rudderlabs.com",
+              "plan": "Paid",
+              "logins": 5
+            },
             "$os": "Mac OS",
             "url": "url",
             "path": "path",
@@ -1545,6 +1630,196 @@
         "JSON_ARRAY": {}
       },
       "files": {}
+    }
+  },
+  {
+    "description": "Pass userTraits for track call",
+    "input": {
+      "destination": {
+        "Config": {
+          "teamApiKey": "phc_HiQkvGt9vktokentokentokenTN",
+          "yourInstance": "https://app.posthog.com"
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "Product Brought",
+        "userId": "uid-2",
+        "context": {
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "android",
+            "version": "8.1.0"
+          },
+          "device": {
+            "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+            "name": "xiaomi",
+            "model": "Redmi 6",
+            "manufacturer": "Xiaomi"
+          },
+          "traits": {
+            "id": "Virat KohliProX",
+            "age": "30",
+            "name": "User_id_identify",
+            "email": "identify@test.com",
+            "phone": "9112340345",
+            "price": "56.0",
+            "userId": "Virat",
+            "address": {
+              "city": "KOlkata",
+              "state": "West bengal",
+              "street": "Park Street",
+              "country": "India",
+              "postalcode": "700096"
+            },
+            "birthday": "2020-11-13",
+            "lastname": "KohliDa",
+            "quantity": "5",
+            "username": "Kohli_putUserName1",
+            "createdat": "18th March 2020",
+            "firstname": "Sajal",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "description": "Sample description"
+          },
+          "network": {
+            "carrier": "Banglalink"
+          }
+        },
+        "rudderId": "ee5c68e2-ecea-4aaf-a885-d0611eb8827b",
+        "messageId": "e4408cb8-16dd-41e9-a313-a7a9cdc4bac5",
+        "properties": {
+          "isf": "False",
+          "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+          "level": 6,
+          "game_id": "fireEagleBase",
+          "game_fps": 30,
+          "is_turbo": "False",
+          "battle_id": "N/A",
+          "bet_level": 1,
+          "game_name": "FireEagleSlots",
+          "bet_amount": 9,
+          "fb_profile": "0",
+          "no_of_spin": 1,
+          "start_date": "2019-08-01",
+          "win_amount": 0,
+          "extra_param": "N/A",
+          "gem_balance": 0,
+          "coin_balance": 9466052,
+          "days_in_game": 0,
+          "is_auto_spin": "False",
+          "ishighroller": "False",
+          "tournament_id": "T1561970819",
+          "bet_multiplier": 1,
+          "isLowEndDevice": "False",
+          "total_payments": 0,
+          "featureGameType": "N/A",
+          "graphicsQuality": "HD",
+          "jackpot_win_type": "Silver",
+          "jackpot_win_amount": 90,
+          "current_module_name": "CasinoGameModule",
+          "versionSessionCount": 2,
+          "additional_bet_index": 0,
+          "internetReachability": "ReachableViaLocalAreaNetwork",
+          "lifetime_gem_balance": 0,
+          "player_total_battles": 0,
+          "player_total_shields": 0
+        },
+        "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "type": "capture",
+          "event": "Product Brought",
+          "api_key": "phc_HiQkvGt9vktokentokentokenTN",
+          "messageId": "e4408cb8-16dd-41e9-a313-a7a9cdc4bac5",
+          "properties": {
+            "$ip": "0.0.0.0",
+            "$os": "android",
+            "isf": "False",
+            "$set": {
+              "id": "Virat KohliProX",
+              "age": "30",
+              "name": "User_id_identify",
+              "email": "identify@test.com",
+              "phone": "9112340345",
+              "price": "56.0",
+              "userId": "Virat",
+              "address": {
+                "city": "KOlkata",
+                "state": "West bengal",
+                "street": "Park Street",
+                "country": "India",
+                "postalcode": "700096"
+              },
+              "birthday": "2020-11-13",
+              "lastname": "KohliDa",
+              "quantity": "5",
+              "username": "Kohli_putUserName1",
+              "createdat": "18th March 2020",
+              "firstname": "Sajal",
+              "anonymousId": "9c6bd77ea9da3e68",
+              "description": "Sample description"
+            },
+            "idfa": "2bf99787-33d2-4ae2-a76a-c49672f97252",
+            "level": 6,
+            "game_id": "fireEagleBase",
+            "game_fps": 30,
+            "is_turbo": "False",
+            "battle_id": "N/A",
+            "bet_level": 1,
+            "game_name": "FireEagleSlots",
+            "$device_id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+            "bet_amount": 9,
+            "fb_profile": "0",
+            "no_of_spin": 1,
+            "start_date": "2019-08-01",
+            "win_amount": 0,
+            "$os_version": "8.1.0",
+            "distinct_id": "uid-2",
+            "extra_param": "N/A",
+            "gem_balance": 0,
+            "$device_name": "xiaomi",
+            "coin_balance": 9466052,
+            "days_in_game": 0,
+            "is_auto_spin": "False",
+            "ishighroller": "False",
+            "$device_model": "Redmi 6",
+            "tournament_id": "T1561970819",
+            "bet_multiplier": 1,
+            "isLowEndDevice": "False",
+            "total_payments": 0,
+            "featureGameType": "N/A",
+            "graphicsQuality": "HD",
+            "$network_carrier": "Banglalink",
+            "jackpot_win_type": "Silver",
+            "$anon_distinct_id": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+            "jackpot_win_amount": 90,
+            "current_module_name": "CasinoGameModule",
+            "versionSessionCount": 2,
+            "$device_manufacturer": "Xiaomi",
+            "additional_bet_index": 0,
+            "internetReachability": "ReachableViaLocalAreaNetwork",
+            "lifetime_gem_balance": 0,
+            "player_total_battles": 0,
+            "player_total_shields": 0
+          },
+          "distinct_id": "uid-2"
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://app.posthog.com/batch"
     }
   }
 ]

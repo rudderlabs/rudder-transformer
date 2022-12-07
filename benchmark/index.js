@@ -11,8 +11,8 @@ const fs = require("fs");
 const path = require("path");
 const Commander = require("commander");
 const logger = require("./metaLogger");
-const versionedRouter = require("../versionedRouter");
-const cdkV2Handler = require("../cdk/v2/handler");
+const versionedRouter = require("../src/versionedRouter");
+const cdkV2Handler = require("../src/cdk/v2/handler");
 
 const supportedDestinations = ["algolia", "pinterest_tag"];
 

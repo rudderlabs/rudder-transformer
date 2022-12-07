@@ -8,7 +8,7 @@ const {
   isDefinedAndNotNull
 } = require("../../v0/util");
 const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
-const ErrorBuilder = require("../../v0/util/error");
+const { AbortedError } = require("../../v0/util/errorTypes");
 const tags = require("../../v0/util/tags");
 
 const nodeSysErrorToStatus = code => {
@@ -97,14 +97,11 @@ const parseDestResponse = (destResponse, destination = "") => {
     !isDefinedAndNotNullAndNotEmpty(destResponse) ||
     !isNonFuncObject(destResponse)
   ) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(
-        `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`
-      )
-      .setDestinationResponse(destResponse)
-      .setStatTags(statTags)
-      .build();
+    throw new AbortedError(
+      `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`,
+      400,
+      destResponse
+    );
   }
   const { responseBody, status } = destResponse;
   // validity of responseBody and status
@@ -114,14 +111,11 @@ const parseDestResponse = (destResponse, destination = "") => {
     !_.isNumber(status) ||
     status === 0
   ) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(
-        `[ResponseTransform]: Destination Response Body and(or) Status Inavlid, for destination: ${destination}`
-      )
-      .setDestinationResponse(destResponse)
-      .setStatTags(statTags)
-      .build();
+    throw new AbortedError(
+      `[ResponseTransform]: Destination Response Body and(or) Status Invalid, for destination: ${destination}`,
+      400,
+      destResponse
+    );
   }
   let parsedDestResponseBody;
   try {

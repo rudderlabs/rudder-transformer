@@ -20,6 +20,10 @@ const {
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const {
+  AbortedError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const conversionCustomVariableCache = new Cache(
   CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
@@ -65,28 +69,21 @@ const getConversionCustomVariable = async (headers, params) => {
       let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
       searchStreamResponse = processAxiosResponse(searchStreamResponse);
       if (!isHttpStatusSuccess(searchStreamResponse.status)) {
-        throw new ErrorBuilder()
-          .setStatus(searchStreamResponse.status)
-          .setDestinationResponse(searchStreamResponse.response)
-          .setMessage(
-            `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`
-          )
-          .setAuthErrorCategory(
-            getAuthErrCategory(get(searchStreamResponse, "status"))
-          )
-          .build();
+        throw new AbortedError(
+          `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+          searchStreamResponse.status,
+          searchStreamResponse.response,
+          getAuthErrCategory(searchStreamResponse.status)
+        );
       }
       const conversionCustomVariable = get(
         searchStreamResponse,
         "response.0.results"
       );
       if (!conversionCustomVariable) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage(
-            `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`
-          )
-          .build();
+        throw new NetworkInstrumentationError(
+          `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`
+        );
       }
       return conversionCustomVariable;
     }
@@ -182,13 +179,11 @@ const responseHandler = destinationResponse => {
     // non-zero code signifies partialFailure
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setDestinationResponse(partialFailureError.details)
-        .setMessage(
-          `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`
-        )
-        .build();
+      throw new AbortedError(
+        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`,
+        400,
+        partialFailureError.details
+      );
     }
 
     return {
@@ -201,14 +196,12 @@ const responseHandler = destinationResponse => {
   // the response from destination is not a success case build an explicit error
   // return status, original destination response, message
   const { response } = destinationResponse;
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status))
-    .build();
+  throw new AbortedError(
+    `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`,
+    status,
+    response,
+    getAuthErrCategory(status)
+  );
 };
 
 const networkHandler = function() {

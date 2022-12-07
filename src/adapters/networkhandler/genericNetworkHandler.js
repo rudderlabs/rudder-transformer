@@ -23,7 +23,7 @@ const tags = require("../../v0/util/tags");
 const responseHandler = (destinationResponse, dest) => {
   const { status } = destinationResponse;
   const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
-  // if the responsee from destination is not a success case build an explicit error
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
       `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`,

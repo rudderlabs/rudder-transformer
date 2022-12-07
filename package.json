@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -19,7 +19,7 @@
     "lint-check": "eslint --ext .js,.json . --fix; exit 0",
     "lint-json-fix": "npx eslint --ext .json --fix .",
     "merge-check": "npm run verify || exit 1; codecov",
-    "start": "node destTransformer.js",
+    "start": "node src/index.js",
     "testDestinations": "npx jest --runInBand --detectOpenHandles --coverage --notify",
     "testVersionedRouter": "npx jest versionedRouter --type=all --detectOpenHandles --notify",
     "testVersioned": "npx jest versionedRouter --destName=heap --type=all --notify",

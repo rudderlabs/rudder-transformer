@@ -1,6 +1,9 @@
 const tags = require("../tags");
 const { BaseError } = require("./base");
 
+const errorTypes = Object.values(tags.ERROR_TYPES);
+const metaTypes = Object.values(tags.METADATA);
+
 class NetworkError extends BaseError {
   constructor(
     message,
@@ -9,16 +12,21 @@ class NetworkError extends BaseError {
     destResponse,
     authErrCategory
   ) {
-    let finalStatTags = {
-      [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK
+    const finalStatTags = {
+      [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,
+      [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ABORTED
     };
 
+    // Allow specifying only error type and meta tags
     if (typeof statTags === "object" && !Array.isArray(statTags)) {
-      // TODO: Restrict the names of the incoming tags here
-      finalStatTags = {
-        ...statTags,
-        finalStatTags
-      };
+      if (errorTypes.includes(statTags[tags.TAG_NAMES.ERROR_TYPE])) {
+        finalStatTags[tags.TAG_NAMES.ERROR_TYPE] =
+          statTags[tags.TAG_NAMES.ERROR_TYPE];
+      }
+
+      if (metaTypes.includes(statTags[tags.TAG_NAMES.META])) {
+        finalStatTags[tags.TAG_NAMES.META] = statTags[tags.TAG_NAMES.META];
+      }
     }
 
     super(message, statusCode, finalStatTags, destResponse, authErrCategory);

@@ -14,6 +14,7 @@ class NetworkError extends DefaultError {
     };
 
     if (typeof statTags === "object" && !Array.isArray(statTags)) {
+      // TODO: Restrict the names of the incoming tags here
       finalStatTags = {
         ...statTags,
         finalStatTags

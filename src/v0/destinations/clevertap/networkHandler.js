@@ -39,7 +39,6 @@ const responseHandler = destinationResponse => {
     throw new AbortedError(
       `Request failed  with status: ${status}`,
       400,
-      undefined,
       destinationResponse
     );
   }

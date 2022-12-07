@@ -12,13 +12,13 @@ const {
   defaultRequestConfig,
   getErrorRespEvents,
   generateErrorObject,
-  TransformationError,
   simpleProcessRouterDest
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
 const logger = require("../../../logger");
 const { getAuthToken } = require("../marketo/transform");
+const { TransformationError } = require("../../util/errorTypes");
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -133,14 +133,7 @@ const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
 
   if (!token) {
-    throw new TransformationError(
-      "Authorisation failed",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      },
-      DESTINATION
-    );
+    throw new TransformationError("Authorisation failed");
   }
   const response = processEvent({ ...event, token });
   return response;

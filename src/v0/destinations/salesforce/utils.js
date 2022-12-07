@@ -43,14 +43,12 @@ const salesforceResponseHandler = (
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        undefined,
         destResponse
       );
     } else if (status === 403 && matchErrorCode("REQUEST_LIMIT_EXCEEDED")) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
       throw new ThrottledError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Throttled).${sourceMessage}`,
-        undefined,
         destResponse
       );
     } else if (status === 503) {
@@ -59,7 +57,6 @@ const salesforceResponseHandler = (
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        undefined,
         destResponse
       );
     }
@@ -72,7 +69,6 @@ const salesforceResponseHandler = (
     throw new AbortedError(
       `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, (Aborted). ${sourceMessage}`,
       400,
-      undefined,
       destResponse
     );
   }

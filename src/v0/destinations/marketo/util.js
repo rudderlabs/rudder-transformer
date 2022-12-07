@@ -48,20 +48,17 @@ const marketoApplicationErrorHandler = (
     throw new AbortedError(
       `Request Failed for ${destination}, ${errors[0].message} (Aborted).${sourceMessage}`,
       400,
-      undefined,
       marketoResponse
     );
   } else if (errors && MARKETO_THROTTLED_CODES.indexOf(errors[0].code) > -1) {
     throw new ThrottledError(
       `Request Failed for ${destination}, ${errors[0].message} (Throttled).${sourceMessage}`,
-      undefined,
       marketoResponse
     );
   } else if (errors && MARKETO_RETRYABLE_CODES.indexOf(errors[0].code) > -1) {
     throw new RetryableError(
       `Request Failed for ${destination}, ${errors[0].message} (Retryable).${sourceMessage}`,
       500,
-      undefined,
       marketoResponse
     );
   }
@@ -124,7 +121,7 @@ const marketoResponseHandler = (
     message += ` -> ${response.errors[0].message}`;
   }
   // Marketo sent us some failure which is not handled
-  throw new UnhandledStatusCodeError(message, undefined, destResponse);
+  throw new UnhandledStatusCodeError(message, destResponse);
 };
 
 /**

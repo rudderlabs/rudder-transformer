@@ -56,7 +56,6 @@ const responseHandler = destinationResponse => {
         throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          undefined,
           destinationResponse
         );
       } else {
@@ -64,7 +63,6 @@ const responseHandler = destinationResponse => {
         throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          undefined,
           destinationResponse
         );
       }

@@ -5,7 +5,7 @@ const { setupUserTransformHandler } = require("../util/customTransformer");
 const { generateFunctionName } = require("../util/customTransformer-faas");
 const { deleteFunction, getFunctionList } = require("../util/openfaas/faasApi");
 
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 jest.mock("axios", () => ({
     ...jest.requireActual("axios")
   }));

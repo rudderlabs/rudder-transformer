@@ -210,35 +210,6 @@ const getHashFromArrayWithValueAsObject = (
   return hashMap;
 };
 
-// NEED to decouple value finding and `required` checking
-// NEED TO DEPRECATE
-const setValues = (payload, message, mappingJson) => {
-  if (Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index += 1) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new CustomError(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
-      }
-    });
-  }
-  return payload;
-};
-
 // get the value from the message given a key
 // it'll look for properties, traits and context.traits in the order
 const getValueFromPropertiesOrTraits = ({ message, key }) => {
@@ -1863,7 +1834,6 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedValues,
   returnArrayOfSubarrays,
-  setValues,
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,

@@ -134,6 +134,10 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["integer"]
+                },
+                dateString: {
+                  type: ["string"],
+                  format: "date-time"
                 }
               },
               type: "object",
@@ -183,6 +187,10 @@ const trackingPlan = {
                     type: "number",
                     maximum: 4.0
                   }
+                },
+                dateString: {
+                  type: ["string"],
+                  format: "date-time"
                 }
               },
               type: "object",
@@ -227,6 +235,10 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["number"]
+                },
+                dateString: {
+                  type: ["string"],
+                  format: "date-time"
                 }
               },
               type: "object",
@@ -617,7 +629,7 @@ describe("Get Event Schema", () => {
 
 describe("Validate Event against schema", () => {
   eventValidationTestCases.forEach(testCase => {
-    it(`should return correct event validation`, async () => {
+    it(`should return correct event validation - ${testCase.testCase}`, async () => {
       fetch.mockResolvedValue({
         json: jest.fn().mockResolvedValue(testCase.trackingPlan),
         status: 200

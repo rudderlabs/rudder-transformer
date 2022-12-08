@@ -3,6 +3,7 @@ const Ajv2019 = require("ajv/dist/2019");
 const Ajv = require("ajv-draft-04");
 const draft7MetaSchema = require("ajv/dist/refs/json-schema-draft-07.json");
 const draft6MetaSchema = require("ajv/dist/refs/json-schema-draft-06.json");
+const addFormats = require("ajv-formats");
 
 const NodeCache = require("node-cache");
 const hash = require("object-hash");
@@ -43,6 +44,7 @@ const supportedEventTypes = {
 const ajv4 = new Ajv(defaultOptions);
 
 const ajv19 = new Ajv2019(defaultOptions);
+addFormats(ajv19, { mode: "fast", formats: ["date", "time"], keywords: true });
 ajv19.addMetaSchema(draft6MetaSchema);
 ajv19.addMetaSchema(draft7MetaSchema);
 

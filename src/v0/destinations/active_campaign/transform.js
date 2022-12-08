@@ -8,11 +8,16 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   simpleProcessRouterDest
 } = require("../../util");
 const { errorHandler } = require("./util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+  UnauthorizedError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
@@ -41,12 +46,12 @@ const responseBuilderSimple = (payload, category, destination) => {
         response.body.FORM = payload;
         break;
       default:
-        throw new CustomError("Message format type not supported", 400);
+        throw new InstrumentationError("Message format type not supported");
     }
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const syncContact = async (contactPayload, category, destination) => {
@@ -66,7 +71,7 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
-    throw new CustomError("Unable to Create Contact", 400);
+    throw new NetworkInstrumentationError("Unable to Create Contact");
   }
   return createdContact.id;
 };
@@ -435,7 +440,7 @@ const screenRequestHandler = async (message, category, destination) => {
   }
 
   if (res.response.status !== 200)
-    throw new CustomError("Unable to create event", res.response.status || 400);
+    throw new UnauthorizedError("Unable to create event");
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -464,10 +469,7 @@ const screenRequestHandler = async (message, category, destination) => {
     }
 
     if (res.response.status !== 201) {
-      throw new CustomError(
-        "Unable to create event",
-        res.response.status || 400
-      );
+      throw new UnauthorizedError("Unable to create event");
     }
   }
   // Previous operations successfull then
@@ -501,10 +503,7 @@ const trackRequestHandler = async (message, category, destination) => {
   }
 
   if (res.response.status !== 200)
-    throw new CustomError(
-      "Unable to fetch events. Aborting",
-      res.response.status || 400
-    );
+    throw new UnauthorizedError("Unable to fetch events. Aborting");
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -529,7 +528,7 @@ const trackRequestHandler = async (message, category, destination) => {
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
     if (res.response.status !== 201) {
-      throw new CustomError(
+      throw new UnauthorizedError(
         "Unable to create event. Aborting",
         res.response.status || 400
       );
@@ -556,9 +555,8 @@ const trackRequestHandler = async (message, category, destination) => {
 // subsquent processing and transformations and the response is sent to rudder-server
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -582,7 +580,7 @@ const processEvent = async (message, destination) => {
       response = await trackRequestHandler(message, category, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
   return response;
 };

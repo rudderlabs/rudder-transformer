@@ -45,15 +45,6 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // GENERIC UTLITY
 // ========================================================================
 
-class CustomError extends Error {
-  constructor(message, statusCode, metadata) {
-    super(message);
-    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
-    // Apart from destination transformation
-    this.response = { status: statusCode || 400, metadata };
-  }
-}
-
 const getEventTime = message => {
   return new Date(message.timestamp).toISOString();
 };

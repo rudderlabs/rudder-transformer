@@ -38,7 +38,10 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { isCdkV2Destination, getCdkV2TestThreshold } = require("./cdk/v2/utils");
-const { getWorkflowEngine, processCdkV2Workflow } = require("./cdk/v2/handler");
+const {
+  getCachedWorkflowEngine,
+  processCdkV2Workflow
+} = require("./cdk/v2/handler");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -423,7 +426,7 @@ async function isValidRouterDest(event, destType) {
   const isCdkV2Dest = isCdkV2Destination(event);
   if (isCdkV2Dest) {
     try {
-      await getWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      await getCachedWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
       return true;
     } catch (error) {
       return false;

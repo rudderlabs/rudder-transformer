@@ -1,5 +1,4 @@
 const {
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
@@ -19,6 +18,11 @@ const {
   createOrUpdateUserPayloadBuilder,
   createEventOccurrencePayloadBuilder
 } = require("./utils");
+const {
+  TransformationError,
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const { EventType } = require("../../../constants");
 
@@ -36,7 +40,9 @@ const responseBuilder = async (payload, endpoint, method, apiKey) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("[ User.com ]:: Payload could not be constructed", 400);
+  throw new TransformationError(
+    "Something went wrong while constructing the payload"
+  );
 };
 
 const identifyResponseBuilder = async (message, destination) => {
@@ -57,7 +63,7 @@ const identifyResponseBuilder = async (message, destination) => {
 
 const trackResponseBuilder = async (message, destination) => {
   if (!message.event) {
-    throw new CustomError("[ User.com ]:: parameter event is required", 400);
+    throw new InstrumentationError("[User.com]:: parameter event is required");
   }
 
   let payload;
@@ -76,9 +82,8 @@ const trackResponseBuilder = async (message, destination) => {
     return responseBuilder(payload, endpoint, method, apiKey);
   }
 
-  throw new CustomError(
-    "[ User.com ]:: No user found with given lookup field, Track event cannot be completed if there is no valid user",
-    400
+  throw new NetworkInstrumentationError(
+    "[User.com] :: No user found with given lookup field, Track event cannot be completed if there is no valid user"
   );
 };
 
@@ -98,9 +103,8 @@ const pageResponseBuilder = async (message, destination) => {
     endpoint = prepareUrl(endpoint, appSubdomain);
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new CustomError(
-    "[ User.com ]:: No user found with given lookup field. Page event cannot be completed if there is no valid user",
-    400
+  throw new NetworkInstrumentationError(
+    "[User.com] :: No user found with given lookup field. Page event cannot be completed if there is no valid user"
   );
 };
 
@@ -135,16 +139,15 @@ const groupResponseBuilder = async (message, destination) => {
     );
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new CustomError("[ User.com ] :: No user found with given userId", 400);
+  throw new InstrumentationError(
+    "[User.com] :: No user found with given userId"
+  );
 };
 
 const processEvent = async (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new CustomError(
-      "[ User.com ]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -162,9 +165,8 @@ const processEvent = async (message, destination) => {
       response = await pageResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(
-        `[ User.com ]:: Message type ${messageType} not supported.`,
-        400
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
       );
   }
   return response;

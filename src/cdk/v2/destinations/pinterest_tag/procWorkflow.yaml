@@ -50,7 +50,7 @@ steps:
         "device_brand": .properties.manufacturer ?? .context.device.manufacturer,
         "device_model": .properties.deviceModel ?? .context.device.model,
         "device_type": .properties.deviceType ?? .context.device.type,
-        "os_version": .context.os.version,
+        "os_version": .context.os.version || undefined,
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,

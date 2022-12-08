@@ -160,9 +160,14 @@ async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
         )}`
       );
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, v0Result=${JSON.stringify(
-          v0Result
-        )}, cdkResult=${JSON.stringify(cdkResult)}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, input=${JSON.stringify(
+          input
+        )}`
+      );
+      logger.error(
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, results=${JSON.stringify(
+          { v0: v0Result, cdk: cdkResult }
+        )}`
       );
       return;
     }

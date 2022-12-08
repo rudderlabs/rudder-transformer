@@ -1,3 +1,5 @@
+const { TransformationError } = require("../../../v0/util");
+
 const SUPPORTED_EVENT_TYPES = [
   "track",
   "page",
@@ -22,6 +24,13 @@ function isValidEventType(event) {
   return true;
 }
 
+function assert(val, message, status, statTags, destination) {
+  if (!val) {
+    throw new TransformationError(message, status, statTags, destination);
+  }
+}
+
 module.exports = {
-  isValidEventType
+  isValidEventType,
+  assert
 };

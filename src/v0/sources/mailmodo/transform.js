@@ -6,7 +6,7 @@ const {
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const Message = require("../message");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
@@ -78,7 +78,7 @@ function process(event) {
     null;
   // throws an error if email is not present
   if (!email) {
-    throw new InstrumentationError("Missing essential fields from Mailmodo");
+    throw new TransformationError("Missing essential fields from Mailmodo");
   }
 
   // generating anonymousId using email

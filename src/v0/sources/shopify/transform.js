@@ -19,7 +19,7 @@ const {
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP
 } = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 const identifyPayloadBuilder = event => {
   const message = new Message(INTEGERATION);
@@ -132,7 +132,7 @@ const processEvent = inputEvent => {
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new InstrumentationError(
+        throw new TransformationError(
           `event type ${shopifyTopic} not supported`
         );
       }

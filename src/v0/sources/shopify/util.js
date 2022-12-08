@@ -15,7 +15,7 @@ const {
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP
 } = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -29,15 +29,15 @@ const getShopifyTopic = event => {
     `[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`
   );
   if (!qParams) {
-    throw new InstrumentationError("Query_parameters is missing");
+    throw new TransformationError("Query_parameters is missing");
   }
   const { topic } = qParams;
   if (!topic || !Array.isArray(topic)) {
-    throw new InstrumentationError("Invalid topic in query_parameters");
+    throw new TransformationError("Invalid topic in query_parameters");
   }
 
   if (topic.length === 0) {
-    throw new InstrumentationError("Topic not found");
+    throw new TransformationError("Topic not found");
   }
   return topic[0];
 };

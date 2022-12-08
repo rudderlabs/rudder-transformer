@@ -1,7 +1,7 @@
 const sha256 = require("sha256");
 const Message = require("../message");
 const { mapping, formEventName } = require("./util");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 const { generateUUID, removeUndefinedAndNullValues } = require("../../util");
 
 function processNormalEvent(mondayPayload) {
@@ -27,7 +27,7 @@ function processNormalEvent(mondayPayload) {
       }
     ];
   } else {
-    throw new InstrumentationError("UserId not found");
+    throw new TransformationError("UserId not found");
   }
 
   message.setPropertiesV2(mondayPayload, mapping);

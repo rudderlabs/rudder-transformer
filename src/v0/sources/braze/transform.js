@@ -8,6 +8,7 @@ const {
   CustomError
 } = require("../../util");
 const Message = require("../message");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
@@ -70,7 +71,7 @@ const processEvent = event => {
     // wrong data
     return null;
   }
-  throw new CustomError("Unknwon event type from Braze");
+  throw new InstrumentationError("Unknown event type from Braze");
 };
 
 const process = events => {

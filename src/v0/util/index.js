@@ -1790,7 +1790,6 @@ const refinePayload = obj => {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
-  CustomError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,

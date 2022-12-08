@@ -22,7 +22,11 @@ const {
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const { InstrumentationError, BaseError } = require("./errorTypes");
+const {
+  InstrumentationError,
+  BaseError,
+  PlatformError
+} = require("./errorTypes");
 const tags = require("./tags");
 // ========================================================================
 // INLINERS
@@ -596,7 +600,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
     // TODO - think of a way to crash the pod
-    throw new CustomError("Wrong sourceKey type or blank sourceKey array");
+    throw new PlatformError("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
 };
@@ -689,7 +693,7 @@ const handleMetadataForValue = (
     }
 
     if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new CustomError(
+      throw new InstrumentationError(
         `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
       );
     }
@@ -716,7 +720,7 @@ const handleMetadataForValue = (
       }
 
       if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new CustomError(
+        throw new InstrumentationError(
           `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
         );
       }

@@ -14,10 +14,11 @@ const { errorHandler } = require("./util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
   InstrumentationError,
-  NetworkInstrumentationError,
-  UnauthorizedError,
-  TransformationError
+  TransformationError,
+  NetworkError
 } = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
@@ -71,7 +72,14 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
-    throw new NetworkInstrumentationError("Unable to Create Contact");
+    throw new NetworkError(
+      "Unable to Create Contact",
+      res.response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+      },
+      res?.response?.data
+    );
   }
   return createdContact.id;
 };
@@ -439,8 +447,16 @@ const screenRequestHandler = async (message, category, destination) => {
     errorHandler(res.response, "Failed to retrieve events");
   }
 
-  if (res.response.status !== 200)
-    throw new UnauthorizedError("Unable to create event");
+  if (res.response.status !== 200) {
+    throw new NetworkError(
+      "Unable to create event",
+      res.response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+      },
+      res?.response?.data
+    );
+  }
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -469,7 +485,14 @@ const screenRequestHandler = async (message, category, destination) => {
     }
 
     if (res.response.status !== 201) {
-      throw new UnauthorizedError("Unable to create event");
+      throw new NetworkError(
+        "Unable to create event",
+        res.response.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        },
+        res?.response?.data
+      );
     }
   }
   // Previous operations successfull then
@@ -502,8 +525,16 @@ const trackRequestHandler = async (message, category, destination) => {
     errorHandler(res.response, "Failed to retrieve events");
   }
 
-  if (res.response.status !== 200)
-    throw new UnauthorizedError("Unable to fetch events. Aborting");
+  if (res.response.status !== 200) {
+    throw new NetworkError(
+      "Unable to fetch events. Aborting",
+      res.response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+      },
+      res?.response?.data
+    );
+  }
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -528,9 +559,13 @@ const trackRequestHandler = async (message, category, destination) => {
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
     if (res.response.status !== 201) {
-      throw new UnauthorizedError(
+      throw new NetworkError(
         "Unable to create event. Aborting",
-        res.response.status || 400
+        res.response.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        },
+        res?.response?.data
       );
     }
   }

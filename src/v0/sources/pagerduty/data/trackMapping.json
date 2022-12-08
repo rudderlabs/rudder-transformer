@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKeys": "messageId"
+  },
+  {
+    "sourceKeys": "occurred_at",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "resource_type",
+    "destKeys": "properties.resource_type"
+  },
+  {
+    "sourceKeys": "data",
+    "destKeys": "properties.data"
+  },
+  {
+    "sourceKeys": "client",
+    "destKeys": "traits.client"
+  },
+  {
+    "sourceKeys": "agent",
+    "destKeys": "traits.agent"
+  }
+]

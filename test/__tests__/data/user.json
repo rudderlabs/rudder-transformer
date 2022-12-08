@@ -108,7 +108,7 @@
       }
     },
     "output": {
-      "error": "[User.com]:: parameter event is required"
+      "error": "Parameter event is required"
     }
   },
   {
@@ -150,7 +150,7 @@
       }
     },
     "output": {
-      "error": "[User.com] :: Parameter name is required"
+      "error": "Parameter name is required"
     }
   },
   {

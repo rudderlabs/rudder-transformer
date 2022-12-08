@@ -63,7 +63,7 @@ const identifyResponseBuilder = async (message, destination) => {
 
 const trackResponseBuilder = async (message, destination) => {
   if (!message.event) {
-    throw new InstrumentationError("[User.com]:: parameter event is required");
+    throw new InstrumentationError("Parameter event is required");
   }
 
   let payload;
@@ -83,7 +83,7 @@ const trackResponseBuilder = async (message, destination) => {
   }
 
   throw new NetworkInstrumentationError(
-    "[User.com] :: No user found with given lookup field, Track event cannot be completed if there is no valid user"
+    "No user found with given lookup field, Track event cannot be completed if there is no valid user"
   );
 };
 
@@ -104,7 +104,7 @@ const pageResponseBuilder = async (message, destination) => {
     return responseBuilder(payload, endpoint, method, apiKey);
   }
   throw new NetworkInstrumentationError(
-    "[User.com] :: No user found with given lookup field. Page event cannot be completed if there is no valid user"
+    "No user found with given lookup field. Page event cannot be completed if there is no valid user"
   );
 };
 
@@ -139,9 +139,7 @@ const groupResponseBuilder = async (message, destination) => {
     );
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new InstrumentationError(
-    "[User.com] :: No user found with given userId"
-  );
+  throw new NetworkInstrumentationError("No user found with given userId");
 };
 
 const processEvent = async (message, destination) => {

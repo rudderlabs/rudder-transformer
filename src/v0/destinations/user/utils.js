@@ -208,15 +208,13 @@ const validatePagePayload = message => {
   const timestamp = getFieldValueFromMessage(message, "timestamp");
 
   if (!pageUrl) {
-    throw new InstrumentationError("[User.com]:: Parameter url is required");
+    throw new InstrumentationError("Parameter url is required");
   }
   if (!pagePath) {
-    throw new InstrumentationError("[User.com]:: Parameter path is required");
+    throw new InstrumentationError("Parameter path is required");
   }
   if (!timestamp) {
-    throw new InstrumentationError(
-      "[User.com] :: Parameter timestamp is required"
-    );
+    throw new InstrumentationError("Parameter timestamp is required");
   }
 };
 
@@ -230,7 +228,7 @@ const validateGroupPayload = message => {
   const traits = getFieldValueFromMessage(message, "traits");
   const { name } = traits;
   if (!name) {
-    throw new InstrumentationError("[User.com] :: Parameter name is required");
+    throw new InstrumentationError("Parameter name is required");
   }
 };
 
@@ -348,9 +346,7 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
  */
 const getUserByEmail = async (apiKey, email, appSubdomain) => {
   if (!email) {
-    throw new InstrumentationError(
-      "[User.com]:: lookup field : email value is not present"
-    );
+    throw new InstrumentationError("Lookup field : email value is not present");
   }
 
   const endpoint = prepareUrl(
@@ -385,9 +381,7 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
  */
 const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   if (!phoneNumber) {
-    throw new InstrumentationError(
-      "[User.com] :: lookup field : phone value is not present"
-    );
+    throw new InstrumentationError("Lookup field : phone value is not present");
   }
 
   const endpoint = prepareUrl(
@@ -410,11 +404,11 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     const { results } = response;
     if (results.length === 0) {
       throw new NetworkInstrumentationError(
-        "[User.com] :: no user found for a given lookup field"
+        "No user found for a given lookup field"
       );
     } else if (results.length > 1) {
       throw new NetworkInstrumentationError(
-        "[User.com] :: multiple users obtained for a given lookup field"
+        "Multiple users obtained for a given lookup field"
       );
     } else {
       const [first] = results;
@@ -523,7 +517,7 @@ const retrieveUserFromLookup = async (message, destination) => {
     }
 
     throw new InstrumentationError(
-      `[User.com] :: lookup field : ${lookupField} is not supported for this destination`
+      `Lookup field : ${lookupField} is not supported for this destination`
     );
   } else {
     const userId = getValueFromMessage(message, "userId");
@@ -536,7 +530,7 @@ const retrieveUserFromLookup = async (message, destination) => {
     }
 
     throw new InstrumentationError(
-      "[User.com] :: default lookup field : email value is empty"
+      "Default lookup field : email value is empty"
     );
   }
 };

@@ -419,11 +419,11 @@
   },
   {
     "statusCode": 400,
-    "error": "Zendesk : UserId is a mandatory field for group"
+    "error": "UserId is a mandatory field for group"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Event type page is not supported"
   },
   {
     "version": "1",

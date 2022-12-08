@@ -9,12 +9,15 @@ const {
   ACCESS_TOKEN_CACHE_TTL_SECONDS
 } = require("./config");
 const {
-  CustomError,
   constructPayload,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const Cache = require("../../util/cache");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
@@ -55,11 +58,10 @@ const getAccessToken = async destination => {
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
     if (processedAuthResponse.status !== 200) {
-      throw new CustomError(
-        `[Wootric]:: access token could not be generated due to ${JSON.stringify(
+      throw new NetworkInstrumentationError(
+        `Access token could not be generated due to ${JSON.stringify(
           processedAuthResponse.response
-        )}`,
-        processedAuthResponse.status
+        )}`
       );
     }
     return processedAuthResponse.response?.access_token;
@@ -84,9 +86,8 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   } else if (isDefinedAndNotNullAndNotEmpty(externalId)) {
     endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${externalId}?lookup_by_external_id=true`;
   } else {
-    throw new CustomError(
-      "wootricEndUserId/userId are missing. At least one parameter must be provided",
-      400
+    throw new InstrumentationError(
+      "wootricEndUserId/userId are missing. At least one parameter must be provided"
     );
   }
 
@@ -105,11 +106,10 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   }
 
   if (processedUserResponse.status !== 404) {
-    throw new CustomError(
-      `[Wootric]:: Unable to retrieve userId due to ${JSON.stringify(
+    throw new NetworkInstrumentationError(
+      `Unable to retrieve userId due to ${JSON.stringify(
         processedUserResponse.response
-      )}`,
-      processedUserResponse.status
+      )}`
     );
   }
 
@@ -125,14 +125,14 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 const validateCreateUserPayload = (userId, email, phone) => {
   // for creating a user userId is mandatory.
   if (!isDefinedAndNotNullAndNotEmpty(userId)) {
-    throw new CustomError("userId is missing", 400);
+    throw new InstrumentationError("userId is missing");
   }
 
   if (
     !isDefinedAndNotNullAndNotEmpty(email) &&
     !isDefinedAndNotNullAndNotEmpty(phone)
   ) {
-    throw new CustomError(
+    throw new InstrumentationError(
       "email/phone number are missing. At least one parameter must be provided",
       400
     );
@@ -203,7 +203,7 @@ const updateUserPayloadBuilder = (message, userDetails) => {
  */
 const validateScore = score => {
   if (!(score >= 0 && score <= 10)) {
-    throw new CustomError("Invalid Score", 400);
+    throw new InstrumentationError("Invalid Score");
   }
 };
 

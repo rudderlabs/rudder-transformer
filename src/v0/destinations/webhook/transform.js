@@ -11,13 +11,16 @@ const {
   getFieldValueFromMessage,
   flattenJson,
   isDefinedAndNotNull,
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   defaultDeleteRequestConfig,
   getIntegrationsObj
 } = require("../../util");
 const { EventType } = require("../../../constants");
+const {
+  ConfigurationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const getPropertyParams = message => {
   if (message.type === EventType.IDENTIFY) {
@@ -154,11 +157,10 @@ function process(event) {
 
       return response;
     }
-    throw new CustomError("Invalid URL in destination config", 400);
+    throw new ConfigurationError("Invalid URL in destination config");
   } catch (err) {
-    throw new CustomError(
-      err.message || "[webhook] Failed to process request",
-      err.status || 400
+    throw new NetworkInstrumentationError(
+      err.message || "[webhook] Failed to process request"
     );
   }
 }

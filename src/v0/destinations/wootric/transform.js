@@ -5,7 +5,6 @@ const {
   getIntegrationsObj,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  CustomError,
   simpleProcessRouterDest
 } = require("../../util");
 const {
@@ -20,6 +19,11 @@ const {
   createDeclinePayloadBuilder
 } = require("./util");
 const { PROPERTIES, END_USER_PROPERTIES } = require("./config");
+const {
+  TransformationError,
+  NetworkInstrumentationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = async (payload, endpoint, method, accessToken) => {
   if (payload) {
@@ -34,7 +38,9 @@ const responseBuilder = async (payload, endpoint, method, accessToken) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError(
+    "Something went wrong while constructing the payload"
+  );
 };
 
 const identifyResponseBuilder = async (message, destination) => {
@@ -45,7 +51,7 @@ const identifyResponseBuilder = async (message, destination) => {
 
   const accessToken = await getAccessToken(destination);
   if (!accessToken) {
-    throw new CustomError("Access token is missing", 400);
+    throw new NetworkInstrumentationError("Access token is missing");
   }
 
   const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
@@ -85,7 +91,7 @@ const trackResponseBuilder = async (message, destination) => {
 
   const accessToken = await getAccessToken(destination);
   if (!accessToken) {
-    throw new CustomError("Access token is missing", 400);
+    throw new NetworkInstrumentationError("Access token is missing");
   }
 
   const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
@@ -99,21 +105,22 @@ const trackResponseBuilder = async (message, destination) => {
 
   if (!wootricEndUserId && rawEndUserId) {
     // If user not found and context.externalId.0.id is present in request
-    throw new CustomError(
-      `No user found with wootric end user Id : ${rawEndUserId}`,
-      400
+    throw new InstrumentationError(
+      `No user found with wootric end user Id : ${rawEndUserId}`
     );
   }
 
   // If user not found and context.externalId.0.id is not present in request and userId is present in request
   if (!wootricEndUserId) {
-    throw new CustomError(`No user found with userId : ${userId}`, 400);
+    throw new InstrumentationError(`No user found with userId : ${userId}`);
   }
 
   const integrationsObj = getIntegrationsObj(message, "wootric");
 
   if (!integrationsObj || !integrationsObj.eventType) {
-    throw new CustomError("Event Type is missing from Integration object", 400);
+    throw new InstrumentationError(
+      "Event Type is missing from Integration object"
+    );
   }
 
   // "integrations": {
@@ -137,7 +144,7 @@ const trackResponseBuilder = async (message, destination) => {
       method = builder.method;
       break;
     default:
-      throw new CustomError("Event Type not supported", 400);
+      throw new InstrumentationError("Event Type not supported");
   }
 
   endpoint = endpoint.replace("<end_user_id>", wootricEndUserId);
@@ -151,10 +158,7 @@ const trackResponseBuilder = async (message, destination) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -166,7 +170,9 @@ const processEvent = async (message, destination) => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
+      );
   }
   return response;
 };

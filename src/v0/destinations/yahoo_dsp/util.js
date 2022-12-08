@@ -2,7 +2,7 @@ const qs = require("qs");
 const sha256 = require("sha256");
 const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
 const { httpPOST } = require("../../../adapters/network");
-const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
+const { isDefinedAndNotNullAndNotEmpty } = require("../../util");
 
 const {
   ACCESS_TOKEN_CACHE_TTL,
@@ -10,6 +10,10 @@ const {
   DSP_SUPPORTED_OPERATION
 } = require("./config.js");
 const Cache = require("../../util/cache");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
@@ -48,9 +52,8 @@ const populateIdentifiers = (audienceList, Config) => {
       // checking for the audience type the user wants to add is present in the input or not.
       if (!traits.includes(audienceAttribute)) {
         // throwing error if the audience type the user wants to add is not present in the input.
-        throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${audienceAttribute} type audience is not available in an object`,
-          400
+        throw new InstrumentationError(
+          `Required property for ${audienceAttribute} type audience is not available in an object`
         );
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
@@ -84,9 +87,8 @@ const createPayload = (audienceList, Config) => {
   seedList = populateIdentifiers(audienceList, Config);
   // throwing the error if nothing is present in the seedList
   if (seedList.length === 0) {
-    throw new CustomError(
-      `[Yahoo_DSP]:: No attributes are present in the '${DSP_SUPPORTED_OPERATION}' property.`,
-      400
+    throw new InstrumentationError(
+      `No attributes are present in the '${DSP_SUPPORTED_OPERATION}' property`
     );
   }
   // Creating dspListPayload
@@ -147,8 +149,8 @@ const getAccessToken = async destination => {
     );
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
+      throw new NetworkInstrumentationError(
+        `Access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
         400
       );
     }

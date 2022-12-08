@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const Message = require("../message");
 const { generateUUID } = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
@@ -77,7 +77,7 @@ function processEvent(event) {
 
     return message;
   }
-  throw new InstrumentationError("Unknwon event type from Appsflyer");
+  throw new TransformationError("Unknwon event type from Appsflyer");
 }
 
 function process(event) {

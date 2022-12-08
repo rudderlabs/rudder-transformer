@@ -8,7 +8,7 @@ const mappingJson = JSON.parse(
 
 const { removeUndefinedAndNullValues } = require("../../util");
 
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 function guidGenerator() {
   const S4 = () =>
@@ -40,7 +40,7 @@ function processEvent(event) {
   ) {
     message.setEventName("App Crashed");
   } else {
-    throw new InstrumentationError(`Unknown event type from Appcenter`);
+    throw new TransformationError(`Unknown event type from Appcenter`);
   }
   const properties = { ...event };
   message.setProperty("properties", properties);

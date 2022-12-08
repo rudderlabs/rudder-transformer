@@ -6,7 +6,7 @@ const {
   checkForRequiredFields
 } = require("./util");
 const { logger } = require("../../../logger");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 const CannyOperation = {
   VOTE_CREATED: "vote.created",
@@ -39,7 +39,7 @@ function settingIds(message, event, typeOfUser) {
     }
   } catch (e) {
     logger?.error(`Missing essential fields from Canny. Error: (${e})`);
-    throw new InstrumentationError(
+    throw new TransformationError(
       `Missing essential fields from Canny. Error: (${e})`
     );
   }

@@ -8,8 +8,9 @@ const {
   removeUndefinedAndNullAndEmptyValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const { ConfigCategory, mappingConfig, getEndpoint } = require("./config");
 
@@ -70,16 +71,14 @@ function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
   if (!message.userId) {
-    throw new CustomError(
-      "User id is absent. Aborting event as userId is mandatory for Appcues",
-      400
+    throw new InstrumentationError(
+      "User id is absent. Aborting event as userId is mandatory for Appcues"
     );
   }
 
@@ -113,7 +112,7 @@ function process(event) {
         getEndpoint(destination.Config.accountId, message.userId)
       );
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new InstrumentationError("Message type is not supported");
   }
 }
 
@@ -141,6 +140,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errRes = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -148,7 +148,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errRes.statTags
         );
       }
     })

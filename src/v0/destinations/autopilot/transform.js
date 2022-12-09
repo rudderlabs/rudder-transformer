@@ -10,9 +10,13 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
 const ErrorBuilder = require("../../util/error");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 const identifyFields = [
   "email",
@@ -86,12 +90,12 @@ function responseBuilderSimple(message, category, destination) {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("invalid message type for autopilot", 400);
+    throw new InstrumentationError("invalid message type for autopilot");
   }
   const messageType = message.type;
   let category;
@@ -103,9 +107,8 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for autopilot`,
-        400
+      throw new InstrumentationError(
+        `message type ${messageType} not supported for autopilot`
       );
   }
 
@@ -140,6 +143,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errRes = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -147,7 +151,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errRes.statTags
         );
       }
     })

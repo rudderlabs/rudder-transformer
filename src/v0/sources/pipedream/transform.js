@@ -11,25 +11,16 @@ const buildTrackPayload = event => {
   return message;
 };
 
-const processEvent = event => {
-  const userIdorAnonymousId = findUserIdOrAnonymousId(event);
-  if (
-    event?.type &&
-    callTypes.includes(event.type.toLowerCase()) &&
-    userIdorAnonymousId
-  ) {
+const process = event => {
+  const id = findUserIdOrAnonymousId(event);
+  if (event?.type && callTypes.includes(event.type.toLowerCase()) && id) {
     return event;
   }
   // default case
   const message = buildTrackPayload(event);
-  message.anonymousId = userIdorAnonymousId || generateUUID();
+  message.anonymousId = id || generateUUID();
 
   return message;
-};
-
-const process = event => {
-  const response = processEvent(event);
-  return response;
 };
 
 exports.process = process;

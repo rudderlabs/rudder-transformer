@@ -8,18 +8,21 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   getIntegrationsObj,
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  generateErrorObject
 } = require("../../util");
 const {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
-  getUserExistence,
   getPropertiesKeyValidation,
   validateTimestamp
 } = require("./util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
@@ -38,7 +41,8 @@ const responseBuilder = (payload, apiKey, endpoint) => {
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let { signUpSourceId } = Config;
-  let endpoint, payload;
+  let endpoint;
+  let payload;
   const integrationsObj = getIntegrationsObj(message, "attentive_tag");
   if (integrationsObj) {
     // Overriding signupSourceId if present in integrations object
@@ -81,7 +85,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       mappingConfig[ConfigCategory.IDENTIFY.name]
     );
     if (!signUpSourceId) {
-      throw new CustomError(
+      throw new ConfigurationError(
         "[Attentive Tag]: SignUp Source Id is required for subscribe event"
       );
     }
@@ -96,9 +100,8 @@ const identifyResponseBuilder = (message, { Config }) => {
     (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&
       !isDefinedAndNotNullAndNotEmpty(payload.user.phone))
   ) {
-    throw new CustomError(
-      "[Attentive Tag] :: Either email or phone is required",
-      400
+    throw new InstrumentationError(
+      "[Attentive Tag] :: Either email or phone is required"
     );
   }
   return responseBuilder(payload, apiKey, endpoint);
@@ -107,14 +110,16 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let endpoint;
-  let event = get(message, "event");
+  let payload;
+  const event = get(message, "event");
   if (!event) {
-    throw new CustomError("[Attentive Tag] :: Event name is not present", 400);
+    throw new InstrumentationError(
+      "[Attentive Tag] :: Event name is not present"
+    );
   }
   if (!validateTimestamp(getFieldValueFromMessage(message, "timestamp"))) {
-    throw new CustomError(
-      "[Attentive_Tag]: Events must be sent within 12 hours of their occurrence.",
-      400
+    throw new InstrumentationError(
+      "[Attentive_Tag]: Events must be sent within 12 hours of their occurrence."
     );
   }
   switch (
@@ -169,9 +174,8 @@ const trackResponseBuilder = (message, { Config }) => {
       endpoint = ConfigCategory.TRACK.endpoint;
       payload.type = get(message, "event");
       if (!getPropertiesKeyValidation(payload)) {
-        throw new CustomError(
-          "[Attentive Tag]:The event name contains characters which is not allowed",
-          400
+        throw new InstrumentationError(
+          "[Attentive Tag]:The event name contains characters which is not allowed"
         );
       }
       payload.externalIdentifiers = getExternalIdentifiersMapping(message);
@@ -182,9 +186,8 @@ const trackResponseBuilder = (message, { Config }) => {
     (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&
       !isDefinedAndNotNullAndNotEmpty(payload.user.phone))
   ) {
-    throw new CustomError(
-      "[Attentive Tag] :: Either email or phone is required",
-      400
+    throw new InstrumentationError(
+      "[Attentive Tag] :: Either email or phone is required"
     );
   }
   return responseBuilder(payload, apiKey, endpoint);
@@ -192,13 +195,13 @@ const trackResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
 
+  let response;
   switch (messageType) {
     case EventType.IDENTIFY:
       response = identifyResponseBuilder(message, destination);
@@ -207,7 +210,7 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
   return response;
 };
@@ -240,6 +243,7 @@ const processRouterDest = inputs => {
           input.destination
         );
       } catch (error) {
+        const errRes = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -247,7 +251,8 @@ const processRouterDest = inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errRes.statTags
         );
       }
     })

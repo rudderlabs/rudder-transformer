@@ -3,40 +3,38 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      (
-        $assert($type($$) = "array", "Invalid event array")
-      )
-  - name: prepareContext
-    template: $setContext("batchMode", true)
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
   - name: transform
     externalWorkflow:
       path: ./procWorkflow.yaml
+      bindings:
+        - name: batchMode
+          value: true
     loopOverInput: true
   - name: successfulEvents
     template: |
-      $outputs.transform#$i.output.{
-          "output": $,
-          /* $$ refers to input (root of the document) */
-          "destination": $$[$i].destination,
-          "metadata": $$[$i].metadata
-      } ~> $toArray
+      $.outputs.transform#idx.output.({
+        "output": .,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata
+      })[]
   - name: failedEvents
     template: |
-      $outputs.transform#$i.error.{
-        "metadata": $toArray($$[$i].metadata),
+      $.outputs.transform#idx.error.({
+        "metadata": ^[idx].metadata[],
         "batched": false,
-        "statusCode": status,
-        "error": message
-      } ~> $toArray
+        "statusCode": .status,
+        "error": .message
+      })[]
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      (
-        $batches := $chunk($outputs.successfulEvents, $MAX_BATCH_SIZE);
-        $batches.{
+        let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+        batches@batch.({
           "batchedRequest": {
             "body": {
-              "JSON": {"data": $toArray(output)},
+              "JSON": {"data": ~r batch.output[]},
               "JSON_ARRAY": {},
               "XML": {},
               "FORM": {}
@@ -44,19 +42,18 @@ steps:
             "version": "1",
             "type": "REST",
             "method": "POST",
-            "endpoint": $ENDPOINT,
+            "endpoint": $.ENDPOINT,
             "headers": {
               "Content-Type": "application/json"
             },
             "params": {},
             "files": {}
           },
-          "metadata": $toArray(metadata),
+          "metadata": ~r batch.metadata[],
           "batched": true,
           "statusCode": 200,
-          "destination": $[0].destination
-        } ~> $toArray;
-      )
+          "destination": batch[0].destination
+        })[];
   - name: finalPayload
     template: |
-      $toArray($outputs.($append(batchSuccessfulEvents, failedEvents)))
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]

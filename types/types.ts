@@ -24,6 +24,7 @@ type TransformationDefaultResponse = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
+  metadata?: Metadata
   [key: string]: any;
 };
 
@@ -85,6 +86,7 @@ type Destination = {
 };
 
 type ProcessorRequest = {
+  request?: ObjectType;
   message: ObjectType;
   metadata: Metadata;
   destination: Destination;
@@ -92,6 +94,7 @@ type ProcessorRequest = {
 };
 
 type RouterData = {
+  request?: ObjectType;
   message: ObjectType;
   metadata: Metadata;
   destination: Destination;
@@ -120,7 +123,7 @@ type RouterResponse = {
   statTags: Object;
 };
 
-type ProxyResponse = {
+type DeliveryResponse = {
   status: number;
   message: string;
   destinationResponse: ObjectType;
@@ -128,6 +131,15 @@ type ProxyResponse = {
   authErrorCategory?: string;
 };
 
+type ErrorDetailer = {
+  destinationType: string;
+  stage: string;
+  serverRequestMetadata: ObjectType;
+  eventMetadatas: Metadata[];
+  destinationInfo: Destination[];
+  inputPayload: ObjectType[] | ObjectType;
+  errorContext: string;
+};
 export {
   ObjectType,
   Metadata,
@@ -137,5 +149,6 @@ export {
   RouterData,
   RouterResponse,
   TransformationDefaultResponse,
-  ProxyResponse
+  DeliveryResponse,
+  ErrorDetailer
 };

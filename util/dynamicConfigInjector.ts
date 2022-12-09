@@ -1,12 +1,15 @@
 import cloneDeep from "lodash/cloneDeep";
-import { ProcessorRequest } from "../types/types";
+import { ProcessorRequest, RouterData } from "../types/types";
 
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
 const unset = require("unset-value");
 
 export class DynamicConfigInjectionService {
-  private static getDynamicConfigValue(event: ProcessorRequest, value: any) {
+  private static getDynamicConfigValue(
+    event: ProcessorRequest | RouterData,
+    value: any
+  ) {
     // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
     //  " {{message.traits.key  ||   \"email\" }} "
     //  " {{ message.traits.key || 1233 }} "
@@ -36,7 +39,10 @@ export class DynamicConfigInjectionService {
     return value;
   }
 
-  private static configureVal(value: any, event: ProcessorRequest) {
+  private static configureVal(
+    value: any,
+    event: ProcessorRequest | RouterData
+  ) {
     if (value) {
       if (Array.isArray(value)) {
         value.forEach((key, index) => {
@@ -53,21 +59,19 @@ export class DynamicConfigInjectionService {
     return value;
   }
 
-  private static getDynamicConfig(event: ProcessorRequest) {
+  private static getDynamicConfig(event: ProcessorRequest | RouterData) {
     const resultantEvent = cloneDeep(event);
     const { Config } = event.destination;
     resultantEvent.destination.Config = this.configureVal(Config, event);
     return resultantEvent;
   }
 
-  public static processDynamicConfigAtProc(event: ProcessorRequest) {
-    return this.getDynamicConfig(event);
-  }
-
-  public static processDynamicConfigAtRouter(event: ProcessorRequest[]) {
-    const eventRetArr = event.map(e => {
+  public static processDynamicConfig(
+    events: ProcessorRequest[] | RouterData[]
+  ) {
+    const eventRespArr = events.map((e: ProcessorRequest | RouterData) => {
       return this.getDynamicConfig(e);
     });
-    return eventRetArr;
+    return eventRespArr;
   }
 }

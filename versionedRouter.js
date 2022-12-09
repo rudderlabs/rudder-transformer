@@ -514,234 +514,234 @@ async function routerHandleDest(ctx) {
   return ctx.body;
 }
 
-if (startDestTransformer) {
-  SUPPORTED_VERSIONS.forEach(version => {
-    const destinations = getIntegrations(`${version}/destinations`);
-    destinations.push(...getIntegrations(CDK_DEST_PATH));
-    destinations.forEach(destination => {
-      // eg. v0/destinations/ga
-      router.post(`/${version}/destinations/${destination}`, async ctx => {
-        const startTime = new Date();
-        await handleDest(ctx, version, destination);
-        ctx.set("apiVersion", API_VERSION);
-        // Assuming that events are from one single source
+// if (startDestTransformer) {
+//   SUPPORTED_VERSIONS.forEach(version => {
+//     const destinations = getIntegrations(`${version}/destinations`);
+//     destinations.push(...getIntegrations(CDK_DEST_PATH));
+//     destinations.forEach(destination => {
+//       // eg. v0/destinations/ga
+//       router.post(`/${version}/destinations/${destination}`, async ctx => {
+//         const startTime = new Date();
+//         await handleDest(ctx, version, destination);
+//         ctx.set("apiVersion", API_VERSION);
+//         // Assuming that events are from one single source
 
-        const metaTags =
-          ctx.request.body &&
-          ctx.request.body.length &&
-          ctx.request.body[0].metadata
-            ? getMetadata(ctx.request.body[0].metadata)
-            : {};
-        stats.timing("dest_transform_request_latency", startTime, {
-          destination,
-          version,
-          ...metaTags
-        });
-        stats.increment("dest_transform_requests", 1, {
-          destination,
-          version,
-          ...metaTags
-        });
-      });
-      // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
-      router.post(`/${version}/${destination}`, async ctx => {
-        const startTime = new Date();
-        await handleDest(ctx, version, destination);
-        ctx.set("apiVersion", API_VERSION);
-        // Assuming that events are from one single source
+//         const metaTags =
+//           ctx.request.body &&
+//           ctx.request.body.length &&
+//           ctx.request.body[0].metadata
+//             ? getMetadata(ctx.request.body[0].metadata)
+//             : {};
+//         stats.timing("dest_transform_request_latency", startTime, {
+//           destination,
+//           version,
+//           ...metaTags
+//         });
+//         stats.increment("dest_transform_requests", 1, {
+//           destination,
+//           version,
+//           ...metaTags
+//         });
+//       });
+//       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
+//       router.post(`/${version}/${destination}`, async ctx => {
+//         const startTime = new Date();
+//         await handleDest(ctx, version, destination);
+//         ctx.set("apiVersion", API_VERSION);
+//         // Assuming that events are from one single source
 
-        const metaTags =
-          ctx.request.body &&
-          ctx.request.body.length &&
-          ctx.request.body[0].metadata
-            ? getMetadata(ctx.request.body[0].metadata)
-            : {};
-        stats.timing("dest_transform_request_latency", startTime, {
-          destination,
-          ...metaTags
-        });
-        stats.increment("dest_transform_requests", 1, {
-          destination,
-          version,
-          ...metaTags
-        });
-      });
-      router.post("/routerTransform", async ctx => {
-        ctx.set("apiVersion", API_VERSION);
-        await routerHandleDest(ctx);
-      });
-    });
-  });
+//         const metaTags =
+//           ctx.request.body &&
+//           ctx.request.body.length &&
+//           ctx.request.body[0].metadata
+//             ? getMetadata(ctx.request.body[0].metadata)
+//             : {};
+//         stats.timing("dest_transform_request_latency", startTime, {
+//           destination,
+//           ...metaTags
+//         });
+//         stats.increment("dest_transform_requests", 1, {
+//           destination,
+//           version,
+//           ...metaTags
+//         });
+//       });
+//       router.post("/routerTransform", async ctx => {
+//         ctx.set("apiVersion", API_VERSION);
+//         await routerHandleDest(ctx);
+//       });
+//     });
+//   });
 
-  if (functionsEnabled()) {
-    router.post("/customTransform", async ctx => {
-      const startTime = new Date();
-      const events = ctx.request.body;
-      const { processSessions } = ctx.query;
-      logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter("user_transform_input_events", events.length, {
-        processSessions
-      });
-      let groupedEvents;
-      if (processSessions) {
-        groupedEvents = _.groupBy(events, event => {
-          // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
-          const rudderId = event.metadata.rudderId || event.message.anonymousId;
-          return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
-        });
-      } else {
-        groupedEvents = _.groupBy(
-          events,
-          event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
-        );
-      }
-      stats.counter(
-        "user_transform_function_group_size",
-        Object.entries(groupedEvents).length,
-        { processSessions }
-      );
+//   if (functionsEnabled()) {
+//     router.post("/customTransform", async ctx => {
+//       const startTime = new Date();
+//       const events = ctx.request.body;
+//       const { processSessions } = ctx.query;
+//       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
+//       stats.counter("user_transform_input_events", events.length, {
+//         processSessions
+//       });
+//       let groupedEvents;
+//       if (processSessions) {
+//         groupedEvents = _.groupBy(events, event => {
+//           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
+//           const rudderId = event.metadata.rudderId || event.message.anonymousId;
+//           return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
+//         });
+//       } else {
+//         groupedEvents = _.groupBy(
+//           events,
+//           event => `${event.metadata.destinationId}_${event.metadata.sourceId}`
+//         );
+//       }
+//       stats.counter(
+//         "user_transform_function_group_size",
+//         Object.entries(groupedEvents).length,
+//         { processSessions }
+//       );
 
-      let ctxStatusCode = 200;
-      const transformedEvents = [];
-      let librariesVersionIDs = [];
-      if (events[0].libraries) {
-        librariesVersionIDs = events[0].libraries.map(
-          library => library.VersionID
-        );
-      }
-      await Promise.all(
-        Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-          logger.debug(`dest: ${dest}`);
-          const transformationVersionId =
-            destEvents[0] &&
-            destEvents[0].destination &&
-            destEvents[0].destination.Transformations &&
-            destEvents[0].destination.Transformations[0] &&
-            destEvents[0].destination.Transformations[0].VersionID;
-          const messageIds = destEvents.map(
-            ev => ev.metadata && ev.metadata.messageId
-          );
-          const commonMetadata = {
-            sourceId: destEvents[0].metadata && destEvents[0].metadata.sourceId,
-            destinationId:
-              destEvents[0].metadata && destEvents[0].metadata.destinationId,
-            destinationType:
-              destEvents[0].metadata && destEvents[0].metadata.destinationType,
-            messageIds
-          };
+//       let ctxStatusCode = 200;
+//       const transformedEvents = [];
+//       let librariesVersionIDs = [];
+//       if (events[0].libraries) {
+//         librariesVersionIDs = events[0].libraries.map(
+//           library => library.VersionID
+//         );
+//       }
+//       await Promise.all(
+//         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
+//           logger.debug(`dest: ${dest}`);
+//           const transformationVersionId =
+//             destEvents[0] &&
+//             destEvents[0].destination &&
+//             destEvents[0].destination.Transformations &&
+//             destEvents[0].destination.Transformations[0] &&
+//             destEvents[0].destination.Transformations[0].VersionID;
+//           const messageIds = destEvents.map(
+//             ev => ev.metadata && ev.metadata.messageId
+//           );
+//           const commonMetadata = {
+//             sourceId: destEvents[0].metadata && destEvents[0].metadata.sourceId,
+//             destinationId:
+//               destEvents[0].metadata && destEvents[0].metadata.destinationId,
+//             destinationType:
+//               destEvents[0].metadata && destEvents[0].metadata.destinationType,
+//             messageIds
+//           };
 
-          const metaTags =
-            destEvents.length && destEvents[0].metadata
-              ? getMetadata(destEvents[0].metadata)
-              : {};
-          const userFuncStartTime = new Date();
-          if (transformationVersionId) {
-            let destTransformedEvents;
-            try {
-              stats.counter(
-                "user_transform_function_input_events",
-                destEvents.length,
-                {
-                  processSessions,
-                  ...metaTags
-                }
-              );
-              destTransformedEvents = await userTransformHandler()(
-                destEvents,
-                transformationVersionId,
-                librariesVersionIDs
-              );
-              transformedEvents.push(
-                ...destTransformedEvents.map(ev => {
-                  if (ev.error) {
-                    return {
-                      statusCode: 400,
-                      error: ev.error,
-                      metadata: _.isEmpty(ev.metadata)
-                        ? commonMetadata
-                        : ev.metadata
-                    };
-                  }
-                  if (!isNonFuncObject(ev.transformedEvent)) {
-                    return {
-                      statusCode: 400,
-                      error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-                        ev.transformedEvent
-                      )}`,
-                      metadata: _.isEmpty(ev.metadata)
-                        ? commonMetadata
-                        : ev.metadata
-                    };
-                  }
-                  return {
-                    output: ev.transformedEvent,
-                    metadata: _.isEmpty(ev.metadata)
-                      ? commonMetadata
-                      : ev.metadata,
-                    statusCode: 200
-                  };
-                })
-              );
-            } catch (error) {
-              logger.error(error);
-              let status = 400;
-              const errorString = error.toString();
-              if (error instanceof RetryRequestError) {
-                ctxStatusCode = error.statusCode;
-              }
-              if (error instanceof RespStatusError) {
-                status = error.statusCode;
-              }
-              destTransformedEvents = destEvents.map(e => {
-                return {
-                  statusCode: status,
-                  metadata: e.metadata,
-                  error: errorString
-                };
-              });
-              transformedEvents.push(...destTransformedEvents);
-              stats.counter("user_transform_errors", destEvents.length, {
-                transformationVersionId,
-                processSessions,
-                ...metaTags
-              });
-            } finally {
-              stats.timing(
-                "user_transform_function_latency",
-                userFuncStartTime,
-                { transformationVersionId, processSessions, ...metaTags }
-              );
-            }
-          } else {
-            const errorMessage = "Transformation VersionID not found";
-            logger.error(`[CT] ${errorMessage}`);
-            transformedEvents.push({
-              statusCode: 400,
-              error: errorMessage,
-              metadata: commonMetadata
-            });
-            stats.counter("user_transform_errors", destEvents.length, {
-              transformationVersionId,
-              processSessions,
-              ...metaTags
-            });
-          }
-        })
-      );
-      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
-      ctx.body = transformedEvents;
-      ctx.status = ctxStatusCode;
-      ctx.set("apiVersion", API_VERSION);
-      stats.timing("user_transform_request_latency", startTime, {
-        processSessions
-      });
-      stats.increment("user_transform_requests", 1, { processSessions });
-      stats.counter("user_transform_output_events", transformedEvents.length, {
-        processSessions
-      });
-    });
-  }
-}
+//           const metaTags =
+//             destEvents.length && destEvents[0].metadata
+//               ? getMetadata(destEvents[0].metadata)
+//               : {};
+//           const userFuncStartTime = new Date();
+//           if (transformationVersionId) {
+//             let destTransformedEvents;
+//             try {
+//               stats.counter(
+//                 "user_transform_function_input_events",
+//                 destEvents.length,
+//                 {
+//                   processSessions,
+//                   ...metaTags
+//                 }
+//               );
+//               destTransformedEvents = await userTransformHandler()(
+//                 destEvents,
+//                 transformationVersionId,
+//                 librariesVersionIDs
+//               );
+//               transformedEvents.push(
+//                 ...destTransformedEvents.map(ev => {
+//                   if (ev.error) {
+//                     return {
+//                       statusCode: 400,
+//                       error: ev.error,
+//                       metadata: _.isEmpty(ev.metadata)
+//                         ? commonMetadata
+//                         : ev.metadata
+//                     };
+//                   }
+//                   if (!isNonFuncObject(ev.transformedEvent)) {
+//                     return {
+//                       statusCode: 400,
+//                       error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+//                         ev.transformedEvent
+//                       )}`,
+//                       metadata: _.isEmpty(ev.metadata)
+//                         ? commonMetadata
+//                         : ev.metadata
+//                     };
+//                   }
+//                   return {
+//                     output: ev.transformedEvent,
+//                     metadata: _.isEmpty(ev.metadata)
+//                       ? commonMetadata
+//                       : ev.metadata,
+//                     statusCode: 200
+//                   };
+//                 })
+//               );
+//             } catch (error) {
+//               logger.error(error);
+//               let status = 400;
+//               const errorString = error.toString();
+//               if (error instanceof RetryRequestError) {
+//                 ctxStatusCode = error.statusCode;
+//               }
+//               if (error instanceof RespStatusError) {
+//                 status = error.statusCode;
+//               }
+//               destTransformedEvents = destEvents.map(e => {
+//                 return {
+//                   statusCode: status,
+//                   metadata: e.metadata,
+//                   error: errorString
+//                 };
+//               });
+//               transformedEvents.push(...destTransformedEvents);
+//               stats.counter("user_transform_errors", destEvents.length, {
+//                 transformationVersionId,
+//                 processSessions,
+//                 ...metaTags
+//               });
+//             } finally {
+//               stats.timing(
+//                 "user_transform_function_latency",
+//                 userFuncStartTime,
+//                 { transformationVersionId, processSessions, ...metaTags }
+//               );
+//             }
+//           } else {
+//             const errorMessage = "Transformation VersionID not found";
+//             logger.error(`[CT] ${errorMessage}`);
+//             transformedEvents.push({
+//               statusCode: 400,
+//               error: errorMessage,
+//               metadata: commonMetadata
+//             });
+//             stats.counter("user_transform_errors", destEvents.length, {
+//               transformationVersionId,
+//               processSessions,
+//               ...metaTags
+//             });
+//           }
+//         })
+//       );
+//       logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+//       ctx.body = transformedEvents;
+//       ctx.status = ctxStatusCode;
+//       ctx.set("apiVersion", API_VERSION);
+//       stats.timing("user_transform_request_latency", startTime, {
+//         processSessions
+//       });
+//       stats.increment("user_transform_requests", 1, { processSessions });
+//       stats.counter("user_transform_output_events", transformedEvents.length, {
+//         processSessions
+//       });
+//     });
+//   }
+// }
 
 if (transformerTestModeEnabled) {
   router.post("/transformation/test", async ctx => {

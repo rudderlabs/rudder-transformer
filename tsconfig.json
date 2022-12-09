@@ -101,5 +101,5 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "exclude": ["dist", "node_modules", "benchmark", "__mocks__", "__tests__", "tsconfig.json"],
-  "include": ["./**/*.json", "./**/*.ts", "./**/*.js"]
+  "include": ["./**/*.json", "./**/*.ts", "./**/*.js", "services/serviceSelectorts"]
 }

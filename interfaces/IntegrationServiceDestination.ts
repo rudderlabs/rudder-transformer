@@ -1,5 +1,7 @@
 import {
+  DeliveryResponse,
   Metadata,
+  ObjectType,
   ProcessorRequest,
   ProcessorResponse,
   RouterData,
@@ -7,29 +9,33 @@ import {
   TransformationDefaultResponse
 } from "../types/types";
 
-export default interface IWorkFlow {
-  processorWorkflow(
+export default interface IntegrationServiceDestination {
+  processorRoutine(
     events: ProcessorRequest[],
     destinationType: string,
-    destHandler: any
+    destHandler: any,
+    requestMetadata: ObjectType
   ): Promise<ProcessorResponse[]>;
 
-  routerWorkflow(
+  routerRoutine(
     events: RouterData[],
     destinationType: string,
-    destHandler: any
+    destHandler: any,
+    requestMetadata: ObjectType
   ): Promise<RouterResponse[]>;
 
-  batchWorkflow(
+  batchRoutine(
     events: RouterData[],
     destinationType: string,
-    destHandler: any
-  ): any
+    destHandler: any,
+    requestMetadata: ObjectType
+  ): any;
 
-  proxyWorkflow(
+  deliveryRoutine(
     event: TransformationDefaultResponse,
     metadata: Metadata,
     destinationType: string,
-    networkHandler: any
-  ): any
+    networkHandler: any,
+    requestMetadata: ObjectType
+  ): Promise<DeliveryResponse>;
 }

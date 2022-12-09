@@ -5,7 +5,12 @@ const router = new Router();
 
 router.post(
   "/:version/destinations/:destination",
-  DestinationController.destinationVanillaTransformAtProcessor
+  DestinationController.destinationTransformAtProcessor
 );
+router.post(
+  "/routerTransform",
+  DestinationController.destinationTransformAtRouter
+);
+router.post("/batch", DestinationController.batchProcess);
 
 export const destinationRoutes = router.routes();

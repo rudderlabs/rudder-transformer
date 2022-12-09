@@ -1,8 +1,6 @@
-import { client } from "../util/errorNotifier";
-import { isCdkV2Destination } from "../cdk/v2/utils";
-import { isCdkDestination } from "../v0/util";
+import { Context } from "koa";
 import { DestHandlerMap } from "../constants/destinationCanonicalNames";
-
+import { API_VERSION } from "../routes/utils/constants";
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     if (DestHandlerMap.hasOwnProperty(dest)) {
@@ -11,47 +9,17 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/transform`);
   }
 
-  public static bugSnagNotify(
-    resp: any,
-    error: any,
-    event: any,
-    destination: any
-  ) {
-    const getCommonMetadata = (metadata: any) => {
-      // TODO: Parse information such as
-      // cluster, namespace, etc information
-      // from the request
-      return {
-        namespace: "Unknown",
-        cluster: "Unknown"
-      };
+  public static getRequestMetadata(ctx: Context) {
+    // TODO: Parse information such as
+    // cluster, namespace, etc information
+    // from the request
+    return {
+      namespace: "Unknown",
+      cluster: "Unknown"
     };
+  }
 
-    const getReqMetadata = (event: any) => {
-      try {
-        return {
-          destType: destination,
-          destinationId: event?.destination?.ID,
-          destName: event?.destination?.Name,
-          metadata: event?.metadata
-        };
-      } catch (error) {
-        // Do nothing
-      }
-      return {};
-    };
-
-    let errCtx = "Destination Transformation";
-    if (isCdkV2Destination(event)) {
-      errCtx = `CDK V2 - ${errCtx}`;
-    } else if (isCdkDestination(event)) {
-      errCtx = `CDK - ${errCtx}`;
-    }
-
-    client.notify(error, errCtx, {
-      ...resp,
-      ...getCommonMetadata(event.metadata),
-      ...getReqMetadata(event)
-    });
+  public static transformerPostProcessor(ctx: Context) {
+    ctx.set("apiVersion", API_VERSION);
   }
 }

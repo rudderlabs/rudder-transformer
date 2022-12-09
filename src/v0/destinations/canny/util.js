@@ -1,6 +1,10 @@
 const qs = require("qs");
 const { httpPOST } = require("../../../adapters/network");
-const { CustomError, getDestinationExternalID } = require("../../util");
+const { getDestinationExternalID } = require("../../util");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * Function to retrieve userId from canny using axios
@@ -22,7 +26,7 @@ const retrieveUserId = async (apiKey, message) => {
       message.traits?.email ||
       message.context?.traits?.email ||
       message.properties?.email;
-    const userId = message.userId;
+    const { userId } = message;
 
     const header = {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -40,16 +44,17 @@ const retrieveUserId = async (apiKey, message) => {
     response = await httpPOST(url, qs.stringify(requestBody), header);
     // If the request fails, throwing error.
     if (response.success === false) {
-      throw new CustomError(
-        `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
-        400
+      throw new NetworkInstrumentationError(
+        `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`
       );
     }
     return (
       response?.response?.data?.data?.id || response?.response?.data?.id || null
     );
   } catch (error) {
-    throw new CustomError("Unable to retrieve userid from Canny", 400);
+    throw new NetworkInstrumentationError(
+      "Unable to retrieve userid from Canny"
+    );
   }
 };
 
@@ -59,10 +64,10 @@ const retrieveUserId = async (apiKey, message) => {
  */
 const validateIdentifyFields = payload => {
   if (!payload.userID) {
-    throw new CustomError("UserId is not present. Aborting message.", 400);
+    throw new InstrumentationError("UserId is not present. Aborting message.");
   }
   if (!payload.name) {
-    throw new CustomError("Name is not present. Aborting message.", 400);
+    throw new InstrumentationError("Name is not present. Aborting message.");
   }
 };
 
@@ -72,13 +77,13 @@ const validateIdentifyFields = payload => {
  */
 const validateCreatePostFields = payload => {
   if (!payload.boardID) {
-    throw new CustomError("BoardID is not present. Aborting message.", 400);
+    throw new InstrumentationError("BoardID is not present. Aborting message.");
   }
   if (!payload.title) {
-    throw new CustomError("Title is not present. Aborting message.", 400);
+    throw new InstrumentationError("Title is not present. Aborting message.");
   }
   if (!payload.details) {
-    throw new CustomError("Details is not present. Aborting message.", 400);
+    throw new InstrumentationError("Details is not present. Aborting message.");
   }
 };
 
@@ -89,13 +94,12 @@ const validateCreatePostFields = payload => {
  */
 const validateEventMapping = (configuredEventsMap, event) => {
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
 
   if (!configuredEventsMap[event]) {
-    throw new CustomError(
-      `Event name (${event}) is not present in the mapping`,
-      400
+    throw new InstrumentationError(
+      `Event name (${event}) is not present in the mapping`
     );
   }
 };

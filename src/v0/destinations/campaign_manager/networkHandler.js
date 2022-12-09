@@ -3,16 +3,20 @@ const {
   proxyRequest
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const { AbortedError, RetryableError } = require("../../util/errorTypes");
-
+const {
+  AbortedError,
+  RetryableError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 /**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -74,15 +78,22 @@ const responseHandler = destinationResponse => {
       destinationResponse
     };
   }
+  if (getAuthErrCategory(status) === "REFRESH_TOKEN") {
+    throw new RetryableError(
+      `Campaign Manager: Retrying as the access token needs to be refreshed`,
+      500,
+      destinationResponse
+    );
+  }
 
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status))
-    .build();
+  throw new NetworkError(
+    `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+    },
+    destinationResponse
+  );
 };
 
 const networkHandler = function() {

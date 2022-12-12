@@ -18,7 +18,6 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   addExternalIdToTraits
 } = require("../../util");
 
@@ -31,6 +30,7 @@ const {
   MERGE_USER_ENDPOINT
 } = require("./config");
 const logger = require("../../../logger");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const deviceRelatedEventNames = [
   "Application Installed",
@@ -86,7 +86,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   if (evType === EventType.IDENTIFY) {
     // if userId is not there simply drop the payload
     if (!userId) {
-      throw new CustomError("userId not present", 400);
+      throw new InstrumentationError("userId not present");
     }
 
     // populate speced traits
@@ -157,9 +157,8 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   } else if (evType === EventType.ALIAS) {
     // ref : https://customer.io/docs/api/#operation/merge
     if (!userId && !message.previousId) {
-      throw new CustomError(
-        "Both userId and previousId is mandatory for merge operation",
-        400
+      throw new InstrumentationError(
+        "Both userId and previousId is mandatory for merge operation"
       );
     }
     endpoint = MERGE_USER_ENDPOINT;
@@ -186,7 +185,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
 
         return response;
       }
-      throw new CustomError("userId or device_token not present", 400);
+      throw new InstrumentationError("userId or device_token not present");
     }
 
     // DEVICE registration
@@ -246,7 +245,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       } else {
         if (!evName) {
           logger.error(`Could not determine event name`);
-          throw new CustomError(`Could not determine event name`, 400);
+          throw new InstrumentationError(`Could not determine event name`);
         }
         trimmedEvName = truncate(evName, 100);
       }
@@ -254,7 +253,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       // This will help in merging for subsequent calls
       const anonymousId = message.anonymousId ? message.anonymousId : undefined;
       if (!anonymousId) {
-        throw new CustomError("Anonymous id/ user id is required");
+        throw new InstrumentationError("Anonymous id/ user id is required");
       } else {
         rawPayload.anonymous_id = anonymousId;
       }
@@ -294,7 +293,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error(`could not determine type ${messageType}`);
-      throw new CustomError(`could not determine type ${messageType}`, 400);
+      throw new InstrumentationError(`could not determine type ${messageType}`);
   }
   const response = responseBuilder(
     message,

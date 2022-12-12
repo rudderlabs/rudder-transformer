@@ -1266,22 +1266,6 @@
                 "quantity": 1,
                 "content_type": "dress",
                 "content_id": "1197218"
-              },
-              {
-                "content_id": "123",
-                "content_type": "product",
-                "content_name": "Monopoly",
-                "price": 14,
-                "quantity": 1,
-                "content_category": "Games"
-              },
-              {
-                "content_id": "345",
-                "content_type": "product",
-                "content_name": "UNO",
-                "price": 3.45,
-                "quantity": 2,
-                "content_category": "Games"
               }
             ],
             "currency": "USD",
@@ -1399,22 +1383,6 @@
                 "quantity": 2,
                 "content_type": "socks",
                 "content_id": "1077218"
-              },
-              {
-                "content_id": "123",
-                "content_type": "product",
-                "content_name": "Monopoly",
-                "price": 14,
-                "quantity": 1,
-                "content_category": "Games"
-              },
-              {
-                "content_id": "345",
-                "content_type": "product",
-                "content_name": "UNO",
-                "price": 3.45,
-                "quantity": 2,
-                "content_category": "Games"
               }
             ],
             "currency": "USD",

@@ -37,12 +37,9 @@ function checkIfValidPhoneNumber(str) {
   return regexExp.test(str);
 }
 
-const getContents = (message, payload) => {
-  let contents = payload.properties?.contents || [];
-  // if contents is not an Array
-  if (!Array.isArray(contents)) {
-    contents = [contents];
-  }
+const getContents = message => {
+  let contents = [];
+
   let products = message.properties.products;
   if (products && Array.isArray(products) && products.length > 0) {
     let singleProduct = {};
@@ -66,8 +63,19 @@ const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
   let payload = constructPayload(message, trackMapping);
 
-  if (payload.properties) {
-    payload.properties.contents = getContents(message, payload);
+  // if contents is not an array
+  if (
+    payload.properties?.contents &&
+    !Array.isArray(payload.properties.contents)
+  ) {
+    payload.properties.contents = [payload.properties.contents];
+  }
+
+  if (!payload.properties?.contents && message.properties?.products) {
+    // retreiving data from products only when contents is not present
+    let prop = payload.properties || {};
+    prop.contents = getContents(message);
+    payload.properties = prop;
   }
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");

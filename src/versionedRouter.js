@@ -15,7 +15,6 @@ const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  CustomError,
   isHttpStatusSuccess,
   getErrorRespEvents,
   isCdkDestination,
@@ -39,6 +38,7 @@ const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { isCdkV2Destination, getCdkV2TestThreshold } = require("./cdk/v2/utils");
 const { getWorkflowEngine, processCdkV2Workflow } = require("./cdk/v2/handler");
+const { PlatformError } = require("./v0/util/errorTypes");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -217,7 +217,7 @@ async function handleDest(ctx, version, destination) {
 
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
-    throw new CustomError("Event is missing or in inappropriate format", 400);
+    throw new PlatformError("Event is missing or in inappropriate format");
   }
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);

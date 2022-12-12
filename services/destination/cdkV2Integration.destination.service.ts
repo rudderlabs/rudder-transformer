@@ -2,6 +2,7 @@ import groupBy from "lodash/groupBy";
 import { processCdkV2Workflow } from "../../cdk/v2/handler";
 import IntegrationServiceDestination from "../../interfaces/IntegrationServiceDestination";
 import {
+  DeliveryResponse,
   ErrorDetailer,
   Metadata,
   ObjectType,
@@ -41,7 +42,7 @@ export default class CDKV2ServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType:destinationType,
             eventMetadatas: [event.metadata],
             serverRequestMetadata: requestMetadata,
             destinationInfo: [event.destination],
@@ -85,7 +86,7 @@ export default class CDKV2ServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType: destinationType,
             eventMetadatas: destInputArray.map(ev => {
               return ev.metadata;
             }),
@@ -124,7 +125,7 @@ export default class CDKV2ServiceDestination
     _destinationType: string,
     _networkHandler: any,
     _requestMetadata: ObjectType
-  ) {
+  ): Promise<DeliveryResponse> {
     throw new Error("CDV2 Does not Implement Delivery Routine");
   }
 }

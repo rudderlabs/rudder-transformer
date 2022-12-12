@@ -5,8 +5,11 @@ import CDKV1ServiceDestination from "../services/destination/cdkV1Integration.de
 import CDKV2ServiceDestination from "../services/destination/cdkV2Integration.destination.service";
 import IntegrationServiceDestination from "../interfaces/IntegrationServiceDestination";
 import NativeIntegrationServiceDestination from "../services/destination/nativentegration.destination.service";
+import IntegrationServiceSource from "../interfaces/IntegrationServiceSource";
+import NativeIntegrationServiceSource from "../services/source/nativeIntegration.source.service";
 
 export class ServiceSelector {
+  private static sourceHandlerMap: Map<string, any> = new Map();
   private static destHandlerMap: Map<string, any> = new Map();
   private static serviceMap: Map<string, any> = new Map();
 
@@ -24,22 +27,28 @@ export class ServiceSelector {
       service = this.serviceMap.get(serviceType);
     } else {
       switch (serviceType) {
-        case INTEGRATION_SERVICE.CDK_V1:
+        case INTEGRATION_SERVICE.CDK_V1_DEST:
           this.serviceMap.set(
-            INTEGRATION_SERVICE.CDK_V1,
+            INTEGRATION_SERVICE.CDK_V1_DEST,
             new CDKV1ServiceDestination()
           );
           break;
-        case INTEGRATION_SERVICE.CDK_V2:
+        case INTEGRATION_SERVICE.CDK_V2_DEST:
           this.serviceMap.set(
-            INTEGRATION_SERVICE.CDK_V2,
+            INTEGRATION_SERVICE.CDK_V2_DEST,
             new CDKV2ServiceDestination()
           );
           break;
-        default:
+        case INTEGRATION_SERVICE.NATIVE_DEST:
           this.serviceMap.set(
-            INTEGRATION_SERVICE.NATIVE,
+            INTEGRATION_SERVICE.NATIVE_DEST,
             new NativeIntegrationServiceDestination()
+          );
+          break;
+        case INTEGRATION_SERVICE.NATIVE_SOURCE:
+          this.serviceMap.set(
+            INTEGRATION_SERVICE.NATIVE_SOURCE,
+            new NativeIntegrationServiceSource()
           );
       }
       service = this.serviceMap.get(serviceType);
@@ -58,8 +67,23 @@ export class ServiceSelector {
     return destinationHandler;
   }
 
-  public static getNativeIntegrationService(): IntegrationServiceDestination {
-    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE);
+  public static getSourceHandler(source: string, version: string) {
+    let sourceHandler: any;
+    if (this.sourceHandlerMap.get(source)) {
+      sourceHandler = this.destHandlerMap.get(source);
+    } else {
+      sourceHandler = MiscService.getSourceHandler(source, version);
+      this.sourceHandlerMap.set(source, sourceHandler);
+    }
+    return sourceHandler;
+  }
+
+  public static getNativeIntegrationServiceDest(): IntegrationServiceDestination {
+    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
+  }
+
+  public static getNativeIntegrationServiceSource(): IntegrationServiceSource {
+    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_SOURCE);
   }
 
   public static getDestinationService(
@@ -68,11 +92,15 @@ export class ServiceSelector {
     const destinationDefinitionConfig: ObjectType =
       events[0].destination.DestinationDefinition.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1);
+      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2);
+      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
     } else {
-      return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE);
+      return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
     }
+  }
+
+  public static getSourceService(arg: unknown) {
+    // Implement source event based descision logic for selecting service
   }
 }

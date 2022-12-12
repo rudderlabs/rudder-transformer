@@ -9,6 +9,10 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/transform`);
   }
 
+  public static getSourceHandler(source: string, version: string) {
+    return require(`../${version}/sources/${source}/transform`);
+  }
+
   public static getRequestMetadata(ctx: Context) {
     // TODO: Parse information such as
     // cluster, namespace, etc information

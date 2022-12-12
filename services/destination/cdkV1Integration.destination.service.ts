@@ -1,6 +1,7 @@
 import { ConfigFactory, Executor } from "rudder-transformer-cdk";
 import IntegrationServiceDestination from "../../interfaces/IntegrationServiceDestination";
 import {
+  DeliveryResponse,
   ErrorDetailer,
   Metadata,
   ObjectType,
@@ -37,7 +38,7 @@ export default class CDKV1ServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType: destinationType,
             eventMetadatas: [event.metadata],
             serverRequestMetadata: requestMetadata,
             destinationInfo: [event.destination],
@@ -79,7 +80,7 @@ export default class CDKV1ServiceDestination
     _destinationType: string,
     _networkHandler: any,
     _requestMetadata: ObjectType
-  ) {
+  ): Promise<DeliveryResponse> {
     throw new Error("CDV1 Does not Implement Delivery Routine");
   }
 }

@@ -24,7 +24,7 @@ type TransformationDefaultResponse = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata?: Metadata
+  metadata?: Metadata;
   [key: string]: any;
 };
 
@@ -123,6 +123,18 @@ type RouterResponse = {
   statTags: Object;
 };
 
+type SourceTransformOutput = {
+  batch: RudderMessage[];
+};
+
+type SourceTransformResponse = {
+  output: SourceTransformOutput;
+  error: ObjectType;
+  statusCode: number;
+  outputToSource: ObjectType;
+  statTags: ObjectType;
+};
+
 type DeliveryResponse = {
   status: number;
   message: string;
@@ -131,8 +143,23 @@ type DeliveryResponse = {
   authErrorCategory?: string;
 };
 
+type RudderMessage = {
+  userId?: string;
+  anonymousId: string;
+  type: string;
+  channel: string;
+  context: ObjectType;
+  originalTimestamp: Date;
+  sentAt: Date;
+  event?: string;
+  integrations?: ObjectType;
+  messageId?: string;
+  properties?: ObjectType;
+  traits?: ObjectType;
+};
+
 type ErrorDetailer = {
-  destinationType: string;
+  integrationType: string;
   stage: string;
   serverRequestMetadata: ObjectType;
   eventMetadatas: Metadata[];
@@ -148,7 +175,9 @@ export {
   RouterRequest,
   RouterData,
   RouterResponse,
+  RudderMessage,
   TransformationDefaultResponse,
+  SourceTransformResponse,
   DeliveryResponse,
   ErrorDetailer
 };

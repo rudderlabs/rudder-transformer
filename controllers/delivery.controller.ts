@@ -13,7 +13,7 @@ export class DeliveryController {
       version,
       destination
     }: { version: string; destination: string } = ctx.params;
-    const integrationService = ServiceSelector.getNativeIntegrationService();
+    const integrationService = ServiceSelector.getNativeIntegrationServiceDest();
     const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
       destination
     );

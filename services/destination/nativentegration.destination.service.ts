@@ -39,7 +39,7 @@ export default class NativeIntegrationServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType: destinationType,
             eventMetadatas: [event.metadata],
             serverRequestMetadata: requestMetadata,
             destinationInfo: [event.destination],
@@ -81,7 +81,7 @@ export default class NativeIntegrationServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType: destinationType,
             eventMetadatas: destInputArray.map(ev => {
               return ev.metadata;
             }),
@@ -128,7 +128,7 @@ export default class NativeIntegrationServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            destinationType,
+            integrationType: destinationType,
             eventMetadatas: destEvents.map(ev => {
               return ev.metadata;
             }),
@@ -175,7 +175,7 @@ export default class NativeIntegrationServiceDestination
       const errorDTO = {
         eventMetadatas: [metadata],
         stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        destinationType,
+        integrationType: destinationType,
         serverRequestMetadata: requestMetadata,
         destinationInfo: undefined,
         inputPayload: destinationRequest,

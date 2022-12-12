@@ -52,7 +52,7 @@ export default class PostTransformationServiceDestination {
   ): ProcessorResponse {
     const errObj = generateErrorObject(
       error,
-      errorDTO.destinationType,
+      errorDTO.integrationType,
       errorDTO.stage
     );
     ErrorReportingService.reportError(error, errObj, errorDTO);
@@ -92,7 +92,7 @@ export default class PostTransformationServiceDestination {
   ): RouterResponse {
     const errObj = generateErrorObject(
       error,
-      errorDTO.destinationType,
+      errorDTO.integrationType,
       errorDTO.stage
     );
     ErrorReportingService.reportError(error, errObj, errorDTO);
@@ -117,7 +117,7 @@ export default class PostTransformationServiceDestination {
   ): RouterResponse {
     const errObj = generateErrorObject(
       error,
-      errorDTO.destinationType,
+      errorDTO.integrationType,
       errorDTO.stage
     );
     ErrorReportingService.reportError(error, errObj, errorDTO);
@@ -141,7 +141,7 @@ export default class PostTransformationServiceDestination {
   ): DeliveryResponse {
     const errObj = generateErrorObject(
       error,
-      errorDTO.destinationType,
+      errorDTO.integrationType,
       errorDTO.stage
     );
     ErrorReportingService.reportError(error, errObj, errorDTO);

@@ -1,10 +1,8 @@
 import Router from "koa-router";
-import { DeliveryController } from "../controllers/delivery.controller";
+import SourceController from "../controllers/source.controller";
 
 const router = new Router();
 
-router.post(
-  "/:version/sources/:source`",
-);
+router.post("/:version/sources/:source`", SourceController.sourceTransform);
 
 export const proxyRoutes = router.routes();

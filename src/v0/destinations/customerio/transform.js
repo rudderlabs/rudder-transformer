@@ -18,7 +18,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  generateErrorObject
 } = require("../../util");
 
 const {
@@ -350,6 +351,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           // eslint-disable-next-line no-nested-ternary
@@ -358,7 +360,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

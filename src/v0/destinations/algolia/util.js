@@ -1,5 +1,5 @@
 const logger = require("../../../logger");
-const { CustomError } = require("../../util");
+const { TransformationError } = require("../../util");
 const { EVENT_TYPES } = require("./config");
 
 /**
@@ -28,9 +28,8 @@ const genericpayloadValidator = payload => {
   const updatedPayload = payload;
   updatedPayload.eventType = payload.eventType.trim().toLowerCase();
   if (!EVENT_TYPES.includes(payload.eventType)) {
-    throw new CustomError(
-      "eventType can be either click, view or conversion",
-      400
+    throw new TransformationError(
+      "eventType can be either click, view or conversion"
     );
   }
   if (payload.filters && !Array.isArray(payload.filters)) {
@@ -100,7 +99,7 @@ const clickPayloadValidator = payload => {
       logger.error("positions should be an array of integers.");
     }
     updatedPayload.positions.some((num, index) => {
-      if (!isNaN(Number(num)) && Number.isInteger(Number(num))) {
+      if (!Number.isNaN(Number(num)) && Number.isInteger(Number(num))) {
         updatedPayload.positions[index] = Number(num);
       } else {
         updatedPayload.positions = null;
@@ -116,9 +115,8 @@ const clickPayloadValidator = payload => {
   }
   if (payload.objectIDs && payload.positions) {
     if (payload.objectIDs.length !== payload.positions.length) {
-      throw new CustomError(
-        "length of objectId and position should be equal",
-        400
+      throw new TransformationError(
+        "length of objectId and position should be equal"
       );
     }
   }
@@ -127,7 +125,7 @@ const clickPayloadValidator = payload => {
       (payload.positions && !payload.queryID) ||
       (!payload.positions && payload.queryID)
     ) {
-      throw new CustomError(
+      throw new TransformationError(
         "for click eventType either both positions and queryId should be present or none",
         400
       );

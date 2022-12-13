@@ -1,0 +1,98 @@
+bindings:
+- name: EventType
+  path: ../../../../constants
+- path: ../../../../v0/destinations/algolia/util
+- path: ../../../../v0/destinations/algolia/config
+- name: removeUndefinedAndNullValues
+  path: ../../../../v0/util
+- path: ../../bindings/jsontemplate
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.destination.Config.apiKey, "Invalid Api Key");
+      $.assert(.destination.Config.applicationId, "Invalid Application Id");
+      $.assert(.message.type === {{$.EventType.TRACK}}, 
+        "message type " + .message.type + " not supported")
+      $.assert(.message.event, "event is required for track call")
+  
+  - name: preparePayload
+    template: |
+      $.assert(.message.properties.index, 'Missing required value from "properties.index"');
+      let eventTypeMap = $.eventTypeMapping(.destination.Config);
+      let event = .message.event.trim().toLowerCase();
+      let eventType = .message.properties.eventType ?? eventTypeMap[event];
+      $.assert(eventType, "eventType is mandatory for track call");
+      let payload = .message.().({
+        index: .properties.index,
+        timestamp: .properties.timestamp,
+        queryID: .properties.queryId || undefined,
+        filters: .properties.filters,
+        objectIDs: .properties.objectIds,
+        positions: .properties.positions,
+        userToken: {{{{$.getGenericPaths("userId", "||")}}}},
+        eventName: event,
+        eventType: eventType
+      });
+      $.context.payload = $.genericpayloadValidator(payload);  
+  
+  - name: populateProductsData
+    condition: |
+      .message.properties.products && 
+      $.context.payload.eventName in ["product list viewed", "order completed"] 
+    steps:
+      - name: populateForClickEvent
+        condition: $.context.payload.eventType === "click"
+        template: |
+            const products = .message.properties.products;
+            $.context.payload.objectIDs = ~r products.objectId;
+            $.context.payload.positions = ~r products.position;
+        else:
+          name: populateForOtherEvents
+          template: |
+            const products = .message.properties.products;
+            $.context.payload.objectIDs = ~r products.objectId.()[:20];
+
+  - name: validateDestPayload
+    template: |
+      const filters = $.context.payload.filters;
+      const objectIDs = $.context.payload.objectIDs;
+      $.assert(!(filters && objectIDs), "event can't have both objectIds and filters at the same time.");
+      $.assert(filters || objectIDs, "Either filters or  objectIds is required.");
+
+  - name: validatePayloadForClickEvent
+    condition: $.context.payload.eventType === "click"
+    template: |          
+      $.context.payload = $.clickPayloadValidator($.context.payload)
+
+  - name: cleanPayload      
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: |
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        {
+          "body": {
+            "JSON": {"events": $.context.payload[]},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": {{$.ENDPOINT}},
+          "headers": {
+            "X-Algolia-Application-Id": .destination.Config.applicationId,
+            "X-Algolia-API-Key": .destination.Config.apiKey
+          },
+          "params": {},
+          "files": {}
+        }

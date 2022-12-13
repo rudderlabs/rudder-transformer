@@ -11,8 +11,8 @@ const fs = require("fs");
 const path = require("path");
 const Commander = require("commander");
 const logger = require("./metaLogger");
-const versionedRouter = require("../versionedRouter");
-const cdkV2Handler = require("../cdk/v2/handler");
+const versionedRouter = require("../src/versionedRouter");
+const cdkV2Handler = require("../src/cdk/v2/handler");
 
 const supportedDestinations = ["algolia", "pinterest_tag"];
 
@@ -39,7 +39,7 @@ const getTestFileName = (intg, testSufix) => {
   return `${intg}${featureSufix}${testSufix}.json`;
 };
 
-const testDataDir = path.join(__dirname, "./../__tests__/data");
+const testDataDir = path.join(__dirname, "../test/__tests__/data");
 const getTestData = (intgList, fileNameSuffixes) => {
   const intgTestData = {};
   intgList.forEach(intg => {

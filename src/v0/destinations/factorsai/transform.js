@@ -7,7 +7,8 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   flattenJson,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  generateErrorObject
 } = require("../../util");
 const { InstrumentationError } = require("../../util/errorTypes");
 
@@ -93,6 +94,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -100,7 +102,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

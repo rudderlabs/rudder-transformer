@@ -62,6 +62,17 @@ const getContents = message => {
   return contents;
 };
 
+const checkContentType = (contents, contenType) => {
+  if (Array.isArray(contents)) {
+    contents.forEach(content => {
+      if (!content.content_type) {
+        content.content_type = contenType || "product_group";
+      }
+    });
+  }
+  return contents;
+};
+
 const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
   let payload = constructPayload(message, trackMapping);
@@ -79,6 +90,13 @@ const getTrackResponse = (message, Config, event) => {
     const prop = payload.properties || {};
     prop.contents = getContents(message);
     payload.properties = prop;
+  }
+
+  if (payload.properties?.contents) {
+    payload.properties.contents = checkContentType(
+      payload.properties?.contents,
+      message.properties?.contentType
+    );
   }
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");

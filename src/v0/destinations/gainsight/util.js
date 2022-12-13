@@ -1,13 +1,13 @@
 const axios = require("axios");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const logger = require("../../../logger");
+const {
+  ConfigurationError,
+  RetryableError,
+  NetworkError
+} = require("../../util/errorTypes");
 const { ENDPOINTS, getLookupPayload } = require("./config");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
+const tags = require("../../util/tags");
 
 const searchGroup = async (groupName, Config) => {
   let resp;
@@ -29,11 +29,17 @@ const searchGroup = async (groupName, Config) => {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to search group ${errMessage}`, errorStatus);
+    throw new NetworkError(
+      `failed to search group ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      }
+    );
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to search group", 500);
+    throw new RetryableError("failed to search group");
   }
   return resp;
 };
@@ -60,11 +66,17 @@ const createGroup = async (payload, Config) => {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to create group ${errMessage}`, errorStatus);
+    throw new NetworkError(
+      `failed to create group ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      }
+    );
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to create group", 500);
+    throw new RetryableError("failed to create group");
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -94,11 +106,17 @@ const updateGroup = async (payload, Config) => {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to update group ${errMessage}`, errorStatus);
+    throw new NetworkError(
+      `failed to update group ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      }
+    );
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to update group", 500);
+    throw new RetryableError("failed to update group");
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -140,7 +158,7 @@ const getConfigOrThrowError = (Config, requiredKeys, methodName) => {
   const retObj = {};
   requiredKeys.forEach(key => {
     if (!Config[key]) {
-      throw new CustomError(`${key} is required for ${methodName}`, 500);
+      throw new ConfigurationError(`${key} is required for ${methodName}`, 500);
     }
     retObj[key] = Config[key];
   });
@@ -152,6 +170,5 @@ module.exports = {
   createGroup,
   updateGroup,
   renameCustomFieldsFromMap,
-  getConfigOrThrowError,
-  CustomError
+  getConfigOrThrowError
 };

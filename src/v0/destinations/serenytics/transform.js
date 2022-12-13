@@ -1,11 +1,15 @@
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   getHashFromArrayWithDuplicate,
   ErrorMessage
 } = require("../../util");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const {
   CONFIG_CATEGORIES,
@@ -30,13 +34,12 @@ const trackResponseBuilder = (message, { Config }, payload) => {
   );
   const { event } = message;
   if (!event) {
-    throw new CustomError(
-      `[Serenytics]: event name is required in track call.`,
-      400
-    );
+    throw new InstrumentationError(`Event name is required in track call.`);
   }
   if (!storageUrlEventMapping[event] && !STORAGE_URL) {
-    throw new CustomError(`Storage url for "TRACK" is missing. Aborting!`, 400);
+    throw new ConfigurationError(
+      `Storage url for "TRACK" is missing. Aborting!`
+    );
   }
 
   const storageUrlEventList = storageUrlEventMapping[event];
@@ -52,10 +55,7 @@ const trackResponseBuilder = (message, { Config }, payload) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   const { Config } = destination;
@@ -117,11 +117,13 @@ const processEvent = (message, destination) => {
       );
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} is not supported`
+      );
   }
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   if (messageType === EventType.TRACK) {
     response = trackResponseBuilder(message, destination, payload);
@@ -162,11 +164,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

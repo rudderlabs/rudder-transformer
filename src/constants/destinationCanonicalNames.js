@@ -102,7 +102,8 @@ const DestCanonicalNames = {
     "gainsight px",
     "Gainsight Px"
   ],
-  awin: ["awin", "Awin", "AWIN"]
+  awin: ["awin", "Awin", "AWIN"],
+  sendinblue: ["sendinblue", "SENDINBLUE", "Sendinblue", "SendinBlue"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

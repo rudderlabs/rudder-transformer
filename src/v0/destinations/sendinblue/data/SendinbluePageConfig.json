@@ -1,0 +1,45 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email", "properties.email"]
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["context.traits.phone", "properties.phone"]
+  },
+  {
+    "destKey": "ma_title",
+    "sourceKeys": ["properties.title", "context.page.title"],
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "page",
+    "sourceKeys": ["properties.url", "context.page.url"],
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ma_path",
+    "sourceKeys": ["properties.path", "context.page.path"],
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ma_referrer",
+    "sourceKeys": ["properties.referrer", "context.page.referrer"],
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "sib_name",
+    "sourceKeys": ["name", "properties.name"],
+    "required": true,
+    "metadata": {
+      "defaultValue": "Page View"
+    }
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["title", "url", "path", "referrer", "name", "email"]
+    }
+  }
+]

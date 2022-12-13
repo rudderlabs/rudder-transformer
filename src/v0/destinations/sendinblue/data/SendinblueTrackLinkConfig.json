@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email", "properties.email"]
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["context.traits.phone", "properties.phone"]
+  },
+  {
+    "destKey": "link",
+    "sourceKeys": "properties.link",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["email", "link"]
+    }
+  }
+]

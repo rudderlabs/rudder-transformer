@@ -12,7 +12,12 @@ const {
   isHttpStatusSuccess
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  NetworkError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
@@ -38,39 +43,21 @@ const responseHandler = (destinationResponse, dest) => {
         validationCode,
         fieldPath
       } = response.validationMessages[0];
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `[GA4] Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
-        )
-        .isTransformResponseFailure(true)
-        .setDestinationResponse(response?.validationMessages[0]?.description)
-        .setStatTags({
-          destType: dest,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: getDynamicErrorType(status)
-        })
-        .build();
+      throw new NetworkInstrumentationError(
+        `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
+      );
     }
   }
 
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
-    throw new ErrorBuilder()
-      .setStatus(status)
-      .setMessage(
-        `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`
-      )
-      .isTransformResponseFailure(true)
-      .setDestinationResponse(destinationResponse)
-      .setStatTags({
-        destType: dest,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicErrorType(status)
-      })
-      .build();
+    throw new NetworkError(
+      `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      }
+    );
   }
 
   return {

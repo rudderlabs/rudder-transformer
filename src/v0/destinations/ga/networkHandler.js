@@ -4,7 +4,11 @@ const {
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  NetworkInstrumentationError,
+  RetryableError
+} = require("../../util/errorTypes");
 
 /**
  * The response handler to handle responses from Google Analytics(Universal Analytics)
@@ -26,16 +30,11 @@ const gaResponseHandler = gaResponse => {
       return errObj.reason && errObj.reason === "invalidCredentials";
     });
     if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
-      throw new ErrorBuilder()
-        .setMessage("[GA] invalid credentials")
-        .setStatus(500)
-        .setDestinationResponse(response)
-        .setAuthErrorCategory(REFRESH_TOKEN)
-        .build();
+      throw new RetryableError("invalid credentials");
     }
-    throw new ErrorBuilder()
+    throw new NetworkInstrumentationError()
       .setMessage(
-        `[GA] Error occurred while completing deletion request: ${response.error?.message}`
+        `Error occurred while completing deletion request: ${response.error?.message}`
       )
       .setStatus(status)
       .setDestinationResponse(response)

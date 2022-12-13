@@ -10,8 +10,7 @@ const {
   nameToEventMap,
   DESTINATION
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+
 const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -28,6 +27,10 @@ const {
 } = require("../../util");
 
 const { isDefinedAndNotNull } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const gaDisplayName = "Google Analytics";
 
@@ -147,17 +150,7 @@ function processPageViews(message, destination) {
         // Ref - https://developers.google.com/analytics/devguides/collection/protocol/v1/reference#encoding
         documentPath = encodeURIComponent(documentPath);
       } catch (error) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage(`Invalid Url: ${documentUrl}`)
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-          })
-          .build();
+        throw new InstrumentationError(`Invalid Url: ${documentUrl}`);
       }
     }
   }
@@ -590,17 +583,7 @@ function processProductListEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("unknown ProductListEvent type")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-          })
-          .build();
+        throw new InstrumentationError("unknown ProductListEvent type");
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
@@ -690,17 +673,7 @@ function processProductEvent(message, destination) {
         parameters.pa = "remove";
         break;
       default:
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("unknown ProductEvent type")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-          })
-          .build();
+        throw new InstrumentationError("unknown ProductEvent type");
     }
 
     // add produt level custom dimensions and metrics to parameters
@@ -746,18 +719,7 @@ function processTransactionEvent(message, destination) {
       parameters.pa = "refund";
       break;
     default:
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("unknown TransactionEvent type")
-        .isExplicit(true)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError("unknown TransactionEvent type");
   }
 
   // One of total/revenue/value should be there
@@ -790,16 +752,9 @@ function processTransactionEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("No product information supplied for transaction event")
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "No product information supplied for transaction event"
+    );
   }
 
   // TODO: parameters.ec missing message.properties check and All value?
@@ -837,17 +792,7 @@ function processEComGenericEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("unknown TransactionEvent type")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-          })
-          .build();
+        throw new ConfigurationError("unknown TransactionEvent type");
     }
   }
   const { products } = message.properties;
@@ -870,16 +815,7 @@ function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
   if (!messageType) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Message type is not present")
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError("Message type is not present");
   }
   let customParams = {};
   let category;
@@ -892,18 +828,7 @@ function processSingleMessage(message, destination) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("server side identify is not on")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                .CONFIGURATION
-          })
-          .build();
+        throw new ConfigurationError("server side identify is not on");
       }
       break;
     case EventType.PAGE:
@@ -917,17 +842,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK: {
       let eventName = message.event;
       if (!(typeof eventName === "string" || eventName instanceof String)) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("Event name is not present/is not a string")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError(
+          "Event name is not present/is not a string"
+        );
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();
@@ -1014,17 +931,9 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("message type not supported")
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   return responseBuilderSimple(

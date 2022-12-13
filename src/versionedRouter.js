@@ -993,13 +993,15 @@ async function handleProxyRequest(destination, ctx) {
       [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
       [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
       [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
-      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
       // [tags.TAG_NAMES.DESTINATION_ID]: TBD
     });
 
     response = {
       status: errObj.status,
-      authErrorCategory: errObj.authErrorCategory,
+      ...(errObj.authErrCategory && {
+        authErrCategory: errObj.authErrorCategory
+      }),
       destinationResponse: errObj.destinationResponse,
       message: errObj.message,
       statTags: errObj.statTags

@@ -2,7 +2,6 @@ const set = require("set-value");
 const { defaultRequestConfig } = require("rudder-transformer-cdk/build/utils");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   constructPayload,
   ErrorMessage,
   defaultPostRequestConfig,
@@ -16,10 +15,15 @@ const {
   REVENUE_CAT_IDENTIFY_EXCLUSION,
   BASE_URL
 } = require("./config");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const trackResponseBuilder = async (message, category, { Config }) => {
   if (!Config.xPlatform) {
-    throw new CustomError("[REVENUE CAT] X-Platform is required field.", 400);
+    throw new ConfigurationError("X-Platform is required field");
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
@@ -85,7 +89,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload, 400);
   }
   let customPayload = {};
   customPayload = extractCustomFields(
@@ -126,16 +130,10 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.apiKey) {
-    throw new CustomError(
-      "[REVENUE CAT] Public API Key required for Authentication.",
-      400
-    );
+    throw new ConfigurationError("Public API Key required for Authentication");
   }
   const messageType = message.type.toLowerCase();
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
@@ -148,7 +146,9 @@ const process = async event => {
       response = await identifyResponseBuilder(message, category, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
+      );
   }
   return response;
 };

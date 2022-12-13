@@ -1,4 +1,5 @@
 const {
+  ErrorMessage,
   defaultRequestConfig,
   simpleProcessRouterDest,
   removeUndefinedAndNullValues,
@@ -31,9 +32,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError(
-    "Something went wrong while constructing the payload"
-  );
+  throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 };
 
 const identifyResponseBuilder = (message, destination) => {
@@ -89,7 +88,7 @@ const processEvent = (message, destination) => {
       break;
     default:
       throw new InstrumentationError(
-        `Event type "${messageType}" is not supported`
+        `Event type ${messageType} is not supported`
       );
   }
   return response;

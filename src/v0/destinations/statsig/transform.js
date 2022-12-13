@@ -10,7 +10,7 @@ function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {
-    throw new InstrumentationError("invalid message type for statsig");
+    throw new InstrumentationError("Event type not present");
   }
   const messageType = message.type;
 

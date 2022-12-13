@@ -92,7 +92,7 @@ function prepareResponse(message, destination, category) {
     }
   } else {
     throw new InstrumentationError(
-      "eventTypeId does not match with ideal format"
+      `eventTypeId does not match with ideal format ${EVENT_TYPE_ID_REGEX}`
     );
   }
   if (isDefinedAndNotNullAndNotEmpty(environment)) {

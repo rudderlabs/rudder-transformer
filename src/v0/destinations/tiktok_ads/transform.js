@@ -89,7 +89,7 @@ const getTrackResponse = (message, Config, event) => {
         ).toString();
       } else {
         throw new InstrumentationError(
-          "Invalid phone number. Include proper country code except +86 and the phone number length must be no longer than 15 digit. Aborting"
+          "Invalid phone number. Ideal Format : /^(+(?!86)d{1,3})?d{1,12}$/g, Include proper country code except +86 and the phone number length must be no longer than 15 digit"
         );
       }
     }
@@ -121,7 +121,9 @@ const trackResponseBuilder = async (message, { Config }) => {
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
-    throw new InstrumentationError(`Event name (${event}) is not valid`);
+    throw new InstrumentationError(
+      `Event name (${event}) is not valid, must be mapped to one of standard events`
+    );
   }
 
   const responseList = [];
@@ -145,7 +147,7 @@ const process = async event => {
   const { message, destination } = event;
 
   if (!destination.Config.accessToken) {
-    throw new ConfigurationError("Access Token not found. Aborting ", 400);
+    throw new ConfigurationError("Access Token not found. Aborting ");
   }
 
   if (!destination.Config.pixelCode) {

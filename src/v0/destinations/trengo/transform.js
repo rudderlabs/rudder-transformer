@@ -64,7 +64,7 @@ const validate = (email, phone, channelIdentifier) => {
     (channelIdentifier === "phone" && !phone) ||
     (channelIdentifier === "email" && !email)
   ) {
-    throw new TransformationError(
+    throw new ConfigurationError(
       `Mandatory field for Channel-Identifier :${channelIdentifier} not present`
     );
   }
@@ -92,16 +92,14 @@ const lookupContact = async (term, destination) => {
     });
   } catch (err) {
     // check if exists err.response && err.response.status else 500
+    const status = err.response?.status || 400;
     throw new NetworkError(
-      err.response.statusText || "Inside lookupContact, failed to make request",
-      err.response.status || 500,
-      err.response.status
-        ? {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              err.response.status
-            )
-          }
-        : {},
+      `Inside lookupContact, failed to make request: ${err.response.statusText}`,
+      status,
+
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
       err.response
     );
   }

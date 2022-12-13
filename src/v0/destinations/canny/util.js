@@ -3,7 +3,8 @@ const { httpPOST } = require("../../../adapters/network");
 const { getDestinationExternalID } = require("../../util");
 const {
   InstrumentationError,
-  NetworkInstrumentationError
+  NetworkInstrumentationError,
+  TransformationError
 } = require("../../util/errorTypes");
 
 /**
@@ -52,9 +53,7 @@ const retrieveUserId = async (apiKey, message) => {
       response?.response?.data?.data?.id || response?.response?.data?.id || null
     );
   } catch (error) {
-    throw new NetworkInstrumentationError(
-      "Unable to retrieve userid from Canny"
-    );
+    throw new TransformationError("Unable to retrieve userid from Canny");
   }
 };
 

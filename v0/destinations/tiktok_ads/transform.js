@@ -38,22 +38,25 @@ function checkIfValidPhoneNumber(str) {
 }
 
 const getContents = message => {
-  let contents = [];
-
-  let products = message.properties.products;
+  const contents = [];
+  const { properties } = message;
+  const { products } = properties;
   if (products && Array.isArray(products) && products.length > 0) {
-    let singleProduct = {};
     products.forEach(product => {
-      singleProduct.content_type = product.content_type || "product";
+      const singleProduct = {};
+      singleProduct.content_type =
+        product.contentType ||
+        properties.contentType ||
+        product.content_type ||
+        properties.content_type ||
+        "product_group";
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;
       singleProduct.content_name = product.name;
       singleProduct.price = product.price;
       singleProduct.quantity = product.quantity;
       singleProduct.description = product.description;
-
       contents.push(removeUndefinedAndNullValues(singleProduct));
-      singleProduct = {};
     });
   }
   return contents;
@@ -73,7 +76,7 @@ const getTrackResponse = (message, Config, event) => {
 
   if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
-    let prop = payload.properties || {};
+    const prop = payload.properties || {};
     prop.contents = getContents(message);
     payload.properties = prop;
   }

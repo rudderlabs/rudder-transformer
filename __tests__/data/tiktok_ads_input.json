@@ -2351,12 +2351,6 @@
       "event": "checkout step completed",
       "properties": {
         "eventId": "1616318632825_357",
-        "contents": {
-          "price": 8,
-          "quantity": 2,
-          "content_type": "socks",
-          "content_id": "1077218"
-        },
         "products": [
           {
             "product_id": "123",

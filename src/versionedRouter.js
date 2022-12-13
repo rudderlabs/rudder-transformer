@@ -851,6 +851,9 @@ if (transformerTestModeEnabled) {
       if (!trRevCode.versionId) {
         trRevCode.versionId = "testVersionId";
       }
+      if (!trRevCode.workspaceId) {
+        trRevCode.workspaceId = "workspaceId";
+      }
       const res = await setupUserTransformHandler(
         trRevCode,
         libraryVersionIDs,

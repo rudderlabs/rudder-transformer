@@ -1,4 +1,4 @@
-const { InstrumentationError } = require("./errorTypes");
+const { PlatformError } = require("./errorTypes");
 
 class RegulationApiUtils {
   /**
@@ -8,7 +8,7 @@ class RegulationApiUtils {
    */
   static executeCommonValidations(userAttributes) {
     if (!Array.isArray(userAttributes)) {
-      throw new InstrumentationError("userAttributes is not an array");
+      throw new PlatformError("userAttributes is not an array");
     }
   }
 }

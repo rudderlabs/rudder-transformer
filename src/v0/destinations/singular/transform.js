@@ -17,7 +17,7 @@ const responseBuilderSimple = (message, { Config }) => {
   const eventName = message.event;
 
   if (!eventName) {
-    throw new InstrumentationError("event name is not present for the event");
+    throw new InstrumentationError("Event name is not present for the event");
   }
 
   const sessionEvent = isSessionEvent(Config, eventName);

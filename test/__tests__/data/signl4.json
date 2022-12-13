@@ -499,7 +499,7 @@
       }
     },
     "output": {
-      "error": "apiKey is a required field"
+      "error": "ApiKey is a required field"
     }
   },
   {

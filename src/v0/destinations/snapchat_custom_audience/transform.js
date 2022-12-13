@@ -6,7 +6,7 @@ const {
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const {
-  InstrumentationError,
+  ConfigurationError,
   InvalidAuthTokenError
 } = require("../../util/errorTypes");
 const { BASE_URL, schemaType } = require("./config");
@@ -79,7 +79,7 @@ const getProperty = (schema, element) => {
         element?.MOBILE_ID;
       return property;
     default:
-      throw new InstrumentationError("Invalid schema");
+      throw new ConfigurationError("Invalid schema");
   }
 };
 
@@ -99,7 +99,7 @@ const getHashedProperty = (schema, hashedProperty) => {
     case "mobileAdId":
       return sha256(hashedProperty.toLowerCase());
     default:
-      throw new InstrumentationError("Invalid schema");
+      throw new ConfigurationError("Invalid schema");
   }
 };
 

@@ -1,4 +1,7 @@
-const { InstrumentationError } = require("../../util/errorTypes");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * Verifies whether the input payload is in right format or not
@@ -34,9 +37,7 @@ const validatePayload = message => {
 const validateFields = (schema, data) => {
   // if required field is not present in all the cases
   if (data[0].length === 0) {
-    throw new InstrumentationError(
-      `${schema} is required for the chosen schema`
-    );
+    throw new ConfigurationError(`${schema} is required for the chosen schema`);
   }
 };
 

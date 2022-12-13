@@ -32,7 +32,10 @@ const {
   channelMapping,
   generateBatchedPayloadForArray
 } = require("./util");
-const { InstrumentationError } = require("../../util/errorTypes");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -57,16 +60,16 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     (eventConversionType === "WEB" || eventConversionType === "OFFLINE") &&
     !pixelId
   ) {
-    throw new InstrumentationError(
+    throw new ConfigurationError(
       "Pixel Id is required for web and offline events"
     );
   }
 
   if (eventConversionType === "MOBILE_APP" && !(appId && snapAppId)) {
     if (!appId) {
-      throw new InstrumentationError("App Id is required for app events");
+      throw new ConfigurationError("App Id is required for app events");
     } else {
-      throw new InstrumentationError("Snap App Id is required for app events");
+      throw new ConfigurationError("Snap App Id is required for app events");
     }
   }
 

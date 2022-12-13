@@ -9,9 +9,9 @@ const {
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const {
-  InstrumentationError,
   ConfigurationError,
-  TransformationError
+  TransformationError,
+  InstrumentationError
 } = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint) => {
@@ -56,7 +56,7 @@ const processEvent = (message, destination) => {
     throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.apiKey) {
-    throw new ConfigurationError("apiKey is a required field");
+    throw new ConfigurationError("ApiKey is a required field");
   }
   const messageType = message.type.toLowerCase();
   let response;

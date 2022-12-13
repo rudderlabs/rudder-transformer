@@ -109,7 +109,9 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   let platform = getValueFromMessage(message, "context.os.name");
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
   if (!platform) {
-    throw new InstrumentationError("Platform name is missing");
+    throw new InstrumentationError(
+      "Platform name is missing from context.os.name"
+    );
   }
   // checking if the os is one of ios, ipados, watchos, tvos
   if (typeof platform === "string" && isAppleFamily(platform.toLowerCase())) {
@@ -118,7 +120,7 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   }
   platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {
-    throw new InstrumentationError("Platform is not supported");
+    throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 
   const payload = constructPayload(

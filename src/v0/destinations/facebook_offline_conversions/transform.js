@@ -20,16 +20,12 @@ const responseBuilder = endpoint => {
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError(
-    "[Facebook Offline Conversions] :: Payload could not be constructed"
-  );
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const trackResponseBuilder = (message, destination) => {
   if (!message.event) {
-    throw new InstrumentationError(
-      "[Facebook Offline Conversions] :: parameter event is required."
-    );
+    throw new InstrumentationError("Parameter event is required.");
   }
 
   const offlineConversionsPayloads = offlineConversionResponseBuilder(
@@ -57,7 +53,7 @@ const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
     throw new InstrumentationError(
-      "[Facebook Offline Conversions] :: Message Type is not present. Aborting message."
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -65,9 +61,7 @@ const processEvent = (message, destination) => {
     return trackResponseBuilder(message, destination);
   }
 
-  throw new InstrumentationError(
-    `[Facebook Offline Conversions] :: Message type ${messageType} not supported.`
-  );
+  throw new InstrumentationError(`Message type ${messageType} not supported.`);
 };
 
 const process = event => {

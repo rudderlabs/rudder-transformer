@@ -391,7 +391,7 @@ const processEvent = (message, destination) => {
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
     throw new TransformationError(
-      "missing valid parameters, unable to generate transformed payload"
+      "Missing valid parameters, unable to generate transformed payload"
     );
   }
   return respList;

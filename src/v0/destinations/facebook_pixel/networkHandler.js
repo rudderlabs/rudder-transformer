@@ -136,7 +136,7 @@ const errorResponseHandler = destResponse => {
   const { error } = response;
   const statusAndStats = getStatusAndStats(error);
   throw new NetworkError(
-    `Facebook Pixel: Failed with ${error.message} during response transformation`,
+    `Failed with ${error.message} during response transformation`,
     statusAndStats.status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusAndStats.status)

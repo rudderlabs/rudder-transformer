@@ -347,7 +347,9 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error("could not determine type");
-      throw new InstrumentationError("message type not supported");
+      throw new InstrumentationError(
+        `Message type ${message.type} not supported`
+      );
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);

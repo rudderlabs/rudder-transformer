@@ -54,7 +54,7 @@ function process(event) {
 
   if (!message.type) {
     throw new InstrumentationError(
-      "[FACTORSAI]: Message Type is not present. Aborting message."
+      "Message Type is not present. Aborting message."
     );
   }
 
@@ -66,7 +66,9 @@ function process(event) {
     case EventType.TRACK:
       return processTrack(message, factorsAIApiKey);
     default:
-      throw new InstrumentationError("Message type is not supported");
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
+      );
   }
 }
 

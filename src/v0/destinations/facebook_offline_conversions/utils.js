@@ -203,7 +203,7 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
   });
   if (!payload.length) {
     throw new ConfigurationError(
-      "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
+      "Please Map Your Standard Events With Event Set Ids"
     );
   }
   return payload;

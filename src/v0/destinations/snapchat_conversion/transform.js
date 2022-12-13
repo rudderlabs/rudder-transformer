@@ -10,7 +10,6 @@ const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  CustomError,
   isAppleFamily,
   getValidDynamicFormConfig,
   checkInvalidRtTfEvents,
@@ -33,6 +32,7 @@ const {
   channelMapping,
   generateBatchedPayloadForArray
 } = require("./util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -57,23 +57,16 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     (eventConversionType === "WEB" || eventConversionType === "OFFLINE") &&
     !pixelId
   ) {
-    throw new CustomError(
-      "[Snapchat] :: Pixel Id is required for web and offline events",
-      400
+    throw new InstrumentationError(
+      "Pixel Id is required for web and offline events"
     );
   }
 
   if (eventConversionType === "MOBILE_APP" && !(appId && snapAppId)) {
     if (!appId) {
-      throw new CustomError(
-        "[Snapchat] :: App Id is required for app events",
-        400
-      );
+      throw new InstrumentationError("App Id is required for app events");
     } else {
-      throw new CustomError(
-        "[Snapchat] :: Snap App Id is required for app events",
-        400
-      );
+      throw new InstrumentationError("Snap App Id is required for app events");
     }
   }
 
@@ -178,9 +171,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
         break;
     }
   } else {
-    throw new CustomError(
-      `Event ${event} doesn't match with Snapchat Events!`,
-      400
+    throw new InstrumentationError(
+      `Event ${event} doesn't match with Snapchat Events!`
     );
   }
 
@@ -239,9 +231,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     !payload.hashed_mobile_ad_id &&
     !(payload.hashed_ip_address && payload.user_agent)
   ) {
-    throw new CustomError(
-      "At least one of email or phone or advertisingId or ip and userAgent is required",
-      400
+    throw new InstrumentationError(
+      "At least one of email or phone or advertisingId or ip and userAgent is required"
     );
   }
   payload.timestamp = getFieldValueFromMessage(message, "timestamp");
@@ -252,9 +243,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     // calculates past event in days
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
     if (deltaDay > 28) {
-      throw new CustomError(
-        "[snapchat_conversion]: Events must be sent within 28 days of their occurrence.",
-        400
+      throw new InstrumentationError(
+        "Events must be sent within 28 days of their occurrence"
       );
     }
   }
@@ -302,7 +292,7 @@ function eventMappingHandler(message, destination) {
   let event = get(message, "event");
 
   if (!event) {
-    throw new CustomError("[Snapchat] :: Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
   event = event.trim().replace(/\s+/g, "_");
 
@@ -336,10 +326,7 @@ function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -363,7 +350,9 @@ function process(event) {
       break;
     }
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 }

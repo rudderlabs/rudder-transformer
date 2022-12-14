@@ -21,8 +21,7 @@ const {
   AbortedError,
   ThrottledError,
   NetworkError,
-  ConfigurationError,
-  NetworkInstrumentationError
+  ConfigurationError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");

@@ -3,9 +3,11 @@ const {
   ThrottledError,
   AbortedError,
   RetryableError,
-  NetworkInstrumentationError,
-  UnauthorizedError
+  UnauthorizedError,
+  NetworkError
 } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [
@@ -44,8 +46,14 @@ const getAccessToken = async config => {
     ) {
       return resp.response.data.access_token;
     }
-    throw new NetworkInstrumentationError(
-      "Could not retrieve authorisation token"
+    const status = resp?.response?.status || 400;
+    throw new NetworkError(
+      "Could not retrieve authorisation token",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      resp
     );
   }
   if (resp.response) {

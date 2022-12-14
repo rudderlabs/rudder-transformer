@@ -13,7 +13,7 @@ const {
   AbortedError,
   RetryableError,
   ThrottledError,
-  InstrumentationError
+  PlatformError
 } = require("../../util/errorTypes");
 
 const getFailedJobStatus = async event => {
@@ -261,7 +261,7 @@ const responseHandler = async (event, type) => {
   if (metadata && metadata.csvHeader) {
     headerArr = metadata.csvHeader.split(",");
   } else {
-    throw new InstrumentationError("No csvHeader in metadata");
+    throw new PlatformError("No csvHeader in metadata");
   }
   const data = {};
   input.forEach(i => {

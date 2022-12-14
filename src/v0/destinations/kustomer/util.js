@@ -6,7 +6,7 @@ const get = require("get-value");
 const { BASE_ENDPOINT } = require("./config");
 const { getType, isDefinedAndNotNull, isObject } = require("../../util");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
+const { NetworkError, AbortedError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 /**
@@ -149,14 +149,7 @@ const fetchKustomer = async (url, destination) => {
     if (err.response) {
       return handleResponse(err.response);
     }
-    throw new NetworkError(
-      err.message,
-      400,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400)
-      },
-      err
-    );
+    throw new AbortedError(err.message);
   }
   return handleResponse(response);
 };

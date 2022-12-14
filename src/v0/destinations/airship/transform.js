@@ -21,7 +21,8 @@ const {
   extractCustomFields,
   getErrorRespEvents,
   getSuccessRespEvents,
-  isEmptyObject
+  isEmptyObject,
+  generateErrorObject
 } = require("../../util");
 const {
   InstrumentationError,
@@ -34,7 +35,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (!apiKey)
     throw new ConfigurationError(
-      "[Airship] :: API Key is required for authorization for Identify events"
+      "API Key is required for authorization for Identify events"
     );
 
   let BASE_URL = BASE_URL_US;
@@ -44,7 +45,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
     throw new InstrumentationError(
-      "[Airship]:: for identify, tags or attributes properties are required under traits"
+      "For identify, tags or attributes properties are required under traits"
     );
   }
 
@@ -156,11 +157,11 @@ const trackResponseBuilder = async (message, { Config }) => {
   if (!appKey || !apiKey) {
     if (!appKey)
       throw new ConfigurationError(
-        "[Airship] :: App Key is required for authorization for track events"
+        "App Key is required for authorization for track events"
       );
     else
       throw new ConfigurationError(
-        "[Airship] :: API Key is required for authorization for track events"
+        "API Key is required for authorization for track events"
       );
   }
   let BASE_URL = BASE_URL_US;
@@ -192,7 +193,7 @@ const groupResponseBuilder = (message, { Config }) => {
 
   if (!apiKey)
     throw new ConfigurationError(
-      "[Airship] :: API Key is required for authorization for group events"
+      "API Key is required for authorization for group events"
     );
 
   let BASE_URL = BASE_URL_US;
@@ -202,7 +203,7 @@ const groupResponseBuilder = (message, { Config }) => {
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
     throw new InstrumentationError(
-      "[Airship]:: for group, tags or attributes properties are required under traits"
+      "For group, tags or attributes properties are required under traits"
     );
   }
 
@@ -338,6 +339,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -345,7 +347,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

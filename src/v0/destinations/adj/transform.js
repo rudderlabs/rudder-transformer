@@ -10,7 +10,8 @@ const {
   flattenJson,
   getSuccessRespEvents,
   getErrorRespEvents,
-  isAppleFamily
+  isAppleFamily,
+  generateErrorObject
 } = require("../../util");
 const {
   InstrumentationError,
@@ -140,10 +141,12 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error?.response?.status || error?.code || 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

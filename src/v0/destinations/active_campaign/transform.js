@@ -74,11 +74,11 @@ const syncContact = async (contactPayload, category, destination) => {
   if (!createdContact) {
     throw new NetworkError(
       "Unable to Create Contact",
-      res.response.status,
+      res.response?.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
       },
-      res?.response?.data
+      res.response?.data
     );
   }
   return createdContact.id;
@@ -447,14 +447,14 @@ const screenRequestHandler = async (message, category, destination) => {
     errorHandler(res.response, "Failed to retrieve events");
   }
 
-  if (res.response.status !== 200) {
+  if (res?.response?.status !== 200) {
     throw new NetworkError(
       "Unable to create event",
-      res.response.status,
+      res.response?.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
       },
-      res?.response?.data
+      res.response?.data
     );
   }
 
@@ -558,7 +558,7 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
-    if (res.response.status !== 201) {
+    if (res?.response?.status !== 201) {
       throw new NetworkError(
         "Unable to create event. Aborting",
         res.response.status,

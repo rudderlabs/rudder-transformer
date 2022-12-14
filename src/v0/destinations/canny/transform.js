@@ -5,7 +5,6 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getHashFromArrayWithDuplicate,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
@@ -17,6 +16,10 @@ const {
   validateCreatePostFields,
   validateEventMapping
 } = require("./util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = responseConfgs => {
   const {
@@ -79,7 +82,9 @@ const getTrackResponse = async (apiKey, message, operationType) => {
       mappingConfig[ConfigCategory.CREATE_VOTE.name]
     );
     if (!payload.postID) {
-      throw new CustomError("PostID is not present. Aborting message.", 400);
+      throw new InstrumentationError(
+        "PostID is not present. Aborting message."
+      );
     }
 
     payload.apiKey = apiKey;
@@ -141,12 +146,11 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!destination.Config.apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
+    throw new ConfigurationError("API Key is not present. Aborting message.");
   }
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -160,7 +164,7 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
   return response;
 };

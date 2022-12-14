@@ -1056,7 +1056,7 @@
       }
     },
     "output": {
-      "error": "[OneSignal]: appId is a required field"
+      "error": "appId is a required field"
     }
   },
   {
@@ -1117,7 +1117,7 @@
       }
     },
     "output": {
-      "error": "Message type page not supported"
+      "error": "Message type page is not supported"
     }
   },
   {
@@ -1245,7 +1245,7 @@
       }
     },
     "output": {
-        "error": "Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -1305,7 +1305,7 @@
       }
     },
     "output": {
-        "error": "[OneSignal]: event is not present in the input payloads"
+      "error": "Event is not present in the input payloads"
     }
   },
   {
@@ -1365,7 +1365,7 @@
       }
     },
     "output": {
-        "error": "[OneSignal]: groupId is required for group events"
+      "error": "groupId is required for group events"
     }
   },
   {
@@ -1425,7 +1425,7 @@
       }
     },
     "output": {
-        "error": "[OneSignal]: userId is required for track events/updating a device"
+      "error": "userId is required for track events/updating a device"
     }
   }
 ]

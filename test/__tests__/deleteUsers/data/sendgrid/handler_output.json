@@ -1,0 +1,12 @@
+[
+  [
+    {
+      "statusCode": 500,
+      "error": "ApiKey is required for deleting user"
+    },
+    {
+      "statusCode": 400,
+      "error": "userAttributes is not an array"
+    }
+  ]
+]

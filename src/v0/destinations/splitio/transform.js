@@ -16,8 +16,12 @@ const {
   isDefinedAndNotNull,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  ErrorMessage
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 function responseBuilderSimple(payload, category, destination) {
   if (payload) {
@@ -32,8 +36,8 @@ function responseBuilderSimple(payload, category, destination) {
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
     return response;
   }
-  // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  // fail-safety for developer error;
+  throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 }
 
 function populateOutputProperty(inputObject) {
@@ -82,10 +86,14 @@ function prepareResponse(message, destination, category) {
         }
         break;
       default:
-        throw new CustomError("Message type not supported", 400);
+        throw new InstrumentationError(
+          `Event type ${message.type} is not supported`
+        );
     }
   } else {
-    throw new CustomError("eventTypeId does not match with ideal format", 400);
+    throw new InstrumentationError(
+      `eventTypeId does not match with ideal format ${EVENT_TYPE_ID_REGEX}`
+    );
   }
   if (isDefinedAndNotNullAndNotEmpty(environment)) {
     outputPayload.environmentName = environment;
@@ -98,10 +106,7 @@ function prepareResponse(message, destination, category) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const category = CONFIG_CATEGORIES.EVENT;
   const response = prepareResponse(message, destination, category);
@@ -139,11 +144,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

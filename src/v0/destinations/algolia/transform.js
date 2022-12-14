@@ -1,7 +1,6 @@
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   getValueFromMessage,
   constructPayload,
   defaultRequestConfig,
@@ -9,7 +8,8 @@ const {
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  TransformationError
 } = require("../../util/index");
 
 const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");
@@ -24,7 +24,7 @@ const {
 const trackResponseBuilder = (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("event is required for track call", 400);
+    throw new TransformationError("event is required for track call");
   }
   event = event.trim().toLowerCase();
   let payload = constructPayload(message, trackMapping);
@@ -34,7 +34,7 @@ const trackResponseBuilder = (message, { Config }) => {
     getValueFromMessage(message, "properties.eventType") || eventMapping[event];
 
   if (!payload.eventType) {
-    throw new CustomError("eventType is mandatory for track call", 400);
+    throw new TransformationError("eventType is mandatory for track call");
   }
   payload = genericpayloadValidator(payload);
 
@@ -57,21 +57,19 @@ const trackResponseBuilder = (message, { Config }) => {
       }
       // making size of object list and position list equal
       if (posLen > 0 && objLen > 0 && posLen !== objLen) {
-        throw new CustomError(
-          "length of objectId and position should be equal",
-          400
+        throw new TransformationError(
+          "length of objectId and position should be equal"
         );
       }
     }
   }
   // for all events either filter or objectID should be there
   if (!payload.filters && !payload.objectIDs) {
-    throw new CustomError("Either filters or  objectIds is required.", 400);
+    throw new TransformationError("Either filters or  objectIds is required.");
   }
   if (payload.filters && payload.objectIDs) {
-    throw new CustomError(
-      "event can’t have both objectIds and filters at the same time.",
-      400
+    throw new TransformationError(
+      "event can't have both objectIds and filters at the same time."
     );
   }
   if (payload.eventType === "click") {
@@ -91,17 +89,16 @@ const trackResponseBuilder = (message, { Config }) => {
 const process = event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "message Type is not present. Aborting message.",
-      400
+    throw new TransformationError(
+      "message Type is not present. Aborting message."
     );
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Invalid Api Key", 400);
+    throw new TransformationError("Invalid Api Key");
   }
   if (!destination.Config.applicationId) {
-    throw new CustomError("Invalid Application Id", 400);
+    throw new TransformationError("Invalid Application Id");
   }
   const messageType = message.type.toLowerCase();
 
@@ -111,14 +108,16 @@ const process = event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new TransformationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    throw new CustomError("Invalid event array", 400);
+    throw new TransformationError("Invalid event array");
   }
 
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);

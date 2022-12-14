@@ -12,7 +12,6 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   getDestinationExternalID,
@@ -20,6 +19,11 @@ const {
   defaultPutRequestConfig
 } = require("../../util");
 const { populateDeviceType, populateTags } = require("./util");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, eventType) => {
   if (payload) {
@@ -37,9 +41,8 @@ const responseBuilder = (payload, endpoint, eventType) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-  throw new CustomError(
-    "Payload could not be populated due to wrong input",
-    400
+  throw new TransformationError(
+    "Payload could not be populated due to wrong input"
   );
 };
 
@@ -108,9 +111,8 @@ const identifyResponseBuilder = (message, { Config }) => {
     responseArray.push(responseBuilder(payload, endpoint, message.type));
   }
   if (!responseArray.length) {
-    throw new CustomError(
-      "[OneSignal]: Correct identifier is required for creating a device (identify call)",
-      400
+    throw new ConfigurationError(
+      "Correct identifier is required for creating a device (identify call)"
     );
   }
   return responseArray;
@@ -129,15 +131,13 @@ const trackResponseBuilder = (message, { Config }) => {
   let { endpoint } = ENDPOINTS.TRACK;
   const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
   if (!event) {
-    throw new CustomError(
-      "[OneSignal]: event is not present in the input payloads",
-      400
+    throw new InstrumentationError(
+      "Event is not present in the input payloads"
     );
   }
   if (!externalUserId) {
-    throw new CustomError(
-      "[OneSignal]: userId is required for track events/updating a device",
-      400
+    throw new InstrumentationError(
+      "userId is required for track events/updating a device"
     );
   }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
@@ -175,19 +175,13 @@ const groupResponseBuilder = (message, { Config }) => {
   const { appId, allowedProperties } = Config;
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new CustomError(
-      "[OneSignal]: groupId is required for group events",
-      400
-    );
+    throw new InstrumentationError("groupId is required for group events");
   }
   let { endpoint } = ENDPOINTS.GROUP;
   const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
 
   if (!externalUserId) {
-    throw new CustomError(
-      "[OneSignal]: userId is required for group events",
-      400
-    );
+    throw new InstrumentationError("userId is required for group events");
   }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
@@ -214,13 +208,10 @@ const groupResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.appId) {
-    throw new CustomError("[OneSignal]: appId is a required field", 400);
+    throw new ConfigurationError("appId is a required field");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -235,7 +226,9 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -264,11 +257,7 @@ const processRouterDest = inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

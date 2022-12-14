@@ -1,7 +1,6 @@
 const get = require("get-value");
 const {
   defaultRequestConfig,
-  CustomError,
   removeUndefinedAndNullValues,
   constructPayload,
   getSuccessRespEvents,
@@ -10,6 +9,10 @@ const {
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -22,9 +25,8 @@ const responseBuilderSimple = (message, category, destination) => {
 
   // Reject other unmapped events
   if (!eventsHashMap[message.event.toLowerCase()]) {
-    throw new CustomError(
-      "The event is not associated to a RockerBox event. Aborting!",
-      400
+    throw new ConfigurationError(
+      "The event is not associated to a RockerBox event. Aborting!"
     );
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
@@ -42,15 +44,12 @@ const responseBuilderSimple = (message, category, destination) => {
 const process = event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const advertiserId = get(destination, "Config.advertiserId");
   if (!advertiserId) {
-    throw new CustomError("Advertiser Id is required.", 400);
+    throw new ConfigurationError("Advertiser Id is required.");
   }
 
   let response;
@@ -64,7 +63,9 @@ const process = event => {
       );
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -95,12 +96,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

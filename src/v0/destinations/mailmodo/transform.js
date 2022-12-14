@@ -15,12 +15,15 @@ const {
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   handleRtTfSingleEventError
 } = require("../../util");
 const { deduceAddressFields, extractCustomProperties } = require("./utils");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = responseConfgs => {
   const { resp, apiKey, endpoint } = responseConfgs;
@@ -97,13 +100,10 @@ const trackResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!destination.Config.apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
+    throw new ConfigurationError("API Key is not present, Aborting event");
   }
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
 
@@ -116,7 +116,9 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };

@@ -18,6 +18,7 @@ const {
   InvalidAuthTokenError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
+const get = require("get-value");
 /**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -94,7 +95,8 @@ const responseHandler = destinationResponse => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
-    destinationResponse
+    destinationResponse,
+    getAuthErrCategory(status)
   );
 };
 

@@ -1,11 +1,13 @@
 const qs = require("qs");
 const { httpPOST } = require("../../../adapters/network");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const { getDestinationExternalID } = require("../../util");
 const {
   InstrumentationError,
-  NetworkInstrumentationError,
-  TransformationError
+  TransformationError,
+  NetworkError
 } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * Function to retrieve userId from canny using axios
@@ -43,10 +45,18 @@ const retrieveUserId = async (apiKey, message) => {
       requestBody.userID = `${userId}`;
     }
     response = await httpPOST(url, qs.stringify(requestBody), header);
+    console.log(response);
     // If the request fails, throwing error.
     if (response.success === false) {
-      throw new NetworkInstrumentationError(
-        `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`
+      throw new NetworkError(
+        `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
+        response.data?.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            response.data?.status
+          )
+        },
+        response.data?.error
       );
     }
     return (

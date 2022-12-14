@@ -9,7 +9,8 @@ const {
 } = require("../../../adapters/network");
 const { DESTINATION } = require("./config");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+const { NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const defaultStatTags = {
   destType: DESTINATION,
@@ -134,14 +135,14 @@ const errorResponseHandler = destResponse => {
   }
   const { error } = response;
   const statusAndStats = getStatusAndStats(error);
-  throw new ErrorBuilder()
-    .setStatus(statusAndStats.status)
-    .setDestinationResponse({ ...response, status: destResponse.status })
-    .setMessage(
-      `Facebook Pixel: Failed with ${error.message} during response transformation`
-    )
-    .setStatTags(statusAndStats.statTags)
-    .build();
+  throw new NetworkError(
+    `Failed with ${error.message} during response transformation`,
+    statusAndStats.status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusAndStats.status)
+    },
+    destResponse
+  );
 };
 
 const destResponseHandler = destinationResponse => {

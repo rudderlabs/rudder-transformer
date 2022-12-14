@@ -148,10 +148,7 @@ const deduceTrackScreenEventName = (message, Config) => {
   const { event, name } = message;
   const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
-    throw new CustomError(
-      "[Pinterest Conversion]:: event_name could not be mapped. Aborting.",
-      400
-    );
+    throw new CustomError("event_name could not be mapped. Aborting.", 400);
   }
 
   /*

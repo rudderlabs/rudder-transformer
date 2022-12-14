@@ -18,8 +18,13 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const gaDisplayName = "Google Analytics";
 
@@ -130,7 +135,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new CustomError(`Invalid Url: ${documentUrl}`, 400);
+        throw new InstrumentationError(`Invalid Url: ${documentUrl}`);
       }
     }
   }
@@ -513,7 +518,7 @@ function processProductListEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown ProductListEvent type", 400);
+        throw new InstrumentationError("unknown ProductListEvent type");
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
@@ -559,9 +564,8 @@ function processProductListEvent(message, destination) {
       }
     } else {
       // throw error, empty Product List in Product List Viewed event payload
-      throw new CustomError(
-        "Empty Product List provided for Product List Viewed Event",
-        400
+      throw new InstrumentationError(
+        "Empty Product List provided for Product List Viewed Event"
       );
     }
   }
@@ -599,7 +603,7 @@ function processProductEvent(message, destination) {
         parameters.pa = "remove";
         break;
       default:
-        throw new CustomError("unknown ProductEvent type", 400);
+        throw new InstrumentationError("unknown ProductEvent type");
     }
 
     // add produt level custom dimensions and metrics to parameters
@@ -645,7 +649,7 @@ function processTransactionEvent(message, destination) {
       parameters.pa = "refund";
       break;
     default:
-      throw new CustomError("unknown TransactionEvent type", 400);
+      throw new InstrumentationError("unknown TransactionEvent type");
   }
 
   // One of total/revenue/value should be there
@@ -678,9 +682,8 @@ function processTransactionEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
-    throw new CustomError(
-      "No product information supplied for transaction event",
-      400
+    throw new InstrumentationError(
+      "No product information supplied for transaction event"
     );
   }
 
@@ -719,7 +722,7 @@ function processEComGenericEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown TransactionEvent type", 400);
+        throw new InstrumentationError("unknown TransactionEvent type");
     }
   }
   const { products } = message.properties;
@@ -742,7 +745,7 @@ function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
   if (!messageType) {
-    throw new CustomError("Message type is not present", 400);
+    throw new InstrumentationError("Message type is not present");
   }
   let customParams = {};
   let category;
@@ -755,7 +758,7 @@ function processSingleMessage(message, destination) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
-        throw new CustomError("server side identify is not on", 400);
+        throw new ConfigurationError("server side identify is not on");
       }
       break;
     case EventType.PAGE:
@@ -769,7 +772,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK: {
       let eventName = message.event;
       if (!(typeof eventName === "string" || eventName instanceof String)) {
-        throw new CustomError("Event name is not present/is not a string", 400);
+        throw new InstrumentationError(
+          "Event name is not present/is not a string"
+        );
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();
@@ -852,7 +857,9 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
 
   return responseBuilderSimple(
@@ -870,10 +877,7 @@ function process(event) {
   try {
     response = processSingleMessage(event.message, event.destination);
   } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
+    throw new TransformationError(error.message || "Unknown error");
   }
 
   return response;
@@ -903,6 +907,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -910,7 +915,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

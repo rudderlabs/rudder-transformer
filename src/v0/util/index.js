@@ -22,7 +22,11 @@ const {
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
 const { TRANSFORMER_METRIC } = require("./constant");
-const { InstrumentationError, BaseError } = require("./errorTypes");
+const {
+  InstrumentationError,
+  BaseError,
+  PlatformError
+} = require("./errorTypes");
 const tags = require("./tags");
 // ========================================================================
 // INLINERS
@@ -44,15 +48,6 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
-
-class CustomError extends Error {
-  constructor(message, statusCode, metadata) {
-    super(message);
-    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
-    // Apart from destination transformation
-    this.response = { status: statusCode || 400, metadata };
-  }
-}
 
 const getEventTime = message => {
   return new Date(message.timestamp).toISOString();
@@ -217,35 +212,6 @@ const getHashFromArrayWithValueAsObject = (
     });
   }
   return hashMap;
-};
-
-// NEED to decouple value finding and `required` checking
-// NEED TO DEPRECATE
-const setValues = (payload, message, mappingJson) => {
-  if (Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index += 1) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new CustomError(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
-      }
-    });
-  }
-  return payload;
 };
 
 // get the value from the message given a key
@@ -634,7 +600,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
     // TODO - think of a way to crash the pod
-    throw new CustomError("Wrong sourceKey type or blank sourceKey array");
+    throw new PlatformError("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
 };
@@ -727,7 +693,7 @@ const handleMetadataForValue = (
     }
 
     if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new CustomError(
+      throw new InstrumentationError(
         `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
       );
     }
@@ -754,7 +720,7 @@ const handleMetadataForValue = (
       }
 
       if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new CustomError(
+        throw new InstrumentationError(
           `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
         );
       }
@@ -1799,7 +1765,6 @@ const refinePayload = obj => {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
-  CustomError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -1873,7 +1838,6 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedValues,
   returnArrayOfSubarrays,
-  setValues,
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const { EventType } = require("../../../constants");
-const { CustomError } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -19,10 +19,10 @@ const process = async event => {
   const { properties, type } = message;
   // EventType validation
   if (type !== EventType.TRACK) {
-    throw new CustomError(`Message Type not supported: ${type}`, 400);
+    throw new InstrumentationError(`Message Type not supported: ${type}`);
   }
   if (!properties || typeof properties !== "object") {
-    throw new CustomError("Invalid payload for the destination", 400);
+    throw new InstrumentationError("Invalid payload for the destination");
   }
   const {
     destination: {

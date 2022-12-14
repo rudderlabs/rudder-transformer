@@ -3,7 +3,7 @@ const { BaseError } = require("./base");
 
 const errorTypes = Object.values(tags.ERROR_TYPES);
 const metaTypes = Object.values(tags.METADATA);
-
+//To throw error when error type (abort, retry or throttle) has to be dynamically deduced
 class NetworkError extends BaseError {
   constructor(
     message,

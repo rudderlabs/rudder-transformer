@@ -94,7 +94,7 @@ const lookupContact = async (term, destination) => {
     // check if exists err.response && err.response.status else 500
     const status = err.response?.status || 400;
     throw new NetworkError(
-      `Inside lookupContact, failed to make request: ${err.response.statusText}`,
+      `Inside lookupContact, failed to make request: ${err.response?.statusText}`,
       status,
 
       {

@@ -10,24 +10,6 @@ const { RetryableError, NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 /**
- * This function helps to determine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!response.error?.details) return REFRESH_TOKEN;
-      return "";
-    default:
-      return "";
-  }
-};
-
-/**
  * The response handler to handle responses from Google Analytics(Universal Analytics)
  * **Note**:
  * Currently this is being used to parse responses from deletion API
@@ -51,7 +33,7 @@ const gaResponseHandler = gaResponse => {
         "invalid credentials",
         response?.error?.status,
         response,
-        getAuthErrCategory(response?.error?.status)
+        "REFRESH_TOKEN"
       );
     }
     throw new NetworkError(

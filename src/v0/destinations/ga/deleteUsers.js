@@ -3,7 +3,6 @@ const { httpPOST } = require("../../../adapters/network");
 
 const {
   InstrumentationError,
-  RetryableError,
   OAuthSecretError
 } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");

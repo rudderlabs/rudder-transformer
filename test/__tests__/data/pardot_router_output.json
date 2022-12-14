@@ -329,9 +329,9 @@
     "statusCode": 500,
     "error": "Empty/Invalid access token",
     "statTags": {
-      "destType": "PARDOT",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "network",
+      "errorType": "retryable",
+      "meta": "invalidAuthToken"
     }
   }
 ]

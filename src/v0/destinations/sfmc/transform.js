@@ -56,13 +56,23 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     );
   } catch (error) {
     if (!isEmpty(error.response)) {
-      throw new TransformationError(
-        `Authorization Failed ${error.response.statusText}`
+      const status = error.status || 400;
+      throw new NetworkError(
+        `Authorization Failed ${error.response.statusText}`,
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        }
       );
     } else {
       const httpError = nodeSysErrorToStatus(error.code);
-      throw new TransformationError(
-        `Authorization Failed ${httpError.message}`
+      const status = httpError.status || 400;
+      throw new NetworkError(
+        `Authorization Failed ${httpError.message}`,
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        }
       );
     }
   }

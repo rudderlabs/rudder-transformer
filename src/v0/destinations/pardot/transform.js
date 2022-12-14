@@ -48,9 +48,9 @@ const {
 } = require("../../util");
 const { CONFIG_CATEGORIES } = require("./config");
 const {
+  OAuthSecretError,
   ConfigurationError,
-  InstrumentationError,
-  InvalidAuthTokenError
+  InstrumentationError
 } = require("../../util/errorTypes");
 
 /**
@@ -68,7 +68,7 @@ const getAccessToken = metadata => {
   // OAuth for this destination
   const { secret } = metadata;
   if (!secret) {
-    throw new InvalidAuthTokenError("Empty/Invalid access token");
+    throw new OAuthSecretError("Empty/Invalid access token");
   }
   return secret.access_token;
 };

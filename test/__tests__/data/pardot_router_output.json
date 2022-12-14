@@ -329,9 +329,8 @@
     "statusCode": 500,
     "error": "Empty/Invalid access token",
     "statTags": {
-      "errorCategory": "network",
-      "errorType": "retryable",
-      "meta": "invalidAuthToken"
+      "errorCategory": "platform",
+      "errorType": "oAuthSecret"
     }
   }
 ]

@@ -80,9 +80,6 @@ const responseBuilder = async (message, destination) => {
   response.body.JSON = removeUndefinedAndNullValues(dspListPayload);
   response.method = defaultPutRequestConfig.requestMethod;
   const accessToken = await getAccessToken(destination);
-  if (!accessToken) {
-    throw new NetworkInstrumentationError("Access token is not available");
-  }
   response.headers = {
     "X-Auth-Token": accessToken,
     "X-Auth-Method": "OAuth2",

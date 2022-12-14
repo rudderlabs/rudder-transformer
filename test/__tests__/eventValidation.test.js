@@ -141,10 +141,10 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig
+        mergedTpConfig
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -157,10 +157,10 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        sourceTpConfig: sourceTpConfig
+        sourceTpConfig
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -175,7 +175,7 @@ const eventValidationTestCases = [
         workspaceId: "dummy_workspace_id"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -188,8 +188,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "page",
@@ -209,7 +209,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -222,8 +222,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "screen",
@@ -242,7 +242,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -255,8 +255,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "alias",
@@ -274,7 +274,7 @@ const eventValidationTestCases = [
         timestamp: "2020-01-21T00:21:34.208Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -287,8 +287,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "group",
@@ -311,7 +311,7 @@ const eventValidationTestCases = [
         timestamp: "2020-01-21T00:21:34.208Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -324,8 +324,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "identify",
@@ -343,7 +343,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -389,7 +389,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -435,7 +435,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.UnplannedEvent
@@ -448,8 +448,8 @@ const eventValidationTestCases = [
         trackingPlanId: "dummy_tracking_plan_id",
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
-        mergedTpConfig: mergedTpConfig,
-        sourceTpConfig: sourceTpConfig
+        mergedTpConfig,
+        sourceTpConfig
       },
       message: {
         type: "track",
@@ -468,7 +468,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -515,7 +515,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.AdditionalProperties
@@ -562,7 +562,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -607,7 +607,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.RequiredMissing
@@ -652,7 +652,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -698,7 +698,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.DatatypeMismatch
@@ -744,7 +744,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -790,7 +790,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.UnknownViolation
@@ -836,7 +836,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -882,7 +882,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -928,7 +928,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.UnplannedEvent
@@ -974,7 +974,7 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: false,
       violationType: "None"
@@ -1020,10 +1020,96 @@ const eventValidationTestCases = [
         timestamp: "2020-02-02T00:23:09.544Z"
       }
     },
-    trackingPlan: trackingPlan,
+    trackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.UnplannedEvent
+    }
+  },
+  {
+    testCase:
+      "Track is part of Tracking Plan + no track config and unplannedProperties is set to drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "drop",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          global: {
+            unplannedProperties: "drop",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdditionalProperties
+    }
+  },
+  {
+    testCase:
+      "Track is part of Tracking Plan + no global config and unplannedProperties is set to forward",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "forward",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          track: {
+            unplannedProperties: "forward",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
     }
   }
 ];
@@ -1031,7 +1117,7 @@ const eventValidationTestCases = [
 describe("Supported Event types testing", () => {
   eventTypesTestCases.forEach(testCase => {
     it(`should return isSupportedOrNot ${testCase.output} for this input eventType ${testCase.eventType} everytime`, () => {
-      var isSupportedOrNot = isEventTypeSupported(testCase.eventType);
+      const isSupportedOrNot = isEventTypeSupported(testCase.eventType);
       expect(isSupportedOrNot).toEqual(testCase.output);
     });
   });

@@ -7,9 +7,9 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   generateUUID
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -41,10 +41,7 @@ function process(event) {
   const { shynetServiceUrl } = destination.Config;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -53,7 +50,9 @@ function process(event) {
     case EventType.PAGE:
       return processPage(message, shynetServiceUrl);
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
+      );
   }
 }
 
@@ -83,11 +82,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

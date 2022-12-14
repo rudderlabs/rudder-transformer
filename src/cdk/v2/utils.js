@@ -127,8 +127,9 @@ function getErrorInfo(err, isProd, defTags) {
 }
 
 function isCdkV2Destination(event) {
-  return Boolean(
-    event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled
+  return (
+    process.env.CDK_V2_Enabled === "true" &&
+    Boolean(event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled)
   );
 }
 

@@ -2,7 +2,6 @@
 const { set, get } = require("lodash");
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   removeUndefinedAndNullValues,
   getErrorRespEvents,
@@ -14,10 +13,16 @@ const {
 const { EventType } = require("../../../constants");
 const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
 const { refinePayload, getEvent } = require("./utils");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {
-    throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
+    throw new TransformationError(
+      "Something went wrong while constructing the payload"
+    );
   }
   set(payload, "timestamp", get(payload, "timestamp").toString());
   set(payload, "Project", projectName);
@@ -62,7 +67,7 @@ const identifyResponseBuilder = (message, projectName) => {
 const trackResponseBuilder = (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
   if (!message.event) {
-    throw new CustomError("[ WOOPRA ]:: Event Name can not be empty.", 400);
+    throw new InstrumentationError("Event Name can not be empty");
   }
   const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
@@ -93,16 +98,10 @@ const process = event => {
   const { message, destination } = event;
   const { projectName } = destination.Config;
   if (!projectName) {
-    throw new CustomError(
-      "[ WOOPRA ]:: Project Name field can not be empty.",
-      400
-    );
+    throw new InstrumentationError("Project Name field can not be empty");
   }
   if (!message.type) {
-    throw new CustomError(
-      "[ WOOPRA ]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -117,9 +116,8 @@ const process = event => {
       response = pageResponseBuilder(message, projectName);
       break;
     default:
-      throw new CustomError(
-        `[ WOOPRA ]:: Message type ${messageType} not supported.`,
-        400
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
       );
   }
   return response;

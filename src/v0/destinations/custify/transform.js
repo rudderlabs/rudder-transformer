@@ -7,10 +7,14 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  generateErrorObject
 } = require("../../util");
 const { processIdentify, processTrack, processGroup } = require("./util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * This function validates the message and builds the response
@@ -38,7 +42,7 @@ const validateAndBuildResponse = async (message, destination) => {
       category = ConfigCategory.GROUP_USER;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
 
   if (get(message, MappedToDestinationKey)) {
@@ -59,9 +63,8 @@ const validateAndBuildResponse = async (message, destination) => {
 
 const processSingleMessage = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Ignoring message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Ignoring message."
     );
   }
   return validateAndBuildResponse(message, destination);
@@ -72,10 +75,7 @@ const process = event => {
   try {
     response = processSingleMessage(event.message, event.destination);
   } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
+    throw new TransformationError(error.message || "Unknown error");
   }
   return response;
 };
@@ -104,6 +104,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -111,7 +112,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

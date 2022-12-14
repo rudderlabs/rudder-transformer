@@ -2,8 +2,12 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const {
+  ConfigurationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 function getResouceList(config) {
   let resource;
@@ -35,15 +39,14 @@ function process(event) {
       };
     } else {
       // drop event if config is empty
-      throw new CustomError(
+      throw new ConfigurationError(
         "EventBridge: received empty config, dropping event",
         400
       );
     }
   } catch (error) {
-    throw new CustomError(
-      error.message || "EventBridge: Unknown error",
-      error.status || 400
+    throw new TransformationError(
+      error.message || "EventBridge: Unknown error"
     );
   }
   return removeUndefinedAndNullValues(response);
@@ -73,6 +76,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -80,7 +84,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

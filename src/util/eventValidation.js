@@ -71,7 +71,7 @@ function getAjv(ajvOptions, isDraft4 = false) {
  */
 function checkForPropertyMissing(property) {
   if (!(property && property !== "")) {
-    throw `${property} doesnt exist for event`;
+    throw new Error(`${property} does not exist for event`);
   }
 }
 
@@ -83,7 +83,7 @@ function checkForPropertyMissing(property) {
  * @returns false If it is not supported or it is not present in supportedEventTypes.
  */
 function isEventTypeSupported(eventType) {
-  if (!supportedEventTypes.hasOwnProperty(eventType)) {
+  if (!Object.prototype.hasOwnProperty.call(supportedEventTypes, eventType)) {
     return false;
   }
   return supportedEventTypes[eventType];
@@ -122,7 +122,7 @@ async function validate(event) {
     checkForPropertyMissing(event.metadata.trackingPlanVersion);
     checkForPropertyMissing(event.metadata.workspaceId);
 
-    const sourceTpConfig = event.metadata.sourceTpConfig;
+    const { sourceTpConfig } = event.metadata;
     const eventSchema = await trackingPlan.getEventSchema(
       event.metadata.trackingPlanId,
       event.metadata.trackingPlanVersion,
@@ -137,7 +137,7 @@ async function validate(event) {
       if (event.message.type !== "track") {
         return [];
       }
-      rudderValidationError = {
+      const rudderValidationError = {
         type: violationTypes.UnplannedEvent,
         message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${event.metadata.trackingPlanId}::${event.metadata.trackingPlanVersion}`,
         meta: {}
@@ -153,8 +153,8 @@ async function validate(event) {
       isDraft4 = true;
     }
 
-    //Current json schema is injected with version for non-track events in config-be, need to remove ot parse it succesfully
-    delete eventSchema["version"];
+    // Current json schema is injected with version for non-track events in config-be, need to remove ot parse it succesfully
+    delete eventSchema.version;
 
     const schemaHash = eventSchemaHash(
       event.metadata.trackingPlanId,
@@ -195,8 +195,8 @@ async function validate(event) {
       return [];
     }
 
-    var validationErrors = validateEvent.errors.map(function(error) {
-      var rudderValidationError;
+    const validationErrors = validateEvent.errors.map(error => {
+      let rudderValidationError;
       switch (error.keyword) {
         case "required":
           rudderValidationError = {
@@ -243,6 +243,7 @@ async function validate(event) {
     });
     return validationErrors;
   } catch (error) {
+    logger.error(`TP event validation error: ${error.message}`);
     throw error;
   }
 }
@@ -258,13 +259,12 @@ async function handleValidation(event) {
   let violationType = "None";
 
   try {
-    const sourceTpConfig = event.metadata.sourceTpConfig;
-    const mergedTpConfig = event.metadata.mergedTpConfig;
+    const { sourceTpConfig, mergedTpConfig } = event.metadata;
 
     if (isEmptyObject(sourceTpConfig) || isEmptyObject(mergedTpConfig)) {
       return {
-        dropEvent: dropEvent,
-        violationType: violationType,
+        dropEvent,
+        violationType,
         validationErrors: []
       };
     }
@@ -272,8 +272,8 @@ async function handleValidation(event) {
     // Checking the evenType is supported or not
     if (!isEventTypeSupported(event.message.type)) {
       return {
-        dropEvent: dropEvent,
-        violationType: violationType,
+        dropEvent,
+        violationType,
         validationErrors: []
       };
     }
@@ -281,17 +281,19 @@ async function handleValidation(event) {
     const validationErrors = await validate(event);
     if (validationErrors.length === 0) {
       return {
-        dropEvent: dropEvent,
-        violationType: violationType,
-        validationErrors: validationErrors
+        dropEvent,
+        violationType,
+        validationErrors
       };
     }
 
     const violationsByType = new Set(validationErrors.map(err => err.type));
+    // eslint-disable-next-line no-restricted-syntax
     for (const [key, val] of Object.entries(mergedTpConfig)) {
       // To have compatibility for config-backend, spread-sheet plugin and postman collection
       // We are making everything to lower string and doing string comparision.
       const value = val?.toString()?.toLowerCase();
+      // eslint-disable-next-line default-case
       switch (key) {
         case "allowUnplannedEvents": {
           const exists = violationsByType.has(violationTypes.UnplannedEvent);
@@ -340,7 +342,7 @@ async function handleValidation(event) {
           break;
         }
         case "sendViolatedEventsTo": {
-          if (value !== "procErrors") {
+          if (value !== "procerrors") {
             logger.error(`Unknown option ${value} in ${key}"`);
           }
           break;
@@ -349,11 +351,12 @@ async function handleValidation(event) {
     }
 
     return {
-      dropEvent: dropEvent,
-      violationType: violationType,
-      validationErrors: validationErrors
+      dropEvent,
+      violationType,
+      validationErrors
     };
   } catch (error) {
+    logger.error(`TP handle validation error: ${error.message}`);
     throw error;
   }
 }

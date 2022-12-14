@@ -3,7 +3,14 @@ const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError, getDestinationExternalID } = require("../../util");
+const { getDestinationExternalID } = require("../../util");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
@@ -23,7 +30,9 @@ const getGroupId = (groupTitle, board) => {
   if (groupId) {
     return groupId;
   }
-  throw new CustomError(`Group ${groupTitle} doesn't exist in the board`, 400);
+  throw new ConfigurationError(
+    `Group ${groupTitle} doesn't exist in the board`
+  );
 };
 
 /**
@@ -44,9 +53,8 @@ const getColumnId = (columnTitle, board) => {
   if (columnId) {
     return columnId;
   }
-  throw new CustomError(
-    `Column ${columnTitle} doesn't exist in the board`,
-    400
+  throw new ConfigurationError(
+    `Column ${columnTitle} doesn't exist in the board`
   );
 };
 
@@ -189,10 +197,16 @@ const getBoardDetails = async (url, boardID, apiToken) => {
   );
   const boardDeatailsResponse = processAxiosResponse(clientResponse);
   if (boardDeatailsResponse.status !== 200) {
-    throw new CustomError(
+    throw new NetworkError(
       `The lookup call could not be completed with the error:
-      ${JSON.stringify(boardDeatailsResponse.response)}`, // Recheck this
-      boardDeatailsResponse.status
+      ${JSON.stringify(boardDeatailsResponse.response)}`,
+      boardDeatailsResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          boardDeatailsResponse.status
+        )
+      },
+      boardDeatailsResponse.response
     );
   }
   return boardDeatailsResponse;
@@ -220,7 +234,7 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
   );
   if (groupTitle) {
     if (!message.properties?.name) {
-      throw new CustomError(`Item name is required to create an item`, 400);
+      throw new InstrumentationError("Item name is required to create an item");
     }
     const groupId = getGroupId(
       groupTitle,

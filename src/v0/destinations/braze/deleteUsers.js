@@ -1,23 +1,30 @@
 const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const {
+  RetryableError,
+  NetworkInstrumentationError,
+  NetworkError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const tags = require("../../util/tags");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { dataCenter, restApiKey } = config;
   if (!dataCenter || !restApiKey) {
-    throw new CustomError(
-      "data center / api key for deletion not present",
-      400
+    throw new ConfigurationError(
+      "data center / api key for deletion not present"
     );
   }
   let endPoint;
   for (let i = 0; i < userAttributes.length; i += 1) {
     const uId = userAttributes[i].userId;
     if (!uId) {
-      throw new CustomError("User id for deletion not present", 400);
+      throw new InstrumentationError("User id for deletion not present");
     }
 
     // Endpoints different for different data centers.
@@ -43,10 +50,12 @@ const userDeletionHandler = async (userAttributes, config) => {
     const resp = await httpSend(requestOptions);
 
     if (resp && !resp.success && !resp.response.response) {
-      throw new CustomError(resp.response.code || "Could not delete user", 400);
+      throw new NetworkInstrumentationError(
+        resp.response.code || "Could not delete user"
+      );
     }
     if (!resp || !resp.response) {
-      throw new CustomError("Could not get response", 500);
+      throw new RetryableError("Could not get response");
     }
     if (
       resp &&
@@ -55,9 +64,15 @@ const userDeletionHandler = async (userAttributes, config) => {
       resp.response.response.status !== 200 &&
       resp.response.response.status !== 404
     ) {
-      throw new CustomError(
+      throw new NetworkError(
         resp.response.response.statusText || "Error while deleting user",
-        resp.response.response.status
+        resp.response.response.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            resp.response.response.status
+          )
+        },
+        resp
       );
     }
   }

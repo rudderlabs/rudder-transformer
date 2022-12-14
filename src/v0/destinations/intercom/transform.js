@@ -15,9 +15,12 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   addExternalIdToTraits
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -72,7 +75,7 @@ function validateIdentify(message, payload) {
 
     return finalPayload;
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError("Email or userId is mandatory");
 }
 
 function validateTrack(message, payload) {
@@ -89,7 +92,7 @@ function validateTrack(message, payload) {
     }
     return { ...payload, metadata };
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError("Email or userId is mandatory");
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -107,7 +110,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
       );
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -124,9 +129,8 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const { sendAnonymousId } = destination.Config;
@@ -144,7 +148,9 @@ function processSingleMessage(message, destination) {
     //   category = ConfigCategory.GROUP;
     //   break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   // build the response and return
@@ -166,10 +172,7 @@ function process(event) {
   try {
     response = processSingleMessage(event.message, event.destination);
   } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
+    throw new TransformationError(error.message || "Unknown error");
   }
   return response;
 }

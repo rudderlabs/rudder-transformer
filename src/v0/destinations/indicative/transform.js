@@ -8,8 +8,12 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 const handleProperties = properties => {
   const result = {};
@@ -121,14 +125,13 @@ const responseBuilderSimple = (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -153,7 +156,9 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   // append context.page to properties for page, track
@@ -218,6 +223,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -225,7 +231,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

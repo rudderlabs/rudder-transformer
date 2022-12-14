@@ -10,11 +10,15 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getErrorRespEvents,
   getSuccessRespEvents,
   getDestinationExternalID
 } = require("../../util");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, apiToken) => {
   if (payload) {
@@ -28,9 +32,8 @@ const responseBuilder = (payload, endpoint, apiToken) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-  throw new CustomError(
-    "Monday]: Payload could not be populated due to wrong input",
-    400
+  throw new TransformationError(
+    "Payload could not be populated due to wrong input"
   );
 };
 
@@ -47,21 +50,19 @@ const trackResponseBuilder = async (message, { Config }) => {
     boardId = Config.boardId;
   }
   if (!boardId) {
-    throw new CustomError("Monday]: boardId is a required field", 400);
+    throw new ConfigurationError("boardId is a required field");
   }
   const event = get(message, "event");
 
   if (!event) {
-    throw new CustomError(
-      "[Monday]: event is not present in the input payloads",
-      400
+    throw new InstrumentationError(
+      "event is not present in the input payloads"
     );
   }
 
   if (!checkAllowedEventNameFromUI(event, Config)) {
-    throw new CustomError(
-      "[Monday]:: Event Discarded. To allow this event, add this in Allowlist",
-      400
+    throw new ConfigurationError(
+      "Event Discarded. To allow this event, add this in Allowlist"
     );
   }
   const endpoint = ENDPOINT;
@@ -75,13 +76,10 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.apiToken) {
-    throw new CustomError("[Monday]: apiToken is a required field", 400);
+    throw new ConfigurationError("ApiToken is a required field");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -90,7 +88,9 @@ const processEvent = async (message, destination) => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -125,7 +125,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response ? error.response.status : error.code || 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

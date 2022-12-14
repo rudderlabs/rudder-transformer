@@ -9,10 +9,10 @@ const {
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   formatTimeStamp,
   isAppleFamily
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // build final response
 // --------------------
@@ -163,9 +163,8 @@ function processMessage(message, destination) {
       customParams = processTrackEvents(message);
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for kochava`,
-        400
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
       );
   }
 
@@ -203,11 +202,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

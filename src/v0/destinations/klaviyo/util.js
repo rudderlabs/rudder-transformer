@@ -11,8 +11,7 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   extractCustomFields,
-  removeUndefinedAndNullValues,
-  CustomError
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 const {
@@ -22,8 +21,11 @@ const {
   CONFIG_CATEGORIES
 } = require("./config");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const { NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This function is used to check if the user/profile already exists or not, if already exists unique person_id
@@ -68,10 +70,16 @@ const isProfileExist = async (message, { Config }) => {
             "There is no profile matching the given parameters."
         )
       ) {
-        throw new CustomError(
+        throw new NetworkError(
           `The lookup call could not be completed with the error:
           ${JSON.stringify(processedProfileResponse.response)}`,
-          processedProfileResponse.status
+          processedProfileResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              processedProfileResponse.status
+            )
+          },
+          processedProfileResponse
         );
       }
     }

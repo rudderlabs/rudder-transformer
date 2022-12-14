@@ -17,9 +17,12 @@ const {
   isDefinedAndNotNull,
   removeUndefinedAndNullValues,
   getErrorRespEvents,
-  getSuccessRespEvents,
-  CustomError
+  getSuccessRespEvents
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = message => {
@@ -81,7 +84,7 @@ const responseBuilderSimple = (message, category, destination) => {
   }
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   payload.properties = {
@@ -141,12 +144,14 @@ const responseBuilderSimple = (message, category, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(ErrorMessage.TypeNotFound, 400);
+    throw new InstrumentationError("Event type is required");
   }
 
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   if (!category) {
-    throw new CustomError(ErrorMessage.TypeNotSupported, 400);
+    throw new InstrumentationError(
+      `Event type ${message.type} is not supported`
+    );
   }
 
   return responseBuilderSimple(message, category, destination);
@@ -182,11 +187,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

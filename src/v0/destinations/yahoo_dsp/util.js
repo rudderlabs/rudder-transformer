@@ -3,17 +3,15 @@ const sha256 = require("sha256");
 const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
 const { httpPOST } = require("../../../adapters/network");
 const { isDefinedAndNotNullAndNotEmpty } = require("../../util");
-
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
   ACCESS_TOKEN_CACHE_TTL,
   AUDIENCE_ATTRIBUTE,
   DSP_SUPPORTED_OPERATION
 } = require("./config.js");
 const Cache = require("../../util/cache");
-const {
-  InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
@@ -149,9 +147,14 @@ const getAccessToken = async destination => {
     );
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {
-      throw new NetworkInstrumentationError(
+      const status = dspAuthorisationData?.response?.status || 400;
+      throw new NetworkError(
         `Access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
-        400
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        },
+        dspAuthorisationData
       );
     }
     return dspAuthorisationData.response?.data?.access_token;

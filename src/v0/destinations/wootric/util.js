@@ -1,6 +1,7 @@
 const qs = require("qs");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const {
@@ -14,10 +15,8 @@ const {
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const Cache = require("../../util/cache");
-const {
-  InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
@@ -58,10 +57,17 @@ const getAccessToken = async destination => {
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
     if (processedAuthResponse.status !== 200) {
-      throw new NetworkInstrumentationError(
+      throw new NetworkError(
         `Access token could not be generated due to ${JSON.stringify(
           processedAuthResponse.response
-        )}`
+        )}`,
+        processedAuthResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            processedAuthResponse.status
+          )
+        },
+        processedAuthResponse
       );
     }
     return processedAuthResponse.response?.access_token;
@@ -106,10 +112,17 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   }
 
   if (processedUserResponse.status !== 404) {
-    throw new NetworkInstrumentationError(
+    throw new NetworkError(
       `Unable to retrieve userId due to ${JSON.stringify(
         processedUserResponse.response
-      )}`
+      )}`,
+      processedUserResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          processedUserResponse.status
+        )
+      },
+      processedUserResponse
     );
   }
 

@@ -21,7 +21,6 @@ const {
 const { PROPERTIES, END_USER_PROPERTIES } = require("./config");
 const {
   TransformationError,
-  NetworkInstrumentationError,
   InstrumentationError
 } = require("../../util/errorTypes");
 
@@ -50,9 +49,6 @@ const identifyResponseBuilder = async (message, destination) => {
   let builder;
 
   const accessToken = await getAccessToken(destination);
-  if (!accessToken) {
-    throw new NetworkInstrumentationError("Access token is missing");
-  }
 
   const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userIdOnly");
@@ -90,9 +86,6 @@ const trackResponseBuilder = async (message, destination) => {
   let builder;
 
   const accessToken = await getAccessToken(destination);
-  if (!accessToken) {
-    throw new NetworkInstrumentationError("Access token is missing");
-  }
 
   const rawEndUserId = getDestinationExternalID(message, "wootricEndUserId");
   const userId = getFieldValueFromMessage(message, "userIdOnly");

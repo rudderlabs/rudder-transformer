@@ -3,7 +3,8 @@ const { httpPOST } = require("../../../adapters/network");
 
 const {
   InstrumentationError,
-  RetryableError
+  RetryableError,
+  OAuthSecretError
 } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { GA_USER_DELETION_ENDPOINT } = require("./config");
@@ -21,7 +22,7 @@ const prepareDeleteRequest = (userAttributes, config, rudderDestInfo) => {
   const { secret } = rudderDestInfo;
   // TODO: Should we do more validations ?
   if (secret && isEmpty(secret)) {
-    throw new RetryableError(
+    throw new OAuthSecretError(
       // This would happen when server doesn't send "x-rudder-dest-info" header
       // Todo's in-case this exception happen:
       // 1. The server version might be an older one

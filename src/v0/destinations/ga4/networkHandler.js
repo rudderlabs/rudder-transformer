@@ -13,10 +13,7 @@ const {
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 
-const {
-  NetworkError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 const responseHandler = (destinationResponse, dest) => {
@@ -43,8 +40,13 @@ const responseHandler = (destinationResponse, dest) => {
         validationCode,
         fieldPath
       } = response.validationMessages[0];
-      throw new NetworkInstrumentationError(
-        `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`
+      throw new NetworkError(
+        `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`,
+        400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        },
+        response?.validationMessages[0]?.description
       );
     }
   }
@@ -56,7 +58,8 @@ const responseHandler = (destinationResponse, dest) => {
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-      }
+      },
+      destinationResponse
     );
   }
 

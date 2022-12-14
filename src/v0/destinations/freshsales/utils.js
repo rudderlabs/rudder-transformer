@@ -350,7 +350,7 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
       lifeCycleStage => lifeCycleStage.name === lifecycleStageName
     );
     if (!lifeCycleStageDetials) {
-      throw new InstrumentationError(
+      throw new NetworkInstrumentationError(
         `failed to fetch lifeCycleStages with ${lifecycleStageName}`
       );
     }

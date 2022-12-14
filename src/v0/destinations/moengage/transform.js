@@ -93,7 +93,9 @@ function responseBuilderSimple(message, category, destination) {
         }
         break;
       default:
-        throw new InstrumentationError("Call type is not valid");
+        throw new InstrumentationError(
+          `Event type ${category.type} is not supported`
+        );
     }
 
     response.body.JSON = removeUndefinedAndNullValues(payload);

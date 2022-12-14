@@ -49,7 +49,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             resp.response?.response?.status
           )
         },
-        resp
+        resp.response
       );
     }
   }

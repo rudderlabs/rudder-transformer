@@ -113,7 +113,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   ) {
     addExternalIdToTraits(message);
     if (!objectType) {
-      throw new TransformationError("objectType not found");
+      throw new InstrumentationError("objectType not found");
     }
     if (operation === "createObject") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
@@ -430,7 +430,7 @@ const batchEvents = destEvents => {
           associationObjectsEventChunk.push(event);
         }
       } else {
-        throw new InstrumentationError("rETL -  Error in getting operation");
+        throw new TransformationError("rETL -  Error in getting operation");
       }
     } else if (operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint

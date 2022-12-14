@@ -35,7 +35,14 @@ const userExists = async (Config, id) => {
     if (response && response.status) {
       return response.status === 200;
     }
-    throw new NetworkInstrumentationError("Invalid response.");
+    throw new NetworkError(
+      "Invalid response.",
+      response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response?.status)
+      },
+      response
+    );
   } catch (error) {
     let errMsg = "";
     let errStatus = 400;
@@ -70,7 +77,14 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
     if (response) {
       return response.status === 200 || response.status === 201;
     }
-    throw new NetworkInstrumentationError("Invalid response.");
+    throw new NetworkError(
+      "Invalid response.",
+      response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.status)
+      },
+      response
+    );
   } catch (error) {
     let errMsg = "";
     const errStatus = 400;

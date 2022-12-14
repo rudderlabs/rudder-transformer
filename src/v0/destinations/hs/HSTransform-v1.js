@@ -234,7 +234,7 @@ const batchIdentifyForrETL = (
         metadata.push(ev.metadata);
       });
     } else {
-      throw new TransformationError("rETL -  Unknow hubspot operation", 400);
+      throw new TransformationError("rETL -  Unknow hubspot operation");
     }
 
     batchEventResponse.batchedRequest.body.JSON = {

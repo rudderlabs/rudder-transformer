@@ -170,11 +170,8 @@ function processSingleMessage(message, destination) {
 
 function process(event) {
   let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new TransformationError(error.message || "Unknown error");
-  }
+
+  response = processSingleMessage(event.message, event.destination);
   return response;
 }
 

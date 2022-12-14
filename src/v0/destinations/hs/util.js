@@ -492,8 +492,15 @@ const getExistingData = async (inputs, destination) => {
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {
-      throw new NetworkInstrumentationError(
-        `rETL - Error during searching object record. ${searchResponse.response?.message}`
+      throw new NetworkError(
+        `rETL - Error during searching object record. ${searchResponse.response?.message}`,
+        searchResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            searchResponse.status
+          )
+        },
+        searchResponse
       );
     }
 

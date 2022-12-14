@@ -27,7 +27,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Required property for email type audience is not available in an object"
+    "error": "Required property for email type audience is not available in an object"
   },
   {
     "version": "1",
@@ -85,35 +85,34 @@
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'"
+    "error": "seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Required property for deviceId type audience is not available in an object"
+    "error": "Required property for deviceId type audience is not available in an object"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Audience Type \"DEVICEID\" is not supported"
+    "error": "Audience Type DEVICEID is not supported"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: The only supported operation for audience updation 'add' is not present"
+    "error": "The only supported operation for audience updation 'add' is not present"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message type track not supoorted"
+    "error": "Event type track is not supported"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message Type is not present. Aborting message."
+    "error": "Event type is required"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: listData is not present inside properties. Aborting message."
+    "error": "listData is not present inside properties. Aborting message"
   },
   {
     "statusCode": 400,
-    "error": "[Yahoo_DSP]:: Message properties is not present. Aborting message."
+    "error": "Message properties is not present. Aborting message"
   }
-  
 ]

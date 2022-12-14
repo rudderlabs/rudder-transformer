@@ -12,8 +12,13 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilderSimple = async (message, destination, basicPayload) => {
   const payload = constructPayload(message, commonConfig);
@@ -85,9 +90,8 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
       if (listMapping[key] && listDelimiter[key]) {
         let val = get(message, `properties.${key}`);
         if (typeof val !== "string" && !Array.isArray(val)) {
-          throw new CustomError(
-            "List Mapping properties variable is neither a string nor an array",
-            400
+          throw new ConfigurationError(
+            "List Mapping properties variable is neither a string nor an array"
           );
         }
         if (typeof val === "string") {
@@ -130,9 +134,8 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);
         if (typeof val !== "string" && !Array.isArray(val)) {
-          throw new CustomError(
-            "prop variable is neither a string nor an array",
-            400
+          throw new InstrumentationError(
+            "prop variable is neither a string nor an array"
           );
         }
         const delimeter = propsDelimiter[key] || "|";
@@ -433,7 +436,9 @@ const handleTrack = (message, destination) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw InstrumentationError(
+      "Message Type is not present. Aborting message."
+    );
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatDestinationConfig(destination.Config);
@@ -451,7 +456,7 @@ const process = async event => {
       payload = handleTrack(messageClone, formattedDestination);
       break;
     default:
-      throw new CustomError("Message type is not supported");
+      throw new InstrumentationError("Message type is not supported");
   }
   if (payload) {
     const response = await responseBuilderSimple(
@@ -461,7 +466,7 @@ const process = async event => {
     );
     return response;
   }
-  throw new CustomError("AA: Unprocessable Event", 400);
+  throw new TransformationError("AA: Unprocessable Event");
 };
 
 const processRouterDest = async inputs => {
@@ -489,10 +494,12 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

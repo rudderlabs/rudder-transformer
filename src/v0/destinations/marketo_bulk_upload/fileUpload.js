@@ -55,13 +55,19 @@ const fetchFieldSchema = async config => {
       fieldSchemaNames.push(field.name);
     });
   } else if (fieldSchemaMapping.response.error) {
-    throw new NetworkInstrumentationError(
-      `${fieldSchemaMapping.response.error}`
+    const status = fieldSchemaMapping?.response?.status || 400;
+    throw new NetworkError(
+      `${fieldSchemaMapping.response.error}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      fieldSchemaMapping
     );
   } else {
-    throw new NetworkInstrumentationError(
-      "Failed to fetch Marketo Field Schema"
-    );
+    throw new NetworkError("Failed to fetch Marketo Field Schema", 400, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400)
+    });
   }
   return { fieldSchemaNames, accessToken };
 };
@@ -72,17 +78,12 @@ const getHeaderFields = (config, fieldSchemaNames, jobIds) => {
   columnFieldsMapping.forEach(colField => {
     if (fieldSchemaNames) {
       if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
-        throw new AbortedError(
-          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
-          400,
-          { successfulJobs: jobIds, unsuccessfulJobs: [] }
+        throw new ConfigurationError(
+          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`
         );
       }
     } else {
-      throw new AbortedError("Marketo Field Schema is Empty. Aborting", 400, {
-        successfulJobs: jobIds,
-        unsuccessfulJobs: []
-      });
+      throw new ConfigurationError("Marketo Field Schema is Empty. Aborting");
     }
   });
   const columnField = getHashFromArray(
@@ -340,7 +341,6 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             });
             throw new ThrottledError(
               resp.response.response.statusText || "Could not upload file",
-              500,
               { successfulJobs, unsuccessfulJobs }
             );
           }

@@ -93,7 +93,6 @@ const getFailedJobStatus = async event => {
         throw new ThrottledError(
           resp.response.response.statusText ||
             "Error during fetching failure job status",
-          500,
           resp
         );
       }
@@ -200,7 +199,6 @@ const getWarningJobStatus = async event => {
         throw new ThrottledError(
           resp.response.response.statusText ||
             "Error during fetching warning job status",
-          500,
           resp
         );
       }

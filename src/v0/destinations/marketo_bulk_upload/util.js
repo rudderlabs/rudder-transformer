@@ -3,7 +3,8 @@ const {
   ThrottledError,
   AbortedError,
   RetryableError,
-  NetworkInstrumentationError
+  NetworkInstrumentationError,
+  UnauthorizedError
 } = require("../../util/errorTypes");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
@@ -82,13 +83,9 @@ const getAccessToken = async config => {
         resp
       );
     }
-    throw new NetworkInstrumentationError(
-      "Could not retrieve authorization token"
-    );
+    throw new UnauthorizedError("Could not retrieve authorization token");
   }
-  throw new NetworkInstrumentationError(
-    "Could not retrieve authorization token"
-  );
+  throw new UnauthorizedError("Could not retrieve authorization token");
 };
 
 module.exports = {

@@ -84,7 +84,6 @@ const getPollStatus = async event => {
         });
         throw new ThrottledError(
           pollStatus.response.data.errors[0].message || "Could not poll status",
-          500,
           pollStatus
         );
       }

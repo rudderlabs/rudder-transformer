@@ -23,7 +23,7 @@ jobs:
       - name: Update PATH
         run: PATH=$(go env GOPATH)/bin:$PATH
       - name: Create Kind cluster
-        run: kind create cluster --name kind-cluster --config=worker-nodes.yml
+        run: kind create cluster --name kind-cluster --config=worker-nodes-kind.yml
       - name: Create OpenFaaS namespaces
         run: kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
       - name: Set up Helm

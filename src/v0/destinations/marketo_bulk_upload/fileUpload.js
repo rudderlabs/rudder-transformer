@@ -10,13 +10,22 @@ const {
   UPLOAD_FILE
 } = require("./util");
 const {
-  CustomError,
   getHashFromArray,
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { httpPOST, httpGET } = require("../../../adapters/network");
 const stats = require("../../../util/stats");
+const {
+  RetryableError,
+  AbortedError,
+  ThrottledError,
+  NetworkError,
+  ConfigurationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 
 const fetchFieldSchema = async config => {
   let fieldArr = [];
@@ -46,9 +55,13 @@ const fetchFieldSchema = async config => {
       fieldSchemaNames.push(field.name);
     });
   } else if (fieldSchemaMapping.response.error) {
-    throw new CustomError(`${fieldSchemaMapping.response.error}`, 400);
+    throw new NetworkInstrumentationError(
+      `${fieldSchemaMapping.response.error}`
+    );
   } else {
-    throw new CustomError("Failed to fetch Marketo Field Schema", 400);
+    throw new NetworkInstrumentationError(
+      "Failed to fetch Marketo Field Schema"
+    );
   }
   return { fieldSchemaNames, accessToken };
 };
@@ -59,14 +72,14 @@ const getHeaderFields = (config, fieldSchemaNames, jobIds) => {
   columnFieldsMapping.forEach(colField => {
     if (fieldSchemaNames) {
       if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
-        throw new CustomError(
+        throw new AbortedError(
           `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
           400,
           { successfulJobs: jobIds, unsuccessfulJobs: [] }
         );
       }
     } else {
-      throw new CustomError(`Marketo Field Schema is Empty. Aborting. `, 400, {
+      throw new AbortedError("Marketo Field Schema is Empty. Aborting", 400, {
         successfulJobs: jobIds,
         unsuccessfulJobs: []
       });
@@ -140,7 +153,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   }
 
   if (!Object.keys(headerArr).length) {
-    throw new CustomError("Header fields not present", 400);
+    throw new ConfigurationError("Header fields not present");
   }
   const csv = [];
   csv.push(headerArr.toString());
@@ -283,7 +296,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               status: 500,
               state: "Retryable"
             });
-            throw new CustomError(
+            throw new RetryableError(
               resp.response.data.errors[0].message || "Could not upload file",
               500,
               { successfulJobs, unsuccessfulJobs }
@@ -301,7 +314,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
                 status: 500,
                 state: "Retryable"
               });
-              throw new CustomError(
+              throw new RetryableError(
                 resp.response.data.errors[0].message || "Could not upload file",
                 500,
                 { successfulJobs, unsuccessfulJobs }
@@ -312,7 +325,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               status: 400,
               state: "Abortable"
             });
-            throw new CustomError(
+            throw new AbortedError(
               resp.response.data.errors[0].message || "Could not upload file",
               400,
               { successfulJobs, unsuccessfulJobs }
@@ -325,7 +338,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               status: 500,
               state: "Retryable"
             });
-            throw new CustomError(
+            throw new ThrottledError(
               resp.response.response.statusText || "Could not upload file",
               500,
               { successfulJobs, unsuccessfulJobs }
@@ -336,7 +349,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             status: 500,
             state: "Retryable"
           });
-          throw new CustomError(
+          throw new RetryableError(
             resp.response.response.statusText || "Error during uploading file",
             500,
             { successfulJobs, unsuccessfulJobs }
@@ -348,12 +361,16 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   } catch (err) {
     stats.increment(UPLOAD_FILE, 1, {
       integration: "Marketo_bulk_upload",
-      status: err.response.status,
+      status: err.response?.status || 400,
       errorMessage: err.message || "Error during uploading file"
     });
-    throw new CustomError(
+    const status = err.response?.status || 400;
+    throw new NetworkError(
       err.message || "Error during uploading file",
-      err.response.status,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
       { successfulJobs, unsuccessfulJobs }
     );
   }
@@ -387,7 +404,7 @@ const responseHandler = async (input, config) => {
     status: 500,
     state: "Retryable"
   });
-  throw new CustomError("No import id received", 500, {
+  throw new RetryableError("No import id received", 500, {
     successfulJobs,
     unsuccessfulJobs
   });

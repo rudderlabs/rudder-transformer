@@ -1,4 +1,3 @@
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const v0Utils = require("../../util");
 const { marketoResponseHandler } = require("./util");
 const {
@@ -18,7 +17,6 @@ const responseHandler = (destinationResponse, destType) => {
   marketoResponseHandler(
     destinationResponse,
     "during Marketo Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     destinationResponse?.rudderJobMetadata,
     authCache,
     "marketo"

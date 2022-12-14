@@ -726,7 +726,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "email is required for the chosen schema"
+      "error": "Required schema parameter email is not found from payload"
     }
   },
   {

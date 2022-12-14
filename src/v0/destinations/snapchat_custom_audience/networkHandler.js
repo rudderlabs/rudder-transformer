@@ -5,14 +5,15 @@ const {
   httpSend
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-
+const tags = require("../../util/tags");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const { NetworkError } = require("../../util/errorTypes");
 
 const prepareProxyReq = request => {
   const { body } = request;
@@ -50,37 +51,18 @@ const scAudienceProxyRequest = async request => {
   return response;
 };
 
-/**
- * This function helps to determine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!response.error?.details) return REFRESH_TOKEN;
-      return "";
-    default:
-      return "";
-  }
-};
-
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   // const respAttributes = response["@attributes"] || null;
   // const { stat, err_code: errorCode } = respAttributes;
-
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `snapchat_custom_audience: ${response.error?.message} ${stageMsg}`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
-    .build();
+  throw new NetworkError(
+    `snapchat_custom_audience: ${response.error?.message} ${stageMsg}`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+    },
+    response
+  );
 };
 
 const responseHandler = destinationResponse => {

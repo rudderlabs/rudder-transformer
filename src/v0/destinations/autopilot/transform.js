@@ -12,7 +12,7 @@ const {
   getErrorRespEvents,
   generateErrorObject
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+
 const {
   InstrumentationError,
   TransformationError
@@ -66,18 +66,7 @@ function responseBuilderSimple(message, category, destination) {
         if (contactIdOrEmail) {
           response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         } else {
-          throw new ErrorBuilder()
-            .setStatus(400)
-            .setMessage("Email is required for track calls")
-            .setStatTags({
-              destType: DESTINATION,
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .BAD_PARAM
-            })
-            .build();
+          throw new InstrumentationError("Email is required for track calls");
           // throw new CustomError("Email is required for track calls", 400);
         }
         break;

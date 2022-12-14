@@ -94,7 +94,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   }
   if (event === undefined || event === "" || flag === 0) {
     throw new ConfigurationError(
-      `Conversion named ${event} is not exist in rudderstack dashboard`
+      `Conversion named "${event}" was not specified in the RudderStack destination configuration`
     );
   }
   const { requireHash } = destination.Config;

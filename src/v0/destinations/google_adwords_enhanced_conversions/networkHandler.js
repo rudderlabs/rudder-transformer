@@ -15,7 +15,10 @@ const {
   getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { BASE_ENDPOINT } = require("./config");
-const { NetworkError, TransformationError } = require("../../util/errorTypes");
+const {
+  NetworkError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -86,7 +89,7 @@ const getConversionActionId = async (method, headers, params) => {
       "response.data[0].results[0].conversionAction.id"
     );
     if (!conversionActionId) {
-      throw new TransformationError(
+      throw new NetworkInstrumentationError(
         `Unable to find conversionActionId for conversion:${params.event}`
       );
     }
@@ -142,7 +145,7 @@ const responseHandler = destinationResponse => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
     response,
-    getAuthErrCategory(status)
+    getAuthErrCategory(status, response)
   );
 };
 // eslint-disable-next-line func-names

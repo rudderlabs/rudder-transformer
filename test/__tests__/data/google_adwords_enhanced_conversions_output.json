@@ -64,7 +64,7 @@
       }
     },
     "statusCode": 400,
-    "error": "Conversion named Checkout Started is not exist in rudderstack dashboard",
+    "error": "Conversion named \"Checkout Started\" was not specified in the RudderStack destination configuration",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -193,7 +193,7 @@
       }
     },
     "statusCode": 400,
-    "error": "Conversion named Product Viewed is not exist in rudderstack dashboard",
+    "error": "Conversion named \"Product Viewed\" was not specified in the RudderStack destination configuration",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",

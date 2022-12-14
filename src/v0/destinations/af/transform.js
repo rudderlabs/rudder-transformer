@@ -9,13 +9,17 @@ const {
   getDestinationExternalID,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getFieldValueFromMessage,
   isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const {
   Event,
@@ -29,12 +33,17 @@ function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
   const os = get(message, "context.os.name");
+  // if ((os && os.toLowerCase() === "android") || (os && isAppleFamily(os))){
+  //   if()
+  // }
   if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
   } else if (os && isAppleFamily(os) && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
+  } else if (!(androidAppId && appleAppId)) {
+    throw new ConfigurationError("Invalid app endpoint");
   } else {
-    throw new CustomError("Invalid app endpoint", 400);
+    throw new InstrumentationError("Invalid app endpoint");
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;
@@ -53,7 +62,9 @@ function responseBuilderSimple(payload, message, destination) {
   //   : undefined;
   const appsflyerId = getDestinationExternalID(message, "appsflyerExternalId");
   if (!appsflyerId) {
-    throw new CustomError("Appsflyer id is not set. Rejecting the event", 400);
+    throw new InstrumentationError(
+      "Appsflyer id is not set. Rejecting the event"
+    );
   }
 
   const updatedPayload = {
@@ -228,7 +239,7 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError("message type not supported");
   }
   return responseBuilderSimple(payload, message, destination);
 }
@@ -262,6 +273,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -269,7 +281,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

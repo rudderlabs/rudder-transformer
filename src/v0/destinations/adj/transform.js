@@ -10,9 +10,14 @@ const {
   flattenJson,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
-  isAppleFamily
+  isAppleFamily,
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const rejectParams = ["revenue", "currency"];
 
@@ -22,7 +27,7 @@ function responseBuilderSimple(message, category, destination) {
   const platform = get(message, "context.device.type");
   const id = get(message, "context.device.id");
   if (typeof platform !== "string" || !platform || !id) {
-    throw new CustomError("Device type/id  not present", 400);
+    throw new InstrumentationError("Device type/id  not present");
   }
   if (platform.toLowerCase() === "android") {
     delete payload.idfv;
@@ -31,7 +36,7 @@ function responseBuilderSimple(message, category, destination) {
     delete payload.android_id;
     delete payload.gps_adid;
   } else {
-    throw new CustomError("Device type not valid", 400);
+    throw new InstrumentationError("Device type not valid");
   }
   if (payload.revenue) {
     payload.currency = message.properties.currency || "USD";
@@ -83,17 +88,16 @@ function responseBuilderSimple(message, category, destination) {
   }
   // fail-safety for developer error
   if (!message.event || !hashMap[message.event]) {
-    throw new CustomError("No event token mapped for this event", 400);
+    throw new ConfigurationError("No event token mapped for this event");
   } else {
-    throw new CustomError("Payload could not be constructed", 400);
+    throw new TransformationError("Payload could not be constructed");
   }
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -103,7 +107,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
 
   // build the response
@@ -137,10 +141,12 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error?.response?.status || error?.code || 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

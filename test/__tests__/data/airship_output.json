@@ -57,7 +57,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: App Key is required for authorization for track events"
+    "error": "App Key is required for authorization for track events"
   },
   {
     "version": "1",
@@ -454,7 +454,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[Airship]:: for identify, tags or attributes properties are required under traits"
+    "error": "For identify, tags or attributes properties are required under traits"
   },
   [
     {
@@ -799,7 +799,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[Airship]:: for group, tags or attributes properties are required under traits"
+    "error": "For group, tags or attributes properties are required under traits"
   },
   [
     {
@@ -1010,14 +1010,14 @@
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization for Identify events"
+    "error": "API Key is required for authorization for Identify events"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization for group events"
+    "error": "API Key is required for authorization for group events"
   },
   {
     "statusCode": 400,
-    "error": "[Airship] :: API Key is required for authorization for track events"
+    "error": "API Key is required for authorization for track events"
   }
 ]

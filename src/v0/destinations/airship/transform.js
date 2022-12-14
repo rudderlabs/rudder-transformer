@@ -16,23 +16,26 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
-  CustomError,
   flattenJson,
   isDefinedAndNotNullAndNotEmpty,
   extractCustomFields,
   getErrorRespEvents,
   getSuccessRespEvents,
-  isEmptyObject
+  isEmptyObject,
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
   const { apiKey, dataCenter } = Config;
 
   if (!apiKey)
-    throw new CustomError(
-      "[Airship] :: API Key is required for authorization for Identify events",
-      400
+    throw new ConfigurationError(
+      "API Key is required for authorization for Identify events"
     );
 
   let BASE_URL = BASE_URL_US;
@@ -41,9 +44,8 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
-    throw new CustomError(
-      "[Airship]:: for identify, tags or attributes properties are required under traits",
-      400
+    throw new InstrumentationError(
+      "For identify, tags or attributes properties are required under traits"
     );
   }
 
@@ -130,7 +132,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = async (message, { Config }) => {
   let name = message.event;
   if (!name) {
-    throw new CustomError("event name is required for track", 400);
+    throw new InstrumentationError("event name is required for track");
   }
 
   name = name.toLowerCase();
@@ -154,14 +156,12 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   if (!appKey || !apiKey) {
     if (!appKey)
-      throw new CustomError(
-        "[Airship] :: App Key is required for authorization for track events",
-        400
+      throw new ConfigurationError(
+        "App Key is required for authorization for track events"
       );
     else
-      throw new CustomError(
-        "[Airship] :: API Key is required for authorization for track events",
-        400
+      throw new ConfigurationError(
+        "API Key is required for authorization for track events"
       );
   }
   let BASE_URL = BASE_URL_US;
@@ -192,9 +192,8 @@ const groupResponseBuilder = (message, { Config }) => {
   const { apiKey, dataCenter } = Config;
 
   if (!apiKey)
-    throw new CustomError(
-      "[Airship] :: API Key is required for authorization for group events",
-      400
+    throw new ConfigurationError(
+      "API Key is required for authorization for group events"
     );
 
   let BASE_URL = BASE_URL_US;
@@ -203,9 +202,8 @@ const groupResponseBuilder = (message, { Config }) => {
 
   const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
-    throw new CustomError(
-      "[Airship]:: for group, tags or attributes properties are required under traits",
-      400
+    throw new InstrumentationError(
+      "For group, tags or attributes properties are required under traits"
     );
   }
 
@@ -291,9 +289,8 @@ const groupResponseBuilder = (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
@@ -311,7 +308,9 @@ const process = async event => {
       response = await groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
@@ -340,6 +339,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -347,7 +347,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

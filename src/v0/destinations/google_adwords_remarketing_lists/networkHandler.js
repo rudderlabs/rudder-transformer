@@ -1,15 +1,17 @@
 const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-
+const { NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -151,14 +153,15 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   // const respAttributes = response["@attributes"] || null;
   // const { stat, err_code: errorCode } = respAttributes;
 
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Google_adwords_remarketing_list: ${response.error.message} ${stageMsg}`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
-    .build();
+  throw new NetworkError(
+    `Google_adwords_remarketing_list: ${response.error.message} ${stageMsg}`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+    },
+    destResponse,
+    getAuthErrCategory(status, response)
+  );
 };
 
 const responseHandler = destinationResponse => {

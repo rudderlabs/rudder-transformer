@@ -78,7 +78,7 @@ const syncContact = async (contactPayload, category, destination) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
       },
-      res.response?.data
+      res.response
     );
   }
   return createdContact.id;
@@ -454,7 +454,7 @@ const screenRequestHandler = async (message, category, destination) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
       },
-      res.response?.data
+      res.response
     );
   }
 
@@ -491,7 +491,7 @@ const screenRequestHandler = async (message, category, destination) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
         },
-        res?.response?.data
+        res?.response
       );
     }
   }
@@ -532,7 +532,7 @@ const trackRequestHandler = async (message, category, destination) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
       },
-      res?.response?.data
+      res?.response
     );
   }
 
@@ -565,7 +565,7 @@ const trackRequestHandler = async (message, category, destination) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
         },
-        res?.response?.data
+        res?.response
       );
     }
   }

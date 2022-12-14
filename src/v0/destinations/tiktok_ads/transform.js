@@ -62,11 +62,11 @@ const getContents = message => {
   return contents;
 };
 
-const checkContentType = (contents, contenType) => {
+const checkContentType = (contents, contentType) => {
   if (Array.isArray(contents)) {
     contents.forEach(content => {
       if (!content.content_type) {
-        content.content_type = contenType || "product_group";
+        content.content_type = contentType || "product_group";
       }
     });
   }
@@ -86,9 +86,9 @@ const getTrackResponse = (message, Config, event) => {
   }
 
   if (
+    payload.properties &&
     !payload.properties?.contents &&
-    message.properties?.products &&
-    payload.properties
+    message.properties?.products
   ) {
     // retreiving data from products only when contents is not present
     payload.properties = {

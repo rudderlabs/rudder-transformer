@@ -3,7 +3,6 @@ const {
   ThrottledError,
   AbortedError,
   RetryableError,
-  UnauthorizedError,
   NetworkError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
@@ -91,9 +90,9 @@ const getAccessToken = async config => {
         resp
       );
     }
-    throw new UnauthorizedError("Could not retrieve authorization token");
+    throw new NetworkError("Could not retrieve authorization token");
   }
-  throw new UnauthorizedError("Could not retrieve authorization token");
+  throw new NetworkError("Could not retrieve authorization token");
 };
 
 module.exports = {

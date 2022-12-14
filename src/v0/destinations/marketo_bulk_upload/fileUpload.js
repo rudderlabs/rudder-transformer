@@ -64,9 +64,11 @@ const fetchFieldSchema = async config => {
       fieldSchemaMapping
     );
   } else {
-    throw new NetworkError("Failed to fetch Marketo Field Schema", 400, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400)
-    });
+    throw new AbortedError(
+      "Failed to fetch Marketo Field Schema",
+      400,
+      fieldSchemaMapping
+    );
   }
   return { fieldSchemaNames, accessToken };
 };

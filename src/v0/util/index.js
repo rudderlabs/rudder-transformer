@@ -21,7 +21,6 @@ const {
   DestCanonicalNames,
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
-const { TRANSFORMER_METRIC } = require("./constant");
 const {
   InstrumentationError,
   BaseError,
@@ -1621,11 +1620,7 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
     destTyp = "";
   }
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array", {
-      destType: destTyp.toUpperCase(),
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-    });
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
   }
   return [];

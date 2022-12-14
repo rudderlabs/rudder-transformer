@@ -5,7 +5,8 @@ const { generateUUID } = require("../../util");
 const {
   ConfigurationError,
   TransformationError,
-  InstrumentationError
+  InstrumentationError,
+  RetryableError
 } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
@@ -72,7 +73,7 @@ const userDeletionHandler = async (userAttributes, config) => {
         userAttributes[i].appsflyer_id
       );
       if (!response || !response.response) {
-        throw new TransformationError("Could not get response");
+        throw new RetryableError("Could not get response");
       }
     } else {
       if (userAttributeKeys.includes("ios_advertising_id")) {

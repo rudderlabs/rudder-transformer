@@ -28,7 +28,7 @@ const responseTransform = destResponse => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
       },
-      respBody
+      { ...respBody, success: false }
     );
   } else if (respBody && !respBody.success) {
     const status = destResponse?.Status || 400;
@@ -38,7 +38,7 @@ const responseTransform = destResponse => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
       },
-      respBody
+      { ...respBody, success: false }
     );
   }
   const status = destResponse.Status;

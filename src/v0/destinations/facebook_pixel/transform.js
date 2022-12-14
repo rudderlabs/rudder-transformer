@@ -8,8 +8,7 @@ const {
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
-  STANDARD_ECOMM_EVENTS_TYPE,
-  DESTINATION
+  STANDARD_ECOMM_EVENTS_TYPE
 } = require("./config");
 const { EventType } = require("../../../constants");
 
@@ -23,10 +22,9 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   isObject,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  generateErrorObject
 } = require("../../util");
-
-const ErrorBuilder = require("../../util/error");
 
 const {
   deduceFbcParam,
@@ -34,13 +32,12 @@ const {
   getContentType,
   transformedPayloadData
 } = require("./utils");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
-const statTags = {
-  destType: DESTINATION,
-  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE
-};
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 /**
  * This method gets content category with proper error-handling
@@ -66,16 +63,9 @@ const getContentCategory = category => {
     !Array.isArray(contentCategory) &&
     typeof contentCategory === "object"
   ) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "'properties.category' must be either be a string or an Array"
-      )
-      .setStatus(400)
-      .setStatTags({
-        ...statTags,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "'properties.category' must be either be a string or an array"
+    );
   }
   return contentCategory;
 };
@@ -114,15 +104,9 @@ const handleOrder = (message, categoryToContent) => {
         }
       }
     } else {
-      throw new ErrorBuilder()
-        .setMessage("'properties.products' is not sent as an Array<Object>")
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        "'properties.products' is not sent as an Array<Object>"
+      );
     }
   }
 
@@ -162,15 +146,9 @@ const handleProductListViewed = (message, categoryToContent) => {
           });
         }
       } else {
-        throw new ErrorBuilder()
-          .setMessage(`'properties.products[${index}]' is not an object`)
-          .setStatus(400)
-          .setStatTags({
-            ...statTags,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError(
+          `'properties.products[${index}]' is not an object`
+        );
       }
     });
   }
@@ -289,15 +267,7 @@ const responseBuilderSimple = (
     const isActionSourceValid =
       ACTION_SOURCES_VALUES.indexOf(commonData.action_source) >= 0;
     if (!isActionSourceValid) {
-      throw new ErrorBuilder()
-        .setMessage("Invalid Action Source type")
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError("Invalid Action Source type");
     }
   }
   if (category.type !== "identify") {
@@ -313,17 +283,9 @@ const responseBuilderSimple = (
       category.standard = true;
     }
     if (Object.keys(customData).length === 0 && category.standard) {
-      throw new ErrorBuilder()
-        .setMessage(
-          `After excluding ${FB_PIXEL_DEFAULT_EXCLUSION}, no fields are present in 'properties' for a standard event`
-        )
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        `After excluding ${FB_PIXEL_DEFAULT_EXCLUSION}, no fields are present in 'properties' for a standard event`
+      );
     }
     customData = transformedPayloadData(
       message,
@@ -375,16 +337,9 @@ const responseBuilderSimple = (
            */
           const validQueryType = ["string", "number", "boolean"];
           if (query && !validQueryType.includes(typeof query)) {
-            throw new ErrorBuilder()
-              .setMessage("'query' should be in string format only")
-              .setStatus(400)
-              .setStatTags({
-                ...statTags,
-                meta:
-                  TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                    .BAD_EVENT
-              })
-              .build();
+            throw new InstrumentationError(
+              "'query' should be in string format only"
+            );
           }
           customData = {
             ...customData,
@@ -409,18 +364,9 @@ const responseBuilderSimple = (
           commonData.event_name = category.event;
           break;
         default:
-          throw new ErrorBuilder()
-            .setMessage(
-              `${category.standard} type of standard event does not exist`
-            )
-            .setStatus(400)
-            .setStatTags({
-              ...statTags,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .BAD_EVENT
-            })
-            .build();
+          throw new InstrumentationError(
+            `${category.standard} type of standard event does not exist`
+          );
         // throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
@@ -478,26 +424,12 @@ const responseBuilderSimple = (
     return response;
   }
   // fail-safety for developer error
-  throw new ErrorBuilder()
-    .setMessage("Payload could not be constructed")
-    .setStatus(400)
-    .setStatTags({
-      ...statTags,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    })
-    .build();
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("'type' is missing")
-      .setStatus(400)
-      .setStatTags({
-        ...statTags,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError("'type' is missing");
   }
 
   const timeStamp = message.originalTimestamp || message.timestamp;
@@ -515,17 +447,9 @@ const processEvent = (message, destination) => {
       stats.increment("fb_pixel_timestamp_error", 1, {
         destinationId: destination.ID
       });
-      throw new ErrorBuilder()
-        .setMessage(
-          "Events must be sent within seven days of their occurrence or up to one minute in the future."
-        )
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        "Events must be sent within seven days of their occurrence or up to one minute in the future."
+      );
     }
   }
 
@@ -559,18 +483,9 @@ const processEvent = (message, destination) => {
         category = CONFIG_CATEGORIES.USERDATA;
         break;
       } else {
-        throw new ErrorBuilder()
-          .setMessage(
-            'For identify events, "Advanced Mapping" configuration must be enabled on the RudderStack dashboard'
-          )
-          .setStatus(400)
-          .setStatTags({
-            ...statTags,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                .CONFIGURATION
-          })
-          .build();
+        throw new ConfigurationError(
+          'For identify events, "Advanced Mapping" configuration must be enabled on the RudderStack dashboard'
+        );
       }
     case EventType.PAGE:
     case EventType.SCREEN:
@@ -578,26 +493,10 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       if (!message.event) {
-        throw new ErrorBuilder()
-          .setMessage("'event' is required")
-          .setStatus(400)
-          .setStatTags({
-            ...statTags,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError("'event' is required");
       }
       if (typeof message.event !== "string") {
-        throw new ErrorBuilder()
-          .setMessage("event name should be string")
-          .setStatus(400)
-          .setStatTags({
-            ...statTags,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError("event name should be string");
       }
       standard = eventsToEvents;
       if (standard) {
@@ -658,15 +557,9 @@ const processEvent = (message, destination) => {
       }
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage("Message type not supported")
-        .setStatus(400)
-        .setStatTags({
-          ...statTags,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   // build the response
   return responseBuilderSimple(
@@ -705,6 +598,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -712,7 +606,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

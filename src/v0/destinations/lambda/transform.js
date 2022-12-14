@@ -1,9 +1,6 @@
 const _ = require("lodash");
-const {
-  getErrorRespEvents,
-  getSuccessRespEvents,
-  CustomError
-} = require("../../util");
+const { getErrorRespEvents, getSuccessRespEvents } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 const DEFAULT_INVOCATION_TYPE = "Event"; // asynchronous invocation
 const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation
@@ -11,7 +8,7 @@ const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
   if (!event.destination.Config) {
-    throw new CustomError("destination.Config cannot be undefined", 400);
+    throw new ConfigurationError("destination.Config cannot be undefined");
   }
   return {
     payload: JSON.stringify(event.message),

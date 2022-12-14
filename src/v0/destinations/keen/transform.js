@@ -9,9 +9,9 @@ const {
   getParsedIP,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  getErrorRespEvents
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { ENDPOINT } = require("./config");
 
 function addAddons(properties, config) {
@@ -139,7 +139,9 @@ function process(event) {
       response = processTrack(message, destination);
       break;
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 
   response.statusCode = 200;
@@ -172,11 +174,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

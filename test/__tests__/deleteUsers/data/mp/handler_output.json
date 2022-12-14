@@ -1,7 +1,7 @@
 [
   [
     {
-      "statusCode": 400,
+      "statusCode": 500,
       "error": "API Token is a required field for user deletion"
     }
   ]

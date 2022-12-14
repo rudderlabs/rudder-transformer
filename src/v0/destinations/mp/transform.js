@@ -1,7 +1,6 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   base64Convertor,
   constructPayload,
   defaultPostRequestConfig,
@@ -25,12 +24,20 @@ const {
 } = require("./config");
 const { httpPOST } = require("../../../adapters/network");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable
 } = require("./util");
+const {
+  InstrumentationError,
+  NetworkError,
+  ConfigurationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson =
   mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
@@ -45,11 +52,7 @@ const createUser = async response => {
   const url = response.endpoint;
   const { params } = response;
   const axiosResponse = await httpPOST(url, {}, { params });
-  const processedResponse = processAxiosResponse(axiosResponse);
-  if (processedResponse.response === 1) {
-    return processedResponse.status;
-  }
-  return processedResponse.status || 400;
+  return processAxiosResponse(axiosResponse);
 };
 
 const setImportCredentials = destConfig => {
@@ -73,9 +76,8 @@ const setImportCredentials = destConfig => {
     )}`;
     params.projectId = projectId;
   } else {
-    throw new CustomError(
-      "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config.",
-      400
+    throw new InstrumentationError(
+      "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config"
     );
   }
   return { endpoint, headers, params };
@@ -112,9 +114,8 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
             : `${BASE_ENDPOINT}/track/`;
         response.headers = {};
       } else if (duration.years > 5) {
-        throw new CustomError(
-          "Event timestamp should be within last 5 years",
-          400
+        throw new InstrumentationError(
+          "Event timestamp should be within last 5 years"
         );
       } else {
         const credentials = setImportCredentials(destConfig);
@@ -231,9 +232,17 @@ const processIdentifyEvents = async (message, type, destination) => {
     message.anonymousId &&
     isImportAuthCredentialsAvailable(destination)
   ) {
-    const responseStatus = await createUser(returnValue);
-    if (!isHttpStatusSuccess(responseStatus)) {
-      throw new CustomError("Unable to create the user.", responseStatus);
+    const createUserResponse = await createUser(returnValue);
+    const status = createUserResponse?.status || 400;
+    if (!isHttpStatusSuccess(status)) {
+      throw new NetworkError(
+        "Unable to create the user",
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        },
+        createUserResponse.response
+      );
     }
     const trackParameters = {
       event: "$merge",
@@ -290,9 +299,8 @@ const processPageOrScreenEvents = (message, type, destination) => {
 
 const processAliasEvents = (message, type, destination) => {
   if (!(message.previousId || message.anonymousId)) {
-    throw new CustomError(
-      "Either previous id or anonymous id should be present in alias payload",
-      400
+    throw new InstrumentationError(
+      "Either previous id or anonymous id should be present in alias payload"
     );
   }
   const parameters = {
@@ -360,20 +368,14 @@ const processGroupEvents = (message, type, destination) => {
       }
     });
   } else {
-    throw new CustomError(
-      "[MP] Group:: Group Key Settings is not configured",
-      400
-    );
+    throw new ConfigurationError("Group Key Settings is not configured");
   }
   return returnValue;
 };
 
 const processSingleMessage = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   switch (message.type) {
     case EventType.TRACK:
@@ -389,7 +391,9 @@ const processSingleMessage = async (message, destination) => {
       return processGroupEvents(message, message.type, destination);
 
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${message.type} is not supported`
+      );
   }
 };
 
@@ -426,11 +430,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

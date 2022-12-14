@@ -304,7 +304,7 @@ const legacyBatchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       } else {
-        throw new InstrumentationError("rETL -  Error in getting operation");
+        throw new TransformationError("rETL -  Error in getting operation");
       }
     } else {
       // making chunks for identify

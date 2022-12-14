@@ -85,11 +85,16 @@ const getTrackResponse = (message, Config, event) => {
     payload.properties.contents = [payload.properties.contents];
   }
 
-  if (!payload.properties?.contents && message.properties?.products) {
+  if (
+    !payload.properties?.contents &&
+    message.properties?.products &&
+    payload.properties
+  ) {
     // retreiving data from products only when contents is not present
-    const prop = payload.properties || {};
-    prop.contents = getContents(message);
-    payload.properties = prop;
+    payload.properties = {
+      ...payload.properties,
+      contents: getContents(message)
+    };
   }
 
   if (payload.properties?.contents) {

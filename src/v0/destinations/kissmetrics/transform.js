@@ -15,11 +15,10 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  getErrorRespEvents
 } = require("../../util");
 const { ENDPOINT } = require("./config");
-const logger = require("../../../logger");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {
@@ -365,8 +364,9 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      logger.debug("Message type not supported");
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return respList;
 }
@@ -397,11 +397,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

@@ -1,8 +1,9 @@
 const _ = require("lodash");
 const flatten = require("flat");
 
-const { isEmpty, isObject, CustomError } = require("../../util");
+const { isEmpty, isObject } = require("../../util");
 const { EventType } = require("../../../constants");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -29,7 +30,7 @@ const process = event => {
   }
 
   if (isEmpty(event.message.userId)) {
-    throw new CustomError("Blank userId passed in identify event", 400);
+    throw new InstrumentationError("Blank userId passed in identify event");
   }
 
   const { prefix } = destination.Config;
@@ -60,7 +61,9 @@ const process = event => {
   processValues(hmap.fields);
 
   if (Object.keys(hmap.fields).length === 0) {
-    throw new CustomError("context or context.traits or traits is empty", 400);
+    throw new InstrumentationError(
+      "context or context.traits or traits is empty"
+    );
   }
 
   const result = {

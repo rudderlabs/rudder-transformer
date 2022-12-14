@@ -11,9 +11,9 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  getErrorRespEvents
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // to string json traits, not using JSON.stringify()
 // always first check for whitelisted traits
@@ -179,7 +179,7 @@ function processTrack(message, destination) {
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
   if (!message.event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
   const eventName = message.event;
   const channelListToSendThisEvent = new Set();
@@ -308,10 +308,7 @@ function process(event) {
   let response;
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   logger.debug("messageType: ", messageType);
@@ -329,7 +326,9 @@ function process(event) {
       break;
     default:
       logger.debug("Message type not supported");
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   logger.debug(JSON.stringify(respList));
   logger.debug("=====end======");
@@ -362,11 +361,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

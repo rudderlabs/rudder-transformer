@@ -99,7 +99,7 @@ const clickPayloadValidator = payload => {
       logger.error("positions should be an array of integers.");
     }
     updatedPayload.positions.some((num, index) => {
-      if (!isNaN(Number(num)) && Number.isInteger(Number(num))) {
+      if (!Number.isNaN(Number(num)) && Number.isInteger(Number(num))) {
         updatedPayload.positions[index] = Number(num);
       } else {
         updatedPayload.positions = null;

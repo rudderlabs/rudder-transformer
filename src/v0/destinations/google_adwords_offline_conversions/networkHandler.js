@@ -10,7 +10,6 @@ const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const { isHttpStatusSuccess, getHashFromArray } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const { getConversionActionId } = require("./utils");
 const Cache = require("../../util/cache");
 const {

@@ -2,7 +2,6 @@ const set = require("set-value");
 const get = require("get-value");
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   isDefinedAndNotNull,
   getIntegrationsObj,
@@ -13,6 +12,10 @@ const {
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 // This function handles the common response payload for the supported calls
 const responseBuilderSimple = (message, category, destination) => {
@@ -109,15 +112,12 @@ const trackResponseBuilder = (message, category, destination) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const authToken = get(destination, "Config.authToken");
   if (!authToken) {
-    throw new CustomError("Auth Token required for Authentication.", 400);
+    throw new ConfigurationError("Auth Token required for Authentication");
   }
 
   let response;
@@ -162,7 +162,9 @@ const process = async event => {
       break;
     }
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -193,11 +195,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

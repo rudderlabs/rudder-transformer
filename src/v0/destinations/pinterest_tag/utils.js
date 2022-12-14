@@ -2,12 +2,12 @@
 const sha256 = require("sha256");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   constructPayload,
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require("./config");
 
 const VALID_ACTION_SOURCES = ["app_android", "app_ios", "web", "offline"];
@@ -109,9 +109,8 @@ const processCommonPayload = message => {
     presentActionSource &&
     !VALID_ACTION_SOURCES.includes(presentActionSource.toLowerCase())
   ) {
-    throw new CustomError(
-      `Action source must be one of ${VALID_ACTION_SOURCES.join(", ")}`,
-      400
+    throw new InstrumentationError(
+      `Action source must be one of ${VALID_ACTION_SOURCES.join(", ")}`
     );
   }
 
@@ -148,7 +147,7 @@ const deduceTrackScreenEventName = (message, Config) => {
   const { event, name } = message;
   const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
-    throw new CustomError("event_name could not be mapped. Aborting.", 400);
+    throw new InstrumentationError("event_name could not be mapped. Aborting");
   }
 
   /*
@@ -217,7 +216,9 @@ const deduceEventName = (message, Config) => {
       eventName = deduceTrackScreenEventName(message, Config);
       break;
     default:
-      throw new CustomError(`The event of type ${type} is not supported`, 400);
+      throw new InstrumentationError(
+        `The event of type ${type} is not supported`
+      );
   }
   return eventName;
 };

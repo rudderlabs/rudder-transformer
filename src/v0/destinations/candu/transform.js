@@ -1,11 +1,14 @@
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   defaultRequestConfig,
   constructPayload,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 const { endpoint, identifyDataMapping, trackDataMapping } = require("./config");
 
 const responseBuilder = (body, { Config }) => {
@@ -28,12 +31,12 @@ const responseBuilder = (body, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
-  if (!destination.Config.apiKey.trim())
-    throw new CustomError(`[CANDU]:: apiKey cannot be empty.`, 400);
+  if (!destination.Config.apiKey.trim()) {
+    throw new ConfigurationError(`[CANDU]:: apiKey cannot be empty.`);
+  }
   if (!message.type) {
-    throw new CustomError(
-      "[CANDU]:: Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "[CANDU]:: Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -48,9 +51,8 @@ const processEvent = (message, destination) => {
       payload.type = "track";
       break;
     default:
-      throw new CustomError(
-        `[CANDU]:: Message type ${messageType} not supported.`,
-        400
+      throw new InstrumentationError(
+        `[CANDU]:: Message type ${messageType} not supported.`
       );
   }
   return responseBuilder(payload, destination);

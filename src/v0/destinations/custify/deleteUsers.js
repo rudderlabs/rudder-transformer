@@ -1,23 +1,29 @@
 const { httpDELETE } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const { CustomError } = require("../../util");
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const tags = require("../../util/tags");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ConfigurationError("Config for deletion not present", 400);
   }
 
   const { apiKey } = config;
   const { userId } = userAttributes;
 
   if (!apiKey) {
-    throw new CustomError("api key for deletion not present", 400);
+    throw new ConfigurationError("api key for deletion not present", 400);
   }
   if (!userId) {
-    throw new CustomError("User id for deletion not present", 400);
+    throw new InstrumentationError("User id for deletion not present", 400);
   }
   const requestUrl = `https://api.custify.com/people?user_id=${userId}`;
   const requestOptions = {
@@ -32,10 +38,16 @@ const userDeletionHandler = async (userAttributes, config) => {
     processedDeletionRequest.status !== 200 &&
     processedDeletionRequest.status !== 404
   ) {
-    throw new CustomError(
+    throw new NetworkError(
       JSON.stringify(processedDeletionRequest.response) ||
         "Error while deleting user",
-      processedDeletionRequest.status
+      processedDeletionRequest.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          processedDeletionRequest.status
+        )
+      },
+      deletionResponse
     );
   }
 

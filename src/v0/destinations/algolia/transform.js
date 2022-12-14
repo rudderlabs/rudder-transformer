@@ -12,7 +12,8 @@ const {
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  TransformationError
 } = require("../../util/index");
 
 const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require("./config");

@@ -11,12 +11,15 @@ const {
   defaultRequestConfig,
   constructPayload,
   defaultPostRequestConfig,
-  CustomError,
   ErrorMessage,
   getErrorRespEvents,
   getSuccessRespEvents,
   extractCustomFields
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -24,21 +27,19 @@ const responseBuilder = (message, category, { Config }) => {
   const { dataCenter, licenseCode, apiKey } = Config;
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   if (!payload.userId && !payload.anonymousId) {
-    throw new CustomError(
-      "[WEBENGAGE]: Either one of userId or anonymousId is mandatory.",
-      400
+    throw new InstrumentationError(
+      "Either one of userId or anonymousId is mandatory"
     );
   }
 
   if (category.type === "identify") {
     const eventTimeStamp = payload.birthDate;
     if (eventTimeStamp === "Invalid date") {
-      throw new CustomError(
-        "[WEBENGAGE]: birthday must be in this (YYYY-MM-DD) format.",
-        400
+      throw new InstrumentationError(
+        "birthday must be in this (YYYY-MM-DD) format"
       );
     }
     const customAttributes = {};
@@ -55,9 +56,8 @@ const responseBuilder = (message, category, { Config }) => {
   } else {
     const eventTimeStamp = payload.eventTime;
     if (eventTimeStamp === "Invalid date") {
-      throw new CustomError(
-        "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DD).",
-        400
+      throw new InstrumentationError(
+        "Timestamp must be ISO format (YYYY-MM-DD)"
       );
     }
     endPoint = `${ENDPOINT(dataCenter)}/${licenseCode}/events`;
@@ -75,7 +75,7 @@ const responseBuilder = (message, category, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw Error("[WEBENGAGE]: Message Type is not present. Aborting message.");
+    throw new InstrumentationError("Event type is required");
   }
   let eventName;
   let category;
@@ -102,7 +102,9 @@ const processEvent = (message, destination) => {
       message.event = eventName;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
-      throw new CustomError("[WEBENGAGE]: Message type not supported");
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 };
 
@@ -136,11 +138,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response ? error.response.status : error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

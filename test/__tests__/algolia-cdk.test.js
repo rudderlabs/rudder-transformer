@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const { TRANSFORMER_METRIC } = require("../../src/v0/util/constant");
 const { processCdkV2Workflow } = require("../../src/cdk/v2/handler");
+const tags = require("../../src/v0/util/tags");
 
 const integration = "algolia";
 const name = "Algolia";
@@ -24,7 +24,7 @@ describe(`${name} Tests`, () => {
           const output = await processCdkV2Workflow(
             integration,
             input,
-            TRANSFORMER_METRIC.ERROR_AT.PROC
+            tags.FEATURES.PROCESSOR
           );
           expect(output).toEqual(expected);
         } catch (error) {
@@ -51,7 +51,7 @@ describe(`${name} Tests`, () => {
           const output = await processCdkV2Workflow(
             integration,
             input,
-            TRANSFORMER_METRIC.ERROR_AT.RT
+            tags.FEATURES.ROUTER
           );
           expect(output).toEqual(expected);
         } catch (error) {

@@ -30,11 +30,7 @@ const {
   checkInvalidRtTfEvents
 } = require("../../util");
 const Cache = require("../../util/cache");
-const {
-  USER_LEAD_CACHE_TTL,
-  AUTH_CACHE_TTL,
-  TRANSFORMER_METRIC
-} = require("../../util/constant");
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
 const {
   marketoResponseHandler,
   sendGetRequest,
@@ -75,8 +71,7 @@ const getAuthToken = async formattedDestination => {
     );
     const data = marketoResponseHandler(
       clientResponse,
-      "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      "During fetching auth token"
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
@@ -524,11 +519,7 @@ const processRouterDest = async inputs => {
       status: 400,
       message: "Authorisation failed",
       responseTransformFailure: true,
-      statTags: {
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      }
+      statTags: {}
     };
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),

@@ -3,10 +3,10 @@ const get = require("get-value");
 const {
   getValueFromMessage,
   getSuccessRespEvents,
-  CustomError,
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents
 } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
 
@@ -102,7 +102,7 @@ const processSingleMessage = event => {
     };
     return payload;
   }
-  throw new CustomError("No Spread Sheet set for this event", 400);
+  throw new ConfigurationError("No Spread Sheet set for this event");
 };
 
 // Main process Function to handle transformation

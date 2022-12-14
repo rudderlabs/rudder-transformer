@@ -2,11 +2,11 @@ const path = require("path");
 const fs = require("fs");
 const sha256 = require("sha256");
 const {
-  CustomError,
   flattenJson,
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const Message = require("../message");
+const { TransformationError } = require("../../util/errorTypes");
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
@@ -78,7 +78,7 @@ function process(event) {
     null;
   // throws an error if email is not present
   if (!email) {
-    throw new CustomError("Missing essential fields from Mailmodo.", 400);
+    throw new TransformationError("Missing essential fields from Mailmodo");
   }
 
   // generating anonymousId using email

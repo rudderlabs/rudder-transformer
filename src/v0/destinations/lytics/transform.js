@@ -13,9 +13,9 @@ const {
   defaultRequestConfig,
   flattenJson,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  getErrorRespEvents
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -45,7 +45,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("invalid message type for lytics", 400);
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type;
   let category;
@@ -61,9 +61,8 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for lytics`,
-        400
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
       );
   }
   // build the response
@@ -100,11 +99,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

@@ -14,11 +14,12 @@
       ],
       "statTags": {
         "destType": "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
-        "stage": "responseTransform",
-        "scope": "exception",
-        "errorAt": "proxy"
-      },
-      "authErrorCategory": "REFRESH_TOKEN"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
     }
   },
   {

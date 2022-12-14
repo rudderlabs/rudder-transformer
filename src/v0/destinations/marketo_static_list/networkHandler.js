@@ -1,4 +1,3 @@
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { marketoResponseHandler } = require("../marketo/util");
 const {
   proxyRequest,
@@ -19,7 +18,6 @@ const responseHandler = (destinationResponse, destType) => {
   marketoResponseHandler(
     destinationResponse,
     "during Marketo Static List Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     destinationResponse?.rudderJobMetadata,
     authCache,
     DESTINATION

@@ -1,5 +1,9 @@
 const { httpDELETE } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
+const {
+  RetryableError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
@@ -12,16 +16,14 @@ const { executeCommonValidations } = require("../../util/regulation-api");
 const userDeletionHandler = async (userAttributes, config) => {
   const { publicKey, privateKey } = config;
   if (!publicKey) {
-    throw new ErrorBuilder()
-      .setMessage("Public key is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Public key is a required field for user deletion"
+    );
   }
   if (!privateKey) {
-    throw new ErrorBuilder()
-      .setMessage("Private key is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Private key is a required field for user deletion"
+    );
   }
   const BASE_URL = "https://api.engage.so/v1/users/uid";
   const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString(
@@ -34,19 +36,13 @@ const userDeletionHandler = async (userAttributes, config) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const element of userAttributes) {
     if (!element.userId) {
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
+      throw new InstrumentationError("User id for deletion not present");
     }
     const endpoint = `${BASE_URL.replace("uid", element.userId)}`;
     // eslint-disable-next-line no-await-in-loop
     const response = await httpDELETE(endpoint, { headers });
     if (!response || !response.response) {
-      throw new ErrorBuilder()
-        .setMessage("Could not get response")
-        .setStatus(500)
-        .build();
+      throw new RetryableError("Could not get response");
     }
   }
   return { statusCode: 200, status: "successful" };

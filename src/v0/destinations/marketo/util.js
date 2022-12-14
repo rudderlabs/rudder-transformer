@@ -4,7 +4,6 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   NetworkError,
   AbortedError,
@@ -67,7 +66,6 @@ const marketoApplicationErrorHandler = (
 const marketoResponseHandler = (
   destResponse,
   sourceMessage,
-  stage,
   rudderJobMetadata,
   authCache,
   destination = DESTINATION
@@ -157,7 +155,6 @@ const getResponseHandlerData = (
   return marketoResponseHandler(
     clientResponse,
     lookupMessage,
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
     { destInfo: { authKey: formattedDestination.ID } },
     authCache
   );

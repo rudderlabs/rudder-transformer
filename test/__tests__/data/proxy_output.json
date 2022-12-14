@@ -29,10 +29,11 @@
       },
       "statTags": {
         "destType": "ANY",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -46,10 +47,11 @@
       },
       "statTags": {
         "destType": "ANY",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -63,10 +65,11 @@
       },
       "statTags": {
         "destType": "ANY",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -80,10 +83,11 @@
       },
       "statTags": {
         "destType": "ANY",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -97,10 +101,11 @@
       },
       "statTags": {
         "destType": "ANY",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

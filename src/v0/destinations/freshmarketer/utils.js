@@ -3,16 +3,22 @@ const get = require("get-value");
 const logger = require("../../../logger");
 const { httpPOST, httpGET } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
-  CustomError,
   defaultPutRequestConfig,
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage
 } = require("../../util");
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /*
  * This functions is used for getting Account details.
@@ -39,14 +45,18 @@ const createUpdateAccount = async (payload, Config) => {
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
     const errMessage = accountResponse.response.errors?.message || "";
     const errorStatus = accountResponse.response.errors?.code || "500";
-    throw new CustomError(
+    throw new NetworkError(
       `failed to create/update group ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      accountResponse
     );
   }
   const accountId = accountResponse.response?.sales_account?.id;
   if (!accountId) {
-    throw new CustomError("[Freshmarketer]: fails in fetching accountId.", 400);
+    throw new NetworkInstrumentationError("Fails in fetching accountId.");
   }
   return accountId;
 };
@@ -86,17 +96,20 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   ) {
     const errMessage = userSalesAccountResponse.response.errors?.message || "";
     const errorStatus = userSalesAccountResponse.response.errors?.code || "500";
-    throw new CustomError(
+    throw new NetworkError(
       `failed to fetch user accountDetails ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      userSalesAccountResponse
     );
   }
   let accountDetails =
     userSalesAccountResponse.response?.contact?.sales_accounts;
   if (!accountDetails) {
-    throw new CustomError(
-      "[Freshmarketer]: Fails in fetching user accountDetails",
-      400
+    throw new NetworkInstrumentationError(
+      "Fails in fetching user accountDetails"
     );
   }
   const accountId = await createUpdateAccount(payload, Config);
@@ -231,9 +244,13 @@ const getContactsDetails = async (userEmail, Config) => {
   if (userResponse.status !== 200 && userResponse.status !== 201) {
     const errMessage = userResponse.response.errors?.message || "";
     const errorStatus = userResponse.response.errors?.code || "500";
-    throw new CustomError(
+    throw new NetworkError(
       `failed to fetch Contact details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      userResponse
     );
   }
   return userResponse;
@@ -257,7 +274,9 @@ const responseBuilderWithContactDetails = async (
   const userDetails = await getContactsDetails(email, Config);
   const userId = userDetails.response?.contact?.id;
   if (!userId) {
-    throw new CustomError("Failed in fetching userId. Aborting!", 400);
+    throw new NetworkInstrumentationError(
+      "Failed in fetching userId. Aborting!"
+    );
   }
   const responseBody = {
     ...payload,
@@ -281,17 +300,15 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   };
   const emails = getFieldValueFromMessage(message, "email");
   if (!emails) {
-    throw new CustomError(
-      "email is required for updating life Cycle Stages. Aborting!",
-      400
+    throw new InstrumentationError(
+      "email is required for updating life Cycle Stages. Aborting!"
     );
   }
   const lifecycleStageId = get(message, "properties.lifecycleStageId");
   const lifecycleStageName = get(message, "properties.lifecycleStageName");
   if (!lifecycleStageId && !lifecycleStageName) {
-    throw new CustomError(
-      `Either of lifecycleStageName or lifecycleStageId is required. Aborting!`,
-      400
+    throw new InstrumentationError(
+      "Either of lifecycleStageName or lifecycleStageId is required. Aborting!"
     );
   }
   if (lifecycleStageId) {
@@ -309,9 +326,13 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   if (lifeCycleStagesResponse.status !== 200) {
     const errMessage = lifeCycleStagesResponse.response.errors?.message || "";
     const errorStatus = lifeCycleStagesResponse.response.errors?.code || "500";
-    throw new CustomError(
+    throw new NetworkError(
       `failed to fetch lifecycle_stages details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      lifeCycleStagesResponse
     );
   }
   const lifeCycleStages = lifeCycleStagesResponse.response?.lifecycle_stages;
@@ -320,9 +341,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
       lifeCycleStage => lifeCycleStage.name === lifecycleStageName
     );
     if (!lifeCycleStageDetials) {
-      throw new CustomError(
-        `failed to fetch lifeCycleStages with ${lifecycleStageName}`,
-        400
+      throw new NetworkInstrumentationError(
+        `failed to fetch lifeCycleStages with ${lifecycleStageName}`
       );
     }
     const response = {
@@ -333,9 +353,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     };
     return response;
   }
-  throw new CustomError(
-    `Unable to fetch correct list of lifecycle stages`,
-    400
+  throw new NetworkInstrumentationError(
+    `Unable to fetch correct list of lifecycle stages`
   );
 };
 
@@ -354,24 +373,22 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     }
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
-    throw new CustomError(
-      `Either of sales activity name or sales activity type id is required. Aborting!`,
-      400
+    throw new InstrumentationError(
+      `Either of sales activity name or sales activity type id is required. Aborting!`
     );
   }
   if (
     !payload.targetable_id &&
     payload.targetable_type.toLowerCase() !== "contact"
   ) {
-    throw new CustomError(`targetable_id is required. Aborting!`, 400);
+    throw new InstrumentationError(`targetable_id is required. Aborting!`);
   }
 
   const email = getFieldValueFromMessage(message, "email");
 
   if (!payload.targetable_id && !email) {
-    throw new CustomError(
-      `Either of email or targetable_id is required for creating sales activity. Aborting!`,
-      400
+    throw new InstrumentationError(
+      `Either of email or targetable_id is required for creating sales activity. Aborting!`
     );
   }
 
@@ -399,9 +416,13 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   if (salesActivityResponse.status !== 200) {
     const errMessage = salesActivityResponse.response.errors?.message || "";
     const errorStatus = salesActivityResponse.response.errors?.code || "500";
-    throw new CustomError(
+    throw new NetworkError(
       `failed to fetch sales activities details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      salesActivityResponse
     );
   }
 
@@ -412,9 +433,8 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
       salesActivity => salesActivity.name === payload.sales_activity_name
     );
     if (!salesActivityDetails) {
-      throw new CustomError(
-        `sales Activity ${payload.sales_activity_name} doesn't exists. Aborting!`,
-        400
+      throw new InstrumentationError(
+        `sales Activity ${payload.sales_activity_name} doesn't exists. Aborting!`
       );
     }
     let responseBody;
@@ -435,7 +455,9 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
 
     return responseBody;
   }
-  throw new CustomError(`Unable to fetch correct list of sales activity.`, 400);
+  throw new NetworkInstrumentationError(
+    `Unable to fetch correct list of sales activity.`
+  );
 };
 
 /*
@@ -469,7 +491,7 @@ const checkNumberDataType = payload => {
     }
   });
   if (errorAttributes.length > 0) {
-    throw new CustomError(`${errorAttributes}: invalid number format`, 400);
+    throw new InstrumentationError(`${errorAttributes}: invalid number format`);
   }
 };
 

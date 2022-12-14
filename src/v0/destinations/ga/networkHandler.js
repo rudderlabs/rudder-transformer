@@ -31,9 +31,9 @@ const gaResponseHandler = gaResponse => {
     if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
       throw new RetryableError(
         "invalid credentials",
-        response?.error?.status,
+        500,
         response,
-        "REFRESH_TOKEN"
+        REFRESH_TOKEN
       );
     }
     throw new NetworkError(

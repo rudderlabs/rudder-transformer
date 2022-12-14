@@ -21,9 +21,9 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const {
   NetworkError,
-  UnauthorizedError,
   ConfigurationError,
-  InstrumentationError
+  InstrumentationError,
+  TransformationError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
@@ -47,7 +47,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     }
     const status = resp.status || 400;
     throw new NetworkError(
-      "Could not retrieve authorization token",
+      "Could not retrieve access token",
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
@@ -56,15 +56,13 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     );
   } catch (error) {
     if (!isEmpty(error.response)) {
-      throw new UnauthorizedError(
-        `Authorization Failed ${error.response.statusText}`,
-        error.response.status
+      throw new TransformationError(
+        `Authorization Failed ${error.response.statusText}`
       );
     } else {
       const httpError = nodeSysErrorToStatus(error.code);
-      throw new UnauthorizedError(
-        `Authorization Failed ${httpError.message}`,
-        httpError.status
+      throw new TransformationError(
+        `Authorization Failed ${httpError.message}`
       );
     }
   }

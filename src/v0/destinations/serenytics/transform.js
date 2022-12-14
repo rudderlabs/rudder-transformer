@@ -164,7 +164,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response ? error.response.status : error.code || 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

@@ -15,7 +15,8 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  generateErrorObject
 } = require("../../util");
 const {
   TransformationError,
@@ -201,6 +202,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const erroObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -208,7 +210,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          erroObj.statTags
         );
       }
     })

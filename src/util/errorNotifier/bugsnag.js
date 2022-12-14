@@ -5,7 +5,6 @@ const {
   DataValidationError
 } = require("rudder-transformer-cdk/build/error/index");
 const pkg = require("../../../package.json");
-const { CustomError } = require("../../v0/util");
 const {
   BaseError,
   TransformationError,
@@ -29,7 +28,6 @@ const {
 } = process.env;
 
 const errorTypesDenyList = [
-  CustomError,
   BaseError,
   TransformationError,
   ConfigurationError,

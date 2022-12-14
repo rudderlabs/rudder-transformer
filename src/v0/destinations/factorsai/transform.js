@@ -7,9 +7,10 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   flattenJson,
-  CustomError,
-  defaultPostRequestConfig
+  defaultPostRequestConfig,
+  generateErrorObject
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require("./config");
 
@@ -52,9 +53,8 @@ function process(event) {
   const { factorsAIApiKey } = destination.Config;
 
   if (!message.type) {
-    throw new CustomError(
-      "[FACTORSAI]: Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
@@ -66,7 +66,9 @@ function process(event) {
     case EventType.TRACK:
       return processTrack(message, factorsAIApiKey);
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} is not supported`
+      );
   }
 }
 
@@ -94,6 +96,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -101,7 +104,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

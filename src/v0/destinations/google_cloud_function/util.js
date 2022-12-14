@@ -1,4 +1,5 @@
-const { defaultBatchRequestConfig, CustomError } = require("../../util");
+const { defaultBatchRequestConfig } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 const { TRIGGERTYPE } = require("./config");
 
@@ -9,12 +10,12 @@ const { TRIGGERTYPE } = require("./config");
 const validateDestinationConfig = ({ Config }) => {
   // throw error if google Cloud Function is not provided
   if (!Config.googleCloudFunctionUrl) {
-    throw new CustomError("[GCF]:: Url not found. Aborting", 400);
+    throw new ConfigurationError("[GCF]:: Url not found. Aborting");
   }
   if (Config.triggerType === "https") {
     // for triggerType https gcloud Authorization is mandatory
     if (!Config.gcloudAuthorization) {
-      throw new CustomError("[GCF]:: Access Token not found. Aborting", 400);
+      throw new ConfigurationError("[GCF]:: Access Token not found. Aborting");
     }
   }
 };

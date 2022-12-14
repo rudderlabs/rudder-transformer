@@ -37,6 +37,24 @@ const prepareProxyReq = request => {
   });
 };
 
+/**
+ * This function helps to determine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to disable the destination.
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategory = (code, response) => {
+  switch (code) {
+    case 401:
+      if (!response.error?.details) return REFRESH_TOKEN;
+      return "";
+    default:
+      return "";
+  }
+};
+
 const scAudienceProxyRequest = async request => {
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
@@ -61,7 +79,8 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
-    response
+    response,
+    getAuthErrCategory(status, response)
   );
 };
 

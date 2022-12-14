@@ -24,12 +24,15 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
+      "authErrorCategory": "",
       "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
-        "errorAt": "proxy",
-        "scope": "exception",
-        "stage": "responseTransform"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -37,12 +40,15 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
+      "authErrorCategory": "",
       "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
-        "errorAt": "proxy",
-        "scope": "exception",
-        "stage": "responseTransform"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

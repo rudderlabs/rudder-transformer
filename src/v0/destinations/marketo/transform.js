@@ -518,7 +518,8 @@ const processRouterDest = async inputs => {
     const errResp = {
       status: 400,
       message: "Authorisation failed",
-      responseTransformFailure: true
+      responseTransformFailure: true,
+      statTags: {}
     };
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),

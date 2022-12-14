@@ -194,8 +194,7 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-      },
-      error
+      }
     );
   }
   return !!response.data.double_optin;

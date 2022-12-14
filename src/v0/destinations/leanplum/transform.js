@@ -104,14 +104,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    const message = error.message || "Unknown error";
-    throw new InstrumentationError(message);
-  }
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 
 const processRouterDest = async inputs => {

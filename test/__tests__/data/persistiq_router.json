@@ -1,197 +1,195 @@
 [
-    {
-        "description": "PersistIQ batch events",
-        "input": [
-            {
-                "message": {
-                    "groupId": "testgroup1",
-                    "context": {
-                        "externalId": [
-                            {
-                                "type": "persistIqLeadId",
-                                "id": "lel1c5u1wuk8"
-                            }
-                        ]
-                    },
-                    "traits": {
-                        "operation": "remove"
-                    },
-                    "type": "group"
-                },
-                "destination": {
-                    "Config": {
-                        "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
-                        "persistIqAttributesMapping": [
-                            {
-                                "from": "useroccupation",
-                                "to": "occupation"
-                            }
-                        ]
-                    }
-                },
-                "metadata": {
-                    "jobId": 1
-                }
-            },
-            {
-                "message": {
-                    "userId": "1",
-                    "context": {
-                        "externalId": [
-                            {
-                                "type": "persistIqLeadId",
-                                "id": "lel1c5u1wuk8"
-                            }
-                        ]
-                    },
-                    "traits": {
-                        "email": "test@rudderstack.com",
-                        "firstName": "test",
-                        "lastName": "rudderstack",
-                        "age": 15
-                    },
-                    "timestamp": "2020-09-29T14:50:29.907+05:30",
-                    "type": "identify"
-                },
-                "destination": {
-                    "Config": {
-                        "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
-                        "persistIqAttributesMapping": [
-                            {
-                                "from": "useroccupation",
-                                "to": "occupation"
-                            }
-                        ]
-                    }
-                },
-                "metadata": {
-                    "jobId": 2
-                }
-            },
-            {
-                "message": {
-                    "anonymousId": "user123",
-                    "groupId": "17",
-                    "traits": {
-                        "lastName": "garwal",
-                        "email": "abc@xyz.com"
-                    },
-                    "type": "group"
-                },
-                "destination": {
-                    "Config": {
-                        "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
-                        "persistIqAttributesMapping": [
-                            {
-                                "from": "useroccupation",
-                                "to": "occupation"
-                            }
-                        ]
-                    }
-                },
-                "metadata": {
-                    "jobId": 3
-                }
-            }
+  {
+    "description": "PersistIQ batch events",
+    "input": [
+      {
+        "message": {
+          "groupId": "testgroup1",
+          "context": {
+            "externalId": [
+              {
+                "type": "persistIqLeadId",
+                "id": "lel1c5u1wuk8"
+              }
+            ]
+          },
+          "traits": {
+            "operation": "remove"
+          },
+          "type": "group"
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 1
+        }
+      },
+      {
+        "message": {
+          "userId": "1",
+          "context": {
+            "externalId": [
+              {
+                "type": "persistIqLeadId",
+                "id": "lel1c5u1wuk8"
+              }
+            ]
+          },
+          "traits": {
+            "email": "test@rudderstack.com",
+            "firstName": "test",
+            "lastName": "rudderstack",
+            "age": 15
+          },
+          "timestamp": "2020-09-29T14:50:29.907+05:30",
+          "type": "identify"
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        }
+      },
+      {
+        "message": {
+          "anonymousId": "user123",
+          "groupId": "17",
+          "traits": {
+            "lastName": "garwal",
+            "email": "abc@xyz.com"
+          },
+          "type": "group"
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
+        "metadata": {
+          "jobId": 3
+        }
+      }
+    ],
+    "output": [
+      {
+        "batchedRequest": {
+          "body": {
+            "XML": {},
+            "FORM": {},
+            "JSON": {},
+            "JSON_ARRAY": {}
+          },
+          "type": "REST",
+          "files": {},
+          "method": "DELETE",
+          "params": {},
+          "headers": {
+            "x-api-key": "2c646069cc5ae3f22cc0dab36cd060ad"
+          },
+          "version": "1",
+          "endpoint": "https://api.persistiq.com/v1/campaigns/testgroup1/leads/lel1c5u1wuk8"
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
+        "metadata": [
+          {
+            "jobId": 1
+          }
         ],
-        "output": [
-            {
-                "batchedRequest": {
-                    "body": {
-                        "XML": {},
-                        "FORM": {},
-                        "JSON": {},
-                        "JSON_ARRAY": {}
-                    },
-                    "type": "REST",
-                    "files": {},
-                    "method": "DELETE",
-                    "params": {},
-                    "headers": {
-                        "x-api-key": "2c646069cc5ae3f22cc0dab36cd060ad"
-                    },
-                    "version": "1",
-                    "endpoint": "https://api.persistiq.com/v1/campaigns/testgroup1/leads/lel1c5u1wuk8"
-                },
-                "destination": {
-                    "Config": {
-                        "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
-                        "persistIqAttributesMapping": [
-                            {
-                                "from": "useroccupation",
-                                "to": "occupation"
-                            }
-                        ]
-                    }
-                },
-                "metadata": [
-                    {
-                        "jobId": 1
-                    }
-                ],
-                "batched": false,
-                "statusCode": 200
+        "batched": false,
+        "statusCode": 200
+      },
+      {
+        "batchedRequest": {
+          "body": {
+            "FORM": {},
+            "JSON": {
+              "data": {
+                "email": "test@rudderstack.com",
+                "first_name": "test",
+                "last_name": "rudderstack",
+                "age": 15
+              }
             },
-            {
-                "batchedRequest": {
-                    "body": {
-                        "FORM": {},
-                        "JSON": {
-                            "data": {
-                                "email": "test@rudderstack.com",
-                                "first_name": "test",
-                                "last_name": "rudderstack",
-                                "age": 15
-                            }
-                        },
-                        "JSON_ARRAY": {},
-                        "XML": {}
-                    },
-                    "endpoint": "https://api.persistiq.com/v1/leads/lel1c5u1wuk8",
-                    "files": {},
-                    "headers": {
-                        "x-api-key": "2c646069cc5ae3f22cc0dab36cd060ad"
-                    },
-                    "method": "PATCH",
-                    "params": {},
-                    "type": "REST",
-                    "version": "1"
-                },
-                "destination": {
-                    "Config": {
-                        "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
-                        "persistIqAttributesMapping": [
-                            {
-                                "from": "useroccupation",
-                                "to": "occupation"
-                            }
-                        ]
-                    }
-                },
-                "metadata": [
-                    {
-                        "jobId": 2
-                    }
-                ],
-                "batched": false,
-                "statusCode": 200
-            },
-            {
-                "metadata": [
-                    {
-                        "jobId": 3
-                    }
-                ],
-                "statTags": {
-                    "destType": "PERSISTIQ",
-                    "meta": "badParam",
-                    "scope": "transformation",
-                    "stage": "transform"
-                },
-                "batched": false,
-                "statusCode": 400,
-                "error": "Lead Id from externalId is not found."
-            }
-        ]
-    }
+            "JSON_ARRAY": {},
+            "XML": {}
+          },
+          "endpoint": "https://api.persistiq.com/v1/leads/lel1c5u1wuk8",
+          "files": {},
+          "headers": {
+            "x-api-key": "2c646069cc5ae3f22cc0dab36cd060ad"
+          },
+          "method": "PATCH",
+          "params": {},
+          "type": "REST",
+          "version": "1"
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
+        "metadata": [
+          {
+            "jobId": 2
+          }
+        ],
+        "batched": false,
+        "statusCode": 200
+      },
+      {
+        "metadata": [
+          {
+            "jobId": 3
+          }
+        ],
+        "statTags": {
+          "errorCategory": "dataValidation",
+          "errorType": "instrumentation"
+        },
+        "batched": false,
+        "statusCode": 400,
+        "error": "Lead Id from externalId is not found"
+      }
+    ]
+  }
 ]

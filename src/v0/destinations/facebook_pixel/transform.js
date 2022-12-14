@@ -64,7 +64,7 @@ const getContentCategory = category => {
     typeof contentCategory === "object"
   ) {
     throw new InstrumentationError(
-      "'properties.category' must be either be a string or an Array"
+      "'properties.category' must be either be a string or an array"
     );
   }
   return contentCategory;

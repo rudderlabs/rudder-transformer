@@ -566,7 +566,7 @@
   },
   {
     "statusCode": 400,
-    "error": "'properties.category' must be either be a string or an Array",
+    "error": "'properties.category' must be either be a string or an array",
     "statTags": {
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"
